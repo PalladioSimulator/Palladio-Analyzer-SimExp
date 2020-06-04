@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/org.palladiosimulator.simexp.markovian.model/src-gen"
+    creationIcons="false" editDirectory="/org.palladiosimulator.simexp.markovian.model.edit/src-gen"
+    editorDirectory="/org.palladiosimulator.simexp.markovian.model.editor/src-gen"
+    modelPluginID="org.palladiosimulator.simexp.markovian.model" modelName="Markovmodel"
+    editPluginClass="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.provider.MarkovmodelEditPlugin"
+    editorPluginClass="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.presentation.MarkovmodelEditorPlugin"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" codeFormatting="true"
+    testSuiteClass="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.tests.MarkovmodelAllTests"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="11.0" copyrightFields="false"
+    editPluginID="org.palladiosimulator.simexp.markovian.model.edit" editorPluginID="org.palladiosimulator.simexp.markovian.model.editor"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>markovmodel.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Markovmodel" basePackage="org.palladiosimulator.simexp.markovian.model"
+      disposableProviderFactory="true" ecorePackage="markovmodel.ecore#/">
+    <nestedGenPackages prefix="MarkovEntity" basePackage="org.palladiosimulator.simexp.markovian.model.markovmodel"
+        disposableProviderFactory="true" ecorePackage="markovmodel.ecore#//markoventity">
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/MarkovModel">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/transitions"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/stateSpace"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/reward"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/actions"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/observations"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/State">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/State/produces"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/State/name"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/Observation">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Observation/O"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Observation/value"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/Transition">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Transition/source"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Transition/target"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Transition/label"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Transition/probability"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/Reward">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Reward/U"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Reward/value"/>
+        <genOperations ecoreOperation="markovmodel.ecore#//markoventity/Reward/addWith">
+          <genParameters ecoreParameter="markovmodel.ecore#//markoventity/Reward/addWith/other"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//markoventity/Action">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Action/T"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Action/action"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="SampleModel" basePackage="org.palladiosimulator.simexp.markovian.model.markovmodel"
+        disposableProviderFactory="true" ecorePackage="markovmodel.ecore#//samplemodel">
+      <genClasses ecoreClass="markovmodel.ecore#//samplemodel/Trajectory">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Trajectory/samplePath"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//samplemodel/Sample">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/reward"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/action"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//samplemodel/Sample/pointInTime"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/current"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/next"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/observation"/>
+      </genClasses>
+      <genClasses ecoreClass="markovmodel.ecore#//samplemodel/SampleModel">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/SampleModel/trajectories"/>
+      </genClasses>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

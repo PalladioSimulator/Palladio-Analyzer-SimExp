@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated markovmodel -->
+      <package
+            uri="http://palladiosimulator.org/markovmodel/markoventity/1.0"
+            class="org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage"
+            genModel="model/markovmodel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated markovmodel -->
+      <package
+            uri="http://palladiosimulator.org/markovmodel/samplemodel/1.0"
+            class="org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModelPackage"
+            genModel="model/markovmodel.genmodel"/>
+   </extension>
+</plugin>
