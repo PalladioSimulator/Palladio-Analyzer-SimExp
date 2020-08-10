@@ -4,10 +4,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class MarkovianUtil {
 	

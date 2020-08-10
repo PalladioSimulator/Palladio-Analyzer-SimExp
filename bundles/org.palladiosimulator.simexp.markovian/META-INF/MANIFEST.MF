@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.palladiosimulator.simexp.markovian.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;bundle-version="2.14.0",
- de.fzi.srp.distribution;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.distribution;bundle-version="1.0.0",
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
  org.palladiosimulator.simexp.service;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11

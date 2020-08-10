@@ -2,10 +2,9 @@ package org.palladiosimulator.simexp.markovian.builder;
 
 import java.util.Objects;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.BasicMarkovian;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class BasicMarkovianBuilder implements BasicMarkovianBuilderTemplate<BasicMarkovianBuilder>, Builder<BasicMarkovian> {
 	

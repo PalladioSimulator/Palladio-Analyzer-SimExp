@@ -2,14 +2,13 @@ package org.palladiosimulator.simexp.markovian.builder;
 
 import java.util.Set;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class MarkovianBuilder {
 

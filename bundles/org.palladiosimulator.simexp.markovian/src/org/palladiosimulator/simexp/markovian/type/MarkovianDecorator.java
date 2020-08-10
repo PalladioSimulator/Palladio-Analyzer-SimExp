@@ -1,8 +1,7 @@
 package org.palladiosimulator.simexp.markovian.type;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public abstract class MarkovianDecorator implements Markovian {
 

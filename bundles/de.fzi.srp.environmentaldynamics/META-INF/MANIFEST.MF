@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Environmentaldynamics
+Bundle-SymbolicName: org.palladiosimulator.simexp.environmentaldynamics
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.palladiosimulator.simexp.environmentaldynamics.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.distribution;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.markovian
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.palladiosimulator.simexp.environmentaldynamics
+Bundle-ActivationPolicy: lazy
+Export-Package: org.palladiosimulator.simexp.environmentaldynamics.builder,
+ org.palladiosimulator.simexp.environmentaldynamics.entity,
+ org.palladiosimulator.simexp.environmentaldynamics.process

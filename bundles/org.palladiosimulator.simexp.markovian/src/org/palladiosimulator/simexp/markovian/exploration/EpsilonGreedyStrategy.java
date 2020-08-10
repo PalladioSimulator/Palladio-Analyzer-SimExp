@@ -7,12 +7,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
-
-import de.fzi.srp.distribution.factory.ProbabilityDistributionFactory;
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class EpsilonGreedyStrategy implements Policy<Transition> {
 	

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.access.MarkovModelAccessor;
 import org.palladiosimulator.simexp.markovian.model.factory.MarkovModelFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
@@ -16,8 +17,6 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.MarkovianResult;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class SampleModelEvaluator {
 	

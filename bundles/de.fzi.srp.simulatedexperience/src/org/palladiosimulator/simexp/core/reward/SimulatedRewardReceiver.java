@@ -1,0 +1,39 @@
+package org.palladiosimulator.simexp.core.reward;
+
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
+
+public class SimulatedRewardReceiver implements RewardReceiver {
+
+	private final RewardEvaluator evaluator;
+	
+	private SimulatedRewardReceiver(RewardEvaluator evaluator) {
+		this.evaluator = evaluator;
+	}
+	
+	public static SimulatedRewardReceiver with(RewardEvaluator evaluator) {
+		return new SimulatedRewardReceiver(evaluator);
+	}
+
+	@Override
+	public Reward<?> obtain(Sample sample) {
+		if (isNotValid(sample)) {
+			//TODO exception handling
+			throw new RuntimeException("");
+		}
+		return evaluate(sample);
+	}
+
+	private Reward<?> evaluate(Sample sample) {
+		SelfAdaptiveSystemState<?> state = (SelfAdaptiveSystemState<?>) sample.getNext();
+		return evaluator.evaluate(state.getQuantifiedState());
+	}
+	
+	private boolean isNotValid(Sample sample) {
+		return (sample.getCurrent() instanceof SelfAdaptiveSystemState) == false ||
+			   (sample.getNext() instanceof SelfAdaptiveSystemState) 	== false;
+	}
+	
+}

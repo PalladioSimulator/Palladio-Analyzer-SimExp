@@ -2,12 +2,11 @@ package org.palladiosimulator.simexp.markovian.type;
 
 import static org.palladiosimulator.simexp.markovian.access.SampleModelAccessor.createInitialSample;
 
+import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
-
-import de.fzi.srp.distribution.function.ProbabilityMassFunction;
 
 public class BasicMarkovian implements Markovian {
 
