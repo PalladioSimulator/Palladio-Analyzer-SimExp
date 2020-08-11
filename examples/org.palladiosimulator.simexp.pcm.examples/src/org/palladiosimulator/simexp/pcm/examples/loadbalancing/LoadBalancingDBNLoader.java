@@ -24,7 +24,7 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 public class LoadBalancingDBNLoader {
 
-	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simulizar.examples.loadbalancer";
+	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
 	private final static String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
 	private final static String BN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_PATH,

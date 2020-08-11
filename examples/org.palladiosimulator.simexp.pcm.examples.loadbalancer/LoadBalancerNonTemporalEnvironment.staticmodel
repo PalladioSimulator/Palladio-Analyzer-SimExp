@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ASCII"?>
+<staticmodel:GroundProbabilisticNetwork xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:staticmodel="http://palladiosimulator.org/Environment/StaticModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_Bs-HoG3fEeqCku_2qkukxg" entityName="StaticEnvironment">
+  <localModels id="_Bs09sG3fEeqCku_2qkukxg" entityName="WorkloadVariation_VaryingWorkloadInstantiation_VaryingWorkloadFactor_Instantiation">
+    <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancingTemplates.templatevariable#_kPH1cW3REeq4sYEFwlTMnQ"/>
+    <distribution href="LoabBalancingDistributions.distributionfunction#_cGlDMG3gEeq5pcSD8uiAxg"/>
+  </localModels>
+  <localProbabilisticModels>
+    <groundRandomVariables id="_BrSsoG3fEeqCku_2qkukxg" entityName="WorkloadVariation_VaryingWorkloadInstantiation" descriptiveModel="_Bs09sG3fEeqCku_2qkukxg">
+      <instantiatedTemplate href="LoadBalancingTemplates.templatevariable#_XcnzUG3REeq4sYEFwlTMnQ"/>
+      <appliedObjects href="overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
+    </groundRandomVariables>
+  </localProbabilisticModels>
+</staticmodel:GroundProbabilisticNetwork>

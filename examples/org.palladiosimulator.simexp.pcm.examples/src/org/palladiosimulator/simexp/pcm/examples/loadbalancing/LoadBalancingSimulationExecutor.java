@@ -40,7 +40,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public final static double UPPER_THRESHOLD_RT = 2.0;
 	public final static double LOWER_THRESHOLD_RT = 1.0;
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simulizar.examples.loadbalancer/elasticity.experiments";
+	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -91,8 +91,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(500) //150
-					.andNumberOfSimulationsPerRun(100) //100
+					.withNumberOfRuns(3) //500
+					.andNumberOfSimulationsPerRun(5) //100
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	//.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get())

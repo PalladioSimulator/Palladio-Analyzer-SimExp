@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dynamicmodel:DynamicBehaviourExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_ZM2ScG3fEeqCku_2qkukxg" entityName="EnvironmentalDynamics">
+  <model href="/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel#_Bs-HoG3fEeqCku_2qkukxg"/>
+  <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+    <localModels id="_ZOLIIG3fEeqCku_2qkukxg" entityName="WorkloadVariation_VaryingWorkloadInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancingTemplates.templatevariable#_C1FSIW3SEeq4sYEFwlTMnQ"/>
+      <distributionFunction href="LoabBalancingDistributions.distributionfunction#_Dy05gG3iEeq5pcSD8uiAxg"/>
+    </localModels>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_ZOLIIG3fEeqCku_2qkukxg">
+      <appliedGroundVariable href="/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel#_BrSsoG3fEeqCku_2qkukxg"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="LoadBalancingTemplates.templatevariable#//@relation.0"/>
+    </timeSliceInductions>
+  </behaviour>
+</dynamicmodel:DynamicBehaviourExtension>

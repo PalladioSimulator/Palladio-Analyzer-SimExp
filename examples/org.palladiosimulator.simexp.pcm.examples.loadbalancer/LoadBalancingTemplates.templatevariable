@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templatevariable:TemplateVariableDefinitions xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_V1338G3REeq4sYEFwlTMnQ" entityName="LoadBalancingTemplates">
+  <variables id="_XcnzUG3REeq4sYEFwlTMnQ" entityName="VaryingWorkload">
+    <signature argument="_dVtGkm3REeq4sYEFwlTMnQ"/>
+  </variables>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_kPH1cW3REeq4sYEFwlTMnQ" entityName="VaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_C1FSIW3SEeq4sYEFwlTMnQ" entityName="TemporalVaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ" temporal="true"/>
+  <arguments id="_dVtGkm3REeq4sYEFwlTMnQ" entityName="Workload"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="VaryingWorkloadTemporalRelation" interfaceVariable="_XcnzUG3REeq4sYEFwlTMnQ"/>
+</templatevariable:TemplateVariableDefinitions>
