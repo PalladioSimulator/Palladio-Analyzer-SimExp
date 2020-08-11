@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
+  <viewpoint:DAnalysis uid="_UH9GwEQSEeqpWKtDtInK0g" selectedViews="_URTQAEQSEeqpWKtDtInK0g" version="14.1.0.201810161215">
+    <semanticResources>distributionfactor.genmodel</semanticResources>
+    <semanticResources>platform:/resource/tools.mdsd.modelingfoundations.identifier/model/identifier.ecore</semanticResources>
+    <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
+    <semanticResources>platform:/resource/org.palladiosimulator.pcm/model/pcm.ecore</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.stoex/model/stoex.ecore</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.identifier/model/identifier.ecore</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.units/model/Units.ecore</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.probfunction/model/ProbabilityFunction.ecore</semanticResources>
+    <semanticResources>platform:/resource/de.uka.ipd.sdq.identifier/model/identifier.genmodel</semanticResources>
+    <semanticResources>platform:/resource/tools.mdsd.modelingfoundations.identifier/model/identifier.genmodel</semanticResources>
+    <semanticResources>platform:/resource/org.palladiosimulator.pcm/model/pcm.genmodel</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.probfunction/model/ProbabilityFunction.genmodel</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.stoex/model/stoex.genmodel</semanticResources>
+    <semanticResources>platform:/plugin/de.uka.ipd.sdq.units/model/Units.genmodel</semanticResources>
+    <semanticResources>platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel</semanticResources>
+    <semanticResources>platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore</semanticResources>
+    <semanticResources>DeltaIoTReconfigurationParams.ecore</semanticResources>
+    <ownedViews xmi:type="viewpoint:DView" uid="_URTQAEQSEeqpWKtDtInK0g">
+      <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_Dbsbg1lgEeqd37PZYmDocg" name="reconfparams class diagram" repPath="#_Dbm78FlgEeqd37PZYmDocg">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
+        <target xmi:type="ecore:EPackage" href="DeltaIoTReconfigurationParams.ecore#/"/>
+      </ownedRepresentationDescriptors>
+    </ownedViews>
+  </viewpoint:DAnalysis>
+  <diagram:DSemanticDiagram uid="_Dbm78FlgEeqd37PZYmDocg" name="reconfparams class diagram">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_DbsbgFlgEeqd37PZYmDocg" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_DbsbgVlgEeqd37PZYmDocg">
+        <computedStyleDescriptions xmi:type="style:BundledImageDescription" xmi:id="_ELkZQFlgEeqd37PZYmDocg" labelExpression="service:renderAsNode" labelAlignment="LEFT" tooltipExpression="service:renderTooltip" sizeComputationExpression="1">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <labelFormat>bold</labelFormat>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='blue']"/>
+        </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:BundledImageDescription" xmi:id="_ELlnYFlgEeqd37PZYmDocg" labelExpression="service:render" labelAlignment="LEFT" tooltipExpression="service:renderTooltip" sizeComputationExpression="1">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <labelFormat>bold</labelFormat>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <color xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+        </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:EdgeStyleDescription" xmi:id="_ELoqsFlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan">
+          <strokeColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <centerLabelStyleDescription xmi:type="style:CenterLabelStyleDescription" xmi:id="_ELoqsVlgEeqd37PZYmDocg" showIcon="false" labelExpression="service:render">
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          </centerLabelStyleDescription>
+          <endLabelStyleDescription xmi:type="style:EndLabelStyleDescription" xmi:id="_ELoqsllgEeqd37PZYmDocg" labelSize="6" showIcon="false" labelExpression="service:eKeysLabel">
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
+          </endLabelStyleDescription>
+        </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:EdgeStyleDescription" xmi:id="_ELp40FlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan">
+          <strokeColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          <centerLabelStyleDescription xmi:type="style:CenterLabelStyleDescription" xmi:id="_ELp40VlgEeqd37PZYmDocg" showIcon="false" labelExpression="service:render">
+            <labelFormat>bold</labelFormat>
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+          </centerLabelStyleDescription>
+          <endLabelStyleDescription xmi:type="style:EndLabelStyleDescription" xmi:id="_ELp40llgEeqd37PZYmDocg" labelSize="6" showIcon="false" labelExpression="service:eKeysLabel">
+            <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
+          </endLabelStyleDescription>
+        </computedStyleDescriptions>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_DbtCkFlgEeqd37PZYmDocg" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_DbtCkVlgEeqd37PZYmDocg" type="Sirius" element="_Dbm78FlgEeqd37PZYmDocg" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_ELs8IFlgEeqd37PZYmDocg" type="2003" element="_ELVvwFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_ELuKQFlgEeqd37PZYmDocg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_ELuxUFlgEeqd37PZYmDocg" type="7004">
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ELuxUVlgEeqd37PZYmDocg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ELuxUllgEeqd37PZYmDocg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_ELs8IVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ELs8IllgEeqd37PZYmDocg" x="150" y="55"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_ELuxU1lgEeqd37PZYmDocg" type="2003" element="_ELZaIFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_ELvYYFlgEeqd37PZYmDocg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_ELvYYVlgEeqd37PZYmDocg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_ELwmgFlgEeqd37PZYmDocg" type="3010" element="_ELjyMFlgEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ELwmgVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ELwmgllgEeqd37PZYmDocg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ELvYYllgEeqd37PZYmDocg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ELvYY1lgEeqd37PZYmDocg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_ELuxVFlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ELuxVVlgEeqd37PZYmDocg" x="215" y="205"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_ELvYZFlgEeqd37PZYmDocg" type="2003" element="_ELaoQFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_ELv_cFlgEeqd37PZYmDocg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_ELv_cVlgEeqd37PZYmDocg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_ELxNkFlgEeqd37PZYmDocg" type="3010" element="_ELlAUFlgEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ELxNkVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ELxNkllgEeqd37PZYmDocg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_ELx0oFlgEeqd37PZYmDocg" type="3010" element="_ELmOcFlgEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_ELx0oVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_ELx0ollgEeqd37PZYmDocg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ELv_cllgEeqd37PZYmDocg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ELv_c1lgEeqd37PZYmDocg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_ELvYZVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ELvYZllgEeqd37PZYmDocg" x="355" y="365"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_RewGkFlgEeqd37PZYmDocg" type="2003" element="_Rd4j4FlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_RewtoFlgEeqd37PZYmDocg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_RewtoVlgEeqd37PZYmDocg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_KPTV8FljEeqd37PZYmDocg" type="3010" element="_KOWTsFljEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_KPTV8VljEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_KPTV8lljEeqd37PZYmDocg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_RewtollgEeqd37PZYmDocg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_Rewto1lgEeqd37PZYmDocg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_RewGkVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_RewGkllgEeqd37PZYmDocg" x="540" y="71" width="138" height="68"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_ZISDwFlgEeqd37PZYmDocg" type="2003" element="_ZH0wwFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_ZISq0FlgEeqd37PZYmDocg" type="5007"/>
+          <children xmi:type="notation:Node" xmi:id="_ZISq0VlgEeqd37PZYmDocg" type="7004">
+            <children xmi:type="notation:Node" xmi:id="_y1QGUFliEeqd37PZYmDocg" type="3010" element="_y0X8kVliEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_y1QGUVliEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_y1QGUlliEeqd37PZYmDocg"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_65d0YFliEeqd37PZYmDocg" type="3010" element="_64rxQFliEeqd37PZYmDocg">
+              <styles xmi:type="notation:FontStyle" xmi:id="_65d0YVliEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8" bold="true"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_65d0YlliEeqd37PZYmDocg"/>
+            </children>
+            <styles xmi:type="notation:SortingStyle" xmi:id="_ZISq0llgEeqd37PZYmDocg"/>
+            <styles xmi:type="notation:FilteringStyle" xmi:id="_ZISq01lgEeqd37PZYmDocg"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_ZISDwVlgEeqd37PZYmDocg" fontName="Segoe UI" fontHeight="8"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ZISDwllgEeqd37PZYmDocg" x="680" y="165" width="203" height="73"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_DbtCkllgEeqd37PZYmDocg"/>
+        <edges xmi:type="notation:Edge" xmi:id="_ELzp0FlgEeqd37PZYmDocg" type="4001" element="_ELoDoFlgEeqd37PZYmDocg" source="_ELs8IFlgEeqd37PZYmDocg" target="_ELuxU1lgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_EL038FlgEeqd37PZYmDocg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL038VlgEeqd37PZYmDocg" x="55" y="-13"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_EL2GEFlgEeqd37PZYmDocg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL2GEVlgEeqd37PZYmDocg" x="1" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_EL2tIFlgEeqd37PZYmDocg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL2tIVlgEeqd37PZYmDocg" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_ELzp0VlgEeqd37PZYmDocg" routing="Rectilinear"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_ELzp0llgEeqd37PZYmDocg" fontColor="7490599" fontName="Segoe UI" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ELzp01lgEeqd37PZYmDocg" points="[110, 49, 0, -101]$[110, 101, 0, -49]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_EL5wcFlgEeqd37PZYmDocg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_EL5wcVlgEeqd37PZYmDocg" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_EL6XgFlgEeqd37PZYmDocg" type="4001" element="_ELpRwVlgEeqd37PZYmDocg" source="_ELuxU1lgEeqd37PZYmDocg" target="_ELvYZFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_EL6XhFlgEeqd37PZYmDocg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL6XhVlgEeqd37PZYmDocg" x="-24" y="-5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_EL6XhllgEeqd37PZYmDocg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL6Xh1lgEeqd37PZYmDocg" x="18" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_EL6XiFlgEeqd37PZYmDocg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_EL6XiVlgEeqd37PZYmDocg" x="-7" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_EL6XgVlgEeqd37PZYmDocg" routing="Rectilinear"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_EL6XgllgEeqd37PZYmDocg" fontColor="7490599" fontName="Segoe UI" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_EL6Xg1lgEeqd37PZYmDocg" points="[130, 31, -13, -129]$[190, 31, 47, -129]$[190, 111, 47, -49]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_EL6-kFlgEeqd37PZYmDocg" id="(0.5,0.5)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_EL6-kVlgEeqd37PZYmDocg" id="(0.5,0.5)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_pJSpQFlgEeqd37PZYmDocg" type="4001" element="_pI4ZkFlgEeqd37PZYmDocg" source="_ELs8IFlgEeqd37PZYmDocg" target="_RewGkFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_pJSpRFlgEeqd37PZYmDocg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pJSpRVlgEeqd37PZYmDocg" x="5" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_pJTQUFlgEeqd37PZYmDocg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pJTQUVlgEeqd37PZYmDocg" x="3" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_pJTQUllgEeqd37PZYmDocg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_pJTQU1lgEeqd37PZYmDocg" x="-3" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_pJSpQVlgEeqd37PZYmDocg" routing="Rectilinear"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_pJSpQllgEeqd37PZYmDocg" fontColor="7490599" fontName="Segoe UI" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_pJSpQ1lgEeqd37PZYmDocg" points="[0, -10, -156, 5]$[156, -10, 0, 5]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_pJTQVFlgEeqd37PZYmDocg" id="(1.0,0.7653061224489796)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_pJTQVVlgEeqd37PZYmDocg" id="(0.0,0.6666666666666666)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_uM9XcFlgEeqd37PZYmDocg" type="4001" element="_uMmyJVlgEeqd37PZYmDocg" source="_RewGkFlgEeqd37PZYmDocg" target="_ZISDwFlgEeqd37PZYmDocg">
+          <children xmi:type="notation:Node" xmi:id="_uM9XdFlgEeqd37PZYmDocg" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uM9XdVlgEeqd37PZYmDocg" x="-16" y="14"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_uM9XdllgEeqd37PZYmDocg" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uM9Xd1lgEeqd37PZYmDocg" x="5" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_uM9XeFlgEeqd37PZYmDocg" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_uM9XeVlgEeqd37PZYmDocg" x="-5" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_uM9XcVlgEeqd37PZYmDocg" routing="Rectilinear"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_uM9XcllgEeqd37PZYmDocg" fontColor="7490599" fontName="Segoe UI" fontHeight="8"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_uM9Xc1lgEeqd37PZYmDocg" points="[35, 0, -70, -68]$[35, 68, -70, 0]$[105, 68, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_uM9-gFlgEeqd37PZYmDocg" id="(0.25735294117647056,1.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_uM9-gVlgEeqd37PZYmDocg" id="(0.0,0.5633802816901409)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_ELVvwFlgEeqd37PZYmDocg" name="DeltaIoTReconfigurationParamRepository" tooltipText="" outgoingEdges="_ELoDoFlgEeqd37PZYmDocg _pI4ZkFlgEeqd37PZYmDocg" width="12" height="10">
+      <target xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository"/>
+      <semanticElements xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_ELW94FlgEeqd37PZYmDocg" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_ELZaIFlgEeqd37PZYmDocg" name="DistributionFactor" tooltipText="" outgoingEdges="_ELpRwVlgEeqd37PZYmDocg" incomingEdges="_ELoDoFlgEeqd37PZYmDocg" width="12" height="10">
+      <target xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor"/>
+      <semanticElements xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_ELaBMFlgEeqd37PZYmDocg" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_ELjyMFlgEeqd37PZYmDocg" name=" appliedComponent : RepositoryComponent" tooltipText="">
+        <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor/appliedComponent"/>
+        <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor/appliedComponent"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_ELkZQVlgEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELkZQFlgEeqd37PZYmDocg" color="114,159,207">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_ELaoQFlgEeqd37PZYmDocg" name="DistributionFactorValue" tooltipText="" incomingEdges="_ELpRwVlgEeqd37PZYmDocg" width="12" height="10">
+      <target xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue"/>
+      <semanticElements xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_ELbPUFlgEeqd37PZYmDocg" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_ELlAUFlgEeqd37PZYmDocg" name="value : EDouble = 0.0" tooltipText="">
+        <target xmi:type="ecore:EAttribute" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue/value"/>
+        <semanticElements xmi:type="ecore:EAttribute" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue/value"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_ELlnYVlgEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELlnYFlgEeqd37PZYmDocg">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_ELmOcFlgEeqd37PZYmDocg" name=" appliedBranch : ProbabilisticBranchTransition" tooltipText="">
+        <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue/appliedBranch"/>
+        <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactorValue/appliedBranch"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_ELm1gFlgEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELkZQFlgEeqd37PZYmDocg" color="114,159,207">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_ELoDoFlgEeqd37PZYmDocg" name="[0..*] distributionFactors" sourceNode="_ELVvwFlgEeqd37PZYmDocg" targetNode="_ELZaIFlgEeqd37PZYmDocg">
+      <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository/distributionFactors"/>
+      <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository/distributionFactors"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_ELoqs1lgEeqd37PZYmDocg" description="_ELoqsFlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_ELoqtVlgEeqd37PZYmDocg" showIcon="false">
+          <customFeatures>labelSize</customFeatures>
+        </centerLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_ELoqtFlgEeqd37PZYmDocg" showIcon="false" labelColor="39,76,114">
+          <customFeatures>labelSize</customFeatures>
+        </endLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_ELpRwVlgEeqd37PZYmDocg" name="[2..*] factorValues" sourceNode="_ELZaIFlgEeqd37PZYmDocg" targetNode="_ELaoQFlgEeqd37PZYmDocg">
+      <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor/factorValues"/>
+      <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DistributionFactor/factorValues"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_ELp401lgEeqd37PZYmDocg" description="_ELp40FlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_ELp41VlgEeqd37PZYmDocg" showIcon="false">
+          <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_ELp41FlgEeqd37PZYmDocg" showIcon="false" labelColor="39,76,114">
+          <customFeatures>labelSize</customFeatures>
+        </endLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_Rd4j4FlgEeqd37PZYmDocg" name="TransmissionPower" tooltipText="" outgoingEdges="_uMmyJVlgEeqd37PZYmDocg" incomingEdges="_pI4ZkFlgEeqd37PZYmDocg" width="12" height="10">
+      <target xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower"/>
+      <semanticElements xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_Rd5K8FlgEeqd37PZYmDocg" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_KOWTsFljEeqd37PZYmDocg" name=" appliedAssembly : AssemblyContext" tooltipText="">
+        <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower/appliedAssembly"/>
+        <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower/appliedAssembly"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_KOW6wFljEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELkZQFlgEeqd37PZYmDocg" color="114,159,207">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_ZH0wwFlgEeqd37PZYmDocg" name="TransmissionPowerValue" tooltipText="" incomingEdges="_uMmyJVlgEeqd37PZYmDocg" width="12" height="10">
+      <target xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue"/>
+      <semanticElements xmi:type="ecore:EClass" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_ZH0wwVlgEeqd37PZYmDocg" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_y0X8kVliEeqd37PZYmDocg" name=" variableRef : VariableReference" tooltipText="">
+        <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue/variableRef"/>
+        <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue/variableRef"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_y0YjoFliEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELkZQFlgEeqd37PZYmDocg" color="114,159,207">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
+      </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_64rxQFliEeqd37PZYmDocg" name="powerSetting : EInt" tooltipText="">
+        <target xmi:type="ecore:EAttribute" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue/powerSetting"/>
+        <semanticElements xmi:type="ecore:EAttribute" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPowerValue/powerSetting"/>
+        <ownedStyle xmi:type="diagram:BundledImage" uid="_64sYUFliEeqd37PZYmDocg" labelAlignment="LEFT" description="_ELlnYFlgEeqd37PZYmDocg">
+          <labelFormat>bold</labelFormat>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
+      </ownedElements>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_pI4ZkFlgEeqd37PZYmDocg" name="[0..*] transmissionPower" sourceNode="_ELVvwFlgEeqd37PZYmDocg" targetNode="_Rd4j4FlgEeqd37PZYmDocg">
+      <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository/transmissionPower"/>
+      <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//DeltaIoTReconfigurationParamRepository/transmissionPower"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_pI5AoFlgEeqd37PZYmDocg" description="_ELoqsFlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_pI5AollgEeqd37PZYmDocg" showIcon="false">
+          <customFeatures>labelSize</customFeatures>
+        </centerLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_pI5AoVlgEeqd37PZYmDocg" showIcon="false" labelColor="39,76,114">
+          <customFeatures>labelSize</customFeatures>
+        </endLabelStyle>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_uMmyJVlgEeqd37PZYmDocg" name="[1..*] transmissionPowerValues" sourceNode="_Rd4j4FlgEeqd37PZYmDocg" targetNode="_ZH0wwFlgEeqd37PZYmDocg">
+      <target xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower/transmissionPowerValues"/>
+      <semanticElements xmi:type="ecore:EReference" href="DeltaIoTReconfigurationParams.ecore#//TransmissionPower/transmissionPowerValues"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_yyR8wFlgEeqd37PZYmDocg" description="_ELp40FlgEeqd37PZYmDocg" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_yyR8wllgEeqd37PZYmDocg" showIcon="false">
+          <labelFormat>bold</labelFormat>
+        </centerLabelStyle>
+        <endLabelStyle xmi:type="diagram:EndLabelStyle" uid="_yyR8wVlgEeqd37PZYmDocg" labelSize="6" showIcon="false" labelColor="39,76,114"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@edgeMappings[name='EC_EReference']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_DboKEFlgEeqd37PZYmDocg"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']"/>
+    <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Validation']"/>
+    <target xmi:type="ecore:EPackage" href="DeltaIoTReconfigurationParams.ecore#/"/>
+  </diagram:DSemanticDiagram>
+</xmi:XMI>

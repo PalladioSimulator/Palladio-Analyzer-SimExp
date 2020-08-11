@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated DeltaIoTReconfigurationParams -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.presentation.ReconfigurationparamsModelWizardID"
+            name="%_UI_ReconfigurationparamsModelWizard_label"
+            class="org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.presentation.ReconfigurationparamsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ReconfigurationparamsModelFile.gif">
+         <description>%_UI_ReconfigurationparamsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated DeltaIoTReconfigurationParams -->
+      <editor
+            id="org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.presentation.ReconfigurationparamsEditorID"
+            name="%_UI_ReconfigurationparamsEditor_label"
+            icon="icons/full/obj16/ReconfigurationparamsModelFile.gif"
+            extensions="reconfigurationparams"
+            class="org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.presentation.ReconfigurationparamsEditor"
+            contributorClass="org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.presentation.ReconfigurationparamsActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>

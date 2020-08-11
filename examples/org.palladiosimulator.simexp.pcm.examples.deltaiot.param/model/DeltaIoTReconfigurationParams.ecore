@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="reconfigurationparams" nsURI="http://palladiosimulator.org/reconfigurationparams/1.0"
+    nsPrefix="reconfigurationparams">
+  <eClassifiers xsi:type="ecore:EClass" name="DeltaIoTReconfigurationParamRepository"
+      eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="distributionFactors" upperBound="-1"
+        eType="#//DistributionFactor" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transmissionPower" upperBound="-1"
+        eType="#//TransmissionPower" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DistributionFactor" eSuperTypes="../../tools.mdsd.modelingfoundations.identifier/model/identifier.ecore#//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="factorValues" lowerBound="2"
+        upperBound="-1" eType="#//DistributionFactorValue" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="appliedComponent" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//repository/RepositoryComponent"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DistributionFactorValue">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="appliedBranch" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//seff/ProbabilisticBranchTransition"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransmissionPower">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transmissionPowerValues"
+        lowerBound="1" upperBound="-1" eType="#//TransmissionPowerValue" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="appliedAssembly" lowerBound="1"
+        eType="ecore:EClass ../../org.palladiosimulator.pcm/model/pcm.ecore#//core/composition/AssemblyContext"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransmissionPowerValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variableRef" lowerBound="1"
+        eType="ecore:EClass ../../de.uka.ipd.sdq.stoex/model/stoex.ecore#//VariableReference"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="powerSetting" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+</ecore:EPackage>
