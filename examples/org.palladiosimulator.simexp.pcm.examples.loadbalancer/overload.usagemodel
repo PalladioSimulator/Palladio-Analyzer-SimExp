@@ -15,4 +15,12 @@
       </workload_UsageScenario>
     </usageScenario_UsageModel>
   </usagemodel:UsageModel>
+  <emfprofileapplication:ProfileApplication>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_YtqF4AEqEeS7FKokKTKFow" taggedValue="WorkloadVariation">
+      <extension href="../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="LoadBalancingTemplates.templatevariable#_dVtGkm3REeq4sYEFwlTMnQ"/>
+      <template href="LoadBalancingTemplates.templatevariable#_XcnzUG3REeq4sYEFwlTMnQ"/>
+    </stereotypeApplications>
+    <importedProfiles nsURI="InstantiationTag" location="platform:/plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram"/>
+  </emfprofileapplication:ProfileApplication>
 </xmi:XMI>
