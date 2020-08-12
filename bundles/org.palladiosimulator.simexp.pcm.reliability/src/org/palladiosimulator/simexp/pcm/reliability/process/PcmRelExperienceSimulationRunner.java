@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyInducedFailureType;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictor;
@@ -17,20 +18,24 @@ import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
+import org.palladiosimulator.simexp.pcm.reliability.job.PrepareBlackboardForReliabilityAnalysisJob;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 import com.google.common.collect.Lists;
+
+import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
+import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRunner {
 
 	private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
 	private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
 
-	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig,
-			List<UncertaintyInducedFailureType> uncertainties) {
+	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig) {
 		this.globalConfig = globalConfig;
-		this.uncertaintyStateSpace = buildUncertaintyStateSpace(uncertainties);
+		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertainties());
 	}
 
 	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(
@@ -64,8 +69,19 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {
+		var blackboard = prepareBlackboardForAnalysis(pcmState);
+		return UncertaintyBasedReliabilityPredictionConfig.newBuilder().rebuild(globalConfig, blackboard);
+	}
+
+	private MDSDBlackboard prepareBlackboardForAnalysis(PcmSelfAdaptiveSystemState pcmState) {
 		var pcm = pcmState.getArchitecturalConfiguration().getConfiguration();
-		return UncertaintyBasedReliabilityPredictionConfig.withNewPCMInstance(globalConfig, pcm);
+		var builderJob = new PrepareBlackboardForReliabilityAnalysisJob(pcm);
+		try {
+			builderJob.execute(new NullProgressMonitor());
+		} catch (JobFailedException | UserCanceledException e) {
+			throw new RuntimeException("Something went wrong while preparing the blackboard for analysis.", e);
+		}
+		return builderJob.getBlackboard();
 	}
 
 	private void retrieveAndSetStateQuantities(StateQuantity quantity, ReliabilityPredictionResult result) {

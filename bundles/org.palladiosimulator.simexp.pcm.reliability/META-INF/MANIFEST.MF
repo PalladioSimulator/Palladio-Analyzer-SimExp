@@ -16,7 +16,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.dependability.reliability.uncertainty,
  tools.mdsd.probdist.api;bundle-version="1.0.0",
  com.google.guava;bundle-version="27.1.0",
- org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0"
+ org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
+ de.uka.ipd.sdq.workflow.mdsd,
+ org.palladiosimulator.analyzer.workflow,
+ org.palladiosimulator.commons
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.reliability
 Bundle-ActivationPolicy: lazy
+Export-Package: org.palladiosimulator.simexp.pcm.reliability.entity,
+ org.palladiosimulator.simexp.pcm.reliability.process
