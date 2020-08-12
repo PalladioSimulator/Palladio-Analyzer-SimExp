@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.util;
 import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.loadInitialBlackboard;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,9 +14,7 @@ import org.palladiosimulator.edp2.models.ExperimentData.ExperimentGroup;
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentSetting;
 import org.palladiosimulator.edp2.models.Repository.Repository;
-import org.palladiosimulator.experimentautomation.abstractsimulation.AbstractSimulationConfiguration;
 import org.palladiosimulator.experimentautomation.application.VariationFactorTuple;
-import org.palladiosimulator.experimentautomation.application.jobs.ComputeVariantsAndAddExperimentJob;
 import org.palladiosimulator.experimentautomation.application.jobs.RunExperimentForEachToolJob;
 import org.palladiosimulator.experimentautomation.application.tooladapter.abstractsimulation.AbstractSimulationConfigFactory;
 import org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model.SimuLizarConfiguration;
@@ -28,7 +25,6 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.simulation.AbstractSimulationConfig;
 import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
-import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 public class ExperimentRunner {
@@ -38,43 +34,17 @@ public class ExperimentRunner {
 	private class SimulationContext {
 
 		private final MDSDBlackboard blackboard;
-		private final BlackboardBasedWorkflow<MDSDBlackboard> workflow;
-
+		
 		public SimulationContext() {
 			this.blackboard = loadInitialBlackboard(experiment);
-			this.workflow = extractWorkflow(experiment);
 		}
 
-		public BlackboardBasedWorkflow<MDSDBlackboard> extractWorkflow(Experiment experiment) {
+		public BlackboardBasedWorkflow<MDSDBlackboard> initWorkflow(Experiment experiment) {
 			return new BlackboardBasedWorkflow<MDSDBlackboard>(new RunExperimentForEachToolJob(experiment), blackboard);
 		}
 
 		public void runSimulation() {
-			if (wasExecuted) {
-				resetSimulation();
-			}
-			workflow.run();
-		}
-
-		private void resetSimulation() {
-			workflow.clear();
-			workflow.addAll(loadSimulationJobs());
-		}
-
-		private List<IJob> loadSimulationJobs() {
-			List<IJob> jobs = new ArrayList<>();
-			for (ToolConfiguration each : experiment.getToolConfiguration()) {
-				if (each instanceof AbstractSimulationConfiguration) {
-					jobs.add(
-							new ComputeVariantsAndAddExperimentJob(experiment, (AbstractSimulationConfiguration) each));
-				}
-			}
-
-			if (jobs.isEmpty()) {
-				// TODO exception handling
-				throw new RuntimeException("");
-			}
-			return jobs;
+			initWorkflow(experiment).run();
 		}
 
 		public MDSDBlackboard getBlackboard() {
@@ -86,12 +56,9 @@ public class ExperimentRunner {
 	private final Experiment experiment;
 	private final SimulationContext simulationContext;
 
-	private boolean wasExecuted;
-
 	public ExperimentRunner(Experiment initial) {
 		this.experiment = initial;
 		this.simulationContext = new SimulationContext();
-		this.wasExecuted = false;
 	}
 
 	private ExperimentSetting findExperimentSetting(ExperimentGroup expGroup, String experimentSettingDescription) {
@@ -145,11 +112,6 @@ public class ExperimentRunner {
 
 	public void runExperiment() {
 		simulationContext.runSimulation();
-		markAsExecuted();
-	}
-
-	private void markAsExecuted() {
-		wasExecuted = true;
 	}
 
 	public PCMInstance makeSnapshotOfPCM() {
