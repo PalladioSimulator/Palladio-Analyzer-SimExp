@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
-import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
+import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
 
 import com.google.common.collect.Lists;
 
@@ -63,7 +63,7 @@ public class RobotCognitionEnvironmentalDynamics {
 	}
 	
 	private EnvironmentProcess createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-		return new ObservableEnvironmentProcess(createDerivableProcess(dbn), createInitialDist(dbn));
+		return new UnobservableEnvironmentProcess(createDerivableProcess(dbn), createInitialDist(dbn));
 	}
 
 	private DerivableEnvironmentalDynamic createDerivableProcess(DynamicBayesianNetwork dbn) {

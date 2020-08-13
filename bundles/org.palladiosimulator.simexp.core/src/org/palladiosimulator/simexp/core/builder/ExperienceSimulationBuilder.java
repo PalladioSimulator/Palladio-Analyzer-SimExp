@@ -69,7 +69,7 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 
-		public SelfAdaptiveSystemBuilder asHiddenProcess() {
+		public SelfAdaptiveSystemBuilder isHiddenProcess() {
 			ExperienceSimulationBuilder.this.isHiddenProcess = true;
 			return this;
 		}
@@ -167,8 +167,10 @@ public abstract class ExperienceSimulationBuilder {
 		checkValidity();
 
 		ExperienceSimulationConfiguration config = ExperienceSimulationConfiguration.newBuilder()
-				.withSimulationID(simulationID).withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
-				.withNumberOfRuns(numberOfRuns).addSimulationRunner(getSimulationRunner())
+				.withSimulationID(simulationID)
+				.withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
+				.withNumberOfRuns(numberOfRuns)
+				.addSimulationRunner(getSimulationRunner())
 				.sampleWith(buildMarkovSampler()).build();
 		return ExperienceSimulator.createSimulator(config);
 	}
@@ -213,19 +215,24 @@ public abstract class ExperienceSimulationBuilder {
 	}
 
 	private Markovian buildPOMDP(ProbabilityMassFunction initialDist, StateSpaceNavigator navigator) {
-		return MarkovianBuilder.createPartiallyObservableMDP().createStateSpaceNavigator(navigator)
+		return MarkovianBuilder.createPartiallyObservableMDP()
+				.createStateSpaceNavigator(navigator)
 				.calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
-				.selectActionsAccordingTo(createPolicy()).withActionSpace(getReconfigurationSpace())
+				.selectActionsAccordingTo(createPolicy())
+				.withActionSpace(getReconfigurationSpace())
 				.withInitialStateDistribution(initialDist)
 				.handleObservationsWith(SelfAdaptiveSystemStateSpaceNavigator.getEnvironmentPerceiptionHandler())
 				.build();
 	}
 
 	private Markovian buildMDP(ProbabilityMassFunction initialDist, StateSpaceNavigator navigator) {
-		return MarkovianBuilder.createMarkovDecisionProcess().createStateSpaceNavigator(navigator)
+		return MarkovianBuilder.createMarkovDecisionProcess()
+				.createStateSpaceNavigator(navigator)
 				.calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
-				.selectActionsAccordingTo(createPolicy()).withActionSpace(getReconfigurationSpace())
-				.withInitialStateDistribution(initialDist).build();
+				.selectActionsAccordingTo(createPolicy())
+				.withActionSpace(getReconfigurationSpace())
+				.withInitialStateDistribution(initialDist)
+				.build();
 	}
 
 	private Policy<Action<?>> createPolicy() {

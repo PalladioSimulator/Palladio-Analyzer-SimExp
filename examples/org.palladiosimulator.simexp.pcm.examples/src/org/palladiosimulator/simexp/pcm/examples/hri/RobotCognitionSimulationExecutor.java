@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyFailureTypeRepository;
+import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyInducedFailureType;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyPackage;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
@@ -88,6 +88,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(RobotCognitionEnvironmentalDynamics.get(dbn))
+				  	.isHiddenProcess()
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
@@ -148,10 +149,10 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	
 	private UncertaintyBasedReliabilityPredictionConfig createDefaultReliabilityConfig() {
 		return new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(),
-				null, loadUncertainties(), null);
+				null, loadUncertaintyRepository(), null);
 	}
 	
-	private List<UncertaintyInducedFailureType> loadUncertainties() {
+	private UncertaintyRepository loadUncertaintyRepository() {
 		ResourceSet rs = new ResourceSetImpl();
 		rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
 		rs.getPackageRegistry().put(UncertaintyPackage.eNS_URI, UncertaintyPackage.eINSTANCE);
@@ -159,8 +160,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		var resource = rs.getResource(UNCERTAINTY_MODEL_URI, true);
 		EcoreUtil.resolveAll(rs);
 
-		var repo = (UncertaintyFailureTypeRepository) resource.getContents().get(0);
-		return repo.getUncertaintyInducedFailureTypes();
+		return (UncertaintyRepository) resource.getContents().get(0);
 	}
 
 	private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

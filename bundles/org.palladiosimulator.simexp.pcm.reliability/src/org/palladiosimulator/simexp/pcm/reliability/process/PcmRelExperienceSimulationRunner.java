@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyInducedFailureType;
+import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictor;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.markov.ReliabilityPredictionResult;
@@ -35,12 +35,11 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 
 	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig) {
 		this.globalConfig = globalConfig;
-		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertainties());
+		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
 	}
 
-	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(
-			List<UncertaintyInducedFailureType> uncertainties) {
-		var stateSpace = uncertainties.stream()
+	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
+		var stateSpace = uncertaintyRepo.getUncertaintyInducedFailureTypes().stream()
 				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each).stream()).collect(toList());
 		return DiscreteUncertaintyStateSpace.of(stateSpace);
 	}
