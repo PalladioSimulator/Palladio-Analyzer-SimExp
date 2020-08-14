@@ -65,6 +65,7 @@
     <semanticResources>reconfigurations_active/Step1ScaleIn.qvto</semanticResources>
     <semanticResources>pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype</semanticResources>
     <semanticResources>platform:/plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram</semanticResources>
+    <semanticResources>../../org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel</semanticResources>
     <semanticResources>/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_O3G7sDpVEee6JY3Ca_2Bfw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.palladiosimulator.editors.sirius.seff/description/seff.odesign#//@ownedViewpoints[name='Seff']"/>

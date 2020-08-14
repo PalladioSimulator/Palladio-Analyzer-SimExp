@@ -9,9 +9,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
-import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyInducedFailureType;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyPackage;
+import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
@@ -41,7 +40,7 @@ import com.google.common.collect.Sets;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
 
-	private final static String EXPERIMENT_FILE = "/";
+	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
 	private final static String SIMULATION_ID = "Robot Cognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createURI("");
