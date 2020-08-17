@@ -80,13 +80,13 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>> 
 	private Action<?> activateFilteringReconfiguration(List<QVToReconfiguration> options) {
 		isFilteringActivated = true;
 
-		return selectOptionWith("ActivateFilterCompont", options);
+		return selectOptionWith("ActivateFilterComponent", options);
 	}
 
 	private Action<?> deactivateFilteringReconfiguration(List<QVToReconfiguration> options) {
 		isFilteringActivated = false;
 
-		return selectOptionWith("DeactivateFilterCompont", options);
+		return selectOptionWith("DeactivateFilterComponent", options);
 	}
 
 	private Action<?> switchToRobustMLModel(List<QVToReconfiguration> options) {

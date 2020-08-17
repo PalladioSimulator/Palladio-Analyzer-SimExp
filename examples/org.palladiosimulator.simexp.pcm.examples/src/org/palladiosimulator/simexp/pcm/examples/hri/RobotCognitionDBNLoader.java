@@ -10,14 +10,14 @@ import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticN
 
 public class RobotCognitionDBNLoader {
 
-	private final static String ROBOT_COGNITION_PATH = "/org.palladiosimulator.dependability.ml.hri/ProbabilisticSensitivityModel.dynamicmodel";
+	private final static String ROBOT_COGNITION_PATH = "/org.palladiosimulator.dependability.ml.hri";
 	private final static ResourceSet RESOURCE_SET = new ResourceSetImpl();
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
 	private final static String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
 	private final static String BN_FILE = String.format("%1s/%2s.%3s", ROBOT_COGNITION_PATH,
-			"LoadBalancerNonTemporalEnvironment", STATIC_MODEL_EXTENSION);
+			"StaticRobotCognitionEnvironment", STATIC_MODEL_EXTENSION);
 	private final static String DBN_FILE = String.format("%1s/%2s.%3s", ROBOT_COGNITION_PATH,
-			"LoadBalancerEnvironmentalDynamics", DYNAMIC_MODEL_EXTENSION);
+			"DynamicRobotCognitionEnvironment", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 	private final static URI BN_URI = URI.createPlatformResourceURI(BN_FILE, true);
 

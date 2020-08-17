@@ -6,7 +6,9 @@
   <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_kPH1cW3REeq4sYEFwlTMnQ" entityName="VaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ">
     <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </factors>
-  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_C1FSIW3SEeq4sYEFwlTMnQ" entityName="TemporalVaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ" temporal="true"/>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_C1FSIW3SEeq4sYEFwlTMnQ" entityName="TemporalVaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
   <arguments id="_dVtGkm3REeq4sYEFwlTMnQ" entityName="Workload"/>
   <relation xsi:type="templatevariable:PersistenceRelation" entityName="VaryingWorkloadTemporalRelation" interfaceVariable="_XcnzUG3REeq4sYEFwlTMnQ"/>
 </templatevariable:TemplateVariableDefinitions>
