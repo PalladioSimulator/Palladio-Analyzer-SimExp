@@ -6,7 +6,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 
 public class RobotCognitionDBNLoader {
 
@@ -27,10 +29,14 @@ public class RobotCognitionDBNLoader {
 	}
 
 	public static GroundProbabilisticNetwork loadGroundProbabilisticNetwork() {
-		return GroundProbabilisticNetwork.class.cast(RESOURCE_SET.getResource(BN_URI, true).getContents().get(0));
+		var modelRepo = ProbabilisticModelRepository.class
+				.cast(RESOURCE_SET.getResource(BN_URI, true).getContents().get(0));
+		return modelRepo.getModels().get(0);
 	}
 
 	private static DynamicBehaviourExtension loadDynamicBehaviourExtension() {
-		return DynamicBehaviourExtension.class.cast(RESOURCE_SET.getResource(DBN_URI, true).getContents().get(0));
+		var dynBehaviourRepo = DynamicBehaviourRepository.class
+				.cast(RESOURCE_SET.getResource(DBN_URI, true).getContents().get(0));
+		return dynBehaviourRepo.getExtensions().get(0);
 	}
 }
