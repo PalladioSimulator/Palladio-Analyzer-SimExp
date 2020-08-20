@@ -20,6 +20,9 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalSt
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
 import com.google.common.collect.Lists;
 
@@ -63,7 +66,7 @@ public class RobotCognitionEnvironmentalDynamics {
 	}
 	
 	private EnvironmentProcess createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-		return new UnobservableEnvironmentProcess(createDerivableProcess(dbn), createInitialDist(dbn));
+		return new UnobservableEnvironmentProcess(createDerivableProcess(dbn), createInitialDist(dbn), createObsProducer());
 	}
 
 	private DerivableEnvironmentalDynamic createDerivableProcess(DynamicBayesianNetwork dbn) {
@@ -98,6 +101,17 @@ public class RobotCognitionEnvironmentalDynamics {
 
 			private EnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
 				throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
+			}
+		};
+	}
+	
+	private ObservationProducer createObsProducer() {
+		return new ObservationProducer() {
+			
+			@Override
+			public Observation<?> produceObservationGiven(State emittingState) {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		};
 	}

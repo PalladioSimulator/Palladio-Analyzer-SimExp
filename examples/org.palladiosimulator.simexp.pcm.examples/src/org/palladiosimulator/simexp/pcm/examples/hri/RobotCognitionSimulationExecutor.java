@@ -5,11 +5,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyPackage;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -38,12 +33,26 @@ import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
+import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
+import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
+import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
+
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
 
+//	private final static EPackage[] REQUIRED_PACKAGES = new EPackage[] {
+//			UncertaintyPackage.eINSTANCE, 
+//			DynamicmodelPackage.eINSTANCE,
+//			StaticmodelPackage.eINSTANCE, 
+//			TemplatevariablePackage.eINSTANCE,
+//			DistributionfunctionPackage.eINSTANCE,
+//			DistributiontypePackage.eINSTANCE
+//	};
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
 	private final static String SIMULATION_ID = "Robot Cognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
-	private final static URI UNCERTAINTY_MODEL_URI = URI.createURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty");
+	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 	private static final double UPPER_THRESHOLD_RT = 1.0;
 	private static final double LOWER_THRESHOLD_REL = 0.95;
 	
@@ -55,6 +64,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.pcmSpecs = createSimMeasurementSpecs();
 		this.reconfigurationStrategy = new RobotCognitionReconfigurationStrategy(pcmSpecs.get(1), pcmSpecs.get(0));
+		
+		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
+		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
 	
 	@Override
@@ -152,14 +164,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	}
 	
 	private UncertaintyRepository loadUncertaintyRepository() {
-		ResourceSet rs = new ResourceSetImpl();
-		rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-		rs.getPackageRegistry().put(UncertaintyPackage.eNS_URI, UncertaintyPackage.eINSTANCE);
-
-		var resource = rs.getResource(UNCERTAINTY_MODEL_URI, true);
-		EcoreUtil.resolveAll(rs);
-
-		return (UncertaintyRepository) resource.getContents().get(0);
+		var partition = new ResourceSetPartition();
+		//partition.initialiseResourceSetEPackages(REQUIRED_PACKAGES);
+		//partition.initialiseResourceSetEPackages(AbstractPCMWorkflowRunConfiguration.PCM_EPACKAGES);
+		partition.loadModel(UNCERTAINTY_MODEL_URI);
+		partition.resolveAllProxies();
+		return (UncertaintyRepository) partition.getFirstContentElement(UNCERTAINTY_MODEL_URI);
 	}
 
 	private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {
