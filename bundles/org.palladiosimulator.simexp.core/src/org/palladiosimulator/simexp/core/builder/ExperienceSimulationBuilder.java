@@ -171,7 +171,8 @@ public abstract class ExperienceSimulationBuilder {
 				.withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
 				.withNumberOfRuns(numberOfRuns)
 				.addSimulationRunner(getSimulationRunner())
-				.sampleWith(buildMarkovSampler()).build();
+				.sampleWith(buildMarkovSampler())
+				.build();
 		return ExperienceSimulator.createSimulator(config);
 	}
 

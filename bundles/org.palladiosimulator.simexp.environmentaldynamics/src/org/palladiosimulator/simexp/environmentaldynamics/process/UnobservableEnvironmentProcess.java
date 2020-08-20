@@ -7,38 +7,23 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 
-	private final static ObservationProducer OBSERVATION_PRODUCER = new ObservationProducer() {
+	private final ObservationProducer obsProducer;
 
-		@Override
-		public Observation<?> produceObservationGiven(State emittingState) {
-			if (isHiddenState(emittingState)) {
-				return HiddenEnvironmentalState.class.cast(emittingState).produceObservation();
-			}
-
-			// TODO exception handling
-			throw new RuntimeException("");
-		}
-
-		private boolean isHiddenState(State state) {
-			return state instanceof HiddenEnvironmentalState;
-		}
-
-	};
-
-	public UnobservableEnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution) {
+	public UnobservableEnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution,
+			ObservationProducer obsProducer) {
 		super(model, initialDistribution);
+		this.obsProducer = obsProducer;
 	}
 
 	public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic dynamics,
-			ProbabilityMassFunction initialDistribution) {
+			ProbabilityMassFunction initialDistribution, ObservationProducer obsProducer) {
 		super(dynamics, initialDistribution);
+		this.obsProducer = obsProducer;
 	}
 
 	@Override
@@ -47,7 +32,7 @@ public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 		return MarkovianBuilder.createHiddenMarkovModel()
 				.createStateSpaceNavigator(environmentalDynamics)
 				.withInitialStateDistribution(initialDistribution)
-				.handleObservationsWith(OBSERVATION_PRODUCER)
+				.handleObservationsWith(obsProducer)
 				.build();
 	}
 

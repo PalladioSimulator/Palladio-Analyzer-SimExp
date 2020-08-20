@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.pcm.perceiption;
 
-import org.palladiosimulator.simexp.distribution.function.ProbabilityDistributionFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 
@@ -10,9 +8,8 @@ public class PcmHiddenEnvironmentalState extends HiddenEnvironmentalState implem
 
 	private final PcmModelChange decoratedModelChange;
 
-	public PcmHiddenEnvironmentalState(PcmModelChange decoratedModelChange, EnvironmentalState trueState,
-			ProbabilityDistributionFunction<EnvironmentalStateObservation> obsDistribution) {
-		super(trueState, obsDistribution);
+	public PcmHiddenEnvironmentalState(PcmModelChange decoratedModelChange, EnvironmentalState trueState) {
+		super(trueState);
 		this.decoratedModelChange = decoratedModelChange;
 	}
 
