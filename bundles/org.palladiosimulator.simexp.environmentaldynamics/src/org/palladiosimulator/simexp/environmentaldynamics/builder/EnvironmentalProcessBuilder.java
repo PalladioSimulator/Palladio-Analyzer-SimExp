@@ -33,6 +33,7 @@ public class EnvironmentalProcessBuilder {
 
 	public EnvironmentalProcessBuilder asHiddenProcessWith(ObservationProducer obsProducer) {
 		this.isHidden = true;
+		this.obsProducer = obsProducer;
 		return this;
 	}
 

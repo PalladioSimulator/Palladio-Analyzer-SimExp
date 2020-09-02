@@ -17,6 +17,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Traject
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
@@ -85,7 +86,7 @@ public class RobotCognitionEnvironmentalDynamics {
 			}
 
 			@Override
-			public EnvironmentalState navigate(NavigationContext context) {
+			public HiddenEnvironmentalState navigate(NavigationContext context) {
 				EnvironmentalState envState = EnvironmentalState.class.cast(context.getSource());
 				List<InputValue> inputs = toInputs(envState.getValue().getValue());
 				if (explorationMode) {
@@ -94,12 +95,12 @@ public class RobotCognitionEnvironmentalDynamics {
 				return sample(toConditionalInputs(inputs));
 			}
 
-			private EnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
+			private HiddenEnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
 				Trajectory traj = dbn.given(asConditionals(conditionalInputs)).sample();
 				return asEnvironmentalState(traj.valueAtTime(0));
 			}
 
-			private EnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+			private HiddenEnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
 				throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
 			}
 		};
@@ -116,8 +117,9 @@ public class RobotCognitionEnvironmentalDynamics {
 		};
 	}
 
-	private EnvironmentalState asEnvironmentalState(List<InputValue> sample) {
-		return EnvironmentalState.get(asPreceivedValue(sample));
+	private HiddenEnvironmentalState asEnvironmentalState(List<InputValue> sample) {
+		var trueState = EnvironmentalState.get(asPreceivedValue(sample));
+		return HiddenEnvironmentalState.get(trueState);
 	}
 
 	private PerceivedValue<?> asPreceivedValue(List<InputValue> sample) {
