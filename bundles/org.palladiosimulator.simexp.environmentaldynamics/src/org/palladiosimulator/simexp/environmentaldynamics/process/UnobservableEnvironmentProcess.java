@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.environmentaldynamics.process;
 
+import static java.util.Objects.requireNonNull;
+
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
@@ -14,42 +16,46 @@ import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 
-	private static class ObservationProducerDecorator implements ObservationProducer {
+	private static class ObservationProducerProxy implements ObservationProducer {
 		
-		private ObservationProducer obsProducer = null;
+		private ObservationProducer representedProducer = null;
 		
-		public void setDecorated(ObservationProducer obsProducer) {
-			this.obsProducer = obsProducer;
+		public void represents(ObservationProducer representedProducer) {
+			this.representedProducer = representedProducer;
 		}
 
 		@Override
 		public Observation<?> produceObservationGiven(State emittingState) {
-			return obsProducer.produceObservationGiven(emittingState);
+			return representedProducer.produceObservationGiven(emittingState);
 		}
 		
 	}
 	
-	private final static ObservationProducerDecorator OBS_DECORATOR = new ObservationProducerDecorator();
+	private final static ObservationProducerProxy PRODUCER_PROXY = new ObservationProducerProxy();
 
 	public UnobservableEnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution,
 			ObservationProducer obsProducer) {
 		super(model, initialDistribution);
-		OBS_DECORATOR.setDecorated(obsProducer);
+		PRODUCER_PROXY.represents(obsProducer);
 	}
 
 	public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic dynamics,
 			ProbabilityMassFunction initialDistribution, ObservationProducer obsProducer) {
 		super(dynamics, initialDistribution);
-		OBS_DECORATOR.setDecorated(obsProducer);
+		PRODUCER_PROXY.represents(obsProducer);
 	}
 
+	public ObservationProducer getObservationProducer() {
+		return requireNonNull(PRODUCER_PROXY.representedProducer, "");
+	}
+	
 	@Override
 	protected Markovian buildMarkovian(StateSpaceNavigator environmentalDynamics,
 			ProbabilityMassFunction initialDistribution) {
 		return MarkovianBuilder.createHiddenMarkovModel()
 				.createStateSpaceNavigator(environmentalDynamics)
 				.withInitialStateDistribution(initialDistribution)
-				.handleObservationsWith(OBS_DECORATOR)
+				.handleObservationsWith(PRODUCER_PROXY)
 				.build();
 	}
 

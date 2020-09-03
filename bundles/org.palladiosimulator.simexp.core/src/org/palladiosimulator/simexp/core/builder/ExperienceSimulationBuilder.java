@@ -22,6 +22,8 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
+import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.builder.StateSpaceNavigatorBuilder;
@@ -216,13 +218,19 @@ public abstract class ExperienceSimulationBuilder {
 	}
 
 	private Markovian buildPOMDP(ProbabilityMassFunction initialDist, StateSpaceNavigator navigator) {
+		if (UnobservableEnvironmentProcess.class.isInstance(envProcess) == false) {
+			throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
+		}
+		
+		ObservationProducer obsProducer = UnobservableEnvironmentProcess.class.cast(envProcess).getObservationProducer(); 
+		SimulatedRewardReceiver rewardReceiver = SimulatedRewardReceiver.with(rewardEvaluator);
 		return MarkovianBuilder.createPartiallyObservableMDP()
 				.createStateSpaceNavigator(navigator)
-				.calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
+				.calculateRewardWith(rewardReceiver)
 				.selectActionsAccordingTo(createPolicy())
 				.withActionSpace(getReconfigurationSpace())
 				.withInitialStateDistribution(initialDist)
-				.handleObservationsWith(SelfAdaptiveSystemStateSpaceNavigator.getEnvironmentPerceiptionHandler())
+				.handleObservationsWith(obsProducer)
 				.build();
 	}
 

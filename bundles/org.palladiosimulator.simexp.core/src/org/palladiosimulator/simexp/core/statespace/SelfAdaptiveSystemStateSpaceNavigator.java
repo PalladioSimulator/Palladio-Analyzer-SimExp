@@ -9,11 +9,8 @@ import org.palladiosimulator.simexp.core.state.RestoredSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
-import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
@@ -30,22 +27,6 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator extends InductiveSta
 	
 	protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess environmentalDynamics) {
 		this.environmentalDynamics = environmentalDynamics;
-	}
-	
-	public static ObservationProducer getEnvironmentPerceiptionHandler() {
-		return new ObservationProducer() {
-			
-			@Override
-			public Observation<?> produceObservationGiven(State emittingState) {
-				PerceivableEnvironmentalState perceivedState = ((SelfAdaptiveSystemState<?>) emittingState).getPerceivedEnvironmentalState();
-				if (perceivedState.isHidden()) {
-					return (EnvironmentalStateObservation) perceivedState;
-				}
-				
-				//TODO exception handling
-				throw new RuntimeException("");
-			}
-		};
 	}
 	
 	public ProbabilityMassFunction createInitialDistribution(InitialSelfAdaptiveSystemStateCreator sassCreator) {
