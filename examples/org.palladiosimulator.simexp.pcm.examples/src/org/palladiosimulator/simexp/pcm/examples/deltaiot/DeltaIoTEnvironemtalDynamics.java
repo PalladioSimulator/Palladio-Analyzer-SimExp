@@ -15,7 +15,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
-import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNetwork;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -102,8 +101,9 @@ public class DeltaIoTEnvironemtalDynamics {
 			}
 
 			private EnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
-				Trajectory traj = dbn.given(asConditionals(conditionalInputs)).sample();
-				return asEnvironmentalState(traj.valueAtTime(0));
+				var traj = dbn.given(asConditionals(conditionalInputs)).sample();
+				var value = toPerceivedValue(traj.valueAtTime(0));
+				return EnvironmentalState.newBuilder().withValue(value).build();
 			}
 
 			private EnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
@@ -119,8 +119,12 @@ public class DeltaIoTEnvironemtalDynamics {
 
 			@Override
 			public Sample drawSample() {
-				List<InputValue> sample = bn.sample();
-				return Sample.of(asEnvironmentalState(sample), bn.probability(sample));
+				var sample = bn.sample();
+				var newState = EnvironmentalState.newBuilder()
+						.withValue(toPerceivedValue(sample))
+						.isInital()
+						.build();
+				return Sample.of(newState, bn.probability(sample));
 			}
 
 			@Override
@@ -134,11 +138,7 @@ public class DeltaIoTEnvironemtalDynamics {
 		};
 	}
 
-	private EnvironmentalState asEnvironmentalState(List<InputValue> sample) {
-		return EnvironmentalState.get(asPreceivedValue(sample));
-	}
-
-	private PerceivedValue<?> asPreceivedValue(List<InputValue> sample) {
+	private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
 		return new PerceivedValue<List<InputValue>>() {
 
 			@Override

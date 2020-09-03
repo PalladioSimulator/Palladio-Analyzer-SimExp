@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.environmentaldynamics.builder;
 
 import java.util.function.Predicate;
 
-import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -48,7 +48,7 @@ public class EnvironmentModelBuilder extends BasicMarkovModelBuilder {
 	}
 
 	private boolean isHidden(State state) {
-		return state instanceof HiddenEnvironmentalState;
+		return PerceivableEnvironmentalState.class.cast(state).isHidden();
 	}
 	
 }

@@ -7,8 +7,6 @@ import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJ
 import org.palladiosimulator.commons.emfutils.EMFCopyHelper;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-import com.google.common.collect.Lists;
-
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.IJob;
@@ -34,10 +32,9 @@ public class CopyPcmModelToBlackboardJob implements IJob, IBlackboardInteracting
 	@Override
 	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
 		var partition = blackboard.getPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID);
-
-		var allocResourceCopy = copyAllocationModel(partition.getResourceSet());
-		var usageResourceCopy = copyUsageModel(partition.getResourceSet());
-		partition.getResourceSet().getResources().addAll(Lists.newArrayList(allocResourceCopy, usageResourceCopy));
+		
+		copyAllocationModel(partition.getResourceSet());
+		copyUsageModel(partition.getResourceSet());
 
 		partition.resolveAllProxies();
 	}

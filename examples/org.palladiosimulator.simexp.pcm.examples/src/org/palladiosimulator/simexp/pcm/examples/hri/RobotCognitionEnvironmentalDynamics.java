@@ -7,9 +7,6 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import java.util.List;
 import java.util.Optional;
 
-import javax.naming.OperationNotSupportedException;
-
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
@@ -19,7 +16,6 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.CategoricalValu
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
@@ -46,33 +42,28 @@ public class RobotCognitionEnvironmentalDynamics {
 		return processInstance.envProcess;
 	}
 
-	private ProbabilityMassFunction createInitialDist(DynamicBayesianNetwork dbn) {
+	private ProbabilityMassFunction createInitialDist() {
 		return new ProbabilityMassFunction() {
-
-			private final BayesianNetwork bn = dbn.getBayesianNetwork();
 
 			@Override
 			public Sample drawSample() {
-				var trueState = EnvironmentalState.get(new CategoricalValue("MLPrediction", "Unknown"));
-				return HiddenEnvironmentalState.get(trueState);
-
-				List<InputValue> sample = bn.sample();
-				return Sample.of(asEnvironmentalState(sample), bn.probability(sample));
+				var initial = EnvironmentalState.newBuilder()
+						.withValue(new CategoricalValue("MLPrediction", "Unknown"))
+						.isInital()
+						.isHidden()
+						.build();
+				return Sample.of(initial, 1.0);
 			}
 
 			@Override
 			public double probability(Sample sample) {
-				List<InputValue> inputs = toInputs(sample);
-				if (inputs.isEmpty()) {
-					return 0;
-				}
-				return bn.probability(inputs);
+				return 1.0;
 			}
 		};
 	}
 
 	private EnvironmentProcess createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-		return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(dbn),
+		return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
 				createObsProducer(dbn));
 	}
 
@@ -81,18 +72,19 @@ public class RobotCognitionEnvironmentalDynamics {
 
 			@Override
 			public void pursueExplorationStrategy() {
-				
+
 			}
 
 			@Override
 			public void pursueExploitationStrategy() {
-				
+
 			}
 
 			@Override
-			public HiddenEnvironmentalState navigate(NavigationContext context) {
-				// Since the intention is to not predict belief states, it is not necessary to know/specify the true state.
-				return (HiddenEnvironmentalState) context.getSource();
+			public EnvironmentalState navigate(NavigationContext context) {
+				// Since the intention is to not predict belief states, it is not necessary to
+				// know/specify the true state.
+				return (EnvironmentalState) context.getSource();
 			}
 		};
 	}
@@ -102,24 +94,31 @@ public class RobotCognitionEnvironmentalDynamics {
 
 			@Override
 			public Observation<?> produceObservationGiven(State emittingState) {
-				EnvironmentalState envState = EnvironmentalState.class.cast(context.getSource());
-				List<InputValue> inputs = toInputs(envState.getValue().getValue());
-				return sample(toConditionalInputs(inputs));
+				var hiddenState = EnvironmentalState.class.cast(emittingState);
+
+				List<InputValue> sample;
+				if (hiddenState.isInitial()) {
+					sample = sampleInitially();
+				} else {
+					List<InputValue> inputs = toInputs(hiddenState.getValue().getValue());
+					sample = sampleNext(toConditionalInputs(inputs));
+				}
+
+				return EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
 			}
 
-			private EnvironmentalStateObservation sample(List<ConditionalInputValue> conditionalInputs) {
+			private List<InputValue> sampleInitially() {
+				return dbn.getBayesianNetwork().sample();
+			}
+
+			private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
 				Trajectory traj = dbn.given(asConditionals(conditionalInputs)).sample();
-				return toEnvironmentalStateObservation(traj.valueAtTime(0));
+				return traj.valueAtTime(0);
 			}
 		};
 	}
 
-	private EnvironmentalStateObservation toEnvironmentalStateObservation(List<InputValue> sample) {
-		var trueState = EnvironmentalState.get(asPreceivedValue(sample));
-		return HiddenEnvironmentalState.get(trueState);
-	}
-
-	private PerceivedValue<?> asPreceivedValue(List<InputValue> sample) {
+	private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
 		return new PerceivedValue<List<InputValue>>() {
 
 			@Override

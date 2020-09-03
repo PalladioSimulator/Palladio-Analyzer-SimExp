@@ -4,7 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
@@ -17,9 +18,9 @@ import org.palladiosimulator.simexp.markovian.type.Markovian;
 public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 
 	private static class ObservationProducerProxy implements ObservationProducer {
-		
+
 		private ObservationProducer representedProducer = null;
-		
+
 		public void represents(ObservationProducer representedProducer) {
 			this.representedProducer = representedProducer;
 		}
@@ -28,9 +29,9 @@ public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 		public Observation<?> produceObservationGiven(State emittingState) {
 			return representedProducer.produceObservationGiven(emittingState);
 		}
-		
+
 	}
-	
+
 	private final static ObservationProducerProxy PRODUCER_PROXY = new ObservationProducerProxy();
 
 	public UnobservableEnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution,
@@ -48,21 +49,18 @@ public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 	public ObservationProducer getObservationProducer() {
 		return requireNonNull(PRODUCER_PROXY.representedProducer, "");
 	}
-	
+
 	@Override
 	protected Markovian buildMarkovian(StateSpaceNavigator environmentalDynamics,
 			ProbabilityMassFunction initialDistribution) {
-		return MarkovianBuilder.createHiddenMarkovModel()
-				.createStateSpaceNavigator(environmentalDynamics)
-				.withInitialStateDistribution(initialDistribution)
-				.handleObservationsWith(PRODUCER_PROXY)
-				.build();
+		return MarkovianBuilder.createHiddenMarkovModel().createStateSpaceNavigator(environmentalDynamics)
+				.withInitialStateDistribution(initialDistribution).handleObservationsWith(PRODUCER_PROXY).build();
 	}
 
 	@Override
 	public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-		return (PerceivableEnvironmentalState) determineNextSampleGiven((HiddenEnvironmentalState) last)
-				.getObservation();
+		EnvironmentalState hiddenState = EnvironmentalStateObservation.class.cast(last).getHiddenState();
+		return (EnvironmentalStateObservation) determineNextSampleGiven(hiddenState).getObservation();
 	}
 
 	@Override

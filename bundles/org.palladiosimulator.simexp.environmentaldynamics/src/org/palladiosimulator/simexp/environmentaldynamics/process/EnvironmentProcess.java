@@ -4,7 +4,6 @@ import static org.palladiosimulator.simexp.environmentaldynamics.entity.Environm
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.HiddenEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.access.SampleModelAccessor;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
@@ -33,7 +32,8 @@ public abstract class EnvironmentProcess {
 	}
 
 	private boolean isHiddenProcess(MarkovModel model) {
-		return model.getStateSpace().get(0) instanceof HiddenEnvironmentalState;
+		PerceivableEnvironmentalState any = (PerceivableEnvironmentalState) model.getStateSpace().get(0);
+		return any.isHidden();		
 	}
 	
 	private StateSpaceNavigator buildEnvironmentalDynamics(MarkovModel model) {

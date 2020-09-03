@@ -4,6 +4,8 @@ public interface PerceivableEnvironmentalState {
 
 	public boolean isHidden();
 	
+	public boolean isInitial();
+	
 	public PerceivedValue<?> getValue();
 	
 	default public String getStringRepresentation() {
