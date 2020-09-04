@@ -50,7 +50,7 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 
 	private void retrieveStateQuantities(PcmSelfAdaptiveSystemState sasState) {
 		ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
-		MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(expRunner.getCurrentExperimentRun());
+		MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(expRunner.getCurrentExperimentRuns());
 		for (PcmMeasurementSpecification each : getMeasurementSpecs(sasState.getQuantifiedState())) {
 			result.getMeasurementsSeries(each).ifPresent(series -> {
 				sasState.getQuantifiedState().setMeasurement(each.computeQuantity(series), each);
@@ -59,8 +59,8 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 	}
 
 	private Set<PcmMeasurementSpecification> getMeasurementSpecs(StateQuantity stateQuantity) {
-		return stateQuantity.getMeasurementSpecs().stream().map(each -> (PcmMeasurementSpecification) each)
-				.collect(Collectors.toSet());
+		return stateQuantity.getMeasurementSpecs().stream().filter(PcmMeasurementSpecification.class::isInstance)
+				.map(PcmMeasurementSpecification.class::cast).collect(Collectors.toSet());
 	}
 
 }

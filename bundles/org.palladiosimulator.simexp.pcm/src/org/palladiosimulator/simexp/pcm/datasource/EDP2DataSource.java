@@ -21,13 +21,24 @@ import org.palladiosimulator.metricspec.constants.MetricDescriptionConstants;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
+import com.google.common.collect.Maps;
+
 public class EDP2DataSource extends DataSource {
 
 	@Override
-	public MeasurementSeriesResult getSimulatedMeasurements(ExperimentRun experimentRun) {
-		return asDataSeries(filterStateMeasurements(experimentRun));
+	public MeasurementSeriesResult getSimulatedMeasurements(List<ExperimentRun> experimentRuns) {
+		return asDataSeries(filterStateMeasurements(experimentRuns));
 	}
 
+	private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(List<ExperimentRun> experimentRuns) {
+		Map<PcmMeasurementSpecification, Measurement> measurments = Maps.newHashMap();
+		for (ExperimentRun each : experimentRuns) {
+			Map<PcmMeasurementSpecification, Measurement> stateMeasurments = filterStateMeasurements(each);
+			measurments.putAll(stateMeasurments);
+		}
+		return measurments;
+	}
+	
 	private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(ExperimentRun experimentRun) {
 		Map<PcmMeasurementSpecification, Measurement> specToMeas = new HashMap<>();
 		for (Measurement each : experimentRun.getMeasurement()) {

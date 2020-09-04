@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.datasource;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,5 +16,5 @@ public abstract class DataSource {
 				.collect(Collectors.toSet());
 	}
 
-	public abstract MeasurementSeriesResult getSimulatedMeasurements(ExperimentRun experimentRun);
+	public abstract MeasurementSeriesResult getSimulatedMeasurements(List<ExperimentRun> experimentRuns);
 }
