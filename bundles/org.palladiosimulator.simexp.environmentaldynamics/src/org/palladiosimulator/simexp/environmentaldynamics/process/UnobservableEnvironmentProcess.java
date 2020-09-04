@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.environmentaldynamics.process;
 
-import static java.util.Objects.requireNonNull;
-
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
@@ -44,10 +42,6 @@ public class UnobservableEnvironmentProcess extends EnvironmentProcess {
 			ProbabilityMassFunction initialDistribution, ObservationProducer obsProducer) {
 		super(dynamics, initialDistribution);
 		PRODUCER_PROXY.represents(obsProducer);
-	}
-
-	public ObservationProducer getObservationProducer() {
-		return requireNonNull(PRODUCER_PROXY.representedProducer, "");
 	}
 
 	@Override

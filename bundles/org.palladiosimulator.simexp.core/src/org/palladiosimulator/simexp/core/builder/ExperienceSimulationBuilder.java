@@ -17,6 +17,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
@@ -30,6 +31,9 @@ import org.palladiosimulator.simexp.markovian.builder.StateSpaceNavigatorBuilder
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.ObservationImpl;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
@@ -131,6 +135,22 @@ public abstract class ExperienceSimulationBuilder {
 		}
 	}
 
+	// Note that in POMDPs only the environment is unobservable captured by the handler of the nested HMM.
+	// Therefore, only a pass through obs handler is required.
+	private final static ObservationProducer PASS_THROUGH_OBS_PRODUCER = new ObservationProducer() {
+		
+		@Override
+		public Observation<?> produceObservationGiven(State emittingState) {
+			return new ObservationImpl<SelfAdaptiveSystemState<?>>() {
+				
+				@Override
+				public SelfAdaptiveSystemState<?> getValue() {
+					return (SelfAdaptiveSystemState<?>) emittingState;
+				};
+			};
+		}
+	};
+	
 	private String simulationID = "";
 	private int numberOfRuns = 0;
 	private int numberOfSamplesPerRun = 0;
@@ -221,8 +241,7 @@ public abstract class ExperienceSimulationBuilder {
 		if (UnobservableEnvironmentProcess.class.isInstance(envProcess) == false) {
 			throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
 		}
-		
-		ObservationProducer obsProducer = UnobservableEnvironmentProcess.class.cast(envProcess).getObservationProducer(); 
+		 
 		SimulatedRewardReceiver rewardReceiver = SimulatedRewardReceiver.with(rewardEvaluator);
 		return MarkovianBuilder.createPartiallyObservableMDP()
 				.createStateSpaceNavigator(navigator)
@@ -230,7 +249,7 @@ public abstract class ExperienceSimulationBuilder {
 				.selectActionsAccordingTo(createPolicy())
 				.withActionSpace(getReconfigurationSpace())
 				.withInitialStateDistribution(initialDist)
-				.handleObservationsWith(obsProducer)
+				.handleObservationsWith(PASS_THROUGH_OBS_PRODUCER)
 				.build();
 	}
 
