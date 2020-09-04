@@ -57,7 +57,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 			throw new RuntimeException();
 		}
 
-		ReliabilityPredictionResult result = makePrediction((PcmSelfAdaptiveSystemState) sasState);
+		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState);
 		retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
 	}
 

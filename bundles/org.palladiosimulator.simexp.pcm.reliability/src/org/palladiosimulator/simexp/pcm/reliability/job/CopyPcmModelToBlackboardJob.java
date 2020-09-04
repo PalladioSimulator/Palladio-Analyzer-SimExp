@@ -1,19 +1,11 @@
 package org.palladiosimulator.simexp.pcm.reliability.job;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
-import org.palladiosimulator.commons.emfutils.EMFCopyHelper;
-import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.simexp.pcm.util.PcmUtil;
 import org.palladiosimulator.solver.models.PCMInstance;
-
-import com.google.common.collect.Lists;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
@@ -25,6 +17,14 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
 public class CopyPcmModelToBlackboardJob implements IJob, IBlackboardInteractingJob<MDSDBlackboard> {
 
+	private static class CustomResourceSetPartition extends ResourceSetPartition {
+		
+		public void setResourceSet(ResourceSet rs) {
+			this.rs = rs;
+		}
+		
+	}
+	
 	private MDSDBlackboard blackboard;
 
 	private final PCMInstance pcm;
@@ -46,8 +46,9 @@ public class CopyPcmModelToBlackboardJob implements IJob, IBlackboardInteracting
 	}
 
 	private PCMResourceSetPartition makeCopy() {
-		var original = new ResourceSetPartition();
-		original.getResourceSet().getResources().addAll(getOriginalResources());
+		var original = new CustomResourceSetPartition();
+		original.setResourceSet(getOriginalResourceSet());
+		
 		return PcmUtil.copyPCMPartition(original);
 	}
 
@@ -61,9 +62,9 @@ public class CopyPcmModelToBlackboardJob implements IJob, IBlackboardInteracting
 		partition.getResourceSet().getResources().addAll(copy.getResourceSet().getResources());
 	}
 
-	private List<Resource> getOriginalResources() {
+	private ResourceSet getOriginalResourceSet() {
 		var anyModelResource = pcm.getAllocation().eResource();
-		return anyModelResource.getResourceSet().getResources();
+		return anyModelResource.getResourceSet();
 	}
 
 	@Override
