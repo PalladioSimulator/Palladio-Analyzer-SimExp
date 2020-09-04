@@ -51,11 +51,11 @@ public class ExperimentProvider {
 		}
 	
 		private void addPcmModels(InitialModel initCopy) {
-			addStaticModels(initCopy);
-			addNonStaticModels(initCopy);
+			addImmutableModels(initCopy);
+			addMutableModels(initCopy);
 		}
 
-		private void addStaticModels(InitialModel initCopy) {
+		private void addImmutableModels(InitialModel initCopy) {
 			Optional.ofNullable(initialExperiment.getInitialModel().getEventMiddleWareRepository())
 					.ifPresent(v -> initCopy.setEventMiddleWareRepository(v));
 			Optional.ofNullable(initialExperiment.getInitialModel().getMiddlewareRepository())
@@ -68,7 +68,7 @@ public class ExperimentProvider {
 					.ifPresent(v -> initCopy.setMonitorRepository(v));
 		}
 
-		private void addNonStaticModels(InitialModel initCopy) {
+		private void addMutableModels(InitialModel initCopy) {
 			PCMResourceSetPartition pcmCopy = PcmUtil.copyPCMPartition(initialPartition);
 			
 			initCopy.setAllocation(pcmCopy.getAllocation());
@@ -77,7 +77,7 @@ public class ExperimentProvider {
 			initCopy.setSystem(pcmCopy.getSystem());
 
 			if (initialExperiment.getToolConfiguration().isEmpty()) {
-				getUsageModel(pcmCopy).ifPresent(v -> initCopy.setUsageModel(v));
+				getUsageModel(pcmCopy).ifPresent(initCopy::setUsageModel);
 			} else {
 				initCopy.setUsageModel(pcmCopy.getUsageModel());
 			}

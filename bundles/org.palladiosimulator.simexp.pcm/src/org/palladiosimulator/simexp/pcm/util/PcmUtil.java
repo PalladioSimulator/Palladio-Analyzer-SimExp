@@ -13,9 +13,11 @@ import org.palladiosimulator.commons.emfutils.EMFCopyHelper;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.Repository;
 
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
+
 public class PcmUtil {
 
-	public static PCMResourceSetPartition copyPCMPartition(PCMResourceSetPartition partitionToCopy) {
+	public static PCMResourceSetPartition copyPCMPartition(ResourceSetPartition partitionToCopy) {
 		PCMResourceSetPartition copy = new PCMResourceSetPartition();
 
 		List<EObject> modelCopy = EMFCopyHelper.deepCopyToEObjectList(partitionToCopy.getResourceSet());
@@ -32,7 +34,7 @@ public class PcmUtil {
 		return copy;
 	}
 
-	private static Optional<URI> retrieveUri(EObject model, PCMResourceSetPartition pcmPartition) {
+	private static Optional<URI> retrieveUri(EObject model, ResourceSetPartition pcmPartition) {
 		if (pcmPartition.hasElement(model.eClass())) {
 			List<EObject> result = pcmPartition.getElement(model.eClass());
 			if (result.size() == 1) {

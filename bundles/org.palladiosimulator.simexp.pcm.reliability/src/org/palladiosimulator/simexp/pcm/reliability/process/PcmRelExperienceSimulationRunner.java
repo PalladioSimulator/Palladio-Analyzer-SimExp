@@ -85,7 +85,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 
 	private void retrieveAndSetStateQuantities(StateQuantity quantity, ReliabilityPredictionResult result) {
 		filterPcmRelMeasurementsSpec(quantity).forEach(spec -> {
-			double probOfSuccess = result.getProbabilityOfSuccess(spec.getUsageScenario());
+			var probOfSuccess = result.getProbabilityOfSuccess(spec.getUsageScenario());
 			quantity.setMeasurement(probOfSuccess, spec);
 		});
 	}
@@ -93,7 +93,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 	private List<UncertaintyState> deriveUncertaintyStates(PerceivableEnvironmentalState envState) {
 		List<UncertaintyState> uncertaintyStateTuple = Lists.newArrayList();
 		for (InputValue each : toInputs(envState)) {
-			uncertaintyStateSpace.findStateWith(each.variable.getId()).ifPresent(s -> {
+			uncertaintyStateSpace.findStateInstantiating(each.variable.getInstantiatedTemplate()).ifPresent(s -> {
 				UncertaintyState stateToAdd = s.newValuedStateWith(each.asCategorical());
 				uncertaintyStateTuple.add(stateToAdd);
 			});

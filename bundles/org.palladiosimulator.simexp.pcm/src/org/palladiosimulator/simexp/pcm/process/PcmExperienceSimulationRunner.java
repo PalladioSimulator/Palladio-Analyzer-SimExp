@@ -32,10 +32,10 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 	@Override
 	public void simulate(SelfAdaptiveSystemState<?> sasState) {
 		runSimulation();
-		retrieveStateQuantities(getSasState(sasState));
+		retrieveStateQuantities(asPcmState(sasState));
 	}
 	
-	private PcmSelfAdaptiveSystemState getSasState(SelfAdaptiveSystemState<?> sasState) {
+	private PcmSelfAdaptiveSystemState asPcmState(SelfAdaptiveSystemState<?> sasState) {
 		if (sasState instanceof PcmSelfAdaptiveSystemState) {
 			return (PcmSelfAdaptiveSystemState) sasState;
 		}

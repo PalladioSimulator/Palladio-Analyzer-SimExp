@@ -34,7 +34,7 @@ public class ExperimentRunner {
 	private class SimulationContext {
 
 		private final MDSDBlackboard blackboard;
-		
+
 		public SimulationContext() {
 			this.blackboard = loadInitialBlackboard(experiment);
 		}
@@ -90,8 +90,7 @@ public class ExperimentRunner {
 
 	private SimuLizarConfiguration findSimulationConfig(Stream<ToolConfiguration> toolConfigs) {
 		Optional<ToolConfiguration> result = toolConfigs
-				.filter(each -> SimulizartooladapterPackage.eINSTANCE.getSimuLizarConfiguration().isInstance(each))
-				.findFirst();
+				.filter(SimulizartooladapterPackage.eINSTANCE.getSimuLizarConfiguration()::isInstance).findFirst();
 		return (SimuLizarConfiguration) result.orElseThrow(() -> new RuntimeException(""));
 	}
 
