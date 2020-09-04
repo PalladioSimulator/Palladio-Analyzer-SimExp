@@ -16,13 +16,13 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner {
-	
+
 	private final DataSource dataSource;
 
 	public PcmExperienceSimulationRunner() {
 		this.dataSource = new EDP2DataSource();
 	}
-	
+
 	@Override
 	public void initSimulationRun() {
 		ExperimentProvider.get().initializeExperimentRunner();
@@ -34,20 +34,20 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 		runSimulation();
 		retrieveStateQuantities(asPcmState(sasState));
 	}
-	
+
 	private PcmSelfAdaptiveSystemState asPcmState(SelfAdaptiveSystemState<?> sasState) {
 		if (sasState instanceof PcmSelfAdaptiveSystemState) {
 			return (PcmSelfAdaptiveSystemState) sasState;
 		}
-		
-		//TODO exception handling 
+
+		// TODO exception handling
 		throw new RuntimeException("");
 	}
-	
+
 	private void runSimulation() {
 		ExperimentProvider.get().getExperimentRunner().runExperiment();
 	}
-	
+
 	private void retrieveStateQuantities(PcmSelfAdaptiveSystemState sasState) {
 		ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
 		MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(expRunner.getCurrentExperimentRun());
@@ -57,9 +57,10 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 			});
 		}
 	}
-	
+
 	private Set<PcmMeasurementSpecification> getMeasurementSpecs(StateQuantity stateQuantity) {
-		return stateQuantity.getMeasurementSpecs().stream().map(each -> (PcmMeasurementSpecification) each).collect(Collectors.toSet());
+		return stateQuantity.getMeasurementSpecs().stream().map(each -> (PcmMeasurementSpecification) each)
+				.collect(Collectors.toSet());
 	}
-	
+
 }
