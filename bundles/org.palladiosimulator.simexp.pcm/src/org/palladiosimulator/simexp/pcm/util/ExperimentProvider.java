@@ -20,8 +20,6 @@ import org.palladiosimulator.experimentautomation.experiments.InitialModel;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 
-import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
-
 public class ExperimentProvider {
 
 	private final static int DEFAULT_REPETITIONS = 1;

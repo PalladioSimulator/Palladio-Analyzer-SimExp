@@ -95,8 +95,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(2) //100
+					.withNumberOfRuns(5) //500
+					.andNumberOfSimulationsPerRun(5) //100
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(RobotCognitionEnvironmentalDynamics.get(dbn))
