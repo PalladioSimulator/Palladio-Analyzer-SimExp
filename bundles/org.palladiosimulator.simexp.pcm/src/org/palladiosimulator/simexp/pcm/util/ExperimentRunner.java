@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.util;
 
 import static java.util.stream.Collectors.toList;
 import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.loadInitialBlackboard;
+import static org.palladiosimulator.simexp.pcm.util.PcmConstants.PCM_RECONFIGURATION_PARTITION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
-import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
 import org.palladiosimulator.edp2.impl.RepositoryManager;
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentGroup;
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
@@ -30,7 +30,7 @@ import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 public class ExperimentRunner {
-
+	
 	private class ExperimentRunExtractor {
 
 		private class ToolContext {
@@ -85,7 +85,7 @@ public class ExperimentRunner {
 				ExperimentGroup group = findExperimentGroup(each);
 				ExperimentSetting setting = findExperimentSetting(group, getVariationId(each));
 				ExperimentRun run = getCurrentRunFrom(setting);
-				
+
 				runs.add(run);
 			}
 			return runs;
@@ -178,21 +178,15 @@ public class ExperimentRunner {
 	}
 
 	private PCMResourceSetPartition copyPCMPartition() {
-		// TODO exception handling
-		PCMResourceSetPartition oldPartition = findAnalyzedPcmPartition().orElseThrow(() -> new RuntimeException(""));
-		return PcmUtil.copyPCMPartition(oldPartition);
+		return PcmUtil.copyPCMPartition(getReconfigurationPartition());
 	}
 
-	private Optional<PCMResourceSetPartition> loadPcmPartition(String id) {
-		return Optional.ofNullable((PCMResourceSetPartition) simulationContext.getBlackboard().getPartition(id));
-	}
-
-	public MDSDBlackboard getBlackboard() {
+	protected MDSDBlackboard getBlackboard() {
 		return simulationContext.getBlackboard();
 	}
 
-	public Optional<PCMResourceSetPartition> findAnalyzedPcmPartition() {
-		return loadPcmPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID);
+	public PCMResourceSetPartition getReconfigurationPartition() {
+		return (PCMResourceSetPartition) simulationContext.getBlackboard().getPartition(PCM_RECONFIGURATION_PARTITION);
 	}
 
 }

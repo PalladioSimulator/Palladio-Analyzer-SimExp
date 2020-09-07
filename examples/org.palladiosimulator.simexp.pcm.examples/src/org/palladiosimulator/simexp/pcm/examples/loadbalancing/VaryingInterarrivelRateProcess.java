@@ -194,8 +194,7 @@ public class VaryingInterarrivelRateProcess {
 	private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
 		return expRunner -> {
 			// TODO exception handling
-			PCMResourceSetPartition pcm = expRunner.findAnalyzedPcmPartition()
-					.orElseThrow(() -> new RuntimeException(""));
+			PCMResourceSetPartition pcm = expRunner.getReconfigurationPartition();
 			OpenWorkload workload = (OpenWorkload) pcm.getUsageModel().getUsageScenario_UsageModel().get(0)
 					.getWorkload_UsageScenario();
 			return workload.getInterArrivalTime_OpenWorkload();

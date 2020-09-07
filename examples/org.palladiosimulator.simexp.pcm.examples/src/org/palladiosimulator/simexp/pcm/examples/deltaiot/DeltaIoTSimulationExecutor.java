@@ -11,7 +11,6 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
@@ -81,8 +80,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 //				.andPacketLossSpec(this.prismSpecs.get(0))
 //				.andEnergyConsumptionSpec(this.prismSpecs.get(1)).build();
 		this.reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy.newBuilder()
-				.withReconfigurationParams(reconfParamsRepo)
-				.andPacketLossSpec(this.prismSpecs.get(0))
+				.withReconfigurationParams(reconfParamsRepo).andPacketLossSpec(this.prismSpecs.get(0))
 				.andEnergyConsumptionSpec(this.prismSpecs.get(1)).build();
 
 		this.dbn = loadOrGenerateDBN();
@@ -129,8 +127,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	private TemplateVariableDefinitions loadTemplates() {
-		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getCurrentBlackboard()
-				.getPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID)
+		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getExperimentRunner()
+				.getReconfigurationPartition()
 				.getElement(TemplatevariablePackage.eINSTANCE.getTemplateVariableDefinitions());
 		if (result.isEmpty()) {
 			// TODO exception handling
@@ -145,7 +143,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 				reconfSelectionPolicy.getId());
 		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
 		System.out.println("***********************************************************************");
-		System.out.println(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
+		System.out.println(
+				String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
 		System.out.println("***********************************************************************");
 	}
 
@@ -156,34 +155,21 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
-				.makeGlobalPcmSettings()
-					.withInitialExperiment(experiment)
-					.andSimulatedMeasurementSpecs(getPrismSpecs())
-					.addExperienceSimulationRunner(getSimualtionRunner())
-					.done()
-				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2)
-					.andNumberOfSimulationsPerRun(100)
-					.done()
-				.specifySelfAdaptiveSystemState()
-					.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
-					.done()
-				.createReconfigurationSpace()
-					.addReconfigurations(getAllReconfigurations())
-					.andReconfigurationSelectionPolicy(reconfSelectionPolicy)
-					.done()
-				.specifyRewardHandling()
-					.withRewardEvaluator(getRewardEvaluator())
-					.done()
-				.build();
+		return PcmExperienceSimulationBuilder.newBuilder().makeGlobalPcmSettings().withInitialExperiment(experiment)
+				.andSimulatedMeasurementSpecs(getPrismSpecs()).addExperienceSimulationRunner(getSimualtionRunner())
+				.done().createSimulationConfiguration().withSimulationID(SIMULATION_ID).withNumberOfRuns(2)
+				.andNumberOfSimulationsPerRun(100).done().specifySelfAdaptiveSystemState()
+				.asPartiallyEnvironmentalDrivenProcess(
+						DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
+				.done().createReconfigurationSpace().addReconfigurations(getAllReconfigurations())
+				.andReconfigurationSelectionPolicy(reconfSelectionPolicy).done().specifyRewardHandling()
+				.withRewardEvaluator(getRewardEvaluator()).done().build();
 	}
 
 	private ExperienceSimulationRunner getSimualtionRunner() {
-		//return new PcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), createPrismLogFile());
-		return new DeltaIoTPcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), 
-				createPrismLogFile(), 
+		// return new PcmBasedPrismExperienceSimulationRunner(getPrismGenerator(),
+		// createPrismLogFile());
+		return new DeltaIoTPcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), createPrismLogFile(),
 				reconfParamsRepo);
 	}
 
@@ -197,7 +183,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	private Set<PrismFileUpdater> getPrismFileUpdater() {
-		return Sets.newHashSet(new PacketLossPrismFileUpdater(prismSpecs.get(0)), 
+		return Sets.newHashSet(new PacketLossPrismFileUpdater(prismSpecs.get(0)),
 				new EnergyConsumptionPrismFileUpdater(prismSpecs.get(1)));
 	}
 
@@ -208,13 +194,13 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		for (QVToReconfiguration each : qvts) {
 			if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(each)) {
 				reconfs.add(new DistributionFactorReconfiguration(each, reconfParamsRepo.getDistributionFactors()));
-			} else if(TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
+			} else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
 				reconfs.add(new TransmissionPowerReconfiguration(each, reconfParamsRepo.getTransmissionPower()));
 			}
 		}
-		
+
 		if (reconfs.isEmpty()) {
-			//TODO exception handling
+			// TODO exception handling
 			throw new RuntimeException("No DeltaIoT reconfigutations could be found or generated");
 		}
 		return reconfs;
@@ -233,18 +219,13 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	private PrismSimulatedMeasurementSpec createPrismSimulatedMeasurementSpecificationForPacketLoss() {
-		return PrismSimulatedMeasurementSpec.newBuilder()
-				.withProperty(PRISM_PACKET_LOSS_PROPERTY)
-				.andModuleFile(getPacketLossModuleFile())
-				.andPropertyFile(getPacketLossPropertyFile())
-				.build();
+		return PrismSimulatedMeasurementSpec.newBuilder().withProperty(PRISM_PACKET_LOSS_PROPERTY)
+				.andModuleFile(getPacketLossModuleFile()).andPropertyFile(getPacketLossPropertyFile()).build();
 	}
 
 	private PrismSimulatedMeasurementSpec createPrismSimulatedMeasurementSpecificationForEnergyConsumption() {
-		return PrismSimulatedMeasurementSpec.newBuilder()
-				.withProperty(PRISM_ENERGY_CONSUMPTION_PROPERTY)
-				.andModuleFile(getEnergyConsumptionModuleFile())
-				.andPropertyFile(getEnergyConsumptionPropertyFile())
+		return PrismSimulatedMeasurementSpec.newBuilder().withProperty(PRISM_ENERGY_CONSUMPTION_PROPERTY)
+				.andModuleFile(getEnergyConsumptionModuleFile()).andPropertyFile(getEnergyConsumptionPropertyFile())
 				.build();
 	}
 

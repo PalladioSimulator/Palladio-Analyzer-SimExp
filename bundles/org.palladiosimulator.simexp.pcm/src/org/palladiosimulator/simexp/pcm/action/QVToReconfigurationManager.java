@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
 import org.palladiosimulator.commons.eclipseutils.FileHelper;
 import org.palladiosimulator.monitorrepository.MonitorRepository;
@@ -25,6 +26,7 @@ import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
+//TODO Refactor to QVTOTransformationJob
 public class QVToReconfigurationManager {
 
 	private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
@@ -76,18 +78,20 @@ public class QVToReconfigurationManager {
 	}
 
 	private PCMPartitionManager getPartitionManager() {
-		MDSDBlackboard blackboard = ExperimentProvider.get().getCurrentBlackboard();
+		PCMResourceSetPartition partition = ExperimentProvider.get().getExperimentRunner()
+				.getReconfigurationPartition();
 		for (Resource each : additonalModelsToTransform) {
-			blackboard.getPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID).getResourceSet()
-					.getResources().add(each);
+			partition.getResourceSet().getResources().add(each);
 		}
+		
+		// this is a quick fix and only required as long as the reconfiguration manager is based on the simulizar reconfiguration manager.
+		MDSDBlackboard blackboard = ExperimentProvider.get().getCurrentBlackboard();
 		return new PCMPartitionManager(blackboard, createNewConfig());
 	}
 
 	private SimuLizarWorkflowConfiguration createNewConfig() {
 		Optional<MonitorRepository> monitorRepo = Optional.empty();
-		List<EObject> result = ExperimentProvider.get().getCurrentBlackboard()
-				.getPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID)
+		List<EObject> result = ExperimentProvider.get().getExperimentRunner().getReconfigurationPartition()
 				.getElement(MonitorRepositoryPackage.eINSTANCE.getMonitorRepository());
 		if (result.isEmpty() == false) {
 			monitorRepo = Optional.of(MonitorRepository.class.cast(result.get(0)));

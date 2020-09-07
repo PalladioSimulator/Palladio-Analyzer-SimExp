@@ -38,13 +38,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPri
 	@Override
 	public void initSimulationRun() {
 		super.initSimulationRun();
-		Optional<PCMResourceSetPartition> pcmPartition = ExperimentProvider.get().getExperimentRunner()
-				.findAnalyzedPcmPartition();
-		if (pcmPartition.isPresent()) {
-			updateModelReferences(pcmPartition.get());
-		} else {
-			// TODO logging
-		}
+		PCMResourceSetPartition pcmPartition = ExperimentProvider.get().getExperimentRunner()
+				.getReconfigurationPartition();
+		updateModelReferences(pcmPartition);
 	}
 
 	private void updateModelReferences(PCMResourceSetPartition pcmPartition) {
