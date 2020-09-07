@@ -10,7 +10,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
@@ -96,8 +95,8 @@ public class LoadBalancingDBNLoader {
 	}
 
 	private static TemplateVariableDefinitions loadTemplates() {
-		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getCurrentBlackboard()
-				.getPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID)
+		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getExperimentRunner()
+				.getWorkingPartition()
 				.getElement(TemplatevariablePackage.eINSTANCE.getTemplateVariableDefinitions());
 		if (result.isEmpty()) {
 			// TODO exception handling

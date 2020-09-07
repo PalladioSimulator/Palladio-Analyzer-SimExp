@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.pcm.util;
 import static java.util.stream.Collectors.toList;
 import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.loadInitialBlackboard;
 import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_ANALYSIS_PARTITION;
-import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_RECONFIGURATION_PARTITION;
+import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_WORKING_PARTITION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,9 +149,9 @@ public class ExperimentRunner {
 		@SuppressWarnings("unchecked")
 		public BlackboardBasedWorkflow<MDSDBlackboard> initWorkflow(Experiment experiment) {
 			SequentialJob simulationJob = new SequentialJob();
-			simulationJob.add(new CopyUriPreservingPartitionJob(PCM_RECONFIGURATION_PARTITION, PCM_ANALYSIS_PARTITION));
+			simulationJob.add(new CopyUriPreservingPartitionJob(PCM_WORKING_PARTITION, PCM_ANALYSIS_PARTITION));
 			//TODO check whether this is necessary.
-			simulationJob.add(new CopyPartitionJob(PCM_RECONFIGURATION_PARTITION,
+			simulationJob.add(new CopyPartitionJob(PCM_WORKING_PARTITION,
 					LoadSimuLizarModelsIntoBlackboardJob.PCM_MODELS_ANALYZED_PARTITION_ID));
 			simulationJob.add(new RunExperimentForEachToolJob(experiment));
 			simulationJob.forEach(job -> ((IBlackboardInteractingJob<MDSDBlackboard>) job).setBlackboard(blackboard));
@@ -192,15 +192,11 @@ public class ExperimentRunner {
 	}
 
 	private PCMResourceSetPartition copyPCMPartition() {
-		return PcmUtil.copyPCMPartition(getReconfigurationPartition());
+		return PcmUtil.copyPCMPartition(getWorkingPartition());
 	}
 
-	protected MDSDBlackboard getBlackboard() {
-		return simulationContext.getBlackboard();
-	}
-
-	public PCMResourceSetPartition getReconfigurationPartition() {
-		return (PCMResourceSetPartition) simulationContext.getBlackboard().getPartition(PCM_RECONFIGURATION_PARTITION);
+	public PCMResourceSetPartition getWorkingPartition() {
+		return (PCMResourceSetPartition) simulationContext.getBlackboard().getPartition(PCM_WORKING_PARTITION);
 	}
 
 }

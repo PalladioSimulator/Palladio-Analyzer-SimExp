@@ -131,10 +131,6 @@ public class ExperimentProvider {
 		currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
-	public MDSDBlackboard getCurrentBlackboard() {
-		return currentRunner.getBlackboard();
-	}
-
 	public ExperimentRunner getExperimentRunner() {
 		return currentRunner;
 	}

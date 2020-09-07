@@ -34,7 +34,7 @@ public class InitialPcmPartitionLoader {
 			add(new CopyPartitionJob(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID,
 	                LoadSimuLizarModelsIntoBlackboardJob.PCM_MODELS_ANALYZED_PARTITION_ID));
 			add(new CopyUriPreservingPartitionJob(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID,
-	                PcmSimulatedExperienceConstants.PCM_RECONFIGURATION_PARTITION));
+	                PcmSimulatedExperienceConstants.PCM_WORKING_PARTITION));
 			return loadBlackboard();
 		}
 		

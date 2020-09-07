@@ -4,6 +4,6 @@ import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJ
 
 public class PcmSimulatedExperienceConstants {
 	
-	public final static String PCM_RECONFIGURATION_PARTITION = "org.palladiosimulator.simexp.pcm.reconfiguration_partition";
+	public final static String PCM_WORKING_PARTITION = "org.palladiosimulator.simexp.pcm.workingpartition";
 	public final static String PCM_ANALYSIS_PARTITION = LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID;
 }

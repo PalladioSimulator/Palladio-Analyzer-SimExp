@@ -79,20 +79,19 @@ public class QVToReconfigurationManager {
 
 	private PCMPartitionManager getPartitionManager() {
 		PCMResourceSetPartition partition = ExperimentProvider.get().getExperimentRunner()
-				.getReconfigurationPartition();
+				.getWorkingPartition();
 		for (Resource each : additonalModelsToTransform) {
 			partition.getResourceSet().getResources().add(each);
 		}
 		
-		// this is a quick fix and only required as long as the reconfiguration manager is based on the simulizar reconfiguration manager.
-		MDSDBlackboard blackboard = new MDSDBlackboard();//ExperimentProvider.get().getCurrentBlackboard();
+		MDSDBlackboard blackboard = new MDSDBlackboard();
 		blackboard.addPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID, partition);
 		return new PCMPartitionManager(blackboard, createNewConfig());
 	}
 
 	private SimuLizarWorkflowConfiguration createNewConfig() {
 		Optional<MonitorRepository> monitorRepo = Optional.empty();
-		List<EObject> result = ExperimentProvider.get().getExperimentRunner().getReconfigurationPartition()
+		List<EObject> result = ExperimentProvider.get().getExperimentRunner().getWorkingPartition()
 				.getElement(MonitorRepositoryPackage.eINSTANCE.getMonitorRepository());
 		if (result.isEmpty() == false) {
 			monitorRepo = Optional.of(MonitorRepository.class.cast(result.get(0)));

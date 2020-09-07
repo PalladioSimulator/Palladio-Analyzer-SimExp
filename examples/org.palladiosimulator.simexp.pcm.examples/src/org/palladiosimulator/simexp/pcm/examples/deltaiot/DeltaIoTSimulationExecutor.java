@@ -128,7 +128,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	private TemplateVariableDefinitions loadTemplates() {
 		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getExperimentRunner()
-				.getReconfigurationPartition()
+				.getWorkingPartition()
 				.getElement(TemplatevariablePackage.eINSTANCE.getTemplateVariableDefinitions());
 		if (result.isEmpty()) {
 			// TODO exception handling
