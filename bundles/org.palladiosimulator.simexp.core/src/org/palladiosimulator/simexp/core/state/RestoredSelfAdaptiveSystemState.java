@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 
 public class RestoredSelfAdaptiveSystemState<T> extends SelfAdaptiveSystemState<T> {
 
+	// TODO this is not a good solution: The class should be refactored in further iterations.
 	private static class SpecialCaseStateQuantity extends StateQuantity {
 		
 		private final String quantifiedState;

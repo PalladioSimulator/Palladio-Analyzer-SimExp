@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.core.reward;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +10,8 @@ import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+
+import com.google.common.collect.Lists;
 
 public class ThresholdBasedRewardEvaluator implements RewardEvaluator {
 	
@@ -44,7 +45,7 @@ public class ThresholdBasedRewardEvaluator implements RewardEvaluator {
 	}
 	
 	protected List<Pair<SimulatedMeasurement, Threshold>> filterThresholds(StateQuantity quantity) {
-		List<Pair<SimulatedMeasurement, Threshold>> matches = new ArrayList<>();
+		List<Pair<SimulatedMeasurement, Threshold>> matches = Lists.newArrayList();
 		for (Pair<SimulatedMeasurementSpecification, Threshold> each : thresholds) {
 			Optional<SimulatedMeasurement> match = quantity.findMeasurementWith(each.getFirst());
 			if (match.isPresent()) {

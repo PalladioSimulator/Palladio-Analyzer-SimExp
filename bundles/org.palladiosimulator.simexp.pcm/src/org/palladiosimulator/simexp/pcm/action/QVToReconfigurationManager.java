@@ -85,7 +85,8 @@ public class QVToReconfigurationManager {
 		}
 		
 		// this is a quick fix and only required as long as the reconfiguration manager is based on the simulizar reconfiguration manager.
-		MDSDBlackboard blackboard = ExperimentProvider.get().getCurrentBlackboard();
+		MDSDBlackboard blackboard = new MDSDBlackboard();//ExperimentProvider.get().getCurrentBlackboard();
+		blackboard.addPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID, partition);
 		return new PCMPartitionManager(blackboard, createNewConfig());
 	}
 

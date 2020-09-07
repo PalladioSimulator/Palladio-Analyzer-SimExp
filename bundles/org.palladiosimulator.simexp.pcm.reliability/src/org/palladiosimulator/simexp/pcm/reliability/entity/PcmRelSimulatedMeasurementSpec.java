@@ -16,5 +16,10 @@ public class PcmRelSimulatedMeasurementSpec extends SimulatedMeasurementSpecific
 	public UsageScenario getUsageScenario() {
 		return usageScenario;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Usage scenario: %1s with id %2s", getName(), getId());
+	}
 
 }

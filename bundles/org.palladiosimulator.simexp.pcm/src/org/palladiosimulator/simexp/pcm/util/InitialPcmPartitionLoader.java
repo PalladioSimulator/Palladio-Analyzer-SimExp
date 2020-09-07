@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.util;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
@@ -34,6 +33,8 @@ public class InitialPcmPartitionLoader {
 		public MDSDBlackboard loadInitialBlackboard() {
 			add(new CopyPartitionJob(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID,
 	                LoadSimuLizarModelsIntoBlackboardJob.PCM_MODELS_ANALYZED_PARTITION_ID));
+			add(new CopyUriPreservingPartitionJob(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID,
+	                PcmSimulatedExperienceConstants.PCM_RECONFIGURATION_PARTITION));
 			return loadBlackboard();
 		}
 		
@@ -41,11 +42,9 @@ public class InitialPcmPartitionLoader {
 		private MDSDBlackboard loadBlackboard() {
 			MDSDBlackboard blackboard = new MDSDBlackboard();
 			this.myJobs.forEach(job -> ((IBlackboardInteractingJob<MDSDBlackboard>) job).setBlackboard(blackboard));
-			
-			IProgressMonitor monitor = new NullProgressMonitor();
 			this.myJobs.forEach(job -> {
 				try {
-					job.execute(monitor);
+					job.execute(new NullProgressMonitor());
 				} catch (JobFailedException | UserCanceledException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

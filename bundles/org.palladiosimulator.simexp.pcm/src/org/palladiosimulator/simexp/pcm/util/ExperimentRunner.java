@@ -2,7 +2,8 @@ package org.palladiosimulator.simexp.pcm.util;
 
 import static java.util.stream.Collectors.toList;
 import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.loadInitialBlackboard;
-import static org.palladiosimulator.simexp.pcm.util.PcmConstants.PCM_RECONFIGURATION_PARTITION;
+import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_ANALYSIS_PARTITION;
+import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_RECONFIGURATION_PARTITION;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,20 +18,24 @@ import org.palladiosimulator.edp2.models.ExperimentData.ExperimentSetting;
 import org.palladiosimulator.edp2.models.Repository.Repository;
 import org.palladiosimulator.experimentautomation.abstractsimulation.AbstractSimulationConfiguration;
 import org.palladiosimulator.experimentautomation.application.VariationFactorTuple;
+import org.palladiosimulator.experimentautomation.application.jobs.CopyPartitionJob;
 import org.palladiosimulator.experimentautomation.application.jobs.RunExperimentForEachToolJob;
 import org.palladiosimulator.experimentautomation.application.tooladapter.abstractsimulation.AbstractSimulationConfigFactory;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ToolConfiguration;
+import org.palladiosimulator.simulizar.launcher.jobs.LoadSimuLizarModelsIntoBlackboardJob;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 
 import de.uka.ipd.sdq.simulation.AbstractSimulationConfig;
 import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
+import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
+import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 public class ExperimentRunner {
-	
+
 	private class ExperimentRunExtractor {
 
 		private class ToolContext {
@@ -141,8 +146,17 @@ public class ExperimentRunner {
 			this.blackboard = loadInitialBlackboard(experiment);
 		}
 
+		@SuppressWarnings("unchecked")
 		public BlackboardBasedWorkflow<MDSDBlackboard> initWorkflow(Experiment experiment) {
-			return new BlackboardBasedWorkflow<MDSDBlackboard>(new RunExperimentForEachToolJob(experiment), blackboard);
+			SequentialJob simulationJob = new SequentialJob();
+			simulationJob.add(new CopyUriPreservingPartitionJob(PCM_RECONFIGURATION_PARTITION, PCM_ANALYSIS_PARTITION));
+			//TODO check whether this is necessary.
+			simulationJob.add(new CopyPartitionJob(PCM_RECONFIGURATION_PARTITION,
+					LoadSimuLizarModelsIntoBlackboardJob.PCM_MODELS_ANALYZED_PARTITION_ID));
+			simulationJob.add(new RunExperimentForEachToolJob(experiment));
+			simulationJob.forEach(job -> ((IBlackboardInteractingJob<MDSDBlackboard>) job).setBlackboard(blackboard));
+			
+			return new BlackboardBasedWorkflow<MDSDBlackboard>(simulationJob, blackboard);
 		}
 
 		public void runSimulation() {
