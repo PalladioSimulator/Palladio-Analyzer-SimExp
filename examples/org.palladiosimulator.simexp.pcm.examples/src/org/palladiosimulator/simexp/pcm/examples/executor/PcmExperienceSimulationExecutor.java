@@ -25,7 +25,7 @@ public abstract class PcmExperienceSimulationExecutor {
 	}
 	
 	public void execute() {
-		createSimulator().produceAndStore();
+		createSimulator().run();
 	}
 	
 	public abstract void evaluate();

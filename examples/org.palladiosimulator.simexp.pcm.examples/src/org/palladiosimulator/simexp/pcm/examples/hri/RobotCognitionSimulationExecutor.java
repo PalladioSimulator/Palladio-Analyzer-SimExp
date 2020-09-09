@@ -42,20 +42,12 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
 
-//	private final static EPackage[] REQUIRED_PACKAGES = new EPackage[] {
-//			UncertaintyPackage.eINSTANCE, 
-//			DynamicmodelPackage.eINSTANCE,
-//			StaticmodelPackage.eINSTANCE, 
-//			TemplatevariablePackage.eINSTANCE,
-//			DistributionfunctionPackage.eINSTANCE,
-//			DistributiontypePackage.eINSTANCE
-//	};
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
 	private final static String SIMULATION_ID = "Robot Cognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
-	private static final double UPPER_THRESHOLD_RT = 1.0;
-	private static final double LOWER_THRESHOLD_REL = 0.95;
+	private static final double UPPER_THRESHOLD_RT = 0.1;
+	private static final double LOWER_THRESHOLD_REL = 0.9;
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
@@ -95,7 +87,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(5) //500
+					.withNumberOfRuns(2) //500
 					.andNumberOfSimulationsPerRun(5) //100
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -166,8 +158,6 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	
 	private UncertaintyRepository loadUncertaintyRepository() {
 		var partition = new ResourceSetPartition();
-		//partition.initialiseResourceSetEPackages(REQUIRED_PACKAGES);
-		//partition.initialiseResourceSetEPackages(AbstractPCMWorkflowRunConfiguration.PCM_EPACKAGES);
 		partition.loadModel(UNCERTAINTY_MODEL_URI);
 		partition.resolveAllProxies();
 		return (UncertaintyRepository) partition.getFirstContentElement(UNCERTAINTY_MODEL_URI);
@@ -181,6 +171,16 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
         config.setSensitivityModelEnabled(false);
         config.setSensitivityModelFileName(null);
         config.setSensitivityLogFileName(null);
+        
+        config.setDeleteTemporaryDataAfterAnalysis(true);
+        config.setDistance(1.0);
+        config.setDomainSize(32);
+        config.setIterationOverPhysicalSystemStatesEnabled(true);
+        config.setMarkovModelReductionEnabled(true);
+        config.setNumberOfEvaluatedSystemStates(1);
+        config.setNumberOfEvaluatedSystemStatesEnabled(false);
+        config.setSolvingTimeLimitEnabled(false);
+        
         // TODO check
         config.setLogFile(null);
         config.setNumberOfEvaluatedSystemStatesEnabled(false);

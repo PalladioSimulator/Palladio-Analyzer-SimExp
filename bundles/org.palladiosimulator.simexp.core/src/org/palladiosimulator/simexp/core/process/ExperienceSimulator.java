@@ -11,14 +11,12 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 public class ExperienceSimulator {
 	
-	//private final String simulationID;
 	private final MarkovSampling markovSampler;
 	private final List<ExperienceSimulationRunner> simulationRunner;
 	
 	private int numberOfRuns;
 	
 	private ExperienceSimulator(ExperienceSimulationConfiguration config) {
-		//this.simulationID = config.getSimulationID();
 		this.numberOfRuns = config.getNumberOfRuns();
 		this.markovSampler = config.getMarkovSampler();
 		this.simulationRunner = config.getSimulationRunner();
@@ -37,9 +35,9 @@ public class ExperienceSimulator {
 		return new ExperienceSimulator(config);
 	}
 	
-	public void produceAndStore() {		
+	public void run() {		
 		do {
-			this.simulationRunner.forEach(ExperienceSimulationRunner::initSimulationRun);
+			initExperienceSimulator();
 			
 			Trajectory tray = markovSampler.sampleTrajectory();
 			for (Sample each : tray.getSamplePath()) {
@@ -47,6 +45,10 @@ public class ExperienceSimulator {
 			}
 			SimulatedExperienceStore.get().store(tray); 
 		} while (stillRunsToExecute());
+	}
+
+	private void initExperienceSimulator() {
+		this.simulationRunner.forEach(ExperienceSimulationRunner::initSimulationRun);
 	}
 
 	private boolean stillRunsToExecute() {
