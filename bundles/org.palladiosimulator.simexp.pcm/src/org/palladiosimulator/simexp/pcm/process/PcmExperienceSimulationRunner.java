@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult;
@@ -21,12 +20,6 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 
 	public PcmExperienceSimulationRunner() {
 		this.dataSource = new EDP2DataSource();
-	}
-
-	@Override
-	public void initSimulationRun() {
-		ExperimentProvider.get().initializeExperimentRunner();
-		QVToReconfigurationManager.get().resetReconfigurator();
 	}
 
 	@Override

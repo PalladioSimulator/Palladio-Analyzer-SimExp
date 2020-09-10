@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.core.action.ReconfigurationSelector;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationConfiguration;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
@@ -54,6 +55,11 @@ public abstract class ExperienceSimulationBuilder {
 
 		public SimulationConfigurationBuilder andNumberOfSimulationsPerRun(int numberOfSamplesPerRun) {
 			ExperienceSimulationBuilder.this.numberOfSamplesPerRun = numberOfSamplesPerRun;
+			return this;
+		}
+		
+		public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(Initializable beforeExecutionInitialization) {
+			ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
 			return this;
 		}
 
@@ -162,6 +168,7 @@ public abstract class ExperienceSimulationBuilder {
 	private Optional<MarkovModel> markovModel = Optional.empty();
 	private SelfAdaptiveSystemStateSpaceNavigator navigator = null;
 	private Optional<ProbabilityMassFunction> initialDistribution = Optional.empty();
+	private Initializable beforeExecutionInitialization = null;
 
 	protected Optional<ReconfigurationFilter> filter = Optional.empty();
 
@@ -192,6 +199,7 @@ public abstract class ExperienceSimulationBuilder {
 				.withSimulationID(simulationID)
 				.withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
 				.withNumberOfRuns(numberOfRuns)
+				.executeBeforeEachRun(beforeExecutionInitialization)
 				.addSimulationRunner(getSimulationRunner())
 				.sampleWith(buildMarkovSampler())
 				.build();

@@ -33,6 +33,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.palladiosimulator.simexp.pcm.action,
  org.palladiosimulator.simexp.pcm.builder,
  org.palladiosimulator.simexp.pcm.datasource,
+ org.palladiosimulator.simexp.pcm.init,
  org.palladiosimulator.simexp.pcm.perceiption,
  org.palladiosimulator.simexp.pcm.process,
  org.palladiosimulator.simexp.pcm.state,

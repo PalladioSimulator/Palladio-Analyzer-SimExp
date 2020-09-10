@@ -16,11 +16,9 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.job.PrepareBlackboardForReliabilityAnalysisJob;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 import com.google.common.collect.Lists;
 
@@ -42,12 +40,6 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 		var stateSpace = uncertaintyRepo.getUncertaintyInducedFailureTypes().stream()
 				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each).stream()).collect(toList());
 		return DiscreteUncertaintyStateSpace.of(stateSpace);
-	}
-
-	@Override
-	public void initSimulationRun() {
-		ExperimentProvider.get().initializeExperimentRunner();
-		QVToReconfigurationManager.get().resetReconfigurator();
 	}
 
 	@Override

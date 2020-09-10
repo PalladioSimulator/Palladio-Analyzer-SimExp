@@ -10,45 +10,50 @@ import com.google.common.collect.Lists;
 public class ExperienceSimulationConfiguration {
 
 	public class ExperienceSimulationConfigBuilder {
-		
+
 		public ExperienceSimulationConfigBuilder withSimulationID(String simulationID) {
 			ExperienceSimulationConfiguration.this.simulationID = simulationID;
 			return this;
 		}
-		
+
 		public ExperienceSimulationConfigBuilder withSampleSpaceID(String sampleSpaceID) {
 			ExperienceSimulationConfiguration.this.sampleSpaceID = sampleSpaceID;
 			return this;
 		}
-		
+
 		public ExperienceSimulationConfigBuilder withNumberOfRuns(int numOfRuns) {
 			ExperienceSimulationConfiguration.this.numberOfRuns = numOfRuns;
 			return this;
 		}
-		
+
+		public ExperienceSimulationConfigBuilder executeBeforeEachRun(Initializable beforeExecutionInitialization) {
+			ExperienceSimulationConfiguration.this.beforeExecutionInitialization = beforeExecutionInitialization;
+			return this;
+		}
+
 		public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner> runner) {
 			ExperienceSimulationConfiguration.this.runner.addAll(runner);
 			return this;
 		}
-		
+
 		public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner runner) {
 			ExperienceSimulationConfiguration.this.runner.add(runner);
 			return this;
 		}
-		
+
 		public ExperienceSimulationConfigBuilder sampleWith(MarkovSampling markovSampler) {
 			ExperienceSimulationConfiguration.this.markovSampler = markovSampler;
 			return this;
 		}
-		
+
 		public ExperienceSimulationConfiguration build() {
 			checkValidity();
-		
-			return ExperienceSimulationConfiguration.this;							   
+
+			return ExperienceSimulationConfiguration.this;
 		}
 
 		private void checkValidity() {
-			//TODO exception handling
+			// TODO exception handling
 			Objects.requireNonNull(runner, "");
 			Objects.requireNonNull(markovSampler, "");
 			if (isNegative(numberOfRuns) || isNegative(horizon)) {
@@ -62,23 +67,24 @@ public class ExperienceSimulationConfiguration {
 		private boolean isNegative(int value) {
 			return value < 0;
 		}
-		
+
 		private boolean isEmptyString(String value) {
 			return value == "";
 		}
 	}
-	
+
 	private int horizon = 0;
 	private int numberOfRuns = 0;
 	private String simulationID = "";
 	private String sampleSpaceID = "";
 	private List<ExperienceSimulationRunner> runner = Lists.newArrayList();
 	private MarkovSampling markovSampler = null;
-	
+	private Initializable beforeExecutionInitialization = null;
+
 	private ExperienceSimulationConfiguration() {
-		
+
 	}
-	
+
 	public int getHorizon() {
 		return horizon;
 	}
@@ -102,9 +108,13 @@ public class ExperienceSimulationConfiguration {
 	public String getSampleSpaceID() {
 		return sampleSpaceID;
 	}
-	
+
 	public static ExperienceSimulationConfigBuilder newBuilder() {
 		return new ExperienceSimulationConfiguration().new ExperienceSimulationConfigBuilder();
 	}
-	
+
+	public Initializable getBeforeExecutionInitialization() {
+		return beforeExecutionInitialization;
+	}
+
 }

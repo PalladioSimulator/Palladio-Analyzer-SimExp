@@ -1,11 +1,15 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
+import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.LOWER_THRESHOLD_REL;
+import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.UPPER_THRESHOLD_RT;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -13,10 +17,10 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
-public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>> {
+public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>, Initializable {
 
-	private static final Threshold THRESHOLD_RT = Threshold.lessThanOrEqualTo(1.0);
-	private static final Threshold THRESHOLD_REL = Threshold.greaterThanOrEqualTo(0.95);
+	private static final Threshold THRESHOLD_RT = Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT);
+	private static final Threshold THRESHOLD_REL = Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL);
 
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final SimulatedMeasurementSpecification responseTimeSpec;
@@ -30,6 +34,12 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>> 
 		this.responseTimeSpec = responseTimeSpec;
 	}
 
+	@Override
+	public void initialize() {
+		isDefaultMLModelActivated = true;
+		isFilteringActivated = false;
+	}
+	
 	@Override
 	public String getId() {
 		return "SimpleStrategy";

@@ -12,13 +12,11 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService.PrismResult;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class PcmBasedPrismExperienceSimulationRunner implements ExperienceSimulationRunner {
@@ -50,12 +48,6 @@ public class PcmBasedPrismExperienceSimulationRunner implements ExperienceSimula
 			}
 		}
 		return prismLog;
-	}
-
-	@Override
-	public void initSimulationRun() {
-		ExperimentProvider.get().initializeExperimentRunner();
-		QVToReconfigurationManager.get().resetReconfigurator();
 	}
 
 	@Override

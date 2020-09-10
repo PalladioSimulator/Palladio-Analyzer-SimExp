@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
@@ -155,15 +156,29 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder().makeGlobalPcmSettings().withInitialExperiment(experiment)
-				.andSimulatedMeasurementSpecs(getPrismSpecs()).addExperienceSimulationRunner(getSimualtionRunner())
-				.done().createSimulationConfiguration().withSimulationID(SIMULATION_ID).withNumberOfRuns(2)
-				.andNumberOfSimulationsPerRun(100).done().specifySelfAdaptiveSystemState()
-				.asPartiallyEnvironmentalDrivenProcess(
-						DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
-				.done().createReconfigurationSpace().addReconfigurations(getAllReconfigurations())
-				.andReconfigurationSelectionPolicy(reconfSelectionPolicy).done().specifyRewardHandling()
-				.withRewardEvaluator(getRewardEvaluator()).done().build();
+		return PcmExperienceSimulationBuilder.newBuilder()
+				.makeGlobalPcmSettings()
+					.withInitialExperiment(experiment)
+					.andSimulatedMeasurementSpecs(getPrismSpecs())
+					.addExperienceSimulationRunner(getSimualtionRunner())
+					.done()
+				.createSimulationConfiguration()
+					.withSimulationID(SIMULATION_ID)
+					.withNumberOfRuns(2)
+					.andNumberOfSimulationsPerRun(100)
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+					.done()
+				.specifySelfAdaptiveSystemState()
+					.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
+					.done()
+				.createReconfigurationSpace()
+					.addReconfigurations(getAllReconfigurations())
+					.andReconfigurationSelectionPolicy(reconfSelectionPolicy)
+					.done()
+				.specifyRewardHandling()
+					.withRewardEvaluator(getRewardEvaluator())
+					.done()
+				.build();
 	}
 
 	private ExperienceSimulationRunner getSimualtionRunner() {

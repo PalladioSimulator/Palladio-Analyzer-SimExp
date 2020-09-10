@@ -25,4 +25,5 @@ Export-Package: org.palladiosimulator.simexp.core.action,
  org.palladiosimulator.simexp.core.statespace,
  org.palladiosimulator.simexp.core.statistics,
  org.palladiosimulator.simexp.core.store,
+ org.palladiosimulator.simexp.core.strategy,
  org.palladiosimulator.simexp.core.util

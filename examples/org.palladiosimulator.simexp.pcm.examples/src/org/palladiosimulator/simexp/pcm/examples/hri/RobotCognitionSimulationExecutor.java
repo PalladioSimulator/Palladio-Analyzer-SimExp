@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
@@ -25,6 +26,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
@@ -42,12 +44,24 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
 
+	public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
+		
+		@Override
+		public void initialize() {
+			super.initialize();
+			
+			Initializable.class.cast(reconfigurationStrategy).initialize();
+		}
+		
+	}
+	
+	public static final double UPPER_THRESHOLD_RT = 0.1;
+	public static final double LOWER_THRESHOLD_REL = 0.9;
+	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
 	private final static String SIMULATION_ID = "Robot Cognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
-	private static final double UPPER_THRESHOLD_RT = 0.1;
-	private static final double LOWER_THRESHOLD_REL = 0.9;
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
@@ -87,8 +101,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(5) //100
+					.withNumberOfRuns(1) //500
+					.andNumberOfSimulationsPerRun(10) //100
+					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(RobotCognitionEnvironmentalDynamics.get(dbn))

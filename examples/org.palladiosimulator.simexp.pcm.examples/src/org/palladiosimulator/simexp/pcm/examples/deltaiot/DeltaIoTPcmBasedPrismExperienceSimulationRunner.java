@@ -13,6 +13,7 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.repository.RepositoryComponent;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.pcm.system.System;
+import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
@@ -21,7 +22,7 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPrismExperienceSimulationRunner {
+public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPrismExperienceSimulationRunner implements Initializable {
 
 	private final static String REPO_NAME = "DeltaIoTRepository";
 	private final static int INITIAL_POWER_VALUE = 0;
@@ -34,10 +35,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPri
 
 		this.reconfParamsRepo = reconfParamsRepo;
 	}
-
+	
 	@Override
-	public void initSimulationRun() {
-		super.initSimulationRun();
+	public void initialize() {
 		PCMResourceSetPartition pcmPartition = ExperimentProvider.get().getExperimentRunner()
 				.getWorkingPartition();
 		updateModelReferences(pcmPartition);
