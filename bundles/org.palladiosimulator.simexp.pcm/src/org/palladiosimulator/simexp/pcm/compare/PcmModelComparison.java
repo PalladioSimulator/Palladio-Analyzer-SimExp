@@ -32,7 +32,8 @@ public class PcmModelComparison {
 		}
 
 		private List<DiffFilter> initDiffFilter() {
-			return Arrays.asList(new AttributeChangedFilter(), new PCMRandomVariableChangeFilter());
+			return Arrays.asList(new AttributeChangedFilter(), new PCMRandomVariableChangeFilter(),
+					new ComponentInstantiationChangeFilter());
 		}
 
 		public static ComparisonResult of(List<Diff> foundDiffs) {
