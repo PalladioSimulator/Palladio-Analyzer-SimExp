@@ -39,7 +39,7 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>,
 		isDefaultMLModelActivated = true;
 		isFilteringActivated = false;
 	}
-	
+
 	@Override
 	public String getId() {
 		return "SimpleStrategy";

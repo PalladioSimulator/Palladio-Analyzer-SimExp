@@ -101,7 +101,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(1) //500
+					.withNumberOfRuns(2) //500
 					.andNumberOfSimulationsPerRun(10) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()

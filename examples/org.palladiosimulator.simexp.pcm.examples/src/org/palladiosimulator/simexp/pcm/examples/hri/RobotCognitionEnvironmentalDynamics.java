@@ -82,9 +82,15 @@ public class RobotCognitionEnvironmentalDynamics {
 
 			@Override
 			public EnvironmentalState navigate(NavigationContext context) {
-				// Since the intention is to not predict belief states, it is not necessary to
-				// know/specify the true state.
-				return (EnvironmentalState) context.getSource();
+				// Since the intention is to not predict belief states, it is not necessary to know/specify the true state.
+				var state = (EnvironmentalState) context.getSource();
+				if (state.isInitial()) {
+					return EnvironmentalState.newBuilder()
+							.withValue(state.getValue())
+							.isHidden()
+							.build();
+				}
+				return state;
 			}
 		};
 	}
@@ -92,6 +98,8 @@ public class RobotCognitionEnvironmentalDynamics {
 	private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
 		return new ObservationProducer() {
 
+			private EnvironmentalStateObservation last = null;
+			
 			@Override
 			public Observation<?> produceObservationGiven(State emittingState) {
 				var hiddenState = EnvironmentalState.class.cast(emittingState);
@@ -100,11 +108,14 @@ public class RobotCognitionEnvironmentalDynamics {
 				if (hiddenState.isInitial()) {
 					sample = sampleInitially();
 				} else {
-					List<InputValue> inputs = toInputs(hiddenState.getValue().getValue());
+					var inputs = toInputs(last.getValue().getValue());
 					sample = sampleNext(toConditionalInputs(inputs));
 				}
+				
+				var current = EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
+				setLastEnvironmentalStateObservation(current);
 
-				return EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
+				return current;
 			}
 
 			private List<InputValue> sampleInitially() {
@@ -114,6 +125,10 @@ public class RobotCognitionEnvironmentalDynamics {
 			private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
 				Trajectory traj = dbn.given(asConditionals(conditionalInputs)).sample();
 				return traj.valueAtTime(0);
+			}
+			
+			private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation current) {
+				this.last = current;
 			}
 		};
 	}
