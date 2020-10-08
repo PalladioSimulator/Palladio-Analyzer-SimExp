@@ -3,12 +3,24 @@
   <variables id="_XcnzUG3REeq4sYEFwlTMnQ" entityName="VaryingWorkload">
     <signature argument="_dVtGkm3REeq4sYEFwlTMnQ"/>
   </variables>
+  <variables id="_s7juEAk1Eeu61-6_430a3w" entityName="ServerFailure">
+    <signature argument="_12CVwgk1Eeu61-6_430a3w"/>
+  </variables>
   <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_kPH1cW3REeq4sYEFwlTMnQ" entityName="VaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ">
     <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </factors>
   <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_C1FSIW3SEeq4sYEFwlTMnQ" entityName="TemporalVaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ" temporal="true">
     <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_HMwJ8Qk2Eeu61-6_430a3w" entityName="ServerFailureDistribution" scope="_s7juEAk1Eeu61-6_430a3w _XcnzUG3REeq4sYEFwlTMnQ">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_qkwZUQk2Eeu61-6_430a3w" entityName="TemporalServerFailureDistribution" scope="_s7juEAk1Eeu61-6_430a3w _XcnzUG3REeq4sYEFwlTMnQ" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
   <arguments id="_dVtGkm3REeq4sYEFwlTMnQ" entityName="Workload"/>
+  <arguments id="_12CVwgk1Eeu61-6_430a3w" entityName="ResourceContainer"/>
   <relation xsi:type="templatevariable:PersistenceRelation" entityName="VaryingWorkloadTemporalRelation" interfaceVariable="_XcnzUG3REeq4sYEFwlTMnQ"/>
+  <relation xsi:type="templatevariable:DependenceRelation" target="_s7juEAk1Eeu61-6_430a3w" source="_XcnzUG3REeq4sYEFwlTMnQ"/>
+  <relation xsi:type="templatevariable:TimeSliceRelation" entityName="timeSliceFailureOccurence" source="_XcnzUG3REeq4sYEFwlTMnQ" target="_s7juEAk1Eeu61-6_430a3w"/>
 </templatevariable:TemplateVariableDefinitions>

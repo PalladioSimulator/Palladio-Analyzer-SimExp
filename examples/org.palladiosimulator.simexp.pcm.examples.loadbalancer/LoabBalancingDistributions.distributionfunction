@@ -8,6 +8,14 @@
     <randomVariables id="_ZOg_AG3iEeq5pcSD8uiAxg" entityName="WL" valueSpace="CATEGORY"/>
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_XjMlMAk8Eeus9r29U6iUxw" entityName="ServerFailure" params="__QMe4Qk8Eeus9r29U6iUxw">
+    <randomVariables id="_iOV5QAk8Eeus9r29U6iUxw" entityName="ServerFailure" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_anfcoAk8Eeus9r29U6iUxw" entityName="ServerFailureTemporal" params="_Y6yNwQk9Eeus9r29U6iUxw">
+    <randomVariables id="_ocongAk8Eeus9r29U6iUxw" entityName="ServerFailure" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
   <params id="_9z1A8W3gEeq5pcSD8uiAxg" entityName="InitialWorkload">
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
     <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.15,0.1};{0.175,0.1};{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1}"/>
@@ -54,6 +62,55 @@
       <cpdEntries>
         <conditonals>0.375</conditonals>
         <entry type="SAMPLESPACE" value="{0.15,0};{0.175,0};{0.2,0};{0.225,0};{0.25,0};{0.275,0};{0.3,0};{0.325,0};{0.35,0.75};{0.375,0.25}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="__QMe4Qk8Eeus9r29U6iUxw" entityName="InitialServerFailure">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+  </params>
+  <params id="_Y6yNwQk9Eeus9r29U6iUxw" entityName="TemporalServerFailure">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.15</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.175</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.7};{unavailable,0.3}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.225</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.25</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.275</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.3</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.325</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.35</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.375</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.95};{unavailable,0.05}"/>
       </cpdEntries>
     </representation>
   </params>
