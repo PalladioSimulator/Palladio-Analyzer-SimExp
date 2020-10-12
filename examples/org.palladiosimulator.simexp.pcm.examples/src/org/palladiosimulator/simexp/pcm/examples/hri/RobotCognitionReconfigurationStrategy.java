@@ -78,10 +78,10 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>,
 	}
 
 	private Action<?> managePerformance(List<QVToReconfiguration> options) {
-		if (isFilteringActivated) {
-			return deactivateFilteringReconfiguration(options);
-		} else if (isDefaultMLModelActivated == false) {
+		if (isDefaultMLModelActivated == false) {
 			return switchToDefaultMLModel(options);
+		} else if (isFilteringActivated) {
+			return deactivateFilteringReconfiguration(options);
 		} else {
 			return QVToReconfiguration.empty();
 		}
