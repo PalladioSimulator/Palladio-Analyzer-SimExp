@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
+import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPrediction;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
-import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictor;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.markov.ReliabilityPredictionResult;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.DiscreteUncertaintyStateSpace;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.DiscreteUncertaintyStateSpace.UncertaintyState;
@@ -56,7 +56,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState) {
 		var config = deriveConfigFrom(pcmState);
 		var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
-		return UncertaintyBasedReliabilityPredictor.predictGiven(uncertaintyStates, config);
+		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config);
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {
@@ -77,7 +77,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 
 	private void retrieveAndSetStateQuantities(StateQuantity quantity, ReliabilityPredictionResult result) {
 		filterPcmRelMeasurementsSpec(quantity).forEach(spec -> {
-			var probOfSuccess = result.getProbabilityOfSuccess(spec.getUsageScenario());
+			var probOfSuccess = result.getProbabilityOfSuccessGiven(spec.getUsageScenario());
 			quantity.setMeasurement(probOfSuccess, spec);
 		});
 	}
