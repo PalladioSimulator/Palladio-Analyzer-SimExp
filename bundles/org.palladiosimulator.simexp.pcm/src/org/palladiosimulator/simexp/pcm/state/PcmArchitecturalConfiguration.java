@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.state;
 
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -75,9 +76,11 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		return ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM();
 	}
 
-	private void apply(QVToReconfiguration reconf) {
+	
+	// FIXME: method internally not used
+	private void apply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
 		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator();
-		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null);
+		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
 		if (!succeded) {
 			//TODO logging
 		}
