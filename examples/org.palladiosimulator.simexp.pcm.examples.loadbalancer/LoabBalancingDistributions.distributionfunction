@@ -67,7 +67,48 @@
   </params>
   <params id="__QMe4Qk8Eeus9r29U6iUxw" entityName="InitialServerFailure">
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
-    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.15</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.175</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.7};{unavailable,0.3}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.225</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.25</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.275</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.3</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.325</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.35</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.375</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.95};{unavailable,0.05}"/>
+      </cpdEntries>
+    </representation>
   </params>
   <params id="_Y6yNwQk9Eeus9r29U6iUxw" entityName="TemporalServerFailure">
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
