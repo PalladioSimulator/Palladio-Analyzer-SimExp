@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.state;
 
-import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,12 +16,15 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
+import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
+
 public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PCMInstance> {
 
 	private PcmArchitecturalConfiguration(PCMInstance configuration) {
 		super(configuration);
 	}
-	
+
 	public static PcmArchitecturalConfiguration of(PCMInstance configuration) {
 		return new PcmArchitecturalConfiguration(configuration);
 	}
@@ -31,7 +33,7 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 	public String getStringRepresentation() {
 		return Integer.toString(deriveUniqueID());
 	}
-	
+
 	private Integer deriveUniqueID() {
 		OutputStream output = new ByteArrayOutputStream();
 		getConfiguration().getRepositories().forEach(r -> appendSerializationString(r.eResource(), output));
@@ -39,7 +41,7 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		appendSerializationString(getConfiguration().getAllocation().eResource(), output);
 		return output.toString().hashCode();
 	}
-	
+
 	private void appendSerializationString(Resource resource, OutputStream output) {
 		try {
 			resource.save(output, Collections.EMPTY_MAP);
@@ -60,36 +62,35 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 	@Override
 	public ArchitecturalConfiguration<?> apply(Reconfiguration<?> reconf) {
 		if (isNotValid(reconf)) {
-			//TODO exception handling
+			// TODO exception handling
 			throw new RuntimeException("");
 		}
-		
+
 		QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
 		if (qvtoReconf.isEmptyReconfiguration() == false) {
 			apply(qvtoReconf);
 		}
-		
+
 		return new PcmArchitecturalConfiguration(makeSnapshot());
 	}
-	
+
 	private PCMInstance makeSnapshot() {
 		return ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM();
 	}
 
-	
-	// FIXME: method internally not used
-	private void apply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
+	private void apply(QVToReconfiguration reconf) {
 		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator();
-		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
+		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null,
+				new ResourceTableManager());
 		if (!succeded) {
-			//TODO logging
+			// TODO logging
 		}
 	}
-	
+
 	private boolean isNotValid(Reconfiguration<?> action) {
 		return (action instanceof QVToReconfiguration) == false;
 	}
-	
+
 	private boolean isNotValid(ArchitecturalConfiguration<?> other) {
 		return other == null || !(other instanceof PcmArchitecturalConfiguration);
 	}
