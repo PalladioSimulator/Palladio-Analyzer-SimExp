@@ -21,11 +21,13 @@
       <instantiatedTemplate href="LoadBalancingTemplates.templatevariable#_s7juEAk1Eeu61-6_430a3w"/>
       <dependenceStructure href="LoadBalancingTemplates.templatevariable#//@relation.1"/>
       <appliedObjects href="iaas.resourceenvironment#_yaTfsAEpEeS7FKokKTKFow"/>
+      <appliedObjects href="overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
     </groundRandomVariables>
     <groundRandomVariables id="_-Fwo4Ak4Eeu61-6_430a3w" entityName="ServerNode2Failure_ServerFailureInstantiation" descriptiveModel="_JaWtIAk6Eeu61-6_430a3w">
       <instantiatedTemplate href="LoadBalancingTemplates.templatevariable#_s7juEAk1Eeu61-6_430a3w"/>
       <dependenceStructure href="LoadBalancingTemplates.templatevariable#//@relation.1"/>
       <appliedObjects href="iaas.resourceenvironment#_3uVlIAEpEeS7FKokKTKFow"/>
+      <appliedObjects href="overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
     </groundRandomVariables>
   </localProbabilisticModels>
 </staticmodel:GroundProbabilisticNetwork>

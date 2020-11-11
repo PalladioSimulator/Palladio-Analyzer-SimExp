@@ -5,6 +5,7 @@
   </variables>
   <variables id="_s7juEAk1Eeu61-6_430a3w" entityName="ServerFailure">
     <signature argument="_12CVwgk1Eeu61-6_430a3w"/>
+    <signature argument="_dVtGkm3REeq4sYEFwlTMnQ"/>
   </variables>
   <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_kPH1cW3REeq4sYEFwlTMnQ" entityName="VaryingWorkloadFactor" scope="_XcnzUG3REeq4sYEFwlTMnQ">
     <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
