@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.palladiosimulator.simexp.workflow.launcher.SimExpLauncher"
+            id="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1"
+            modes="run, debug"
+            name="SimExp Analyzer"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1"
+            icon="icon/crystalball.png"
+            id="org.palladiosimulator.simexp.ui.workflow.launchConfigurationTypeImage1">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.palladiosimulator.simexp.ui.workflow.config.LaunchSimExpTabGroup"
+            id="org.palladiosimulator.simexp.ui.workflow.launchConfigurationTabGroup1"
+            type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
+      </launchConfigurationTabGroup>
+   </extension>
+
+</plugin>

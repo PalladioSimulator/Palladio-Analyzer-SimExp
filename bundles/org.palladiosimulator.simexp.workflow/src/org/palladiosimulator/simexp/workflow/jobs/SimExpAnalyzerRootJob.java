@@ -1,0 +1,21 @@
+package org.palladiosimulator.simexp.workflow.jobs;
+
+import org.eclipse.debug.core.ILaunch;
+import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+
+import de.uka.ipd.sdq.workflow.jobs.ICompositeJob;
+import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
+
+public class SimExpAnalyzerRootJob extends SequentialBlackboardInteractingJob<MDSDBlackboard> implements ICompositeJob {
+    
+    public SimExpAnalyzerRootJob(SimExpWorkflowConfiguration config, ILaunch launch) {
+        super(SimExpAnalyzerRootJob.class.getName(), false);
+        
+        // add all contained jobs here
+        this.addJob(new PcmExperienceSimulationJob());
+//         this.addJob(PerformabilityWorkflowJobFactory.createPerformabilityBlackboardInitializePartitionsJob()); //new PreparePCMBlackboardPartitionJob());
+         
+    }
+
+}
