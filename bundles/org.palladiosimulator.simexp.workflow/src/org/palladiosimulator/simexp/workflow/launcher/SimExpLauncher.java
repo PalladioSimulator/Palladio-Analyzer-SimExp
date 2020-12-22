@@ -76,6 +76,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
         loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel,
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
+        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel,
+                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
         return loggerList;
     }
 
