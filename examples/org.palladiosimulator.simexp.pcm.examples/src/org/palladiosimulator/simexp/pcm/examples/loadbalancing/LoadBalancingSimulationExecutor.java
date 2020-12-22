@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
@@ -37,6 +38,8 @@ import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
+    
+    private static final Logger LOGGER = Logger.getLogger(LoadBalancingSimulationExecutor.class.getName());
 
 	public final static double UPPER_THRESHOLD_RT = 2.0;
 	public final static double LOWER_THRESHOLD_RT = 1.0;
@@ -77,9 +80,9 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
 		SimulatedExperienceEvaluator evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
-		System.out.println("***********************************************************************");
-		System.out.println(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
-		System.out.println("***********************************************************************");
+		LOGGER.info("***********************************************************************");
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
+		LOGGER.info("***********************************************************************");
 	}
 	
 	@Override

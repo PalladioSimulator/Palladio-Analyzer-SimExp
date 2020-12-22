@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -50,6 +51,8 @@ import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor {
+    
+    private static final Logger LOGGER = Logger.getLogger(DeltaIoTSimulationExecutor.class.getName());
 
 	public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
 
@@ -143,10 +146,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID,
 				reconfSelectionPolicy.getId());
 		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
-		System.out.println("***********************************************************************");
-		System.out.println(
-				String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
-		System.out.println("***********************************************************************");
+		LOGGER.info("***********************************************************************");
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
+		LOGGER.info("***********************************************************************");
 	}
 
 	@Override
