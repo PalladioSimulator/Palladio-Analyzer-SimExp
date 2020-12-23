@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
@@ -43,6 +44,8 @@ import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
+    
+    private static final Logger LOGGER = Logger.getLogger(RobotCognitionSimulationExecutor.class.getName());
 
 	public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
 		
@@ -80,9 +83,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfigurationStrategy.getId());
 		SimulatedExperienceEvaluator evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
-		System.out.println("***********************************************************************");
-		System.out.println(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
-		System.out.println("***********************************************************************");
+		LOGGER.info("***********************************************************************");
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
+		LOGGER.info("***********************************************************************");
 	}
 
 	@Override

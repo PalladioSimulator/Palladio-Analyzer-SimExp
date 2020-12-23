@@ -13,6 +13,7 @@ public class SimExpAnalyzerRootJob extends SequentialBlackboardInteractingJob<MD
         super(SimExpAnalyzerRootJob.class.getName(), false);
         
         // add all contained jobs here
+        this.addJob(new SimExpServiceRegistrationJob());
         this.addJob(new PcmExperienceSimulationJob());
 //         this.addJob(PerformabilityWorkflowJobFactory.createPerformabilityBlackboardInitializePartitionsJob()); //new PreparePCMBlackboardPartitionJob());
          

@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -42,6 +43,8 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.entity.Value;
 
 public class DeltaIoTEnvironemtalDynamics {
+    
+    private static final Logger LOGGER = Logger.getLogger(DeltaIoTEnvironemtalDynamics.class.getName());
 
 	private final static String SNR_TEMPLATE = "SignalToNoiseRatio";
 	private final static String MA_TEMPLATE = "MoteActivation";
@@ -228,7 +231,7 @@ public class DeltaIoTEnvironemtalDynamics {
 
 			@Override
 			protected SelfAdaptiveSystemState<?> determineStructuralState(NavigationContext context) {
-				System.out.println("Start with state transition.");
+				LOGGER.info("Start with state transition.");
 				long start = System.currentTimeMillis();
 				QVToReconfiguration reconf = QVToReconfiguration.class.cast(context.getAction().get());
 				ArchitecturalConfiguration<?> nextConfig = getCurrentArchitecture(context).apply(reconf);
@@ -236,7 +239,7 @@ public class DeltaIoTEnvironemtalDynamics {
 				PerceivableEnvironmentalState nextEnvironment = determineNextEnvState(currentEnvironment, nextConfig);
 				long end = System.currentTimeMillis();
 
-				System.out.println("Stop with state transition, took : " + ((end - start) / 1000));
+				LOGGER.info("Stop with state transition, took : " + ((end - start) / 1000));
 				return asPcmState(context.getSource()).transitToNext(nextEnvironment, nextConfig);
 			}
 

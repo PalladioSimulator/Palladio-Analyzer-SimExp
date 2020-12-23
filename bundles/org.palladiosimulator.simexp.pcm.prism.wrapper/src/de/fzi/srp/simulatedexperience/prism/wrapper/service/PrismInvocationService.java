@@ -3,6 +3,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 
@@ -15,6 +16,8 @@ import prism.PrismFileLog;
 import prism.Result;
 
 public class PrismInvocationService implements PrismService {
+    
+    private static final Logger LOGGER = Logger.getLogger(PrismInvocationService.class.getName());
 
 	private Prism prism;
 
@@ -34,7 +37,7 @@ public class PrismInvocationService implements PrismService {
 		PropertiesFile propertyFile = null;
 		try {
 			
-			System.out.println("Start prism invocation: " + context.propertyFileContent);
+			LOGGER.info("Start prism invocation: " + context.propertyFileContent);
 			long start = System.currentTimeMillis();
 			propertyFile = setUpPrism(context);
 
@@ -47,7 +50,7 @@ public class PrismInvocationService implements PrismService {
 			}
 			long end = System.currentTimeMillis();
 
-			System.out.println("Stop prism invocation, took:" + ((end - start) / 1000));
+			LOGGER.info("Stop prism invocation, took:" + ((end - start) / 1000));
 			return prismResult;
 		} catch (FileNotFoundException | PrismException e) {
 			throw new RuntimeException("Something went wrong during prism model checking.", e);

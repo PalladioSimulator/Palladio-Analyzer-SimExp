@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
@@ -27,6 +28,8 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
+    
+    private static final Logger LOGGER = Logger.getLogger(LocalQualityBasedReconfigurationStrategy.class.getName());
 
 	private static class WirelessLinkFilter {
 
@@ -74,7 +77,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
 	@Override
 	protected Action<?> handlePacketLoss(PcmSelfAdaptiveSystemState state, SimulatedMeasurement packetLoss,
 			Set<Action<?>> options) {
-		System.out.println("Start with actions selection.");
+		LOGGER.info("Start with actions selection.");
 		long start = System.currentTimeMillis();
 		
 		Action<?> action;
@@ -86,7 +89,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
 		
 		long end = System.currentTimeMillis();
 		
-		System.out.println("Stop with action selection, took : " + ((end - start) / 1000));
+		LOGGER.info("Stop with action selection, took : " + ((end - start) / 1000));
 		
 		return action;
 	}

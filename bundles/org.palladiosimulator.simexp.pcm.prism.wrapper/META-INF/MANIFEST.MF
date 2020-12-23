@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.prism.wrapper
 Bundle-ActivationPolicy: lazy
+Export-Package: de.fzi.srp.simulatedexperience.prism.wrapper.service

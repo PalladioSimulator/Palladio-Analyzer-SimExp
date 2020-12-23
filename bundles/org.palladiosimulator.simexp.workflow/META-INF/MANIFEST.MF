@@ -8,5 +8,13 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.palladiosimulator.analyzer.workflow,
  de.uka.ipd.sdq.workflow.mdsd;bundle-version="4.3.0",
  org.palladiosimulator.simexp.pcm.examples,
- org.palladiosimulator.simexp.commons.constants
+ org.palladiosimulator.simexp.commons.constants,
+ org.palladiosimulator.simexp.service;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm.prism,
+ org.palladiosimulator.simexp.pcm.prism.wrapper,
+ org.palladiosimulator.simexp.distribution,
+ org.palladiosimulator.simexp.distribution.apache,
+ org.palladiosimulator.simexp.core,
+ org.palladiosimulator.simexp.core.store.cache.guava,
+ org.palladiosimulator.simexp.core.store.csv
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.core.store.cache.guava
 Bundle-ActivationPolicy: lazy
+Export-Package: org.palladiosimulator.simexp.core.store.cache.guava.loader
