@@ -17,9 +17,15 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner {
 
 	private final DataSource dataSource;
+	private final ExperimentProvider experimentProvider;
 
 	public PcmExperienceSimulationRunner() {
-		this.dataSource = new EDP2DataSource();
+		this(new EDP2DataSource(), ExperimentProvider.get());
+	}
+	
+	PcmExperienceSimulationRunner(DataSource dataSource, ExperimentProvider experimentProvider) {
+	    this.dataSource = dataSource; 
+	    this.experimentProvider = experimentProvider;
 	}
 
 	@Override
@@ -38,11 +44,11 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 	}
 
 	private void runSimulation() {
-		ExperimentProvider.get().getExperimentRunner().runExperiment();
+        experimentProvider.getExperimentRunner().runExperiment();
 	}
 
 	private void retrieveStateQuantities(PcmSelfAdaptiveSystemState sasState) {
-		ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
+		ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
 		MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(expRunner.getCurrentExperimentRuns());
 		for (PcmMeasurementSpecification each : getMeasurementSpecs(sasState.getQuantifiedState())) {
 			result.getMeasurementsSeries(each).ifPresent(series -> {
