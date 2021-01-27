@@ -10,8 +10,36 @@
 	<artifactId>bundles</artifactId>	
 	<packaging>pom</packaging>
 	
+
 	<modules>
 		<!-- insert bundle folders here -->
+		<module>org.palladiosimulator.simexp.commons.constants</module>		
+		<module>org.palladiosimulator.simexp.markovian.model</module>
+		<module>org.palladiosimulator.simexp.service</module>
+		<module>org.palladiosimulator.simexp.distribution</module>
+		<module>org.palladiosimulator.simexp.distribution.apache</module>
+		<module>org.palladiosimulator.simexp.markovian</module>
+		<module>org.palladiosimulator.simexp.environmentaldynamics</module>
+		<module>org.palladiosimulator.simexp.core</module>
+		<module>org.palladiosimulator.simexp.core.store.csv</module>
+		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
+		<module>org.palladiosimulator.simexp.pcm</module>
+		
+		<module>org.palladiosimulator.simexp.ui.workflow</module>
+		<!-- has reference to org.palladiosimulator.simexp.pcm.examples -->
+<!--
+		<module>org.palladiosimulator.simexp.pcm.ui</module>	
+-->		
+		<module>org.palladiosimulator.simexp.workflow</module>
+		
+<!--
+		<module>org.palladiosimulator.simexp.pcm.prism</module>
+		<module>org.palladiosimulator.simexp.pcm.prism.wrapper</module>
+-->	
+		<!-- requires org.palladiosimulator.dependability.reliability.uncertainty.solver 1.0.0; is part of Palladio-Analyzer-Dependability-ML -->
+<!--
+		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
+-->			
 	</modules>
 	
 </project>
