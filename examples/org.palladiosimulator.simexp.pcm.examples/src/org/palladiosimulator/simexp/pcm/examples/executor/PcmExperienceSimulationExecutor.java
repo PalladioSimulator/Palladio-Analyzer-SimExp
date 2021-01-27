@@ -5,14 +5,15 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.binding.ExecutorBindingModule;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
-
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import com.google.inject.Guice;
 
 public abstract class PcmExperienceSimulationExecutor {
 	
 	protected final Experiment experiment;
 	
-	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
+//	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
+	private static PcmExperienceSimulationExecutor instance;
 	
 	public PcmExperienceSimulationExecutor() {
 		this.experiment = new ExperimentLoader().loadExperiment(getExperimentFile());
@@ -21,6 +22,9 @@ public abstract class PcmExperienceSimulationExecutor {
 	}
 
 	public static PcmExperienceSimulationExecutor get() {
+	    if (instance == null) {
+	        instance = ServiceRegistry.get().findService(PcmExperienceSimulationExecutor.class).orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
+	    }
 		return instance;
 	}
 	

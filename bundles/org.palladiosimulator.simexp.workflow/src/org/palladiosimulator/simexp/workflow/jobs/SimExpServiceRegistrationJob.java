@@ -11,9 +11,11 @@ import org.palladiosimulator.simexp.core.store.cache.guava.loader.GuavaSimulated
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.distribution.apache.factory.ProbabilityDistributionFactoryAdapter;
 import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
-import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
+import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
+//import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 
-import de.fzi.srp.simulatedexperience.prism.wrapper.service.PrismInvocationService;
+//import de.fzi.srp.simulatedexperience.prism.wrapper.service.PrismInvocationService;
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
@@ -27,7 +29,10 @@ public class SimExpServiceRegistrationJob implements IJob {
 	public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
 		LOGGER.info("Start registration of the required services.");
 		
-		registerService(service(PrismService.class).isProvidedBy(PrismInvocationService.class));
+		registerService(service(PcmExperienceSimulationExecutor.class).isProvidedBy(LoadBalancingSimulationExecutor.class));
+
+		//FIXME: Prism service registration should be customized
+//		registerService(service(PrismService.class).isProvidedBy(PrismInvocationService.class));
 		registerService(service(ProbabilityDistributionFactory.class).isProvidedBy(ProbabilityDistributionFactoryAdapter.class));
 		registerService(service(SimulatedExperienceCache.class).isProvidedBy(GuavaSimulatedExperienceCache.class));
 		registerService(service(SimulatedExperienceAccessor.class).isProvidedBy(CsvAccessor.class));
