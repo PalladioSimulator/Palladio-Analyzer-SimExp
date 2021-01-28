@@ -8,9 +8,11 @@ import static org.palladiosimulator.simexp.environmentaldynamics.builder.Environ
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.naming.OperationNotSupportedException;
@@ -41,6 +43,7 @@ import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
 import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
@@ -169,6 +172,7 @@ public class VaryingInterarrivelRateProcess {
 	private final static IContinousPDF INTERARRIVAL_RATE_DISTRIBUTION = new PDFFactory()
 			.createExponentialDistribution(RATE);
 	private final static String ATTRIBUTE_NAME = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION.getName();
+	private final static String WORKLOAD_TEMPLATE = "VaryingWorkload";
 
 	private static PcmAttributeChange attrChange;
 	private static VaryingInterarrivelRateProcess processInstance = null;
@@ -289,16 +293,23 @@ public class VaryingInterarrivelRateProcess {
 	}
 
 	private PerceivedValue<?> asPerceivedValue(List<InputValue> sample) {
+		Map<String, InputValue> newValueStore = Maps.newHashMap();
+		newValueStore.put(ATTRIBUTE_NAME, findWorkloadInputValue(sample));
+		
 		return new PerceivedValue<List<InputValue>>() {
 
+			private final Map<String, InputValue> valueStore = newValueStore;
+			
 			@Override
 			public List<InputValue> getValue() {
-				return sample;
+				return valueStore.values().stream()
+						.map(InputValue.class::cast)
+						.collect(toList());
 			}
 
 			@Override
 			public Optional<Object> getElement(String key) {
-				return Optional.of(sample.get(0).value.get());
+				return Optional.ofNullable(valueStore.get(key)).map(InputValue::asCategorical);
 			}
 
 			@Override
@@ -314,6 +325,17 @@ public class VaryingInterarrivelRateProcess {
 			}
 
 		};
+	}
+
+	private InputValue findWorkloadInputValue(List<InputValue> sample) {
+		return sample.stream()
+				.filter(inputValueWithWorkloadTemplate())
+				.findFirst()
+				.orElseThrow(() -> new RuntimeException(String.format("Could not found template %s.", WORKLOAD_TEMPLATE)));
+	}
+
+	private Predicate<InputValue> inputValueWithWorkloadTemplate() {
+		return i -> i.variable.getInstantiatedTemplate().getEntityName().equals(WORKLOAD_TEMPLATE);
 	}
 
 	public static EnvironmentProcess get() {
