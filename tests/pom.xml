@@ -12,6 +12,7 @@
 	
 	<modules>
 		<!-- insert test folders here -->
+		<module>org.palladiosimulator.simexp.pcm.tests</module>
 	</modules>
 	
 </project>

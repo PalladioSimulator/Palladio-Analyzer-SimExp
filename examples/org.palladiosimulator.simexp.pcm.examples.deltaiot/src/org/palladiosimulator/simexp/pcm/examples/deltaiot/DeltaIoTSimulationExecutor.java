@@ -18,6 +18,7 @@ import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;

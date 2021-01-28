@@ -10,11 +10,10 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.simexp.commons.constants,
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
- org.palladiosimulator.simexp.pcm.prism,
- org.palladiosimulator.simexp.pcm.prism.wrapper,
  org.palladiosimulator.simexp.distribution,
  org.palladiosimulator.simexp.distribution.apache,
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.core.store.cache.guava,
- org.palladiosimulator.simexp.core.store.csv
+ org.palladiosimulator.simexp.core.store.csv,
+ org.palladiosimulator.simexp.pcm.examples.loadbalancing;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
