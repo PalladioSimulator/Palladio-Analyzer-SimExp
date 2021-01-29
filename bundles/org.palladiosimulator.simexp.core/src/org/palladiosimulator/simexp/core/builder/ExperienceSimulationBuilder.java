@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
-import org.palladiosimulator.simexp.core.action.ReconfigurationFilter;
-import org.palladiosimulator.simexp.core.action.ReconfigurationSelector;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationConfiguration;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -114,11 +112,6 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 
-		public ReconfigurationSpaceBuilder withOptionalReconfigurationFilter(ReconfigurationFilter filter) {
-			ExperienceSimulationBuilder.this.filter = Optional.of(filter);
-			return this;
-		}
-
 		public ReconfigurationSpaceBuilder andReconfigurationSelectionPolicy(Policy<Action<?>> policy) {
 			ExperienceSimulationBuilder.this.policy = policy;
 			return this;
@@ -169,8 +162,6 @@ public abstract class ExperienceSimulationBuilder {
 	private SelfAdaptiveSystemStateSpaceNavigator navigator = null;
 	private Optional<ProbabilityMassFunction> initialDistribution = Optional.empty();
 	private Initializable beforeExecutionInitialization = null;
-
-	protected Optional<ReconfigurationFilter> filter = Optional.empty();
 
 	protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
@@ -254,7 +245,7 @@ public abstract class ExperienceSimulationBuilder {
 		return MarkovianBuilder.createPartiallyObservableMDP()
 				.createStateSpaceNavigator(navigator)
 				.calculateRewardWith(rewardReceiver)
-				.selectActionsAccordingTo(createPolicy())
+				.selectActionsAccordingTo(policy)
 				.withActionSpace(getReconfigurationSpace())
 				.withInitialStateDistribution(initialDist)
 				.handleObservationsWith(PASS_THROUGH_OBS_PRODUCER)
@@ -265,17 +256,10 @@ public abstract class ExperienceSimulationBuilder {
 		return MarkovianBuilder.createMarkovDecisionProcess()
 				.createStateSpaceNavigator(navigator)
 				.calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
-				.selectActionsAccordingTo(createPolicy())
+				.selectActionsAccordingTo(policy)
 				.withActionSpace(getReconfigurationSpace())
 				.withInitialStateDistribution(initialDist)
 				.build();
-	}
-
-	private Policy<Action<?>> createPolicy() {
-		if (filter.isPresent()) {
-			return new ReconfigurationSelector(filter.get(), policy);
-		}
-		return new ReconfigurationSelector(policy);
 	}
 
 	private Set<Action<?>> getReconfigurationSpace() {
