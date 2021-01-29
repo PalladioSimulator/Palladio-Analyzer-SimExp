@@ -18,7 +18,6 @@ import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -85,8 +84,10 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 //				.andPacketLossSpec(this.prismSpecs.get(0))
 //				.andEnergyConsumptionSpec(this.prismSpecs.get(1)).build();
 		this.reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy.newBuilder()
-				.withReconfigurationParams(reconfParamsRepo).andPacketLossSpec(this.prismSpecs.get(0))
-				.andEnergyConsumptionSpec(this.prismSpecs.get(1)).build();
+				.withReconfigurationParams(reconfParamsRepo)
+				.andPacketLossSpec(this.prismSpecs.get(0))
+				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
+				.build();
 
 		this.dbn = loadOrGenerateDBN();
 
@@ -176,7 +177,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
-					.andReconfigurationSelectionPolicy(reconfSelectionPolicy)
+					.andReconfigurationStrategy(reconfSelectionPolicy)
 					.done()
 				.specifyRewardHandling()
 					.withRewardEvaluator(getRewardEvaluator())

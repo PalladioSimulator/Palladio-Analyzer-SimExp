@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
+import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
@@ -96,6 +97,29 @@ public abstract class ExperienceSimulationBuilder {
 
 	public class ReconfigurationSpaceBuilder {
 
+		private class ReconfigurationStrategyAdapter implements Policy<Action<?>> {
+
+			private final Policy<Reconfiguration<?>> adaptedStrategy; 
+			
+			public ReconfigurationStrategyAdapter(Policy<Reconfiguration<?>> adaptedStrategy) {
+				this.adaptedStrategy = adaptedStrategy;
+			}
+			
+			@Override
+			public String getId() {
+				return adaptedStrategy.getId();
+			}
+
+			@Override
+			public Action<?> select(State source, Set<Action<?>> options) {
+				Set<Reconfiguration<?>> reconfigurationOptions = options.stream()
+						.map(each -> (Reconfiguration<?>) each)
+						.collect(Collectors.toSet());
+				return adaptedStrategy.select(source, reconfigurationOptions);
+			}
+			
+		}
+		
 		public ReconfigurationSpaceBuilder addReconfiguration(Reconfiguration<?> reconf) {
 			if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
 				ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
@@ -112,8 +136,13 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 
-		public ReconfigurationSpaceBuilder andReconfigurationSelectionPolicy(Policy<Action<?>> policy) {
+		public ReconfigurationSpaceBuilder andReconfigurationStrategy(Policy<Action<?>> policy) {
 			ExperienceSimulationBuilder.this.policy = policy;
+			return this;
+		}
+		
+		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy strategy) {
+			ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
 			return this;
 		}
 

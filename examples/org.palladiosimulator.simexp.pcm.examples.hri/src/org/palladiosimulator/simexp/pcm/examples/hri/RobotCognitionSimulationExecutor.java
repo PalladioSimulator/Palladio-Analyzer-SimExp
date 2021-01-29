@@ -114,7 +114,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
-				  	.andReconfigurationSelectionPolicy(reconfigurationStrategy)
+				  	.andReconfigurationStrategy(reconfigurationStrategy)
 				  	.done()
 				.specifyRewardHandling()
 				  	.withRewardEvaluator(getRewardEvaluator())

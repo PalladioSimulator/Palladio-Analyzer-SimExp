@@ -105,7 +105,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
-				  	.andReconfigurationSelectionPolicy(reconfSelectionPolicy)
+				  	.andReconfigurationStrategy(reconfSelectionPolicy)
 				  	.done()
 				.specifyRewardHandling()
 				  	//.withRewardEvaluator(getSimpleRewardEvaluator())
