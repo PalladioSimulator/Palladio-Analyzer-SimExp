@@ -11,10 +11,6 @@ public class PcmEnvironmentalState extends EnvironmentalState implements PcmMode
 
 	private final List<PcmModelChange> decoratedModelChanges = new ArrayList<PcmModelChange>();
 	
-//	public PcmEnvironmentalState(PcmModelChange decoratedModelChange, PerceivedValue<?> value) {
-//		super(value, false, false);
-//		this.decoratedModelChanges.add(decoratedModelChange);
-//	}
 
 	public PcmEnvironmentalState(List<PcmModelChange> decoratedModelChange, PerceivedValue<?> value) {
 	    super(value, false, false);
