@@ -6,6 +6,7 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import static org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentalProcessBuilder.describedBy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
@@ -24,6 +27,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
+import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.usagemodel.OpenWorkload;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
@@ -38,8 +42,11 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvi
 import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
+import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
+import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import com.google.common.collect.Lists;
@@ -50,6 +57,8 @@ import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 
 public class VaryingInterarrivelRateProcess {
+    
+    private static final Logger LOGGER = Logger.getLogger(VaryingInterarrivelRateProcess.class.getName());
 
 	private class IntervallHelper {
 
@@ -145,8 +154,8 @@ public class VaryingInterarrivelRateProcess {
 		}
 
 		private EnvironmentalState create(String name, double value) {
-			ScalarValue scala = new ScalarValue(ATTRIBUTE_NAME, value);
-			PcmEnvironmentalState state = new PcmEnvironmentalState(attrChange, scala);
+			ScalarValue scala = new ScalarValue(PCM_SPECIFICATION_ATTRIBUTE, value);
+			PcmEnvironmentalState state = new PcmEnvironmentalState(Arrays.asList(attrChange), scala);
 			state.setName(name);
 			return state;
 		}
@@ -171,29 +180,60 @@ public class VaryingInterarrivelRateProcess {
 	private final static int NUMBER_OF_STATES = 100;
 	private final static IContinousPDF INTERARRIVAL_RATE_DISTRIBUTION = new PDFFactory()
 			.createExponentialDistribution(RATE);
-	private final static String ATTRIBUTE_NAME = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION.getName();
-	private final static String WORKLOAD_TEMPLATE = "VaryingWorkload";
+	private final static String PCM_SPECIFICATION_ATTRIBUTE = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION.getName();
+	private final static String WORKLOAD_VARIABLE = "WorkloadVariation_VaryingWorkloadInstantiation";
+	
+	private final static String PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE = "ServerNode1";  // entityName pcm resource container representing server node 1
+	private final static String SERVER_NODE_1_VARIABLE = "ServerNode1Failure_ServerFailureInstantiation";
+	private final static String PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE = "ServerNode2";  // entityName pcm resource container representing server node 2
+	private final static String SERVER_NODE_2_VARIABLE = "ServerNode2Failure_ServerFailureInstantiation";
 
 	private static PcmAttributeChange attrChange;
+	private static PcmModelChange attrChangeServerNode1;
+	private static PcmModelChange attrChangeServerNode2;
 	private static VaryingInterarrivelRateProcess processInstance = null;
 
 	private final EnvironmentProcess envProcess;
 	private final ProbabilityMassFunction initialDist;
 
 	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn) {
-		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), ATTRIBUTE_NAME);
-
+//		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), PCM_SPECIFICATION_ATTRIBUTE);
+	    initPcmAttributeChange();
+		
 		this.initialDist = createInitialDist(dbn);
 		this.envProcess = createEnvironmentalProcess(dbn);
 	}
 
 	public VaryingInterarrivelRateProcess() {
-		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), ATTRIBUTE_NAME);
+//		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), PCM_SPECIFICATION_ATTRIBUTE);
+//		
+//		PCMResourceSetPartition pcm = ExperimentProvider.get().getExperimentRunner().getWorkingPartition();
+//		
+//		// attribute name values are taken from the names of the instantiated template variable model, i.e. *.staticmodel
+//		attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_1_VARIABLE, pcm);
+//		attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_2_VARIABLE, pcm);
+	    initPcmAttributeChange();
 
 		EnvironmentalStateSpace stateSpace = createStateSpace();
 		this.initialDist = createInitialDistributionOver(stateSpace.asSamples());
 		this.envProcess = createEnvironmentalProcess(stateSpace.asList());
 	}
+	
+    private void initPcmAttributeChange() {
+        attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
+                PCM_SPECIFICATION_ATTRIBUTE);
+
+        PCMResourceSetPartition pcm = ExperimentProvider.get()
+            .getExperimentRunner()
+            .getWorkingPartition();
+
+        // attribute name values are taken from the names of the instantiated template variable
+        // model, i.e. *.staticmodel
+        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_1_VARIABLE,
+                pcm);
+        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_2_VARIABLE,
+                pcm);
+    }
 
 	private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
 		return expRunner -> {
@@ -204,6 +244,7 @@ public class VaryingInterarrivelRateProcess {
 			return workload.getInterArrivalTime_OpenWorkload();
 		};
 	}
+
 
 	public static EnvironmentProcess get(DynamicBayesianNetwork dbn) {
 		if (processInstance == null) {
@@ -289,12 +330,18 @@ public class VaryingInterarrivelRateProcess {
 
 	private EnvironmentalState asPcmEnvironmentalState(List<InputValue> sample) {
 		//return EnvironmentalState.get(asPerceivedValue(sample));
-		return new PcmEnvironmentalState(attrChange, asPerceivedValue(sample));
+	    ArrayList<PcmModelChange> attrChanges = new ArrayList<PcmModelChange>();
+	    attrChanges.add(attrChange);
+	    attrChanges.add(attrChangeServerNode1);
+	    attrChanges.add(attrChangeServerNode2);
+		return new PcmEnvironmentalState(attrChanges, asPerceivedValue(sample));
 	}
 
 	private PerceivedValue<?> asPerceivedValue(List<InputValue> sample) {
 		Map<String, InputValue> newValueStore = Maps.newHashMap();
-		newValueStore.put(ATTRIBUTE_NAME, findWorkloadInputValue(sample));
+		newValueStore.put(PCM_SPECIFICATION_ATTRIBUTE, findInputValue(sample, WORKLOAD_VARIABLE));
+		newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, findInputValue(sample, SERVER_NODE_1_VARIABLE));
+		newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, findInputValue(sample, SERVER_NODE_2_VARIABLE));
 		
 		return new PerceivedValue<List<InputValue>>() {
 
@@ -327,15 +374,27 @@ public class VaryingInterarrivelRateProcess {
 		};
 	}
 
-	private InputValue findWorkloadInputValue(List<InputValue> sample) {
+	
+	// rewrite; sample + variable name -> 
+	private InputValue findInputValue(List<InputValue> sample, String variableName) {
+//	private InputValue findWorkloadInputValue(List<InputValue> sample) {
+	    Predicate<InputValue> inputValue = inputValue(variableName);
+	    
 		return sample.stream()
-				.filter(inputValueWithWorkloadTemplate())
+				.filter(inputValue) 
 				.findFirst()
-				.orElseThrow(() -> new RuntimeException(String.format("Could not found template %s.", WORKLOAD_TEMPLATE)));
+				.orElseThrow(() -> new RuntimeException(String.format("Variable not found in sample | variableName: '%s' | sample: %s "
+				        , variableName, StringUtils.join(sample, ","))));
 	}
 
-	private Predicate<InputValue> inputValueWithWorkloadTemplate() {
-		return i -> i.variable.getInstantiatedTemplate().getEntityName().equals(WORKLOAD_TEMPLATE);
+	private Predicate<InputValue> inputValue(String variableName) {
+//		return i -> i.variable.getInstantiatedTemplate().getEntityName().equals(WORKLOAD_TEMPLATE);
+	    return inputValue -> {
+	        GroundRandomVariable groundRandomVariabe = inputValue.variable;
+	        String groundRandomVariableName = groundRandomVariabe.getEntityName();
+	        return groundRandomVariableName.equals(variableName);
+	    };
+//		return i -> i.variable.getEntityName().equals(variableName);
 	}
 
 	public static EnvironmentProcess get() {
