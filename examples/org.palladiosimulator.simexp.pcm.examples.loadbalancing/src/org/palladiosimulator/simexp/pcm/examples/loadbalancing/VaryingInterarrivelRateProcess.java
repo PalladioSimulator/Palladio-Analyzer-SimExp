@@ -229,9 +229,9 @@ public class VaryingInterarrivelRateProcess {
 
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
-        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_1_VARIABLE,
+        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE,
                 pcm);
-        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_2_VARIABLE,
+        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE,
                 pcm);
     }
 
