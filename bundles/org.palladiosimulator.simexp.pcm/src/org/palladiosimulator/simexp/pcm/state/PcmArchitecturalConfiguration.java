@@ -1,6 +1,8 @@
 package org.palladiosimulator.simexp.pcm.state;
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
+import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -66,7 +68,7 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		
 		QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
 		if (qvtoReconf.isEmptyReconfiguration() == false) {
-			apply(qvtoReconf);
+			apply(qvtoReconf, new ResourceTableManager());
 		}
 		
 		return new PcmArchitecturalConfiguration(makeSnapshot());
