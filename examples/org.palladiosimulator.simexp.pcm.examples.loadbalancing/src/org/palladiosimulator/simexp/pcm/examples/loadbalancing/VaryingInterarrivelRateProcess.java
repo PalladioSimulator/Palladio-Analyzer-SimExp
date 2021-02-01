@@ -197,23 +197,13 @@ public class VaryingInterarrivelRateProcess {
 	private final ProbabilityMassFunction initialDist;
 
 	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn) {
-//		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), PCM_SPECIFICATION_ATTRIBUTE);
 	    initPcmAttributeChange();
-		
 		this.initialDist = createInitialDist(dbn);
 		this.envProcess = createEnvironmentalProcess(dbn);
 	}
 
 	public VaryingInterarrivelRateProcess() {
-//		attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(), PCM_SPECIFICATION_ATTRIBUTE);
-//		
-//		PCMResourceSetPartition pcm = ExperimentProvider.get().getExperimentRunner().getWorkingPartition();
-//		
-//		// attribute name values are taken from the names of the instantiated template variable model, i.e. *.staticmodel
-//		attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_1_VARIABLE, pcm);
-//		attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(SERVER_NODE_2_VARIABLE, pcm);
 	    initPcmAttributeChange();
-
 		EnvironmentalStateSpace stateSpace = createStateSpace();
 		this.initialDist = createInitialDistributionOver(stateSpace.asSamples());
 		this.envProcess = createEnvironmentalProcess(stateSpace.asList());
