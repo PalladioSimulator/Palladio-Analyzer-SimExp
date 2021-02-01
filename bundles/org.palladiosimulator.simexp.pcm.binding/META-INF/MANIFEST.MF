@@ -8,5 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.simexp.environmentaldynamics,
  org.palladiosimulator.analyzer.workflow,
- org.palladiosimulator.pcm
+ org.palladiosimulator.pcm,
+ tools.mdsd.probdist.api,
+ org.apache.commons.lang;bundle-version="2.6.0"
 Export-Package: org.palladiosimulator.simexp.pcm.binding.api
