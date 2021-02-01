@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public abstract class AbstractPcmModelChange implements PcmModelChange {
     
@@ -19,19 +20,19 @@ public abstract class AbstractPcmModelChange implements PcmModelChange {
         this.pcm = pcm;
     }
     
-    abstract void applyChange(Object object);
+    abstract void applyChange(CategoricalValue value);
     
     @Override
     public void apply(PerceivedValue<?> change) {
         LOGGER.debug(String.format("Apply pcmModelChanges: pcmAttributeName:'%s' ; changed value:'%s'", pcmAttrbuteName, change.getValue().toString()));
-        
         // fixme: replace ? with a concrete type
         Optional<?> newValue = change.getElement(pcmAttrbuteName);
         
         if (newValue.isPresent()) {
-            applyChange(newValue.get());
+            CategoricalValue changedValue = (CategoricalValue) change.getElement(pcmAttrbuteName).get();
+            applyChange(changedValue);
         } else {
-            LOGGER.error("Failed binding: could not apply changed value to PCM.");
+            LOGGER.error("Failed binding: could not apply changed perceived value to PCM.");
         }
     }
     
