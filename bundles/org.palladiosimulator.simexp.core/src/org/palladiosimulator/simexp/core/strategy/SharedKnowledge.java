@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.core.strategy;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
 
@@ -20,6 +22,14 @@ public class SharedKnowledge {
 			return result.map(v -> (T) v);
 		}
 		return Optional.empty();
+	}
+	
+	public Set<String> getKeys() {
+		return knowledgeStore.keySet();
+	}
+	
+	public Collection<Object> getValues() {
+		return knowledgeStore.values();
 	}
 	
 }
