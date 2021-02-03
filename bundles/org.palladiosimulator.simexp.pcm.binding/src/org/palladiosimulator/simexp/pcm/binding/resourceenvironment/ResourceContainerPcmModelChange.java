@@ -5,6 +5,7 @@ import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.pcm.resourceenvironment.ProcessingResourceSpecification;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
+import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
@@ -15,13 +16,15 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * */
 public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
     
-    public ResourceContainerPcmModelChange(String attributeName, PCMResourceSetPartition pcm) {
-        super(attributeName, pcm);
+    public ResourceContainerPcmModelChange(String attributeName, ExperimentRunner experimentRunner) {
+        super(attributeName, experimentRunner);
     }
     
     @Override
-    void applyChange(CategoricalValue value) { 
+    void applyChange(CategoricalValue value) {
         double serverNodeFailureRate = (StringUtils.equals("unavailable", value.get())) ? 1.0 : 0.0;
+        
+        PCMResourceSetPartition pcm = lookupPcmWorkingModel();
         EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
         for (ResourceContainer resourceContainer : resourceContainers) {
             EList<ProcessingResourceSpecification> activeResourceSpecs = resourceContainer.getActiveResourceSpecifications_ResourceContainer();

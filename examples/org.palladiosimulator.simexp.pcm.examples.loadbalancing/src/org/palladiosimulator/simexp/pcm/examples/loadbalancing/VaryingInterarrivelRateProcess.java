@@ -212,17 +212,11 @@ public class VaryingInterarrivelRateProcess {
     private void initPcmAttributeChange() {
         attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
                 PCM_SPECIFICATION_ATTRIBUTE);
-
-        PCMResourceSetPartition pcm = ExperimentProvider.get()
-            .getExperimentRunner()
-            .getWorkingPartition();
-
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
-        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE,
-                pcm);
-        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE,
-                pcm);
+        ExperimentRunner experimentRunner = ExperimentProvider.get().getExperimentRunner();
+        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, experimentRunner);
+        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, experimentRunner);
     }
 
 	private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
