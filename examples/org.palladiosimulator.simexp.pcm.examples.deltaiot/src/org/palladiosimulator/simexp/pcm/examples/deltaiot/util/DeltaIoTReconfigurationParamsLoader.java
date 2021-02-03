@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;

@@ -1,10 +1,12 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {

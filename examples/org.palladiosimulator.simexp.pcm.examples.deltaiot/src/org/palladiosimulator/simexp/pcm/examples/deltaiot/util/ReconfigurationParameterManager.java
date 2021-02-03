@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
 import java.util.function.Predicate;
 

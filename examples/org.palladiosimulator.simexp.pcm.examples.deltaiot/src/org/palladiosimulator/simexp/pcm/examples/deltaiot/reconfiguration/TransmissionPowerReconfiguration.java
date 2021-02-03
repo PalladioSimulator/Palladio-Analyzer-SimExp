@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration;
 
 import java.util.List;
 import java.util.Map;

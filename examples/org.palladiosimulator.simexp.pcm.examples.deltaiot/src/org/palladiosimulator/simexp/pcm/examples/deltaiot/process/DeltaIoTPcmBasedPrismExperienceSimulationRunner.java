@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.process;
 
 import java.io.File;
 import java.util.List;

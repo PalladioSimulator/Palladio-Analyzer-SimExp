@@ -1,7 +1,7 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.OPTIONS_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.STATE_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.OPTIONS_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.STATE_KEY;
 
 import java.util.Optional;
 import java.util.Set;
@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 public interface QualityBasedReconfigurationPlanner {

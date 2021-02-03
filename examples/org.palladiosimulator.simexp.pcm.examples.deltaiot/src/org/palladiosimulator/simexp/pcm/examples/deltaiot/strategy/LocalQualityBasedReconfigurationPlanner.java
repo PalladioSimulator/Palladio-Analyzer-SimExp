@@ -1,12 +1,12 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.DISTRIBUTION_FACTOR_INCREMENT;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.ENERGY_CONSUMPTION_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.PACKET_LOSS_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.TRANSMISSION_POWER_INCREMENT;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.QualityBasedReconfigurationPlanner.retrieveDistributionFactorReconfiguration;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.QualityBasedReconfigurationPlanner.retrieveTransmissionPowerReconfiguration;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.DISTRIBUTION_FACTOR_INCREMENT;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.ENERGY_CONSUMPTION_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.PACKET_LOSS_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.TRANSMISSION_POWER_INCREMENT;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.QualityBasedReconfigurationPlanner.retrieveDistributionFactorReconfiguration;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.QualityBasedReconfigurationPlanner.retrieveTransmissionPowerReconfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -19,9 +19,13 @@ import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.MoteContext;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationStrategy2.MoteContext.LinkingResourceQuantity;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.MoteContext;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.MoteContext.LinkingResourceQuantity;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterManager;
 
 import com.google.common.collect.Maps;
 

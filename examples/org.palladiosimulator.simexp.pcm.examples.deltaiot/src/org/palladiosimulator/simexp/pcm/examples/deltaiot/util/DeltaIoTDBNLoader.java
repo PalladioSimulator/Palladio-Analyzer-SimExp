@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor;
 
 public class DeltaIoTDBNLoader {
 
