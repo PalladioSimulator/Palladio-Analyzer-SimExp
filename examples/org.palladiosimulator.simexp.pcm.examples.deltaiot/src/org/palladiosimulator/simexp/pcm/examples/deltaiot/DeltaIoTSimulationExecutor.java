@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
+import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -70,6 +71,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
 	private final Policy<Action<?>> reconfSelectionPolicy;
+	private final ReconfigurationStrategy strategy;
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
@@ -87,6 +89,12 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 				.withReconfigurationParams(reconfParamsRepo)
 				.andPacketLossSpec(this.prismSpecs.get(0))
 				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
+				.build();
+		this.strategy = DeltaIoTReconfigurationStrategy2.newBuilder()
+				.withID("LocalQualityBasedStrategy")
+				.andPacketLossSpec(this.prismSpecs.get(0))
+				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
+				.andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo))
 				.build();
 
 		this.dbn = loadOrGenerateDBN();
@@ -146,10 +154,10 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID,
-				reconfSelectionPolicy.getId());
+				strategy.getId());
 		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
 		LOGGER.info("***********************************************************************");
-		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", strategy.getId(), totalReward));
 		LOGGER.info("***********************************************************************");
 	}
 
@@ -168,8 +176,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2)
-					.andNumberOfSimulationsPerRun(100)
+					.withNumberOfRuns(3)
+					.andNumberOfSimulationsPerRun(10)
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -177,7 +185,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
-					.andReconfigurationStrategy(reconfSelectionPolicy)
+					//.andReconfigurationStrategy(reconfSelectionPolicy)
+					.andReconfigurationStrategy(strategy)
 					.done()
 				.specifyRewardHandling()
 					.withRewardEvaluator(getRewardEvaluator())
