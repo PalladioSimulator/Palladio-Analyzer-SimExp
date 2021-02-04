@@ -79,10 +79,9 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		return ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM();
 	}
 
-	private void apply(QVToReconfiguration reconf) {
+	private void apply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
 		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator();
-		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null,
-				new ResourceTableManager());
+		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
 		if (!succeded) {
 			// TODO logging
 		}
