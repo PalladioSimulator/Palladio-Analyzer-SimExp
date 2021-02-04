@@ -5,7 +5,7 @@ import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.pcm.resourceenvironment.ProcessingResourceSpecification;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
-import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
@@ -16,15 +16,23 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * */
 public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
     
-    public ResourceContainerPcmModelChange(String attributeName, ExperimentRunner experimentRunner) {
-        super(attributeName, experimentRunner);
+    public ResourceContainerPcmModelChange(String attributeName) {
+        super(attributeName);
     }
     
     @Override
     void applyChange(CategoricalValue value) {
         double serverNodeFailureRate = (StringUtils.equals("unavailable", value.get())) ? 1.0 : 0.0;
         
-        PCMResourceSetPartition pcm = lookupPcmWorkingModel();
+        /**
+         * note: The current implementation assumes that, for each trajectory, a new experiment runner is created,
+         * i.e. if a new experiment is started, the pcm model must be resetted to the original state; thus
+         * we can not pass the experiment runner as constructor param, because it will be continuously updated
+         * during the various experiment runs; if we would pass is as constructor param, we would not be able
+         * to get the latest updated state of the pcm model: Intead we would always work on a stale state of
+         * the pcm model
+         * */
+        PCMResourceSetPartition pcm = ExperimentProvider.get().getExperimentRunner().getWorkingPartition();
         EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
         for (ResourceContainer resourceContainer : resourceContainers) {
             EList<ProcessingResourceSpecification> activeResourceSpecs = resourceContainer.getActiveResourceSpecifications_ResourceContainer();
