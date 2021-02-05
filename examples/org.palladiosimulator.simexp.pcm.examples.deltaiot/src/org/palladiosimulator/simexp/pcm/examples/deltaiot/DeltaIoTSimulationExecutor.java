@@ -18,7 +18,6 @@ import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
@@ -28,7 +27,6 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics;
@@ -36,8 +34,6 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.GlobalQualityBasedReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTDBNLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
@@ -181,7 +177,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 				.done();
 
 		var strategySubBuilder = builder.createReconfigurationSpace()
-				.addReconfigurations(getAllReconfigurations());
+				.addReconfigurations(strategyContext.getReconfigurationSpace());
 		if (strategyContext.isSelectionPolicy()) {
 			strategySubBuilder.andReconfigurationStrategy(strategyContext.getSelectionPolicy());
 		} else {
@@ -212,25 +208,6 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private Set<PrismFileUpdater> getPrismFileUpdater() {
 		return Sets.newHashSet(new PacketLossPrismFileUpdater(prismSpecs.get(0)),
 				new EnergyConsumptionPrismFileUpdater(prismSpecs.get(1)));
-	}
-
-	private Set<Reconfiguration<?>> getAllReconfigurations() {
-		Set<Reconfiguration<?>> reconfs = Sets.newHashSet();
-
-		List<QVToReconfiguration> qvts = QVToReconfigurationManager.get().loadReconfigurations();
-		for (QVToReconfiguration each : qvts) {
-			if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(each)) {
-				reconfs.add(new DistributionFactorReconfiguration(each, reconfParamsRepo.getDistributionFactors()));
-			} else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
-				reconfs.add(new TransmissionPowerReconfiguration(each, reconfParamsRepo.getTransmissionPower()));
-			}
-		}
-
-		if (reconfs.isEmpty()) {
-			// TODO exception handling
-			throw new RuntimeException("No DeltaIoT reconfigutations could be found or generated");
-		}
-		return reconfs;
 	}
 
 	private RewardEvaluator getRewardEvaluator() {
