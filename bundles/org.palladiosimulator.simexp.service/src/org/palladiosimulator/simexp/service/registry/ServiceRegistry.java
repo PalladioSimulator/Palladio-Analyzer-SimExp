@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
+
 public class ServiceRegistry {
 	
 	private final static class DefaultServiceDiscovery implements ServiceDiscovery {
 
+		private static final Logger LOGGER = Logger.getLogger(DefaultServiceDiscovery.class.getName());
+		
 		@Override
 		public void setUp(List<ServiceEntry<?>> services) {
 			
@@ -42,7 +46,7 @@ public class ServiceRegistry {
 				result = (T) serviceEntry.getProvidedClass().getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				//TODO logging
+				LOGGER.error("An error occured while service binding.", e);
 			}
 			return result;
 		}
