@@ -5,6 +5,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -93,13 +94,13 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 
 			if (eachMote.hasTwoLinks() && powerChanging == false) {
 				if (eachMote.hasUnequalTransmissionPower()) {
-					var iterator = eachMote.linkDetails.keySet().iterator();
-					var left = iterator.next();
-					var leftTransmissionPower = eachMote.linkDetails.get(left).transmissionPower;
-					var leftDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, left);
-					var right = iterator.next();
-					var rightTransmissionPower = eachMote.linkDetails.get(right).transmissionPower;
-					var rightDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, right);
+					Iterator<LinkingResource> iterator = eachMote.linkDetails.keySet().iterator();
+					LinkingResource left = iterator.next();
+					double leftTransmissionPower = eachMote.linkDetails.get(left).transmissionPower;
+					double leftDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, left);
+					LinkingResource right = iterator.next();
+					double rightTransmissionPower = eachMote.linkDetails.get(right).transmissionPower;
+					double rightDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, right);
 
 					if (leftDistributionFactor == 1.0 && rightDistributionFactor == 1.0) {
 						reconfiguration.setDistributionFactorsUniformally(eachMote.mote);
@@ -147,7 +148,7 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 		var adjustedParams = paramCalculator.computeIncreasedTransmissionPower(mote, link);
 		reconfiguration.adjustTransmissionPower(adjustedParams);
 	}
-	
+
 	private void adjustDistributionFactor(LinkingResource linkToDecrease, MoteContext mote,
 			DeltaIoTNetworkReconfiguration reconfiguration) {
 		var adjustedParams = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, mote);
