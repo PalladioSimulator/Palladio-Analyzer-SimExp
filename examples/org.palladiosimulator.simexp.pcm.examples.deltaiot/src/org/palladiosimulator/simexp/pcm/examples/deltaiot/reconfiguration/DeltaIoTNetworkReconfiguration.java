@@ -11,7 +11,6 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
@@ -21,11 +20,15 @@ public class DeltaIoTNetworkReconfiguration extends QVToReconfiguration {
 	
 	private final DeltaIoTReconfigurationParamRepository paramRepo;
 
-	protected DeltaIoTNetworkReconfiguration(QvtoModelTransformation transformation,
+	public DeltaIoTNetworkReconfiguration(QVToReconfiguration reconfiguration,
 			DeltaIoTReconfigurationParamRepository paramRepo) {
-		super(transformation);
+		super(reconfiguration.getTransformation());
 
 		this.paramRepo = paramRepo;
+	}
+	
+	public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
+		return qvt.getStringRepresentation().endsWith("NetworkReconfiguration");
 	}
 
 	public void setDistributionFactorsUniformally(AssemblyContext mote) {

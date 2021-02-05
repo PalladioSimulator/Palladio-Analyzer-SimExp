@@ -25,12 +25,9 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
-import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
@@ -41,10 +38,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumpt
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.GlobalQualityBasedReconfigurationStrategy;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationPlanner;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTDBNLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -82,8 +76,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final static String PRISM_ENERGY_CONSUMPTION_PROPERTY = "Rmax=? [ F \"EnergyConsumption\" ]";
 
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
-	private final Policy<Action<?>> reconfSelectionPolicy;
-	private final ReconfigurationStrategy strategy;
+	private final ReconfigurationStrategyContext strategyContext;
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
@@ -93,21 +86,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForEnergyConsumption());
 
 		this.reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader().load(DISTRIBUTION_FACTORS);
-//		this.reconfSelectionPolicy = GlobalQualityBasedReconfigurationStrategy.newBuilder()
-//				.withReconfigurationParams(reconfParamsRepo)
-//				.andPacketLossSpec(this.prismSpecs.get(0))
-//				.andEnergyConsumptionSpec(this.prismSpecs.get(1)).build();
-		this.reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy.newBuilder()
-				.withReconfigurationParams(reconfParamsRepo)
-				.andPacketLossSpec(this.prismSpecs.get(0))
-				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
-				.build();
-		this.strategy = DeltaIoTReconfigurationStrategy2.newBuilder()
-				.withID("LocalQualityBasedStrategy")
-				.andPacketLossSpec(this.prismSpecs.get(0))
-				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
-				.andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo))
-				.build();
+		this.strategyContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo);
+		//this.strategyContext = new LocalQualityBasedMAPEKStrategyContext(this.prismSpecs.get(0), this.prismSpecs.get(1), reconfParamsRepo);
+		//this.strategyContext = new LocalQualityBasedStrategyContext(this.prismSpecs.get(0), this.prismSpecs.get(1), reconfParamsRepo);
 
 		this.dbn = loadOrGenerateDBN();
 
@@ -166,10 +147,10 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID,
-				strategy.getId());
+				strategyContext.getStrategyID());
 		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
 		LOGGER.info("***********************************************************************");
-		LOGGER.info(String.format("The total Reward of policy %1s is %2s", strategy.getId(), totalReward));
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", strategyContext.getStrategyID(), totalReward));
 		LOGGER.info("***********************************************************************");
 	}
 
@@ -180,30 +161,36 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
-				.makeGlobalPcmSettings()
-					.withInitialExperiment(experiment)
-					.andSimulatedMeasurementSpecs(getPrismSpecs())
-					.addExperienceSimulationRunner(getSimualtionRunner())
-					.done()
-				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(3)
-					.andNumberOfSimulationsPerRun(10)
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
-					.done()
-				.specifySelfAdaptiveSystemState()
-					.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
-					.done()
-				.createReconfigurationSpace()
-					.addReconfigurations(getAllReconfigurations())
-					//.andReconfigurationStrategy(reconfSelectionPolicy)
-					.andReconfigurationStrategy(strategy)
-					.done()
-				.specifyRewardHandling()
-					.withRewardEvaluator(getRewardEvaluator())
-					.done()
-				.build();
+		var builder = PcmExperienceSimulationBuilder.newBuilder()
+			.makeGlobalPcmSettings()
+				.withInitialExperiment(experiment)
+				.andSimulatedMeasurementSpecs(getPrismSpecs())
+				.addExperienceSimulationRunner(getSimualtionRunner())
+				.done()
+			.createSimulationConfiguration()
+				.withSimulationID(SIMULATION_ID)
+				.withNumberOfRuns(3)
+				.andNumberOfSimulationsPerRun(10)
+				.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+				.done()
+			.specifySelfAdaptiveSystemState()
+				.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
+				.done()
+			.specifyRewardHandling()
+				.withRewardEvaluator(getRewardEvaluator())
+				.done();
+
+		var strategySubBuilder = builder.createReconfigurationSpace()
+				.addReconfigurations(getAllReconfigurations());
+		if (strategyContext.isSelectionPolicy()) {
+			strategySubBuilder.andReconfigurationStrategy(strategyContext.getSelectionPolicy());
+		} else {
+			strategySubBuilder.andReconfigurationStrategy(strategyContext.getStrategy());
+		}
+		strategySubBuilder.done();
+		
+		
+		return builder.build();
 	}
 
 	private ExperienceSimulationRunner getSimualtionRunner() {
