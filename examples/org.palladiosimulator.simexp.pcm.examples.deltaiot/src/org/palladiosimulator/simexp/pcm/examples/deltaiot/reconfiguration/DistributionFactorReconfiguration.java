@@ -19,8 +19,8 @@ import com.google.common.math.DoubleMath;
 
 public class DistributionFactorReconfiguration extends QVToReconfiguration {
 
+	public final static double DEFAULT_VALUE = 0.0;
 	private final static String QVT_FILE_SUFFIX = "DistributionFactor";
-	private final static double DEFAULT_VALUE = 0.0;
 	private final static double TOLERANCE = 0.001;
 
 	private final Set<DistributionFactor> distFactors;

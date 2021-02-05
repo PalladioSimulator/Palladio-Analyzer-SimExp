@@ -7,13 +7,21 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.Del
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics.toInputs;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
+import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
@@ -28,6 +36,41 @@ public class DeltaIoTCommons {
 	public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(0.4);
 	public final static double DISTRIBUTION_FACTOR_INCREMENT = 0.1;
 	public final static int TRANSMISSION_POWER_INCREMENT = 1;
+	
+	public static PcmSelfAdaptiveSystemState findPcmState(SharedKnowledge knowledge) {
+		return (PcmSelfAdaptiveSystemState) knowledge.getValue(STATE_KEY).orElseThrow();
+	}
+	
+	public static Set<QVToReconfiguration> findOptions(SharedKnowledge knowledge) {
+		Set<?> options = (Set<?>) knowledge.getValue(OPTIONS_KEY).orElseThrow();
+		return options.stream()
+				.filter(QVToReconfiguration.class::isInstance)
+				.map(QVToReconfiguration.class::cast)
+				.collect(Collectors.toSet());
+	}
+	
+	public static DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(SharedKnowledge knowledge) {
+		return retrieveReconfiguration(DistributionFactorReconfiguration.class, findOptions(knowledge))
+				.orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
+	}
+
+	public static TransmissionPowerReconfiguration retrieveTransmissionPowerReconfiguration(SharedKnowledge knowledge) {
+		return retrieveReconfiguration(TransmissionPowerReconfiguration.class, findOptions(knowledge))
+				.orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
+	}
+	
+	public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(SharedKnowledge knowledge) {
+		return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, findOptions(knowledge))
+				.orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
+	}
+
+	private static <T extends QVToReconfiguration> Optional<T> retrieveReconfiguration(Class<T> reconfClass,
+			Set<QVToReconfiguration> options) {
+		return options.stream()
+				.filter(reconfClass::isInstance)
+				.map(reconfClass::cast)
+				.findFirst();
+	}
 	
 	public static void requirePcmSelfAdaptiveSystemState(State source) {
 		if (PcmSelfAdaptiveSystemState.class.isInstance(source) == false) {

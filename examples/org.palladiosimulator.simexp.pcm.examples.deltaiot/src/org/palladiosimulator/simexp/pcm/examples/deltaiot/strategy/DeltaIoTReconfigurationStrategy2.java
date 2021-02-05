@@ -9,6 +9,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDistributionFactorReconfiguration;
 
 import java.util.Set;
 
@@ -122,6 +123,8 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 
 	@Override
 	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
+		retrieveDistributionFactorReconfiguration(knowledge).setDistributionFactorValuesToDefaults();
+		
 		double packetLoss = knowledge.getValue(PACKET_LOSS_KEY).map(Double.class::cast).orElseThrow();
 		if (isPacketLossViolated(packetLoss)) {
 			return planner.planPacketLoss(knowledge);

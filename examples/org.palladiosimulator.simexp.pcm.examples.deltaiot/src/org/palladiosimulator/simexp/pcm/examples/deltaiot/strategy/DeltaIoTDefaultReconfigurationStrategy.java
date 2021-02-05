@@ -76,6 +76,8 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
 		DeltaIoTNetworkReconfiguration reconfiguration = knowledge.getValue(OPTIONS_KEY)
 				.map(DeltaIoTNetworkReconfiguration.class::cast).orElseThrow();
+		reconfiguration.setDistributionFactorValuesToDefaults();
+		
 		boolean powerChanging = false;
 
 		MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
