@@ -29,7 +29,7 @@ public class DeltaIoTNetworkReconfiguration extends QVToReconfiguration {
 	}
 	
 	public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-		return qvt.getStringRepresentation().endsWith("NetworkReconfiguration");
+		return qvt.getStringRepresentation().endsWith("DeltaIoTNetwork");
 	}
 	
 	public void setDistributionFactorValuesToDefaults() {

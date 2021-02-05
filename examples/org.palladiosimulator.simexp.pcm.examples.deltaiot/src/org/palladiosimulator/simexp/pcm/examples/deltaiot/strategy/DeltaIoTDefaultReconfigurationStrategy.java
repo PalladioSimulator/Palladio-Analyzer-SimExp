@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.OPTIONS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
 
@@ -74,8 +75,7 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 
 	@Override
 	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
-		DeltaIoTNetworkReconfiguration reconfiguration = knowledge.getValue(OPTIONS_KEY)
-				.map(DeltaIoTNetworkReconfiguration.class::cast).orElseThrow();
+		DeltaIoTNetworkReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
 		reconfiguration.setDistributionFactorValuesToDefaults();
 		
 		boolean powerChanging = false;
@@ -108,9 +108,9 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 						reconfiguration.setDistributionFactorsUniformally(eachMote.mote);
 					}
 
-					if (leftTransmissionPower > rightTransmissionPower && leftDistributionFactor < 100) {
+					if (leftTransmissionPower > rightTransmissionPower && leftDistributionFactor < 1.0) {
 						adjustDistributionFactor(right, eachMote, reconfiguration);
-					} else if (rightDistributionFactor < 100) {
+					} else if (rightDistributionFactor < 1.0) {
 						adjustDistributionFactor(left, eachMote, reconfiguration);
 					}
 
