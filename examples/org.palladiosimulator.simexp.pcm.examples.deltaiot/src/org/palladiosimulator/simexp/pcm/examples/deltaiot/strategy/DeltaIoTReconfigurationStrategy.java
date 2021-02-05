@@ -180,7 +180,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(branchToDecrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT * (-1));
 		factors.put(findBranchWith(branchToIncrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT);
-		if (reconf.isValid(factors)) {
+		if (DistributionFactorReconfiguration.isValid(factors)) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -191,7 +191,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
 		factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT);
-		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -202,7 +202,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
 		factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -213,7 +213,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT * (-1));
 		factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT);
-		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -224,7 +224,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT);
 		factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -235,7 +235,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
 		factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT);
-		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeIncreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}
@@ -246,7 +246,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<Action<?
 		Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
 		factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
 		factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+		if (Boolean.logicalAnd(reconf.canBeDecreased(factors), DistributionFactorReconfiguration.isValid(factors))) {
 			reconf.adjustDistributionFactors(factors);
 			return true;
 		}

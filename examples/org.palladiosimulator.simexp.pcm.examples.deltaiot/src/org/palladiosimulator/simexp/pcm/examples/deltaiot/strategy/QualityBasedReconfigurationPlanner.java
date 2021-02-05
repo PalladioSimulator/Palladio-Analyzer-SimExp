@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.OPTIONS_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2.STATE_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.OPTIONS_KEY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 
 import java.util.Optional;
 import java.util.Set;

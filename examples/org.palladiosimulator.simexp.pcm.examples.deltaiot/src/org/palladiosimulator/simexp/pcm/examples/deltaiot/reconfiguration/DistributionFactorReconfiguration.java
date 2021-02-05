@@ -74,7 +74,7 @@ public class DistributionFactorReconfiguration extends QVToReconfiguration {
 		return max(branchProb1, branchProb2) <= 1.0;
 	}
 
-	public boolean isValid(Map<ProbabilisticBranchTransition, Double> factors) {
+	public static boolean isValid(Map<ProbabilisticBranchTransition, Double> factors) {
 		if (factors.size() != 2) {
 			return false;
 		}
@@ -87,6 +87,10 @@ public class DistributionFactorReconfiguration extends QVToReconfiguration {
 		boolean areInRange = Boolean.logicalAnd(Boolean.logicalAnd(branchProb1 >= 0, branchProb1 <= 1),
 				Boolean.logicalAnd(branchProb2 >= 0, branchProb2 <= 1));
 		return Boolean.logicalAnd(sumsUpToOne, areInRange);
+	}
+	
+	public static boolean isNotValid(Map<ProbabilisticBranchTransition, Double> factors) {
+		return isValid(factors) == false;
 	}
 
 	private Optional<DistributionFactorValue> findDistFactorValueWith(ProbabilisticBranchTransition branch) {

@@ -17,8 +17,8 @@ import de.uka.ipd.sdq.stoex.VariableReference;
 public class TransmissionPowerReconfiguration extends QVToReconfiguration {
 
 	private final static String QVT_FILE_SUFFIX = "TransmissionPower";
-	private final static int MAX_POWER = 15;
-	private final static int MIN_POWER = 0;
+	public final static int MAX_POWER = 15;
+	public final static int MIN_POWER = 0;
 
 	private final Set<TransmissionPower> powerSettings;
 
