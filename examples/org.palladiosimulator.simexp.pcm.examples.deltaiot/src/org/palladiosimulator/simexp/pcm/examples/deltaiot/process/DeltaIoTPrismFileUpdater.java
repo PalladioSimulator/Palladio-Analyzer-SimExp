@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.process;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTEnvironemtalDynamics.toInputs;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics.toInputs;
 
 import java.util.List;
 import java.util.Map;
