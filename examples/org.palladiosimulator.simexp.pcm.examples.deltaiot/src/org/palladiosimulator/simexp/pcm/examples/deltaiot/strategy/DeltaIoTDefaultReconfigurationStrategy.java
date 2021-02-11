@@ -24,6 +24,8 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationPa
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterManager;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
+import com.google.common.math.DoubleMath;
+
 public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrategy {
 
 	private final ReconfigurationParameterManager paramManager;
@@ -104,13 +106,13 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 					double rightTransmissionPower = eachMote.linkDetails.get(right).transmissionPower;
 					double rightDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, right);
 
-					if (leftDistributionFactor == 1.0 && rightDistributionFactor == 1.0) {
+					if (isEqualToOne(leftDistributionFactor) && isEqualToOne(rightDistributionFactor)) {
 						reconfiguration.setDistributionFactorsUniformally(eachMote.mote);
 					}
 
-					if (leftTransmissionPower > rightTransmissionPower && leftDistributionFactor < 1.0) {
+					if (leftTransmissionPower > rightTransmissionPower && isSmallerThanOne(leftDistributionFactor)) {
 						adjustDistributionFactor(right, eachMote, reconfiguration);
-					} else if (rightDistributionFactor < 1.0) {
+					} else if (isSmallerThanOne(rightDistributionFactor)) {
 						adjustDistributionFactor(left, eachMote, reconfiguration);
 					}
 
@@ -119,6 +121,15 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 		}
 
 		return reconfiguration;
+	}
+
+	private boolean isSmallerThanOne(double distributionFactor) {
+		return distributionFactor < 1.0 && isEqualToOne(distributionFactor) == false;
+	}
+	
+	private boolean isEqualToOne(double distributionFactor) {
+		var TOLERANCE = 0.0001;
+		return DoubleMath.fuzzyEquals(distributionFactor, 1.0, TOLERANCE);
 	}
 
 	@Override
