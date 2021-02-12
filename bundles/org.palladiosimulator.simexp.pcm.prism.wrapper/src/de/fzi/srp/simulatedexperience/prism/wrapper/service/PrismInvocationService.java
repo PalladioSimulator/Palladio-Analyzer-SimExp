@@ -3,7 +3,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 
@@ -17,27 +16,22 @@ import prism.Result;
 
 public class PrismInvocationService implements PrismService {
     
-    private static final Logger LOGGER = Logger.getLogger(PrismInvocationService.class.getName());
-
-	private Prism prism;
+    private Prism prism;
+	private File logFile;
 
 	@Override
-	public void initialise(File logFile) {
-		prism = new Prism(new PrismFileLog(logFile.toString()));
-		try {
-			prism.initialise();
-		} catch (PrismException e) {
-			// TODO Exception handling
-			throw new RuntimeException("There went something wrong while initialising prism.", e);
-		}
+	public void setLogFile(File logFile) {
+		this.logFile = logFile;
 	}
 	
 	@Override
 	public PrismResult modelCheck(PrismContext context) {
+		initPrism();
+		
 		PropertiesFile propertyFile = null;
 		try {
 			
-			LOGGER.info("Start prism invocation: " + context.propertyFileContent);
+			System.out.println("Start prism invocation: " + context.propertyFileContent);
 			long start = System.currentTimeMillis();
 			propertyFile = setUpPrism(context);
 
@@ -48,15 +42,28 @@ public class PrismInvocationService implements PrismService {
 
 				prismResult.addResult(propertyToCheck.toString(), quantify(result));
 			}
+			
+			prism.closeDown();
+			
 			long end = System.currentTimeMillis();
 
-			LOGGER.info("Stop prism invocation, took:" + ((end - start) / 1000));
+			System.out.println("Stop prism invocation, took:" + ((end - start) / 1000));
 			return prismResult;
 		} catch (FileNotFoundException | PrismException e) {
 			throw new RuntimeException("Something went wrong during prism model checking.", e);
 		}
 	}
 
+	private void initPrism() {
+		prism = new Prism(new PrismFileLog(logFile.toString()));
+		try {
+			prism.initialise();
+		} catch (PrismException e) {
+			// TODO Exception handling
+			throw new RuntimeException("There went something wrong while initialising prism.", e);
+		}
+	}
+	
 	private PropertiesFile setUpPrism(PrismContext context) throws FileNotFoundException, PrismException {
 		ModulesFile moduleFile = prism.parseModelString(context.moduleFileContent);
 		prism.loadPRISMModel(moduleFile);

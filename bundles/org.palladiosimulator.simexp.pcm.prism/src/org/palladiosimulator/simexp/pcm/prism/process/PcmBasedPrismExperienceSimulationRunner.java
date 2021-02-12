@@ -34,7 +34,7 @@ public class PcmBasedPrismExperienceSimulationRunner implements ExperienceSimula
 				.orElseThrow(() -> new RuntimeException("There is no prism service."));
 		this.prismGenerator = prismGenerator;
 
-		this.prismService.initialise(createLogFile(prismFolder));
+		this.prismService.setLogFile(createLogFile(prismFolder));
 	}
 
 	private File createLogFile(File prismFolder) {

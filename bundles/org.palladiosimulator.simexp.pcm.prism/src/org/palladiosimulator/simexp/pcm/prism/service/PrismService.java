@@ -30,7 +30,7 @@ public interface PrismService {
 		
 	}
 	
-	public void initialise(File logFile);
+	public void setLogFile(File logFile);
 	
 	public PrismResult modelCheck(PrismContext context);
 	
