@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.entity.Entity;
+import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.repository.RepositoryComponent;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
@@ -18,14 +19,15 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPower;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPrismExperienceSimulationRunner implements Initializable {
+public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPrismExperienceSimulationRunner
+		implements Initializable {
 
 	private final static String REPO_NAME = "DeltaIoTRepository";
-	private final static int INITIAL_POWER_VALUE = 0;
 
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
 
@@ -35,11 +37,10 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPri
 
 		this.reconfParamsRepo = reconfParamsRepo;
 	}
-	
+
 	@Override
 	public void initialize() {
-		PCMResourceSetPartition pcmPartition = ExperimentProvider.get().getExperimentRunner()
-				.getWorkingPartition();
+		PCMResourceSetPartition pcmPartition = ExperimentProvider.get().getExperimentRunner().getWorkingPartition();
 		updateModelReferences(pcmPartition);
 	}
 
@@ -77,18 +78,28 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPri
 	private void updateAndResetTransmissionPower(System system) {
 		for (TransmissionPower powerSetting : reconfParamsRepo.getTransmissionPower()) {
 			updateTransmissionPowerReferences(powerSetting, system);
-			resetPowerSettings(powerSetting);
 		}
-	}
-
-	private void resetPowerSettings(TransmissionPower powerSetting) {
-		powerSetting.getTransmissionPowerValues().forEach(value -> value.setPowerSetting(INITIAL_POWER_VALUE));
 	}
 
 	private void updateTransmissionPowerReferences(TransmissionPower powerSetting, System system) {
 		for (AssemblyContext eachContext : system.getAssemblyContexts__ComposedStructure()) {
 			if (powerSetting.getAppliedAssembly().getId().equals(eachContext.getId())) {
 				powerSetting.setAppliedAssembly(eachContext);
+				updateToDefaultPowerValues(eachContext, powerSetting);
+			}
+		}
+	}
+
+	private void updateToDefaultPowerValues(AssemblyContext context, TransmissionPower powerSetting) {
+		for (VariableUsage eachVarUsage : context.getConfigParameterUsages__AssemblyContext()) {
+			for (TransmissionPowerValue eachValue : powerSetting.getTransmissionPowerValues()) {
+				var refName = eachVarUsage.getNamedReference__VariableUsage().getReferenceName();
+				var valueRefName = eachValue.getVariableRef().getReferenceName();
+				if (refName.equals(valueRefName)) {
+					var strTp = eachVarUsage.getVariableCharacterisation_VariableUsage().get(0)
+							.getSpecification_VariableCharacterisation().getSpecification();
+					eachValue.setPowerSetting(Integer.parseInt(strTp));
+				}
 			}
 		}
 	}
