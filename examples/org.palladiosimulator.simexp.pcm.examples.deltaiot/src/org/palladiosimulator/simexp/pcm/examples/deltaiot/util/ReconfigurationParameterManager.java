@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterCalculator.isPhysicalLink;
-
 import java.util.function.Predicate;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -28,7 +26,7 @@ public class ReconfigurationParameterManager {
 		if (branches.size() == 1) {
 			searchedBranch = branches.get(0);
 		} else if (branches.size() == 2) {
-			searchedBranch = isPhysicalLink(branches.get(0), link) ? branches.get(0) : branches.get(1);
+			searchedBranch = DeltaIoTModelAccess.get().isPhysicalLink(branches.get(0), link) ? branches.get(0) : branches.get(1);
 		} else {
 			throw new RuntimeException("The number of links must be either one or two.");
 		}

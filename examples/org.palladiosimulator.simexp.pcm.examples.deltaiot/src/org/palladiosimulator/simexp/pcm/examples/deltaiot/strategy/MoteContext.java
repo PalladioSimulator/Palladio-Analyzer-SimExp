@@ -2,20 +2,23 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
+import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class MoteContext {
-	
+
 	protected static class MoteContextFilter {
 
 		private final List<MoteContext> contexts;
@@ -26,7 +29,7 @@ public class MoteContext {
 					.map(MoteContext.class::cast)
 					.collect(toList());
 		}
-		
+
 		public List<MoteContext> getAllMoteContexts() {
 			return contexts;
 		}
@@ -37,114 +40,131 @@ public class MoteContext {
 					.collect(toList());
 		}
 
-		public Map<MoteContext, LinkingResource> motesWithSNRLowerThan(Threshold lowerBound) {
-			Map<MoteContext, LinkingResource> result = Maps.newHashMap();
+		public Map<MoteContext, WirelessLink> motesWithSNRLowerThan(Threshold lowerBound) {
+			Map<MoteContext, WirelessLink> result = Maps.newHashMap();
 			for (MoteContext each : contexts) {
 				linksWithSNRLowerThan(lowerBound, each).forEach(link -> result.put(each, link));
 			}
 			return result;
 		}
-		
-		public Map<MoteContext, LinkingResource> motesWithSNRHigherThan(Threshold lowerBound) {
-			Map<MoteContext, LinkingResource> result = Maps.newHashMap();
+
+		public Map<MoteContext, WirelessLink> motesWithSNRHigherThan(Threshold lowerBound) {
+			Map<MoteContext, WirelessLink> result = Maps.newHashMap();
 			for (MoteContext each : contexts) {
 				linksWithSNRHigherThan(lowerBound, each).forEach(link -> result.put(each, link));
 			}
 			return result;
 		}
 
-		public LinkingResource linkWithHighestSNR(MoteContext mote) {
-			return orderBySNRValue(mote.linkDetails).get(0).getKey();
+		public WirelessLink linkWithSmallestSNR(MoteContext mote) {
+			return orderBySNRValue(mote.links).get(0);
 		}
-		
-		public LinkingResource linkWithHighestTransmissionPower(MoteContext mote) {
-			return orderByTransmissionPowerValue(mote.linkDetails).get(0).getKey();
+
+		public WirelessLink linkWithHighestTransmissionPower(MoteContext mote) {
+			var values = orderByTransmissionPowerValue(mote.links);
+			return values.get(values.size() - 1);
 		}
-		
-		private List<LinkingResource> linksWithSNRLowerThan(Threshold lowerBound, MoteContext mote) {
-			return orderBySNRValue(mote.linkDetails).stream()
-					.takeWhile(each -> lowerBound.isSatisfied(each.getValue()))
-					.map(each -> each.getKey())
-					.collect(toList());
-		}
-		
-		private List<LinkingResource> linksWithSNRHigherThan(Threshold upperBound, MoteContext mote) {
-			return orderBySNRValue(mote.linkDetails).stream()
-					.dropWhile(each -> upperBound.isNotSatisfied(each.getValue()))
-					.map(each -> each.getKey())
+
+		private List<WirelessLink> linksWithSNRLowerThan(Threshold lowerBound, MoteContext mote) {
+			return orderBySNRValue(mote.links).stream()
+					.takeWhile(each -> lowerBound.isSatisfied(each.SNR))
 					.collect(toList());
 		}
 
-		private List<Entry<LinkingResource, Double>> orderBySNRValue(
-				Map<LinkingResource, LinkingResourceQuantity> links) {
-			return links.entrySet().stream()
-					.map(e -> Map.entry(e.getKey(), e.getValue().SNR))
-					.sorted(Map.Entry.comparingByValue())
+		private List<WirelessLink> linksWithSNRHigherThan(Threshold upperBound, MoteContext mote) {
+			return orderBySNRValue(mote.links).stream()
+					.dropWhile(each -> upperBound.isNotSatisfied(each.SNR))
 					.collect(toList());
 		}
+
+		private List<WirelessLink> orderBySNRValue(Set<WirelessLink> links) {
+			var snrComparator = new Comparator<WirelessLink>() {
+
+				@Override
+				public int compare(WirelessLink l1, WirelessLink l2) {
+					return Double.compare(l1.SNR, l2.SNR);
+				}
+			};
+			var result = orderBy(snrComparator, links);
+			return result;
+		}
+
+		private List<WirelessLink> orderByTransmissionPowerValue(Set<WirelessLink> links) {
+			var tpComparator = new Comparator<WirelessLink>() {
+
+				@Override
+				public int compare(WirelessLink l1, WirelessLink l2) {
+					return Double.compare(l1.transmissionPower, l2.transmissionPower);
+				}
+			};
+			return orderBy(tpComparator, links);
+		}
 		
-		private List<Entry<LinkingResource, Double>> orderByTransmissionPowerValue(
-				Map<LinkingResource, LinkingResourceQuantity> links) {
-			return links.entrySet().stream()
-					.map(e -> Map.entry(e.getKey(), e.getValue().transmissionPower))
-					.sorted(Map.Entry.comparingByValue())
+		private List<WirelessLink> orderBy(Comparator<WirelessLink> linkComparator, Set<WirelessLink> links) {
+			return links.stream()
+					.sorted(linkComparator)
 					.collect(toList());
 		}
 
 	}
-	
-	protected static class LinkingResourceQuantity {
-		
+
+	public static class WirelessLink {
+
+		public final LinkingResource pcmLink;
 		public final double SNR;
 		public final double transmissionPower;
-		
-		public LinkingResourceQuantity(double SNR, double transmissionPower) {
+		public final double distributionFactor;
+
+		private WirelessLink(LinkingResource pcmLink, double SNR, double transmissionPower,
+				double distributionFactor) {
+			this.pcmLink = pcmLink;
 			this.SNR = SNR;
 			this.transmissionPower = transmissionPower;
+			this.distributionFactor = distributionFactor;
 		}
 	}
-	
+
 	public final AssemblyContext mote;
-	public final Map<LinkingResource, LinkingResourceQuantity> linkDetails;
-	
+	public final Set<WirelessLink> links;
+
 	public MoteContext(AssemblyContext mote, Map<LinkingResource, Double> linkToSNR) {
 		this.mote = mote;
-		this.linkDetails = Maps.newHashMap();
-		
-		initLinkDetails(mote, linkToSNR);
+		this.links = initLinks(mote, linkToSNR);
 	}
-	
-	private Map<LinkingResource, LinkingResourceQuantity> initLinkDetails(AssemblyContext mote, 
-			Map<LinkingResource, Double> linkToSNR) {
+
+	private Set<WirelessLink> initLinks(AssemblyContext mote, Map<LinkingResource, Double> linkToSNR) {
+		Set<WirelessLink> links = Sets.newHashSet();		
 		for (LinkingResource each : linkToSNR.keySet()) {
 			var SNR = linkToSNR.get(each);
 			var transmissionPower = DeltaIoTModelAccess.get().retrieveTransmissionPower(mote, each);
-			linkDetails.put(each, new LinkingResourceQuantity(SNR, transmissionPower));
+			var distFactor = DeltaIoTModelAccess.get().retrieveCommunicatingBranch(mote, each)
+					.map(ProbabilisticBranchTransition::getBranchProbability).orElse(1.0);
+			links.add(new WirelessLink(each, SNR, transmissionPower, distFactor));
 		}
-		return linkDetails;
+		return links;
 	}
-	
+
 	public boolean hasTwoLinks() {
-		return linkDetails.size() == 2;
+		return links.size() == 2;
 	}
-	
+
 	public boolean hasEqualTransmissionPower() {
 		if (hasTwoLinks() == false) {
 			return false;
 		}
-		
-		var linkQuantityIterator = linkDetails.values().iterator();
+
+		var linkQuantityIterator = links.iterator();
 		var tp1 = linkQuantityIterator.next().transmissionPower;
 		var tp2 = linkQuantityIterator.next().transmissionPower;
 		return tp1 == tp2;
 	}
-	
+
 	public boolean hasUnequalTransmissionPower() {
 		return hasEqualTransmissionPower() == false;
 	}
-	
+
 	public String getId() {
 		return mote.getId();
 	}
-	
+
 }

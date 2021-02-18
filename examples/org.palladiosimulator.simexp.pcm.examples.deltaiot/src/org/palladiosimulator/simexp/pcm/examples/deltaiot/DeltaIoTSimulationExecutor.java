@@ -23,7 +23,6 @@ import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
-import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -34,6 +33,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.GlobalQualityBasedReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTDBNLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
@@ -82,8 +82,10 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForEnergyConsumption());
 
 		this.reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader().load(DISTRIBUTION_FACTORS);
-		this.strategyContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo);
-		//this.strategyContext = new LocalQualityBasedMAPEKStrategyContext(this.prismSpecs.get(0), this.prismSpecs.get(1), reconfParamsRepo);
+		//this.strategyContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo);
+		//this.strategyContext = new NonAdaptiveStrategyContext();
+		this.strategyContext = new LocalQualityBasedMAPEKStrategyContext(this.prismSpecs.get(0), this.prismSpecs.get(1), reconfParamsRepo);
+		
 		//this.strategyContext = new LocalQualityBasedStrategyContext(this.prismSpecs.get(0), this.prismSpecs.get(1), reconfParamsRepo);
 
 		this.dbn = loadOrGenerateDBN();
@@ -211,7 +213,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	private RewardEvaluator getRewardEvaluator() {
-		return ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold(), lowerEnergyConsumptionThreshold());
+		// return ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold(), lowerEnergyConsumptionThreshold());
+		return QualityBasedRewardEvaluator.evaluateBy(prismSpecs);
 	}
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold() {

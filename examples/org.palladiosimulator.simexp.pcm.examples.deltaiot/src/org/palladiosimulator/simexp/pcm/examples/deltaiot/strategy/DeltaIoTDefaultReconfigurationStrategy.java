@@ -2,15 +2,14 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.OPTIONS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 
 import java.util.Iterator;
 import java.util.Set;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
@@ -18,21 +17,18 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.LinkingResourceQuantity;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.MoteContextFilter;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterCalculator;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterManager;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import com.google.common.math.DoubleMath;
 
 public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrategy {
 
-	private final ReconfigurationParameterManager paramManager;
 	private final ReconfigurationParameterCalculator paramCalculator;
 
 	public DeltaIoTDefaultReconfigurationStrategy(DeltaIoTReconfigurationParamRepository reconfParamsRepo) {
-		this.paramManager = new ReconfigurationParameterManager(reconfParamsRepo);
 		this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo);
 	}
 
@@ -60,8 +56,8 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 	protected boolean analyse(SharedKnowledge knowledge) {
 		MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
 		for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
-			for (LinkingResource eachLink : eachMote.linkDetails.keySet()) {
-				if (isPowerOptimal(eachMote.linkDetails.get(eachLink)) == false) {
+			for (WirelessLink eachLink : eachMote.links) {
+				if (isPowerOptimal(eachLink) == false) {
 					return true;
 				}
 			}
@@ -84,13 +80,12 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 
 		MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
 		for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
-			for (LinkingResource eachLink : eachMote.linkDetails.keySet()) {
-				LinkingResourceQuantity quantity = eachMote.linkDetails.get(eachLink);
+			for (WirelessLink eachLink : eachMote.links) {
 				powerChanging = false;
-				if (quantity.SNR > 0 && quantity.transmissionPower > 0) {
+				if (eachLink.SNR > 0 && eachLink.transmissionPower > 0) {
 					decreaseTransmissionPower(eachMote.mote, eachLink, reconfiguration);
 					powerChanging = true;
-				} else if (quantity.SNR < 0 && quantity.transmissionPower < 15) {
+				} else if (eachLink.SNR < 0 && eachLink.transmissionPower < 15) {
 					increaseTransmissionPower(eachMote.mote, eachLink, reconfiguration);
 					powerChanging = true;
 				}
@@ -98,13 +93,13 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 
 			if (eachMote.hasTwoLinks() && powerChanging == false) {
 				if (eachMote.hasUnequalTransmissionPower()) {
-					Iterator<LinkingResource> iterator = eachMote.linkDetails.keySet().iterator();
-					LinkingResource left = iterator.next();
-					double leftTransmissionPower = eachMote.linkDetails.get(left).transmissionPower;
-					double leftDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, left);
-					LinkingResource right = iterator.next();
-					double rightTransmissionPower = eachMote.linkDetails.get(right).transmissionPower;
-					double rightDistributionFactor = paramManager.findDistributionFactorOf(eachMote.mote, right);
+					Iterator<WirelessLink> iterator = eachMote.links.iterator();
+					WirelessLink left = iterator.next();
+					double leftTransmissionPower = left.transmissionPower;
+					double leftDistributionFactor = left.distributionFactor;
+					WirelessLink right = iterator.next();
+					double rightTransmissionPower = right.transmissionPower;
+					double rightDistributionFactor = right.distributionFactor;
 
 					if (isEqualToOne(leftDistributionFactor) && isEqualToOne(rightDistributionFactor)) {
 						reconfiguration.setDistributionFactorsUniformally(eachMote.mote);
@@ -123,15 +118,6 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 		return reconfiguration;
 	}
 
-	private boolean isSmallerThanOne(double distributionFactor) {
-		return distributionFactor < 1.0 && isEqualToOne(distributionFactor) == false;
-	}
-	
-	private boolean isEqualToOne(double distributionFactor) {
-		var TOLERANCE = 0.0001;
-		return DoubleMath.fuzzyEquals(distributionFactor, 1.0, TOLERANCE);
-	}
-
 	@Override
 	protected Reconfiguration<?> emptyReconfiguration() {
 		return QVToReconfiguration.empty();
@@ -145,27 +131,36 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 		}
 	}
 
-	private boolean isPowerOptimal(LinkingResourceQuantity linkQuantity) {
-		return (linkQuantity.SNR > 0 && linkQuantity.transmissionPower > 0)
-				|| (linkQuantity.SNR < 0 && linkQuantity.transmissionPower < 15);
+	private boolean isPowerOptimal(WirelessLink link) {
+		return (link.SNR > 0 && link.transmissionPower > 0)
+				|| (link.SNR < 0 && link.transmissionPower < 15);
 	}
 
-	private void decreaseTransmissionPower(AssemblyContext mote, LinkingResource link,
+	private void decreaseTransmissionPower(AssemblyContext mote, WirelessLink link,
 			DeltaIoTNetworkReconfiguration reconfiguration) {
 		var adjustedParams = paramCalculator.computeDecreasedTransmissionPower(mote, link);
 		reconfiguration.adjustTransmissionPower(adjustedParams);
 	}
 
-	private void increaseTransmissionPower(AssemblyContext mote, LinkingResource link,
+	private void increaseTransmissionPower(AssemblyContext mote, WirelessLink link,
 			DeltaIoTNetworkReconfiguration reconfiguration) {
 		var adjustedParams = paramCalculator.computeIncreasedTransmissionPower(mote, link);
 		reconfiguration.adjustTransmissionPower(adjustedParams);
 	}
 
-	private void adjustDistributionFactor(LinkingResource linkToDecrease, MoteContext mote,
+	private void adjustDistributionFactor(WirelessLink linkToDecrease, MoteContext mote,
 			DeltaIoTNetworkReconfiguration reconfiguration) {
 		var adjustedParams = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, mote);
 		reconfiguration.adjustDistributionFactor(adjustedParams);
+	}
+	
+	private boolean isSmallerThanOne(double distributionFactor) {
+		return distributionFactor < 1.0 && isEqualToOne(distributionFactor) == false;
+	}
+	
+	private boolean isEqualToOne(double distributionFactor) {
+		var TOLERANCE = 0.0001;
+		return DoubleMath.fuzzyEquals(distributionFactor, 1.0, TOLERANCE);
 	}
 
 }

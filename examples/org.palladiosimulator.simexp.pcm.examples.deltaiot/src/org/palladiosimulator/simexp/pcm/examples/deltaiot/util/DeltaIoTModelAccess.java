@@ -159,6 +159,19 @@ public class DeltaIoTModelAccess {
 		return comp.getServiceEffectSpecifications__BasicComponent().stream().flatMap(filterProbabilistBranches())
 				.collect(toList());
 	}
+	
+	public Optional<ProbabilisticBranchTransition> retrieveCommunicatingBranch(AssemblyContext sourceMote, LinkingResource link) {
+		return retrieveCommunicatingBranches(sourceMote).stream()
+				.filter(each -> isPhysicalLink(each, link))
+				.findFirst();
+	}
+	
+	public boolean isPhysicalLink(ProbabilisticBranchTransition probabilisticBranchTransition,
+			LinkingResource physicalLink) {
+		String usedLinkId = probabilisticBranchTransition.getEntityName()
+				.substring(probabilisticBranchTransition.getEntityName().length() - 1);
+		return physicalLink.getEntityName().endsWith(usedLinkId);
+	}
 
 	private Function<ServiceEffectSpecification, Stream<ProbabilisticBranchTransition>> filterProbabilistBranches() {
 		return seff -> {

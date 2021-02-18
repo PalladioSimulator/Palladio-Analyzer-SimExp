@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.ENERGY_CONSUMPTION_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.PACKET_LOSS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDistributionFactorReconfiguration;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveTransmissionPowerReconfiguration;
 
@@ -16,90 +14,113 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationPa
 
 public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReconfigurationPlanner {
 
-	public final static Threshold MEDIUM_PACKET_LOSS = Threshold.lessThan(0.3);
-	public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(0.4);
-	
 	private final ReconfigurationParameterCalculator paramCalculator;
-	
+
 	public LocalQualityBasedReconfigurationPlanner(DeltaIoTReconfigurationParamRepository reconfParamsRepo) {
 		this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo);
 	}
 
 	@Override
 	public QVToReconfiguration planPacketLoss(SharedKnowledge knowledge) {
-		double packetLoss = knowledge.getValue(PACKET_LOSS_KEY).map(Double.class::cast).orElseThrow();
-		if (MEDIUM_PACKET_LOSS.isSatisfied(packetLoss)) {
-			return increaseDistributionLocally(knowledge);
-		} else {
-			return increaseTransmissionPowerLocally(knowledge);
+		DistributionFactorReconfiguration dfReconfiguration = retrieveDistributionFactorReconfiguration(knowledge);
+		if (increaseDistributionLocally(dfReconfiguration, knowledge)) {
+			return dfReconfiguration;
 		}
+		
+		TransmissionPowerReconfiguration tpReconfiguration = retrieveTransmissionPowerReconfiguration(knowledge);
+		if (increaseTransmissionPowerLocally(tpReconfiguration, knowledge)) {
+			return tpReconfiguration;
+		}
+		
+		return QVToReconfiguration.empty();
 	}
 
 	@Override
 	public QVToReconfiguration planEnergyConsumption(SharedKnowledge knowledge) {
-		double energyConsumtption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
-		if (LOWER_ENERGY_CONSUMPTION.isSatisfied(energyConsumtption)) {
-			return decreaseDistributionLocally(knowledge);
-		} else {
-			return decreaseTransmissionPowerLocally(knowledge);
-		}
-	}
-
-	private QVToReconfiguration increaseDistributionLocally(SharedKnowledge knowledge) {
-		DistributionFactorReconfiguration dfReconfiguration = retrieveDistributionFactorReconfiguration(knowledge);
-
-		var motesFilter = new MoteContextFilter(knowledge);
-		for (MoteContext each : motesFilter.motesWithTwoLinks()) {
-			var linkWithHighestSNR = motesFilter.linkWithHighestSNR(each);
-			var adjustedFactors = paramCalculator.computeAdjustedDistributionFactors(linkWithHighestSNR, each);
-			if (DistributionFactorReconfiguration.isValid(adjustedFactors)) {
-				dfReconfiguration.adjustDistributionFactors(adjustedFactors);
-			}
-		}
-		return dfReconfiguration;
-	}
-	
-	private QVToReconfiguration decreaseDistributionLocally(SharedKnowledge knowledge) {
-		DistributionFactorReconfiguration dfReconfiguration = retrieveDistributionFactorReconfiguration(knowledge);
-
-		var motesFilter = new MoteContextFilter(knowledge);
-		for (MoteContext each : motesFilter.motesWithTwoLinks()) {
-			var linkWithHighestPower = motesFilter.linkWithHighestTransmissionPower(each);
-			var adjustedFactors = paramCalculator.computeAdjustedDistributionFactors(linkWithHighestPower, each);
-			if (DistributionFactorReconfiguration.isValid(adjustedFactors)) {
-				dfReconfiguration.adjustDistributionFactors(adjustedFactors);
-			}
-		}
-		return dfReconfiguration;
-	}
-
-	private QVToReconfiguration increaseTransmissionPowerLocally(SharedKnowledge knowledge) {
 		TransmissionPowerReconfiguration tpReconfiguration = retrieveTransmissionPowerReconfiguration(knowledge);
+		if (decreaseTransmissionPowerLocally(tpReconfiguration, knowledge)) {
+			return tpReconfiguration;
+		}
+		
+		DistributionFactorReconfiguration dfReconfiguration = retrieveDistributionFactorReconfiguration(knowledge);
+		if (decreaseDistributionLocally(dfReconfiguration, knowledge)) {
+			return dfReconfiguration;
+		}
+		
+		return QVToReconfiguration.empty();
+	}
+
+	private boolean increaseDistributionLocally(DistributionFactorReconfiguration dfReconfiguration, SharedKnowledge knowledge) {
+		var isReconfigurable = false;
+		
+		var motesFilter = new MoteContextFilter(knowledge);
+		for (MoteContext each : motesFilter.motesWithTwoLinks()) {
+			var linkToDecrease = motesFilter.linkWithSmallestSNR(each);
+			if (linkToDecrease.distributionFactor > 0) {
+				var adjustedFactors = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, each);
+				if (DistributionFactorReconfiguration.isValid(adjustedFactors)) {
+					dfReconfiguration.adjustDistributionFactors(adjustedFactors);
+					isReconfigurable = true;
+				}
+			}
+		}
+		
+		return isReconfigurable;
+	}
+
+	private boolean decreaseDistributionLocally(DistributionFactorReconfiguration dfReconfiguration, SharedKnowledge knowledge) {
+		var isReconfigurable = false;
+
+		var motesFilter = new MoteContextFilter(knowledge);
+		for (MoteContext each : motesFilter.motesWithTwoLinks()) {
+			var linkToDecrease = motesFilter.linkWithHighestTransmissionPower(each);
+			if (linkToDecrease.distributionFactor > 0) {
+				var adjustedFactors = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, each);
+				if (DistributionFactorReconfiguration.isValid(adjustedFactors)) {
+					dfReconfiguration.adjustDistributionFactors(adjustedFactors);
+					isReconfigurable = true;
+				}
+			}
+		}
+		
+		return isReconfigurable;
+	}
+
+	private boolean increaseTransmissionPowerLocally(TransmissionPowerReconfiguration tpReconfiguration, SharedKnowledge knowledge) {
+		var isReconfigurable = false;
 
 		var motesWithLowSNRLinks = new MoteContextFilter(knowledge).motesWithSNRLowerThan(Threshold.lessThan(0));
 		for (MoteContext each : motesWithLowSNRLinks.keySet()) {
 			var lowSNRLink = motesWithLowSNRLinks.get(each);
-			var adjustedPowerSettings = paramCalculator.computeIncreasedTransmissionPower(each.mote, lowSNRLink);
-			if (tpReconfiguration.canBeAdjusted(adjustedPowerSettings)) {
-				tpReconfiguration.adjustPowerSetting(adjustedPowerSettings);
+			if (lowSNRLink.distributionFactor > 0 && lowSNRLink.transmissionPower < 15) {
+				var adjustedPowerSettings = paramCalculator.computeIncreasedTransmissionPower(each.mote, lowSNRLink);
+				if (tpReconfiguration.canBeAdjusted(adjustedPowerSettings)) {
+					tpReconfiguration.adjustPowerSetting(adjustedPowerSettings);
+					isReconfigurable = true;
+				}
 			}
 		}
-		return tpReconfiguration;
+		
+		return isReconfigurable;
 	}
 
-	private QVToReconfiguration decreaseTransmissionPowerLocally(SharedKnowledge knowledge) {
-		TransmissionPowerReconfiguration tpReconfiguration = retrieveTransmissionPowerReconfiguration(knowledge);
-				
-		var motesWithHighSNRLinks = new MoteContextFilter(knowledge).motesWithSNRHigherThan(Threshold.greaterThanOrEqualTo(0));
+	private boolean decreaseTransmissionPowerLocally(TransmissionPowerReconfiguration tpReconfiguration, SharedKnowledge knowledge) {
+		var isReconfigurable = false;
+
+		var motesWithHighSNRLinks = new MoteContextFilter(knowledge)
+				.motesWithSNRHigherThan(Threshold.greaterThanOrEqualTo(0));
 		for (MoteContext each : motesWithHighSNRLinks.keySet()) {
 			var highSNRLink = motesWithHighSNRLinks.get(each);
-			var adjustedPowerSettings = paramCalculator.computeDecreasedTransmissionPower(each.mote, highSNRLink);
-			if (tpReconfiguration.canBeAdjusted(adjustedPowerSettings)) {
-				tpReconfiguration.adjustPowerSetting(adjustedPowerSettings);
+			if (highSNRLink.distributionFactor > 0 && highSNRLink.transmissionPower > 0) {
+				var adjustedPowerSettings = paramCalculator.computeDecreasedTransmissionPower(each.mote, highSNRLink);
+				if (tpReconfiguration.canBeAdjusted(adjustedPowerSettings)) {
+					tpReconfiguration.adjustPowerSetting(adjustedPowerSettings);
+					isReconfigurable = true;
+				}
 			}
 		}
 
-		return tpReconfiguration;
+		return isReconfigurable;
 	}
 
 }
