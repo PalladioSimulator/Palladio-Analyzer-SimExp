@@ -154,14 +154,17 @@ public class DeltaIoTEnvironemtalDynamics {
 
 			@Override
 			public String toString() {
+				var wiValues = sample.stream().filter(each -> isWITemplate().test(each.variable)).collect(toList());
+				var snrValues = sample.stream().filter(each -> isSNRTemplate(each.variable)).collect(toList());
+				var maValues = sample.stream().filter(each -> isMATemplate().test(each.variable)).collect(toList());
+				
 				StringBuilder builder = new StringBuilder();
-				for (InputValue each : sample) {
-					builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-							each.value.toString()));
-				}
+				wiValues.forEach(input -> builder.append(String.format("(Variable: %1s, Value: %2s),", input.variable.getEntityName(), input.value.toString())));
+				snrValues.forEach(input -> builder.append(String.format("(Variable: %1s, Value: %2s),", input.variable.getEntityName(), input.value.toString())));
+				maValues.forEach(input -> builder.append(String.format("(Variable: %1s, Value: %2s),", input.variable.getEntityName(), input.value.toString())));
 
 				String stringValues = builder.toString();
-				return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
+				return String.format("Environmental states:%s", stringValues.substring(0, stringValues.length() - 1));
 			}
 
 		};
