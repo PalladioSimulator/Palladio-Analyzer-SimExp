@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNetwork;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
@@ -34,8 +37,17 @@ public class PacketLossPrismFileUpdater extends DeltaIoTPrismFileUpdater {
 		ResourceEnvironment resEnv = sasState.getArchitecturalConfiguration().getConfiguration()
 				.getResourceEnvironment();
 		for (LinkingResource each : resEnv.getLinkingResources__ResourceEnvironment()) {
-			resolveSNRInputValue(each, sasState.getPerceivedEnvironmentalState())
-					.ifPresent(value -> substitute(prismContext, each, value));
+			var snrValue = resolveSNRInputValue(each, sasState.getPerceivedEnvironmentalState());
+					//.ifPresent(value -> substitute(prismContext, each, value));
+			if (snrValue.isPresent()) {
+				var localNetwork = LocalProbabilisticNetwork.class
+						.cast(snrValue.get().variable.eContainer());
+				var wiVariable = DeltaIoTEnvironemtalDynamics.findWirelessInterferenceVariable(localNetwork);
+				var wirelessInterference = DeltaIoTModelAccess.get().retrieveWirelessInterference(wiVariable, 
+						sasState.getPerceivedEnvironmentalState());
+				var newSnrValue = Double.valueOf(snrValue.get().asCategorical().get()) + wirelessInterference;
+				substitute(prismContext, each, Double.toString(newSnrValue));
+			}
 		}
 	}
 

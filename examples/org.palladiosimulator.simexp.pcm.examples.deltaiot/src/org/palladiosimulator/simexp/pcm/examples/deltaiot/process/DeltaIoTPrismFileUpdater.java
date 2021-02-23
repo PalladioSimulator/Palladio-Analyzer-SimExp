@@ -213,10 +213,14 @@ public abstract class DeltaIoTPrismFileUpdater extends PrismFileUpdateGenerator.
 	}
 
 	protected <T extends Entity> void substitute(PrismContext prismContext, T element, InputValue value) {
+		substitute(prismContext, element, value.value.toString());
+	}
+	
+	protected <T extends Entity> void substitute(PrismContext prismContext, T element, String value) {
 		if (element.getEntityName().equals("Gateway1Instance")) {
 			return;
 		}
-		resolveAndSubstitute(prismContext, element.getEntityName(), value.value.toString());
+		resolveAndSubstitute(prismContext, element.getEntityName(), value);
 	}
 
 	protected void resolveAndSubstitute(PrismContext prismContext, String unresolvedSymbol, String value) {
