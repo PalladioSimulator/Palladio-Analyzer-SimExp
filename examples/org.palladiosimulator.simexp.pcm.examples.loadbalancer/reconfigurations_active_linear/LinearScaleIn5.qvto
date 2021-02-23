@@ -9,7 +9,6 @@
  * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
  * in conjunction with mappings defined in the project properties.
  */
-modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
 modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
 modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
 modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
@@ -31,12 +30,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation LinearScaleIn5(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
-							//inout pcmRepository : PCM_REP,
-							//in pcmSystem : PCM_SYS,
-							inout pcmAllocation : PCM_ALLOC
-							//in pcmResources : PCM_RES_ENV
-							) {
+transformation LinearScaleIn5(inout pcmAllocation : PCM_ALLOC ) {
 							
 							
 	property outsourceFactor : Real = 0.5;
