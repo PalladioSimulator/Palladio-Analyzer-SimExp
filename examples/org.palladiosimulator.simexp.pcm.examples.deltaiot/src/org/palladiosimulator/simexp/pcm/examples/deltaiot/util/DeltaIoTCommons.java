@@ -33,7 +33,7 @@ public class DeltaIoTCommons {
 	public final static String PACKET_LOSS_KEY = "PacketLoss";
 	public final static String ENERGY_CONSUMPTION_KEY = "EnergyConsumption";
 	public final static Threshold LOWER_PACKET_LOSS = Threshold.lessThan(0.1);
-	public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(25.0);
+	public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(13.4);//Threshold.lessThan(25.0);
 	public final static double DISTRIBUTION_FACTOR_INCREMENT = 0.1;
 	public final static int TRANSMISSION_POWER_INCREMENT = 1;
 	
