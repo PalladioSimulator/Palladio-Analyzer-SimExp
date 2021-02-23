@@ -16,7 +16,8 @@ public abstract class PcmExperienceSimulationExecutor {
 	private static PcmExperienceSimulationExecutor instance;
 	
 	public PcmExperienceSimulationExecutor() {
-		this.experiment = new ExperimentLoader().loadExperiment(getExperimentFile());
+	    String experimentFile = getExperimentFile();
+		this.experiment = new ExperimentLoader().loadExperiment(experimentFile);
 		ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
