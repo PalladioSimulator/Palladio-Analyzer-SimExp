@@ -13,6 +13,7 @@
       <allocation href="../loadbalancer_on_iaas.allocation#_CX1d8AErEeS7FKokKTKFow"/>
       <middlewareRepository href="../loadbalancer.repository#_FjtWUAEmEeS7FKokKTKFow"/>
       <eventMiddleWareRepository href="../loadbalancer.repository#_FjtWUAEmEeS7FKokKTKFow"/>
+      <reconfigurationRules href="../ReconfigurationRules.experiments#/"/>
       <monitorRepository href="../monitors/monitoring.monitorrepository#_I0p9IMltEeSsG6YHnSxiuA"/>
       <repository href="../loadbalancer.repository#_FjtWUAEmEeS7FKokKTKFow"/>
       <system href="../loadbalancer.system#_lhnn8AEnEeS7FKokKTKFow"/>
