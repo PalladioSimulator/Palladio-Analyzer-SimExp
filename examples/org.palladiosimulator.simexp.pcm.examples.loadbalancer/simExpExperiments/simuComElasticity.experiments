@@ -9,7 +9,7 @@
     <experimentDesign xsi:type="ExperimentAutomation.Experiments:FullFactorialDesign"/>
     <responseMeasurement xsi:type="ExperimentAutomation.Experiments:SimulationDurationMeasurement"/>
     <initialModel>
-      <usageModel href="../overload.usagemodel#/0"/>
+      <usageModel href="../overload.usagemodel#/"/>
       <allocation href="../loadbalancer_on_iaas.allocation#_CX1d8AErEeS7FKokKTKFow"/>
       <reconfigurationRules href="../ReconfigurationRules.experiments#/"/>
       <monitorRepository href="../monitors/monitoring.monitorrepository#_I0p9IMltEeSsG6YHnSxiuA"/>
