@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:emfprofileapplication="http://www.modelversioning.org/emfprofile/application/1.1" xmlns:myprofile="InstantiationTag" xmlns:usagemodel="http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:usagemodel="http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2">
   <usagemodel:UsageModel>
     <usageScenario_UsageModel id="_YtqF4AEqEeS7FKokKTKFow" entityName="overloadUsageScenario">
       <scenarioBehaviour_UsageScenario id="_YtqF4QEqEeS7FKokKTKFow" entityName="defaultUsageScenarioBehaviour">
@@ -15,12 +15,4 @@
       </workload_UsageScenario>
     </usageScenario_UsageModel>
   </usagemodel:UsageModel>
-  <emfprofileapplication:ProfileApplication>
-    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_YtqF4AEqEeS7FKokKTKFow" taggedValue="WorkloadVariation">
-      <extension href="../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
-      <argument href="LoadBalancingTemplates.templatevariable#_dVtGkm3REeq4sYEFwlTMnQ"/>
-      <template href="LoadBalancingTemplates.templatevariable#_XcnzUG3REeq4sYEFwlTMnQ"/>
-    </stereotypeApplications>
-    <importedProfiles nsURI="InstantiationTag" location="platform:/plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram"/>
-  </emfprofileapplication:ProfileApplication>
 </xmi:XMI>
