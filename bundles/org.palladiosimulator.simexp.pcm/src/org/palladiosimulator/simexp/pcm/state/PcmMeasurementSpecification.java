@@ -36,10 +36,10 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
                 return Double.NaN;
             }
 
-            LOGGER.debug("Taken measurements from simulation:");
-            for (Number number : measurementsAsNumbers) {
-                LOGGER.debug(String.format("measurement = %s", number.toString()));
-            }
+//            LOGGER.debug("Taken measurements from simulation:");
+//            for (Number number : measurementsAsNumbers) {
+//                LOGGER.debug(String.format("measurement = %s", number.toString()));
+//            }
 
             double aggregatedMeasurements = StatisticalQuantities.withNumbers(measurementsAsNumbers).mean();
             LOGGER.info(String.format("Aggregated measurements = %s", aggregatedMeasurements));
