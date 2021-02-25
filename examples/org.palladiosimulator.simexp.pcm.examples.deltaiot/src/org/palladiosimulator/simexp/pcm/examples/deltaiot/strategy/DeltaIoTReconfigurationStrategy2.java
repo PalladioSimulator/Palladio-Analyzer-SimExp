@@ -9,6 +9,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDistributionFactorReconfiguration;
 
 import java.util.Set;
@@ -123,13 +124,13 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 
 	@Override
 	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
-		retrieveDistributionFactorReconfiguration(knowledge).setDistributionFactorValuesToDefaults();
+		retrieveDeltaIoTNetworkReconfiguration(knowledge).setDistributionFactorValuesToDefaults();
 		
-		double packetLoss = knowledge.getValue(PACKET_LOSS_KEY).map(Double.class::cast).orElseThrow();
-		if (isPacketLossViolated(packetLoss)) {
-			return planner.planPacketLoss(knowledge);
+		double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
+		if (isEnergyConsumptionIsViolated(energyConsumption)) {
+			return planner.planEnergyConsumption(knowledge);	
 		}
-		return planner.planEnergyConsumption(knowledge);
+		return planner.planPacketLoss(knowledge);
 	}
 
 	@Override
