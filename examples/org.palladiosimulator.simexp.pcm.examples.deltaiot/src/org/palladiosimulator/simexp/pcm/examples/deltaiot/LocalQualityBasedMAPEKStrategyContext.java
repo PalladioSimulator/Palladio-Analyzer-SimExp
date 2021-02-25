@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSp
 public class LocalQualityBasedMAPEKStrategyContext implements ReconfigurationStrategyContext {
 
 	private final DeltaIoTReconfigurationStrategy2 strategy;
-	private final ReconfigurationStrategyContext decoratedContext;
+	private final DefaultDeltaIoTStrategyContext decoratedContext;
 	
 	public LocalQualityBasedMAPEKStrategyContext(PrismSimulatedMeasurementSpec packetLossSpec,
 			PrismSimulatedMeasurementSpec energyConsumptionSpec,
@@ -25,7 +25,7 @@ public class LocalQualityBasedMAPEKStrategyContext implements ReconfigurationStr
 				.andEnergyConsumptionSpec(energyConsumptionSpec)
 				.andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo))
 				.build();
-		this.decoratedContext = new LocalQualityBasedStrategyContext(packetLossSpec, energyConsumptionSpec, reconfParamsRepo);
+		this.decoratedContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo);
 	}
 
 	@Override
