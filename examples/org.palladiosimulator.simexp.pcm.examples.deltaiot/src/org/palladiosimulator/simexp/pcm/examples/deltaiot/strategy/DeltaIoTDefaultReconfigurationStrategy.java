@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaI
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.MoteContextFilter;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.ReconfigurationParameterCalculator;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import com.google.common.math.DoubleMath;
@@ -49,6 +50,13 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 
 		addMonitoredEnvironmentValues(state, knowledge);
 
+		var tracker = SystemConfigurationTracker.get(getId());
+		tracker.registerAndPrintNetworkConfig(knowledge);
+		if (tracker.isLastRun()) {
+			tracker.saveNetworkConfigs();
+			tracker.resetTrackedValues();
+		}
+		
 		return knowledge;
 	}
 

@@ -10,7 +10,6 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDistributionFactorReconfiguration;
 
 import java.util.Set;
 
@@ -21,6 +20,7 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
@@ -37,7 +37,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 			this.id = id;
 			return this;
 		}
-		
+
 		public DeltaIoTReconfigurationStrategy2Builder andPacketLossSpec(PrismSimulatedMeasurementSpec packetLossSpec) {
 			this.packetLossSpec = packetLossSpec;
 			return this;
@@ -48,9 +48,8 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 			this.energyConsumptionSpec = energyConsumptionSpec;
 			return this;
 		}
-		
-		public DeltaIoTReconfigurationStrategy2Builder andPlanner(
-				QualityBasedReconfigurationPlanner planner) {
+
+		public DeltaIoTReconfigurationStrategy2Builder andPlanner(QualityBasedReconfigurationPlanner planner) {
 			this.planner = planner;
 			return this;
 		}
@@ -81,7 +80,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 		this.packetLossSpec = packetLossSpec;
 		this.energyConsumptionSpec = energyConsumptionSpec;
 	}
-	
+
 	public static DeltaIoTReconfigurationStrategy2Builder newBuilder() {
 		return new DeltaIoTReconfigurationStrategy2Builder();
 	}
@@ -90,7 +89,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 	public String getId() {
 		return id;
 	}
-
+	
 	@Override
 	protected SharedKnowledge monitor(State source, Set<Reconfiguration<?>> options) {
 		requirePcmSelfAdaptiveSystemState(source);
@@ -103,6 +102,13 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 
 		addMonitoredEnvironmentValues(state, knowledge);
 		addMonitoredQualityValues(state, knowledge);
+		
+		var tracker = SystemConfigurationTracker.get(id);
+		tracker.registerAndPrintNetworkConfig(knowledge);
+		if (tracker.isLastRun()) {
+			tracker.saveNetworkConfigs();
+			tracker.resetTrackedValues();
+		}
 
 		return knowledge;
 	}
@@ -110,25 +116,17 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 	@Override
 	protected boolean analyse(SharedKnowledge knowledge) {
 		double packetLoss = knowledge.getValue(PACKET_LOSS_KEY).map(Double.class::cast).orElseThrow();
-		if (isPacketLossViolated(packetLoss)) {
-			return true;
-		}
-
 		double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
-		if (isEnergyConsumptionIsViolated(energyConsumption)) {
-			return true;
-		}
-
-		return false;
+		return isPacketLossViolated(packetLoss) || isEnergyConsumptionViolated(energyConsumption);
 	}
 
 	@Override
 	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
 		retrieveDeltaIoTNetworkReconfiguration(knowledge).setDistributionFactorValuesToDefaults();
-		
+
 		double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
-		if (isEnergyConsumptionIsViolated(energyConsumption)) {
-			return planner.planEnergyConsumption(knowledge);	
+		if (isEnergyConsumptionViolated(energyConsumption)) {
+			return planner.planEnergyConsumption(knowledge);
 		}
 		return planner.planPacketLoss(knowledge);
 	}
@@ -162,7 +160,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 		return LOWER_PACKET_LOSS.isNotSatisfied(packetLoss);
 	}
 
-	private boolean isEnergyConsumptionIsViolated(double energyConsumtption) {
+	private boolean isEnergyConsumptionViolated(double energyConsumtption) {
 		return LOWER_ENERGY_CONSUMPTION.isNotSatisfied(energyConsumtption);
 	}
 

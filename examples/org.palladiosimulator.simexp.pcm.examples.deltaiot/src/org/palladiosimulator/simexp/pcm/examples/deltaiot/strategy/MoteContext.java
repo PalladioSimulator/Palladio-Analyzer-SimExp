@@ -19,7 +19,7 @@ import com.google.common.collect.Sets;
 
 public class MoteContext {
 
-	protected static class MoteContextFilter {
+	public static class MoteContextFilter {
 
 		private final List<MoteContext> contexts;
 

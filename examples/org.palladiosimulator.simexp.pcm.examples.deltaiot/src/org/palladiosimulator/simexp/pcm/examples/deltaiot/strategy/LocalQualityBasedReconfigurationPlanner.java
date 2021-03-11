@@ -33,8 +33,8 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
 	@Override
 	public QVToReconfiguration planPacketLoss(SharedKnowledge knowledge) {
 		var reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
-		increaseDistributionLocally(reconfiguration, knowledge);
 		increaseTransmissionPowerLocally(reconfiguration, knowledge);
+		increaseDistributionLocally(reconfiguration, knowledge);
 		return reconfiguration;
 	}
 
@@ -53,9 +53,11 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
 			SharedKnowledge knowledge) {
 		var motesFilter = new MoteContextFilter(knowledge);
 		for (MoteContext each : motesFilter.motesWithTwoLinks()) {
-			var linkToDecrease = motesFilter.linkWithHighestTransmissionPower(each);
-			if (isGreaterThanZero(linkToDecrease.distributionFactor)) {
-				adjustDistributionFactor(linkToDecrease, each, reconfiguration);
+			if (each.hasUnequalTransmissionPower()) {
+				var linkToDecrease = motesFilter.linkWithHighestTransmissionPower(each);
+				if (isGreaterThanZero(linkToDecrease.distributionFactor)) {
+					adjustDistributionFactor(linkToDecrease, each, reconfiguration);
+				}
 			}
 		}
 	}
