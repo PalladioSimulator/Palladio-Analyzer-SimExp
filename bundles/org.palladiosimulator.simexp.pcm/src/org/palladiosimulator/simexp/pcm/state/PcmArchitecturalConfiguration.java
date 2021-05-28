@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
@@ -21,6 +22,8 @@ import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
 
 public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PCMInstance> {
+    
+    private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class.getName());
 
 	private PcmArchitecturalConfiguration(PCMInstance configuration) {
 		super(configuration);
@@ -63,8 +66,7 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 	@Override
 	public ArchitecturalConfiguration<?> apply(Reconfiguration<?> reconf) {
 		if (isNotValid(reconf)) {
-			// TODO exception handling
-			throw new RuntimeException("");
+			throw new RuntimeException("Failed to apply reconfiguration: reconfiguration was invalid. Expected a QVTO transformation.");
 		}
 
 		QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
@@ -83,8 +85,9 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator();
 		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
 		if (!succeded) {
-			// TODO logging
+			LOGGER.error("Failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration.");
 		}
+		LOGGER.info(String.format("Applied reconfiguration: '%s'", reconf.getTransformation().getTransformationName()));
 	}
 
 	private boolean isNotValid(Reconfiguration<?> action) {

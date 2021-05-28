@@ -45,7 +45,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public final static double LOWER_THRESHOLD_RT = 1.0;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
-	private final static String SIMUCOM_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuComElasticity.experiments";
 	private final static String SIMULIZAR_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuLizarElasticity.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
@@ -75,9 +74,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 
 	@Override
 	protected String getExperimentFile() {
-//		return EXPERIMENT_FILE;
-		return SIMUCOM_EXPERIMENT_FILE;
-//		return SIMULIZAR_EXPERIMENT_FILE;
+		return SIMULIZAR_EXPERIMENT_FILE;
 	}
 
 	@Override

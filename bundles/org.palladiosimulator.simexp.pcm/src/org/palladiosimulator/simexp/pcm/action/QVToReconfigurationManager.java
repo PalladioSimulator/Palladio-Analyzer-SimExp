@@ -53,7 +53,7 @@ public class QVToReconfigurationManager {
 	}
 
 	private QVToReconfigurationManager(String qvtoFilePath) {
-		this.reconfigurator = new QVTOReconfigurator();
+		this.reconfigurator = new QVTOReconfigurator(null, null);
 		this.loadTransformations(qvtoFilePath);
 	}
 
@@ -108,7 +108,7 @@ public class QVToReconfigurationManager {
 	}
 
 	public void resetReconfigurator() {
-		reconfigurator = new QVTOReconfigurator();
+		reconfigurator = new QVTOReconfigurator(null, null);
 	}
 
 	public void addModelsToTransform(Resource modelsToTransform) {
