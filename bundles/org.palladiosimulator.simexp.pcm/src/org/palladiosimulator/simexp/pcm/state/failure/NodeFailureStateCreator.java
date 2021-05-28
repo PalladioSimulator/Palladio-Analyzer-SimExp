@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.state.failure;
+package org.palladiosimulator.simexp.pcm.state.failure;
 
 import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.failuremodel.failurescenario.FailureScenario;

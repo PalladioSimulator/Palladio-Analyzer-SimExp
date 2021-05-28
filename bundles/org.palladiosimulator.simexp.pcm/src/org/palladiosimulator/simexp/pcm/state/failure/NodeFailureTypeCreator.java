@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.state.failure;
+package org.palladiosimulator.simexp.pcm.state.failure;
 
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.FailuretypeFactory;

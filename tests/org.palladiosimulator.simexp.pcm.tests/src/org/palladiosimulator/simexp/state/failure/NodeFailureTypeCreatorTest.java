@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.failuremodel.failuretype.Failure;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
+import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 
 public class NodeFailureTypeCreatorTest {
 

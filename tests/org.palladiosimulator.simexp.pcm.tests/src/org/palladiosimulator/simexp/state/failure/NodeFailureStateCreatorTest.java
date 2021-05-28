@@ -28,6 +28,8 @@ import org.palladiosimulator.pcm.resourceenvironment.ProcessingResourceSpecifica
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceenvironmentFactory;
+import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
+import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 
 public class NodeFailureStateCreatorTest {
 
