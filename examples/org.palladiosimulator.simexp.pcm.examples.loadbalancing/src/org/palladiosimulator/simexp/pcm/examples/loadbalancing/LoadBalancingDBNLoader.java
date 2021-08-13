@@ -21,7 +21,8 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public class LoadBalancingDBNLoader {
+public enum LoadBalancingDBNLoader  {
+    INSTANCE;
 
 	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
@@ -32,14 +33,16 @@ public class LoadBalancingDBNLoader {
 			"LoadBalancerEnvironmentalDynamics", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 	private final static URI BN_URI = URI.createPlatformResourceURI(BN_FILE, true);
-	private final static ResourceSet RESOURCE_SET = new ResourceSetImpl();
-	static {
-		RESOURCE_SET.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-		RESOURCE_SET.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
+	
+	private final ResourceSet resourceSet = new ResourceSetImpl();
+	
+	private LoadBalancingDBNLoader() {
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
+		resourceSet.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
 	}
 
-	private static void persist(EObject eObj, String path) {
-		Resource resource = RESOURCE_SET.createResource(URI.createFileURI(path));
+	public void persist(EObject eObj, String path) {
+		Resource resource = resourceSet.createResource(URI.createFileURI(path));
 		resource.getContents().add(eObj);
 		try {
 			resource.save(Collections.EMPTY_MAP);
@@ -48,20 +51,20 @@ public class LoadBalancingDBNLoader {
 		}
 	}
 
-	public static DynamicBayesianNetwork loadDBN() {
+	public DynamicBayesianNetwork loadDBN() {
 		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
 		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension());
 	}
 
-	private static DynamicBehaviourExtension loadDynamicBehaviourExtension() {
-		return DynamicBehaviourExtension.class.cast(RESOURCE_SET.getResource(DBN_URI, true).getContents().get(0));
+	private DynamicBehaviourExtension loadDynamicBehaviourExtension() {
+		return DynamicBehaviourExtension.class.cast(resourceSet.getResource(DBN_URI, true).getContents().get(0));
 	}
 
-	public static GroundProbabilisticNetwork loadGroundProbabilisticNetwork() {
-		return GroundProbabilisticNetwork.class.cast(RESOURCE_SET.getResource(BN_URI, true).getContents().get(0));
+	public GroundProbabilisticNetwork loadGroundProbabilisticNetwork() {
+		return GroundProbabilisticNetwork.class.cast(resourceSet.getResource(BN_URI, true).getContents().get(0));
 	}
 
-	public static DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp) {
+	public DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp) {
 		try {
 			return loadDBN();
 		} catch (Exception e) {
@@ -69,7 +72,7 @@ public class LoadBalancingDBNLoader {
 		}
 	}
 
-	private static DynamicBayesianNetwork generateDBN(Experiment exp) {
+	private DynamicBayesianNetwork generateDBN(Experiment exp) {
 		TemplateVariableDefinitions templates = loadTemplates();
 
 		BayesianNetwork bn = null;
@@ -88,13 +91,13 @@ public class LoadBalancingDBNLoader {
 		return dbn;
 	}
 
-	private static BayesianNetwork generateBN(TemplateVariableDefinitions templates, Experiment exp) {
+	private BayesianNetwork generateBN(TemplateVariableDefinitions templates, Experiment exp) {
 		ResourceSet appliedModels = new ResourceSetImpl();
 		appliedModels.getResources().add(exp.getInitialModel().getUsageModel().eResource());
 		return new BayesianNetworkGenerator(templates).generate(appliedModels);
 	}
 
-	private static TemplateVariableDefinitions loadTemplates() {
+	private TemplateVariableDefinitions loadTemplates() {
 		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getExperimentRunner()
 				.getWorkingPartition()
 				.getElement(TemplatevariablePackage.eINSTANCE.getTemplateVariableDefinitions());

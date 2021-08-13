@@ -58,7 +58,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	
 	public LoadBalancingSimulationExecutor() {
-		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+		this.dbn = LoadBalancingDBNLoader.INSTANCE.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
