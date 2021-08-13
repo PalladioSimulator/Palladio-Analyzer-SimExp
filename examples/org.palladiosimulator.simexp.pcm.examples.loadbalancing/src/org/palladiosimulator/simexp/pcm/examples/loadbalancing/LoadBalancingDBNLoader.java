@@ -21,7 +21,7 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public enum LoadBalancingDBNLoader implements IManager, IDynamicBayesianBNetworkLoader {
+public enum LoadBalancingDBNLoader implements IManager, IDynamicBayesianNetworkLoader {
     INSTANCE;
 
 	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";

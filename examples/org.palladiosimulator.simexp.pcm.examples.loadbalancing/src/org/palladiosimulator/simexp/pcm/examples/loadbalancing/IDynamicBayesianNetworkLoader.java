@@ -4,7 +4,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 
-public interface IDynamicBayesianBNetworkLoader {
+public interface IDynamicBayesianNetworkLoader {
     
     DynamicBayesianNetwork loadDBN();
     
