@@ -21,7 +21,7 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public enum LoadBalancingDBNLoader  {
+public enum LoadBalancingDBNLoader implements IManager {
     INSTANCE;
 
 	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
@@ -107,4 +107,9 @@ public enum LoadBalancingDBNLoader  {
 		}
 		return result.get(0);
 	}
+
+    @Override
+    public ResourceSet getResourceSet() {
+        return resourceSet;
+    }
 }
