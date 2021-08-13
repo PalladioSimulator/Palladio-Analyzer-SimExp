@@ -71,9 +71,9 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public LoadBalancingSimulationExecutor() {
 	    
 	    // FIXME: decide if injected as constructor dependencies
-	    this.dbnPersistence = new DynamicBayesiannetworkPersistence(LoadBalancingDBNLoader.INSTANCE);
+	    this.dbnPersistence = new DynamicBayesiannetworkPersistence(DynamicBayesianNetworkResourceSetManager.INSTANCE);
 	    this.dbnModelGenerator = new DynamicBayesianNetworkModelGenerator(dbnPersistence, dbnLoader, ENVIRONMENTAL_STATICS_MODEL_FILE, ENVIRONMENTAL_DYNAMICS_MODEL_FILE);
-	    this.dbnLoader = new DynamicBayesianNetworkLoader(LoadBalancingDBNLoader.INSTANCE, ENVIRONMENTAL_STATICS_MODEL_FILE, ENVIRONMENTAL_DYNAMICS_MODEL_FILE, dbnModelGenerator);
+	    this.dbnLoader = new DynamicBayesianNetworkLoader(DynamicBayesianNetworkResourceSetManager.INSTANCE, ENVIRONMENTAL_STATICS_MODEL_FILE, ENVIRONMENTAL_DYNAMICS_MODEL_FILE, dbnModelGenerator);
 	    // load experimentModels; FIXME: should not be part of constructor
 	    // FIXME: if dbn == null -> generate model initially, else load model
         this.dbn = dbnLoader.loadOrGenerateDBN(experiment);
