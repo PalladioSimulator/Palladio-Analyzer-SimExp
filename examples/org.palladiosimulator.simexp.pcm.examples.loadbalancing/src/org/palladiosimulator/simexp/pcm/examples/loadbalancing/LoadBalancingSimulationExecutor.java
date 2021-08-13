@@ -45,6 +45,13 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public final static double LOWER_THRESHOLD_RT = 1.0;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
+	
+	private final static String ENVIRONMENTAL_MODELS_BASE_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
+	private final static String ENVIRONMENTAL_STATICS_MODEL_FILE = String.format("%1s/%2s.%3s", ENVIRONMENTAL_MODELS_BASE_PATH,
+          "LoadBalancerNonTemporalEnvironment", DynamicBayesianNetworkLoader.STATIC_MODEL_EXTENSION);
+	private final static String ENVIRONMENTAL_DYNAMICS_MODEL_FILE = String.format("%1s/%2s.%3s", ENVIRONMENTAL_MODELS_BASE_PATH,
+          "LoadBalancerEnvironmentalDynamics", DynamicBayesianNetworkLoader.DYNAMIC_MODEL_EXTENSION);;
+	
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -57,8 +64,20 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	
+	private IDynamicBayesianNetworkLoader dbnLoader;
+    private IDynamicBayesianNetworkPersistence dbnPersistence;
+    private IDynamicBayesianNetworkGenerator dbnModelGenerator;
+	
 	public LoadBalancingSimulationExecutor() {
-		this.dbn = LoadBalancingDBNLoader.INSTANCE.loadOrGenerateDBN(experiment);
+	    
+	    // FIXME: decide if injected as constructor dependencies
+	    this.dbnPersistence = new DynamicBayesiannetworkPersistence(LoadBalancingDBNLoader.INSTANCE);
+	    this.dbnModelGenerator = new DynamicBayesianNetworkModelGenerator(dbnPersistence, dbnLoader, ENVIRONMENTAL_STATICS_MODEL_FILE, ENVIRONMENTAL_DYNAMICS_MODEL_FILE);
+	    this.dbnLoader = new DynamicBayesianNetworkLoader(LoadBalancingDBNLoader.INSTANCE, ENVIRONMENTAL_STATICS_MODEL_FILE, ENVIRONMENTAL_DYNAMICS_MODEL_FILE, dbnModelGenerator);
+	    // load experimentModels; FIXME: should not be part of constructor
+	    // FIXME: if dbn == null -> generate model initially, else load model
+        this.dbn = dbnLoader.loadOrGenerateDBN(experiment);
+	    
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
@@ -70,6 +89,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
+	
 
 	@Override
 	protected String getExperimentFile() {
