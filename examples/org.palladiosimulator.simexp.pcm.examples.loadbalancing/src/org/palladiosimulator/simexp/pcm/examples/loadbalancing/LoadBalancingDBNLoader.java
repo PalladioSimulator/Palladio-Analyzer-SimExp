@@ -21,7 +21,7 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-public enum LoadBalancingDBNLoader implements IDynamicBayesianNetworkResourceSetManager, IDynamicBayesianNetworkLoader, IDynamicBayesianNetworkPersistence,
+public enum LoadBalancingDBNLoader implements IDynamicBayesianNetworkResourceSetManager, IDynamicBayesianNetworkLoader,
     IDynamicBayesianNetworkGenerator {
     INSTANCE;
 
@@ -37,20 +37,23 @@ public enum LoadBalancingDBNLoader implements IDynamicBayesianNetworkResourceSet
 	
 	private final ResourceSet resourceSet = new ResourceSetImpl();
 	
+	private final IDynamicBayesianNetworkPersistence dbnPersistence;
+	
 	private LoadBalancingDBNLoader() {
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
 		resourceSet.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
+		this.dbnPersistence = new DynamicBayesiannetworkPersistence(this);
 	}
 
-	public void persist(EObject eObj, String path) {
-		Resource resource = resourceSet.createResource(URI.createFileURI(path));
-		resource.getContents().add(eObj);
-		try {
-			resource.save(Collections.EMPTY_MAP);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void persist(EObject eObj, String path) {
+//		Resource resource = resourceSet.createResource(URI.createFileURI(path));
+//		resource.getContents().add(eObj);
+//		try {
+//			resource.save(Collections.EMPTY_MAP);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	public DynamicBayesianNetwork loadDBN() {
 		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
@@ -81,13 +84,13 @@ public enum LoadBalancingDBNLoader implements IDynamicBayesianNetworkResourceSet
 			bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
 		} catch (Exception e) {
 			bn = generateBN(templates, exp);
-			persist(bn.get(), BN_FILE);
+			dbnPersistence.persist(bn.get(), BN_FILE);
 		}
 
 		DynamicBayesianNetwork dbn = new DynamicBayesianNetworkGenerator(templates)
 				.createProbabilisticNetwork(bn.get());
 
-		persist(dbn.getDynamics(), DBN_FILE);
+		dbnPersistence.persist(dbn.getDynamics(), DBN_FILE);
 
 		return dbn;
 	}
