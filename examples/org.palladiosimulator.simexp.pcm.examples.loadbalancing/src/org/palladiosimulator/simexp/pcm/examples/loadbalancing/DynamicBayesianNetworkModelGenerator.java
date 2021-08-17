@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
@@ -10,7 +11,6 @@ import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 public class DynamicBayesianNetworkModelGenerator implements IDynamicBayesianNetworkGenerator {
@@ -31,14 +31,15 @@ public class DynamicBayesianNetworkModelGenerator implements IDynamicBayesianNet
     }
 
     @Override
-    public DynamicBayesianNetwork generateDBN(Experiment exp) {
+    public DynamicBayesianNetwork generateDBN(Resource usageModel) {
         TemplateVariableDefinitions templates = loadTemplates();
 
         BayesianNetwork bn = null;
         try {
             bn = new BayesianNetwork(null, dbnLoader.loadGroundProbabilisticNetwork());
         } catch (Exception e) {
-            bn = generateBN(templates, exp);
+            // FIXME: extract BN generation from exception handling
+            bn = generateBN(templates, usageModel);
             dbnPersistence.persist(bn.get(), environmentalStaticsModel);
         }
 
@@ -50,9 +51,9 @@ public class DynamicBayesianNetworkModelGenerator implements IDynamicBayesianNet
         return dbn;
     }
     
-    private BayesianNetwork generateBN(TemplateVariableDefinitions templates, Experiment exp) {
+    private BayesianNetwork generateBN(TemplateVariableDefinitions templates, Resource usageModel) {
         ResourceSet appliedModels = new ResourceSetImpl();
-        appliedModels.getResources().add(exp.getInitialModel().getUsageModel().eResource());
+        appliedModels.getResources().add(usageModel);
         return new BayesianNetworkGenerator(templates).generate(appliedModels);
     }
 

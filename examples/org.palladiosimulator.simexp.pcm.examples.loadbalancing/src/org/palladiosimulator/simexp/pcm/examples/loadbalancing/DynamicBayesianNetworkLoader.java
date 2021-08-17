@@ -1,12 +1,12 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
-import org.palladiosimulator.experimentautomation.experiments.Experiment;
 
 public class DynamicBayesianNetworkLoader implements IDynamicBayesianNetworkLoader {
     
@@ -53,12 +53,12 @@ public class DynamicBayesianNetworkLoader implements IDynamicBayesianNetworkLoad
 
     
     @Override
-    public DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp) {
+    public DynamicBayesianNetwork loadOrGenerateDBN(Resource usageModel) {
             try {
                 return loadDBN();
             } catch (Exception e) {
                 // FIXME: refactor: in case of exception, generate DBN; when does this situation occur?
-                return dbnModelGenerator.generateDBN(exp);
+                return dbnModelGenerator.generateDBN(usageModel);
             }
     }
 

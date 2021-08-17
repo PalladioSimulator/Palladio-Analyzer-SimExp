@@ -1,8 +1,8 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
+import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
-import org.palladiosimulator.experimentautomation.experiments.Experiment;
 
 public interface IDynamicBayesianNetworkLoader {
     
@@ -10,6 +10,6 @@ public interface IDynamicBayesianNetworkLoader {
     
     GroundProbabilisticNetwork loadGroundProbabilisticNetwork();
     
-    DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp);
+    DynamicBayesianNetwork loadOrGenerateDBN(Resource usageModel);
 
 }
