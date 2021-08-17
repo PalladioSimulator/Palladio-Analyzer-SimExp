@@ -3,17 +3,14 @@ package org.palladiosimulator.simexp.pcm.examples.executor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.examples.ISimExpPcmConfiguration;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public abstract class PcmExperienceSimulationExecutor {
 	
-    protected ISimExpPcmConfiguration simExpPcmConfiguration;
-	protected Experiment experiment;
+	private Experiment experiment;
 	
 	private static PcmExperienceSimulationExecutor instance;
-	
 	
 	public PcmExperienceSimulationExecutor() {}
 	
@@ -27,10 +24,19 @@ public abstract class PcmExperienceSimulationExecutor {
 	}
 	
 	protected void init() {
-        this.experiment = new ExperimentLoader().loadExperiment(simExpPcmConfiguration.getExperimentFile());
-        ExperimentProvider.create(this.experiment);
         QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
+
+    protected void initializeExperiment(IPcmConfiguration config) {
+        ExperimentLoader experimentLoader = new ExperimentLoader();
+        String experimentFile = config.getExperimentFile();
+        this.experiment = experimentLoader.loadExperiment(experimentFile);
+        ExperimentProvider.create(this.experiment);
+    }
+    
+    protected Experiment getExperiment() {
+        return experiment;
+    }
 	
 	public void execute() {
 		createSimulator().run();

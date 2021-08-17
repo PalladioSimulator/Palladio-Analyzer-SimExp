@@ -1,9 +1,8 @@
 package org.palladiosimulator.simexp.pcm.examples;
 
+import org.palladiosimulator.simexp.pcm.examples.executor.IPcmConfiguration;
 
-public interface ISimExpPcmConfiguration {
-    
-    String getExperimentFile();
+public interface ISimExpPcmConfiguration extends IPcmConfiguration {
     
     String getEnvironmentalStaticsModelFile();
     
