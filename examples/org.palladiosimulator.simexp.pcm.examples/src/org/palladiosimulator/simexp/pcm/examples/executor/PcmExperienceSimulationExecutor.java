@@ -3,29 +3,33 @@ package org.palladiosimulator.simexp.pcm.examples.executor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.examples.binding.ExecutorBindingModule;
+import org.palladiosimulator.simexp.pcm.examples.ISimExpPcmConfiguration;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
-import com.google.inject.Guice;
 
 public abstract class PcmExperienceSimulationExecutor {
 	
-	protected final Experiment experiment;
+    protected ISimExpPcmConfiguration simExpPcmConfiguration;
+	protected Experiment experiment;
 	
-//	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
 	private static PcmExperienceSimulationExecutor instance;
 	
-	public PcmExperienceSimulationExecutor() {
-		this.experiment = new ExperimentLoader().loadExperiment(getExperimentFile());
-		ExperimentProvider.create(this.experiment);
-		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
-	}
-
+	
+	public PcmExperienceSimulationExecutor() {}
+	
+	
 	public static PcmExperienceSimulationExecutor get() {
 	    if (instance == null) {
 	        instance = ServiceRegistry.get().findService(PcmExperienceSimulationExecutor.class).orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
+	        instance.init();
 	    }
 		return instance;
+	}
+	
+	protected void init() {
+        this.experiment = new ExperimentLoader().loadExperiment(simExpPcmConfiguration.getExperimentFile());
+        ExperimentProvider.create(this.experiment);
+        QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
 	
 	public void execute() {
@@ -37,7 +41,7 @@ public abstract class PcmExperienceSimulationExecutor {
 	protected abstract String getExperimentFile();
 	protected abstract ExperienceSimulator createSimulator();
 	
-	private String getReconfigurationRulesLocation() {
+	protected String getReconfigurationRulesLocation() {
 		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
 		experiment.getInitialModel().setReconfigurationRules(null);
 		return path;
