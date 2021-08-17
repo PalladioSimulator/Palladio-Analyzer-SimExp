@@ -10,9 +10,9 @@ import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioReposit
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.HWCrashFailure;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
+import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
+import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
-import org.palladiosimulator.simexp.state.failure.NodeFailureStateCreator;
-import org.palladiosimulator.simexp.state.failure.NodeFailureTypeCreator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
