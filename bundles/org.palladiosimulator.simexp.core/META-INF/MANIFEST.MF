@@ -27,3 +27,4 @@ Export-Package: org.palladiosimulator.simexp.core.action,
  org.palladiosimulator.simexp.core.store,
  org.palladiosimulator.simexp.core.strategy,
  org.palladiosimulator.simexp.core.util
+Import-Package: org.apache.log4j

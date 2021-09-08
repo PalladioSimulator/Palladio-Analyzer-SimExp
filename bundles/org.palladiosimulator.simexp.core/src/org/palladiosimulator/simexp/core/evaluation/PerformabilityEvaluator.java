@@ -2,11 +2,12 @@ package org.palladiosimulator.simexp.core.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
 public class PerformabilityEvaluator implements TotalRewardCalculation {
     
+    private static final Logger LOGGER = Logger.getLogger(PerformabilityEvaluator.class.getName());
     
     private final String simulationId;
     private final String sampleSpaceId;
@@ -44,6 +45,8 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
             double addedUpResponseTimes = responseTimes.stream().mapToDouble(Double::doubleValue).sum();
             totalReward =  addedUpResponseTimes / responseTimes.size();
         }
+        
+        LOGGER.info(String.format("Computed performability reward: expectation(response time): %", totalReward));
         return totalReward;
     }
     
