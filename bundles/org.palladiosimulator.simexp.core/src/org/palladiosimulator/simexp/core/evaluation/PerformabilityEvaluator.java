@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.core.evaluation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
@@ -46,12 +48,12 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
             totalReward =  addedUpResponseTimes / responseTimes.size();
         }
         
-        LOGGER.debug(String.format("Computed performability reward: expectation(response time): %.5f", totalReward));
+        LOGGER.debug(String.format(Locale.ENGLISH, "Computed performability reward: expectation(response time): %.5f", totalReward));
         return totalReward;
     }
     
     private double retrieveResponseTime(SimulatedExperience exp) {
-        // todo: check reward format; the reward is of format
+        // response time reward format is of type double
         return Double.parseDouble(exp.getReward());
     }
 

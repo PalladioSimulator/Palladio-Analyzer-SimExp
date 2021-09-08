@@ -50,12 +50,12 @@ public class PerformabilityRewardEvaluation implements RewardEvaluator {
     
     private static class PerformabilityRewardSignal extends RewardImpl<Double> {
 
-        private PerformabilityRewardSignal() {
-            super.setValue(0.0);
+        private PerformabilityRewardSignal(double responseTime) {
+            super.setValue(responseTime);
         }
 
         public static PerformabilityRewardSignal create(double responseTime) {
-            return new PerformabilityRewardSignal();
+            return new PerformabilityRewardSignal(responseTime);
         }
 
         @Override
