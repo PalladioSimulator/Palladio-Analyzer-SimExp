@@ -24,10 +24,13 @@ public class SimulatedRewardReceiver implements RewardReceiver {
 
 	@Override
 	public Reward<?> obtain(Sample sample) {
-		if (isNotValid(sample)) {
-			//TODO exception handling
-			throw new RuntimeException("");
-		}
+		SelfAdaptiveSystemStateSampleValidator checkSample = this.new SelfAdaptiveSystemStateSampleValidator();
+        try {
+            checkSample.validate(sample);
+        } catch (SimulatedRewardReceiver.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
+            throw new RuntimeException(e);
+        }
+		
 		return evaluate(sample);
 	}
 
@@ -38,9 +41,29 @@ public class SimulatedRewardReceiver implements RewardReceiver {
         return evaluatedReward;
 	}
 	
-	private boolean isNotValid(Sample sample) {
-		return (sample.getCurrent() instanceof SelfAdaptiveSystemState) == false ||
-			   (sample.getNext() instanceof SelfAdaptiveSystemState) 	== false;
-	}
+	
+	private class SelfAdaptiveSystemStateSampleValidator {
+	    
+        public void validate(Sample sample) throws SelfAdaptiveSystemStateSampleValidationExcpetion {
+            boolean isValid = true;
+            StringBuilder invalidSampleMsg = new StringBuilder("Self-adaptive system state sample is invalid. Reason: ");
+
+            if(!(sample.getCurrent() instanceof SelfAdaptiveSystemState)){
+                invalidSampleMsg.append("current state is of wrong type; expected to be of type SelfAdaptiveSystemState");
+                isValid = false;
+            } else if(!(sample.getNext() instanceof SelfAdaptiveSystemState)) {
+                invalidSampleMsg.append("subsequent state is of wrong type; expected to be of type SelfAdaptiveSystemState");
+                isValid = false;
+            } if (!isValid) {
+                throw new SelfAdaptiveSystemStateSampleValidationExcpetion(invalidSampleMsg.toString());
+            }
+        }
+
+        public class SelfAdaptiveSystemStateSampleValidationExcpetion extends Exception {
+            public SelfAdaptiveSystemStateSampleValidationExcpetion(String message) {
+                super(message);
+            }
+        }
+    }
 	
 }
