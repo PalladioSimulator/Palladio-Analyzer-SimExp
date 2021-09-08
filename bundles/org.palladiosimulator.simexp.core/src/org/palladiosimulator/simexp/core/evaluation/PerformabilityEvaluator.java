@@ -46,7 +46,7 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
             totalReward =  addedUpResponseTimes / responseTimes.size();
         }
         
-        LOGGER.info(String.format("Computed performability reward: expectation(response time): %", totalReward));
+        LOGGER.debug(String.format("Computed performability reward: expectation(response time): %.5f", totalReward));
         return totalReward;
     }
     
