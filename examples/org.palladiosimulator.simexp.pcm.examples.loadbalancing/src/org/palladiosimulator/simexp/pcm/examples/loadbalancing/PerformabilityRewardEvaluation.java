@@ -1,6 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -33,19 +36,18 @@ public class PerformabilityRewardEvaluation implements RewardEvaluator {
         double measuredResponseTime = 0.0;
         
         // filter simulated response time measurement from set (key: Usage Scenario: UsageScenario_Response Time)
-        List<SimulatedMeasurement> responseTimeMeasurement = quantity.getMeasurements()
-                .stream()
-                .filter(rt -> rt.getSpecification().getId().equals(responseTimeMeasurementSpec.getId())) 
-                .collect(Collectors.toList());
-        
-        if (responseTimeMeasurement.size() != 1) {
-            LOGGER.error(String.format("Check your measurement specification. Quantified state contains no measured response times: %s"
+        Optional<SimulatedMeasurement> simulatedResponseTimeMeasurement = quantity.findMeasurementWith(responseTimeMeasurementSpec);
+        if (!simulatedResponseTimeMeasurement.isPresent()) {
+            LOGGER.error(String.format("No simulated response time measurements available for quantified state: %s; check your measurement specification."
                     , quantity.getMeasurements().toString()));
         } else {
-            measuredResponseTime = responseTimeMeasurement.get(0).getValue();
+            LOGGER.info(String.format("Simulated response time measurements available for quantified state %s", quantity.toString()));
+            measuredResponseTime = simulatedResponseTimeMeasurement.get().getValue();
         }
         
-        return PerformabilityRewardSignal.create(measuredResponseTime);
+        PerformabilityRewardSignal rewardSignal = PerformabilityRewardSignal.create(measuredResponseTime);
+        LOGGER.debug(String.format(Locale.ENGLISH, "Performability reward signal for quantified state: %.10f", rewardSignal.getValue()));
+        return rewardSignal;
     }
     
     private static class PerformabilityRewardSignal extends RewardImpl<Double> {
