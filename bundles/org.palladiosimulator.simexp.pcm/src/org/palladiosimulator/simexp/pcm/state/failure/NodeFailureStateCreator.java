@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.state.failure;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.failuremodel.failurescenario.FailureScenario;
 import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioRepository;
@@ -17,8 +19,13 @@ public class NodeFailureStateCreator {
     private static FailurescenarioFactory factory = FailurescenarioFactory.eINSTANCE;
     private static CoreFactory coreFactory = CoreFactory.eINSTANCE;
     
-    public FailureScenarioRepository create(EList<ResourceContainer> containers, HWCrashFailure failureType) {
+    public FailureScenarioRepository createRepo() {
         FailureScenarioRepository repo = factory.createFailureScenarioRepository();
+        return repo;
+    }
+    
+    
+    public void addScenario(FailureScenarioRepository repo, List<ResourceContainer> containers, HWCrashFailure failureType) {
         if (!containers.isEmpty()) {
             for (ResourceContainer resourceContainer : containers) {
                 FailureScenario failureScenario = factory.createFailureScenario();
@@ -33,9 +40,8 @@ public class NodeFailureStateCreator {
                 repo.getFailurescenarios().add(failureScenario);
             }
         }
-        return repo;
     }
-    
+
     
     private Occurrence createFailureOccurenceForProcessingResource(ProcessingResourceSpecification processingResource) {
         Occurrence failureOccurence = factory.createOccurrence();

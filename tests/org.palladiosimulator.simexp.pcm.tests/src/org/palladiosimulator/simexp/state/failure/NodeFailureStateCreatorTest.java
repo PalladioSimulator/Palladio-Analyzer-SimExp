@@ -46,9 +46,9 @@ public class NodeFailureStateCreatorTest {
 
     @Test
     public void testCreateNoFailureScenarioIfResourceContainersNotPresent() {
-        FailureScenarioRepository repo = creator.create(ECollections.emptyEList(), null);
-        assertEquals(0, repo.getFailurescenarios()
-            .size());
+        FailureScenarioRepository repo = creator.createRepo();
+        creator.addScenario(repo, ECollections.emptyEList(), null);
+        assertEquals(0, repo.getFailurescenarios().size());
     }
 
     @Test
@@ -64,7 +64,8 @@ public class NodeFailureStateCreatorTest {
         HWCrashFailure failureType = (HWCrashFailure) failureTypeCreator.create()
             .getFailuretypes()
             .get(0);
-        FailureScenarioRepository repo = creator.create(containers, failureType);
+        FailureScenarioRepository repo = creator.createRepo();
+        creator.addScenario(repo, containers, failureType);
 
         EList<FailureScenario> resultedFailureScenario = repo.getFailurescenarios();
         assertEquals("Failed to create single failure scenario for HW crash failure with single cpu resource container",
@@ -97,7 +98,8 @@ public class NodeFailureStateCreatorTest {
         HWCrashFailure failureType = (HWCrashFailure) failureTypeCreator.create()
             .getFailuretypes()
             .get(0);
-        FailureScenarioRepository repo = creator.create(containers, failureType);
+        FailureScenarioRepository repo = creator.createRepo();
+        creator.addScenario(repo, containers, failureType);
 
         EList<FailureScenario> resultedFailureScenario = repo.getFailurescenarios();
 
@@ -132,7 +134,8 @@ public class NodeFailureStateCreatorTest {
         HWCrashFailure failureType = (HWCrashFailure) failureTypeCreator.create()
             .getFailuretypes()
             .get(0);
-        FailureScenarioRepository repo = creator.create(containers, failureType);
+        FailureScenarioRepository repo = creator.createRepo();
+        creator.addScenario(repo, containers, failureType);
 
         EList<FailureScenario> resultedFailureScenarios = repo.getFailurescenarios();
 
@@ -165,7 +168,8 @@ public class NodeFailureStateCreatorTest {
         HWCrashFailure failureType = (HWCrashFailure) failureTypeCreator.create()
             .getFailuretypes()
             .get(0);
-        FailureScenarioRepository failureScenarioRepo = creator.create(containers, failureType);
+        FailureScenarioRepository failureScenarioRepo = creator.createRepo();
+        creator.addScenario(failureScenarioRepo, containers, failureType);
 
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry()

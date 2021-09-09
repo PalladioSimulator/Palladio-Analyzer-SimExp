@@ -27,7 +27,7 @@ public abstract class AbstractPcmModelChange implements PcmModelChange {
     
     @Override
     public void apply(PerceivedValue<?> change) {
-        LOGGER.debug(String.format("Apply pcmModelChanges: pcmAttributeName:'%s' ; perceived value:'%s'", pcmAttrbuteName, change.getValue().toString()));
+        LOGGER.debug(String.format("Apply perceived environmental value '%s' to PCM model element '%s'", change.getValue().toString(), pcmAttrbuteName));
         // fixme: replace ? with a concrete type
         Optional<?> newValue = change.getElement(pcmAttrbuteName);
         
@@ -35,7 +35,7 @@ public abstract class AbstractPcmModelChange implements PcmModelChange {
             CategoricalValue changedValue = (CategoricalValue) change.getElement(pcmAttrbuteName).get();
             applyChange(changedValue);
         } else {
-            LOGGER.error("Failed binding: could not apply changed perceived value to PCM.");
+            LOGGER.error(String.format("Failed binding: could not apply perceived environmental value '%s' to PCM model element '%s'", change.getValue().toString(), pcmAttrbuteName));
         }
     }
     
