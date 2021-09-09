@@ -50,13 +50,12 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
 
         // node unavailable
         if (StringUtils.equals("unavailable", value.get())) {
-
             PCMResourceSetPartition pcm = ExperimentProvider.get()
                     .getExperimentRunner()
                     .getWorkingPartition();
             EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
             List<ResourceContainer> failedResourceContainers = filterFailedResourceContainer(resourceContainers, getPcmAttributeName());
-            LOGGER.debug(String.format("Unavailable server node detected: %s", debugMessageFailedServerNodes(failedResourceContainers)));
+            LOGGER.info(String.format("Unavailable server node detected: %s", debugMessageFailedServerNodes(failedResourceContainers)));
 
             // lookup failure model from blackboard partition
             ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
