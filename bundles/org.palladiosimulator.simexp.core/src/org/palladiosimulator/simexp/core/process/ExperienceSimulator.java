@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.core.process;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
@@ -11,6 +12,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 public class ExperienceSimulator {
+    
+    private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
 	private final MarkovSampling markovSampler;
 	private final List<ExperienceSimulationRunner> simulationRunner;

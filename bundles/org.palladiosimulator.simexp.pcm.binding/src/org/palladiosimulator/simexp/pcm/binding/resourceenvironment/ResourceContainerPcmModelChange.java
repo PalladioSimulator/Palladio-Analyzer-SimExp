@@ -1,19 +1,23 @@
 package org.palladiosimulator.simexp.pcm.binding.resourceenvironment;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioRepository;
+import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
+import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
 import org.palladiosimulator.failuremodel.failuretype.HWCrashFailure;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
-import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 /**
@@ -26,13 +30,13 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
     
     private static final Logger LOGGER = Logger.getLogger(ResourceContainerPcmModelChange.class);
 
-    private NodeFailureTypeCreator failureTypeCeator;
+//    private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
 
     public ResourceContainerPcmModelChange(String attributeName) {
         super(attributeName);
 
-        failureTypeCeator = new NodeFailureTypeCreator();
+//        failureTypeCeator = new NodeFailureTypeCreator();
         failureStateCreator = new NodeFailureStateCreator();
     }
 
@@ -49,28 +53,53 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
 
         // node unavailable
         if (StringUtils.equals("unavailable", value.get())) {
-            LOGGER.info("Unavailable server node detected ...");
-
-            // create failure model
-            FailureTypeRepository failureTypeRepo = failureTypeCeator.create();
-            HWCrashFailure hwCrashFailureType = (HWCrashFailure) failureTypeRepo.getFailuretypes()
-                .get(0);
 
             PCMResourceSetPartition pcm = ExperimentProvider.get()
-                .getExperimentRunner()
-                .getWorkingPartition();
-            EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment()
-                .getResourceContainer_ResourceEnvironment();
-            FailureScenarioRepository failureScenarioRepo = failureStateCreator.create(resourceContainers, hwCrashFailureType);
+                    .getExperimentRunner()
+                    .getWorkingPartition();
+            EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
+            List<ResourceContainer> failedResourceContainers = filterFailedResourceContainer(resourceContainers, getPcmAttributeName());
+            LOGGER.debug(String.format("%d unavailable server node(s) detected: %s", failedResourceContainers.size(), debugMessageFailedServerNodes(failedResourceContainers)));
 
-            // inject failure model into black board partition
+            // lookup failure model from blackboard partition
+            ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
+            
+            FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);;
+            FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition.getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository()).get(0);
+            HWCrashFailure hwCrashFailureType = (HWCrashFailure) failureTypeRepo.getFailuretypes().get(0);
+            
+            // add new failure scenario and update failure model in blackboard partition
+            failureStateCreator.addScenario(failureScenarioRepo, failedResourceContainers, hwCrashFailureType);
             try {
-                ExperimentProvider.get().getExperimentRunner().injectFailureScenario(failureScenarioRepo, failureTypeRepo);
+                ExperimentProvider.get().getExperimentRunner().updateFailureScenario(failureScenarioRepo);
             } catch (IOException e) {
-                LOGGER.error("Failed to inject failurescenario models into blackboard partition", e);
+                LOGGER.error("Failed to inject updated failurescenario model into blackboard partition", e);
             }
         }
     }
     
+    
+    private List<ResourceContainer> filterFailedResourceContainer(EList<ResourceContainer> resourceContainers, String filterFailedResourceContainerName) {
+        List<ResourceContainer> filteredFailedResourceContainters = resourceContainers.stream()
+                .filter(rc -> rc.getEntityName().equals(filterFailedResourceContainerName))
+                .collect(Collectors.toList());
+        return filteredFailedResourceContainters;
+    }
+    
+    
+    private String debugMessageFailedServerNodes(List<ResourceContainer> resourceContainers) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Failed resource containers [");
+
+        for (ResourceContainer resourceContainer : resourceContainers) {
+            sb.append("(");
+            sb.append(resourceContainer.getId());
+            sb.append(",");
+            sb.append(resourceContainer.getEntityName());
+            sb.append("),");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
     
 }

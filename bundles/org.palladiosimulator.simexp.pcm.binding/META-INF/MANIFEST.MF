@@ -11,5 +11,6 @@ Require-Bundle: org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.pcm,
  tools.mdsd.probdist.api,
  org.apache.commons.lang;bundle-version="2.6.0",
- org.palladiosimulator.failuremodel;bundle-version="5.0.0"
+ org.palladiosimulator.failuremodel;bundle-version="5.0.0",
+ de.uka.ipd.sdq.workflow.mdsd
 Export-Package: org.palladiosimulator.simexp.pcm.binding.api

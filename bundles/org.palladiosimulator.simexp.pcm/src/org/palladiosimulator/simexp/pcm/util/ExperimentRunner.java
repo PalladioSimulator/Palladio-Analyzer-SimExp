@@ -203,6 +203,16 @@ public class ExperimentRunner {
                 addResourceToPartition(resourceSet, modelURIFailureTypes, failureTypeRepo);
                 addResourceToPartition(resourceSet, modelURIFailureScenario, failureScenarioRepo);
         }
+
+        public void updateFailureScenario(FailureScenarioRepository failureScenarioRepo) throws IOException {
+            ResourceSetPartition partition = simulationContext.blackboard.getPartition(PCM_WORKING_PARTITION);
+            File tmpFileFailureScenario = File.createTempFile("serverNodeFailures", ".failurescenario");
+            URI modelURIFailureScenario = URI.createFileURI(tmpFileFailureScenario.getAbsolutePath());
+            
+            ResourceSet resourceSet = partition.getResourceSet();
+            // update in-memory models to blackboard partition
+            addResourceToPartition(resourceSet, modelURIFailureScenario, failureScenarioRepo);
+        }
         
         private void addResourceToPartition(ResourceSet resourceSet, URI modelURI, EObject modelRoot) {
             Resource resource = resourceSet.getResource(modelURI, false);
@@ -264,8 +274,16 @@ public class ExperimentRunner {
             .getPartition(PCM_WORKING_PARTITION);
     }
 
+    public ResourceSetPartition getPlainWorkingPartition() {
+        return simulationContext.getBlackboard().getPartition(PCM_WORKING_PARTITION);
+    }
+
     public void injectFailureScenario(FailureScenarioRepository failureScenarioRepo, FailureTypeRepository failureTypeRepo) throws IOException {
         simulationContext.injectFailureScenario(failureScenarioRepo, failureTypeRepo);
+    }
+
+    public void updateFailureScenario(FailureScenarioRepository failureScenarioRepo) throws IOException {
+        simulationContext.updateFailureScenario(failureScenarioRepo);
     }
     
 
