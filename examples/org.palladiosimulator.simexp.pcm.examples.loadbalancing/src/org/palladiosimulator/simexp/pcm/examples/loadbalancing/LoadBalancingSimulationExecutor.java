@@ -28,7 +28,6 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Measu
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
-import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
@@ -94,7 +93,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
