@@ -30,13 +30,10 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
     
     private static final Logger LOGGER = Logger.getLogger(ResourceContainerPcmModelChange.class);
 
-//    private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
 
     public ResourceContainerPcmModelChange(String attributeName) {
         super(attributeName);
-
-//        failureTypeCeator = new NodeFailureTypeCreator();
         failureStateCreator = new NodeFailureStateCreator();
     }
 
@@ -59,11 +56,10 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
                     .getWorkingPartition();
             EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
             List<ResourceContainer> failedResourceContainers = filterFailedResourceContainer(resourceContainers, getPcmAttributeName());
-            LOGGER.debug(String.format("%d unavailable server node(s) detected: %s", failedResourceContainers.size(), debugMessageFailedServerNodes(failedResourceContainers)));
+            LOGGER.debug(String.format("Unavailable server node detected: %s", debugMessageFailedServerNodes(failedResourceContainers)));
 
             // lookup failure model from blackboard partition
             ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
-            
             FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);;
             FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition.getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository()).get(0);
             HWCrashFailure hwCrashFailureType = (HWCrashFailure) failureTypeRepo.getFailuretypes().get(0);
@@ -89,7 +85,7 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
     
     private String debugMessageFailedServerNodes(List<ResourceContainer> resourceContainers) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Failed resource containers [");
+        sb.append("Failed resource container(s) [");
 
         for (ResourceContainer resourceContainer : resourceContainers) {
             sb.append("(");
