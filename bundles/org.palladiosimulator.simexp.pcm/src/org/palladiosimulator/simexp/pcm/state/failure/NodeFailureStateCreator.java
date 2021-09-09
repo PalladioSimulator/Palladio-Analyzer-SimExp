@@ -42,25 +42,6 @@ public class NodeFailureStateCreator {
         }
     }
 
-//    public FailureScenarioRepository create(EList<ResourceContainer> containers, HWCrashFailure failureType) {
-//        FailureScenarioRepository repo = factory.createFailureScenarioRepository();
-//        if (!containers.isEmpty()) {
-//            for (ResourceContainer resourceContainer : containers) {
-//                FailureScenario failureScenario = factory.createFailureScenario();
-//                failureScenario.setEntityName(failureType.getEntityName() + "at 0s point in time of " + resourceContainer.getEntityName());
-//                EList<ProcessingResourceSpecification> processingResources = resourceContainer.getActiveResourceSpecifications_ResourceContainer();
-//                EList<Occurrence> occurences = failureScenario.getOccurrences();
-//                for (ProcessingResourceSpecification processingResource : processingResources) {
-//                    Occurrence occurence = createFailureOccurenceForProcessingResource(processingResource);
-//                    occurence.setFailure(failureType);
-//                    occurences.add(occurence);
-//                }
-//                repo.getFailurescenarios().add(failureScenario);
-//            }
-//        }
-//        return repo;
-//    }
-    
     
     private Occurrence createFailureOccurenceForProcessingResource(ProcessingResourceSpecification processingResource) {
         Occurrence failureOccurence = factory.createOccurrence();
