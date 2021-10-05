@@ -9,9 +9,9 @@ public abstract class AbstractExperienceSimulationRunner implements ExperienceSi
 
     @Override
     public void initialize() {
-        LOGGER.info("==== Initialize simulation");
+        LOGGER.info("==== Initialize experience simulator");
         doInitialize();
-        LOGGER.info("==== Done. Initialize simulation");
+        LOGGER.info("==== Done. Initialize experience simulator");
     }
     
     @Override
@@ -42,7 +42,7 @@ public abstract class AbstractExperienceSimulationRunner implements ExperienceSi
     protected void doInitialize() {
         /** default - nothing to do here
          * 
-         *   here any behavior should be implemented that is required to initialize the simulation
+         *   here any behavior should be implemented that is required to initialize the experience simulator
          *   
          *   */
     }
