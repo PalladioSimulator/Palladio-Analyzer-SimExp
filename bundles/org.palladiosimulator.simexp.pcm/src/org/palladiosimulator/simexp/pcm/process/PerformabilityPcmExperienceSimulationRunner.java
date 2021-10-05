@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
-public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSimulationRunner { //implements ExperienceSimulationRunner, Initializable {
+public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSimulationRunner {
     
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
