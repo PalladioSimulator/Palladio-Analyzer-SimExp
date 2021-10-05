@@ -31,7 +31,7 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
 
     
     @Override
-    protected void doInitialize() {
+    public void initialize() {
         // FIXME: check if failurescenario models are available in working partition
         // lookup failure model from blackboard partition
         try {

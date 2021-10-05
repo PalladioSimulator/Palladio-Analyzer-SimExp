@@ -6,9 +6,17 @@ import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConsta
 import static org.palladiosimulator.simexp.pcm.util.PcmSimulatedExperienceConstants.PCM_WORKING_PARTITION;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +40,7 @@ import org.palladiosimulator.experimentautomation.application.tooladapter.abstra
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ToolConfiguration;
 import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioRepository;
+import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.simulizar.launcher.jobs.LoadSimuLizarModelsIntoBlackboardJob;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -48,6 +57,10 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 public class ExperimentRunner {
     
     private static final Logger LOGGER = Logger.getLogger(ExperimentRunner.class);
+    
+    
+    private static final String FAILURE_SCENARIO_MODEL_URI = "http://palladiosimulator.org/failurescenario/1.0";
+    private static final String FAILURE_TYPE_MODEL_URI = "http://palladiosimulator.org/failuretype/1.0";
 
 
     private class ExperimentRunExtractor {
@@ -194,9 +207,11 @@ public class ExperimentRunner {
         public void injectFailureScenario(FailureScenarioRepository failureScenarioRepo, FailureTypeRepository failureTypeRepo) throws IOException {
                 ResourceSetPartition partition = simulationContext.blackboard.getPartition(PCM_WORKING_PARTITION);
                 File tmpFileFailureTypes = File.createTempFile("serverNodeFailureTypes", ".failuretype");
-                URI modelURIFailureTypes = URI.createFileURI(tmpFileFailureTypes.getAbsolutePath());
+//                URI modelURIFailureTypes = URI.createFileURI(tmpFileFailureTypes.getAbsolutePath());
+                URI modelURIFailureTypes = URI.createURI(FAILURE_TYPE_MODEL_URI);
                 File tmpFileFailureScenario = File.createTempFile("serverNodeFailures", ".failurescenario");
-                URI modelURIFailureScenario = URI.createFileURI(tmpFileFailureScenario.getAbsolutePath());
+//                URI modelURIFailureScenario = URI.createFileURI(tmpFileFailureScenario.getAbsolutePath());
+                URI modelURIFailureScenario = URI.createURI(FAILURE_SCENARIO_MODEL_URI);
                 
                 ResourceSet resourceSet = partition.getResourceSet();
                 // add in-memory models to blackboard partition
@@ -207,11 +222,13 @@ public class ExperimentRunner {
         public void updateFailureScenario(FailureScenarioRepository failureScenarioRepo) throws IOException {
             ResourceSetPartition partition = simulationContext.blackboard.getPartition(PCM_WORKING_PARTITION);
             File tmpFileFailureScenario = File.createTempFile("serverNodeFailures", ".failurescenario");
-            URI modelURIFailureScenario = URI.createFileURI(tmpFileFailureScenario.getAbsolutePath());
+//            URI modelURIFailureScenario = URI.createFileURI(tmpFileFailureScenario.getAbsolutePath());
+            URI modelURIFailureScenario = URI.createURI(FAILURE_SCENARIO_MODEL_URI);
             
             ResourceSet resourceSet = partition.getResourceSet();
             // update in-memory models to blackboard partition
             addResourceToPartition(resourceSet, modelURIFailureScenario, failureScenarioRepo);
+            
         }
         
         private void addResourceToPartition(ResourceSet resourceSet, URI modelURI, EObject modelRoot) {
@@ -223,22 +240,48 @@ public class ExperimentRunner {
             try {
                 Resource initalResource = create(resourceSet, modelURI, modelRoot);
                 addResource(resourceSet, initalResource);
+                printResourceToFileSystem(initalResource);
+                
             } catch (IOException e) {
                 LOGGER.error(String.format("Failed to add model %s to resource set", modelURI), e);
             }
+        }
+        
+        
+        private void printResourceToFileSystem(Resource resource) throws FileNotFoundException, IOException {
+            Path pathBaseDir = FileSystems.getDefault().getPath("C:\\tmp\\SIMEXP\\");
+            URI oldUri = resource.getURI();
+            try {
+                URI tmpUri = URI.createFileURI(pathBaseDir.toString() + "\\" + oldUri.segment(0) + "_" + Long.toString(System.nanoTime()));
+                resource.setURI(tmpUri);
+                Map<?,?> options = new HashMap<>();
+                resource.save(options);
+            } catch (IOException e) {
+                LOGGER.error(String.format("Failed to persist resource URI %s to filesytem", "bla"), e);
+            
+            } finally {
+                resource.setURI(oldUri);
+            }
+            
         }
         
         private Resource create(ResourceSet resourceSet, URI modelURI, EObject modelRoot) throws IOException {
             Resource newResource = resourceSet.createResource(modelURI);
             newResource.getContents().clear();
             newResource.getContents().add(modelRoot);
-            newResource.save(Collections.EMPTY_MAP);
+//            newResource.save(Collections.EMPTY_MAP);
             resourceSet.getResources().add(newResource);
             return newResource;
         }
         
         private void addResource(ResourceSet resourceSet, Resource newResource) {
             resourceSet.getResources().add(newResource);
+        }
+
+        public void clearFailureScenarios() {
+            ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
+            FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);
+            failureScenarioRepo.getFailurescenarios().clear();
         }
 
     }
@@ -284,6 +327,10 @@ public class ExperimentRunner {
 
     public void updateFailureScenario(FailureScenarioRepository failureScenarioRepo) throws IOException {
         simulationContext.updateFailureScenario(failureScenarioRepo);
+    }
+    
+    public void clearFailureScenarios() {
+        simulationContext.clearFailureScenarios();
     }
     
 
