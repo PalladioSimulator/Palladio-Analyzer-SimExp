@@ -25,6 +25,11 @@ public class NodeFailureStateCreator {
     }
     
     
+    public static void resetScenarios(FailureScenarioRepository repo) {
+        repo.getFailurescenarios().clear();
+    }
+    
+    
     public void addScenario(FailureScenarioRepository repo, List<ResourceContainer> containers, HWCrashFailure failureType) {
         if (!containers.isEmpty()) {
             for (ResourceContainer resourceContainer : containers) {

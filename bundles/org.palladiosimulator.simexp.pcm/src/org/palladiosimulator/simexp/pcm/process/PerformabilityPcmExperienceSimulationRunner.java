@@ -6,15 +6,17 @@ import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioReposit
 import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
-public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSimulationRunner { //implements ExperienceSimulationRunner, Initializable {
+public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSimulationRunner {
     
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
@@ -31,7 +33,7 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
 
     
     @Override
-    protected void doInitialize() {
+    public void initialize() {
         // FIXME: check if failurescenario models are available in working partition
         // lookup failure model from blackboard partition
         try {
@@ -52,5 +54,12 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
         assert failureScenarioRepo != null;
         assert failureTypeRepo != null;
     }
+    
+    @Override
+        protected void postSimulate(SelfAdaptiveSystemState<?> sasState) {
+            ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
+            expRunner.clearFailureScenarios();
+            LOGGER.info("Cleared failurescenarios model.");
+        }
     
 }
