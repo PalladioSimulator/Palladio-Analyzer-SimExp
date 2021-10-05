@@ -6,11 +6,13 @@ import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioReposit
 import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
@@ -52,5 +54,12 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
         assert failureScenarioRepo != null;
         assert failureTypeRepo != null;
     }
+    
+    @Override
+        protected void postSimulate(SelfAdaptiveSystemState<?> sasState) {
+            ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
+            expRunner.clearFailureScenarios();
+            LOGGER.info("Cleared failurescenarios model.");
+        }
     
 }
