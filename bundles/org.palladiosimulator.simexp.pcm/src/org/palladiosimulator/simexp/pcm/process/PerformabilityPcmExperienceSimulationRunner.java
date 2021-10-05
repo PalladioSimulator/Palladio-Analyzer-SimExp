@@ -33,7 +33,7 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
 
     
     @Override
-    public void initialize() {
+    protected void doInitialize() {
         // FIXME: check if failurescenario models are available in working partition
         // lookup failure model from blackboard partition
         try {
@@ -54,6 +54,7 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
         assert failureScenarioRepo != null;
         assert failureTypeRepo != null;
     }
+    
     
     @Override
         protected void postSimulate(SelfAdaptiveSystemState<?> sasState) {
