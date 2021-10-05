@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.pcm.process;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
+import org.palladiosimulator.simexp.core.process.AbstractExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
-public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner {
+public class PcmExperienceSimulationRunner extends AbstractExperienceSimulationRunner {
 
 	private final DataSource dataSource;
 	private final ExperimentProvider experimentProvider;
@@ -28,10 +28,11 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 	    this.experimentProvider = experimentProvider;
 	}
 
+
 	@Override
-	public void simulate(SelfAdaptiveSystemState<?> sasState) {
-		runSimulation();
-		retrieveStateQuantities(asPcmState(sasState));
+	protected void doSimulate(SelfAdaptiveSystemState<?> sasState) {
+	    runSimulation();
+	    retrieveStateQuantities(asPcmState(sasState));
 	}
 
 	private PcmSelfAdaptiveSystemState asPcmState(SelfAdaptiveSystemState<?> sasState) {
@@ -61,5 +62,6 @@ public class PcmExperienceSimulationRunner implements ExperienceSimulationRunner
 		return stateQuantity.getMeasurementSpecs().stream().filter(PcmMeasurementSpecification.class::isInstance)
 				.map(PcmMeasurementSpecification.class::cast).collect(Collectors.toSet());
 	}
+
 
 }
