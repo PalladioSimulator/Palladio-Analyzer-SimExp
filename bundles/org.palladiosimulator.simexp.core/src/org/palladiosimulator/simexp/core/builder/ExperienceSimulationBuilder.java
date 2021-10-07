@@ -115,6 +115,7 @@ public abstract class ExperienceSimulationBuilder {
 				Set<Reconfiguration<?>> reconfigurationOptions = options.stream()
 						.map(each -> (Reconfiguration<?>) each)
 						.collect(Collectors.toSet());
+				// FIXME: simplify: execution of action should be part of MAPE-K -> no return type of Action required
 				return adaptedStrategy.select(source, reconfigurationOptions);
 			}
 			
@@ -142,6 +143,7 @@ public abstract class ExperienceSimulationBuilder {
 		}
 		
 		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy strategy) {
+		    // todo: setup mape-k executor here
 			ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
 			return this;
 		}
