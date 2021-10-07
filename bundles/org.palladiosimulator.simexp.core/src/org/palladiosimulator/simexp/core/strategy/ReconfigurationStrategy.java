@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 // This class is not yet integrated in the simulated experience process. This is rather a reminder for future work. 
 // The idea is to introduce a dedicated concept for reconfiguration strategies following the MAPE-K principles.
-public abstract class ReconfigurationStrategy<T> implements Policy<Reconfiguration<T>> {
+public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> implements Policy<T> {
     
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationStrategy.class);
     
@@ -21,19 +21,23 @@ public abstract class ReconfigurationStrategy<T> implements Policy<Reconfigurati
     
 
 	@Override
-	public Reconfiguration<T> select(State source, Set<Reconfiguration<T>> options) {
-	    Reconfiguration<T> reconfiguration = emptyReconfiguration();
+	public T select(State source, Set<T> options) {
+	    T reconfiguration = emptyReconfiguration();
 	    
 	    LOGGER.info("Run MAPE-K loop ...");
+	    LOGGER.info("Execute 'MONITOR' step");
 		monitor(source, knowledge);
 		LOGGER.info("Executed 'MONITOR' step");
+		
+		LOGGER.info("Execute 'ANALYZE' step");
 		boolean isAnalyzable = analyse(source, knowledge);
-		LOGGER.info("Executed 'ANALYZE' step");
+		LOGGER.info(String.format("Executed 'ANALYZE' step. Found constraint violations: '%s'", isAnalyzable));
 		if (isAnalyzable) {
-			reconfiguration = plan(source, knowledge);
+		    LOGGER.info("Execute 'PLANING' step");
+			reconfiguration = plan(source, options, knowledge);
 			LOGGER.info("Executed 'PLANING' step");
 		}
-		LOGGER.info(String.format("Execute 'EXECUTION' step applying reconfiguration = %s", reconfiguration.toString()));
+		LOGGER.info(String.format("Execute 'EXECUTE' step by applying adaptation = %s", reconfiguration.toString()));
 		return reconfiguration;
 	}
 
@@ -41,7 +45,7 @@ public abstract class ReconfigurationStrategy<T> implements Policy<Reconfigurati
 
 	protected abstract boolean analyse(State source, SharedKnowledge knowledge);
 
-	protected abstract Reconfiguration<T> plan(State source, SharedKnowledge knowledge);
+	protected abstract T plan(State source, Set<T> options, SharedKnowledge knowledge);
 	
-	protected abstract Reconfiguration<T> emptyReconfiguration();
+	protected abstract T emptyReconfiguration();
 }
