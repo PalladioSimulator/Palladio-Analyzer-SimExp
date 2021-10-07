@@ -25,15 +25,19 @@ public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> impl
 	    T reconfiguration = emptyReconfiguration();
 	    
 	    LOGGER.info("Run MAPE-K loop ...");
+	    LOGGER.info("Execute 'MONITOR' step");
 		monitor(source, knowledge);
 		LOGGER.info("Executed 'MONITOR' step");
+		
+		LOGGER.info("Execute 'ANALYZE' step");
 		boolean isAnalyzable = analyse(source, knowledge);
 		LOGGER.info(String.format("Executed 'ANALYZE' step. Found constraint violations: '%s'", isAnalyzable));
 		if (isAnalyzable) {
+		    LOGGER.info("Execute 'PLANING' step");
 			reconfiguration = plan(source, options, knowledge);
 			LOGGER.info("Executed 'PLANING' step");
 		}
-		LOGGER.info(String.format("Execute 'EXECUTION' step applying reconfiguration = %s", reconfiguration.toString()));
+		LOGGER.info(String.format("Execute 'EXECUTE' step by applying adaptation = %s", reconfiguration.toString()));
 		return reconfiguration;
 	}
 
