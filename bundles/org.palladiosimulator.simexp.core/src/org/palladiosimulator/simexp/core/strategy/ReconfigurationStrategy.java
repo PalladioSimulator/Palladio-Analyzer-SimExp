@@ -25,23 +25,23 @@ public abstract class ReconfigurationStrategy<T> implements Policy<Reconfigurati
 	    Reconfiguration<T> reconfiguration = emptyReconfiguration();
 	    
 	    LOGGER.info("Run MAPE-K loop ...");
-		monitor(knowledge);
+		monitor(source, knowledge);
 		LOGGER.info("Executed 'MONITOR' step");
-		boolean isAnalyzable = analyse(knowledge);
+		boolean isAnalyzable = analyse(source, knowledge);
 		LOGGER.info("Executed 'ANALYZE' step");
 		if (isAnalyzable) {
-			reconfiguration = plan(knowledge);
+			reconfiguration = plan(source, knowledge);
 			LOGGER.info("Executed 'PLANING' step");
 		}
 		LOGGER.info(String.format("Execute 'EXECUTION' step applying reconfiguration = %s", reconfiguration.toString()));
 		return reconfiguration;
 	}
 
-	protected abstract void monitor(SharedKnowledge knowledge);
+	protected abstract void monitor(State source, SharedKnowledge knowledge);
 
-	protected abstract boolean analyse(SharedKnowledge knowledge);
+	protected abstract boolean analyse(State source, SharedKnowledge knowledge);
 
-	protected abstract Reconfiguration<T> plan(SharedKnowledge knowledge);
+	protected abstract Reconfiguration<T> plan(State source, SharedKnowledge knowledge);
 	
 	protected abstract Reconfiguration<T> emptyReconfiguration();
 }
