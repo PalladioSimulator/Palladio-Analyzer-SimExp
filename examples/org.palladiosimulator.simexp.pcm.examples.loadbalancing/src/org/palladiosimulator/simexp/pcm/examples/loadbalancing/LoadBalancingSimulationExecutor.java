@@ -59,8 +59,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
-//	private final Policy<QVToReconfiguration> reconfSelectionPolicy;
-	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
+	private final Policy<Action<?>> reconfSelectionPolicy;
 	
 	public LoadBalancingSimulationExecutor() {
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
