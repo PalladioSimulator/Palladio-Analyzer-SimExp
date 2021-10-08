@@ -24,20 +24,23 @@ public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> impl
 	public T select(State source, Set<T> options) {
 	    T reconfiguration = emptyReconfiguration();
 	    
-	    LOGGER.info("Run MAPE-K loop ...");
-	    LOGGER.info("Execute 'MONITOR' step");
+	    LOGGER.info("==== Start MAPE-K loop ====");
+	    LOGGER.info("'MONITOR' step start");
 		monitor(source, knowledge);
-		LOGGER.info("Executed 'MONITOR' step");
+        LOGGER.debug(String.format("'MONITOR' knowledge snapshot: %s", knowledge.toString()));
+		LOGGER.info("'MONITOR' step done");
 		
-		LOGGER.info("Execute 'ANALYZE' step");
+		LOGGER.info("'ANALYZE' step start");
 		boolean isAnalyzable = analyse(source, knowledge);
-		LOGGER.info(String.format("Executed 'ANALYZE' step. Found constraint violations: '%s'", isAnalyzable));
+		LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
+		LOGGER.info("'ANALYZE' step done");
 		if (isAnalyzable) {
-		    LOGGER.info("Execute 'PLANING' step");
+		    LOGGER.info("'PLANNING' step start");
 			reconfiguration = plan(source, options, knowledge);
-			LOGGER.info("Executed 'PLANING' step");
+            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
+            LOGGER.info("'PLANNING' step done");
 		}
-		LOGGER.info(String.format("Execute 'EXECUTE' step by applying adaptation = %s", reconfiguration.toString()));
+		LOGGER.info("'EXECUTE' step start");
 		return reconfiguration;
 	}
 
