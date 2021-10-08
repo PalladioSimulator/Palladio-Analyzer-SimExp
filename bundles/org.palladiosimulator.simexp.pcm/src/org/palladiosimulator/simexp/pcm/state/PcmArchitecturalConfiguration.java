@@ -66,28 +66,35 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 	@Override
 	public ArchitecturalConfiguration<?> apply(Reconfiguration<?> reconf) {
 		if (isNotValid(reconf)) {
-			throw new RuntimeException("Failed to apply reconfiguration: reconfiguration was invalid. Expected a QVTO transformation.");
+			throw new RuntimeException("'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of QVToReconfiguration");
 		}
-
 		QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
 		if (qvtoReconf.isEmptyReconfiguration() == false) {
-			apply(qvtoReconf, new ResourceTableManager());
+		    String transformationName = qvtoReconf.getTransformation().getTransformationName();
+            LOGGER.info(String.format("'EXECUTE' apply reconfiguration '%s'", transformationName));
+			doApply(qvtoReconf, new ResourceTableManager());
 		}
 
-		return new PcmArchitecturalConfiguration(makeSnapshot());
+		LOGGER.info("'EXECUTE' step done");
+		PcmArchitecturalConfiguration updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration(makeSnapshot());
+		return updatedArchitecturalConfiguration;
 	}
 
 	private PCMInstance makeSnapshot() {
 		return ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM();
 	}
 
-	private void apply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
+	private void doApply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
+	    boolean succeded = false;
 		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator();
-		boolean succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
-		if (!succeded) {
-			LOGGER.error("Failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration.");
+		succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
+		String transformationName = reconf.getTransformation().getTransformationName();
+		if (succeded) {
+		    LOGGER.info(String.format("'EXECUTE' applied reconfiguration '%s'", transformationName));
+		} else {
+			LOGGER.error(String.format("'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration '%s'"
+			        , transformationName));
 		}
-		LOGGER.info(String.format("Applied reconfiguration: '%s'", reconf.getTransformation().getTransformationName()));
 	}
 
 	private boolean isNotValid(Reconfiguration<?> action) {

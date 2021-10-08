@@ -9,24 +9,24 @@ public abstract class AbstractExperienceSimulationRunner implements ExperienceSi
 
     @Override
     public void initialize() {
-        LOGGER.info("==== Initialize experience simulator");
+        LOGGER.info("Initialize experience simulator");
         doInitialize();
-        LOGGER.info("==== Done. Initialize experience simulator");
+        LOGGER.info("Initialized experience simulator");
     }
     
     @Override
     public final void simulate(SelfAdaptiveSystemState<?> sasState) {
-        LOGGER.info(String.format("==== Run pre-simulation hook for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Execute pre-simulation hook for state '%s'", sasState.toString()));
         preSimulate(sasState);
-        LOGGER.info(String.format("==== Done. Pre-simulation hook for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Executed pre-simulation hook for state '%s'", sasState.toString()));
         
-        LOGGER.info(String.format("==== Run simulation for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Do simulation for state '%s'", sasState.toString()));
         doSimulate(sasState);
-        LOGGER.info(String.format("==== Done. Simulation for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Done simulation for state '%s'", sasState.toString()));
         
-        LOGGER.info(String.format("==== Run post-simulation hook for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Execute post-simulation hook for state '%s'", sasState.toString()));
         postSimulate(sasState);
-        LOGGER.info(String.format("==== Done. Post-simulation hook for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Executed post-simulation hook for state '%s'", sasState.toString()));
     }
 
     protected void preSimulate(SelfAdaptiveSystemState<?> sasState) {
