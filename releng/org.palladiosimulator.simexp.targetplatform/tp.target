@@ -293,6 +293,15 @@
 	</location>
 
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-addons-failurescenario/releases/latest/"/>
+		<unit id="org.palladiosimulator.failuremodel.feature.feature.group" version="5.0.0.202109150727"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-addons-failurescenario/nightly/"/>
+		<unit id="org.palladiosimulator.failuremodel.feature.feature.group" version="5.0.0.202109150727"/>
+	</location>
+
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 		<repository location="https://updatesite.mdsd.tools/metamodel-modeling-probabilitydistributions/releases/latest/"/>
 		<unit id="tools.mdsd.probdist.api.feature.feature.group" version="1.0.0.202006041242"/>
 	</location>
@@ -309,5 +318,10 @@
 		<repository location="https://updatesite.mdsd.tools/metamodel-modeling-foundations/nightly"/>
 		<unit id="tools.mdsd.modelingfoundations.identifier.feature.feature.group" version="1.0.0.202010011104"/>
 	</location>	
+	
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+        <repository location="https://updatesite.mdsd.tools/build-licensefeature/releases/1.0.0" />
+        <unit id="tools.mdsd.license.epl2.feature.group" version="1.0.0" />
+    </location>
 </locations>
 </target>
