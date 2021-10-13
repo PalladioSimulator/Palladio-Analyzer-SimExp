@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar;bundle-version="1.0.0",
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model;bundle-version="1.0.0",
  org.palladiosimulator.simexp.service,
- org.palladiosimulator.envdyn.api
+ org.palladiosimulator.envdyn.api,
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples
 Bundle-ActivationPolicy: lazy
