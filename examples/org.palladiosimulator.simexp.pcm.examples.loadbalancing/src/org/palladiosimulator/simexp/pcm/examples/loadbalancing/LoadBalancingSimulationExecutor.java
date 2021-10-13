@@ -12,6 +12,7 @@ import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -30,6 +31,7 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Measu
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
@@ -59,7 +61,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
-	private final Policy<Action<?>> reconfSelectionPolicy;
+	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
 	
 	public LoadBalancingSimulationExecutor() {
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
@@ -67,7 +69,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
+		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
@@ -83,7 +85,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+//		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
@@ -95,7 +98,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
+//					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
@@ -113,7 +117,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 				  	.done()
 				.specifyRewardHandling()
 				  	//.withRewardEvaluator(getSimpleRewardEvaluator())
-				  	.withRewardEvaluator(getRewardEvaluator())
+//				  	.withRewardEvaluator(getRewardEvaluator())
+				  	.withRewardEvaluator(getPerformabilityRewardEvaluator())
 				  	.done()
 				.build();
 	}
@@ -128,6 +133,12 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private RewardEvaluator getRewardEvaluator() {
 		return new LoadBalancingRewardEvaluation(upperResponseTimeThreshold(), cpuServer1Threshold(), cpuServer2Threshold());
 	}
+	
+
+    private RewardEvaluator getPerformabilityRewardEvaluator() {
+        PcmMeasurementSpecification responseTimeMeasurementSpec = pcmSpecs.get(0);
+        return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec);
+    }
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> upperResponseTimeThreshold() {
 		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));

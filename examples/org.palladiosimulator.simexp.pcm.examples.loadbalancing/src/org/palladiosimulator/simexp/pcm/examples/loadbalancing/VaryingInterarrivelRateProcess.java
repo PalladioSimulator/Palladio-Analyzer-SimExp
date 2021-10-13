@@ -299,7 +299,7 @@ public class VaryingInterarrivelRateProcess {
 		};
 	}
 
-	private List<InputValue> toInputs(Object sample) {
+	public static List<InputValue> toInputs(Object sample) {
 		if (List.class.isInstance(sample)) {
 			List<?> inputs = List.class.cast(sample);
 			if (inputs.isEmpty() == false) {
