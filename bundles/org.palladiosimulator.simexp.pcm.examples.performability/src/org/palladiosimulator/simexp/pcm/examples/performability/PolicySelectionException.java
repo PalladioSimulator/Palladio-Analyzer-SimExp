@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
+package org.palladiosimulator.simexp.pcm.examples.performability;
 
 public class PolicySelectionException extends Exception {
 

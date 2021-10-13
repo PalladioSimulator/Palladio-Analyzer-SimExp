@@ -29,6 +29,8 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
@@ -85,8 +87,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-//		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
-		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+//		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");

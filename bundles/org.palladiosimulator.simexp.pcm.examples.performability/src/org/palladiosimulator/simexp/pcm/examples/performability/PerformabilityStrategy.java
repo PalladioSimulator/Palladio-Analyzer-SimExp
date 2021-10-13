@@ -1,7 +1,6 @@
-package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
+package org.palladiosimulator.simexp.pcm.examples.performability;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.simexp.pcm.examples.loadbalancing.VaryingInterarrivelRateProcess.toInputs;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 import com.google.common.collect.Maps;
@@ -197,7 +197,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        for (InputValue each : toInputs(state.getValue()
+        for (InputValue each : EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue())) {
             if (isServerNodeVariable(each.variable)) {
                 ResourceContainer container = (ResourceContainer) each.variable.getAppliedObjects()

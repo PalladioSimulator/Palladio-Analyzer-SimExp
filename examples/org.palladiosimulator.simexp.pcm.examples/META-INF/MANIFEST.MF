@@ -12,8 +12,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.experimentautomation.application;bundle-version="1.1.0",
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar;bundle-version="1.0.0",
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model;bundle-version="1.0.0",
- org.palladiosimulator.simexp.service
+ org.palladiosimulator.simexp.service,
+ org.palladiosimulator.envdyn.api
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples
 Bundle-ActivationPolicy: lazy
-Export-Package: org.palladiosimulator.simexp.pcm.examples.executor
+Export-Package: org.palladiosimulator.simexp.pcm.examples.executor,
+ org.palladiosimulator.simexp.pcm.examples.utils
