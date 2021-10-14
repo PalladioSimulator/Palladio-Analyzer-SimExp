@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExperimentAutomation.Experiments:ExperimentRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ExperimentAutomation.Experiments="http://palladiosimulator.org/ExperimentAutomation/Experiments/1.0" xmlns:ExperimentAutomation.Experiments.AbstractSimulation="http://palladiosimulator.org/ExperimentAutomation/AbstractSimulation/1.0" xmlns:simulizartooladapter="http://palladiosimulator.org/ExperimentAutomation/ToolAdapter/SimuLizar/1.0">
+  <experiments name="SimExp Experiment" description="SimExp Experiment" repetitions="5">
+    <toolConfiguration xsi:type="simulizartooladapter:SimuLizarConfiguration" name="SimuLizar ToolConfiguration">
+      <stopConditions xsi:type="ExperimentAutomation.Experiments.AbstractSimulation:MeasurementCountStopCondition" measurementCount="500"/>
+      <stopConditions xsi:type="ExperimentAutomation.Experiments.AbstractSimulation:SimTimeStopCondition" simulationTime="-1"/>
+      <datasource xsi:type="ExperimentAutomation.Experiments.AbstractSimulation:MemoryDatasource"/>
+    </toolConfiguration>
+    <experimentDesign xsi:type="ExperimentAutomation.Experiments:FullFactorialDesign"/>
+    <responseMeasurement xsi:type="ExperimentAutomation.Experiments:SimulationDurationMeasurement"/>
+    <initialModel>
+      <usageModel href="rm.usagemodel#/"/>
+      <allocation href="rm.allocation#_cpSykBLPEeu8HvFyDMmd-w"/>
+      <middlewareRepository href="pathmap://PCM_MODELS/Glassfish.repository#_yQk9oIX1EdyWta7nHuXiHQ"/>
+      <eventMiddleWareRepository href="pathmap://PCM_MODELS/default_event_middleware.repository#_Onc7cMALEd-LKvNtxXAQbQ"/>
+      <reconfigurationRules href="reconfiguration-rules/reconfigurationRules.experiments#/"/>
+      <monitorRepository href="default.monitorrepository#_V42x0BLVEeu8HvFyDMmd-w"/>
+      <repository href="rm.repository#_SRM7UPZdEeqHU66RnBytqw"/>
+      <system href="rm.system#_9TreEPaUEeqHU66RnBytqw"/>
+      <resourceEnvironment href="rm.resourceenvironment#/"/>
+    </initialModel>
+  </experiments>
+</ExperimentAutomation.Experiments:ExperimentRepository>
