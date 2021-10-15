@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templatevariable:TemplateVariableDefinitions xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_h_Th0PtqEeuPUtFH1XJrHw" entityName="environmentalTemplates">
+  <variables id="_mHxMAPtqEeuPUtFH1XJrHw" entityName="TemplateVariable_VaryingWorkload">
+    <signature argument="_0tXjcvtqEeuPUtFH1XJrHw"/>
+  </variables>
+  <variables id="_VtIJEPtrEeuPUtFH1XJrHw" entityName="TemplateVariable_ServerFailure">
+    <signature argument="_0tXjcvtqEeuPUtFH1XJrHw"/>
+    <signature argument="__OwekvtqEeuPUtFH1XJrHw"/>
+  </variables>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_em5mIftrEeuPUtFH1XJrHw" entityName="TemplateFactor_InitialVaryingWorkloadDistribution" scope="_mHxMAPtqEeuPUtFH1XJrHw">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_cU-xYftsEeuPUtFH1XJrHw" entityName="TemplateFactor_TemporalVaryingWorkloadDistribution" scope="_mHxMAPtqEeuPUtFH1XJrHw" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_he54kftsEeuPUtFH1XJrHw" entityName="TemplateFactor_InitialServerFailureDistribution" scope="_mHxMAPtqEeuPUtFH1XJrHw _VtIJEPtrEeuPUtFH1XJrHw">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_h-8DgftsEeuPUtFH1XJrHw" entityName="TemplateFactor_TemporalServerFailureDistribution" scope="_mHxMAPtqEeuPUtFH1XJrHw _VtIJEPtrEeuPUtFH1XJrHw" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <arguments id="_0tXjcvtqEeuPUtFH1XJrHw" entityName="Workload"/>
+  <arguments id="__OwekvtqEeuPUtFH1XJrHw" entityName="ResourceContainer"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="TemporalRelation_VaryingWorkload" interfaceVariable="_mHxMAPtqEeuPUtFH1XJrHw"/>
+  <relation xsi:type="templatevariable:DependenceRelation" target="_VtIJEPtrEeuPUtFH1XJrHw" source="_mHxMAPtqEeuPUtFH1XJrHw"/>
+  <relation xsi:type="templatevariable:TimeSliceRelation" entityName="TimeSliceRelation_FailureOccurence" source="_mHxMAPtqEeuPUtFH1XJrHw" target="_VtIJEPtrEeuPUtFH1XJrHw"/>
+</templatevariable:TemplateVariableDefinitions>
