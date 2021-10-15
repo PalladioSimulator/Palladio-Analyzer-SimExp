@@ -26,6 +26,7 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Measu
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -52,9 +53,12 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final static String SIMULATION_ID = "LoadBalancing";
 	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
+    private static final String SERVER_FAILURE_TEMPLATE_ID = "_s7juEAk1Eeu61-6_430a3w";
+	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
+    private PerformabilityStrategyConfiguration strategyConfiguration;
 	
 	public FaultTolerantLoadBalancingSimulationExecutor() {
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
@@ -62,7 +66,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0));
+		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), strategyConfiguration);
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		

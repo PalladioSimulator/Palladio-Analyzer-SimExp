@@ -38,7 +38,6 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
-    private static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
     private static final String NODE_RECOVERY_QVTO_NAME = "nodeRecovery";
@@ -48,8 +47,11 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private final PcmMeasurementSpecification responseTimeSpec;
 
-    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec) {
+    private PerformabilityStrategyConfiguration strategyConfiguration;
+
+    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration) {
         this.responseTimeSpec = responseTimeSpec;
+        this.strategyConfiguration = strategyConfiguration;
     }
 
     @Override
@@ -264,7 +266,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     private boolean isServerNodeVariable(GroundRandomVariable variable) {
         return variable.getInstantiatedTemplate()
             .getId()
-            .equals(SERVER_FAILURE_TEMPLATE_ID);
+            .equals(strategyConfiguration.getNodeFailureTemplateId());
     }
 
     private Optional<QVToReconfiguration> findReconfiguration(String name, Set<QVToReconfiguration> options2) {
