@@ -12,52 +12,23 @@
     <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_he54kftsEeuPUtFH1XJrHw"/>
     <distribution href="environmentalDistributions.distributionfunction#_nrfHsPtNEeuPUtFH1XJrHw"/>
   </localModels>
-  <localModels id="_n9ViUPtxEeuPUtFH1XJrHw" entityName="GPM_StaticInstance_ServerNode3_FailureOccurence">
-    <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_he54kftsEeuPUtFH1XJrHw"/>
-    <distribution href="environmentalDistributions.distributionfunction#_nrfHsPtNEeuPUtFH1XJrHw"/>
-  </localModels>
-  <localModels id="_ren3wPtxEeuPUtFH1XJrHw" entityName="GPM_StaticInstance_ServerNode4_FailureOccurence">
-    <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_he54kftsEeuPUtFH1XJrHw"/>
-    <distribution href="environmentalDistributions.distributionfunction#_nrfHsPtNEeuPUtFH1XJrHw"/>
-  </localModels>
-  <localModels id="_uisswPtxEeuPUtFH1XJrHw" entityName="GPM_StaticInstance_ServerNode5_FailureOccurence">
-    <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_he54kftsEeuPUtFH1XJrHw"/>
-    <distribution href="environmentalDistributions.distributionfunction#_nrfHsPtNEeuPUtFH1XJrHw"/>
-  </localModels>
   <localProbabilisticModels>
     <groundRandomVariables id="_4pMwwPtzEeuPUtFH1XJrHw" entityName="GRV_StaticInstance_VaryingWorkload" descriptiveModel="_WLh_gPtvEeuPUtFH1XJrHw">
       <instantiatedTemplate href="environmentalTemplates.templatevariable#_mHxMAPtqEeuPUtFH1XJrHw"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
+      <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
+      <appliedObjects href="../overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
     </groundRandomVariables>
     <groundRandomVariables id="_eyY44Pt1EeumisnHoKJ-1w" entityName="GRV_StaticInstance_ServerNode1" descriptiveModel="_dfSEgPtwEeuPUtFH1XJrHw">
       <instantiatedTemplate href="environmentalTemplates.templatevariable#_VtIJEPtrEeuPUtFH1XJrHw"/>
       <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
-      <appliedObjects href="../rm.resourceenvironment#_q8E_AAxpEeuG0YlooJbPiA"/>
+      <appliedObjects href="../overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
+      <appliedObjects href="../iaas.resourceenvironment#_yaTfsAEpEeS7FKokKTKFow"/>
     </groundRandomVariables>
     <groundRandomVariables id="_iWcOcPt1EeumisnHoKJ-1w" entityName="GRV_StaticInstance_ServerNode2" descriptiveModel="_05tuoPtwEeuPUtFH1XJrHw">
       <instantiatedTemplate href="environmentalTemplates.templatevariable#_VtIJEPtrEeuPUtFH1XJrHw"/>
       <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
-      <appliedObjects href="../rm.resourceenvironment#_sPQeIAxpEeuG0YlooJbPiA"/>
-    </groundRandomVariables>
-    <groundRandomVariables id="_kB0LIPt1EeumisnHoKJ-1w" entityName="GRV_StaticInstance_ServerNode3" descriptiveModel="_n9ViUPtxEeuPUtFH1XJrHw">
-      <instantiatedTemplate href="environmentalTemplates.templatevariable#_VtIJEPtrEeuPUtFH1XJrHw"/>
-      <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
-      <appliedObjects href="../rm.resourceenvironment#_sxwHMAxpEeuG0YlooJbPiA"/>
-    </groundRandomVariables>
-    <groundRandomVariables id="_lJeWwPt1EeumisnHoKJ-1w" entityName="GRV_StaticInstance_ServerNode4" descriptiveModel="_ren3wPtxEeuPUtFH1XJrHw">
-      <instantiatedTemplate href="environmentalTemplates.templatevariable#_VtIJEPtrEeuPUtFH1XJrHw"/>
-      <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
-      <appliedObjects href="../rm.resourceenvironment#_6CfScBLVEeu8HvFyDMmd-w"/>
-    </groundRandomVariables>
-    <groundRandomVariables id="_mTGRQPt1EeumisnHoKJ-1w" entityName="GRV_StaticInstance_ServerNode5" descriptiveModel="_uisswPtxEeuPUtFH1XJrHw">
-      <instantiatedTemplate href="environmentalTemplates.templatevariable#_VtIJEPtrEeuPUtFH1XJrHw"/>
-      <dependenceStructure href="environmentalTemplates.templatevariable#//@relation.1"/>
-      <appliedObjects href="../rm.usagemodel#_KX07cBLREeu8HvFyDMmd-w"/>
-      <appliedObjects href="../rm.resourceenvironment#_rkDS8BLVEeu8HvFyDMmd-w"/>
+      <appliedObjects href="../overload.usagemodel#_YtqF4AEqEeS7FKokKTKFow"/>
+      <appliedObjects href="../iaas.resourceenvironment#_3uVlIAEpEeS7FKokKTKFow"/>
     </groundRandomVariables>
   </localProbabilisticModels>
 </staticmodel:GroundProbabilisticNetwork>
