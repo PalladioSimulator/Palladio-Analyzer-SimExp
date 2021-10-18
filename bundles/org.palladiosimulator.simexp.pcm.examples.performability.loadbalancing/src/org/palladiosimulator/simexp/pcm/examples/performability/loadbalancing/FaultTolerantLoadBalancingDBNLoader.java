@@ -23,12 +23,13 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
 public class FaultTolerantLoadBalancingDBNLoader {
 
-	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
+	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant";
+	private final static String LOAD_BALANCER_ENVIRONMENT_PATH = LOAD_BALANCER_PATH + "/environment";
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
 	private final static String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
-	private final static String BN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_PATH,
+	private final static String BN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_ENVIRONMENT_PATH,
 			"LoadBalancerNonTemporalEnvironment", STATIC_MODEL_EXTENSION);
-	private final static String DBN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_PATH,
+	private final static String DBN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_ENVIRONMENT_PATH,
 			"LoadBalancerEnvironmentalDynamics", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 	private final static URI BN_URI = URI.createPlatformResourceURI(BN_FILE, true);

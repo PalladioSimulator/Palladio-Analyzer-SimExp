@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
@@ -36,7 +38,6 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
-    private static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
     private static final String NODE_RECOVERY_QVTO_NAME = "nodeRecovery";
@@ -46,8 +47,11 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private final PcmMeasurementSpecification responseTimeSpec;
 
-    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec) {
+    private PerformabilityStrategyConfiguration strategyConfiguration;
+
+    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration) {
         this.responseTimeSpec = responseTimeSpec;
+        this.strategyConfiguration = strategyConfiguration;
     }
 
     @Override
@@ -197,11 +201,10 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        for (InputValue each : EnvironmentalDynamicsUtils.toInputs(state.getValue()
-            .getValue())) {
-            if (isServerNodeVariable(each.variable)) {
-                ResourceContainer container = (ResourceContainer) each.variable.getAppliedObjects()
-                    .get(1);
+        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue().getValue());
+        for (InputValue each : inputs) {
+            ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
+            if (container != null) {
                 CategoricalValue nodeState = (CategoricalValue) each.value;
                 serverNodeStates.put(container, nodeState);
             }
@@ -212,6 +215,22 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
 
         return serverNodeStates;
+    }
+    
+    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
+        GroundRandomVariable grVariable = inputValue.variable;
+        if (isServerNodeVariable(grVariable)) {
+            // NOTE: The ground random variable definition in *.staticmodel defines the attributge appliedObjects; 
+            // retrieving of the referenced objects requires the consideration of their specified order in the model
+            EList<EObject> appliedObjects = grVariable.getAppliedObjects();
+            for (EObject appliedObject : appliedObjects) {
+                // find referenced appliedObjecs 'ResourceContainer'
+                if (appliedObject instanceof ResourceContainer) {
+                    return (ResourceContainer) appliedObject;
+                }
+            }
+        }
+        return null;
     }
 
     private boolean allNodesAreAvailable(Map<ResourceContainer, CategoricalValue> serverNodeStates) {
@@ -247,7 +266,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     private boolean isServerNodeVariable(GroundRandomVariable variable) {
         return variable.getInstantiatedTemplate()
             .getId()
-            .equals(SERVER_FAILURE_TEMPLATE_ID);
+            .equals(strategyConfiguration.getNodeFailureTemplateId());
     }
 
     private Optional<QVToReconfiguration> findReconfiguration(String name, Set<QVToReconfiguration> options2) {

@@ -26,6 +26,7 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Measu
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -43,8 +44,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	public final static double UPPER_THRESHOLD_RT = 2.0;
 	public final static double LOWER_THRESHOLD_RT = 1.0;
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
-	private final static String SIMULIZAR_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuLizarElasticity.experiments";
+	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/experiments/simexp.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -53,9 +53,12 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final static String SIMULATION_ID = "LoadBalancing";
 	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
+    private static final String SERVER_FAILURE_TEMPLATE_ID = "_s7juEAk1Eeu61-6_430a3w";
+	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
+    private PerformabilityStrategyConfiguration strategyConfiguration;
 	
 	public FaultTolerantLoadBalancingSimulationExecutor() {
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
@@ -63,7 +66,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0));
+		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), strategyConfiguration);
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
@@ -73,7 +77,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 
 	@Override
 	protected String getExperimentFile() {
-		return SIMULIZAR_EXPERIMENT_FILE;
+		return EXPERIMENT_FILE;
 	}
 
 	@Override
