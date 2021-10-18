@@ -28,9 +28,9 @@ public class FaultTolerantLoadBalancingDBNLoader {
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
 	private final static String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
 	private final static String BN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_ENVIRONMENT_PATH,
-			"LoadBalancerNonTemporalEnvironment", STATIC_MODEL_EXTENSION);
+			"environmentalStatics", STATIC_MODEL_EXTENSION);
 	private final static String DBN_FILE = String.format("%1s/%2s.%3s", LOAD_BALANCER_ENVIRONMENT_PATH,
-			"LoadBalancerEnvironmentalDynamics", DYNAMIC_MODEL_EXTENSION);
+			"environmentalDynamics", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 	private final static URI BN_URI = URI.createPlatformResourceURI(BN_FILE, true);
 	private final static ResourceSet RESOURCE_SET = new ResourceSetImpl();
