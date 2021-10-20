@@ -181,12 +181,12 @@ public class FaultTolerantVaryingInterarrivelRateProcess {
 	private final static IContinousPDF INTERARRIVAL_RATE_DISTRIBUTION = new PDFFactory()
 			.createExponentialDistribution(RATE);
 	private final static String PCM_SPECIFICATION_ATTRIBUTE = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION.getName();
-	private final static String WORKLOAD_VARIABLE = "WorkloadVariation_VaryingWorkloadInstantiation";
+	private final static String WORKLOAD_VARIABLE = "GRV_StaticInstance_VaryingWorkload";     // GRV entity name *.staticmodel
 	
 	private final static String PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE = "ServerNode1";  // entityName pcm resource container representing server node 1
-	private final static String SERVER_NODE_1_VARIABLE = "ServerNode1Failure_ServerFailureInstantiation";
+	private final static String SERVER_NODE_1_VARIABLE = "GRV_StaticInstance_ServerNode1";  // GRV entity name *.staticmodel
 	private final static String PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE = "ServerNode2";  // entityName pcm resource container representing server node 2
-	private final static String SERVER_NODE_2_VARIABLE = "ServerNode2Failure_ServerFailureInstantiation";
+	private final static String SERVER_NODE_2_VARIABLE = "GRV_StaticInstance_ServerNode2";  // GVR entity name *.staticmodel
 
 	private static PcmAttributeChange attrChange;
 	private static PcmModelChange attrChangeServerNode1;
