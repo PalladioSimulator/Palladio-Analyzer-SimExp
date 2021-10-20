@@ -9,7 +9,6 @@
  * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
  * in conjunction with mappings defined in the project properties.
  */
-modeltype PRM uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
 modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
 modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
 modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
@@ -26,14 +25,16 @@ modeltype PCM_PARAM uses 'http://palladiosimulator.org/PalladioComponentModel/Pa
 modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
 
 /*
- * The transformation signature declares that a PRM modeltype is required as input, while an PCM
- * modeltype is transformed inplace. The PRM modeltype is referenced as 'prm' throughout the 
+ * The transformation signature declares that a RuntimeMeasurement modeltype is required as input, while an PCM
+ * modeltype is transformed inplace. The RuntimeMeasurement modeltype is referenced as 'RuntimeMeasurement' throughout the 
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation scaleOut(/**in prm : PRM,
-						in pcmAllocation : PCM_ALLOC */) {
+transformation Step1Outsource( inout pcmAllocation : PCM_ALLOC ) {
 							
+	// Define Threshold and Scale Out
+	property threshold : Real = 2.0;
+	property outsourceFactor : Real = 0.1;
 
 	/**
 	 * The main transformation.
@@ -41,22 +42,51 @@ transformation scaleOut(/**in prm : PRM,
 	 */
 	main() {
 	
+		log('SimuLizar Outsource Rule Transformation started');
+		
+		log('***********************OUTSOURCE STARTED**************************');
+		pcmAllocation.rootObjects()[Allocation]->forAll(
+					allocation : Allocation | 
+					outSourceProcessing(allocation.allocationContexts_Allocation)
+				);
+	}
 
-		log('Transformation rule [scaleOut] started ...');
+	
+	/**
+	 * outsource Processing.
+	 */
+	helper outSourceProcessing(allocationContexts : Set(AllocationContext)) : Boolean {
+	
+	log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
+	
+		allocationContexts->forEach(allocation){
+
+			if( allocation.assemblyContext_AllocationContext.entityName = "AC_LoadBalancer" ) {
+			
+				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
+					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
+						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(entityName="delegateToServer1");
+						log('Branch1: ' + branch1.toString());
+						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(entityName="delegateToServer2");
+						log('Branch2: ' + branch2.toString());
+						if(branch2.branchProbability < 0.5 and branch1.branchProbability > 0.5) {
+						log('Balancing Load...');
+							branch2.branchProbability := branch2.branchProbability + outsourceFactor;
+							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							branch1.branchProbability := branch1.branchProbability - outsourceFactor;
+							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							return true;
+						} else {
+							log('Balancing Load... UNCHANGED...');
+							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branchProbability to ' + branch1.branchProbability.toString());
+						}
+					}
+				}
+			}
+		};
 		
-		/**
-		*	implement transformation logic 
-		*
-		* we start with a very simple scaleIn logic
-		* we assume, that all nodes have the same deployment, i.e.
-		* all nodes have the same deploymed components
-		* scaleOut in this setup means, that we set the
-		* branch probability to a value > 0.0 for those nodes,
-		* that should be added to the current simulation
-		*/
-		
-		log('Transformation rule [scaleOut] DONE.');
+		return false;
 	}
 	
-
 }
