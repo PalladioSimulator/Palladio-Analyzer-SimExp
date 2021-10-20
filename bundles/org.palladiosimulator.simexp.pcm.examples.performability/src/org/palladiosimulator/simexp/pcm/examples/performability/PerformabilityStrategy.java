@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import com.google.common.collect.Maps;
 
@@ -47,11 +48,14 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private final PcmMeasurementSpecification responseTimeSpec;
 
-    private PerformabilityStrategyConfiguration strategyConfiguration;
+    private final PerformabilityStrategyConfiguration strategyConfiguration;
+    private final NodeRecoveryStrategy recoveryStrategy;
 
-    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration) {
+    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration
+            , NodeRecoveryStrategy recoveryStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
+        this.recoveryStrategy = recoveryStrategy;
     }
 
     @Override
@@ -74,6 +78,8 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
             Object value = entry.getValue();
             knowledge.store(key, value);
         }
+        
+        LOGGER.debug(knowledge.toString());
     }
 
     protected boolean analyse(State source, SharedKnowledge knowledge) {
@@ -177,6 +183,13 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
                     return emptyReconfiguration();
                 }
             }
+            
+            /**
+             * workarournd to implement node recovery behavior until we are able to realize this as QVTO transformation
+             * 
+             * */
+            recoveryStrategy.execute((PcmSelfAdaptiveSystemState) sasState, knowledge);
+            
             return nodeRecovery(options);
 
         } catch (PolicySelectionException e) {
@@ -269,6 +282,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
             .equals(strategyConfiguration.getNodeFailureTemplateId());
     }
 
+    
     private Optional<QVToReconfiguration> findReconfiguration(String name, Set<QVToReconfiguration> options2) {
         List<QVToReconfiguration> options = options2.stream()
             .filter(QVToReconfiguration.class::isInstance)
