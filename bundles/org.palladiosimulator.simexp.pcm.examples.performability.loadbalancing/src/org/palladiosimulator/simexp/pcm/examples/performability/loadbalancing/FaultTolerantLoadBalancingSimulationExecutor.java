@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
+import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
@@ -68,7 +69,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
-		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), strategyConfiguration);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0)
+		        , strategyConfiguration
+		        , new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup(), new RepositoryModelUpdater()));
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
