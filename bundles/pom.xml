@@ -26,6 +26,11 @@
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
 		<module>org.palladiosimulator.simexp.pcm</module>
 		
+		<module>org.palladiosimulator.pcm.query</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.performability</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing</module>
+		
+		
 		<module>org.palladiosimulator.simexp.ui.workflow</module>
 		<!-- has reference to org.palladiosimulator.simexp.pcm.examples -->
 <!--

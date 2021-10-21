@@ -24,6 +24,7 @@
 		<module>org.palladiosimulator.simexp.pcm.examples.deltaiot.param</module> 
 -->		
 		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancer</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant</module>
 
 	</modules>
 	
