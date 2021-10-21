@@ -78,8 +78,6 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
             Object value = entry.getValue();
             knowledge.store(key, value);
         }
-        
-        LOGGER.debug(knowledge.toString());
     }
 
     protected boolean analyse(State source, SharedKnowledge knowledge) {
