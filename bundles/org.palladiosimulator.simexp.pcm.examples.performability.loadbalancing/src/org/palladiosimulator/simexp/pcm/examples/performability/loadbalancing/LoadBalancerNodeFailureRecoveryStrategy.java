@@ -45,6 +45,8 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
 
     @Override
     public void execute(PcmSelfAdaptiveSystemState sasState, SharedKnowledge knowledge) {
+        LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ", LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
+        
         String serverNode1State = knowledge.getValue(serverNodeOneId).get().toString();
         String serverNode2State = knowledge.getValue(serverNodeTwoId).get().toString();
         
