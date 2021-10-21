@@ -188,12 +188,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
              * workarournd to implement node recovery behavior until we are able to realize this as QVTO transformation
              * 
              * */
-            if (!(sasState instanceof PcmSelfAdaptiveSystemState)) {
-                /** RestoredSelfAdaptiveSystemState */
-                throw new RuntimeException("Failed to cast object");
-            }
-            PcmSelfAdaptiveSystemState pcmSasState = (PcmSelfAdaptiveSystemState) sasState;
-            recoveryStrategy.execute(pcmSasState, knowledge);
+            recoveryStrategy.execute(sasState, knowledge);
             
             return nodeRecovery(options);
 

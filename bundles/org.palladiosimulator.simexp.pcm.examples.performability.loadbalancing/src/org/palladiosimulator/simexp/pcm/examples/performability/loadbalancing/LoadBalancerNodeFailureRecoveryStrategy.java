@@ -8,10 +8,10 @@ import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
-import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStrategy {
@@ -44,7 +44,7 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
     
 
     @Override
-    public void execute(PcmSelfAdaptiveSystemState sasState, SharedKnowledge knowledge) {
+    public void execute(SelfAdaptiveSystemState<?> sasState, SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ", LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
         
         String serverNode1State = knowledge.getValue(serverNodeOneId).get().toString();
@@ -52,7 +52,7 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
         
         LOGGER.info(String.format("Knowledge: [%s,%s], [%s,&%s]", serverNodeOneId, serverNode1State, serverNodeTwoId, serverNode2State));
         
-        ArchitecturalConfiguration<PCMInstance> architecturalConfig = sasState.getArchitecturalConfiguration();
+        ArchitecturalConfiguration<PCMInstance> architecturalConfig = (ArchitecturalConfiguration<PCMInstance>) sasState.getArchitecturalConfiguration();
         PCMInstance pcmInstance = architecturalConfig.getConfiguration();
         Repository defaultRepository = repositoryLookup.findRepositoryByEntityName(pcmInstance.getRepositories(), "defaultRepository");
         
@@ -110,5 +110,5 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
         }
         return null;
     }
-    
+
 }
