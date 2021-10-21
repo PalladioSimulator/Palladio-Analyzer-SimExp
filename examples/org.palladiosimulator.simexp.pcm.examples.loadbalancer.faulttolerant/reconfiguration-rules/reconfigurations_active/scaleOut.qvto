@@ -30,7 +30,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation Step1Outsource( inout pcmAllocation : PCM_ALLOC ) {
+transformation scaleOut( inout pcmAllocation : PCM_ALLOC ) {
 							
 	// Define Threshold and Scale Out
 	property threshold : Real = 2.0;
