@@ -19,6 +19,9 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
 
     private static final Logger LOGGER = Logger.getLogger(LoadBalancerNodeFailureRecoveryStrategy.class.getName());
 
+    private static final String NODE_STATE_UNAVAILABLE = "unavailable";
+    private static final String NODE_STATE_AVAILABLE = "available";
+
     private static final double ZERO_BRANCH_TRANSITION_PROBABILITY= 0.0;
     private static final double ONE_BRANCH_TRANSITION_PROBABILITY= 1.0;
     private static final double DEFAULT_BRANCH_TRANSITION_PROBABILITY = 0.5;
@@ -63,11 +66,11 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
                 defaultRepository
                 , loadBalancerId, "processRequest", "delegateToServer2", "AC_Server2");
 
-        if (serverNode1State.equals("unavailable") && serverNode2State.equals("unavailable")) {
+        if (serverNode1State.equals(NODE_STATE_UNAVAILABLE) && serverNode2State.equals(NODE_STATE_UNAVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ZERO_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ZERO_BRANCH_TRANSITION_PROBABILITY);
             LOGGER.debug(String.format("All nodes are unavailable. Set branch transition to probability %s.", ZERO_BRANCH_TRANSITION_PROBABILITY));
-        } else  if (serverNode1State.equals("available") && serverNode2State.equals("available")) {
+        } else  if (serverNode1State.equals(NODE_STATE_AVAILABLE) && serverNode2State.equals(NODE_STATE_AVAILABLE)) {
             /** how to restore the branch transition probabilities if a node becomes available again is use case specific*/
             if ( ZERO_BRANCH_TRANSITION_PROBABILITY == probBranchTransitionToServerNode1.getBranchProbability()
                  || ZERO_BRANCH_TRANSITION_PROBABILITY == probBranchTransitionToServerNode2.getBranchProbability()) {
@@ -75,12 +78,12 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
                 repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, DEFAULT_BRANCH_TRANSITION_PROBABILITY);
                 LOGGER.debug(String.format("All nodes are available. Restored branch transition to default probability %s.", DEFAULT_BRANCH_TRANSITION_PROBABILITY));
             }
-        } else if (serverNode1State.equals("unavailable") && serverNode2State.equals("available")) {
+        } else if (serverNode1State.equals(NODE_STATE_UNAVAILABLE) && serverNode2State.equals(NODE_STATE_AVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ZERO_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ONE_BRANCH_TRANSITION_PROBABILITY);
             LOGGER.debug(String.format("Detected unavailable node %s. Changed branch transition to node %s to probability %s."
                     , serverNodeOneEntityName, serverNodeTwoEntityName, ONE_BRANCH_TRANSITION_PROBABILITY));
-        } else if (serverNode1State.equals("available") && serverNode2State.equals("unavailable")) {
+        } else if (serverNode1State.equals(NODE_STATE_AVAILABLE) && serverNode2State.equals(NODE_STATE_UNAVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ONE_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ZERO_BRANCH_TRANSITION_PROBABILITY);
             LOGGER.debug(String.format("Detected unavailable node %s. Changed branch transition to node %s to probability %s."
