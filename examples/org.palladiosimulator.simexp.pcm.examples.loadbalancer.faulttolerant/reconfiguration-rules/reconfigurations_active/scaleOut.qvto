@@ -66,20 +66,21 @@ transformation scaleOut( inout pcmAllocation : PCM_ALLOC ) {
 				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
 					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
 						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(entityName="delegateToServer1");
-						log('Branch1: ' + branch1.toString());
+//						log('Branch1: ' + branch1.toString());
 						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(entityName="delegateToServer2");
-						log('Branch2: ' + branch2.toString());
+//						log('Branch2: ' + branch2.toString());
+						log('Current load balancing probabilities: branch1=' + branch1.branchProbability.toString() + ', branch2=' + branch2.branchProbability.toString());			
 						if(branch2.branchProbability < 0.5 and branch1.branchProbability > 0.5) {
 						log('Balancing Load...');
 							branch2.branchProbability := branch2.branchProbability + outsourceFactor;
-							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branch2.branchProbability to ' + branch2.branchProbability.toString());
 							branch1.branchProbability := branch1.branchProbability - outsourceFactor;
-							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
 							return true;
 						} else {
 							log('Balancing Load... UNCHANGED...');
-							log('Set branchProbability to ' + branch2.branchProbability.toString());
-							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							log('Set branch2.branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
 						}
 					}
 				}
