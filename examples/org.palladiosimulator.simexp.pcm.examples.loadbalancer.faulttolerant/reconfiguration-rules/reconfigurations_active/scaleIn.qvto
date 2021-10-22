@@ -68,17 +68,18 @@ transformation scaleIn( in pcmAllocation : PCM_ALLOC ) {
 						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_tjFukAEoEeS7FKokKTKFow");
 //						//name of branch: delegateToServer1
 						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_ridTkAEoEeS7FKokKTKFow");
+						log('Current load balancing probabilities: branch1=' + branch1.branchProbability.toString() + ', branch2=' + branch2.branchProbability.toString());
 						if(branch2.branchProbability > 0.0 and branch1.branchProbability < 1.0) {
-						log('Balancing Load...');
+							log('Balancing Load...');
 							branch2.branchProbability := branch2.branchProbability - outsourceFactor;
-							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branch2.branchProbability to ' + branch2.branchProbability.toString());
 							branch1.branchProbability := branch1.branchProbability + outsourceFactor;
-							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
 							return true;
 						} else {
 							log('Balancing Load... UNCHANGED...');
-							log('Set branchProbability to ' + branch2.branchProbability.toString());
-							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							log('Set branch2.branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
 						}
 					}
 				}
