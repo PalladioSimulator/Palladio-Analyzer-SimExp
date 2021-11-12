@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
+package org.palladiosimulator.simexp.pcm.examples.performability;
 
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 

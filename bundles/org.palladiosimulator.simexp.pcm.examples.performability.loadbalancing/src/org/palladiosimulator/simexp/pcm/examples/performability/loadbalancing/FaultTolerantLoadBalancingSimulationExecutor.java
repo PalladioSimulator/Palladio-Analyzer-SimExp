@@ -10,6 +10,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
+import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
@@ -25,9 +26,12 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
+import org.palladiosimulator.simexp.pcm.examples.performability.ReconfigurationPlanningStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -60,8 +64,12 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
-    private PerformabilityStrategyConfiguration strategyConfiguration;
 	
+    private final PcmMeasurementSpecification responseTimeSpec;
+	private final NodeRecoveryStrategy nodeRecoveryStrategy;
+	private PerformabilityStrategyConfiguration strategyConfiguration;
+	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
+		
 	public FaultTolerantLoadBalancingSimulationExecutor() {
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
@@ -69,9 +77,14 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
-		this.reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0)
-		        , strategyConfiguration
-		        , new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup(), new RepositoryModelUpdater()));
+		
+		this.responseTimeSpec = pcmSpecs.get(0);
+//		this.nodeRecoveryStrategy = new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
+//                , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
+		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
+		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
+        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeSpec, strategyConfiguration, nodeRecoveryStrategy);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
@@ -104,8 +117,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(3) //500
-					.andNumberOfSimulationsPerRun(5) //100
+					.withNumberOfRuns(10) //500
+					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()

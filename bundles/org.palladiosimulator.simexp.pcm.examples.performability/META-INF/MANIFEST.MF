@@ -17,5 +17,6 @@ Require-Bundle: org.apache.log4j,
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="5.0.1",
  org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
- org.palladiosimulator.solver;bundle-version="5.0.0"
+ org.palladiosimulator.solver;bundle-version="5.0.0",
+ org.palladiosimulator.pcm.query
 Export-Package: org.palladiosimulator.simexp.pcm.examples.performability

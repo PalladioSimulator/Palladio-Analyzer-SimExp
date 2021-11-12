@@ -36,7 +36,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * 
  */
 public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfiguration> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
@@ -47,34 +47,36 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     private static final Threshold LOWER_THRESHOLD = Threshold.greaterThanOrEqualTo(1.0);
 
     private final PcmMeasurementSpecification responseTimeSpec;
-
     private final PerformabilityStrategyConfiguration strategyConfiguration;
-    private final NodeRecoveryStrategy recoveryStrategy;
+//    private final NodeRecoveryStrategy recoveryStrategy;
+    private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 
-    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration
-            , NodeRecoveryStrategy recoveryStrategy) {
+    public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
+            PerformabilityStrategyConfiguration strategyConfiguration
+            , ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
-        this.recoveryStrategy = recoveryStrategy;
+//        this.recoveryStrategy = recoveryStrategy;
+        this.reconfigurationPlanningStrategy = reconfigurationPlanningStrategy;
     }
 
     @Override
     public String getId() {
         return PerformabilityStrategy.class.getName();
     }
-    
-    
+
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
         /**
          * transfer status of server nodes to knowledge base
-         * */
+         */
         SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
-        
+
         for (Entry<ResourceContainer, CategoricalValue> entry : serverNodeStates.entrySet()) {
-            String key = entry.getKey().getId();
+            String key = entry.getKey()
+                .getId();
             Object value = entry.getValue();
             knowledge.store(key, value);
         }
@@ -83,10 +85,10 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     protected boolean analyse(State source, SharedKnowledge knowledge) {
         boolean hasConstraintViolations = false;
         /**
-         * check for any constraint violations that require a reconfiguration of the system,
-         * e.g. threshold violations, presence of failed nodes, ...
+         * check for any constraint violations that require a reconfiguration of the system, e.g.
+         * threshold violations, presence of failed nodes, ...
          * 
-         * */
+         */
         SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
@@ -102,16 +104,15 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
         return hasConstraintViolations;
     }
-    
-    
+
     @Override
-    protected QVToReconfiguration  plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         /**
-         * The role of the planner function is to select the best adaptation option and 
-         * generate a plan for adapting the managed system from its current configuration 
-         * to the new configuration defined by the best adaptation option.
-         * */
-        
+         * The role of the planner function is to select the best adaptation option and generate a
+         * plan for adapting the managed system from its current configuration to the new
+         * configuration defined by the best adaptation option.
+         */
+
         /**
          * This method must be implemented for each system model under study, i.e. the actual
          * reconfiguration files (qvto transformations) are defined as part of the system model
@@ -123,28 +124,22 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
          * 
          * if (node.isUnavailable) => node recovery && redistribute work
          * 
-         * if (responseTime < threshold) => scale-out
-         * if (responseTime > threshold) => scale-in
+         * if (responseTime < threshold) => scale-out if (responseTime > threshold) => scale-in
          * 
-         * required adaptation actions:         * 
-         * infrastructure-level
-         * 1) node recovery: 
-         *      - this action must ensure that a defined minimal set of nodes is always available
-         *      - if less nodes are available than the defined minimum, then new nodes must be started
-         *      - this action does not (re)distribute work (!)
-         * 2) work redistribution:
-         *      - this action must check if the node of current work is available; if not, the work
-         *        must be redistributed, to an available node
-         * application-level
-         * 3) scale-in
-         * 4) scale-out
+         * required adaptation actions: * infrastructure-level 1) node recovery: - this action must
+         * ensure that a defined minimal set of nodes is always available - if less nodes are
+         * available than the defined minimum, then new nodes must be started - this action does not
+         * (re)distribute work (!) 2) work redistribution: - this action must check if the node of
+         * current work is available; if not, the work must be redistributed, to an available node
+         * application-level 3) scale-in 4) scale-out
          * 
          * As result after applying the adaptation strategy a new SAS (self-adaptive system) state
          * is returned with an adapted/updated environment and architectural model
          * 
-         * Notes: if several trigger conditions occur, a priorization within the strategy is required,
-         * i.e. node repair will take some time, therefore work must be re-distributed on still-working nodes
-         * before actual scaling; remember that this topic is connected to availability of nodes and the minimum set of available nodes
+         * Notes: if several trigger conditions occur, a priorization within the strategy is
+         * required, i.e. node repair will take some time, therefore work must be re-distributed on
+         * still-working nodes before actual scaling; remember that this topic is connected to
+         * availability of nodes and the minimum set of available nodes
          */
 
         /**
@@ -160,48 +155,53 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
          * werden failurescenarimodel liegt im Blackboard -> input Variable für die QVTO
          * transformation upgedatedte failuresceario wieder zurück ins blackboard (QVTO Ergebnis)
          * 
-         
+         * 
          */
-        
-        // FIXME: later replace by combined QVTo transformation (Ch.Strier approach) to support execution of multiple actions
-        QVToReconfiguration plannedAction = null;      /** could also be a list of actions to execute */
-        
-        try {
-            SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
-            Double responseTime = retrieveResponseTime(sasState);
-            Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
-                    sasState.getPerceivedEnvironmentalState());
 
-            if (allNodesAreAvailable(serverNodeStates)) {
-                if (isExceeded(responseTime)) {
-                    return outSource(options);
-                } else if (isSubceeded(responseTime)) {
-                    return scaleIn(options);
-                } else {
-                    return emptyReconfiguration();
-                }
-            }
-            
+        // FIXME: later replace by combined QVTo transformation (Ch.Strier approach) to support
+        // execution of multiple actions
+        QVToReconfiguration plannedAction = emptyReconfiguration();
+        /** could also be a list of actions to execute */
+
+        try {
+//            SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+//            Double responseTime = retrieveResponseTime(sasState);
+//            Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
+//                    sasState.getPerceivedEnvironmentalState());
+//            
+
+//            if (allNodesAreAvailable(serverNodeStates)) {
+//                if (isExceeded(responseTime)) {
+//                    return outSource(options);
+//                } else if (isSubceeded(responseTime)) {
+//                    return scaleIn(options);
+//                } else {
+//                    return emptyReconfiguration();
+//                }
+//            }
+
             /**
-             * workarournd to implement node recovery behavior until we are able to realize this as QVTO transformation
+             * workarournd to implement node recovery behavior until we are able to realize this as
+             * QVTO transformation
              * 
-             * */
-            recoveryStrategy.execute(sasState, knowledge);
-            
-            return nodeRecovery(options);
+             */
+//            recoveryStrategy.execute(sasState, knowledge);
+//            return nodeRecovery(options);
+
+            plannedAction = reconfigurationPlanningStrategy.planReconfigurationSteps(source, options, knowledge);
+            return plannedAction;
 
         } catch (PolicySelectionException e) {
             LOGGER.error("Failed to select an adaptation strategy", e);
             return emptyReconfiguration();
         }
-        
+
     }
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
         return QVToReconfiguration.empty();
     }
-
 
     private Double retrieveResponseTime(SelfAdaptiveSystemState<?> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
@@ -212,7 +212,8 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue().getValue());
+        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
+            .getValue());
         for (InputValue each : inputs) {
             ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
             if (container != null) {
@@ -222,17 +223,20 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
 
         if (serverNodeStates.isEmpty()) {
-            throw new RuntimeException("Environment model holds no specification of node failure random variables. Unabled to run performability strategy.");
+            throw new RuntimeException(
+                    "Environment model holds no specification of node failure random variables. Unabled to run performability strategy.");
         }
 
         return serverNodeStates;
     }
-    
+
     private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
         GroundRandomVariable grVariable = inputValue.variable;
         if (isServerNodeVariable(grVariable)) {
-            // NOTE: The ground random variable definition in *.staticmodel defines the attributge appliedObjects; 
-            // retrieving of the referenced objects requires the consideration of their specified order in the model
+            // NOTE: The ground random variable definition in *.staticmodel defines the attributge
+            // appliedObjects;
+            // retrieving of the referenced objects requires the consideration of their specified
+            // order in the model
             EList<EObject> appliedObjects = grVariable.getAppliedObjects();
             for (EObject appliedObject : appliedObjects) {
                 // find referenced appliedObjecs 'ResourceContainer'
@@ -248,7 +252,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         return serverNodeStates.values()
             .stream()
             .allMatch(v -> v.get()
-            .equals(AVAILABLE_STATE));
+                .equals(AVAILABLE_STATE));
     }
 
     private boolean isExceeded(Double responseTime) {
@@ -261,12 +265,12 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
 
     private QVToReconfiguration scaleIn(Set<QVToReconfiguration> options) throws PolicySelectionException {
         return findReconfiguration(SCALE_IN_QVTO_NAME, options)
-                .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_IN_QVTO_NAME)));
+            .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_IN_QVTO_NAME)));
     }
 
     private QVToReconfiguration outSource(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options)
-                .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_OUT_SOURCE_QVTO_NAME)));
+        return (QVToReconfiguration) findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options).orElseThrow(
+                () -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_OUT_SOURCE_QVTO_NAME)));
     }
 
     private QVToReconfiguration nodeRecovery(Set<QVToReconfiguration> options) throws PolicySelectionException {
@@ -280,7 +284,6 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
             .equals(strategyConfiguration.getNodeFailureTemplateId());
     }
 
-    
     private Optional<QVToReconfiguration> findReconfiguration(String name, Set<QVToReconfiguration> options2) {
         List<QVToReconfiguration> options = options2.stream()
             .filter(QVToReconfiguration.class::isInstance)
@@ -295,10 +298,11 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
         return Optional.empty();
     }
-    
-    
+
     private String missingQvtoTransformationMessage(String qvtoTransformationName) {
-        return String.format("No QVT transformation named '%s' available. Ensure your model defines a corresponding transformation.", qvtoTransformationName);
+        return String.format(
+                "No QVT transformation named '%s' available. Ensure your model defines a corresponding transformation.",
+                qvtoTransformationName);
     }
 
 }

@@ -1,30 +1,21 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
-import org.apache.log4j.Logger;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
+import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.repository.RepositoryComponent;
-import org.palladiosimulator.pcm.seff.BranchAction;
+import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
+import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
-import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
-import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.AbstractNodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConstants;
+import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStrategy {
-    
-
-    private static final Logger LOGGER = Logger.getLogger(LoadBalancerNodeFailureRecoveryStrategy.class.getName());
-
-    private static final String NODE_STATE_UNAVAILABLE = "unavailable";
-    private static final String NODE_STATE_AVAILABLE = "available";
-
-    private static final double ZERO_BRANCH_TRANSITION_PROBABILITY= 0.0;
-    private static final double ONE_BRANCH_TRANSITION_PROBABILITY= 1.0;
-    private static final double DEFAULT_BRANCH_TRANSITION_PROBABILITY = 0.5;
+public class LoadBalancerNodeFailureRecoveryStrategy extends AbstractNodeRecoveryStrategy {
     
     private final String loadBalancerId = "_xISeMAEpEeS7FKokKTKFow";
     private final String loadBalancerEntityName = "LoadBalancer";
@@ -34,15 +25,10 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
     private final String serverNodeTwoId = "_3uVlIAEpEeS7FKokKTKFow";
     private final String serverNodeTwoEntityName = "ServerNode2";
 
-    private final PerformabilityStrategyConfiguration strategyConfiguration;
-    private final RepositoryModelLookup repositoryLookup;
-    private final RepositoryModelUpdater repositoryUpdater;
-    
     public LoadBalancerNodeFailureRecoveryStrategy(PerformabilityStrategyConfiguration strategyConfiguration
-            , RepositoryModelLookup repositoryLookup, RepositoryModelUpdater repositoryUpdater) {
-        this.strategyConfiguration = strategyConfiguration;
-        this.repositoryLookup = repositoryLookup;
-        this.repositoryUpdater = repositoryUpdater;
+            , RepositoryModelLookup repositoryLookup, ResourceEnvironmentModelLookup resourceEnvLookup
+            , RepositoryModelUpdater repositoryUpdater) {
+            super(strategyConfiguration, repositoryLookup, resourceEnvLookup, repositoryUpdater);
     }
     
 
@@ -61,57 +47,42 @@ public class LoadBalancerNodeFailureRecoveryStrategy implements NodeRecoveryStra
         
         ProbabilisticBranchTransition probBranchTransitionToServerNode1 = findProbabilisticBranchTransitionToServerNode(
                 defaultRepository
-                , loadBalancerId, "processRequest", "delegateToServer1", "AC_Server1");
+                , loadBalancerId, "processRequest", "delegateToServer1", "AC_Server1", loadBalancerSeffBranchActionId);
         ProbabilisticBranchTransition probBranchTransitionToServerNode2 = findProbabilisticBranchTransitionToServerNode(
                 defaultRepository
-                , loadBalancerId, "processRequest", "delegateToServer2", "AC_Server2");
-
-        if (serverNode1State.equals(NODE_STATE_UNAVAILABLE) && serverNode2State.equals(NODE_STATE_UNAVAILABLE)) {
+                , loadBalancerId, "processRequest", "delegateToServer2", "AC_Server2", loadBalancerSeffBranchActionId);
+        
+        if (serverNode1State.equals(PerformabilityStrategyConstants.NODE_STATE_UNAVAILABLE) 
+            && serverNode2State.equals(PerformabilityStrategyConstants.NODE_STATE_UNAVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ZERO_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ZERO_BRANCH_TRANSITION_PROBABILITY);
-            LOGGER.debug(String.format("All nodes are unavailable. Set branch transition to probability %s.", ZERO_BRANCH_TRANSITION_PROBABILITY));
-        } else  if (serverNode1State.equals(NODE_STATE_AVAILABLE) && serverNode2State.equals(NODE_STATE_AVAILABLE)) {
+        } else  if (serverNode1State.equals(PerformabilityStrategyConstants.NODE_STATE_AVAILABLE) 
+                && serverNode2State.equals(PerformabilityStrategyConstants.NODE_STATE_AVAILABLE)) {
             /** how to restore the branch transition probabilities if a node becomes available again is use case specific*/
             if ( ZERO_BRANCH_TRANSITION_PROBABILITY == probBranchTransitionToServerNode1.getBranchProbability()
                  || ZERO_BRANCH_TRANSITION_PROBABILITY == probBranchTransitionToServerNode2.getBranchProbability()) {
                 repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, DEFAULT_BRANCH_TRANSITION_PROBABILITY);
                 repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, DEFAULT_BRANCH_TRANSITION_PROBABILITY);
-                LOGGER.debug(String.format("All nodes are available. Restored branch transition to default probability %s.", DEFAULT_BRANCH_TRANSITION_PROBABILITY));
             }
-        } else if (serverNode1State.equals(NODE_STATE_UNAVAILABLE) && serverNode2State.equals(NODE_STATE_AVAILABLE)) {
+        } else if (serverNode1State.equals(PerformabilityStrategyConstants.NODE_STATE_UNAVAILABLE) 
+                && serverNode2State.equals(PerformabilityStrategyConstants.NODE_STATE_AVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ZERO_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ONE_BRANCH_TRANSITION_PROBABILITY);
-            LOGGER.debug(String.format("Detected unavailable node %s. Changed branch transition to node %s to probability %s."
-                    , serverNodeOneEntityName, serverNodeTwoEntityName, ONE_BRANCH_TRANSITION_PROBABILITY));
-        } else if (serverNode1State.equals(NODE_STATE_AVAILABLE) && serverNode2State.equals(NODE_STATE_UNAVAILABLE)) {
+        } else if (serverNode1State.equals(PerformabilityStrategyConstants.NODE_STATE_AVAILABLE) 
+                && serverNode2State.equals(PerformabilityStrategyConstants.NODE_STATE_UNAVAILABLE)) {
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode1, ONE_BRANCH_TRANSITION_PROBABILITY);
             repositoryUpdater.updateBranchProbability(probBranchTransitionToServerNode2, ZERO_BRANCH_TRANSITION_PROBABILITY);
-            LOGGER.debug(String.format("Detected unavailable node %s. Changed branch transition to node %s to probability %s."
-                    , serverNodeTwoEntityName, serverNodeOneEntityName, ONE_BRANCH_TRANSITION_PROBABILITY));
         } else {
             LOGGER.debug("Failed to perform load balancer node failure recovery strategy. Unable to identify connected nodes.");
         }
-    }
-    
-    
-    private  ProbabilisticBranchTransition findProbabilisticBranchTransitionToServerNode(
-            Repository repository, String loadBalancerBasicComponentId
-            , String loadBalancerSeffOperationSignatureEntityName
-            , String branchTransitionEntityName
-            , String operationRequiredRoleName) {
-        RepositoryComponent loadBalancer = repositoryLookup.findBasicComponentById(repository, loadBalancerBasicComponentId);
-        if (loadBalancer == null) {
-            return null;
-        }
-        ResourceDemandingSEFF rdSeff = (ResourceDemandingSEFF) repositoryLookup.findSeffOfComponentByOperationSignature(loadBalancer
-                , loadBalancerSeffOperationSignatureEntityName);
-        BranchAction rdSeffBranchAction = repositoryLookup.findSeffBranchActionById(rdSeff, loadBalancerSeffBranchActionId);
-        ProbabilisticBranchTransition branchTransition = repositoryLookup.findSeffProbabilisticBranchTransitionByEntityName(rdSeffBranchAction, branchTransitionEntityName);
-        boolean isReference = repositoryLookup.isProbabilisticBranchTransitionExternalCallActionTo(branchTransition, operationRequiredRoleName);
-        if (isReference) {
-            return branchTransition;
-        }
-        return null;
-    }
+        
+        ResourceEnvironment resourceEnv = pcmInstance.getResourceEnvironment();
+        ResourceContainer node1 = resourceEnvLookup.findResourceContainerById(resourceEnv, serverNodeOneId);
+        ResourceContainer node2 = resourceEnvLookup.findResourceContainerById(resourceEnv, serverNodeTwoId);
+        logMsg(node1.getEntityName(), node2.getEntityName(), serverNodeOneId, serverNodeTwoId, serverNode1State, serverNode2State
+                , probBranchTransitionToServerNode1.getBranchProbability(), probBranchTransitionToServerNode2.getBranchProbability());
 
+        LOGGER.info(String.format("'EXECUTE' applied reconfiguration 'nodeRecovery' workaround %s ", LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
+    }
+    
 }
