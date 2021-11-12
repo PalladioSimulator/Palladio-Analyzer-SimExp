@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<failurescenario:FailureScenarioRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:failurescenario="http://palladiosimulator.org/failurescenario/1.0" id="_mF_oQEFkEeyItt1jU-apMg">
+  <failurescenarios id="_D8ek4EOLEeyZmomNazpcGg" entityName="HWCrashFailureat 0s point in time of ServerNode1">
+    <occurrences>
+      <origin xsi:type="failurescenario:ProcessingResourceReference">
+        <processingResource href="../iaas.resourceenvironment#_GAVEEAEqEeS7FKokKTKFow"/>
+      </origin>
+      <pointInTime specification="0.0"/>
+    </occurrences>
+  </failurescenarios>
+</failurescenario:FailureScenarioRepository>
