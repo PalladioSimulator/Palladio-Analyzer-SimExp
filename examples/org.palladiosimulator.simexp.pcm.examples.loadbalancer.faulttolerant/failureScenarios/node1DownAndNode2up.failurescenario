@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<failurescenario:FailureScenarioRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:failurescenario="http://palladiosimulator.org/failurescenario/1.0" id="_mF_oQEFkEeyItt1jU-apMg">
+<failurescenario:FailureScenarioRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:failurescenario="http://palladiosimulator.org/failurescenario/1.0" xmlns:failuretype="http://palladiosimulator.org/failuretype/1.0" id="_mF_oQEFkEeyItt1jU-apMg">
   <failurescenarios id="_D8ek4EOLEeyZmomNazpcGg" entityName="HWCrashFailureat 0s point in time of ServerNode1">
     <occurrences>
+      <failure xsi:type="failuretype:HWCrashFailure" href="faulttolerantloadbalancer.failuretype#_Ni9XVUFkEeyItt1jU-apMg"/>
       <origin xsi:type="failurescenario:ProcessingResourceReference">
         <processingResource href="../iaas.resourceenvironment#_GAVEEAEqEeS7FKokKTKFow"/>
       </origin>
