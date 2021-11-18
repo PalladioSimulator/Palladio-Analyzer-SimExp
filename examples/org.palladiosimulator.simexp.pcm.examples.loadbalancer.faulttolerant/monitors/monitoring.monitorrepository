@@ -72,4 +72,11 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
   </monitors>
+  <monitors id="_7I600Eh9Eey2VqAVyY1ITQ" entityName="System ExecutionResultType">
+    <measurementSpecifications id="_8x0FQEh9Eey2VqAVyY1ITQ">
+      <metricDescription xsi:type="metricspec:TextualBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_wvh0gBX7Eey-ibmvVnJ8rg"/>
+      <processingType xsi:type="monitorrepository:FeedThrough" id="_Cx5_dEh-Eey2VqAVyY1ITQ"/>
+    </measurementSpecifications>
+    <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
+  </monitors>
 </monitorrepository:MonitorRepository>
