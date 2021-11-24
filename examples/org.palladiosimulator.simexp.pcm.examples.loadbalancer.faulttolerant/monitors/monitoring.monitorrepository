@@ -18,7 +18,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ResourceEnvironmentMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.1"/>
   </monitors>
-  <monitors id="_1dAVIOjrEeSExOmBpAKT0Q" entityName="Reconfiguration">
+  <monitors id="_1dAVIOjrEeSExOmBpAKT0Q" entityName="Reconfiguration" activated="false">
     <measurementSpecifications id="_2_fbkOjrEeSExOmBpAKT0Q">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_VYg6MujFEeSB6OBq2SKZxQ"/>
       <processingType xsi:type="monitorrepository:FeedThrough" id="_ZNrDNO0WEeWdrOr0QROn8g"/>
@@ -43,7 +43,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ExternalCallActionMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.3"/>
   </monitors>
-  <monitors id="_eWvMQC2JEeyRTa0rKPKQIg" entityName="cpuServer1">
+  <monitors id="_eWvMQC2JEeyRTa0rKPKQIg" entityName="cpuServer1" activated="false">
     <measurementSpecifications id="_U8eb0C2KEeyBcuFfWBtHLA">
       <metricDescription xsi:type="metricspec:MetricSetDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_mhws4SkUEeSuf8LV7cHLgA"/>
       <processingType xsi:type="monitorrepository:TimeDriven" id="_XaIxES2KEeyBcuFfWBtHLA"/>
@@ -54,7 +54,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="org.palladiosimulator.edp2.models:ResourceURIMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.4"/>
   </monitors>
-  <monitors id="_gy-lMC2JEeyRTa0rKPKQIg" entityName="cpuServer2">
+  <monitors id="_gy-lMC2JEeyRTa0rKPKQIg" entityName="cpuServer2" activated="false">
     <measurementSpecifications id="_CO-lcC2LEeyBcuFfWBtHLA">
       <metricDescription xsi:type="metricspec:MetricSetDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_mhws4SkUEeSuf8LV7cHLgA"/>
       <processingType xsi:type="monitorrepository:FeedThrough" id="_KkSqkC2LEeyBcuFfWBtHLA"/>
@@ -73,8 +73,8 @@
     <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
   </monitors>
   <monitors id="_7I600Eh9Eey2VqAVyY1ITQ" entityName="System ExecutionResultType">
-    <measurementSpecifications id="_8x0FQEh9Eey2VqAVyY1ITQ">
-      <metricDescription xsi:type="metricspec:TextualBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_wvh0gBX7Eey-ibmvVnJ8rg"/>
+    <measurementSpecifications id="_8x0FQEh9Eey2VqAVyY1ITQ" triggersSelfAdaptations="false">
+      <metricDescription xsi:type="metricspec:MetricSetDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_-TkoURX7Eey-ibmvVnJ8rg"/>
       <processingType xsi:type="monitorrepository:FeedThrough" id="_Cx5_dEh-Eey2VqAVyY1ITQ"/>
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
