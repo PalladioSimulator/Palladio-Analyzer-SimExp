@@ -70,8 +70,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
 	
-    private final PcmMeasurementSpecification responseTimeSpec;
-    private final PcmMeasurementSpecification buildSystemExecutionResultTypeSpec;
+    private final PcmMeasurementSpecification responseTimeMeasurementSpec;
+    private final PcmMeasurementSpecification systemResultExectutionTypeTimeMeasurementSpec;
+    
 	private final NodeRecoveryStrategy nodeRecoveryStrategy;
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
@@ -85,14 +86,14 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
 		
-		this.responseTimeSpec = pcmSpecs.get(0);
-        this.buildSystemExecutionResultTypeSpec = pcmSpecs.get(3);
+		this.responseTimeMeasurementSpec = pcmSpecs.get(0);
+        this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
 //		this.nodeRecoveryStrategy = new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 //                , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
 		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
-        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeSpec, strategyConfiguration, nodeRecoveryStrategy);
-		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeSpec, strategyConfiguration, reconfigurationPlanningStrategy);
+        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
@@ -145,8 +146,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	}
 
     private RewardEvaluator getPerformabilityRewardEvaluator() {
-        PcmMeasurementSpecification responseTimeMeasurementSpec = pcmSpecs.get(0);
-        PcmMeasurementSpecification systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
         return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec, systemResultExectutionTypeTimeMeasurementSpec);
     }
 
