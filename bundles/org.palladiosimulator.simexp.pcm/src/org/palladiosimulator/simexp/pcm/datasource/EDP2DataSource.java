@@ -13,9 +13,14 @@ import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
 import org.palladiosimulator.edp2.models.ExperimentData.Measurement;
 import org.palladiosimulator.edp2.models.ExperimentData.RawMeasurements;
 import org.palladiosimulator.measurementframework.measureprovider.IMeasureProvider;
+import org.palladiosimulator.metricspec.Identifier;
 import org.palladiosimulator.metricspec.MetricDescription;
 import org.palladiosimulator.metricspec.constants.MetricDescriptionConstants;
 import org.palladiosimulator.simexp.core.util.Pair;
+import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementValue;
+import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.NumberMeasurementValue;
+import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.PointInTime;
+import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.StringMeasurementValue;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 public class EDP2DataSource extends DataSource {
@@ -33,23 +38,41 @@ public class EDP2DataSource extends DataSource {
         for (PcmMeasurementSpecification each : measurements.keySet()) {
             Measurement measure = measurements.get(each);
             MetricDescription desc = each.getMetricDescription();
-            List<Pair<Number, Double>> measurementSeries = getMeasurementSeries(measure, desc);
+            List<Pair<PointInTime, MeasurementValue>> measurementSeries = getMeasurementSeries(measure, desc);
             result.addMeasurementSeries(each, measurementSeries);
         }
         return result;
     }
 
-    private List<Pair<Number, Double>> getMeasurementSeries(Measurement measurement, MetricDescription metricDesc) {
-        List<Pair<Number, Double>> measurementSeries = new ArrayList<>();
+    private List<Pair<PointInTime, MeasurementValue>> getMeasurementSeries(Measurement measurement, MetricDescription metricDesc) {
+        List<Pair<PointInTime, MeasurementValue>> measurementSeries = new ArrayList<>();
+        
         Iterator<IMeasureProvider> iterator = getIterator(measurement);
         while (iterator.hasNext()) {
             IMeasureProvider provider = iterator.next();
             Measure<?, ?> stateQuantity = provider.getMeasureForMetric(metricDesc);
             Measure<?, ?> timeInstant = provider.getMeasureForMetric(MetricDescriptionConstants.POINT_IN_TIME_METRIC);
+            // point in time the measurement of a specific metric was taken
+            Double timeInstantValue = (Double) timeInstant.getValue();
+            PointInTime pointInTime = new MeasurementSeriesResult.PointInTime(timeInstantValue);
+            // measured value of specific metric
             Object stateQuantityValue = stateQuantity.getValue();
+
+            if (stateQuantityValue instanceof Identifier) {
+                Identifier stateQuantityValueAsIdentifier = (Identifier) stateQuantityValue;
+                String stateQuantityAsStringValue = (String) stateQuantityValueAsIdentifier.getLiteral();
+                StringMeasurementValue measurementValueAsString = new MeasurementSeriesResult.StringMeasurementValue(stateQuantityAsStringValue);
+                Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime, measurementValueAsString);
+                measurementSeries.add(measurementValuePair);
+            }
             if (stateQuantityValue instanceof Number) {
                 Number number = (Number) stateQuantityValue;
-                measurementSeries.add(Pair.of(number, (Double) timeInstant.getValue()));
+                if (number instanceof Double) {
+                    Double stateQuantityAsDoubleValue = (Double) stateQuantityValue;
+                    NumberMeasurementValue<Double> measurementValueAsDouble = new MeasurementSeriesResult.NumberMeasurementValue<Double>(stateQuantityAsDoubleValue, Double.class);
+                    Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime, measurementValueAsDouble);
+                    measurementSeries.add(measurementValuePair);
+                }
             }
         }
         return measurementSeries;
