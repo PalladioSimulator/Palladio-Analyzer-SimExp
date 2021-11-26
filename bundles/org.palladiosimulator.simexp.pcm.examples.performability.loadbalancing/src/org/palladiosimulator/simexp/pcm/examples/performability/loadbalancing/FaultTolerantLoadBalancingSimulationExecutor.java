@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.metricspec.MetricDescription;
+import org.palladiosimulator.metricspec.MetricSetDescription;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
@@ -24,14 +27,15 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
-import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.performability.ReconfigurationPlanningStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
+import org.palladiosimulator.simexp.pcm.examples.performability.SystemExecutionResultTypeMeasurementAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -55,6 +59,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static String CPU_SERVER_1_MONITOR = "cpuServer1";
 	private final static String CPU_SERVER_2_MONITOR = "cpuServer2";
+    private final static String SYSTEM_EXECUTION_RESULTTYPE = "System ExecutionResultType";
 	private final static String SIMULATION_ID = "LoadBalancing";
 	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
@@ -65,7 +70,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfSelectionPolicy;
 	
-    private final PcmMeasurementSpecification responseTimeSpec;
+    private final PcmMeasurementSpecification responseTimeMeasurementSpec;
+    private final PcmMeasurementSpecification systemResultExectutionTypeTimeMeasurementSpec;
+    
 	private final NodeRecoveryStrategy nodeRecoveryStrategy;
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
@@ -74,17 +81,19 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
-								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
+								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR),
+								 	 buildSystemExecutionResultTypeSpec(SYSTEM_EXECUTION_RESULTTYPE));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
 		
-		this.responseTimeSpec = pcmSpecs.get(0);
+		this.responseTimeMeasurementSpec = pcmSpecs.get(0);
+        this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
 //		this.nodeRecoveryStrategy = new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 //                , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
 		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
-        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeSpec, strategyConfiguration, nodeRecoveryStrategy);
-		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeSpec, strategyConfiguration, reconfigurationPlanningStrategy);
+        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
@@ -117,8 +126,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(10) //500
-					.andNumberOfSimulationsPerRun(100) //100
+					.withNumberOfRuns(2) //500
+					.andNumberOfSimulationsPerRun(2) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -137,8 +146,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	}
 
     private RewardEvaluator getPerformabilityRewardEvaluator() {
-        PcmMeasurementSpecification responseTimeMeasurementSpec = pcmSpecs.get(0);
-        return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec);
+        return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec, systemResultExectutionTypeTimeMeasurementSpec);
     }
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> upperResponseTimeThreshold() {
@@ -176,13 +184,31 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PcmMeasurementSpecification buildCpuUtilizationSpecOf(String monitorName) {
 		Monitor monitor = findMonitor(monitorName);
 		MeasurementSpecification spec = monitor.getMeasurementSpecifications().get(1);
-		return PcmMeasurementSpecification.newBuilder()
+		MeasurementAggregator utilizationAggregator = new UtilizationAggregator();
+        return PcmMeasurementSpecification.newBuilder()
 				.withName(monitor.getEntityName())
 				.measuredAt(monitor.getMeasuringPoint())
 				.withMetric(spec.getMetricDescription())
-				.aggregateMeasurementsBy(getUtilizationAggregator())
+				.aggregateMeasurementsBy(utilizationAggregator)
 				.build();
 	}
+	
+	private PcmMeasurementSpecification buildSystemExecutionResultTypeSpec(String systemExecutionResulttype) {
+        Monitor monitor = findMonitor(SYSTEM_EXECUTION_RESULTTYPE);
+        EList<MeasurementSpecification> measurementSpecifications = monitor.getMeasurementSpecifications();
+        // this is a MetricDescriptionSet -> thus you need to add the contained BaseMetric
+        MeasurementSpecification measurementSpec = measurementSpecifications.get(0);
+        MeasurementAggregator systemExecResultTypeAggregtator = new SystemExecutionResultTypeMeasurementAggregator();
+        MetricDescription metricDescription = measurementSpec.getMetricDescription();
+        EList<MetricDescription> subsumedMetrics = ((MetricSetDescription) metricDescription).getSubsumedMetrics();
+        MetricDescription subsumedTextualBaseMetricDescription = subsumedMetrics.get(1);
+        return PcmMeasurementSpecification.newBuilder()
+            .withName(monitor.getEntityName())
+            .measuredAt(monitor.getMeasuringPoint())
+            .withMetric(subsumedTextualBaseMetricDescription)
+            .aggregateMeasurementsBy(systemExecResultTypeAggregtator)
+            .build();
+    }
 
 	private Monitor findMonitor(String monitorName) {
 		Stream<Monitor> monitors = experiment.getInitialModel().getMonitorRepository().getMonitors().stream();
@@ -191,51 +217,4 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
 	}
 	
-	private MeasurementAggregator getUtilizationAggregator() {
-		return new PcmMeasurementSpecification.MeasurementAggregator() {
-			
-			@Override
-			public double aggregate(MeasurementSeries series) {
-				double utilization = 0;
-				
-				List<Pair<Number, Double>> measurements = series.asList();
-				for (int i = 0; i < measurements.size() - 1; i++) {
-					Pair<Number, Double> current = measurements.get(i);
-					Pair<Number, Double> next = measurements.get(i + 1);
-					if (isActive(current, next) || isIdle(current, next)) {
-						utilization += getTimeInstant(next) - getTimeInstant(current);
-					}
-				}
-				
-				return computeUtilization(utilization, getTotalTime(measurements));
-			}
-
-			private Double getTotalTime(List<Pair<Number, Double>> measurements) {
-				int last = measurements.size() - 1;
-				return getTimeInstant(measurements.get(last));
-			}
-
-			private double computeUtilization(double utilization, Double totalTime) {
-				return utilization / totalTime;
-			}
-
-			private boolean isActive(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) > 0;
-			}
-
-			private boolean isIdle(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) == 0;
-			}
-			
-			private Integer getResourceState(Pair<Number, Double> measurement) {
-				return measurement.getFirst().intValue();
-			}
-			
-			private Double getTimeInstant(Pair<Number, Double> measurement) {
-				return measurement.getSecond();
-			}
-			
-		};
-	}
-
 }

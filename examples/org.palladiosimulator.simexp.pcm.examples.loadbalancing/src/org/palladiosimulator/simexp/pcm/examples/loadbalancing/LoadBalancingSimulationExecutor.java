@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -159,11 +160,12 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private PcmMeasurementSpecification buildCpuUtilizationSpecOf(String monitorName) {
 		Monitor monitor = findMonitor(monitorName);
 		MeasurementSpecification spec = monitor.getMeasurementSpecifications().get(1);
-		return PcmMeasurementSpecification.newBuilder()
+		MeasurementAggregator utilizationAggregator = new UtilizationAggregator();
+        return PcmMeasurementSpecification.newBuilder()
 				.withName(monitor.getEntityName())
 				.measuredAt(monitor.getMeasuringPoint())
 				.withMetric(spec.getMetricDescription())
-				.aggregateMeasurementsBy(getUtilizationAggregator())
+				.aggregateMeasurementsBy(utilizationAggregator)
 				.build();
 	}
 
@@ -174,51 +176,4 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
 	}
 	
-	private MeasurementAggregator getUtilizationAggregator() {
-		return new PcmMeasurementSpecification.MeasurementAggregator() {
-			
-			@Override
-			public double aggregate(MeasurementSeries series) {
-				double utilization = 0;
-				
-				List<Pair<Number, Double>> measurements = series.asList();
-				for (int i = 0; i < measurements.size() - 1; i++) {
-					Pair<Number, Double> current = measurements.get(i);
-					Pair<Number, Double> next = measurements.get(i + 1);
-					if (isActive(current, next) || isIdle(current, next)) {
-						utilization += getTimeInstant(next) - getTimeInstant(current);
-					}
-				}
-				
-				return computeUtilization(utilization, getTotalTime(measurements));
-			}
-
-			private Double getTotalTime(List<Pair<Number, Double>> measurements) {
-				int last = measurements.size() - 1;
-				return getTimeInstant(measurements.get(last));
-			}
-
-			private double computeUtilization(double utilization, Double totalTime) {
-				return utilization / totalTime;
-			}
-
-			private boolean isActive(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) > 0;
-			}
-
-			private boolean isIdle(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) == 0;
-			}
-			
-			private Integer getResourceState(Pair<Number, Double> measurement) {
-				return measurement.getFirst().intValue();
-			}
-			
-			private Double getTimeInstant(Pair<Number, Double> measurement) {
-				return measurement.getSecond();
-			}
-			
-		};
-	}
-
 }

@@ -15,10 +15,12 @@ public class PerformabilityRewardEvaluation implements RewardEvaluator {
     
     private static final Logger LOGGER = Logger.getLogger(PerformabilityRewardEvaluation.class.getName());
     
-    private PcmMeasurementSpecification responseTimeMeasurementSpec;
+    private final PcmMeasurementSpecification responseTimeMeasurementSpec;
+    private final PcmMeasurementSpecification systemResultExectutionTypeTimeMeasurementSpec;
 
-    public PerformabilityRewardEvaluation(PcmMeasurementSpecification responseTimeMeasurementSpec) {
+    public PerformabilityRewardEvaluation(PcmMeasurementSpecification responseTimeMeasurementSpec, PcmMeasurementSpecification systemResultExectutionTypeTimeMeasurementSpec) {
         this.responseTimeMeasurementSpec = responseTimeMeasurementSpec;
+        this.systemResultExectutionTypeTimeMeasurementSpec = systemResultExectutionTypeTimeMeasurementSpec;
     }
     
     @Override
@@ -34,6 +36,7 @@ public class PerformabilityRewardEvaluation implements RewardEvaluator {
         
         // filter simulated response time measurement from set (key: Usage Scenario: UsageScenario_Response Time)
         Optional<SimulatedMeasurement> simulatedResponseTimeMeasurement = quantity.findMeasurementWith(responseTimeMeasurementSpec);
+        // FIXME: add systemREsultExecutionTypeTimeMeasurementSpec
         if (!simulatedResponseTimeMeasurement.isPresent()) {
             LOGGER.error(String.format("No simulated response time measurements available for quantified state: %s; check your measurement specification."
                     , quantity.getMeasurements().toString()));

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.state;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.statistics.StatisticalQuantities;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
+import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementValue;
 
 public class PcmMeasurementSpecification extends SimulatedMeasurementSpecification {
 
@@ -29,7 +31,15 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
         
         @Override
         public double aggregate(MeasurementSeries measurements) {
-            List<Number> measurementsAsNumbers = measurements.asListOfValues();
+            List<MeasurementValue> measurementsValues = measurements.asListOfValues();
+            
+            List<Number> measurementsAsNumbers = new ArrayList<>();
+            for (MeasurementValue measurementValue : measurementsValues) {
+                Object value = measurementValue.getValue();
+                if (value instanceof Number) {
+                    measurementsAsNumbers.add((Number) value);
+                }
+            }
 
             if (measurementsAsNumbers.isEmpty()) {
                 LOGGER.error("No measurements available from simulation.");
