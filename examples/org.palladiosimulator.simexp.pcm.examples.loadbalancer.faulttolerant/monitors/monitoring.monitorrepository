@@ -9,7 +9,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
   </monitors>
-  <monitors id="_kFHBIMluEeSsG6YHnSxiuA" entityName="Number of Resources">
+  <monitors id="_kFHBIMluEeSsG6YHnSxiuA" entityName="Number of Resources" activated="false">
     <measurementSpecifications id="_wH_LsMu0EeSC07Pn0gpm5Q">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_e7x3gq-eEeSgL6DrxYuwZg"/>
       <processingType xsi:type="monitorrepository:FixedSizeAggregation" id="_0Fe1YFo-Eea2h9EzXC7SRg" numberOfMeasurements="2">
@@ -34,7 +34,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ExternalCallActionMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.2"/>
   </monitors>
-  <monitors id="_sxfRIAOzEeWk4qXEVpjV-g" entityName="Server2">
+  <monitors id="_sxfRIAOzEeWk4qXEVpjV-g" entityName="Server2" activated="false">
     <measurementSpecifications id="_5osNEAOzEeWk4qXEVpjV-g">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_6rYmYs7nEeOX_4BzImuHbA"/>
       <processingType xsi:type="monitorrepository:TimeDrivenAggregation" id="_HQTt8gJ9Eeii4a_bO5GIsg">
