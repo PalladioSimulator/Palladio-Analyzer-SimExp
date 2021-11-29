@@ -54,7 +54,8 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
     
     private double retrieveResponseTime(SimulatedExperience exp) {
         // response time reward format is of type double
-        return Double.parseDouble(exp.getReward());
+        String reward = exp.getReward();
+        return Double.parseDouble(reward);
     }
 
 }

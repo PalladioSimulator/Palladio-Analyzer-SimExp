@@ -78,7 +78,11 @@ public class PerformabilityRewardEvaluation implements RewardEvaluator {
         }
 
         public static PerformabilityRewardSignal create(double responseTime, double successRate, double lowerResponseTime, double upperResponseTime) {
-            double interpolatedResponseTime = ResponseTimeLinearInterpolator.interpolate(responseTime, lowerResponseTime, upperResponseTime);
+            // FIXME: only interpolate if response time is in current range; add range check
+            double interpolatedResponseTime = 0.0;
+            if (responseTime > lowerResponseTime && responseTime < upperResponseTime ) {
+                interpolatedResponseTime = ResponseTimeLinearInterpolator.interpolate(responseTime, lowerResponseTime, upperResponseTime);
+            }
             double performabilityRewardSignal = interpolatedResponseTime + successRate;
             return new PerformabilityRewardSignal(performabilityRewardSignal);
         }
