@@ -146,7 +146,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	}
 
     private RewardEvaluator getPerformabilityRewardEvaluator() {
-        return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec, systemResultExectutionTypeTimeMeasurementSpec);
+        return new PerformabilityRewardEvaluation(responseTimeMeasurementSpec, systemResultExectutionTypeTimeMeasurementSpec
+                , lowerResponseTimeThreshold(), upperResponseTimeThreshold());
     }
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> upperResponseTimeThreshold() {
