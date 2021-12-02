@@ -50,8 +50,8 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
-	public final static double UPPER_THRESHOLD_RT = 2.0;
-	public final static double LOWER_THRESHOLD_RT = 1.0;
+    public final static double LOWER_THRESHOLD_RT = 0.1;
+	public final static double UPPER_THRESHOLD_RT = 0.4;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/experiments/simexp.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
@@ -111,7 +111,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
 		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
-		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
+		double computeTotalReward = evaluator.computeTotalReward();
+        LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), computeTotalReward));
 		LOGGER.info("***********************************************************************");
 	}
 	
