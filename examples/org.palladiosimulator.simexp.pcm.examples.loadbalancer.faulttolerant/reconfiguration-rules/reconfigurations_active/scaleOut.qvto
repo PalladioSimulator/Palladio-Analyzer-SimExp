@@ -33,7 +33,6 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
 transformation scaleOut( inout pcmAllocation : PCM_ALLOC ) {
 							
 	// Define Threshold and Scale Out
-	property threshold : Real = 2.0;
 	property outsourceFactor : Real = 0.1;
 
 	/**
