@@ -83,19 +83,14 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR),
 								 	 buildSystemExecutionResultTypeSpec(SYSTEM_EXECUTION_RESULTTYPE));
-//		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
 		
 		this.responseTimeMeasurementSpec = pcmSpecs.get(0);
         this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
-//		this.nodeRecoveryStrategy = new LoadBalancerNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
-//                , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
 		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
         this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
 		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
-//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
-//		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -122,7 +117,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-//					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
@@ -132,7 +126,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
-				  	//.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get())
 				  	.asEnvironmentalDrivenProcess(FaultTolerantVaryingInterarrivelRateProcess.get(dbn))
 					.done()
 				.createReconfigurationSpace()
@@ -140,7 +133,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 				  	.andReconfigurationStrategy(reconfSelectionPolicy)
 				  	.done()
 				.specifyRewardHandling()
-				  	//.withRewardEvaluator(getSimpleRewardEvaluator())
 				  	.withRewardEvaluator(getPerformabilityRewardEvaluator())
 				  	.done()
 				.build();
