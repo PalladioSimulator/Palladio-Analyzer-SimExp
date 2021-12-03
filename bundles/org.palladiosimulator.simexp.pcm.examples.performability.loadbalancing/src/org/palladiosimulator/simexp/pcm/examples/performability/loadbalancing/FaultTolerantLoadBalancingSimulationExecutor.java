@@ -89,8 +89,13 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
         this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
 		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
-        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
-		this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
+
+		// configure the different planning strategies that shall be investigated by accordingly (un)comment the required strategy definition
+		this.reconfigurationPlanningStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+//        this.reconfigurationPlanningStrategy = new LoadBalancingScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+//        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+
+        this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -121,8 +126,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(2) //100
+					.withNumberOfRuns(50) //500
+					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
