@@ -70,35 +70,35 @@
     <representation xsi:type="distributionfunction:TabularCPD">
       <cpdEntries>
         <conditonals>0.2</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.225</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.25</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.7};{unavailable,0.3}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.275</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.3</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.325</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.35</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.375</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.4</conditonals>
@@ -106,7 +106,7 @@
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.425</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.95};{unavailable,0.05}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
     </representation>
   </params>
@@ -115,35 +115,35 @@
     <representation xsi:type="distributionfunction:TabularCPD">
       <cpdEntries>
         <conditonals>0.2</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.225</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.25</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.7};{unavailable,0.3}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.275</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.3</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.325</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.6};{unavailable,0.4}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.35</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.375</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.8};{unavailable,0.2}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.4</conditonals>
@@ -151,7 +151,7 @@
       </cpdEntries>
       <cpdEntries>
         <conditonals>0.425</conditonals>
-        <entry type="SAMPLESPACE" value="{available,0.95};{unavailable,0.05}"/>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
       </cpdEntries>
     </representation>
   </params>
