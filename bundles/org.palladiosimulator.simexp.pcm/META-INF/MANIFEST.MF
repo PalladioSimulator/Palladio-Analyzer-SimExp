@@ -40,6 +40,5 @@ Export-Package: org.palladiosimulator.simexp.pcm.action,
  org.palladiosimulator.simexp.pcm.process,
  org.palladiosimulator.simexp.pcm.state,
  org.palladiosimulator.simexp.pcm.state.failure,
- org.palladiosimulator.simexp.pcm.util,
- org.palladiosimulator.simexp.state.failure
+ org.palladiosimulator.simexp.pcm.util
 Import-Package: de.uka.ipd.sdq.codegen.simucontroller
