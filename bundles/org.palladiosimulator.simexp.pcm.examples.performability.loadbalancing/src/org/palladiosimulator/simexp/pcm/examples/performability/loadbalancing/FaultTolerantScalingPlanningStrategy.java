@@ -36,10 +36,6 @@ public class FaultTolerantScalingPlanningStrategy extends AbstractLoadBalancingS
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
-
-        /** workaround until node recovery is also accessible as qvto script */
-        recoveryStrategy.execute(sasState, knowledge);
-
         
         /** scaling only allowed if all nodes are available */
         if (allNodesAreAvailable(serverNodeStates)) {
@@ -47,8 +43,10 @@ public class FaultTolerantScalingPlanningStrategy extends AbstractLoadBalancingS
                 return lookupReconfigure(SCALE_OUT_SOURCE_QVTO_NAME, options);
             } else if (isSubceeded(responseTime)) {
                 return lookupReconfigure(SCALE_IN_QVTO_NAME, options);
-            } else {
             }
+        } else {
+        	/** workaround until node recovery is also accessible as qvto script */
+            recoveryStrategy.execute(sasState, knowledge);
         }
         return emptyReconfiguration();
     }
