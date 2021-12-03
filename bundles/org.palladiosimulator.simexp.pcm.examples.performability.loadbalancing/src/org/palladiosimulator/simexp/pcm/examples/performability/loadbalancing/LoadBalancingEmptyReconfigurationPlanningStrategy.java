@@ -11,7 +11,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class LoadBalancingEmptyReconfigurationPlanningStrategy extends AbstractReconfigurationPlanningStrategy{
+public class LoadBalancingEmptyReconfigurationPlanningStrategy extends AbstractReconfigurationPlanningStrategy {
     
     public LoadBalancingEmptyReconfigurationPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy recoveryStrategy) {

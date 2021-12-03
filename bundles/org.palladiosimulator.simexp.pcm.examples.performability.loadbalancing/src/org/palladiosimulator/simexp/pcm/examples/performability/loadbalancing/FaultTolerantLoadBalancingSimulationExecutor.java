@@ -50,8 +50,8 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
-    public final static double LOWER_THRESHOLD_RT = 0.1;
-	public final static double UPPER_THRESHOLD_RT = 0.4;
+    private static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
+    private static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/experiments/simexp.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
@@ -92,8 +92,10 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 
 		// configure the different planning strategies that shall be investigated by accordingly (un)comment the required strategy definition
 		this.reconfigurationPlanningStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
-//        this.reconfigurationPlanningStrategy = new LoadBalancingScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
-//        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration, nodeRecoveryStrategy);
+//        this.reconfigurationPlanningStrategy = new LoadBalancingScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration
+//                , nodeRecoveryStrategy , LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+//        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration
+//                , nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
 
         this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 		
@@ -149,11 +151,11 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
     }
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> upperResponseTimeThreshold() {
-		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
+		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
 	}
 	
 	private Pair<SimulatedMeasurementSpecification, Threshold> lowerResponseTimeThreshold() {
-		return Pair.of(pcmSpecs.get(0), Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_RT));
+		return Pair.of(pcmSpecs.get(0), Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
 	}
 	
 	private Pair<SimulatedMeasurementSpecification, Threshold> cpuServer1Threshold() {

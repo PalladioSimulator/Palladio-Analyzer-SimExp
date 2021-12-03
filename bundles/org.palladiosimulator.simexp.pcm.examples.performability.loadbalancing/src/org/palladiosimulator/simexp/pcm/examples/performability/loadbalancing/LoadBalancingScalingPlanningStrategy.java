@@ -17,16 +17,16 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class FaultTolerantScalingPlanningStrategy extends AbstractLoadBalancingScalingPlanningStrategy {
+public class LoadBalancingScalingPlanningStrategy extends AbstractLoadBalancingScalingPlanningStrategy {
     
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
 
-    public FaultTolerantScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy recoveryStrategy,
-            Threshold lowerThresholdResponseTime, Threshold upperThresholdResponseTime) {
-        super(responseTimeSpec, strategyConfiguration, recoveryStrategy, lowerThresholdResponseTime, upperThresholdResponseTime);
-
+    public LoadBalancingScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
+            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy recoveryStrategy
+            , Threshold lowerThresholdResponseTime, Threshold upperThresholdResponseTime) {
+        super(responseTimeSpec, strategyConfiguration, recoveryStrategy
+                , lowerThresholdResponseTime, upperThresholdResponseTime);
     }
 
     @Override
@@ -37,11 +37,7 @@ public class FaultTolerantScalingPlanningStrategy extends AbstractLoadBalancingS
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
-        /** workaround until node recovery is also accessible as qvto script */
-        recoveryStrategy.execute(sasState, knowledge);
-
-        
-        /** scaling only allowed if all nodes are available */
+         /** scaling only allowed if all nodes are available */
         if (allNodesAreAvailable(serverNodeStates)) {
             if (isExceeded(responseTime)) {
                 return lookupReconfigure(SCALE_OUT_SOURCE_QVTO_NAME, options);
@@ -60,4 +56,6 @@ public class FaultTolerantScalingPlanningStrategy extends AbstractLoadBalancingS
             .equals(PerformabilityStrategyConstants.NODE_STATE_AVAILABLE));
     }
 
+
 }
+
