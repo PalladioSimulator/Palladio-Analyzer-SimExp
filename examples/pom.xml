@@ -13,6 +13,9 @@
 
 	<modules>
 		<!-- insert bundle folders here -->
+		<module>org.palladiosimulator.simexp.pcm.examples.performability</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing</module>
+
 		<module>org.palladiosimulator.simexp.pcm.examples</module>
 		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancing</module>
 
