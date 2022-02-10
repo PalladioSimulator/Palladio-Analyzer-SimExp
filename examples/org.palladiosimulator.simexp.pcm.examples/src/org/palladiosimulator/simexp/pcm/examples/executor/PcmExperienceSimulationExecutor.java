@@ -1,14 +1,15 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.examples.binding.ExecutorBindingModule;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
-import com.google.inject.Guice;
 
 public abstract class PcmExperienceSimulationExecutor {
+    
+    protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
 	
 	protected final Experiment experiment;
 	
@@ -16,7 +17,8 @@ public abstract class PcmExperienceSimulationExecutor {
 	private static PcmExperienceSimulationExecutor instance;
 	
 	public PcmExperienceSimulationExecutor() {
-		this.experiment = new ExperimentLoader().loadExperiment(getExperimentFile());
+	    String experimentFile = getExperimentFile();
+		this.experiment = new ExperimentLoader().loadExperiment(experimentFile);
 		ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}

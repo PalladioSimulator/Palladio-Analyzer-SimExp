@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
@@ -48,20 +49,47 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator extends InductiveSta
 	
 	@Override
 	public State navigate(NavigationContext context) {
-		if (isNotValid(context)) {
-			//TODO exception handling
-			throw new RuntimeException("");
-		}
+        NavigationContextValidator checkContext = this.new NavigationContextValidator();
+        try {
+            checkContext.validate(context);
+        } catch (SelfAdaptiveSystemStateSpaceNavigator.NavigationContextValidator.NavigationContextValidationExcpetion e) {
+            throw new RuntimeException(e);
+        }
 		
 		SelfAdaptiveSystemState<?> structuralState = determineStructuralState(context);
 		return determineQuantifiedState(structuralState);
 	}
 	
-	private boolean isNotValid(NavigationContext context) {
-		return (context.getAction().isPresent()) == false ||
-			   (context.getAction().get() instanceof Reconfiguration<?>) == false ||
-			   (context.getSource() instanceof SelfAdaptiveSystemState<?>) == false;
-	}
+	
+    private class NavigationContextValidator {
+        public void validate(NavigationContext context) throws NavigationContextValidationExcpetion {
+            boolean isValid = true;
+            StringBuilder invalidContxtMsg = new StringBuilder("Context is invalid. Reason: ");
+
+            Optional<Action<?>> action = context.getAction();
+
+            if (!action.isPresent()) {
+                invalidContxtMsg.append("no action present");
+                isValid = false;
+            } else if (!(action.get() instanceof Reconfiguration)) {
+                invalidContxtMsg.append("specified action does not conform to reconfiguration specification");
+                isValid = false;
+            } else if (!(context.getSource() instanceof SelfAdaptiveSystemState)) {
+                invalidContxtMsg.append("specified state does not conform to self-adaptive system state specification");
+                isValid = false;
+            }
+            if (!isValid) {
+                throw new NavigationContextValidationExcpetion(invalidContxtMsg.toString());
+            }
+        }
+
+        public class NavigationContextValidationExcpetion extends Exception {
+            public NavigationContextValidationExcpetion(String message) {
+                super(message);
+            }
+        }
+    }
+
 	
 	private SelfAdaptiveSystemState<?> determineQuantifiedState(SelfAdaptiveSystemState<?> structuralState) {
 		Optional<SimulatedExperience> result = SimulatedExperienceStore.get().findSelfAdaptiveSystemState(structuralState.toString());

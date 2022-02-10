@@ -9,7 +9,6 @@
  * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
  * in conjunction with mappings defined in the project properties.
  */
-modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
 modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
 modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
 modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
@@ -31,13 +30,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation Step1Outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
-							//inout pcmRepository : PCM_REP,
-							//in pcmSystem : PCM_SYS,
-							inout pcmAllocation : PCM_ALLOC
-							//in pcmResources : PCM_RES_ENV
-							) {
-							
+transformation Step1Outsource( inout pcmAllocation : PCM_ALLOC ) {
 							
 	// Define Threshold and Scale Out
 	property threshold : Real = 2.0;
@@ -51,44 +44,13 @@ transformation Step1Outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 	
 		log('SimuLizar Outsource Rule Transformation started');
 		
-		/*
-		assert fatal(runtimeMeasurement.rootObjects()[RuntimeMeasurement]->size() > 0)
-			with log ("No Measurements found!");
-			
-		assert fatal(pcmAllocation.rootObjects()[Allocation]->size() > 0)
-			with log ("Allocation Model is empty!");
-			
-		// Assert true for the return value of the condition check to get correct reconfiguration time measuring points
-		assert error (runtimeMeasurement.rootObjects()[RuntimeMeasurement]->checkCondition() = true)
-			with log ("No reconfiguration required");	*/
-		
 		log('***********************OUTSOURCE STARTED**************************');
 		pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					outSourceProcessing(allocation.allocationContexts_Allocation)
 				);
+	}
 
-	}
-	
-	helper Set(RuntimeMeasurement) :: checkCondition() : Boolean {
-	
-		self->forEach(measurement) {
-		log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
-		
-			if (measurement.measuringValue > threshold) {
-		
-				log('Threshold is exceeded');
-				pcmAllocation.rootObjects()[Allocation]->forAll(
-					allocation : Allocation | 
-					outSourceProcessing(allocation.allocationContexts_Allocation)
-				);
-				return true;
-			};
-		};
-		
-		log('No measurements match the condition. Number of measurements is ' + self->size().toString());
-		return false;
-	}
 	
 	/**
 	 * outsource Processing.

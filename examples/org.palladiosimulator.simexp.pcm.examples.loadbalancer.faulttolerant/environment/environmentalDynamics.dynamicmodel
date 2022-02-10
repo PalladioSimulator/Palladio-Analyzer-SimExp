@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dynamicmodel:DynamicBehaviourExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_zEM6UPt3EeumisnHoKJ-1w" entityName="EnvironmentalDynamcis">
+  <model href="environmentalStatics.staticmodel#_gM_54PtuEeuPUtFH1XJrHw"/>
+  <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+    <localModels id="_EdzqcPt4EeumisnHoKJ-1w" entityName="TemporalGPM_DynamicInstance_VaryingWorkload">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_cU-xYftsEeuPUtFH1XJrHw"/>
+      <distributionFunction href="environmentalDistributions.distributionfunction#_l01IEPtNEeuPUtFH1XJrHw"/>
+    </localModels>
+    <localModels id="_enkooPt4EeumisnHoKJ-1w" entityName="TemporalGPM_DynamicInstance_ServerNode1_FailureOccurence">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_h-8DgftsEeuPUtFH1XJrHw"/>
+      <distributionFunction href="environmentalDistributions.distributionfunction#_rAU8kPtNEeuPUtFH1XJrHw"/>
+    </localModels>
+    <localModels id="_kvWfMPt4EeumisnHoKJ-1w" entityName="TemporalGPM_DynamicInstance_ServerNode2_FailureOccurence">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="environmentalTemplates.templatevariable#_h-8DgftsEeuPUtFH1XJrHw"/>
+      <distributionFunction href="environmentalDistributions.distributionfunction#_rAU8kPtNEeuPUtFH1XJrHw"/>
+    </localModels>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_EdzqcPt4EeumisnHoKJ-1w">
+      <appliedGroundVariable href="environmentalStatics.staticmodel#_4pMwwPtzEeuPUtFH1XJrHw"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="environmentalTemplates.templatevariable#//@relation.0"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_enkooPt4EeumisnHoKJ-1w">
+      <appliedGroundVariable href="environmentalStatics.staticmodel#_eyY44Pt1EeumisnHoKJ-1w"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="environmentalTemplates.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_kvWfMPt4EeumisnHoKJ-1w">
+      <appliedGroundVariable href="environmentalStatics.staticmodel#_iWcOcPt1EeumisnHoKJ-1w"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="environmentalTemplates.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+  </behaviour>
+</dynamicmodel:DynamicBehaviourExtension>

@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.palladiosimulator.simexp.service.Activator
 Require-Bundle: org.eclipse.core.runtime,
- com.google.inject;bundle-version="3.0.0"
+ com.google.inject;bundle-version="3.0.0",
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: de.fzi.srp.serviceregistry
 Bundle-ActivationPolicy: lazy
