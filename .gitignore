@@ -1,3 +1,5 @@
 target/
 bin/
 edp2/
+.ipynb_checkpoints/
+**__pycache__**
