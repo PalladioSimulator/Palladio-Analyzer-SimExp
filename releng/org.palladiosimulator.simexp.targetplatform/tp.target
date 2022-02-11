@@ -11,8 +11,8 @@
 	
 
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" refresh="true">
-		<repository location="https://se2.informatik.uni-wuerzburg.de/eclipse/limbo/"/>
-		<unit id="LIMBO_DLIM.feature.group" version="0.16.1.201606230914"/>
+		<repository location="https://updatesite.palladio-simulator.com/palladio-p2mirror-dlim/releases/latest/"/>
+		<unit id="LIMBO_DLIM.feature.group" version="0.0.0"/>
 	</location>	
 	
 	
