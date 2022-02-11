@@ -16,6 +16,10 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import feature="org.palladiosimulator.license.epl2" version="1.0.0"/>
+   </requires>
+
    <plugin
          id="org.palladiosimulator.simexp.pcm.ui"
          download-size="0"
