@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.palladiosimulator.simexp.example.pcm.feature">
-      <category name="org.palladiosimulator.addons.category"/>
-   </feature>
-   <feature id="org.palladiosimulator.simexp.example.prism.feature">
-      <category name="org.palladiosimulator.addons.category"/>
-   </feature>
-   <feature id="org.palladiosimulator.simexp.example.reliability.feature">
-      <category name="org.palladiosimulator.addons.category"/>
-   </feature>
    <feature id="org.palladiosimulator.simexp.feature">
-      <category name="org.palladiosimulator.addons.category"/>
-   </feature>
-   <feature id="org.palladiosimulator.simexp.test.feature">
       <category name="org.palladiosimulator.addons.category"/>
    </feature>
    <category-def name="org.palladiosimulator.addons.category" label="Palladio Bench Addons">
