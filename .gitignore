@@ -3,3 +3,4 @@ bin/
 edp2/
 .ipynb_checkpoints/
 **__pycache__**
+*.polyglot.build.properties
