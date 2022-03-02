@@ -13,7 +13,7 @@ public interface ReconfigurationStrategyContext {
 	
 	public boolean isSelectionPolicy();
 	
-	public ReconfigurationStrategy getStrategy();
+	public <T extends Reconfiguration<?>> ReconfigurationStrategy<T> getStrategy();
 	
 	public Policy<Action<?>> getSelectionPolicy();
 	

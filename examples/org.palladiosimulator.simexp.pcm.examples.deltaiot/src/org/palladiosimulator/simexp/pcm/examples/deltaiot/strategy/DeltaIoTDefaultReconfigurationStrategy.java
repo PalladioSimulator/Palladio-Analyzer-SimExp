@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.OPTIONS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
@@ -10,7 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -25,7 +23,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import com.google.common.math.DoubleMath;
 
-public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrategy {
+public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrategy<QVToReconfiguration> {
 
 	private final ReconfigurationParameterCalculator paramCalculator;
 
@@ -39,14 +37,12 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 	}
 
 	@Override
-	protected SharedKnowledge monitor(State source, Set<Reconfiguration<?>> options) {
+	protected void monitor(State source, SharedKnowledge knowledge) {
 		requirePcmSelfAdaptiveSystemState(source);
 
 		PcmSelfAdaptiveSystemState state = PcmSelfAdaptiveSystemState.class.cast(source);
 
-		SharedKnowledge knowledge = new SharedKnowledge();
 		knowledge.store(STATE_KEY, state);
-		knowledge.store(OPTIONS_KEY, options);
 
 		addMonitoredEnvironmentValues(state, knowledge);
 
@@ -56,12 +52,10 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 			tracker.saveNetworkConfigs();
 			tracker.resetTrackedValues();
 		}
-		
-		return knowledge;
 	}
 
 	@Override
-	protected boolean analyse(SharedKnowledge knowledge) {
+	protected boolean analyse(State source, SharedKnowledge knowledge) {
 		MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
 		for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
 			for (WirelessLink eachLink : eachMote.links) {
@@ -80,8 +74,8 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 	}
 
 	@Override
-	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
-		DeltaIoTNetworkReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
+	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+		DeltaIoTNetworkReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
 		reconfiguration.setDistributionFactorValuesToDefaults();
 		
 		boolean powerChanging = false;
@@ -127,7 +121,7 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 	}
 
 	@Override
-	protected Reconfiguration<?> emptyReconfiguration() {
+	protected QVToReconfiguration emptyReconfiguration() {
 		return QVToReconfiguration.empty();
 	}
 

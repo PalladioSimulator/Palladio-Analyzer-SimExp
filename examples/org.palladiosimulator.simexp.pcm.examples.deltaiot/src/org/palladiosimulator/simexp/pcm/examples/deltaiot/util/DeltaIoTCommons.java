@@ -63,6 +63,11 @@ public class DeltaIoTCommons {
 		return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, findOptions(knowledge))
 				.orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
 	}
+	
+	public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(Set<QVToReconfiguration> options) {
+		return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, options)
+				.orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
+	}
 
 	private static <T extends QVToReconfiguration> Optional<T> retrieveReconfiguration(Class<T> reconfClass,
 			Set<QVToReconfiguration> options) {

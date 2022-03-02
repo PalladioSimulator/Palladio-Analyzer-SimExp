@@ -230,7 +230,7 @@ public abstract class ExperienceSimulationBuilder {
 
 	public class ReconfigurationSpaceBuilder {
 
-		private class ReconfigurationStrategyAdapter implements Policy<Action<?>> {
+		private class ReconfigurationStrategyAdapter<T extends Reconfiguration<?>> implements Policy<Action<?>> {
 
 			private final Policy<Reconfiguration<?>> adaptedStrategy; 
 			
@@ -275,7 +275,7 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 		
-		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy strategy) {
+		public <T extends Reconfiguration<?>> ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy<T> strategy) {
 		    // todo: setup mape-k executor here
 			ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
 			return this;

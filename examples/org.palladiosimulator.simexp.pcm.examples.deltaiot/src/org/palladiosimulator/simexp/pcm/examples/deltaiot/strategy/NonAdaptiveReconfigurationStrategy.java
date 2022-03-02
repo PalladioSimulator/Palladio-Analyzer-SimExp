@@ -2,41 +2,37 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import java.util.Set;
 
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
-public class NonAdaptiveReconfigurationStrategy extends ReconfigurationStrategy {
+public class NonAdaptiveReconfigurationStrategy extends ReconfigurationStrategy<QVToReconfiguration> {
 
-	private final static SharedKnowledge EMPTY_KNOWLEDGE = new SharedKnowledge();
-	
 	@Override
 	public String getId() {
 		return "NonAdaptiveReconfigurationStrategy";
 	}
 
 	@Override
-	protected SharedKnowledge monitor(State source, Set<Reconfiguration<?>> options) {
-		return EMPTY_KNOWLEDGE;
+	protected void monitor(State source, SharedKnowledge knowledge) {
+		
 	}
 
 	@Override
-	protected boolean analyse(SharedKnowledge knowledge) {
+	protected boolean analyse(State source, SharedKnowledge knowledge) {
 		return false;
 	}
 
 	@Override
-	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
+	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
 		// Nothing to plan
 		return emptyReconfiguration();
 	}
 
 	@Override
-	protected Reconfiguration<?> emptyReconfiguration() {
+	protected QVToReconfiguration emptyReconfiguration() {
 		return QVToReconfiguration.empty();
 	}
-
 	
 }

@@ -14,7 +14,6 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import java.util.Set;
 
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
@@ -24,7 +23,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurati
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
-public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
+public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QVToReconfiguration> {
 
 	public static class DeltaIoTReconfigurationStrategy2Builder {
 
@@ -91,14 +90,12 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 	}
 	
 	@Override
-	protected SharedKnowledge monitor(State source, Set<Reconfiguration<?>> options) {
+	protected void monitor(State source, SharedKnowledge knowledge) {
 		requirePcmSelfAdaptiveSystemState(source);
 
 		PcmSelfAdaptiveSystemState state = PcmSelfAdaptiveSystemState.class.cast(source);
 
-		SharedKnowledge knowledge = new SharedKnowledge();
 		knowledge.store(STATE_KEY, state);
-		knowledge.store(OPTIONS_KEY, options);
 
 		addMonitoredEnvironmentValues(state, knowledge);
 		addMonitoredQualityValues(state, knowledge);
@@ -109,20 +106,19 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 			tracker.saveNetworkConfigs();
 			tracker.resetTrackedValues();
 		}
-
-		return knowledge;
 	}
 
 	@Override
-	protected boolean analyse(SharedKnowledge knowledge) {
+	protected boolean analyse(State source, SharedKnowledge knowledge) {
 		double packetLoss = knowledge.getValue(PACKET_LOSS_KEY).map(Double.class::cast).orElseThrow();
 		double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
 		return isPacketLossViolated(packetLoss) || isEnergyConsumptionViolated(energyConsumption);
 	}
 
 	@Override
-	protected Reconfiguration<?> plan(SharedKnowledge knowledge) {
-		retrieveDeltaIoTNetworkReconfiguration(knowledge).setDistributionFactorValuesToDefaults();
+	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+		retrieveDeltaIoTNetworkReconfiguration(options).setDistributionFactorValuesToDefaults();
+		knowledge.store(OPTIONS_KEY, options);
 
 		double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY).map(Double.class::cast).orElseThrow();
 		if (isEnergyConsumptionViolated(energyConsumption)) {
@@ -132,7 +128,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy {
 	}
 
 	@Override
-	protected Reconfiguration<?> emptyReconfiguration() {
+	protected QVToReconfiguration emptyReconfiguration() {
 		return QVToReconfiguration.empty();
 	}
 
