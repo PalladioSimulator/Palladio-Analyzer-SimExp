@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -21,6 +23,8 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 
 public class ExperimentProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(ExperimentProvider.class.getName());
 
 	private final static int DEFAULT_REPETITIONS = 1;
 
@@ -33,11 +37,14 @@ public class ExperimentProvider {
 		}
 
 		private Experiment retrieveExperiment(ExperimentRepository experimentRepo) {
-			// TODO exception handling
-			return findElement(experimentRepo.getExperiments(), exp -> exp.getId().equals(initialExperiment.getId()))
-					.orElseThrow(() -> new RuntimeException(""));
+		    String initialExperimentName = initialExperiment.getName();
+		    EList<Experiment> experiments = experimentRepo.getExperiments();
+		    Experiment retrievedExperiment = findElement(experiments, exp -> exp.getName().equals(initialExperimentName))
+		                                    .orElseThrow(() -> new RuntimeException(String.format("Failed to retrieve experiment '%s' from experimentRepository ", initialExperimentName)));
+			return retrievedExperiment;
 		}
-
+		
+		
 		private ExperimentRepository copyExperimentRepository() {
 			ResourceSet originalRs = new ResourceSetImpl();
 			originalRs.getResources().add(initialExperiment.eResource());

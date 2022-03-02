@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<distributionfunction:ProbabilityDistributionFunctionRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:distributionfunction="http://www.mdsd.tools/probdist/distributionfunction/1.0" id="_c4b00PtNEeuPUtFH1XJrHw" entityName="EnvironmentDistributions">
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_irG-EPtNEeuPUtFH1XJrHw" entityName="InitialVaryingWorkload" params="_Vdw9kftOEeuPUtFH1XJrHw">
+    <randomVariables id="_vK7UwPtNEeuPUtFH1XJrHw" entityName="randomVariableInitialWL" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_l01IEPtNEeuPUtFH1XJrHw" entityName="TemporalVaryingWorkload" params="_tt3EYftOEeuPUtFH1XJrHw">
+    <randomVariables id="__kDfUPtNEeuPUtFH1XJrHw" entityName="randomVariableTemporalVaryingWL" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_nrfHsPtNEeuPUtFH1XJrHw" entityName="InitialServerFailure" params="_oxrBwftPEeuPUtFH1XJrHw">
+    <randomVariables id="_J4oGcPtOEeuPUtFH1XJrHw" entityName="randomVariableInitialServerFailure" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_rAU8kPtNEeuPUtFH1XJrHw" entityName="TemporalServerFailure" params="_wGcP4ftPEeuPUtFH1XJrHw">
+    <randomVariables id="_OS55YPtOEeuPUtFH1XJrHw" entityName="randomVariableTemporalServerFailure" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <params id="_Vdw9kftOEeuPUtFH1XJrHw" entityName="InitialWorkload">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+  </params>
+  <params id="_tt3EYftOEeuPUtFH1XJrHw" entityName="TemporalWorkload">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.225</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.25</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.275</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.3</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.325</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.35</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.375</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.4</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.425</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,0.1};{0.225,0.1};{0.25,0.1};{0.275,0.1};{0.3,0.1};{0.325,0.1};{0.35,0.1};{0.375,0.1};{0.4,0.1};{0.425,0.1}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_oxrBwftPEeuPUtFH1XJrHw" entityName="InitialServerFailure">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.225</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.25</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.275</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.3</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.325</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.35</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.375</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.4</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.425</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_wGcP4ftPEeuPUtFH1XJrHw" entityName="TemporalServerFailure">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.225</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.25</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.275</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.3</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.325</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.35</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.375</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.4</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.425</conditonals>
+        <entry type="SAMPLESPACE" value="{available,0.9};{unavailable,0.1}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+</distributionfunction:ProbabilityDistributionFunctionRepository>

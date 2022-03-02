@@ -13,6 +13,9 @@
 
 	<modules>
 		<!-- insert bundle folders here -->
+		<module>org.palladiosimulator.simexp.pcm.examples.performability</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing</module>
+
 		<module>org.palladiosimulator.simexp.pcm.examples</module>
 		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancing</module>
 
@@ -24,6 +27,7 @@
 		<module>org.palladiosimulator.simexp.pcm.examples.deltaiot.param</module> 
 -->		
 		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancer</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant</module>
 
 	</modules>
 	

@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.distribution,
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
  org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
- de.uka.ipd.sdq.scheduler
+ de.uka.ipd.sdq.scheduler,
+ org.palladiosimulator.failuremodel;bundle-version="5.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm
 Bundle-ActivationPolicy: lazy
@@ -38,5 +39,6 @@ Export-Package: org.palladiosimulator.simexp.pcm.action,
  org.palladiosimulator.simexp.pcm.perceiption,
  org.palladiosimulator.simexp.pcm.process,
  org.palladiosimulator.simexp.pcm.state,
+ org.palladiosimulator.simexp.pcm.state.failure,
  org.palladiosimulator.simexp.pcm.util
 Import-Package: de.uka.ipd.sdq.codegen.simucontroller

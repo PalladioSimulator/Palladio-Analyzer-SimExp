@@ -15,6 +15,7 @@ import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -82,7 +83,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfigurationStrategy.getId());
-		SimulatedExperienceEvaluator evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");

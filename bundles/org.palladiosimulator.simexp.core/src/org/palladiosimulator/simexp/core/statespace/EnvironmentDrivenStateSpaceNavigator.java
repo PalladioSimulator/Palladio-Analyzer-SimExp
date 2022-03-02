@@ -21,7 +21,10 @@ public class EnvironmentDrivenStateSpaceNavigator extends SelfAdaptiveSystemStat
 		Reconfiguration<?> reconf = (Reconfiguration<?>) context.getAction().get();
 		PerceivableEnvironmentalState nextEnvState = environmentalDynamics.determineNextGiven(getLastEnvironmentalState(context));
 		ArchitecturalConfiguration<?> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
-		return getSasState(context).transitToNext(nextEnvState, nextArchConf);
+	    LOGGER.info("==== End MAPE-K loop ====");
+	    SelfAdaptiveSystemState<?> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
+	    LOGGER.info(String.format("Transitioned to next state '%s'", nextState.toString()));
+		return nextState;
 	}
 
 	private PerceivableEnvironmentalState getLastEnvironmentalState(NavigationContext context) {

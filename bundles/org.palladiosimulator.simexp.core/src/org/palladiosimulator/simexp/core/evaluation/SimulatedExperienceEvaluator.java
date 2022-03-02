@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
-public class SimulatedExperienceEvaluator {
+public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
 
 	private final String simulationId;
 	private final String sampleSpaceId;
@@ -15,11 +15,12 @@ public class SimulatedExperienceEvaluator {
 		this.sampleSpaceId = sampleSpaceId;
 	}
 	
-	public static SimulatedExperienceEvaluator of(String simulationId, String sampleSpaceId) {
+	public static TotalRewardCalculation of(String simulationId, String sampleSpaceId) {
 		return new SimulatedExperienceEvaluator(simulationId, sampleSpaceId);
 	}
 	
-	public Double computeTotalReward() {
+	@Override
+    public double computeTotalReward() {
 		double totalReward = 0;
 		
 		SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);

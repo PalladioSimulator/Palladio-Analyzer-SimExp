@@ -6,9 +6,25 @@
       <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancingTemplates.templatevariable#_C1FSIW3SEeq4sYEFwlTMnQ"/>
       <distributionFunction href="LoabBalancingDistributions.distributionfunction#_Dy05gG3iEeq5pcSD8uiAxg"/>
     </localModels>
+    <localModels id="_FUwUQAk7Eeu61-6_430a3w" entityName="ServerNode1FailureInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancingTemplates.templatevariable#_qkwZUQk2Eeu61-6_430a3w"/>
+      <distributionFunction href="LoabBalancingDistributions.distributionfunction#_anfcoAk8Eeus9r29U6iUxw"/>
+    </localModels>
+    <localModels id="_TMijcAk7Eeu61-6_430a3w" entityName="ServerNode2FailureInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancingTemplates.templatevariable#_qkwZUQk2Eeu61-6_430a3w"/>
+      <distributionFunction href="LoabBalancingDistributions.distributionfunction#_anfcoAk8Eeus9r29U6iUxw"/>
+    </localModels>
     <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_ZOLIIG3fEeqCku_2qkukxg">
       <appliedGroundVariable href="/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel#_BrSsoG3fEeqCku_2qkukxg"/>
       <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="LoadBalancingTemplates.templatevariable#//@relation.0"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_FUwUQAk7Eeu61-6_430a3w">
+      <appliedGroundVariable href="/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel#_ao2EUAk4Eeu61-6_430a3w"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="LoadBalancingTemplates.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_TMijcAk7Eeu61-6_430a3w">
+      <appliedGroundVariable href="/org.palladiosimulator.simexp.pcm.examples.loadbalancer/LoadBalancerNonTemporalEnvironment.staticmodel#_-Fwo4Ak4Eeu61-6_430a3w"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="LoadBalancingTemplates.templatevariable#//@relation.2"/>
     </timeSliceInductions>
   </behaviour>
 </dynamicmodel:DynamicBehaviourExtension>

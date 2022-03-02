@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<failuretype:FailureTypeRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:failuretype="http://palladiosimulator.org/failuretype/1.0" id="_KBcYYEFkEeyItt1jU-apMg">
+  <failuretypes xsi:type="failuretype:HWCrashFailure" id="_Ni9XVUFkEeyItt1jU-apMg" entityName="HWCrashFailure"/>
+</failuretype:FailureTypeRepository>

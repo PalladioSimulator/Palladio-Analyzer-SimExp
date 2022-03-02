@@ -1,9 +1,9 @@
 package org.palladiosimulator.simexp.core.strategy;
 
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import com.google.common.collect.Maps;
 
@@ -24,12 +24,23 @@ public class SharedKnowledge {
 		return Optional.empty();
 	}
 	
-	public Set<String> getKeys() {
-		return knowledgeStore.keySet();
-	}
-	
-	public Collection<Object> getValues() {
-		return knowledgeStore.values();
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("SharedKnowledge[");
+        Iterator<Entry<String, Object>> iter = knowledgeStore.entrySet().iterator();
+        while (iter.hasNext()) {
+            Entry<String, Object> entry = iter.next();
+            sb.append(entry.getKey());
+            sb.append('=').append('"');
+            sb.append(entry.getValue());
+            sb.append('"');
+            if (iter.hasNext()) {
+                sb.append(',').append(' ');
+            }
+        }
+        sb.append("]");
+        return sb.toString();
 	}
 	
 }

@@ -13,18 +13,18 @@ import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -45,6 +45,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	public final static double LOWER_THRESHOLD_RT = 1.0;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
+	private final static String SIMULIZAR_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuLizarElasticity.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -55,7 +56,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
-	private final Policy<Action<?>> reconfSelectionPolicy;
+	private final NStepLoadBalancerStrategy reconfSelectionPolicy;
 	
 	public LoadBalancingSimulationExecutor() {
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
@@ -63,8 +64,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
-//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
+		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
@@ -73,13 +73,13 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 
 	@Override
 	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
+		return SIMULIZAR_EXPERIMENT_FILE;
 	}
 
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-		SimulatedExperienceEvaluator evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
@@ -124,7 +124,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private RewardEvaluator getRewardEvaluator() {
 		return new LoadBalancingRewardEvaluation(upperResponseTimeThreshold(), cpuServer1Threshold(), cpuServer2Threshold());
 	}
-
+	
 	private Pair<SimulatedMeasurementSpecification, Threshold> upperResponseTimeThreshold() {
 		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
 	}
@@ -160,11 +160,12 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private PcmMeasurementSpecification buildCpuUtilizationSpecOf(String monitorName) {
 		Monitor monitor = findMonitor(monitorName);
 		MeasurementSpecification spec = monitor.getMeasurementSpecifications().get(1);
-		return PcmMeasurementSpecification.newBuilder()
+		MeasurementAggregator utilizationAggregator = new UtilizationAggregator();
+        return PcmMeasurementSpecification.newBuilder()
 				.withName(monitor.getEntityName())
 				.measuredAt(monitor.getMeasuringPoint())
 				.withMetric(spec.getMetricDescription())
-				.aggregateMeasurementsBy(getUtilizationAggregator())
+				.aggregateMeasurementsBy(utilizationAggregator)
 				.build();
 	}
 
@@ -175,51 +176,4 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
 	}
 	
-	private MeasurementAggregator getUtilizationAggregator() {
-		return new PcmMeasurementSpecification.MeasurementAggregator() {
-			
-			@Override
-			public double aggregate(MeasurementSeries series) {
-				double utilization = 0;
-				
-				List<Pair<Number, Double>> measurements = series.asList();
-				for (int i = 0; i < measurements.size() - 1; i++) {
-					Pair<Number, Double> current = measurements.get(i);
-					Pair<Number, Double> next = measurements.get(i + 1);
-					if (isActive(current, next) || isIdle(current, next)) {
-						utilization += getTimeInstant(next) - getTimeInstant(current);
-					}
-				}
-				
-				return computeUtilization(utilization, getTotalTime(measurements));
-			}
-
-			private Double getTotalTime(List<Pair<Number, Double>> measurements) {
-				int last = measurements.size() - 1;
-				return getTimeInstant(measurements.get(last));
-			}
-
-			private double computeUtilization(double utilization, Double totalTime) {
-				return utilization / totalTime;
-			}
-
-			private boolean isActive(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) > 0;
-			}
-
-			private boolean isIdle(Pair<Number, Double> current, Pair<Number, Double> next) {
-				return getResourceState(current) > 0 && getResourceState(next) == 0;
-			}
-			
-			private Integer getResourceState(Pair<Number, Double> measurement) {
-				return measurement.getFirst().intValue();
-			}
-			
-			private Double getTimeInstant(Pair<Number, Double> measurement) {
-				return measurement.getSecond();
-			}
-			
-		};
-	}
-
 }

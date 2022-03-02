@@ -4,11 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.log4j.Logger;
+
 
 import org.apache.log4j.Logger;
 
 public class ServiceRegistry {
 	
+    
+    private static final Logger LOGGER = Logger.getLogger(ServiceRegistry.class.getName());
+    
+    
 	private final static class DefaultServiceDiscovery implements ServiceDiscovery {
 
 		private static final Logger LOGGER = Logger.getLogger(DefaultServiceDiscovery.class.getName());
@@ -46,7 +52,7 @@ public class ServiceRegistry {
 				result = (T) serviceEntry.getProvidedClass().getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				LOGGER.error("An error occured while service binding.", e);
+			    LOGGER.error(String.format("Failed to provide service implementation for service '%s'", serviceEntry.getProvidedClass().getName()), e);
 			}
 			return result;
 		}

@@ -23,7 +23,11 @@
 		<module>org.palladiosimulator.simexp.core</module>
 		<module>org.palladiosimulator.simexp.core.store.csv</module>
 		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
+		<module>org.palladiosimulator.simexp.pcm.binding</module>
 		<module>org.palladiosimulator.simexp.pcm</module>
+		
+		<module>org.palladiosimulator.pcm.query</module>
+	
 		
 		<module>org.palladiosimulator.simexp.ui.workflow</module>
 		<!-- has reference to org.palladiosimulator.simexp.pcm.examples -->
