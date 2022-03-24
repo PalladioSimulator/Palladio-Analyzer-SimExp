@@ -1,6 +1,8 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import static java.util.stream.Collectors.toSet;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.PRISM_ENERGY_CONSUMPTION_PROPERTY;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.PRISM_PACKET_LOSS_PROPERTY;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -67,11 +69,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final static String PRISM_FOLDER = "prism";
 	private final static String PRISM_PACKET_LOSS_MODULE_NAME = "PacketLoss.prism";
 	private final static String PRISM_PACKET_LOSS_PROPERTY_NAME = "PacketLoss.props";
-	private final static String PRISM_PACKET_LOSS_PROPERTY = "P=? [ F \"Packetloss\" ]";
 	private final static String PRISM_ENERGY_CONSUMPTION_MODULE_NAME = "EnergyConsumption.prism";
 	private final static String PRISM_ENERGY_CONSUMPTION_PROPERTY_NAME = "EnergyConsumption.props";
-	private final static String PRISM_ENERGY_CONSUMPTION_PROPERTY = "Rmax=? [ F \"EnergyConsumption\" ]";
-
+	
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
 	private final ReconfigurationStrategyContext strategyContext;
 	private final DynamicBayesianNetwork dbn;

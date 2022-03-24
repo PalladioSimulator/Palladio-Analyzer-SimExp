@@ -38,6 +38,8 @@ public class DeltaIoTCommons {
 	//public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(31);
 	public final static double DISTRIBUTION_FACTOR_INCREMENT = 0.1;
 	public final static int TRANSMISSION_POWER_INCREMENT = 1;
+	public final static String PRISM_PACKET_LOSS_PROPERTY = "P=? [ F \"Packetloss\" ]";
+	public final static String PRISM_ENERGY_CONSUMPTION_PROPERTY = "Rmax=? [ F \"EnergyConsumption\" ]";
 	
 	public static PcmSelfAdaptiveSystemState findPcmState(SharedKnowledge knowledge) {
 		return (PcmSelfAdaptiveSystemState) knowledge.getValue(STATE_KEY).orElseThrow();
