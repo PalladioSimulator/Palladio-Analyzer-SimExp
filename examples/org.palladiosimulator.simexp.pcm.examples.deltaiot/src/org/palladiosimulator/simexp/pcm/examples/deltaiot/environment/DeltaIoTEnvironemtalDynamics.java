@@ -283,6 +283,10 @@ public class DeltaIoTEnvironemtalDynamics {
 						throw new RuntimeException(String.format("There are no snr values for %s", snrToQuery));
 					}
 
+					// We assumed that the wireless interference has an impact on the SNR; However, this is not done in the 
+					// deltaiot simulator code. Therefore, we follow the logic of the deltaiot simulator and adapt the SNR not 
+					// w.r.t. to the wireless interference value. 
+					// return snrValues.get().getSNR(transmissionPower) + wirelessInterference;
 					return snrValues.get().getSNR(transmissionPower);
 				}
 
