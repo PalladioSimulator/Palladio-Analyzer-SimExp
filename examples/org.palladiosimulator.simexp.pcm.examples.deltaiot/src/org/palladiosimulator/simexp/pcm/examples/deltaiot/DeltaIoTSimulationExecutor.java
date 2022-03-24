@@ -193,15 +193,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	private ExperienceSimulationRunner getSimualtionRunner() {
-		// return new PcmBasedPrismExperienceSimulationRunner(getPrismGenerator(),
-		// createPrismLogFile());
-		return new DeltaIoTPcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), createPrismLogFile(),
-				reconfParamsRepo);
-	}
-
-	private File createPrismLogFile() {
-		URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER).toString(), true);
-		return new File(CommonPlugin.resolve(uri).toFileString());
+		return new DeltaIoTPcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), reconfParamsRepo);
 	}
 
 	private PrismGenerator getPrismGenerator() {

@@ -10,14 +10,16 @@ import parser.ast.ModulesFile;
 import parser.ast.PropertiesFile;
 import parser.ast.Property;
 import prism.Prism;
+import prism.PrismDevNullLog;
 import prism.PrismException;
 import prism.PrismFileLog;
+import prism.PrismLog;
 import prism.Result;
 
 public class PrismInvocationService implements PrismService {
     
-    private Prism prism;
-	private File logFile;
+    private Prism prism = null;
+	private File logFile = null;
 
 	@Override
 	public void setLogFile(File logFile) {
@@ -55,7 +57,8 @@ public class PrismInvocationService implements PrismService {
 	}
 
 	private void initPrism() {
-		prism = new Prism(new PrismFileLog(logFile.toString()));
+		PrismLog log = logFile == null ? new PrismDevNullLog() : new PrismFileLog(logFile.toString());
+		prism = new Prism(log);
 		try {
 			prism.initialise();
 		} catch (PrismException e) {

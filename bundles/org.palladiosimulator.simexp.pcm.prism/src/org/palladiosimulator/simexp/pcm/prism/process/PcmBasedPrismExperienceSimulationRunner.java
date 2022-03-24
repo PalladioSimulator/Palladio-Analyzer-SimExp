@@ -3,8 +3,6 @@ package org.palladiosimulator.simexp.pcm.prism.process;
 import static java.util.stream.Collectors.toList;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,27 +25,17 @@ public class PcmBasedPrismExperienceSimulationRunner implements ExperienceSimula
 
 	private final PrismService prismService;
 	private final PrismGenerator prismGenerator;
-
+	
+	public PcmBasedPrismExperienceSimulationRunner(PrismGenerator prismGenerator) {
+		this(prismGenerator, null);
+	}
+	
 	public PcmBasedPrismExperienceSimulationRunner(PrismGenerator prismGenerator, File prismFolder) {
-		// TODO exception handling
 		this.prismService = ServiceRegistry.get().findService(PrismService.class)
 				.orElseThrow(() -> new RuntimeException("There is no prism service."));
 		this.prismGenerator = prismGenerator;
 
-		this.prismService.setLogFile(createLogFile(prismFolder));
-	}
-
-	private File createLogFile(File prismFolder) {
-		File prismLog = Paths.get(prismFolder.toString(), LOG_FILE).toFile();
-		if (prismLog.exists() == false) {
-			try {
-				prismLog.createNewFile();
-			} catch (IOException e) {
-				// TODO Exception handling
-				throw new RuntimeException("Prism log file cannot be created.", e);
-			}
-		}
-		return prismLog;
+		this.prismService.setLogFile(prismFolder);
 	}
 
 	@Override
