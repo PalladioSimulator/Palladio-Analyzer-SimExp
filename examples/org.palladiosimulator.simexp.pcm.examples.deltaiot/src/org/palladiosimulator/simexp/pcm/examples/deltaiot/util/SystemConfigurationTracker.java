@@ -95,7 +95,7 @@ public class SystemConfigurationTracker {
 	}
 	
 	public boolean isLastRun() {
-		return run == (DeltaIoTSimulationExecutor.TOTAL_NUMBER_OF_RUNS - 1);
+		return run == (DeltaIoTSimulationExecutor.TOTAL_NUMBER_OF_SIM_RUNS - 1);
 	}
 	
 	private void registerHeader() {

@@ -59,7 +59,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
     
     private static final Logger LOGGER = Logger.getLogger(DeltaIoTSimulationExecutor.class.getName());
 
-    public final static int TOTAL_NUMBER_OF_RUNS = 96;
+    public final static int TOTAL_NUMBER_OF_RUNS = 10;
+    public final static int TOTAL_NUMBER_OF_SIM_RUNS = 96;
 	public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
 
 	private final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
@@ -168,8 +169,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 				.done()
 			.createSimulationConfiguration()
 				.withSimulationID(SIMULATION_ID)
-				.withNumberOfRuns(1)
-				.andNumberOfSimulationsPerRun(TOTAL_NUMBER_OF_RUNS)
+				.withNumberOfRuns(TOTAL_NUMBER_OF_RUNS)
+				.andNumberOfSimulationsPerRun(TOTAL_NUMBER_OF_SIM_RUNS)
 				.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 				.done()
 			.specifySelfAdaptiveSystemState()

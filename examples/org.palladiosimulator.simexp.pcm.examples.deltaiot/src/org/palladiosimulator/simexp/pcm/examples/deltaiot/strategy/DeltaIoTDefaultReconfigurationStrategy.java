@@ -65,7 +65,7 @@ public class DeltaIoTDefaultReconfigurationStrategy extends ReconfigurationStrat
 			}
 
 			if (eachMote.hasTwoLinks()) {
-				if (eachMote.hasEqualTransmissionPower()) {
+				if (eachMote.hasUnequalTransmissionPower()) {
 					return true;
 				}
 			}
