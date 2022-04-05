@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Deltaiot
+Bundle-SymbolicName: org.palladiosimulator.envdyn.examples.deltaiot
+Bundle-Version: 5.0.0.qualifier
+Bundle-Activator: org.palladiosimulator.envdyn.examples.deltaiot.Activator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.palladiosimulator.envdyn.examples.deltaiot
+Bundle-ActivationPolicy: lazy

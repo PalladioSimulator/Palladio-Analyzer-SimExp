@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resourcetype:ResourceRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:resourcetype="http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2">
+  <availableResourceTypes_ResourceRepository xsi:type="resourcetype:CommunicationLinkResourceType" id="_3xODo8V-Eem8XvI7PKw-OA" entityName="LPWAN">
+    <networkInducedFailureType__CommunicationLinkResourceType href="WirelessFailureType.reliability#_ZRVu4MWAEem8XvI7PKw-OA"/>
+  </availableResourceTypes_ResourceRepository>
+</resourcetype:ResourceRepository>

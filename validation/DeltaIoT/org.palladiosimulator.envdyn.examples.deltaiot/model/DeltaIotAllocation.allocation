@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allocation:Allocation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:allocation="http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2" id="_QYEj8MWHEem8XvI7PKw-OA" entityName="defaultAllocation">
+  <targetResourceEnvironment_Allocation href="DeltaIoTResources.resourceenvironment#/0"/>
+  <system_Allocation href="DeltaIoTSystem.system#_pgtnIMTpEem6vJHOl6M9XA"/>
+  <allocationContexts_Allocation id="_aGw20MWHEem8XvI7PKw-OA" entityName="Allocation_Gateway1Instance &lt;Gateway>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_19nq8MVxEem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_rh4NoMTpEem6vJHOl6M9XA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_ozBP4MWHEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor2 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_dCX34MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_qjREUMVtEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_vURWYMWHEem8XvI7PKw-OA" entityName="Allocation_ST2to4 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_dCX34MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_ymkMYMVtEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_191EUMWHEem8XvI7PKw-OA" entityName="Allocation_TemperatureSensor3 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_dfDz4MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_cd24AMTtEem6vJHOl6M9XA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_4ni4kMWHEem8XvI7PKw-OA" entityName="Allocation_ST3to1 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_dfDz4MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_t_dDUMTpEem6vJHOl6M9XA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_9BIvAMWHEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor4 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_eyg_0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_ys03UMVrEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_AvaXkMWIEem8XvI7PKw-OA" entityName="Allocation_ST4to1 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_eyg_0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_shdhQMVrEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_HNl78MWIEem8XvI7PKw-OA" entityName="Allocation_RFIDSensor5 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_fE-o0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_TzjAkMVsEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_KkXDcMWIEem8XvI7PKw-OA" entityName="Allocation_ST5to9 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_fE-o0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_ebvHQMVsEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_Tj6YYMWIEem8XvI7PKw-OA" entityName="Allocation_TemperatureSensor6 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_fVOrUMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_uUhk4MVsEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_XfnY8MWIEem8XvI7PKw-OA" entityName="Allocation_ST6to4 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_fVOrUMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_1avZoMVsEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_dZkO4MWIEem8XvI7PKw-OA" entityName="Allocation_RFIDSensor7 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_hr6O0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_a37z4MVtEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_fsMY0MWIEem8XvI7PKw-OA" entityName="Allocation_DT7to3_2 &lt;DualTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_hr6O0MV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_IHglUMVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_iyA6QMWIEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor8 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_iSbcQMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_9shcUMTtEem6vJHOl6M9XA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_n2lnYMWIEem8XvI7PKw-OA" entityName="Allocation_ST8to1 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_iSbcQMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_BL_M0MTuEem6vJHOl6M9XA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_rEBMsMWIEem8XvI7PKw-OA" entityName="Allocation_TemperatureSensor9 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_jhdbMMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_efL5UMVrEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_td-tsMWIEem8XvI7PKw-OA" entityName="Allocation_ST9to1 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_jhdbMMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_KE9Q0MVrEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_wWd9wMWIEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor10 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_kNpLwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_7iTqQMVrEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_yL4AMMWIEem8XvI7PKw-OA" entityName="Allocation_DT10to6_5 &lt;DualTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_kNpLwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_ELpeoMVsEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_4895gMWIEem8XvI7PKw-OA" entityName="Allocation_RFIDSensor11 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_k1AGsMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_btcqIMVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_-X0YoMWIEem8XvI7PKw-OA" entityName="Allocation_ST11to7 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_k1AGsMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_dDR_MMVvEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_BgahQMWJEem8XvI7PKw-OA" entityName="Allocation_RFIDSensor12 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_ldcmwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_oXbpcMVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_Ey93IMWJEem8XvI7PKw-OA" entityName="Allocation_DT12to3_7 &lt;DualTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_ldcmwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_TBd8AMVvEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_Jk_bsMWJEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor13 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_mHQYwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_fnNxAMVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_RhNrYMWJEem8XvI7PKw-OA" entityName="Allocation_ST13to11 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_mHQYwMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_jcTWwMVvEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_U-BJcMWJEem8XvI7PKw-OA" entityName="Allocation_PassiveInfraredSensor14 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_new-QMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_1qCH8MVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_Xh-7AMWJEem8XvI7PKw-OA" entityName="Allocation_ST14to12 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_new-QMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_D5PYoMVvEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_cT1gcMWJEem8XvI7PKw-OA" entityName="Allocation_TemperatureSensor15 &lt;SensorNode>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_oJevMMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_5Y_F8MVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+  <allocationContexts_Allocation id="_eVDxUMWJEem8XvI7PKw-OA" entityName="Allocation_ST15to12 &lt;SingleTransmitter>">
+    <resourceContainer_AllocationContext href="DeltaIoTResources.resourceenvironment#_oJevMMV9Eem8XvI7PKw-OA"/>
+    <assemblyContext_AllocationContext href="DeltaIoTSystem.system#_-WaCMMVuEem8XvI7PKw-OA"/>
+  </allocationContexts_Allocation>
+</allocation:Allocation>
