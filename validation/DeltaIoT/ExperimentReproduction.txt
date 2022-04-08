@@ -1,0 +1,16 @@
+* Since the SimExp UI is currently work-in-progress, we created a corresponding project which includes the java sources for experiment reproduction
+
+* Clone and import SimExp
+** Clone the latest git repository of SimExp
+** Import all bundles into your eclipse workspace
+** Import all org.palladiosimulator.simexp.pcm.examples.deltaiot* projects from the examples folder
+
+* Setup
+** Check whether in SimExpServiceRegistration.java (.\Palladio-Analyzer-SimExp\bundles\org.palladiosimulator.simexp.workflow\src\org\palladiosimulator\simexp\workflow\jobs) the class DeltaIoTSimulationExecutor is registered. If not, replace the class with currently registered class.
+** Moreover, DeltaIoTSimulationExecutor contains all experiments settings (e.g. number of trajectories, ...) and the adaptation strategy to be evaluated. Therefore, comment out the strategy to be evaluated.
+*** Note that if variants of the quality-based strategy are supposed to be evaluated, make sure that the proper energy consumption bounds are used.
+** Afterwards configure and run a new eclipse instance in the run configurations and let it run.
+** Import the project org.palladiosimulator.envdyn.examples.deltaiot (located in this folder) in the newly created eclipse instance.
+
+* Execute SimExp
+** Create a new SimExp run configuration and let it run.
