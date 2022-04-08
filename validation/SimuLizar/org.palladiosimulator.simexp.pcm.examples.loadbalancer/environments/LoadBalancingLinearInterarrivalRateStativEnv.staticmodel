@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+<staticmodel:ProbabilisticModelRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:staticmodel="http://palladiosimulator.org/Environment/StaticModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_Aa6OtbZiEey0O8znMCGiVQ" entityName="InterArrivalTimeDistributionRepo">
+  <models id="_Aa61wbZiEey0O8znMCGiVQ" entityName="StaticInterArrivalTimeNetwork">
+    <localModels id="_Aa6OtrZiEey0O8znMCGiVQ" entityName="StaticInterArrivalTimeModel">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancerLinearInterarrivalRateTemplates.templatevariable#_Aa6Os7ZiEey0O8znMCGiVQ"/>
+      <distribution href="LoadBalancerLinearInterarrivalRateDist.distributionfunction#_AcRgoLZiEey0O8znMCGiVQ"/>
+    </localModels>
+    <localProbabilisticModels>
+      <groundRandomVariables id="_Aa61wLZiEey0O8znMCGiVQ" entityName="WorkloadVariation_VaryingWorkloadInstantiation" descriptiveModel="_Aa6OtrZiEey0O8znMCGiVQ">
+        <instantiatedTemplate href="LoadBalancerLinearInterarrivalRateTemplates.templatevariable#_Aa6OsrZiEey0O8znMCGiVQ"/>
+        <appliedObjects href="overload.usagemodel#//@usageScenario_UsageModel.0/@workload_UsageScenario"/>
+      </groundRandomVariables>
+    </localProbabilisticModels>
+  </models>
+</staticmodel:ProbabilisticModelRepository>

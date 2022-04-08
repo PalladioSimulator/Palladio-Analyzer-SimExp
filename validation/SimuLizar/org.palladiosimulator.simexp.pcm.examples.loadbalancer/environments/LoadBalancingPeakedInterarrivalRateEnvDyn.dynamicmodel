@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dynamicmodel:DynamicBehaviourRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_CotWQbZSEeyRqv2ZLhw7hg" entityName="InterArrivalTimeDistributionDynamicsRepo">
+  <extensions id="_Co4VYLZSEeyRqv2ZLhw7hg" entityName="InterArrivalTimeDistributionDynamics">
+    <model href="LoadBalancingPeakedInterarrivalRateStativEnv.staticmodel#_CotWQLZSEeyRqv2ZLhw7hg"/>
+    <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+      <localModels id="_CotWQrZSEeyRqv2ZLhw7hg" entityName="DynamicInterArrivalTime">
+        <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancerPeakedInterarrivalRateTemplates.templatevariable#_CorhFLZSEeyRqv2ZLhw7hg"/>
+        <distributionFunction href="LoadBalancerPeakedInterarrivalRateDist.distributionfunction#_CqPnUbZSEeyRqv2ZLhw7hg"/>
+      </localModels>
+      <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_CotWQrZSEeyRqv2ZLhw7hg">
+        <appliedGroundVariable href="LoadBalancingPeakedInterarrivalRateStativEnv.staticmodel#_CosvMLZSEeyRqv2ZLhw7hg"/>
+        <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="LoadBalancerPeakedInterarrivalRateTemplates.templatevariable#//@relation.0"/>
+      </timeSliceInductions>
+    </behaviour>
+  </extensions>
+</dynamicmodel:DynamicBehaviourRepository>
