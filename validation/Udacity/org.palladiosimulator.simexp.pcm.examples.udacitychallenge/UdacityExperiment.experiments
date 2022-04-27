@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExperimentAutomation.Experiments:ExperimentRepository xmlns:ExperimentAutomation.Experiments="http://palladiosimulator.org/ExperimentAutomation/Experiments/1.0">
+  <experiments id="org.palladiosimulator.simexp.pcm.examples.udacitychallenge.experiment" name="UdacityExperiment">
+    <initialModel>
+      <allocation href="AutonomousSystemAlloc.allocation#_8EdNAL11EeunTKCICMkJWw"/>
+    </initialModel>
+  </experiments>
+</ExperimentAutomation.Experiments:ExperimentRepository>
