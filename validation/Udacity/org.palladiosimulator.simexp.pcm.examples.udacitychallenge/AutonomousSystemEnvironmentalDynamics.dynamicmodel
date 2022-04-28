@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dynamicmodel:DynamicBehaviourRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_nkUUYMbPEeyOxtg3mPZ3yg" entityName="AutonomousSystemEnvDyn">
+  <extensions id="_pb_AoMbPEeyOxtg3mPZ3yg" entityName="AutonomousSystemEnvDynModel">
+    <model href="AutonomousSystemStaticEnvironment.staticmodel#_dBlx8MbOEeyOxtg3mPZ3yg"/>
+    <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+      <localModels id="_xHFEEMbPEeyOxtg3mPZ3yg" entityName="ImageBlurringTemporalDynamicModel">
+        <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DNNTemplateVariables.templatevariable#_iMvWQcbQEeyOxtg3mPZ3yg"/>
+        <distributionFunction href="DNNSensitivityDistributions.distributionfunction#_M44hoMbREeyOxtg3mPZ3yg"/>
+      </localModels>
+      <localModels id="_2uwBwMbQEeyOxtg3mPZ3yg" entityName="ImageBrightnessTemporalDynamicModel">
+        <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DNNTemplateVariables.templatevariable#_awauocbQEeyOxtg3mPZ3yg"/>
+        <distributionFunction href="DNNSensitivityDistributions.distributionfunction#_IZwD4MbREeyOxtg3mPZ3yg"/>
+      </localModels>
+      <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_xHFEEMbPEeyOxtg3mPZ3yg">
+        <appliedGroundVariable href="AutonomousSystemStaticEnvironment.staticmodel#_kavJwMbOEeyOxtg3mPZ3yg"/>
+        <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DNNTemplateVariables.templatevariable#//@relation.2"/>
+      </timeSliceInductions>
+      <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_2uwBwMbQEeyOxtg3mPZ3yg">
+        <appliedGroundVariable href="AutonomousSystemStaticEnvironment.staticmodel#_lPzJgMbOEeyOxtg3mPZ3yg"/>
+        <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DNNTemplateVariables.templatevariable#//@relation.3"/>
+      </timeSliceInductions>
+    </behaviour>
+  </extensions>
+</dynamicmodel:DynamicBehaviourRepository>

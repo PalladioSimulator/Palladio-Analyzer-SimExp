@@ -24,6 +24,12 @@
   <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_g7CuELu9Eey6j5H-iqteUQ" entityName="WorstSteeringSensitivityModel" params="_zwX1Ubu9Eey6j5H-iqteUQ">
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_IZwD4MbREeyOxtg3mPZ3yg" entityName="ImageBrightnessTemporalDistribution" params="_SwoYIcbREeyOxtg3mPZ3yg">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_M44hoMbREeyOxtg3mPZ3yg" entityName="ImageBlurringDistributionTemporal" params="_TPF1wcbREeyOxtg3mPZ3yg">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
   <params id="_zlxAkTPxEeyLC5Tfbz4pBQ" entityName="ChauffeurSensitivityParam">
     <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
     <representation xsi:type="distributionfunction:TabularCPD">
@@ -217,6 +223,36 @@
         <conditonals>(ImageBrightness=Low)</conditonals>
         <conditonals>(ImageBlurring=NotBlurry)</conditonals>
         <entry type="SAMPLESPACE" value="{Success,0.0};{Fail,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_SwoYIcbREeyOxtg3mPZ3yg" entityName="ImageBrightnessTemporalParam">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>(ImageBrightness=Strong)</conditonals>
+        <entry type="SAMPLESPACE" value="{(ImageBrightness=Strong),0.3};{(ImageBrightness=Low),0};{(ImageBrightness=Normal),0.7}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>(ImageBrightness=Normal)</conditonals>
+        <entry type="SAMPLESPACE" value="{(ImageBrightness=Strong),0.2};{(ImageBrightness=Low),0.2};{(ImageBrightness=Normal),0.6}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>(ImageBrightness=Low)</conditonals>
+        <entry type="SAMPLESPACE" value="{(ImageBrightness=Strong),0};{(ImageBrightness=Low),0.3};{(ImageBrightness=Normal),0.7}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_TPF1wcbREeyOxtg3mPZ3yg" entityName="ImageBlurringTemporalParam">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>(ImageBlurring=Blurry)</conditonals>
+        <entry type="SAMPLESPACE" value="{(ImageBlurring=Blurry),0.5};{(ImageBlurring=NotBlurry),0.5}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>(ImageBlurring=NotBlurry)</conditonals>
+        <entry type="SAMPLESPACE" value="{(ImageBlurring=Blurry),0.3};{(ImageBlurring=NotBlurry),0.7}"/>
       </cpdEntries>
     </representation>
   </params>

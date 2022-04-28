@@ -12,6 +12,14 @@
   <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_X73JESpHEeuMpaabmuiN-Q" entityName="ImageBlurringFactor" scope="_0uh4oCpGEeuMpaabmuiN-Q">
     <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
   </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_awauocbQEeyOxtg3mPZ3yg" entityName="TemporalImageBrightnessFactor" scope="_U5Fzu8qkEeqObY-eK2jOOA" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_iMvWQcbQEeyOxtg3mPZ3yg" entityName="TemporalImageBlurringFactor" scope="_0uh4oCpGEeuMpaabmuiN-Q" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
   <relation xsi:type="templatevariable:DependenceRelation" target="_U5ElksqkEeqObY-eK2jOOA" source="_U5Fzu8qkEeqObY-eK2jOOA"/>
   <relation xsi:type="templatevariable:DependenceRelation" target="_U5ElksqkEeqObY-eK2jOOA" source="_0uh4oCpGEeuMpaabmuiN-Q"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="ImageBlurringTemporalRelation" interfaceVariable="_0uh4oCpGEeuMpaabmuiN-Q"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="ImageBrightnessTemporalRelation" interfaceVariable="_U5Fzu8qkEeqObY-eK2jOOA"/>
 </templatevariable:TemplateVariableDefinitions>

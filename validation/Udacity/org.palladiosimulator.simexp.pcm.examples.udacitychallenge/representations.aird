@@ -7,11 +7,19 @@
   <semanticResources>AutonomousSystemUsage.usagemodel</semanticResources>
   <semanticResources>DNNSensitivityDistributions.distributionfunction</semanticResources>
   <semanticResources>pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype</semanticResources>
-  <semanticResources>DNNSensitivityModels.staticmodel</semanticResources>
   <semanticResources>DNNTemplateVariables.templatevariable</semanticResources>
   <semanticResources>pathmap://PCM_MODELS/Palladio.resourcetype</semanticResources>
   <semanticResources>pathmap://PCM_MODELS/PrimitiveTypes.repository</semanticResources>
   <semanticResources>pathmap://PCM_MODELS/FailureTypes.repository</semanticResources>
   <semanticResources>SteeringAnglePredictionUncertaintyModel.uncertainty</semanticResources>
+  <semanticResources>DNNSensitivityModels.staticmodel</semanticResources>
+  <semanticResources>pathmap://PCM_MODELS/Glassfish.repository</semanticResources>
+  <semanticResources>pathmap://PCM_MODELS/default_event_middleware.repository</semanticResources>
   <semanticResources>UdacityExperiment.experiments</semanticResources>
+  <semanticResources>DummyServiceLevelObjectives.slo</semanticResources>
+  <semanticResources>ReconfigurationFolder.experiments</semanticResources>
+  <semanticResources>reconfigurations/ActivateFilterComponent.qvto</semanticResources>
+  <semanticResources>reconfigurations/DeactivateFilterComponent.qvto</semanticResources>
+  <semanticResources>AutonomousSystemStaticEnvironment.staticmodel</semanticResources>
+  <semanticResources>AutonomousSystemEnvironmentalDynamics.dynamicmodel</semanticResources>
 </viewpoint:DAnalysis>

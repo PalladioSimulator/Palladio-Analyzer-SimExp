@@ -1,0 +1,122 @@
+/*
+ * Two modeltypes are declared. The http NS URIs correspond to those used to register the 
+ * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
+ * in conjunction with mappings defined in the project properties.
+ */
+modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
+modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
+modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
+modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
+modeltype PCM_SYS uses 'http://palladiosimulator.org/PalladioComponentModel/System/5.2';
+modeltype PCM_RES_ENV uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2';
+modeltype PCM_RES_TYPE uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2';
+modeltype PCM_USAGE uses 'http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2';
+modeltype PCM_FEATURE_CONF uses 'http://sdq.ipd.uka.de/FeatureConfig/2.0';
+modeltype PCM_FEATURE_MOD uses 'http://sdq.ipd.uka.de/FeatureModel/2.0';
+modeltype PCM_CORE uses 'http://palladiosimulator.org/PalladioComponentModel/Core/5.2';
+modeltype PCM_COMP uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2';
+modeltype PCM_ENTITY uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2';
+modeltype PCM_PARAM uses 'http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2';
+modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
+
+/*
+ * The transformation deactivates the filter component.
+ */
+transformation DeactivateFilterComponent(inout pcmSystem : PCM_SYS, in pcmRepo : PCM_REP) {
+							
+							
+	property filterAssemblyId : String = "_FYG24MYYEeyiNd6DFUWDnw";
+	property identityComponentId : String = "_wnZR8MYgEeyiNd6DFUWDnw";
+	property identitySinkConnectorId : String = "_EoPxIMYhEeyiNd6DFUWDnw";
+	property identitySourceConnectorId : String = "_Dm_vgMYhEeyiNd6DFUWDnw";
+
+	/**
+	 * The main transformation.
+	 * This is the entry point of the overall transformation.
+	 */
+	main() {
+	
+		log('Simulated experience: deactivate filter component.');
+		
+		var identityComponent : BasicComponent := findIdentityComponent();
+		adjustConnectors(identityComponent);
+		activate(identityComponent);
+
+	}
+	
+	helper findIdentityComponent() : BasicComponent {
+		var identityComponent : BasicComponent := null;
+		pcmRepo.rootObjects()[Repository].allSubobjects()[BasicComponent]->forEach(component) {
+			if component.id = identityComponentId then {
+				log('Found identity component: ' + component.entityName);
+				
+				identityComponent := component;
+				break;
+			} 
+			endif
+		};
+		
+		assert fatal(identityComponent != null) with log('The identity component could not be found.');
+		
+		return identityComponent;
+	}
+	
+	/**
+	 * Adjusts the roles of the connectors.
+	 */
+	helper adjustConnectors(identityComponent : BasicComponent) {
+		var adjustedSuccessfully : Boolean = false;
+		
+		pcmSystem.rootObjects()[System].allSubobjects()[EventChannelSinkConnector]->forEach(connector) {
+			if connector.id = identitySinkConnectorId then {
+				log('Found target connector: ' + connector.entityName);
+				
+				connector.sinkRole__EventChannelSinkConnector := identityComponent.providedRoles_InterfaceProvidingEntity->asSequence()->first().oclAsType(SinkRole);
+				
+				adjustedSuccessfully := true;
+				break;
+			} 
+			endif
+		};
+		
+		assert fatal(adjustedSuccessfully) with log('The assembly connector could not be found.');
+		
+		adjustedSuccessfully := false;
+		
+		pcmSystem.rootObjects()[System].allSubobjects()[EventChannelSourceConnector]->forEach(connector) {
+			if connector.id = identitySourceConnectorId then {
+				log('Found target connector: ' + connector.entityName);
+				
+				connector.sourceRole__EventChannelSourceRole := identityComponent.requiredRoles_InterfaceRequiringEntity->asSequence()->first().oclAsType(SourceRole);
+				
+				adjustedSuccessfully := true;
+				break;
+			} 
+			endif
+		};
+		
+		assert fatal(adjustedSuccessfully) with log('The assembly connector could not be found.');
+	}
+	
+	/**
+	 * Activate identity component.
+	 */
+	helper activate(identityComponent : BasicComponent) {
+		var activatedSuccessfully : Boolean = false;	
+	
+		pcmSystem.rootObjects()[System].allSubobjects()[AssemblyContext]->forEach(assembly) {
+			if assembly.id = filterAssemblyId then {
+				log('Found target assembly: ' + assembly.entityName);
+				
+				assembly.encapsulatedComponent__AssemblyContext := identityComponent;
+				
+				activatedSuccessfully := true;
+				break;
+			} 
+			endif
+		};
+		
+		assert fatal(activatedSuccessfully) with log('The filter assembly could not be found.');
+	}
+	
+}

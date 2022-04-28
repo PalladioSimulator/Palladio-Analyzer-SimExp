@@ -69,7 +69,7 @@
           <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
         </resourceDemand_Action>
         <internalFailureOccurrenceDescriptions__InternalAction failureProbability="0.001">
-          <softwareInducedFailureType__InternalFailureOccurrenceDescription href="pathmap://PCM_MODELS/FailureTypes.repository.repository#_sLBREFf0EeW5Q6z-Ts8kIg"/>
+          <softwareInducedFailureType__InternalFailureOccurrenceDescription href="pathmap://PCM_MODELS/FailureTypes.repository#_sLBREFf0EeW5Q6z-Ts8kIg"/>
         </internalFailureOccurrenceDescriptions__InternalAction>
       </steps_Behaviour>
       <steps_Behaviour xsi:type="seff:EmitEventAction" id="_EAIOm7mnEeyS2sGHdAg-UQ" entityName="PublishEnrichedDistanceMeasure" predecessor_AbstractAction="_c2jzkA_oEeyEv_6ldihyWQ" successor_AbstractAction="_i6EMUgZfEeyBeaTSQFCmQg" eventType__EmitEventAction="_uyKiEAZnEeyBeaTSQFCmQg" sourceRole__EmitEventAction="_G5zQcAZoEeyBeaTSQFCmQg">

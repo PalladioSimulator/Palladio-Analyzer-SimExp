@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<resourceenvironment:ResourceEnvironment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:resourceenvironment="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2" entityName="New ResourceEnvironment">
+<resourceenvironment:ResourceEnvironment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:resourceenvironment="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2" entityName="SelfDrivingCarResourceEnvironment">
   <linkingResources__ResourceEnvironment id="_wB-aoLpBEeyZT639BONGyg" entityName="FlexRay bus" connectedResourceContainers_LinkingResource="_YGnNsbpBEeyZT639BONGyg _STv3MbpBEeyZT639BONGyg _IDPGIbpAEeyZT639BONGyg _XvAd8L11EeunTKCICMkJWw _9s2EobpAEeyZT639BONGyg _mg5F8bpBEeyZT639BONGyg">
     <communicationLinkResourceSpecifications_LinkingResource id="_nR5PoLpCEeyZT639BONGyg" failureProbability="1.0E-4">
       <communicationLinkResourceType_CommunicationLinkResourceSpecification href="Palladio.resourcetype#_o3sScH2AEdyH8uerKnHYug"/>
