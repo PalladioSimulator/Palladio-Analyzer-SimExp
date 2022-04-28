@@ -77,7 +77,7 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 
 	private void retrieveAndSetStateQuantities(StateQuantity quantity, ReliabilityPredictionResult result) {
 		filterPcmRelMeasurementsSpec(quantity).forEach(spec -> {
-			var probOfSuccess = result.getProbabilityOfSuccessGiven(spec.getUsageScenario());
+			var probOfSuccess = result.getProbabilityOfSuccess(spec.getUsageScenario());
 			quantity.setMeasurement(probOfSuccess, spec);
 		});
 	}
