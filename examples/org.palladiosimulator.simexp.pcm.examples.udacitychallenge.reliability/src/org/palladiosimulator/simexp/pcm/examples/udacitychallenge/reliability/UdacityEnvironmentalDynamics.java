@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvi
 import com.google.common.collect.Lists;
 
 public class UdacityEnvironmentalDynamics {
-	
+
 	private static UdacityEnvironmentalDynamics processInstance = null;
 
 	private final EnvironmentProcess envProcess;
@@ -46,12 +46,12 @@ public class UdacityEnvironmentalDynamics {
 
 			@Override
 			public void pursueExplorationStrategy() {
-				
+
 			}
 
 			@Override
 			public void pursueExploitationStrategy() {
-				
+
 			}
 
 			@Override
@@ -64,14 +64,12 @@ public class UdacityEnvironmentalDynamics {
 			private EnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
 				var traj = dbn.given(asConditionals(conditionalInputs)).sample();
 				var value = toPerceivedValue(traj.valueAtTime(0));
-				return EnvironmentalState.newBuilder()
-						.withValue(value)
-						.build();
+				return EnvironmentalState.newBuilder().withValue(value).build();
 			}
 
 		};
 	}
-	
+
 	private ProbabilityMassFunction createInitialDist(DynamicBayesianNetwork dbn) {
 		return new ProbabilityMassFunction() {
 
@@ -81,10 +79,7 @@ public class UdacityEnvironmentalDynamics {
 			public Sample drawSample() {
 				var sample = bn.sample();
 				var value = toPerceivedValue(sample);
-				var initial = EnvironmentalState.newBuilder()
-						.withValue(value)
-						.isInital()
-						.build();
+				var initial = EnvironmentalState.newBuilder().withValue(value).isInital().build();
 				return Sample.of(initial, bn.probability(sample));
 			}
 
@@ -132,9 +127,7 @@ public class UdacityEnvironmentalDynamics {
 			List<?> inputs = List.class.cast(sample);
 			if (inputs.isEmpty() == false) {
 				if (InputValue.class.isInstance(inputs.get(0))) {
-					return inputs.stream()
-							.map(InputValue.class::cast)
-							.collect(toList());
+					return inputs.stream().map(InputValue.class::cast).collect(toList());
 				}
 			}
 		}

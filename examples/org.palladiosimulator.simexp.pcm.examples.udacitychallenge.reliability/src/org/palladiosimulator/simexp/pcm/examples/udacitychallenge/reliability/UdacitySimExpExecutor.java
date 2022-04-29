@@ -35,6 +35,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
+import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
+import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
+import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 
@@ -67,6 +71,9 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 		this.reconfigurationStrategy = new ImageBlurMitigationStrategy();
 		//this.reconfigurationStrategy = new RandomizedFilterActivationStrategy();
 		//this.reconfigurationStrategy = new StaticSystemSimulation();
+		
+		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
+		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
 	
 	@Override
@@ -91,17 +98,15 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
 					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner())
-					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(3) //100
+					.withNumberOfRuns(50) //500
+					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new UdcityBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(UdacityEnvironmentalDynamics.get(dbn))
-				  	.isHiddenProcess()
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())

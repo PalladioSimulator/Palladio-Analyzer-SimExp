@@ -443,12 +443,12 @@
     </serviceEffectSpecifications__BasicComponent>
   </components__Repository>
   <components__Repository xsi:type="repository:BasicComponent" id="_wnZR8MYgEeyiNd6DFUWDnw" entityName="IdentityComponent">
-    <providedRoles_InterfaceProvidingEntity xsi:type="repository:SinkRole" id="_EoPxIMYhEeyiNd6DFUWDnw" entityName="Sink_PerceivedImage_IdentityComponent" eventGroup__SinkRole="_uRMg0AZYEeyBeaTSQFCmQg"/>
-    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:SourceRole" id="_Dm_vgMYhEeyiNd6DFUWDnw" entityName="Source_EventGroup_RamboSteeringAnglePrediction_IdentityComponent" eventGroup__SourceRole="_FX73wMYYEeyiNd6DFUWDnw"/>
-    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_EoTbgMYhEeyiNd6DFUWDnw" describedService__SEFF="_4ilREAZYEeyBeaTSQFCmQg">
-      <steps_Behaviour xsi:type="seff:StartAction" id="_EoUCkMYhEeyiNd6DFUWDnw" entityName="start" successor_AbstractAction="_OKgKi8YhEeyiNd6DFUWDnw"/>
-      <steps_Behaviour xsi:type="seff:StopAction" id="_EoUCkcYhEeyiNd6DFUWDnw" entityName="stop" predecessor_AbstractAction="_OKgKi8YhEeyiNd6DFUWDnw"/>
-      <steps_Behaviour xsi:type="seff:EmitEventAction" id="_OKgKi8YhEeyiNd6DFUWDnw" predecessor_AbstractAction="_EoUCkMYhEeyiNd6DFUWDnw" successor_AbstractAction="_EoUCkcYhEeyiNd6DFUWDnw">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:SinkRole" id="_EoPxIMYhEeyiNd6DFUWDnw" entityName="IdentityComponentSink_PerceivedImage_IdentityComponent" eventGroup__SinkRole="_uRMg0AZYEeyBeaTSQFCmQg"/>
+    <requiredRoles_InterfaceRequiringEntity xsi:type="repository:SourceRole" id="_Dm_vgMYhEeyiNd6DFUWDnw" entityName="IdentityComponentSource_EventGroup_RamboSteeringAnglePrediction_IdentityComponent" eventGroup__SourceRole="_FX73wMYYEeyiNd6DFUWDnw"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_GGODV8eHEeymk-TnEv1SWQ" describedService__SEFF="_4ilREAZYEeyBeaTSQFCmQg">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_LLZNYseHEeymk-TnEv1SWQ" entityName="IdentityStart" successor_AbstractAction="_O9zIC8eHEeymk-TnEv1SWQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_MErl0MeHEeymk-TnEv1SWQ" entityName="IdentityStop" predecessor_AbstractAction="_O9zIC8eHEeymk-TnEv1SWQ"/>
+      <steps_Behaviour xsi:type="seff:EmitEventAction" id="_O9zIC8eHEeymk-TnEv1SWQ" entityName="IdentityEmitEventAction" predecessor_AbstractAction="_LLZNYseHEeymk-TnEv1SWQ" successor_AbstractAction="_MErl0MeHEeymk-TnEv1SWQ" eventType__EmitEventAction="_FX73wcYYEeyiNd6DFUWDnw" sourceRole__EmitEventAction="_Dm_vgMYhEeyiNd6DFUWDnw">
         <inputVariableUsages__CallAction>
           <variableCharacterisation_VariableUsage type="BYTESIZE">
             <specification_VariableCharacterisation specification="IntPMF[(1;1.0)]"/>

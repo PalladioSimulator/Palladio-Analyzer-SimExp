@@ -11,7 +11,7 @@ public class StaticSystemSimulation extends ReconfigurationStrategy<QVToReconfig
 
 	@Override
 	public String getId() {
-		return StaticSystemSimulation.class.getCanonicalName();
+		return StaticSystemSimulation.class.getName();
 	}
 
 	@Override

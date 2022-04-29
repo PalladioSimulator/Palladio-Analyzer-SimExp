@@ -22,4 +22,5 @@
   <semanticResources>reconfigurations/DeactivateFilterComponent.qvto</semanticResources>
   <semanticResources>AutonomousSystemStaticEnvironment.staticmodel</semanticResources>
   <semanticResources>AutonomousSystemEnvironmentalDynamics.dynamicmodel</semanticResources>
+  <semanticResources>DummyMonitorRepository.monitorrepository</semanticResources>
 </viewpoint:DAnalysis>

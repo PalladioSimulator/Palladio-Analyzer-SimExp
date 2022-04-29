@@ -27,8 +27,8 @@ transformation DeactivateFilterComponent(inout pcmSystem : PCM_SYS, in pcmRepo :
 							
 	property filterAssemblyId : String = "_FYG24MYYEeyiNd6DFUWDnw";
 	property identityComponentId : String = "_wnZR8MYgEeyiNd6DFUWDnw";
-	property identitySinkConnectorId : String = "_EoPxIMYhEeyiNd6DFUWDnw";
-	property identitySourceConnectorId : String = "_Dm_vgMYhEeyiNd6DFUWDnw";
+	property identitySinkConnectorId : String = "_xZ6VYLoqEeyZT639BONGyg";
+	property identitySourceConnectorId : String = "_FX7QsMYYEeyiNd6DFUWDnw";
 
 	/**
 	 * The main transformation.

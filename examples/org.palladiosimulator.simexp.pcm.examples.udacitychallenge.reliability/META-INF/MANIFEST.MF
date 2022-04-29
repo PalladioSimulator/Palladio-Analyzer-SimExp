@@ -26,3 +26,4 @@ Require-Bundle: org.palladiosimulator.simexp.pcm.examples,
  tools.mdsd.probdist.api.apache;bundle-version="1.0.0",
  tools.mdsd.probdist.model.basic;bundle-version="1.0.0",
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0"
+Export-Package: org.palladiosimulator.simexp.pcm.examples.udacitychallenge.reliability

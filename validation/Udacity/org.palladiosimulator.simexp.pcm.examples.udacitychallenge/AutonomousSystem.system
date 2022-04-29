@@ -40,7 +40,7 @@
     <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="AutonomousSystemComponents.repository#_vzR7gLo6EeyZT639BONGyg"/>
   </assemblyContexts__ComposedStructure>
   <assemblyContexts__ComposedStructure id="_FYG24MYYEeyiNd6DFUWDnw" entityName="Assembly_Filter_RamboSteeringAnglePrediction">
-    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="AutonomousSystemComponents.repository#_FX_iIMYYEeyiNd6DFUWDnw"/>
+    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="AutonomousSystemComponents.repository#_wnZR8MYgEeyiNd6DFUWDnw"/>
   </assemblyContexts__ComposedStructure>
   <eventChannel__ComposedStructure id="_DKCIMAZqEeyBeaTSQFCmQg" entityName="PerceivedImage" eventChannelSourceConnector__EventChannel="_F2YZsAZqEeyBeaTSQFCmQg" eventChannelSinkConnector__EventChannel="_xZ6VYLoqEeyZT639BONGyg _exGqYLouEeyZT639BONGyg _RmkzsLo3EeyZT639BONGyg">
     <eventGroup__EventChannel href="AutonomousSystemComponents.repository#_uRMg0AZYEeyBeaTSQFCmQg"/>
@@ -111,7 +111,7 @@
     <sinkRole__EventChannelSinkConnector href="AutonomousSystemComponents.repository#_gleOcLmTEeyjMezYjxU3eA"/>
   </connectors__ComposedStructure>
   <connectors__ComposedStructure xsi:type="composition:EventChannelSinkConnector" id="_xZ6VYLoqEeyZT639BONGyg" entityName="SteeringAnglePredictionSinkConnector" assemblyContext__EventChannelSinkConnector="_FYG24MYYEeyiNd6DFUWDnw" eventChannel__EventChannelSinkConnector="_DKCIMAZqEeyBeaTSQFCmQg">
-    <sinkRole__EventChannelSinkConnector href="AutonomousSystemComponents.repository#_FXucYMYYEeyiNd6DFUWDnw"/>
+    <sinkRole__EventChannelSinkConnector href="AutonomousSystemComponents.repository#_EoPxIMYhEeyiNd6DFUWDnw"/>
   </connectors__ComposedStructure>
   <connectors__ComposedStructure xsi:type="composition:EventChannelSinkConnector" id="_exGqYLouEeyZT639BONGyg" assemblyContext__EventChannelSinkConnector="_Ze__EAZqEeyBeaTSQFCmQg" eventChannel__EventChannelSinkConnector="_DKCIMAZqEeyBeaTSQFCmQg">
     <sinkRole__EventChannelSinkConnector href="AutonomousSystemComponents.repository#_2493sLotEeyZT639BONGyg"/>
@@ -147,7 +147,7 @@
     <sinkRole__EventChannelSinkConnector href="AutonomousSystemComponents.repository#_FX1xIMYYEeyiNd6DFUWDnw"/>
   </connectors__ComposedStructure>
   <connectors__ComposedStructure xsi:type="composition:EventChannelSourceConnector" id="_FX7QsMYYEeyiNd6DFUWDnw" entityName="FilterToAiChannelSourceConnector_RamboSteeringAnglePrediction" assemblyContext__EventChannelSourceConnector="_FYG24MYYEeyiNd6DFUWDnw" eventChannel__EventChannelSourceConnector="_FX6poMYYEeyiNd6DFUWDnw">
-    <sourceRole__EventChannelSourceRole href="AutonomousSystemComponents.repository#_FX1KEMYYEeyiNd6DFUWDnw"/>
+    <sourceRole__EventChannelSourceRole href="AutonomousSystemComponents.repository#_Dm_vgMYhEeyiNd6DFUWDnw"/>
   </connectors__ComposedStructure>
   <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_2L3vUC6PEeydEsXxOHK8gg" entityName="IPerceptionProvidedRole">
     <providedInterface__OperationProvidedRole href="AutonomousSystemComponents.repository#_ibE5VwZWEeyBeaTSQFCmQg"/>

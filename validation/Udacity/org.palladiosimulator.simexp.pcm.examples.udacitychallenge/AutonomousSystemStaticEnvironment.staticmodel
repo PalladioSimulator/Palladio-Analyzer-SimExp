@@ -12,9 +12,11 @@
     <localProbabilisticModels>
       <groundRandomVariables id="_kavJwMbOEeyOxtg3mPZ3yg" entityName="ImageBlurRandomVariable" descriptiveModel="_hj_mIMbOEeyOxtg3mPZ3yg">
         <instantiatedTemplate href="DNNTemplateVariables.templatevariable#_0uh4oCpGEeuMpaabmuiN-Q"/>
+        <appliedObjects href="AutonomousSystemUsage.usagemodel#_EOfPML12EeunTKCICMkJWw"/>
       </groundRandomVariables>
       <groundRandomVariables id="_lPzJgMbOEeyOxtg3mPZ3yg" entityName="ImageBrightnessRandomVariable" descriptiveModel="_i9H8QMbOEeyOxtg3mPZ3yg">
         <instantiatedTemplate href="DNNTemplateVariables.templatevariable#_U5Fzu8qkEeqObY-eK2jOOA"/>
+        <appliedObjects href="AutonomousSystemUsage.usagemodel#_EOfPML12EeunTKCICMkJWw"/>
       </groundRandomVariables>
     </localProbabilisticModels>
   </models>

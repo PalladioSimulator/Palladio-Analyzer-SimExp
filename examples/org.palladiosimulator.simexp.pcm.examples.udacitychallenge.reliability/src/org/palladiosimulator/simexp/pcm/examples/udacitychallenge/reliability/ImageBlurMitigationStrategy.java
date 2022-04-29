@@ -20,7 +20,7 @@ public class ImageBlurMitigationStrategy extends ReconfigurationStrategy<QVToRec
 	
 	@Override
 	public String getId() {
-		return ImageBlurMitigationStrategy.class.getCanonicalName();
+		return ImageBlurMitigationStrategy.class.getName();
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class ImageBlurMitigationStrategy extends ReconfigurationStrategy<QVToRec
 			throw new RuntimeException("");
 		}
 
-		var envState = ((SelfAdaptiveSystemState<?>) source).getPerceivedEnvironmentalState().getValue();
+		var envState = ((SelfAdaptiveSystemState<?>) source).getPerceivedEnvironmentalState().getValue().getValue();
 		for (InputValue each : UdacityEnvironmentalDynamics.toInputs(envState)) {
 			if (each.variable.getEntityName().equals(IMG_BLUR)) {
 				knowledge.store(IMG_BLUR, each.value);
@@ -45,7 +45,7 @@ public class ImageBlurMitigationStrategy extends ReconfigurationStrategy<QVToRec
 	@Override
 	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
 		var value = (CategoricalValue) knowledge.getValue(IMG_BLUR).orElseThrow();
-		var isBlurryImage = value.get().equals("Blurry");
+		var isBlurryImage = value.get().equals("(ImageBlurring=Blurry)");
 		
 		if (isBlurryImage && isFilteringActivated) {
 			return QVToReconfiguration.empty();
