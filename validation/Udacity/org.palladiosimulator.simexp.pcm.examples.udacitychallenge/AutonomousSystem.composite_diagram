@@ -114,20 +114,6 @@
       </children>
       <children xmi:type="notation:Shape" xmi:id="_z_Ynn8bHEeyOxtg3mPZ3yg" type="3006" fontName="Segoe UI">
         <children xmi:type="notation:DecorationNode" xmi:id="_z_YnocbHEeyOxtg3mPZ3yg" type="5009"/>
-        <children xmi:type="notation:Shape" xmi:id="_0BFQsMbHEeyOxtg3mPZ3yg" type="3014" fontName="Segoe UI">
-          <children xmi:type="notation:DecorationNode" xmi:id="_0BFQssbHEeyOxtg3mPZ3yg" type="5016">
-            <layoutConstraint xmi:type="notation:Location" xmi:id="_0BFQs8bHEeyOxtg3mPZ3yg" y="5"/>
-          </children>
-          <element xmi:type="repository:SinkRole" href="AutonomousSystemComponents.repository#_FX1xIMYYEeyiNd6DFUWDnw"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0BFQscbHEeyOxtg3mPZ3yg"/>
-        </children>
-        <children xmi:type="notation:Shape" xmi:id="_0BFQtMbHEeyOxtg3mPZ3yg" type="3013" fontName="Segoe UI">
-          <children xmi:type="notation:DecorationNode" xmi:id="_0BFQtsbHEeyOxtg3mPZ3yg" type="5015">
-            <layoutConstraint xmi:type="notation:Location" xmi:id="_0BFQt8bHEeyOxtg3mPZ3yg" y="5"/>
-          </children>
-          <element xmi:type="repository:SourceRole" href="AutonomousSystemComponents.repository#_EcHr5jciEeylpfVm0_xYGQ"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0BFQtcbHEeyOxtg3mPZ3yg"/>
-        </children>
         <element xmi:type="composition:AssemblyContext" href="AutonomousSystem.system#_hM4QwAZqEeyBeaTSQFCmQg"/>
         <layoutConstraint xmi:type="notation:Bounds" xmi:id="_z_YnoMbHEeyOxtg3mPZ3yg" x="1083" y="205"/>
       </children>
@@ -390,12 +376,6 @@
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0GYAaMbHEeyOxtg3mPZ3yg" points="[2, -14, 166, -60]$[-164, 46, 0, 0]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_4MHGtMbHEeyOxtg3mPZ3yg" id="(0.75,0.0)"/>
   </edges>
-  <edges xmi:type="notation:Connector" xmi:id="_0GYAacbHEeyOxtg3mPZ3yg" type="4010" source="_0BFQsMbHEeyOxtg3mPZ3yg" target="_z_hxksbHEeyOxtg3mPZ3yg">
-    <styles xmi:type="notation:FontStyle" xmi:id="_0GYAasbHEeyOxtg3mPZ3yg" fontName="Segoe UI"/>
-    <element xmi:type="composition:EventChannelSinkConnector" href="AutonomousSystem.system#_FX6pocYYEeyiNd6DFUWDnw"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0GYAa8bHEeyOxtg3mPZ3yg" points="[24, 25, 0, -60]$[24, 85, 0, 0]"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_4MHGwMbHEeyOxtg3mPZ3yg" id="(0.5,0.0)"/>
-  </edges>
   <edges xmi:type="notation:Connector" xmi:id="_0GhKUMbHEeyOxtg3mPZ3yg" type="4009" source="_z_rihMbHEeyOxtg3mPZ3yg" target="_z_hxgMbHEeyOxtg3mPZ3yg">
     <styles xmi:type="notation:FontStyle" xmi:id="_0GhKUcbHEeyOxtg3mPZ3yg" fontName="Segoe UI"/>
     <element xmi:type="composition:EventChannelSourceConnector" href="AutonomousSystem.system#_F2YZsAZqEeyBeaTSQFCmQg"/>
@@ -413,12 +393,6 @@
     <element xmi:type="composition:EventChannelSourceConnector" href="AutonomousSystem.system#_ZAGckAZqEeyBeaTSQFCmQg"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0GhKWMbHEeyOxtg3mPZ3yg" points="[-61, 25, -417, -60]$[356, 85, 0, 0]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_4MHGwcbHEeyOxtg3mPZ3yg" id="(0.25,0.0)"/>
-  </edges>
-  <edges xmi:type="notation:Connector" xmi:id="_0Gq7UMbHEeyOxtg3mPZ3yg" type="4009" source="_0BFQtMbHEeyOxtg3mPZ3yg" target="_z_hxjMbHEeyOxtg3mPZ3yg">
-    <styles xmi:type="notation:FontStyle" xmi:id="_0Gq7UcbHEeyOxtg3mPZ3yg" fontName="Segoe UI"/>
-    <element xmi:type="composition:EventChannelSourceConnector" href="AutonomousSystem.system#__KbpoAZqEeyBeaTSQFCmQg"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_0Gq7UsbHEeyOxtg3mPZ3yg" points="[-149, 25, 115, -60]$[-264, 85, 0, 0]"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_4MHGv8bHEeyOxtg3mPZ3yg" id="(0.75,0.0)"/>
   </edges>
   <edges xmi:type="notation:Connector" xmi:id="_0Gq7U8bHEeyOxtg3mPZ3yg" type="4009" source="_0A7ftMbHEeyOxtg3mPZ3yg" target="_z_hxjMbHEeyOxtg3mPZ3yg">
     <styles xmi:type="notation:FontStyle" xmi:id="_0Gq7VMbHEeyOxtg3mPZ3yg" fontName="Segoe UI"/>

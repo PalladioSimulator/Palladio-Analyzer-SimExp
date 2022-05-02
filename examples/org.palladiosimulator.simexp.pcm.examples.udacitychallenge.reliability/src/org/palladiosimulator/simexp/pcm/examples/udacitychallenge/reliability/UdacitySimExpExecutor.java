@@ -16,17 +16,17 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
-import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
+import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
-import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
-import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
-import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
@@ -59,7 +59,6 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	
 	private final static String SIMULATION_ID = "UdacityChallenge";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("org.palladiosimulator.simexp.pcm.examples.udacitychallenge/SteeringAnglePredictionUncertaintyModel.uncertainty", true);
-	private final static Threshold UPPER_REL = Threshold.greaterThanOrEqualTo(0.93);
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
@@ -68,8 +67,8 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	public UdacitySimExpExecutor() {
 		this.dbn = UdacityEnvironmentLoader.load();
 		this.pcmSpecs = createSimMeasurementSpecs();
-		this.reconfigurationStrategy = new ImageBlurMitigationStrategy();
-		//this.reconfigurationStrategy = new RandomizedFilterActivationStrategy();
+		//this.reconfigurationStrategy = new ImageBlurMitigationStrategy();
+		this.reconfigurationStrategy = new RandomizedFilterActivationStrategy();
 		//this.reconfigurationStrategy = new StaticSystemSimulation();
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
@@ -101,7 +100,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(50) //500
+					.withNumberOfRuns(50) //50
 					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new UdcityBeforeExecutionInitialization())
 					.done()
@@ -118,9 +117,28 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 				.build();
 	}
 	
-	private ThresholdBasedRewardEvaluator getRewardEvaluator() {
-		var threshold = Pair.of(pcmSpecs.get(0), UPPER_REL);
-		return ThresholdBasedRewardEvaluator.with(threshold);
+	private RewardEvaluator getRewardEvaluator() {
+		class RealValuedReward extends RewardImpl<Double> {
+			
+			private RealValuedReward(double value) {
+				super.setValue(value);
+			}
+			
+			@Override
+			public String toString() {
+				return Double.toString(getValue());
+			}
+
+		}
+		
+		return new RewardEvaluator() {
+			
+			@Override
+			public Reward<?> evaluate(StateQuantity quantifiedState) {
+				var reliability = quantifiedState.findMeasurementWith(pcmSpecs.get(0)).get().getValue();
+				return new RealValuedReward(reliability);
+			}
+		};
 	}
 
 	private Set<Reconfiguration<?>> getAllReconfigurations() {

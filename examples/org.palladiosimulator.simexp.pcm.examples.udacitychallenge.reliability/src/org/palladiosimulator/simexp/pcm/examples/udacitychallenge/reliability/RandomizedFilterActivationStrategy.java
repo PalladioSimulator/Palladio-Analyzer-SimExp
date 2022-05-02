@@ -11,7 +11,7 @@ public class RandomizedFilterActivationStrategy extends ImageBlurMitigationStrat
 
 	@Override
 	public String getId() {
-		return RandomizedFilterActivationStrategy.class.getName();
+		return "RandomizedFilterActivationStrategy";
 	}
 
 	@Override

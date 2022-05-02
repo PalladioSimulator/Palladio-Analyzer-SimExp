@@ -20,7 +20,7 @@ public class ImageBlurMitigationStrategy extends ReconfigurationStrategy<QVToRec
 	
 	@Override
 	public String getId() {
-		return ImageBlurMitigationStrategy.class.getName();
+		return "ImageBlurMitigationStrategy";
 	}
 
 	@Override
