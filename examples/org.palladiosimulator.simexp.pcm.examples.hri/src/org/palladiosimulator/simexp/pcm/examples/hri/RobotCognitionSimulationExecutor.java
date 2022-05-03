@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -20,11 +19,16 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -35,7 +39,6 @@ import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimu
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
@@ -63,18 +66,21 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public static final double LOWER_THRESHOLD_REL = 0.9;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
-	private final static String SIMULATION_ID = "Robot Cognition";
+	private final static String SIMULATION_ID = "RobotCognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 	
 	private final DynamicBayesianNetwork dbn;
-	private final List<SimulatedMeasurementSpecification> pcmSpecs;
-	private final Policy<Action<?>> reconfigurationStrategy;
+	private final SimulatedMeasurementSpecification responseTimeSpec;
+	private final SimulatedMeasurementSpecification reliabilitySpec;
+	private final ReconfigurationStrategy<?> reconfigurationStrategy;
 	
 	public RobotCognitionSimulationExecutor() {
 		this.dbn = RobotCognitionDBNLoader.load();
-		this.pcmSpecs = createSimMeasurementSpecs();
-		this.reconfigurationStrategy = new RobotCognitionReconfigurationStrategy(pcmSpecs.get(1), pcmSpecs.get(0));
+		this.responseTimeSpec = buildResponseTimeSpec();
+		this.reliabilitySpec = buildReliabilitySpec();
+		//this.reconfigurationStrategy = new RobotCognitionReconfigurationStrategy(reliabilitySpec, responseTimeSpec);
+		this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -99,7 +105,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		return PcmExperienceSimulationBuilder.newBuilder()
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
-					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
+					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
 					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner())
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
@@ -118,7 +124,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 				  	.andReconfigurationStrategy(reconfigurationStrategy)
 				  	.done()
 				.specifyRewardHandling()
-				  	.withRewardEvaluator(getRewardEvaluator())
+				  	.withRewardEvaluator(getPureReliabilityBasedRewardEvaluator())
 				  	.done()
 				.build();
 	}
@@ -130,21 +136,41 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private RewardEvaluator getRewardEvaluator() {
 		return new RobotCognitionRewardEvaluation(responseTimeThreshold(), reliabilityThreshold());
 	}
+	
+	private RewardEvaluator getPureReliabilityBasedRewardEvaluator() {
+		class RealValuedReward extends RewardImpl<Double> {
+			
+			private RealValuedReward(double value) {
+				super.setValue(value);
+			}
+			
+			@Override
+			public String toString() {
+				return Double.toString(getValue());
+			}
+
+		}
+		
+		return new RewardEvaluator() {
+			
+			@Override
+			public Reward<?> evaluate(StateQuantity quantifiedState) {
+				var reliability = quantifiedState.findMeasurementWith(reliabilitySpec).get().getValue();
+				return new RealValuedReward(reliability);
+			}
+		};
+	}
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold() {
-		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
+		return Pair.of(responseTimeSpec, Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
 	}
 	
 	private Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold() {
-		return Pair.of(pcmSpecs.get(1), Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL));
+		return Pair.of(reliabilitySpec, Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL));
 	}
 
 	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner() {
 		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig());
-	}
-
-	private List<SimulatedMeasurementSpecification> createSimMeasurementSpecs() {
-		return Lists.newArrayList(buildResponseTimeSpec(), buildReliabilitySpec());
 	}
 	
 	private SimulatedMeasurementSpecification buildReliabilitySpec() {
