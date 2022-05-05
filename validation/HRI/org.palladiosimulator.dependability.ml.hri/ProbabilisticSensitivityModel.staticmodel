@@ -54,4 +54,58 @@
       </groundRandomVariables>
     </localProbabilisticModels>
   </models>
+  <models id="_s80i0MrwEeylqaZ-C_Z_cg" entityName="WorstPredictionSensitivityModel">
+    <localModels id="_uTTNkMrwEeylqaZ-C_Z_cg" entityName="WorstPredictionSensitivityModel">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_U5Elk8qkEeqObY-eK2jOOA"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_BG9O8MrzEeylqaZ-C_Z_cg"/>
+    </localModels>
+    <localModels id="_wx1skMrwEeylqaZ-C_Z_cg" entityName="ImageBrightnessSensitivityModel">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_U5FzvMqkEeqObY-eK2jOOA"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_a9RjscqkEeqObY-eK2jOOA"/>
+    </localModels>
+    <localModels id="_xUWjwMrwEeylqaZ-C_Z_cg" entityName="SensorNoiseSensitivityModel">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_X73JESpHEeuMpaabmuiN-Q"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_UxIxICpVEeuMpaabmuiN-Q"/>
+    </localModels>
+    <localProbabilisticModels>
+      <groundRandomVariables id="_ydadkMrwEeylqaZ-C_Z_cg" entityName="PredictionSensitivity" descriptiveModel="_uTTNkMrwEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_U5ElksqkEeqObY-eK2jOOA"/>
+        <dependenceStructure href="HRITemplateDefinitions.templatevariable#//@relation.0"/>
+        <dependenceStructure href="HRITemplateDefinitions.templatevariable#//@relation.2"/>
+      </groundRandomVariables>
+      <groundRandomVariables id="_zH92cMrwEeylqaZ-C_Z_cg" entityName="BrightnessSensitivity" descriptiveModel="_wx1skMrwEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_U5Fzu8qkEeqObY-eK2jOOA"/>
+      </groundRandomVariables>
+      <groundRandomVariables id="_zh1vAMrwEeylqaZ-C_Z_cg" entityName="SensorNoiseSensitivity" descriptiveModel="_xUWjwMrwEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_0uh4oCpGEeuMpaabmuiN-Q"/>
+      </groundRandomVariables>
+    </localProbabilisticModels>
+  </models>
+  <models id="_F83qcMryEeylqaZ-C_Z_cg" entityName="PerfectPredictionSensitivityModel">
+    <localModels id="_IQIGgMryEeylqaZ-C_Z_cg" entityName="PredictionSensitivity">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_U5Elk8qkEeqObY-eK2jOOA"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_MxSvIMrzEeylqaZ-C_Z_cg"/>
+    </localModels>
+    <localModels id="_JwyoAMryEeylqaZ-C_Z_cg" entityName="BrightnessSensitivity">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_U5FzvMqkEeqObY-eK2jOOA"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_a9RjscqkEeqObY-eK2jOOA"/>
+    </localModels>
+    <localModels id="_KYbPwMryEeylqaZ-C_Z_cg" entityName="SensorNoiseSensitivityModel">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="HRITemplateDefinitions.templatevariable#_X73JESpHEeuMpaabmuiN-Q"/>
+      <distribution href="ProbabilityDistributions.distributionfunction#_UxIxICpVEeuMpaabmuiN-Q"/>
+    </localModels>
+    <localProbabilisticModels>
+      <groundRandomVariables id="_QCzYoMryEeylqaZ-C_Z_cg" descriptiveModel="_IQIGgMryEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_U5ElksqkEeqObY-eK2jOOA"/>
+        <dependenceStructure href="HRITemplateDefinitions.templatevariable#//@relation.0"/>
+        <dependenceStructure href="HRITemplateDefinitions.templatevariable#//@relation.2"/>
+      </groundRandomVariables>
+      <groundRandomVariables id="_h1jBgMryEeylqaZ-C_Z_cg" entityName="BrightnessSensitivity" descriptiveModel="_JwyoAMryEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_U5Fzu8qkEeqObY-eK2jOOA"/>
+      </groundRandomVariables>
+      <groundRandomVariables id="_4V-hgMryEeylqaZ-C_Z_cg" entityName="SensorNoiseSensitivity" descriptiveModel="_KYbPwMryEeylqaZ-C_Z_cg">
+        <instantiatedTemplate href="HRITemplateDefinitions.templatevariable#_0uh4oCpGEeuMpaabmuiN-Q"/>
+      </groundRandomVariables>
+    </localProbabilisticModels>
+  </models>
 </staticmodel:ProbabilisticModelRepository>

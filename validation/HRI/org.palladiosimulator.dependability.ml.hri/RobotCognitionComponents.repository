@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:reliability="http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:seff="http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2" xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/2.2" id="_ST3ZANCmEeqWne3bdagE9g" entityName="RobotCognitionComponents">
   <components__Repository xsi:type="repository:BasicComponent" id="_zbDDANCrEeqWne3bdagE9g" entityName="Camera">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_bNyLwNDBEeqWne3bdagE9g" entityName="Camera.CognitionProcess.Provider" providedInterface__OperationProvidedRole="_fZ1SQNC9EeqWne3bdagE9g"/>
@@ -165,6 +165,38 @@
       <steps_Behaviour xsi:type="seff:InternalAction" id="_qGKogOBoEeq7Govxf64fxQ" entityName="MakeRobustPrediction" predecessor_AbstractAction="_mA4OIeBoEeq7Govxf64fxQ" successor_AbstractAction="_mA4OIuBoEeq7Govxf64fxQ">
         <resourceDemand_Action>
           <specification_ParametericResourceDemand specification="25"/>
+          <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        </resourceDemand_Action>
+        <internalFailureOccurrenceDescriptions__InternalAction failureProbability="0.01">
+          <softwareInducedFailureType__InternalFailureOccurrenceDescription href="pathmap://PCM_MODELS/FailureTypes.repository#_sLBREFf0EeW5Q6z-Ts8kIg"/>
+        </internalFailureOccurrenceDescriptions__InternalAction>
+      </steps_Behaviour>
+    </serviceEffectSpecifications__BasicComponent>
+  </components__Repository>
+  <components__Repository xsi:type="repository:BasicComponent" id="_-Jmo0Mr5EeylqaZ-C_Z_cg" entityName="WorstClassifier">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_B7JAwMr6EeylqaZ-C_Z_cg" entityName="Provided_ObjectClassification_WorstClassifier" providedInterface__OperationProvidedRole="_flBpENDSEeqWne3bdagE9g"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_B7MrIMr6EeylqaZ-C_Z_cg" describedService__SEFF="_n_abcNDSEeqWne3bdagE9g">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_B7NSMMr6EeylqaZ-C_Z_cg" entityName="start" successor_AbstractAction="_YdJ1IMr6EeylqaZ-C_Z_cg"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_B7N5QMr6EeylqaZ-C_Z_cg" entityName="stop" predecessor_AbstractAction="_YdJ1IMr6EeylqaZ-C_Z_cg"/>
+      <steps_Behaviour xsi:type="seff:InternalAction" id="_YdJ1IMr6EeylqaZ-C_Z_cg" entityName="makePrediction" predecessor_AbstractAction="_B7NSMMr6EeylqaZ-C_Z_cg" successor_AbstractAction="_B7N5QMr6EeylqaZ-C_Z_cg">
+        <resourceDemand_Action>
+          <specification_ParametericResourceDemand specification="15"/>
+          <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        </resourceDemand_Action>
+        <internalFailureOccurrenceDescriptions__InternalAction failureProbability="0.01">
+          <softwareInducedFailureType__InternalFailureOccurrenceDescription href="pathmap://PCM_MODELS/FailureTypes.repository#_sLBREFf0EeW5Q6z-Ts8kIg"/>
+        </internalFailureOccurrenceDescriptions__InternalAction>
+      </steps_Behaviour>
+    </serviceEffectSpecifications__BasicComponent>
+  </components__Repository>
+  <components__Repository xsi:type="repository:BasicComponent" id="_CZFhAMr6EeylqaZ-C_Z_cg" entityName="PerfectClassifier">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_ErMGgMr6EeylqaZ-C_Z_cg" entityName="Provided_ObjectClassification_PerfectClassifier" providedInterface__OperationProvidedRole="_flBpENDSEeqWne3bdagE9g"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_ErMtkMr6EeylqaZ-C_Z_cg" describedService__SEFF="_n_abcNDSEeqWne3bdagE9g">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_ErMtkcr6EeylqaZ-C_Z_cg" entityName="start" successor_AbstractAction="_cI01oMr6EeylqaZ-C_Z_cg"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_ErMtksr6EeylqaZ-C_Z_cg" entityName="stop" predecessor_AbstractAction="_cI01oMr6EeylqaZ-C_Z_cg"/>
+      <steps_Behaviour xsi:type="seff:InternalAction" id="_cI01oMr6EeylqaZ-C_Z_cg" entityName="makePrediction" predecessor_AbstractAction="_ErMtkcr6EeylqaZ-C_Z_cg" successor_AbstractAction="_ErMtksr6EeylqaZ-C_Z_cg">
+        <resourceDemand_Action>
+          <specification_ParametericResourceDemand specification="15"/>
           <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
         </resourceDemand_Action>
         <internalFailureOccurrenceDescriptions__InternalAction failureProbability="0.01">

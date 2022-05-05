@@ -13,7 +13,7 @@ import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -24,11 +24,8 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -57,7 +54,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		public void initialize() {
 			super.initialize();
 			
-			Initializable.class.cast(reconfigurationStrategy).initialize();
+			if (reconfigurationStrategy instanceof Initializable) {
+				Initializable.class.cast(reconfigurationStrategy).initialize();
+			}
 		}
 		
 	}
@@ -79,8 +78,10 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
-		//this.reconfigurationStrategy = new RobotCognitionReconfigurationStrategy(reliabilitySpec, responseTimeSpec);
-		this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
+		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
+		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
+		this.reconfigurationStrategy = new StaticSystemSimulation();
+		
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -89,7 +90,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfigurationStrategy.getId());
-		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
@@ -111,8 +112,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(3) //100
+					.withNumberOfRuns(50) //50
+					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()

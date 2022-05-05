@@ -98,11 +98,9 @@ public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVTo
 				.map(CategoricalValue.class::cast)
 				.get();
 		var isImgBrightnessIncreased = !imgBrightness.get().equals("(ImageBrightnessMeasure=Medium)");
-		
 		if (isSensorNoiseIncreased || isImgBrightnessIncreased) {
-			return manageReliability(options);
+			return manageReliability(isSensorNoiseIncreased, isImgBrightnessIncreased, options);
 		} 
-		
 		
 		var rtSimMeasurement = knowledge.getValue(responseTimeSpec.getId())
 				.map(SimulatedMeasurement.class::cast)
@@ -126,14 +124,18 @@ public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVTo
 		isFilteringActivated = false;
 	}
 	
-	private QVToReconfiguration manageReliability(Set<QVToReconfiguration> options) {
-		if (isFilteringActivated == false) {
-			return activateFilteringReconfiguration(options);
-		} else if (isDefaultMLModelActivated) {
+	private QVToReconfiguration manageReliability(boolean isSensorNoiseIncreased, boolean isImgBrightnessIncreased,
+			Set<QVToReconfiguration> options) {
+		var bothValuesIncreased = isSensorNoiseIncreased && isImgBrightnessIncreased;
+		if (bothValuesIncreased && isDefaultMLModelActivated) {
 			return switchToRobustMLModel(options);
-		} else {
-			return QVToReconfiguration.empty();
 		}
+		
+		if (isSensorNoiseIncreased && isFilteringActivated == false) {
+			return activateFilteringReconfiguration(options);
+		} 
+		
+		return QVToReconfiguration.empty();
 	}
 
 	private QVToReconfiguration managePerformance(Set<QVToReconfiguration> options) {
