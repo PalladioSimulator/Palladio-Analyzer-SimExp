@@ -1,0 +1,10 @@
+Condition;Probability of Success;Probability of Fail
+Brightness: High, SensorNoise: High;0.95;0.05
+Brightness: High, SensorNoise: Medium;0.97;0.03
+Brightness: High, SensorNoise: Low;0.99;0.01
+Brightness: Medium, SensorNoise: High;0.98;0.02
+Brightness: Medium, SensorNoise: Medium;0.99;0.01
+Brightness: Medium, SensorNoise: Low;1;0
+Brightness: Low, SensorNoise: High;0.95;0.05
+Brightness: Low, SensorNoise: Medium;0.97;0.03
+Brightness: Low, SensorNoise: Low;0.99;0.01
