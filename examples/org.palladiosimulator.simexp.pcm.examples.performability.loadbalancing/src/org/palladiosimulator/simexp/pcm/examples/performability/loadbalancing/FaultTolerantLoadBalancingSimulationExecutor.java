@@ -16,6 +16,7 @@ import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -111,7 +112,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	@Override
 	public void evaluate() {
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
+		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(SIMULATION_ID, sampleSpaceId); //new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		double computeTotalReward = evaluator.computeTotalReward();
         LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), computeTotalReward));
