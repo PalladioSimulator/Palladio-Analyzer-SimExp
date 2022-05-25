@@ -5,7 +5,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DefaultSimulatedExperience implements SimulatedExperience {
+public class DefaultSimulatedExperience implements StateAwareSimulatedExperience {
 
 	private final static String NONE = "-";
 	
@@ -26,10 +26,17 @@ public class DefaultSimulatedExperience implements SimulatedExperience {
 											helper.getNext().toString()) ;
 	}
 	
-	public static String getCurrentStateFrom(SimulatedExperience simExperience) {
-		String reconf = simExperience.getReconfiguration();
+	public String getCurrentState() {
+        String reconf = getReconfiguration();
+        String currentState = getId().split(reconf)[0];
+        return currentState.subSequence(0, currentState.lastIndexOf("_")).toString();
+	}
+	
+	public static String getCurrentStateFrom(StateAwareSimulatedExperience simExperience) {
+		/*String reconf = simExperience.getReconfiguration();
 		String currentState = simExperience.getId().split(reconf)[0];
-		return currentState.subSequence(0, currentState.lastIndexOf("_")).toString();
+		return currentState.subSequence(0, currentState.lastIndexOf("_")).toString();*/
+		return simExperience.getCurrentState();
 	}
 	
 	@Override

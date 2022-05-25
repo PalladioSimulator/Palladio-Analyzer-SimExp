@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
+import org.palladiosimulator.simexp.core.entity.StateAwareSimulatedExperience;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvFormatter.SimulatedExperienceStoreColumnName;
 
-public class CsvSimulatedExperience implements SimulatedExperience {
+public class CsvSimulatedExperience implements StateAwareSimulatedExperience {
 
 	private String reward;
 	private final List<String> row;
@@ -75,5 +76,12 @@ public class CsvSimulatedExperience implements SimulatedExperience {
 	protected void setReward(String reward) {
 		this.reward = reward;
 	}
-	
+
+	@Override
+    public String getCurrentState() {
+        String reconf = getReconfiguration();
+        String currentState = getId().split(reconf)[0];  // split Id column at 'reconfig name' and take the first substring
+        CharSequence subSeq = currentState.subSequence(0, currentState.lastIndexOf("_")); // remove trailing underscore
+        return subSeq.toString();
+	}
 }

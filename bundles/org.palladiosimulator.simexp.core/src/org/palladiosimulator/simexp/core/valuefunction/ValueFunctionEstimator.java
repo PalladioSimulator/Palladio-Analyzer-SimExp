@@ -4,5 +4,5 @@ import org.palladiosimulator.simexp.core.evaluation.SampleModelIterator;
 
 public interface ValueFunctionEstimator {
 	
-	public ValueFunction estimate(SampleModelIterator iterator);
+	public IValueFunction estimate(SampleModelIterator iterator);
 }

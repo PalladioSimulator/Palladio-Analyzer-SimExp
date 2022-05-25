@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
-import org.palladiosimulator.simexp.core.valuefunction.MonteCarloPrediction;
-import org.palladiosimulator.simexp.core.valuefunction.ValueFunction;
+import org.palladiosimulator.simexp.core.entity.StateAwareSimulatedExperience;
+import org.palladiosimulator.simexp.core.valuefunction.IValueFunction;
+import org.palladiosimulator.simexp.core.valuefunction.montecarlo.MonteCarloPrediction;
+import org.palladiosimulator.simexp.core.valuefunction.montecarlo.MonteCarloPredictionFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -25,7 +27,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
 			SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
 			while (iterator.hasNext()) {
-				String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next().get(0));
+				String initial = DefaultSimulatedExperience.getCurrentStateFrom((StateAwareSimulatedExperience) iterator.next().get(0));
 				sampledInitials.add(initial);
 			}
 
@@ -55,16 +57,24 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
 	private final String simulationId;
 	private final String sampleSpaceId;
+	private final MonteCarloPredictionFactory predictionFactory;
 
 	public ExpectedRewardEvaluator(String simulationId, String sampleSpaceId) {
-		this.simulationId = simulationId;
-		this.sampleSpaceId = sampleSpaceId;
+	    this(simulationId, sampleSpaceId, new MonteCarloPredictionFactory());
+	}
+	
+	ExpectedRewardEvaluator(String simulationId, String sampleSpaceId, MonteCarloPredictionFactory predictionFactory) {
+        this.simulationId = simulationId;
+        this.sampleSpaceId = sampleSpaceId;
+        this.predictionFactory = predictionFactory;
 	}
 
 	@Override
 	public double computeTotalReward() {
 		SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
-		ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation().estimate(iterator);
+		//IValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation().estimate(iterator);
+        MonteCarloPrediction firstVisitEstimator = predictionFactory.createFirstVisitEstimator();
+		IValueFunction valueFunction = firstVisitEstimator.estimate(iterator);
 
 		InitialStateEstimator initialStateEstimator = new InitialStateEstimator();
 		

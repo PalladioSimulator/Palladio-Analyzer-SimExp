@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 
 import com.google.common.collect.Maps;
 
-public class ValueFunction {
+public class ValueFunction implements IValueFunction {
 
 	private final Map<String, Double> expectedRewards;
 	
@@ -15,15 +15,17 @@ public class ValueFunction {
 		this.expectedRewards= Maps.newHashMap(); 
 	}
 	
-	public Double getExpectedRewardFor(String state) {
+	@Override
+    public Double getExpectedRewardFor(String state) {
 		return Optional.ofNullable(expectedRewards.get(state)).orElse(0.0);
 	}
 	
-	public Double getExpectedRewardFor(SelfAdaptiveSystemState<?> state) {
+	@Override
+    public Double getExpectedRewardFor(SelfAdaptiveSystemState<?> state) {
 		return Optional.ofNullable(expectedRewards.get(state.toString())).orElse(0.0);
 	}
 	
-	protected void updateExpectedReward(String state, Double expReward) {
+	public void updateExpectedReward(String state, Double expReward) {
 		expectedRewards.put(state, expReward);
 	}
 
