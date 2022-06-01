@@ -16,8 +16,8 @@ public class AccumulatedRewardManagerTest {
 
     
     @Test
-    public void testGetAccumulatedRewardForUnknownState() throws Exception {
-        AccumulatedReward expected = new AccumulatedReward();
+    public void testGetNonAccumulatedRewardForUnknownState() throws Exception {
+        AccumulatedReward expected = new AccumulatedReward(0.0, 1);
         
         AccumulatedReward actual = accRewardManager.getAccumulatedReward("unknownState");
         
@@ -25,7 +25,7 @@ public class AccumulatedRewardManagerTest {
     }
     
     @Test
-    public void testGetAccRewardForKnownStated() {
+    public void testGetAccRewardForKnownState() {
         String state = "state";
         AccumulatedReward expectedReward = new AccumulatedReward();
         expectedReward.append(2.0);
