@@ -7,13 +7,14 @@ public class AccumulatedReward {
     private double total;
     private int accummulations;
     
-    public AccumulatedReward() {
-        this(0.0, 1);
-    }
     
     AccumulatedReward(double total, int accummulations) {
         this.total = total;
         this.accummulations = accummulations;
+    }
+
+    public AccumulatedReward() {
+        // TODO Auto-generated constructor stub
     }
 
     public void append(double reward) {

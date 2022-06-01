@@ -15,11 +15,11 @@ public class AccumulatedRewardTest {
     
     @Test
     public void testAppendReward() throws Exception {
-        AccumulatedReward expected = new AccumulatedReward(2.0, 2);
         AccumulatedReward actual = new AccumulatedReward();
         
         actual.append(2.0);
         
+        AccumulatedReward expected = new AccumulatedReward(2.0, 1);
         assertEquals(expected, actual);
     }
 
@@ -29,12 +29,12 @@ public class AccumulatedRewardTest {
         
         double actual = accReward.calculateAverage();
         
-        assertEquals(0.0, actual, DELTA);
+        assertEquals(Double.NaN, actual, DELTA);
     }
 
     @Test
     public void testCalculateAverageReward() throws Exception {
-        AccumulatedReward accReward = new AccumulatedReward(4.0, 1);
+        AccumulatedReward accReward = new AccumulatedReward(2.0, 1);
         
         double actual = accReward.calculateAverage();
         
@@ -43,8 +43,8 @@ public class AccumulatedRewardTest {
     
     @Test
     public void testCalculateAverageRewardFromSingleReward() {
-        AccumulatedReward accReward = new AccumulatedReward();
-        double reward = 4.0;
+        AccumulatedReward accReward = new AccumulatedReward(2.0, 2);
+        double reward = 2.0;
         accReward.append(reward);
         
         double actual = accReward.calculateAverage();
@@ -66,14 +66,13 @@ public class AccumulatedRewardTest {
     
     @Test
     public void testMergeAccRewards(){
-        AccumulatedReward accReward = new AccumulatedReward();
-        AccumulatedReward mergeAccReward = new AccumulatedReward(4.0, 2);
-        accReward.append(1.0);
+        AccumulatedReward accReward = new AccumulatedReward(1.0, 1);
+        AccumulatedReward mergeAccReward = new AccumulatedReward(3.0, 3);
+
         accReward.mergeWith(mergeAccReward);
 
-        double actual = accReward.calculateAverage();
-        
-        assertEquals(1.25, actual, DELTA);
+        AccumulatedReward expected = new AccumulatedReward(4.0, 4);
+        assertEquals(expected, accReward);
     }
 
 }
