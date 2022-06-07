@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.palladiosimulator.simexp.core2.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.palladiosimulator.simexp.core;bundle-version="1.0.0"
+Automatic-Module-Name: org.palladiosimulator.simexp.core2.test
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.junit,
+ org.mockito.mockito-merged;bundle-version="3.3.3",
+ org.palladiosimulator.simexp.core,
+ net.bytebuddy.byte-buddy;bundle-version="1.10.9",
+ net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
+ org.objenesis;bundle-version="2.6.0"

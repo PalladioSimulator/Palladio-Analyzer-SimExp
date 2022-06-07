@@ -28,8 +28,9 @@ public class DefaultSimulatedExperience implements SimulatedExperience {
 	
 	public static String getCurrentStateFrom(SimulatedExperience simExperience) {
 		String reconf = simExperience.getReconfiguration();
-		String currentState = simExperience.getId().split(reconf)[0];
-		return currentState.subSequence(0, currentState.lastIndexOf("_")).toString();
+//		String currentState = simExperience.getId().split(reconf)[0];
+//		return currentState.subSequence(0, currentState.lastIndexOf("_")).toString();
+		return reconf;
 	}
 	
 	@Override
