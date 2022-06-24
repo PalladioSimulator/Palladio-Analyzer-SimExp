@@ -1,0 +1,9 @@
+grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.common.Terminals
+
+generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
