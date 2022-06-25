@@ -2,8 +2,21 @@ grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.co
 
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
-Model:
-	greetings+=Greeting*;
+KModel:
+	elements+=Element*;
 	
-Greeting:
-	'Hello' name=ID '!';
+Element: Statement;
+
+Statement: DeclarationStatement | IfStatement;
+
+DeclarationStatement returns Statement: 
+	'var' var=Variable ';';
+	
+IfStatement returns Statement: 
+	'if' '(' Expression ')' '{' (statements+=Statement)* '}';
+
+Expression: 'placeholder';	
+
+Variable: dataType=DataType name=ID;
+
+enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
