@@ -189,5 +189,10 @@ class KmodelParsingTest {
 		
 		val issues = validationTestHelper.validate(result)
 		Assertions.assertEquals(issues.length, 2)
+		
+		Assertions.assertEquals(issues.get(0).message, "Duplicate Variable 'a'")
+		Assertions.assertEquals(issues.get(0).lineNumber, 1)
+		Assertions.assertEquals(issues.get(1).message, "Duplicate Variable 'a'")
+		Assertions.assertEquals(issues.get(1).lineNumber, 2)
 	}
 }
