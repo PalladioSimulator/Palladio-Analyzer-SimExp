@@ -100,6 +100,9 @@
 						</fileset>
 						<fileset>
 							<directory>${basedir}/model/generated/</directory>
+							<excludes>
+								<exclude>**/.gitignore</exclude>
+							</excludes>
 						</fileset>
 					</filesets>
 				</configuration>
