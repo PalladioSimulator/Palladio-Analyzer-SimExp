@@ -1,2 +1,3 @@
 target
 bin
+/org.palladiosimulator.simexp.dsl.kmodel/*.jar
