@@ -91,17 +91,14 @@ class KmodelParsingTest {
 			var int a;
 			var bool b;
 		''')
-		Assertions.assertNotNull(result)
+
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
-		
 		Assertions.assertEquals(result.elements.length, 2)
 		val iterator = result.elements.iterator
-		
 		val firstVariable = (iterator.next as Statement).^var as Variable
 		Assertions.assertEquals(firstVariable.dataType, DataType.INT)
 		Assertions.assertEquals(firstVariable.name, "a")
-		
 		val secondVariable = (iterator.next as Statement).^var as Variable
 		Assertions.assertEquals(secondVariable.dataType, DataType.BOOL)
 		Assertions.assertEquals(secondVariable.name, "b")
@@ -112,9 +109,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var a;
 		''')
-		Assertions.assertNotNull(result)
+		
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("no viable alternative at input 'a'", errors.get(0).message);
 	}
 	
 	@Test
@@ -122,9 +120,11 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var something a;
 		''')
-		Assertions.assertNotNull(result)
+		
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(2, errors.length);
+		Assertions.assertEquals("no viable alternative at input 'something'", errors.get(0).message);
+		Assertions.assertEquals("extraneous input 'a' expecting ';'", errors.get(1).message);
 	}
 	
 	@Test
@@ -132,9 +132,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var float;
 		''')
-		Assertions.assertNotNull(result)
+		
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("missing RULE_ID at ';'", errors.get(0).message);
 	}
 	
 	@Test
@@ -142,9 +143,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var int 1;
 		''')
-		Assertions.assertNotNull(result)
+		
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("mismatched input '1' expecting RULE_ID", errors.get(0).message);
 	}
 	
 	@Test
@@ -152,9 +154,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var bool ?;
 		''')
-		Assertions.assertNotNull(result)
+
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("mismatched input '?' expecting RULE_ID", errors.get(0).message);
 	}
 	
 	@Test
@@ -162,9 +165,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var string var;
 		''')
-		Assertions.assertNotNull(result)
+
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("mismatched input 'var' expecting RULE_ID", errors.get(0).message);
 	}
 	
 	@Test
@@ -172,9 +176,10 @@ class KmodelParsingTest {
 		val result = parseHelper.parse('''
 			var int bool;
 		''')
-		Assertions.assertNotNull(result)
+
 		val errors = result.eResource.errors
-		Assertions.assertFalse(errors.isEmpty)
+		Assertions.assertEquals(1, errors.length);
+		Assertions.assertEquals("mismatched input 'bool' expecting RULE_ID", errors.get(0).message);
 	}
 	
 	@Test
@@ -183,13 +188,11 @@ class KmodelParsingTest {
 			var string a;
 			var float a;
 		''')
-		Assertions.assertNotNull(result)
+		
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
-		
 		val issues = validationTestHelper.validate(result)
 		Assertions.assertEquals(issues.length, 2)
-		
 		Assertions.assertEquals(issues.get(0).message, "Duplicate Variable 'a'")
 		Assertions.assertEquals(issues.get(0).lineNumber, 1)
 		Assertions.assertEquals(issues.get(1).message, "Duplicate Variable 'a'")
