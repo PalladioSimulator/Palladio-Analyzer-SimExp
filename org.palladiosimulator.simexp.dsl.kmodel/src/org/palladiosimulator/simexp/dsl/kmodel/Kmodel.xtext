@@ -3,20 +3,35 @@ grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.co
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
-	elements+=Element*;
+	(actions+=ActionDefinition)*
+	(elements+=Element)*;
 	
 Element: Statement;
 
-Statement: DeclarationStatement | IfStatement;
+ActionDefinition:
+	'action' name=ID '(' parameter=Parameter ')' ';';
+	
+Parameter: dataType=DataType name=ID;
 
-DeclarationStatement returns Statement: 
+Statement: VariableDeclarationStatement | ActionStatement | IfStatement;
+
+VariableDeclarationStatement returns Statement: 
 	'var' var=Variable ';';
 	
+ActionStatement returns Statement:
+	action=[ActionDefinition] '(' parameterValue=Expression ')' ';';	
+	
 IfStatement returns Statement: 
-	'if' '(' Expression ')' '{' (statements+=Statement)* '}';
+	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
-Expression: 'placeholder';	
+Expression: ref=[Variable] | Constant;	
 
 Variable: dataType=DataType name=ID;
 
+Constant: BOOL | INT | FLOAT | STRING;	
+
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
+
+terminal BOOL: 'true' | 'false';
+
+terminal FLOAT: INT '.' INT;
