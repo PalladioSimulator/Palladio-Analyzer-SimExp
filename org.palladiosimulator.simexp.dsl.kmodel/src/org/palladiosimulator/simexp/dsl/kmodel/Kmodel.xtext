@@ -3,12 +3,12 @@ grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.co
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
-	(actions+=ActionDefinition)*
+	(actions+=Action)*
 	(elements+=Element)*;
 	
 Element: Statement;
 
-ActionDefinition:
+Action:
 	'action' name=ID '(' parameter=Parameter ')' ';';
 	
 Parameter: dataType=DataType name=ID;
@@ -19,16 +19,14 @@ VariableDeclarationStatement returns Statement:
 	'var' var=Variable ';';
 	
 ActionStatement returns Statement:
-	action=[ActionDefinition] '(' parameterValue=Expression ')' ';';	
+	action=[Action] '(' argument=Expression ')' ';';	
 	
 IfStatement returns Statement: 
 	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
-Expression: ref=[Variable] | Constant;	
+Expression: ref=[Variable];	
 
 Variable: dataType=DataType name=ID;
-
-Constant: BOOL | INT | FLOAT | STRING;	
 
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 

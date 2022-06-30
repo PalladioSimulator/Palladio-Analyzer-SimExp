@@ -3,6 +3,16 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
+import java.util.Iterator;
+
+import org.eclipse.xtext.validation.Check;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Element;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
 /**
  * This class contains custom validation rules. 
@@ -11,15 +21,35 @@ package org.palladiosimulator.simexp.dsl.kmodel.validation;
  */
 public class KmodelValidator extends AbstractKmodelValidator {
 	
-//	public static final String INVALID_NAME = "invalidName";
-//
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital",
-//					KmodelPackage.Literals.GREETING__NAME,
-//					INVALID_NAME);
-//		}
-//	}
+	@Check
+	public void checkConditionType(Statement statement) {
+		Expression condition = statement.getCondition();
+		
+		if (condition != null) {
+			DataType conditionType = condition.getRef().getDataType();
+			
+			if (!conditionType.equals(DataType.BOOL)) {
+				error("The condition must be of the type " + DataType.BOOL 
+						+ ". Got " + conditionType + " instead.",
+						KmodelPackage.Literals.STATEMENT__CONDITION);
+			}
+		}
+	}
 	
+	@Check
+	public void checkArgumentType(Statement statement) {
+		Action action = statement.getAction();
+		Expression argument = statement.getArgument();
+		
+		if (action != null && argument != null) {
+			DataType parameterType = action.getParameter().getDataType();
+			DataType argumentType = argument.getRef().getDataType();
+			
+			if (!parameterType.equals(argumentType)) {
+				error("Expected an argument of the type "
+						+ parameterType + ". Got " + argumentType + " instead.",
+						KmodelPackage.Literals.STATEMENT__ARGUMENT);
+			}
+		}
+	}
 }
