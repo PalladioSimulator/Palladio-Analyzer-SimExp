@@ -23,8 +23,9 @@ public class KmodelParsingJavaTest {
 
     @Test
     public void parseSingleIntVariable() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("var int count;\n");
+        String sb = String.join("\n", 
+                "var int count;"
+        );
         
         KModel model = parserHelper.parse(sb);
         
