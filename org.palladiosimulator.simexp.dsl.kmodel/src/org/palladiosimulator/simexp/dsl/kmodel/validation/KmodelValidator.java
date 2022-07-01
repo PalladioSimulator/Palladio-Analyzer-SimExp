@@ -3,14 +3,10 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
-import java.util.Iterator;
-
 import org.eclipse.xtext.validation.Check;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Element;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
