@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Element;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -30,9 +31,10 @@ public class KmodelParsingJavaTest {
         
         assertModelWithoutErrors(model);
         
-        EList<Statement> elements = model.getElements();
+        EList<Element> elements = model.getElements();
         Assert.assertEquals(1, elements.size());
-        Statement statement = elements.get(0);
+        Element element = elements.get(0);
+        Statement statement = (Statement) element;
         Variable variable = statement.getVar();
         Assert.assertEquals("count", variable.getName());
         Assert.assertEquals(DataType.INT, variable.getDataType());
@@ -49,3 +51,4 @@ public class KmodelParsingJavaTest {
     }
 
 }
+
