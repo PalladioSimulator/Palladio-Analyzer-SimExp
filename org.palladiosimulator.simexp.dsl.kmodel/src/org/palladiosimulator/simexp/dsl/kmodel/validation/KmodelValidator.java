@@ -54,7 +54,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		}
 	}
 	
-	public DataType getDataType(Expression expression) {
+	private DataType getDataType(Expression expression) {
 		Variable variable = expression.getVariable();
 		Expression constant = expression.getConstant();
 		

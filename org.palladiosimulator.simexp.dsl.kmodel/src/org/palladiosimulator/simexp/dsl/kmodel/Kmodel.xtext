@@ -4,7 +4,7 @@ generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
 	(actions+=Action)*
-	(elements+=Statement)*;
+	(statements+=Statement)*;
 	
 Action:
 	'action' name=ID '(' parameter=Parameter ')' ';';
