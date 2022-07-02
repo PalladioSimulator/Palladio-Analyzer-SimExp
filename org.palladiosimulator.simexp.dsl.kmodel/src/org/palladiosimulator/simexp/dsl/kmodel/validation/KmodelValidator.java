@@ -3,16 +3,17 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
-import java.util.Iterator;
-
 import org.eclipse.xtext.validation.Check;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolConstant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Element;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntConstant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 /**
  * This class contains custom validation rules. 
@@ -26,7 +27,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		Expression condition = statement.getCondition();
 		
 		if (condition != null) {
-			DataType conditionType = condition.getRef().getDataType();
+			DataType conditionType = getDataType(condition);
 			
 			if (!conditionType.equals(DataType.BOOL)) {
 				error("The condition must be of the type " + DataType.BOOL 
@@ -43,7 +44,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		if (action != null && argument != null) {
 			DataType parameterType = action.getParameter().getDataType();
-			DataType argumentType = argument.getRef().getDataType();
+			DataType argumentType = getDataType(argument);
 			
 			if (!parameterType.equals(argumentType)) {
 				error("Expected an argument of the type "
@@ -51,5 +52,30 @@ public class KmodelValidator extends AbstractKmodelValidator {
 						KmodelPackage.Literals.STATEMENT__ARGUMENT);
 			}
 		}
+	}
+	
+	public DataType getDataType(Expression expression) {
+		Variable variable = expression.getVariable();
+		Expression constant = expression.getConstant();
+		
+		if (variable != null) {
+			return variable.getDataType();
+			
+		} else if (constant != null) {
+			if (constant instanceof BoolConstant) {
+				return DataType.BOOL;
+				
+			} else if (constant instanceof IntConstant) {
+				return DataType.INT;
+				
+			} else if (constant instanceof FloatConstant) {
+				return DataType.FLOAT;
+				
+			} else if (constant instanceof StringConstant) {
+				return DataType.STRING;
+			}
+		}
+		
+		return null;
 	}
 }

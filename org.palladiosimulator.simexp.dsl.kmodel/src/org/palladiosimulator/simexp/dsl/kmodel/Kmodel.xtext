@@ -24,9 +24,14 @@ ActionStatement returns Statement:
 IfStatement returns Statement: 
 	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
-Expression: ref=[Variable];	
+Expression: variable=[Variable] | constant=Constant;	
 
 Variable: dataType=DataType name=ID;
+
+Constant returns Expression: {BoolConstant} value=BOOL
+						   | {IntConstant} value=INT 
+						   | {FloatConstant} value=FLOAT 
+						   | {StringConstant} value=STRING;
 
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 
