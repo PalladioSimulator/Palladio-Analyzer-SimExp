@@ -34,7 +34,7 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -53,7 +53,7 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -72,7 +72,7 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -91,7 +91,7 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -111,7 +111,7 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(2, statements.size());
@@ -133,7 +133,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 2, "no viable alternative at input 'something'",
+    	KmodelTestUtil.assertErrorMessages(model, 2, "no viable alternative at input 'something'",
     			"extraneous input 'name' expecting ';'");
     }
     
@@ -144,7 +144,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 1, "missing RULE_ID at ';'");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "missing RULE_ID at ';'");
     }
     
     @Test
@@ -154,7 +154,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 1, "mismatched input '1' expecting RULE_ID");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '1' expecting RULE_ID");
     }
     
     @Test
@@ -164,7 +164,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 1, "mismatched input '?' expecting RULE_ID");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '?' expecting RULE_ID");
     }
     
     @Test
@@ -174,7 +174,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 1, "mismatched input 'var' expecting RULE_ID");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'var' expecting RULE_ID");
     }
     
     @Test
@@ -184,7 +184,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	assertErrorMessage(model, 1, "mismatched input 'int' expecting RULE_ID");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'int' expecting RULE_ID");
     }
     
     @Test
@@ -195,7 +195,7 @@ public class KmodelVariableParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
 
-    	assertModelWithoutErrors(model);
+    	KmodelTestUtil.assertModelWithoutErrors(model);
     	
     	List<Issue> issues = validationTestHelper.validate(model);
     	Assert.assertEquals(2, issues.size());
@@ -204,27 +204,6 @@ public class KmodelVariableParsingJavaTest {
     	Assert.assertEquals(1, issues.get(0).getLineNumber().intValue());
     	Assert.assertEquals("Duplicate Variable 'variable'", issues.get(1).getMessage());
     	Assert.assertEquals(2, issues.get(1).getLineNumber().intValue());
-    }
-    
-    private void assertModelWithoutErrors(KModel model) {
-        Assert.assertNotNull(model);
-        EList<Diagnostic> errors = model.eResource().getErrors();
-        StringBuilder joinedErrors = new StringBuilder(); 
-        for (Diagnostic diagnostic : errors) {
-            joinedErrors.append(String.join(",", diagnostic.getMessage()));
-        }
-        Assert.assertTrue(String.format("Unexpected errors: %s", joinedErrors), errors.isEmpty());
-    }
-    
-    private void assertErrorMessage(KModel model, int numErrors, String... messages) {
-    	Assert.assertNotNull(model);
-    	EList<Diagnostic> errors = model.eResource().getErrors();
-    	
-    	Assert.assertEquals(numErrors, errors.size());
-    	
-    	for (int i = 0; i < numErrors; i++) {
-    		Assert.assertEquals(messages[i], errors.get(i).getMessage());
-    	}
     }
 }
 

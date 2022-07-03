@@ -37,7 +37,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -56,7 +56,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -75,7 +75,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -94,7 +94,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -114,7 +114,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
@@ -138,15 +138,10 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         List<Issue> issues = validationTestHelper.validate(model);
         Assert.assertTrue(issues.isEmpty());
-        
-        // TODO
-        // Das funktioniert noch nicht. Es muss wohl doch ein Custom Validater geschrieben
-        // werden, da der von Xtext gegebene auch gleiche Parameternamen bei untersch. Action
-        // als Fehler erkennt.
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
@@ -174,7 +169,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -202,7 +197,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
@@ -231,7 +226,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         List<Issue> issues = validationTestHelper.validate(model);
         Assert.assertEquals(1, issues.size());
@@ -251,7 +246,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
         
         List<Issue> issues = validationTestHelper.validate(model);
         Assert.assertEquals(1, issues.size());
@@ -269,7 +264,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertErrorMessage(model, 1, "no viable alternative at input ')'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input ')'");
         
         // TODO
         // Soll eine Action ohne Parameter möglich sein?
@@ -284,7 +279,7 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         
-        assertModelWithoutErrors(model);
+        KmodelTestUtil.assertModelWithoutErrors(model);
     	
     	List<Issue> issues = validationTestHelper.validate(model);
     	Assert.assertEquals(2, issues.size());
@@ -293,26 +288,5 @@ public class KmodelActionParsingJavaTest {
     	Assert.assertEquals(1, issues.get(0).getLineNumber().intValue());
     	Assert.assertEquals("Duplicate Action 'adapt'", issues.get(1).getMessage());
     	Assert.assertEquals(2, issues.get(1).getLineNumber().intValue());
-    }
-    
-    private void assertModelWithoutErrors(KModel model) {
-        Assert.assertNotNull(model);
-        EList<Diagnostic> errors = model.eResource().getErrors();
-        StringBuilder joinedErrors = new StringBuilder(); 
-        for (Diagnostic diagnostic : errors) {
-            joinedErrors.append(String.join(",", diagnostic.getMessage()));
-        }
-        Assert.assertTrue(String.format("Unexpected errors: %s", joinedErrors), errors.isEmpty());
-    }
-    
-    private void assertErrorMessage(KModel model, int numErrors, String... messages) {
-    	Assert.assertNotNull(model);
-    	EList<Diagnostic> errors = model.eResource().getErrors();
-    	
-    	Assert.assertEquals(numErrors, errors.size());
-    	
-    	for (int i = 0; i < numErrors; i++) {
-    		Assert.assertEquals(messages[i], errors.get(i).getMessage());
-    	}
     }
 }
