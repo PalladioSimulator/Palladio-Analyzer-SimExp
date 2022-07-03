@@ -30,8 +30,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			DataType conditionType = getDataType(condition);
 			
 			if (!conditionType.equals(DataType.BOOL)) {
-				error("The condition must be of the type " + DataType.BOOL 
-						+ ". Got " + conditionType + " instead.",
+				error("The condition must be of type '" + DataType.BOOL 
+						+ "'. Got '" + conditionType + "' instead.",
 						KmodelPackage.Literals.STATEMENT__CONDITION);
 			}
 		}
@@ -47,8 +47,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			DataType argumentType = getDataType(argument);
 			
 			if (!parameterType.equals(argumentType)) {
-				error("Expected an argument of the type "
-						+ parameterType + ". Got " + argumentType + " instead.",
+				error("Expected an argument of type '"
+						+ parameterType + "'. Got '" + argumentType + "' instead.",
 						KmodelPackage.Literals.STATEMENT__ARGUMENT);
 			}
 		}

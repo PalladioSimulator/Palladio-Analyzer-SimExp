@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
-public class KmodelParsingJavaTest {
+public class KmodelVariableParsingJavaTest {
     @Inject private ParseHelper<KModel> parserHelper;
     
     @Inject private ValidationTestHelper validationTestHelper;
