@@ -74,6 +74,31 @@ public class KmodelIfParsingJavaTest {
     }
     
     @Test
+    public void parseConsecutiveIfStatements() throws Exception {
+        String sb = String.join("\n",
+        		"if (true) {}",
+                "if (true) {}"
+        );
+        
+        KModel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        EList<Statement> statements = model.getStatements();
+        Assert.assertEquals(2, statements.size());
+        Expression firstCondition = statements.get(0).getCondition();
+        EList<Statement> firstThenStatements = statements.get(0).getBody().getActions();
+        Assert.assertTrue(firstCondition.getConstant() instanceof BoolConstant);
+        Assert.assertEquals(((BoolConstant) firstCondition.getConstant()).getValue(), "true");
+        Assert.assertTrue(firstThenStatements.isEmpty());
+        Expression secondCondition = statements.get(1).getCondition();
+        EList<Statement> secondThenStatements = statements.get(1).getBody().getActions();
+        Assert.assertTrue(secondCondition.getConstant() instanceof BoolConstant);
+        Assert.assertEquals(((BoolConstant) secondCondition.getConstant()).getValue(), "true");
+        Assert.assertTrue(secondThenStatements.isEmpty());
+        
+    }
+    
+    @Test
     public void parseNestedIfStatements() throws Exception {
         String sb = String.join("\n",
         		"var bool condition;",

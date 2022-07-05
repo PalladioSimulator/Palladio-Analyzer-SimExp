@@ -254,6 +254,17 @@ public class KmodelActionParsingJavaTest {
     }
     
     @Test
+    public void parseActionWithTwoParameters() throws Exception {
+        String sb = String.join("\n", 
+                "action adapt(bool param1, string param2);"
+        );
+        
+        KModel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ',' expecting ')'");
+    }
+    
+    @Test
     public void parseTwoActionsWithSameName() throws Exception {
     	String sb = String.join("\n"
     	        , "action adapt(int param);"
@@ -267,5 +278,28 @@ public class KmodelActionParsingJavaTest {
     	Assert.assertEquals(2, issues.size());
     	Assert.assertEquals("Duplicate ActionDeclaration 'adapt'", issues.get(0).getMessage());
     	Assert.assertEquals("Duplicate ActionDeclaration 'adapt'", issues.get(1).getMessage());
+    }
+    
+    @Test
+    public void parseLocalActionDeclaration() throws Exception {
+    	String sb = String.join("\n", 
+    			"if(true){",
+    			"action adapt(int param);",
+    			"}");
+    	
+    	KModel model = parserHelper.parse(sb);
+
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'action' expecting '}'");
+    }
+    
+    @Test
+    public void parseActionCallOutsideIf() throws Exception {
+    	String sb = String.join("\n", 
+    			"action adapt(int param);",
+    			"adapt(1);");
+    	
+    	KModel model = parserHelper.parse(sb);
+
+    	KmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
     }
 }

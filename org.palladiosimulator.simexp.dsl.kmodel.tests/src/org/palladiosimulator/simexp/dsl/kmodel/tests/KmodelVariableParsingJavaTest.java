@@ -197,5 +197,17 @@ public class KmodelVariableParsingJavaTest {
     	Assert.assertEquals("Duplicate Variable 'variable'", issues.get(1).getMessage());
     	Assert.assertEquals(2, issues.get(1).getLineNumber().intValue());
     }
+    
+    @Test
+    public void parseLocalVariable() throws Exception {
+    	String sb = String.join("\n", 
+    			"if(true){",
+    			"var int variable;",
+    			"}");
+    	
+    	KModel model = parserHelper.parse(sb);
+
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'var' expecting '}'");
+    }
 }
 
