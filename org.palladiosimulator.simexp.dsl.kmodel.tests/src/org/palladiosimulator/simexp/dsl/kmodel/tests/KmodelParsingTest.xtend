@@ -34,10 +34,10 @@ class KmodelParsingTest {
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		
-		Assertions.assertEquals(result.statements.length, 1)
-		val variable = (result.statements.head as Statement).^var as Variable
-		Assertions.assertEquals(variable.dataType, DataType.INT)
-		Assertions.assertEquals(variable.name, "a")
+		Assertions.assertEquals(result.variables.length, 1)
+		val variable = result.variables.get(0)
+		Assertions.assertEquals(variable.^var.dataType, DataType.INT)
+		Assertions.assertEquals(variable.^var.name, "a")
 	}
 	
 	@Test
@@ -49,10 +49,10 @@ class KmodelParsingTest {
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		
-		Assertions.assertEquals(result.statements.length, 1)
-		val variable = (result.statements.head as Statement).^var as Variable
-		Assertions.assertEquals(variable.dataType, DataType.FLOAT)
-		Assertions.assertEquals(variable.name, "a")
+		Assertions.assertEquals(result.variables.length, 1)
+		val variable = result.variables.get(0)
+		Assertions.assertEquals(variable.^var.dataType, DataType.FLOAT)
+		Assertions.assertEquals(variable.^var.name, "a")
 	}
 	
 	@Test
@@ -64,10 +64,10 @@ class KmodelParsingTest {
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		
-		Assertions.assertEquals(result.statements.length, 1)
-		val variable = (result.statements.head as Statement).^var as Variable
-		Assertions.assertEquals(variable.dataType, DataType.BOOL)
-		Assertions.assertEquals(variable.name, "a")
+		Assertions.assertEquals(result.variables.length, 1)
+		val variable = result.variables.get(0)
+		Assertions.assertEquals(variable.^var.dataType, DataType.BOOL)
+		Assertions.assertEquals(variable.^var.name, "a")
 	}
 	
 	@Test
@@ -79,10 +79,10 @@ class KmodelParsingTest {
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		
-		Assertions.assertEquals(result.statements.length, 1)
-		val variable = (result.statements.head as Statement).^var as Variable
-		Assertions.assertEquals(variable.dataType, DataType.STRING)
-		Assertions.assertEquals(variable.name, "a")
+		Assertions.assertEquals(result.variables.length, 1)
+		val variable = result.variables.get(0)
+		Assertions.assertEquals(variable.^var.dataType, DataType.STRING)
+		Assertions.assertEquals(variable.^var.name, "a")
 	}
 	
 	@Test
@@ -94,14 +94,16 @@ class KmodelParsingTest {
 
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
-		Assertions.assertEquals(result.statements.length, 2)
-		val iterator = result.statements.iterator
-		val firstVariable = (iterator.next as Statement).^var as Variable
-		Assertions.assertEquals(firstVariable.dataType, DataType.INT)
-		Assertions.assertEquals(firstVariable.name, "a")
-		val secondVariable = (iterator.next as Statement).^var as Variable
-		Assertions.assertEquals(secondVariable.dataType, DataType.BOOL)
-		Assertions.assertEquals(secondVariable.name, "b")
+		Assertions.assertEquals(result.variables.length, 2)
+		
+		val variables = result.variables
+		val firstVariable = variables.get(0)
+		Assertions.assertEquals(firstVariable.^var.dataType, DataType.INT)
+		Assertions.assertEquals(firstVariable.^var.name, "a")
+		
+		val secondVariable = variables.get(1)
+		Assertions.assertEquals(secondVariable.^var.dataType, DataType.BOOL)
+		Assertions.assertEquals(secondVariable.^var.name, "b")
 	}
 	
 	@Test
