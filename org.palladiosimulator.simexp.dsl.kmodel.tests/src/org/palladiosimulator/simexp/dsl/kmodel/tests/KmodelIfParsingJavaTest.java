@@ -149,7 +149,7 @@ public class KmodelIfParsingJavaTest {
     @Test
     public void parseIfStatementWithActionCall() throws Exception {
     	String sb = String.join("\n",
-    			"action scaleOut(float balancingFactor);",
+    			"action scaleOut(var float balancingFactor);",
     			"if (false) {",
     			"scaleOut(1.0);",
     			"}"
@@ -221,8 +221,8 @@ public class KmodelIfParsingJavaTest {
                 ,"//Variable declarations"
                 ,"var int i;"
                 ,"// action declaration"
-                , "action a(float factor);"
-                , "action anotherA(float factor);"
+                , "action a(var float factor);"
+                , "action anotherA(var float factor);"
                 
                 ,"// rule block"
                 ,"if (true) {"

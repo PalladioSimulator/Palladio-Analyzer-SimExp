@@ -21,7 +21,7 @@ ProbeDeclaration returns Field:
 ActionDeclaration:
 	'action' name=ID '(' parameter=Parameter ')' ';';
 	
-Parameter: dataType=DataType name=ID;
+Parameter: paramType=ParamType dataType=DataType name=ID;
 	
 ActionStatement returns Statement:
 	action=[ActionDeclaration] '(' argument=Expression ')' ';';
@@ -42,6 +42,8 @@ Literal returns Expression:
 	| {StringLiteral} value=STRING;
 
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
+
+enum ParamType: PARAMETER = 'param' | VARIABLE = 'var';
 
 terminal BOOL: 'true' | 'false';
 
