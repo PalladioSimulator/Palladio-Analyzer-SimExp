@@ -32,13 +32,12 @@ public class KmodelVariableParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> variableDecl = model.getVariables();
         Assert.assertEquals(1, variableDecl.size());
-        Variable variable = variableDecl.get(0).getVar();
         
+        Variable variable = variableDecl.get(0).getVar();
         Assert.assertEquals("condition", variable.getName());
         Assert.assertEquals(DataType.BOOL, variable.getDataType());
     }
@@ -50,13 +49,12 @@ public class KmodelVariableParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> variableDecl = model.getVariables();
         Assert.assertEquals(1, variableDecl.size());
-        Variable variable = variableDecl.get(0).getVar();
         
+        Variable variable = variableDecl.get(0).getVar();
         Assert.assertEquals("count", variable.getName());
         Assert.assertEquals(DataType.INT, variable.getDataType());
     }
@@ -68,13 +66,12 @@ public class KmodelVariableParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> variableDecl = model.getVariables();
         Assert.assertEquals(1, variableDecl.size());
-        Variable variable = variableDecl.get(0).getVar();
         
+        Variable variable = variableDecl.get(0).getVar();
         Assert.assertEquals("number", variable.getName());
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
     }
@@ -86,13 +83,12 @@ public class KmodelVariableParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> variableDecl = model.getVariables();
         Assert.assertEquals(1, variableDecl.size());
-        Variable variable = variableDecl.get(0).getVar();
         
+        Variable variable = variableDecl.get(0).getVar();
         Assert.assertEquals("word", variable.getName());
         Assert.assertEquals(DataType.STRING, variable.getDataType());
     }
@@ -105,14 +101,15 @@ public class KmodelVariableParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Statement> variableDecl = model.getVariables();
         Assert.assertEquals(2, variableDecl.size());
+        
         Variable firstVariable = variableDecl.get(0).getVar();
         Assert.assertEquals("count", firstVariable.getName());
         Assert.assertEquals(DataType.INT, firstVariable.getDataType());
+        
         Variable secondVariable = variableDecl.get(1).getVar();
         Assert.assertEquals("word", secondVariable.getName());
         Assert.assertEquals(DataType.STRING, secondVariable.getDataType());
@@ -191,7 +188,6 @@ public class KmodelVariableParsingJavaTest {
     	
     	List<Issue> issues = validationTestHelper.validate(model);
     	Assert.assertEquals(2, issues.size());
-    	
     	Assert.assertEquals("Duplicate Variable 'variable'", issues.get(0).getMessage());
     	Assert.assertEquals(1, issues.get(0).getLineNumber().intValue());
     	Assert.assertEquals("Duplicate Variable 'variable'", issues.get(1).getMessage());
