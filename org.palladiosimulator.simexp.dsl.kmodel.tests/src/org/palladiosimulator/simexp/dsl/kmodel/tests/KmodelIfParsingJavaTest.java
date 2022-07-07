@@ -16,13 +16,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -32,7 +32,7 @@ public class KmodelIfParsingJavaTest {
     @Inject private ValidationTestHelper validationTestHelper;
     
     @Test
-    public void parseIfStatementWithConstantCondition() throws Exception {
+    public void parseIfStatementWithLiteralCondition() throws Exception {
         String sb = String.join("\n", 
                 "if (true) {}"
         );
@@ -44,8 +44,8 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Expression condition = statements.get(0).getCondition();
-        Assert.assertTrue(condition.getConstant() instanceof BoolConstant);
-        Assert.assertEquals(((BoolConstant) condition.getConstant()).getValue(), "true");
+        Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
+        Assert.assertEquals(((BoolLiteral) condition.getLiteral()).getValue(), "true");
         
         EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
@@ -61,10 +61,10 @@ public class KmodelIfParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        EList<Statement> variables = model.getVariables();
+        EList<Field> variables = model.getVariables();
         assertEquals(1, model.getVariables().size());
         
-        Variable boolConditionVar = variables.get(0).getVar();
+        Field boolConditionVar = variables.get(0);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
         
@@ -72,9 +72,9 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Expression condition = statements.get(0).getCondition();
-        Assert.assertEquals(boolConditionVar, condition.getVariable());
-        Assert.assertEquals(DataType.BOOL, condition.getVariable().getDataType());
-        Assert.assertEquals("condition", condition.getVariable().getName());
+        Assert.assertEquals(boolConditionVar, condition.getField());
+        Assert.assertEquals(DataType.BOOL, condition.getField().getDataType());
+        Assert.assertEquals("condition", condition.getField().getName());
         
         EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
@@ -94,15 +94,15 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(2, statements.size());
         
         Expression firstCondition = statements.get(0).getCondition();
-        Assert.assertTrue(firstCondition.getConstant() instanceof BoolConstant);
-        Assert.assertEquals(((BoolConstant) firstCondition.getConstant()).getValue(), "true");
+        Assert.assertTrue(firstCondition.getLiteral() instanceof BoolLiteral);
+        Assert.assertEquals(((BoolLiteral) firstCondition.getLiteral()).getValue(), "true");
         
         EList<Statement> firstThenStatements = statements.get(0).getBody().getStatements();
         Assert.assertTrue(firstThenStatements.isEmpty());
         
         Expression secondCondition = statements.get(1).getCondition();
-        Assert.assertTrue(secondCondition.getConstant() instanceof BoolConstant);
-        Assert.assertEquals(((BoolConstant) secondCondition.getConstant()).getValue(), "true");
+        Assert.assertTrue(secondCondition.getLiteral() instanceof BoolLiteral);
+        Assert.assertEquals(((BoolLiteral) secondCondition.getLiteral()).getValue(), "true");
         
         EList<Statement> secondThenStatements = statements.get(1).getBody().getStatements();
         Assert.assertTrue(secondThenStatements.isEmpty());
@@ -121,10 +121,10 @@ public class KmodelIfParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        EList<Statement> variables = model.getVariables();
+        EList<Field> variables = model.getVariables();
         assertEquals(1, variables.size());
         
-        Variable boolConditionVar = variables.get(0).getVar();
+        Field boolConditionVar = variables.get(0);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
         
@@ -132,14 +132,14 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Statement outerIfStmt = statements.get(0);
-        Variable outerIfConditionVar = outerIfStmt.getCondition().getVariable();
+        Field outerIfConditionVar = outerIfStmt.getCondition().getField();
         Assert.assertEquals(boolConditionVar, outerIfConditionVar);
         
         EList<Statement> outerThenStatements = outerIfStmt.getBody().getStatements();
         Assert.assertEquals(1, outerThenStatements.size());
         
         Statement innerIfStmt = outerThenStatements.get(0);
-        Variable innerIfConditionVar = innerIfStmt.getCondition().getVariable();
+        Field innerIfConditionVar = innerIfStmt.getCondition().getField();
         Assert.assertEquals(boolConditionVar, innerIfConditionVar);
         
         EList<Statement> innerThenStatements = innerIfStmt.getBody().getStatements();
@@ -170,8 +170,8 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Expression condition = statements.get(0).getCondition();
-        Assert.assertTrue(condition.getConstant() instanceof BoolConstant);
-        Assert.assertEquals(((BoolConstant) condition.getConstant()).getValue(), "false");
+        Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
+        Assert.assertEquals(((BoolLiteral) condition.getLiteral()).getValue(), "false");
         
         EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
         Assert.assertEquals(1, thenStatements.size());
@@ -180,12 +180,12 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(action, actionCall.getAction());
         
         Expression actionArgument = actionCall.getArgument();
-        Assert.assertTrue(actionArgument.getConstant() instanceof FloatConstant);
-        Assert.assertEquals(((FloatConstant) actionArgument.getConstant()).getValue(), "1.0");
+        Assert.assertTrue(actionArgument.getLiteral() instanceof FloatLiteral);
+        Assert.assertEquals(((FloatLiteral) actionArgument.getLiteral()).getValue(), "1.0");
     }
     
     @Test
-    public void parseIfStatementWithWrongConstantType() throws Exception {
+    public void parseIfStatementWithWrongLiteralType() throws Exception {
         String sb = String.join("\n", 
                 "if (\"condition\") {}"
         );

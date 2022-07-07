@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
@@ -151,7 +151,7 @@ public class KmodelActionParsingJavaTest {
     }
     
     @Test
-    public void parseActionCallWithConstant() throws Exception {
+    public void parseActionCallWithLiteral() throws Exception {
         String sb = String.join("\n", 
                 "action scaleOut(float balancingFactor);"
                 , "if(true){"
@@ -177,8 +177,8 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getAction(), action);
         
         Expression actionArgument = actionCall.getArgument();
-        Assert.assertTrue(actionArgument.getConstant() instanceof FloatConstant);
-        Assert.assertEquals(((FloatConstant) actionArgument.getConstant()).getValue(), "1.0");
+        Assert.assertTrue(actionArgument.getLiteral() instanceof FloatLiteral);
+        Assert.assertEquals(((FloatLiteral) actionArgument.getLiteral()).getValue(), "1.0");
     }
     
     @Test
@@ -210,12 +210,12 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionDeclaration, actionCall.getAction());
         
         Expression actionArgument = actionCall.getArgument();
-        Assert.assertEquals("argument", actionArgument.getVariable().getName());
-        Assert.assertEquals(DataType.FLOAT, actionArgument.getVariable().getDataType());
+        Assert.assertEquals("argument", actionArgument.getField().getName());
+        Assert.assertEquals(DataType.FLOAT, actionArgument.getField().getDataType());
     }
     
     @Test
-    public void parseActionCallWithWrongConstantType() throws Exception {
+    public void parseActionCallWithWrongLiteralType() throws Exception {
         String sb = String.join("\n", 
                 "action scaleOut(float balancingFactor);"
                 , "if(true) {"

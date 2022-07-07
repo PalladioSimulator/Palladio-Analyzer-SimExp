@@ -24,7 +24,8 @@ public class KmodelTestUtil {
     	Assert.assertEquals(numErrors, errors.size());
     	
     	for (int i = 0; i < numErrors; i++) {
-    		Assert.assertEquals(messages[i], errors.get(i).getMessage());
+    		String errorMessage = "Expected error: \"" + messages[i] + "\", got \"" + errors.get(i).getMessage() + "\" instead.";
+    		Assert.assertEquals(errorMessage, messages[i], errors.get(i).getMessage());
     	}
     }
 }

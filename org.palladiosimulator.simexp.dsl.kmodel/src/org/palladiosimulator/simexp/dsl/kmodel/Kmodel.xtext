@@ -3,17 +3,25 @@ grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.co
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
-	(variables+=VariableDeclarationStatement)*
+	(constants+=ConstantDeclaration)*
+	(variables+=VariableDeclaration)*
+	(probes+=ProbeDeclaration)*
 	(actions+=ActionDeclaration)*
 	(statements+=IfStatement)*;
+	
+ConstantDeclaration returns Field:
+	{Constant} 'const' dataType=DataType name=ID '=' value=Expression ';';	
+	
+VariableDeclaration returns Field:
+	{Variable} 'var' dataType=DataType name=ID ';';	
+
+ProbeDeclaration returns Field:
+	{Probe} 'probe' dataType=DataType id=ID 'as' name=ID ';';
 	
 ActionDeclaration:
 	'action' name=ID '(' parameter=Parameter ')' ';';
 	
 Parameter: dataType=DataType name=ID;
-
-VariableDeclarationStatement returns Statement: 
-	'var' var=Variable ';';
 	
 ActionStatement returns Statement:
 	action=[ActionDeclaration] '(' argument=Expression ')' ';';
@@ -25,16 +33,13 @@ Body:
 	{Body} statements+=(ActionStatement | IfStatement)*;
 
 Expression: 
-	variable=[Variable] | constant=Constant;	
+	field=[Field] | literal=Literal;	
 
-Variable: 
-	dataType=DataType name=ID;
-
-Constant returns Expression: 
-	{BoolConstant} value=BOOL
-	| {IntConstant} value=INT 
-	| {FloatConstant} value=FLOAT 
-	| {StringConstant} value=STRING;
+Literal returns Expression: 
+	  {BoolLiteral} value=BOOL
+	| {IntLiteral} value=INT 
+	| {FloatLiteral} value=FLOAT
+	| {StringLiteral} value=STRING;
 
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 

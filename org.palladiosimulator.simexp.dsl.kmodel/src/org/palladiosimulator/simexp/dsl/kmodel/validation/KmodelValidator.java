@@ -5,15 +5,16 @@ package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import org.eclipse.xtext.validation.Check;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatConstant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntConstant;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringConstant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 /**
  * This class contains custom validation rules. 
@@ -21,6 +22,22 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 public class KmodelValidator extends AbstractKmodelValidator {
+	
+	@Check
+	public void checkConstantType(Constant constant) {
+		Expression value = constant.getValue();
+		
+		if (value != null) {
+			DataType constantDataType = constant.getDataType();
+			DataType valueDataType = getDataType(value);
+			
+			if (!constantDataType.equals(valueDataType)) {
+				error("Expected a value of type '"
+						+ constantDataType + "'. Got '" + valueDataType + "' instead.",
+						KmodelPackage.Literals.CONSTANT__VALUE);
+			}
+		}
+	}
 	
 	@Check
 	public void checkConditionType(Statement statement) {
@@ -55,23 +72,23 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	private DataType getDataType(Expression expression) {
-		Variable variable = expression.getVariable();
-		Expression constant = expression.getConstant();
+		Field field = expression.getField();
+		Expression literal = expression.getLiteral();
 		
-		if (variable != null) {
-			return variable.getDataType();
+		if (field != null) {
+			return field.getDataType();
 			
-		} else if (constant != null) {
-			if (constant instanceof BoolConstant) {
+		} else if (literal != null) {
+			if (literal instanceof BoolLiteral) {
 				return DataType.BOOL;
 				
-			} else if (constant instanceof IntConstant) {
+			} else if (literal instanceof IntLiteral) {
 				return DataType.INT;
 				
-			} else if (constant instanceof FloatConstant) {
+			} else if (literal instanceof FloatLiteral) {
 				return DataType.FLOAT;
 				
-			} else if (constant instanceof StringConstant) {
+			} else if (literal instanceof StringLiteral) {
 				return DataType.STRING;
 			}
 		}
