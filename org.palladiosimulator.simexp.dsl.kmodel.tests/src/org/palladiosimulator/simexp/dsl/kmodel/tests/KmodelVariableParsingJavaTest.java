@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.kmodel.tests;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
@@ -9,7 +7,6 @@ import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +30,9 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variableDecl = model.getVariables();
+        EList<Field> variableDecl = model.getFields();
         Assert.assertEquals(1, variableDecl.size());
         
         Field variable = variableDecl.get(0);
@@ -51,12 +49,13 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variableDecl = model.getVariables();
+        EList<Field> variableDecl = model.getFields();
         Assert.assertEquals(1, variableDecl.size());
         
         Field variable = variableDecl.get(0);
-        Assert.assertTrue(variable instanceof Field);
+        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("count", variable.getName());
         Assert.assertEquals(DataType.INT, variable.getDataType());
     }
@@ -69,12 +68,13 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variableDecl = model.getVariables();
+        EList<Field> variableDecl = model.getFields();
         Assert.assertEquals(1, variableDecl.size());
         
         Field variable = variableDecl.get(0);
-        Assert.assertTrue(variable instanceof Field);
+        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("number", variable.getName());
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
     }
@@ -87,12 +87,13 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variableDecl = model.getVariables();
+        EList<Field> variableDecl = model.getFields();
         Assert.assertEquals(1, variableDecl.size());
         
         Field variable = variableDecl.get(0);
-        Assert.assertTrue(variable instanceof Field);
+        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("word", variable.getName());
         Assert.assertEquals(DataType.STRING, variable.getDataType());
     }
@@ -106,99 +107,31 @@ public class KmodelVariableParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variableDecl = model.getVariables();
+        EList<Field> variableDecl = model.getFields();
         Assert.assertEquals(2, variableDecl.size());
         
         Field firstVariable = variableDecl.get(0);
-        Assert.assertTrue(firstVariable instanceof Field);
+        Assert.assertTrue(firstVariable instanceof Variable);
         Assert.assertEquals("count", firstVariable.getName());
         Assert.assertEquals(DataType.INT, firstVariable.getDataType());
         
         Field secondVariable = variableDecl.get(1);
-        Assert.assertTrue(secondVariable instanceof Field);
+        Assert.assertTrue(secondVariable instanceof Variable);
         Assert.assertEquals("word", secondVariable.getName());
         Assert.assertEquals(DataType.STRING, secondVariable.getDataType());
     }
     
     @Test
-    public void parseVariableWithInvalidType() throws Exception {
+    public void parseVariableWithValue() throws Exception {
     	String sb = String.join("\n", 
-    			"var something name;");
+                "var int number = 1;"
+        );
     	
     	KModel model = parserHelper.parse(sb);
     	
-    	KmodelTestUtil.assertErrorMessages(model, 2, "no viable alternative at input 'something'",
-    			"extraneous input 'name' expecting ';'");
-    }
-    
-    @Test
-    public void parseVariableWithoutName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var bool;");
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "missing RULE_ID at ';'");
-    }
-    
-    @Test
-    public void parseVariableWithNumberAsName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var int 1;");
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '1' expecting RULE_ID");
-    }
-    
-    @Test
-    public void parseVariableWithSymbolAsName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var bool ?;");
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '?' expecting RULE_ID");
-    }
-    
-    @Test
-    public void parseVariableWithKeywordAsName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var float var;");
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 2, "mismatched input 'var' expecting RULE_ID",
-    			"no viable alternative at input ';'");
-    }
-    
-    @Test
-    public void parseVariableWithTypeAsName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var string int;");
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'int' expecting RULE_ID");
-    }
-    
-    @Test
-    public void parseTwoVariablesWithSameName() throws Exception {
-    	String sb = String.join("\n", 
-    			"var bool variable;",
-    			"var float variable;");
-    	
-    	KModel model = parserHelper.parse(sb);
-
-    	KmodelTestUtil.assertModelWithoutErrors(model);
-    	
-    	List<Issue> issues = validationTestHelper.validate(model);
-    	Assert.assertEquals(2, issues.size());
-    	Assert.assertEquals("Duplicate Field 'variable'", issues.get(0).getMessage());
-    	Assert.assertEquals(1, issues.get(0).getLineNumber().intValue());
-    	Assert.assertEquals("Duplicate Field 'variable'", issues.get(1).getMessage());
-    	Assert.assertEquals(2, issues.get(1).getLineNumber().intValue());
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
     
     @Test

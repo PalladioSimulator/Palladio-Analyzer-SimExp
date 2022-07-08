@@ -3,34 +3,35 @@ grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.co
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
-	(constants+=ConstantDeclaration)*
-	(variables+=VariableDeclaration)*
-	(probes+=ProbeDeclaration)*
-	(actions+=ActionDeclaration)*
+	(fields+=Field)*
+	(actions+=Action)*
 	(statements+=IfStatement)*;
 	
-ConstantDeclaration returns Field:
+Field:
+	Constant | Variable | Probe;
+	
+Constant returns Field:
 	{Constant} 'const' dataType=DataType name=ID '=' value=Expression ';';	
 	
-VariableDeclaration returns Field:
+Variable returns Field:
 	{Variable} 'var' dataType=DataType name=ID ';';	
 
-ProbeDeclaration returns Field:
-	{Probe} 'probe' dataType=DataType id=ID 'as' name=ID ';';
+Probe returns Field:
+	{Probe} 'probe' id=ID 'as' dataType=DataType name=ID ';';
 	
-ActionDeclaration:
-	'action' name=ID '(' parameter=Parameter ')' ';';
+Action:
+	{Action} 'action' name=ID '(' parameter=Parameter ')' ';';
 	
 Parameter: paramType=ParamType dataType=DataType name=ID;
-	
-ActionStatement returns Statement:
-	action=[ActionDeclaration] '(' argument=Expression ')' ';';
+
+Statement:
+	ActionCall | IfStatement;
+
+ActionCall returns Statement:
+	action=[Action] '(' argument=Expression ')' ';';
 	
 IfStatement returns Statement: 
-	'if' '(' condition=Expression ')' '{' body=Body '}';
-
-Body:
-	{Body} statements+=(ActionStatement | IfStatement)*;
+	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
 Expression: 
 	field=[Field] | literal=Literal;	

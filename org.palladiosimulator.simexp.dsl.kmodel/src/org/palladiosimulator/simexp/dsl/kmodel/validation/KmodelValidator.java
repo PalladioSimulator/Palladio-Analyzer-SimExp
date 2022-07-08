@@ -4,7 +4,7 @@
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import org.eclipse.xtext.validation.Check;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
@@ -56,7 +56,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
 	public void checkArgumentType(Statement statement) {
-		ActionDeclaration action = statement.getAction();
+		Action action = statement.getAction();
 		Expression argument = statement.getArgument();
 		
 		if (action != null && argument != null) {

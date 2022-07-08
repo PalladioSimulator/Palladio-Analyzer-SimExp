@@ -13,7 +13,7 @@ import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
@@ -35,11 +35,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("decreaseQuality", action.getName());
         Assert.assertEquals(DataType.BOOL, action.getParameter().getDataType());
         Assert.assertEquals("decrease", action.getParameter().getName());
@@ -53,11 +54,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("setNumCPUs", action.getName());
         Assert.assertEquals(DataType.INT, action.getParameter().getDataType());
         Assert.assertEquals("numCPUs", action.getParameter().getName());
@@ -71,11 +73,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
         Assert.assertEquals(DataType.FLOAT, action.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", action.getParameter().getName());
@@ -89,11 +92,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("setConfiguration", action.getName());
         Assert.assertEquals(DataType.STRING, action.getParameter().getDataType());
         Assert.assertEquals("name", action.getParameter().getName());
@@ -108,16 +112,17 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
         
-        ActionDeclaration firstAction = actions.get(0);
+        Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
         Assert.assertEquals(DataType.FLOAT, firstAction.getParameter().getDataType());
         Assert.assertEquals("scaleOutFactor", firstAction.getParameter().getName());
         
-        ActionDeclaration secondAction = actions.get(1);
+        Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
         Assert.assertEquals(DataType.FLOAT, secondAction.getParameter().getDataType());
         Assert.assertEquals("scaleInFactor", secondAction.getParameter().getName());
@@ -132,19 +137,20 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
         List<Issue> issues = validationTestHelper.validate(model);
         Assert.assertTrue(issues.isEmpty());
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
         
-        ActionDeclaration firstAction = actions.get(0);
+        Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
         Assert.assertEquals(DataType.FLOAT, firstAction.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", firstAction.getParameter().getName());
         
-        ActionDeclaration secondAction = actions.get(1);
+        Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
         Assert.assertEquals(DataType.FLOAT, secondAction.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", secondAction.getParameter().getName());
@@ -161,11 +167,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
         Assert.assertEquals(DataType.FLOAT, action.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", action.getParameter().getName());
@@ -173,7 +180,7 @@ public class KmodelActionParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement actionCall = statements.get(0).getBody().getStatements().get(0);
+        Statement actionCall = statements.get(0).getStatements().get(0);
         Assert.assertEquals(actionCall.getAction(), action);
         
         Expression actionArgument = actionCall.getArgument();
@@ -193,11 +200,12 @@ public class KmodelActionParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<ActionDeclaration> actions = model.getActions();
+        EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration actionDeclaration = actions.get(0);
+        Action actionDeclaration = actions.get(0);
         Assert.assertEquals("scaleOut", actionDeclaration.getName());
         Assert.assertEquals(DataType.FLOAT, actionDeclaration.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", actionDeclaration.getParameter().getName());
@@ -205,7 +213,7 @@ public class KmodelActionParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement actionCall = statements.get(0).getBody().getStatements().get(0);
+        Statement actionCall = statements.get(0).getStatements().get(0);
         Assert.assertEquals(actionCall.getAction(), actionDeclaration);
         Assert.assertEquals(actionDeclaration, actionCall.getAction());
         
@@ -226,10 +234,8 @@ public class KmodelActionParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        List<Issue> issues = validationTestHelper.validate(model);
-        Assert.assertEquals(1, issues.size());
-        Assert.assertEquals("Expected an argument of type 'float'. Got 'bool' instead.", issues.get(0).getMessage());
-        Assert.assertEquals(3, issues.get(0).getLineNumber().intValue());
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+        		"Expected an argument of type 'float'. Got 'bool' instead.");
     }
     
     @Test
@@ -245,10 +251,8 @@ public class KmodelActionParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        List<Issue> issues = validationTestHelper.validate(model);
-        Assert.assertEquals(1, issues.size());
-        Assert.assertEquals("Expected an argument of type 'float'. Got 'int' instead.", issues.get(0).getMessage());
-        Assert.assertEquals(4, issues.get(0).getLineNumber().intValue());
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+        		"Expected an argument of type 'float'. Got 'int' instead.");
     }
     
     @Test
@@ -284,10 +288,8 @@ public class KmodelActionParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-    	List<Issue> issues = validationTestHelper.validate(model);
-    	Assert.assertEquals(2, issues.size());
-    	Assert.assertEquals("Duplicate ActionDeclaration 'adapt'", issues.get(0).getMessage());
-    	Assert.assertEquals("Duplicate ActionDeclaration 'adapt'", issues.get(1).getMessage());
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
+        		"Duplicate Action 'adapt'", "Duplicate Action 'adapt'");
     }
     
     @Test

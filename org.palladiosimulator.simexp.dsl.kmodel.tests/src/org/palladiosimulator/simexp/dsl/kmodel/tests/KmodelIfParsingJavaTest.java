@@ -2,8 +2,6 @@ package org.palladiosimulator.simexp.dsl.kmodel.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
@@ -11,11 +9,10 @@ import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionDeclaration;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
@@ -23,6 +20,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -39,6 +37,7 @@ public class KmodelIfParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -47,7 +46,7 @@ public class KmodelIfParsingJavaTest {
         Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(((BoolLiteral) condition.getLiteral()).getValue(), "true");
         
-        EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
+        EList<Statement> thenStatements = statements.get(0).getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
     }
     
@@ -60,11 +59,13 @@ public class KmodelIfParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variables = model.getVariables();
-        assertEquals(1, model.getVariables().size());
+        EList<Field> variables = model.getFields();
+        assertEquals(1, variables.size());
         
         Field boolConditionVar = variables.get(0);
+        Assert.assertTrue(boolConditionVar instanceof Variable);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
         
@@ -76,7 +77,7 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(DataType.BOOL, condition.getField().getDataType());
         Assert.assertEquals("condition", condition.getField().getName());
         
-        EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
+        EList<Statement> thenStatements = statements.get(0).getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
     }
     
@@ -89,6 +90,7 @@ public class KmodelIfParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(2, statements.size());
@@ -97,14 +99,14 @@ public class KmodelIfParsingJavaTest {
         Assert.assertTrue(firstCondition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(((BoolLiteral) firstCondition.getLiteral()).getValue(), "true");
         
-        EList<Statement> firstThenStatements = statements.get(0).getBody().getStatements();
+        EList<Statement> firstThenStatements = statements.get(0).getStatements();
         Assert.assertTrue(firstThenStatements.isEmpty());
         
         Expression secondCondition = statements.get(1).getCondition();
         Assert.assertTrue(secondCondition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(((BoolLiteral) secondCondition.getLiteral()).getValue(), "true");
         
-        EList<Statement> secondThenStatements = statements.get(1).getBody().getStatements();
+        EList<Statement> secondThenStatements = statements.get(1).getStatements();
         Assert.assertTrue(secondThenStatements.isEmpty());
         
     }
@@ -120,11 +122,13 @@ public class KmodelIfParsingJavaTest {
         
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
-        EList<Field> variables = model.getVariables();
+        EList<Field> variables = model.getFields();
         assertEquals(1, variables.size());
         
         Field boolConditionVar = variables.get(0);
+        Assert.assertTrue(boolConditionVar instanceof Variable);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
         
@@ -135,14 +139,14 @@ public class KmodelIfParsingJavaTest {
         Field outerIfConditionVar = outerIfStmt.getCondition().getField();
         Assert.assertEquals(boolConditionVar, outerIfConditionVar);
         
-        EList<Statement> outerThenStatements = outerIfStmt.getBody().getStatements();
+        EList<Statement> outerThenStatements = outerIfStmt.getStatements();
         Assert.assertEquals(1, outerThenStatements.size());
         
         Statement innerIfStmt = outerThenStatements.get(0);
         Field innerIfConditionVar = innerIfStmt.getCondition().getField();
         Assert.assertEquals(boolConditionVar, innerIfConditionVar);
         
-        EList<Statement> innerThenStatements = innerIfStmt.getBody().getStatements();
+        EList<Statement> innerThenStatements = innerIfStmt.getStatements();
         Assert.assertTrue(innerThenStatements.isEmpty());
     }
     
@@ -157,11 +161,12 @@ public class KmodelIfParsingJavaTest {
     	
     	KModel model = parserHelper.parse(sb);
     	KmodelTestUtil.assertModelWithoutErrors(model);
+    	KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     	
-    	EList<ActionDeclaration> actions = model.getActions();
+    	EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         
-        ActionDeclaration action = actions.get(0);
+        Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
         Assert.assertEquals(DataType.FLOAT, action.getParameter().getDataType());
         Assert.assertEquals("balancingFactor", action.getParameter().getName());
@@ -173,7 +178,7 @@ public class KmodelIfParsingJavaTest {
         Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(((BoolLiteral) condition.getLiteral()).getValue(), "false");
         
-        EList<Statement> thenStatements = statements.get(0).getBody().getStatements();
+        EList<Statement> thenStatements = statements.get(0).getStatements();
         Assert.assertEquals(1, thenStatements.size());
         
         Statement actionCall = thenStatements.get(0);
@@ -193,9 +198,8 @@ public class KmodelIfParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        List<Issue> issues = validationTestHelper.validate(model);
-        Assert.assertEquals("The condition must be of type 'bool'. Got 'string' instead.", issues.get(0).getMessage());
-        Assert.assertEquals(1, issues.get(0).getLineNumber().intValue());
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"The condition must be of type 'bool'. Got 'string' instead.");
     }
     
     @Test
@@ -208,10 +212,8 @@ public class KmodelIfParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
-        List<Issue> issues = validationTestHelper.validate(model);
-        Assert.assertEquals(1, issues.size());
-        Assert.assertEquals("The condition must be of type 'bool'. Got 'string' instead.", issues.get(0).getMessage());
-        Assert.assertEquals(2, issues.get(0).getLineNumber().intValue());
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"The condition must be of type 'bool'. Got 'string' instead.");
     }
     
     
@@ -219,7 +221,7 @@ public class KmodelIfParsingJavaTest {
     public void parseComplexStatement() throws Exception {
         String sb = String.join("\n"
                 ,"//Variable declarations"
-                ,"var int i;"
+                ,"var float i;"
                 ,"// action declaration"
                 , "action a(var float factor);"
                 , "action anotherA(var float factor);"
@@ -234,7 +236,7 @@ public class KmodelIfParsingJavaTest {
         KModel model = parserHelper.parse(sb);
         
         KmodelTestUtil.assertModelWithoutErrors(model);
-
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
     
     
