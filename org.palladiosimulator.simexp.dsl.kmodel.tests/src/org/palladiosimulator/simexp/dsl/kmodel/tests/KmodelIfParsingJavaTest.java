@@ -182,7 +182,7 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, thenStatements.size());
         
         Statement actionCall = thenStatements.get(0);
-        Assert.assertEquals(action, actionCall.getAction());
+        Assert.assertEquals(action, actionCall.getActionRef());
         
         Expression actionArgument = actionCall.getArgument();
         Assert.assertTrue(actionArgument.getLiteral() instanceof FloatLiteral);

@@ -97,7 +97,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.FLOAT, constant.getDataType());
         
-        Expression value = constant.getValue().getLiteral();
+        Expression value = constant.getValue();
         Assert.assertTrue(value instanceof FloatLiteral);
         Assert.assertEquals("1.0", ((FloatLiteral) value).getValue());
     }
@@ -176,7 +176,62 @@ public class KmodelConstantParsingJavaTest {
     }
     
     @Test
-    public void parseConstantWithoutWrongValueType() throws Exception {
+    public void parseConstantWithVariableValue() throws Exception {
+    	String sb = String.join("\n",
+    			"var int variable;",
+                "const int constant = variable;"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"Cannot assign an expression containing a variable to a constant value.");
+    }
+    
+    @Test
+    public void parseConstantWithExpressionContainingVariable() throws Exception {
+    	String sb = String.join("\n",
+    			"var bool variable;",
+                "const bool constant = variable & true;"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"Cannot assign an expression containing a variable to a constant value.");
+    }
+    
+    @Test
+    public void parseConstantWithSelfReference() throws Exception {
+    	String sb = String.join("\n", 
+                "const bool constant = false | constant;"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"Field 'constant' must be defined before referencing.");
+    }
+    
+    @Test
+    public void parseConstantsWithCyclicReference() throws Exception {
+    	String sb = String.join("\n", 
+                "const int const1 = const2;",
+                "const int const2 = const1"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"Field 'const2' must be defined before referencing.");
+    }
+    
+    @Test
+    public void parseConstantWithWrongValueType() throws Exception {
     	String sb = String.join("\n", 
                 "const int number = true;"
         );

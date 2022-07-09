@@ -3,6 +3,10 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel.scoping;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.scoping.IScope;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 
 /**
  * This class contains custom scoping description.
@@ -11,5 +15,12 @@ package org.palladiosimulator.simexp.dsl.kmodel.scoping;
  * on how and when to use it.
  */
 public class KmodelScopeProvider extends AbstractKmodelScopeProvider {
-
+	
+	@Override
+	public IScope getScope(EObject context, EReference reference) {
+		if (reference == KmodelPackage.Literals.EXPRESSION__FIELD) {
+		}
+		
+		return delegateGetScope(context, reference);
+	}
 }

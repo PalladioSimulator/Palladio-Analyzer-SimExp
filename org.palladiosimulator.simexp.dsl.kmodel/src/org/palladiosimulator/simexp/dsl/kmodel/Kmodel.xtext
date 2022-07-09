@@ -28,13 +28,27 @@ Statement:
 	ActionCall | IfStatement;
 
 ActionCall returns Statement:
-	action=[Action] '(' argument=Expression ')' ';';
+	actionRef=[Action] '(' argument=Expression ')' ';';
 	
 IfStatement returns Statement: 
 	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
-Expression: 
-	field=[Field] | literal=Literal;	
+Expression: Disjunction;
+
+Disjunction returns Expression:
+    Conjunction ({Disjunction.left=current} '|' right=Conjunction)*;
+    
+Conjunction returns Expression:
+	Comparison ({Conjunction.left=current} '&' right=Comparison)*;
+	
+Comparison returns Expression:
+	Negation ({Comparison.left=current} ('==' | '!=') right=Negation)*;	
+	
+Negation returns Expression:
+	{Negation} (negate?='!')? expr=Term;	
+
+Term returns Expression: 
+	field=[Field] | literal=Literal | '(' expr=Expression ')';	
 
 Literal returns Expression: 
 	  {BoolLiteral} value=BOOL

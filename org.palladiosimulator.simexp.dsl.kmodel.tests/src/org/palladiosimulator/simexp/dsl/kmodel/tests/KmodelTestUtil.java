@@ -46,6 +46,7 @@ public class KmodelTestUtil {
 	public static void assertValidationIssues(ValidationTestHelper helper, KModel model, int numIssues, String... messages) {
     	Assert.assertNotNull(model);
     	List<Issue> issues = helper.validate(model);
+    	
     	Assert.assertEquals(numIssues, issues.size());
     	
     	for (int i = 0; i < numIssues; i++) {
@@ -53,4 +54,6 @@ public class KmodelTestUtil {
     		Assert.assertEquals(errorMessage, messages[i], issues.get(i).getMessage());
     	}
     }
+	
+	
 }

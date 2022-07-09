@@ -181,7 +181,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Statement actionCall = statements.get(0).getStatements().get(0);
-        Assert.assertEquals(actionCall.getAction(), action);
+        Assert.assertEquals(actionCall.getActionRef(), action);
         
         Expression actionArgument = actionCall.getArgument();
         Assert.assertTrue(actionArgument.getLiteral() instanceof FloatLiteral);
@@ -214,8 +214,8 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Statement actionCall = statements.get(0).getStatements().get(0);
-        Assert.assertEquals(actionCall.getAction(), actionDeclaration);
-        Assert.assertEquals(actionDeclaration, actionCall.getAction());
+        Assert.assertEquals(actionCall.getActionRef(), actionDeclaration);
+        Assert.assertEquals(actionDeclaration, actionCall.getActionRef());
         
         Expression actionArgument = actionCall.getArgument();
         Assert.assertEquals("argument", actionArgument.getField().getName());

@@ -4,17 +4,29 @@
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import org.eclipse.xtext.validation.Check;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.EcoreUtil2;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Comparison;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Conjunction;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Disjunction;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Negation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 /**
  * This class contains custom validation rules. 
@@ -24,7 +36,30 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
-	public void checkConstantType(Constant constant) {
+	public void checkFieldReferenceDefinedBefore(Expression expression) {
+		Field field = expression.getField();
+		
+		if (field != null && !fieldsDefinedBefore(expression).contains(field)) {
+			String name = field.getName();
+			if (name != null) {
+				error("Field '" + name + "' must be defined before referencing.",
+						KmodelPackage.Literals.EXPRESSION__FIELD);
+			}
+		}
+	}
+	
+	@Check
+	public void checkConstantValueFieldType(Constant constant) {
+		Expression value = constant.getValue();
+		
+		if (containsVariable(value)) {
+			error("Cannot assign an expression containing a variable to a constant value.",
+					KmodelPackage.Literals.CONSTANT__VALUE);
+		}
+	}
+	
+	@Check
+	public void checkConstantValueDataType(Constant constant) {
 		Expression value = constant.getValue();
 		
 		if (value != null) {
@@ -56,7 +91,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
 	public void checkArgumentType(Statement statement) {
-		Action action = statement.getAction();
+		Action action = statement.getActionRef();
 		Expression argument = statement.getArgument();
 		
 		if (action != null && argument != null) {
@@ -71,9 +106,110 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		}
 	}
 	
+	@Check
+	public void checkDisjunctionExpression(Disjunction disjunction) {
+		DataType leftDataType = getDataType(disjunction.getLeft());
+		DataType rightDataType = getDataType(disjunction.getRight());
+		
+		if (leftDataType != DataType.BOOL) {
+			error("Expected a value of type '" + DataType.BOOL + "'. Got '" + leftDataType + "' instead.", 
+					KmodelPackage.Literals.DISJUNCTION__LEFT);
+		}
+		
+		if (rightDataType != DataType.BOOL) {
+			error("Expected a value of type '" + DataType.BOOL + "'. Got '" + rightDataType + "' instead.", 
+					KmodelPackage.Literals.DISJUNCTION__RIGHT);
+		}
+	}
+	
+	@Check
+	public void checkConjunctionExpression(Conjunction conjunction) {
+		DataType leftDataType = getDataType(conjunction.getLeft());
+		DataType rightDataType = getDataType(conjunction.getRight());
+		
+		if (leftDataType != DataType.BOOL) {
+			error("Expected a value of type '" + DataType.BOOL + "'. Got '" + leftDataType + "' instead.", 
+					KmodelPackage.Literals.CONJUNCTION__LEFT);
+		}
+		
+		if (rightDataType != DataType.BOOL) {
+			error("Expected a value of type '" + DataType.BOOL + "'. Got '" + rightDataType + "' instead.", 
+					KmodelPackage.Literals.CONJUNCTION__RIGHT);
+		}
+	}
+	
+	@Check
+	public void checkComparisonExpression(Comparison comparison) {
+		DataType leftDataType = getDataType(comparison.getLeft());
+		DataType rightDataType = getDataType(comparison.getRight());
+		
+		if (leftDataType != rightDataType) {
+			error("Cannot compare a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.COMPARISON__LEFT);
+			
+			error("Cannot compare a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.COMPARISON__RIGHT);
+		}
+	}
+	
+	@Check
+	public void checkNegationExpression(Negation negation) {
+		if (negation.isNegate()) {
+			DataType type = getDataType(negation);
+			
+			if (type != DataType.BOOL) {
+				error("Cannot negate a '" + type + "' value.",
+						KmodelPackage.Literals.EXPRESSION__EXPR);
+			}
+		}
+	}
+	
 	private DataType getDataType(Expression expression) {
+		if (expression instanceof Disjunction) {
+			Disjunction disjunction = (Disjunction) expression;
+			
+			if (disjunction.getRight() != null) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(disjunction.getLeft());
+			}
+		}
+		
+		if (expression instanceof Conjunction) {
+			Conjunction conjunction = (Conjunction) expression;
+			
+			if (conjunction.getRight() != null) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(conjunction.getLeft());
+			}
+		}
+		
+		if (expression instanceof Comparison) {
+			Comparison comparison = (Comparison) expression;
+			
+			if (comparison.getRight() != null) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(comparison.getLeft());
+			}
+		}
+		
+		if (expression instanceof Negation) {
+			Negation negation = (Negation) expression;
+			
+			if (negation.isNegate()) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(negation.getExpr());
+			}
+		}
+
 		Field field = expression.getField();
 		Expression literal = expression.getLiteral();
+		Expression expr = expression.getExpr();
 		
 		if (field != null) {
 			return field.getDataType();
@@ -91,8 +227,57 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			} else if (literal instanceof StringLiteral) {
 				return DataType.STRING;
 			}
+		} else  if (expr != null) {
+			return getDataType(expr);
 		}
 		
 		return null;
+	}
+	
+	public List<EObject> fieldsDefinedBefore(Expression expression) {
+		KModel kmodel = EcoreUtil2.getContainerOfType(expression, KModel.class);
+		List<EObject> contents = EcoreUtil2.eAllContentsAsList(kmodel);
+		
+		try {
+			EObject first = contents.stream().filter(field -> EcoreUtil.isAncestor(field, expression)).findFirst().get();
+			return contents.subList(0 , contents.indexOf(first));
+		
+		} catch (NoSuchElementException e) {
+			return Collections.emptyList();
+		}
+	}
+	
+	public boolean containsVariable(Expression expression) {
+		if (expression == null) {
+			return false;
+		}
+		
+		if (expression instanceof Disjunction) {
+			Disjunction disjunction = (Disjunction) expression;
+			return containsVariable(disjunction.getLeft()) || containsVariable(disjunction.getRight());
+		}
+		
+		if (expression instanceof Conjunction) {
+			Conjunction conjunction = (Conjunction) expression;
+			return containsVariable(conjunction.getLeft()) || containsVariable(conjunction.getRight());
+		}
+		
+		if (expression instanceof Comparison) {
+			Comparison comparison = (Comparison) expression;
+			return containsVariable(comparison.getLeft()) || containsVariable(comparison.getRight());
+		}
+		
+		if (expression instanceof Negation) {
+			Negation negation = (Negation) expression;
+			return containsVariable(negation.getExpr());
+		}
+		
+		Field field = expression.getField();
+		
+		if (field != null && field instanceof Variable) {
+			return true;
+		}
+		
+		return false;
 	}
 }
