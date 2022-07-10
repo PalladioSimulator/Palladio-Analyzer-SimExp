@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ParamType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
 @RunWith(XtextRunner.class)
@@ -218,8 +219,50 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionDeclaration, actionCall.getActionRef());
         
         Expression actionArgument = actionCall.getArgument();
-        Assert.assertEquals("argument", actionArgument.getField().getName());
-        Assert.assertEquals(DataType.FLOAT, actionArgument.getField().getDataType());
+        Assert.assertEquals("argument", actionArgument.getFieldRef().getName());
+        Assert.assertEquals(DataType.FLOAT, actionArgument.getFieldRef().getDataType());
+    }
+    
+    @Test
+    public void parseActionWithVariableParameter() throws Exception {
+    	String sb = String.join("\n",
+    			"var float factor;",
+                "action scaleOut(var float balancingFactor);",
+                "if (true) {",
+                "scaleOut(factor);",
+                "}"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        
+        EList<Action> actions = model.getActions();
+        Assert.assertEquals(1, actions.size());
+        
+        Action action = actions.get(0);
+        Assert.assertEquals(ParamType.VARIABLE, action.getParameter().getParamType());
+    }
+    
+    @Test
+    public void parseActionWithFixedParameter() throws Exception {
+    	String sb = String.join("\n", 
+    			"const float factor = 1.0;",
+                "action scaleOut(param float balancingFactor);",
+                "if (true) {",
+                "scaleOut(factor);",
+                "}"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        
+        EList<Action> actions = model.getActions();
+        Assert.assertEquals(1, actions.size());
+        
+        Action action = actions.get(0);
+        Assert.assertEquals(ParamType.PARAMETER, action.getParameter().getParamType());
     }
     
     @Test

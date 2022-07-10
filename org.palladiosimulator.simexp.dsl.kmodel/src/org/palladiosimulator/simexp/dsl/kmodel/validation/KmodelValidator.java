@@ -11,18 +11,22 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Addition;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.AdditiveInversion;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Comparison;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Conjunction;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Disjunction;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Equality;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Multiplication;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Negation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
@@ -37,19 +41,19 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
 	public void checkFieldReferenceDefinedBefore(Expression expression) {
-		Field field = expression.getField();
+		Field field = expression.getFieldRef();
 		
 		if (field != null && !fieldsDefinedBefore(expression).contains(field)) {
 			String name = field.getName();
 			if (name != null) {
 				error("Field '" + name + "' must be defined before referencing.",
-						KmodelPackage.Literals.EXPRESSION__FIELD);
+						KmodelPackage.Literals.EXPRESSION__FIELD_REF);
 			}
 		}
 	}
 	
 	@Check
-	public void checkConstantValueFieldType(Constant constant) {
+	public void checkConstantForVariableValue(Constant constant) {
 		Expression value = constant.getValue();
 		
 		if (containsVariable(value)) {
@@ -75,7 +79,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkConditionType(Statement statement) {
+	public void checkConditionDataType(Statement statement) {
 		Expression condition = statement.getCondition();
 		
 		if (condition != null) {
@@ -90,7 +94,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkArgumentType(Statement statement) {
+	public void checkArgumentDataType(Statement statement) {
 		Action action = statement.getActionRef();
 		Expression argument = statement.getArgument();
 		
@@ -139,15 +143,51 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
+	public void checkEqualityExpression(Equality equality) {
+		DataType leftDataType = getDataType(equality.getLeft());
+		DataType rightDataType = getDataType(equality.getRight());
+		
+		boolean leftIsNumber = leftDataType == DataType.INT || leftDataType == DataType.FLOAT;
+		boolean rightIsNumber = rightDataType == DataType.INT || rightDataType == DataType.FLOAT;
+		
+		if (!(leftIsNumber && rightIsNumber) && leftDataType != rightDataType) {
+			error("Cannot compare the equality of a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.EQUALITY__LEFT);
+			
+			error("Cannot compare the equality of a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.EQUALITY__RIGHT);
+		}
+	}
+	
+	@Check
+	public void checkNegationExpression(Negation negation) {
+		if (negation.isNegated()) {
+			DataType type = getDataType(negation.getExpr());
+			
+			if (type != DataType.BOOL) {
+				error("Cannot negate a '" + type + "' value.",
+						KmodelPackage.Literals.EXPRESSION__EXPR);
+			}
+		}
+	}
+	
+	@Check
 	public void checkComparisonExpression(Comparison comparison) {
 		DataType leftDataType = getDataType(comparison.getLeft());
 		DataType rightDataType = getDataType(comparison.getRight());
 		
-		if (leftDataType != rightDataType) {
+		boolean leftIsNumber = leftDataType == DataType.INT || leftDataType == DataType.FLOAT;
+		boolean rightIsNumber = rightDataType == DataType.INT || rightDataType == DataType.FLOAT;
+		
+		if (!leftIsNumber) {
 			error("Cannot compare a '"
 					+ leftDataType + "' value with a '" + rightDataType + "' value.",
 					KmodelPackage.Literals.COMPARISON__LEFT);
-			
+		}
+		
+		if (!rightIsNumber) {
 			error("Cannot compare a '"
 					+ leftDataType + "' value with a '" + rightDataType + "' value.",
 					KmodelPackage.Literals.COMPARISON__RIGHT);
@@ -155,14 +195,56 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkNegationExpression(Negation negation) {
-		if (negation.isNegate()) {
-			DataType type = getDataType(negation);
+	public void checkAdditionExpression(Addition addition) {
+		DataType leftDataType = getDataType(addition.getLeft());
+		DataType rightDataType = getDataType(addition.getRight());
+		
+		boolean leftIsNumber = leftDataType == DataType.INT || leftDataType == DataType.FLOAT;
+		boolean rightIsNumber = rightDataType == DataType.INT || rightDataType == DataType.FLOAT;
+		
+		if (!leftIsNumber) {
+			error("Cannot add or subtract a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.ADDITION__LEFT);
+		}
+		
+		if (!rightIsNumber) {
+			error("Cannot add or subtract a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.ADDITION__RIGHT);
+		}
+	}
+	
+	@Check
+	public void checkAdditiveInversionExpression(AdditiveInversion inversion) {
+		if (inversion.isInverted()) {
+			DataType type = getDataType(inversion);
 			
-			if (type != DataType.BOOL) {
-				error("Cannot negate a '" + type + "' value.",
+			if (type != DataType.INT && type != DataType.FLOAT) {
+				error("Cannot invert a '" + type + "' value.",
 						KmodelPackage.Literals.EXPRESSION__EXPR);
 			}
+		}
+	}
+	
+	@Check
+	public void checkMultiplicationExpression(Multiplication multiplication) {
+		DataType leftDataType = getDataType(multiplication.getLeft());
+		DataType rightDataType = getDataType(multiplication.getRight());
+		
+		boolean leftIsNumber = leftDataType == DataType.INT || leftDataType == DataType.FLOAT;
+		boolean rightIsNumber = rightDataType == DataType.INT || rightDataType == DataType.FLOAT;
+		
+		if (!leftIsNumber) {
+			error("Cannot multiply or divide a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.MULTIPLICATION__LEFT);
+		}
+		
+		if (!rightIsNumber) {
+			error("Cannot multiply or divide a '"
+					+ leftDataType + "' value with a '" + rightDataType + "' value.",
+					KmodelPackage.Literals.MULTIPLICATION__RIGHT);
 		}
 	}
 	
@@ -187,6 +269,26 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			}
 		}
 		
+		if (expression instanceof Equality) {
+			Equality equality = (Equality) expression;
+			
+			if (equality.getRight() != null) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(equality.getLeft());
+			}
+		}
+		
+		if (expression instanceof Negation) {
+			Negation negation = (Negation) expression;
+			
+			if (negation.isNegated()) {
+				return DataType.BOOL;
+			} else {
+				return getDataType(negation.getExpr());
+			}
+		}
+		
 		if (expression instanceof Comparison) {
 			Comparison comparison = (Comparison) expression;
 			
@@ -197,17 +299,47 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			}
 		}
 		
-		if (expression instanceof Negation) {
-			Negation negation = (Negation) expression;
+		if (expression instanceof Addition) {
+			Addition addition = (Addition) expression;
 			
-			if (negation.isNegate()) {
-				return DataType.BOOL;
+			DataType leftDataType = getDataType(addition.getLeft());
+			
+			if (addition.getRight() != null ) {
+				DataType rightDataType = getDataType(addition.getRight());
+				
+				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
+					return DataType.FLOAT;
+				} else {
+					return DataType.INT;
+				}
 			} else {
-				return getDataType(negation.getExpr());
+				return leftDataType;
+			}
+		}
+		
+		if (expression instanceof AdditiveInversion) {
+			return getDataType(expression.getExpr());
+		}
+		
+		if (expression instanceof Multiplication) {
+			Multiplication multiplication = (Multiplication) expression;
+			
+			DataType leftDataType = getDataType(multiplication.getLeft());
+			
+			if (multiplication.getRight() != null ) {
+				DataType rightDataType = getDataType(multiplication.getRight());
+				
+				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
+					return DataType.FLOAT;
+				} else {
+					return DataType.INT;
+				}
+			} else {
+				return leftDataType;
 			}
 		}
 
-		Field field = expression.getField();
+		Field field = expression.getFieldRef();
 		Expression literal = expression.getLiteral();
 		Expression expr = expression.getExpr();
 		
@@ -234,20 +366,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		return null;
 	}
 	
-	public List<EObject> fieldsDefinedBefore(Expression expression) {
-		KModel kmodel = EcoreUtil2.getContainerOfType(expression, KModel.class);
-		List<EObject> contents = EcoreUtil2.eAllContentsAsList(kmodel);
-		
-		try {
-			EObject first = contents.stream().filter(field -> EcoreUtil.isAncestor(field, expression)).findFirst().get();
-			return contents.subList(0 , contents.indexOf(first));
-		
-		} catch (NoSuchElementException e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	public boolean containsVariable(Expression expression) {
+	private boolean containsVariable(Expression expression) {
 		if (expression == null) {
 			return false;
 		}
@@ -272,12 +391,29 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return containsVariable(negation.getExpr());
 		}
 		
-		Field field = expression.getField();
+		Field field = expression.getFieldRef();
 		
 		if (field != null && field instanceof Variable) {
 			return true;
 		}
 		
 		return false;
+	}
+	
+	private List<EObject> fieldsDefinedBefore(Expression expression) {
+		KModel kmodel = EcoreUtil2.getContainerOfType(expression, KModel.class);
+		List<EObject> contents = EcoreUtil2.eAllContentsAsList(kmodel);
+		
+		try {
+			EObject first = contents
+					.stream()
+					.filter(field -> EcoreUtil.isAncestor(field, expression))
+					.findFirst()
+					.get();
+			return contents.subList(0 , contents.indexOf(first));
+		
+		} catch (NoSuchElementException e) {
+			return Collections.emptyList();
+		}
 	}
 }

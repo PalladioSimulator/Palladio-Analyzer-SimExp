@@ -39,16 +39,28 @@ Disjunction returns Expression:
     Conjunction ({Disjunction.left=current} '|' right=Conjunction)*;
     
 Conjunction returns Expression:
-	Comparison ({Conjunction.left=current} '&' right=Comparison)*;
+	Equality ({Conjunction.left=current} '&' right=Equality)*;
 	
-Comparison returns Expression:
-	Negation ({Comparison.left=current} ('==' | '!=') right=Negation)*;	
+Equality returns Expression:
+	Negation ({Equality.left=current} op=('==' | '!=') right=Negation)*;
 	
 Negation returns Expression:
-	{Negation} (negate?='!')? expr=Term;	
+	{Negation} (negated?='!')? expr=Comparison;	
+	
+Comparison returns Expression:
+	Addition ({Comparison.left=current} op=('<' | '<=' | '>=' | '>') right=Addition)?;	
+	
+Addition returns Expression:
+	AdditiveInversion ({Addition.left=current} op=('+' | '-') right=Multiplication)*;
+	
+AdditiveInversion returns Expression:
+	{AdditiveInversion} (inverted?='-')? expr=Multiplication;
+	
+Multiplication returns Expression:
+	Term ({Multiplication.left=current} op=('*' | '/') right=Term)*;			
 
 Term returns Expression: 
-	field=[Field] | literal=Literal | '(' expr=Expression ')';	
+	fieldRef=[Field] | literal=Literal | '(' expr=Expression ')';	
 
 Literal returns Expression: 
 	  {BoolLiteral} value=BOOL

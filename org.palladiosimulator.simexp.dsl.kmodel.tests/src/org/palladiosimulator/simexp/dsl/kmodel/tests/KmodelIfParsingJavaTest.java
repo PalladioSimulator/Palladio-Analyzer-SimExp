@@ -73,9 +73,9 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Expression condition = statements.get(0).getCondition();
-        Assert.assertEquals(boolConditionVar, condition.getField());
-        Assert.assertEquals(DataType.BOOL, condition.getField().getDataType());
-        Assert.assertEquals("condition", condition.getField().getName());
+        Assert.assertEquals(boolConditionVar, condition.getFieldRef());
+        Assert.assertEquals(DataType.BOOL, condition.getFieldRef().getDataType());
+        Assert.assertEquals("condition", condition.getFieldRef().getName());
         
         EList<Statement> thenStatements = statements.get(0).getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
@@ -136,14 +136,14 @@ public class KmodelIfParsingJavaTest {
         Assert.assertEquals(1, statements.size());
         
         Statement outerIfStmt = statements.get(0);
-        Field outerIfConditionVar = outerIfStmt.getCondition().getField();
+        Field outerIfConditionVar = outerIfStmt.getCondition().getFieldRef();
         Assert.assertEquals(boolConditionVar, outerIfConditionVar);
         
         EList<Statement> outerThenStatements = outerIfStmt.getStatements();
         Assert.assertEquals(1, outerThenStatements.size());
         
         Statement innerIfStmt = outerThenStatements.get(0);
-        Field innerIfConditionVar = innerIfStmt.getCondition().getField();
+        Field innerIfConditionVar = innerIfStmt.getCondition().getFieldRef();
         Assert.assertEquals(boolConditionVar, innerIfConditionVar);
         
         EList<Statement> innerThenStatements = innerIfStmt.getStatements();

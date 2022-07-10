@@ -165,6 +165,39 @@ public class KmodelConstantParsingJavaTest {
     }
     
     @Test
+    public void parseConstantWithConstantValue() throws Exception {
+    	String sb = String.join("\n", 
+                "const int const1 = 1;",
+                "const int const2 = const1;"
+        );
+    	
+    	KModel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        
+        EList<Field> fields = model.getFields();
+        Assert.assertEquals(2, fields.size());
+        
+        Field firstField = fields.get(0);
+        Assert.assertTrue(firstField instanceof Constant);
+        
+        Constant firstConstant = (Constant) firstField;
+        Assert.assertEquals("count", firstConstant.getName());
+        Assert.assertEquals(DataType.INT, firstConstant.getDataType());
+
+        // TODO Test Value
+        
+        Field secondField = fields.get(1);
+        Assert.assertTrue(secondField instanceof Constant);
+        
+        Constant secondConstant = (Constant) secondField;
+        Assert.assertEquals("word", secondConstant.getName());
+        Assert.assertEquals(DataType.STRING, secondConstant.getDataType());
+        
+        // TODO Test Value
+    }
+    
+    @Test
     public void parseConstantWithoutValue() throws Exception {
     	String sb = String.join("\n", 
                 "const int noValue;"
