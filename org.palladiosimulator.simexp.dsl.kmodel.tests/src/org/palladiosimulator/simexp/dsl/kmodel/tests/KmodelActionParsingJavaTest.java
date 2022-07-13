@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ParamType;
@@ -184,9 +185,9 @@ public class KmodelActionParsingJavaTest {
         Statement actionCall = statements.get(0).getStatements().get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
         
-        Expression actionArgument = actionCall.getArgument();
+        Expression actionArgument = KmodelTestUtil.getNextExpressionWithContent(actionCall.getArgument());
         Assert.assertTrue(actionArgument.getLiteral() instanceof FloatLiteral);
-        Assert.assertEquals(((FloatLiteral) actionArgument.getLiteral()).getValue(), "1.0");
+        Assert.assertEquals(1, ((FloatLiteral) actionArgument.getLiteral()).getValue(), 0.0f);
     }
     
     @Test
@@ -218,9 +219,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getActionRef(), actionDeclaration);
         Assert.assertEquals(actionDeclaration, actionCall.getActionRef());
         
-        Expression actionArgument = actionCall.getArgument();
-        Assert.assertEquals("argument", actionArgument.getFieldRef().getName());
-        Assert.assertEquals(DataType.FLOAT, actionArgument.getFieldRef().getDataType());
+        Expression actionArgument = KmodelTestUtil.getNextExpressionWithContent(actionCall.getArgument());
+        Field argumentField = actionArgument.getFieldRef();
+        Assert.assertEquals("argument", argumentField.getName());
+        Assert.assertEquals(DataType.FLOAT, argumentField.getDataType());
     }
     
     @Test
@@ -282,9 +284,9 @@ public class KmodelActionParsingJavaTest {
     }
     
     @Test
-    public void parseActionCallWithWrongVariableType() throws Exception {
+    public void parseActionCallWithWrongFieldType() throws Exception {
         String sb = String.join("\n", 
-                "var int factor;",
+                "var bool factor;",
                 "action scaleOut(var float balancingFactor);"
                 , "if(true){"
                 , "scaleOut(factor);"
@@ -295,7 +297,12 @@ public class KmodelActionParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Expected an argument of type 'float'. Got 'int' instead.");
+        		"Expected an argument of type 'float'. Got 'bool' instead.");
+    }
+    
+    @Test
+    public void parseActionCallWithWrongParameterType() throws Exception {
+    	// TODO
     }
     
     @Test

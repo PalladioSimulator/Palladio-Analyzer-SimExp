@@ -1,5 +1,7 @@
 grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.common.Terminals
 
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
 KModel:
@@ -9,9 +11,9 @@ KModel:
 	
 Field:
 	Constant | Variable | Probe;
-	
+
 Constant returns Field:
-	{Constant} 'const' dataType=DataType name=ID '=' value=Expression ';';	
+	{Constant} 'const' dataType=DataType name=ID '=' value=Expression ';';
 	
 Variable returns Field:
 	{Variable} 'var' dataType=DataType name=ID ';';	
@@ -33,19 +35,17 @@ ActionCall returns Statement:
 IfStatement returns Statement: 
 	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
-Expression: Disjunction;
-
-Disjunction returns Expression:
-    Conjunction ({Disjunction.left=current} '|' right=Conjunction)*;
+Expression:
+    Conjunction ({Expression.left=current} op='||' right=Conjunction)*;
     
 Conjunction returns Expression:
-	Equality ({Conjunction.left=current} '&' right=Equality)*;
+	Equality ({Conjunction.left=current} op='&&' right=Equality)*;
 	
 Equality returns Expression:
 	Negation ({Equality.left=current} op=('==' | '!=') right=Negation)*;
 	
 Negation returns Expression:
-	{Negation} (negated?='!')? expr=Comparison;	
+	{Negation} (op='!')? left=Comparison;	
 	
 Comparison returns Expression:
 	Addition ({Comparison.left=current} op=('<' | '<=' | '>=' | '>') right=Addition)?;	
@@ -54,8 +54,8 @@ Addition returns Expression:
 	AdditiveInversion ({Addition.left=current} op=('+' | '-') right=Multiplication)*;
 	
 AdditiveInversion returns Expression:
-	{AdditiveInversion} (inverted?='-')? expr=Multiplication;
-	
+	{AdditiveInversion} (op='-')? left=Multiplication;
+
 Multiplication returns Expression:
 	Term ({Multiplication.left=current} op=('*' | '/') right=Term)*;			
 
@@ -72,6 +72,6 @@ enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string'
 
 enum ParamType: PARAMETER = 'param' | VARIABLE = 'var';
 
-terminal BOOL: 'true' | 'false';
+terminal BOOL returns ecore::EBoolean: 'true' | 'false';
 
-terminal FLOAT: INT '.' INT;
+terminal FLOAT returns ecore::EFloat: INT '.' INT;

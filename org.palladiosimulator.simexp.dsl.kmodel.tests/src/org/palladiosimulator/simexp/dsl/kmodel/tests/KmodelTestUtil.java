@@ -7,7 +7,14 @@ import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 public class KmodelTestUtil {
 	
@@ -55,5 +62,92 @@ public class KmodelTestUtil {
     	}
     }
 	
+	public static Expression getNextExpressionWithContent(Expression expression) {
+		Expression currentExpr = expression;
+		
+		while (currentExpr.getOp() == null && currentExpr.getExpr() == null
+				&& currentExpr.getLiteral() == null && currentExpr.getFieldRef() == null) {
+			
+			currentExpr = currentExpr.getLeft();
+		}
+		
+		return currentExpr;
+	}
 	
+	public static DataType getDataType(Expression expression) {
+		if (expression == null) {
+			return null;
+		}
+		
+		String operation = expression.getOp();
+		
+		if (operation != null) {
+			switch (operation) {
+			// Fallthrough, all cases are boolean.
+			case "||":
+			case "&&":
+			case "==":
+			case "!=":
+			case "!":	
+			case "<":
+			case "<=":
+			case ">=":
+			case ">":	
+				return DataType.BOOL;
+			
+			// Fallthrough, all cases are either int or float.
+			case "+":
+			case "-":
+			case "*":
+				DataType leftDataType = getDataType(expression.getLeft());
+				DataType rightDataType = getDataType(expression.getRight());
+				
+				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
+					return DataType.FLOAT;
+				} else {
+					return DataType.INT;
+				}
+				
+			// Division returns always a float value.	
+			case "/":
+				return DataType.FLOAT;
+				
+			default: 
+				break;	
+			}
+		}
+		
+		Expression left = expression.getLeft();
+		if (left != null) {
+			return getDataType(left);
+		}
+		
+		Expression inner = expression.getExpr();
+		if (inner != null) {
+			return getDataType(inner);
+		}
+		
+		Expression literal = expression.getLiteral();
+		if (literal != null) {
+			if (literal instanceof BoolLiteral) {
+				return DataType.BOOL;
+				
+			} else if (literal instanceof IntLiteral) {
+				return DataType.INT;
+				
+			} else if (literal instanceof FloatLiteral) {
+				return DataType.FLOAT;
+				
+			} else if (literal instanceof StringLiteral) {
+				return DataType.STRING;
+			}
+		}
+		
+		Field fieldRef = expression.getFieldRef();
+		if (fieldRef != null) {
+			return fieldRef.getDataType();
+		}
+		
+		return null;
+	}
 }
