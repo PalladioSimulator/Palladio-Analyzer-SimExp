@@ -11,22 +11,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Addition;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.AdditiveInversion;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.AdditionExpr;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.AdditiveInversionExpr;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Comparison;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Conjunction;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ComparisonExpr;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ConjunctionExpr;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Equality;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.EqualityExpr;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Multiplication;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Negation;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.MultiplicationExpr;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.NegationExpr;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -119,7 +120,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
 	public void checkDisjunctionExpression(Expression disjunction) {
-		if (!disjunction.getOp().equals("||")) {
+		if (disjunction.getOp() != Operation.OR) {
 			return;
 		}
 		
@@ -138,8 +139,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkConjunctionExpression(Conjunction conjunction) {
-		if (!conjunction.getOp().equals("&&")) {
+	public void checkConjunctionExpression(ConjunctionExpr conjunction) {
+		if (conjunction.getOp() != Operation.AND) {
 			return;
 		}
 		
@@ -158,8 +159,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkEqualityExpression(Equality equality) {
-		if (!equality.getOp().equals("==") && !equality.getOp().equals("!=")) {
+	public void checkEqualityExpression(EqualityExpr equality) {
+		if (equality.getOp() != Operation.EQUAL && equality.getOp() != Operation.UNEQUAL) {
 			return;
 		}
 		
@@ -181,8 +182,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkNegationExpression(Negation negation) {
-		if (!negation.getOp().equals("!")) {
+	public void checkNegationExpression(NegationExpr negation) {
+		if (negation.getOp() != Operation.NOT) {
 			return;
 		}
 		
@@ -190,14 +191,14 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		if (type != DataType.BOOL) {
 			error("Cannot negate a '" + type + "' value.",
-					KmodelPackage.Literals.EXPRESSION__EXPR);
+					KmodelPackage.Literals.EXPRESSION__LEFT);
 		}
 	}
 	
 	@Check
-	public void checkComparisonExpression(Comparison comparison) {
-		if (!comparison.getOp().equals("<") && !comparison.getOp().equals("<=") 
-				&& !comparison.getOp().equals(">=") && !comparison.getOp().equals(">")) {
+	public void checkComparisonExpression(ComparisonExpr comparison) {
+		if (comparison.getOp() != Operation.SMALLER && comparison.getOp() != Operation.SMALLER_OR_EQUAL
+				&& comparison.getOp() != Operation.GREATER_OR_EQUAL && comparison.getOp() != Operation.GREATER) {
 			return;
 		}
 		
@@ -221,8 +222,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkAdditionExpression(Addition addition) {
-		if (!addition.getOp().equals("+") && !addition.getOp().equals("-")) {
+	public void checkAdditionExpression(AdditionExpr addition) {
+		if (addition.getOp() != Operation.PLUS && addition.getOp() != Operation.MINUS) {
 			return;
 		}
 		
@@ -246,8 +247,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkAdditiveInversionExpression(AdditiveInversion inversion) {
-		if (!inversion.getOp().equals("-")) {
+	public void checkAdditiveInversionExpression(AdditiveInversionExpr inversion) {
+		if (inversion.getOp() != Operation.PLUS && inversion.getOp() != Operation.MINUS) {
 			return;
 		}
 
@@ -255,13 +256,13 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			
 		if (type != DataType.INT && type != DataType.FLOAT) {
 			error("Cannot invert a '" + type + "' value.",
-					KmodelPackage.Literals.EXPRESSION__EXPR);
+					KmodelPackage.Literals.EXPRESSION__LEFT);
 		}
 	}
 	
 	@Check
-	public void checkMultiplicationExpression(Multiplication multiplication) {
-		if (!multiplication.getOp().equals("*") && !multiplication.getOp().equals("/")) {
+	public void checkMultiplicationExpression(MultiplicationExpr multiplication) {
+		if (multiplication.getOp() != Operation.MULTIPLY && multiplication.getOp() != Operation.DIVIDE) {
 			return;
 		}
 		
@@ -289,41 +290,45 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return null;
 		}
 		
-		String operation = expression.getOp();
+		Operation operation = expression.getOp();
 		
 		if (operation != null) {
 			switch (operation) {
-			// Fallthrough, all cases are boolean.
-			case "||":
-			case "&&":
-			case "==":
-			case "!=":
-			case "!":	
-			case "<":
-			case "<=":
-			case ">=":
-			case ">":	
-				return DataType.BOOL;
+				// No Operation.
+				case NULL:
+					break;
 			
-			// Fallthrough, all cases are either int or float.
-			case "+":
-			case "-":
-			case "*":
-				DataType leftDataType = getDataType(expression.getLeft());
-				DataType rightDataType = getDataType(expression.getRight());
+				// Fallthrough, all cases are boolean.
+				case OR:
+				case AND:
+				case EQUAL:
+				case UNEQUAL:
+				case NOT:	
+				case SMALLER:
+				case SMALLER_OR_EQUAL:
+				case GREATER_OR_EQUAL:
+				case GREATER:	
+					return DataType.BOOL;
+			
+				// Fallthrough, all cases are either int or float.
+				case PLUS:
+				case MINUS:
+				case MULTIPLY:
+					DataType leftDataType = getDataType(expression.getLeft());
+					DataType rightDataType = getDataType(expression.getRight());
 				
-				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
-					return DataType.FLOAT;
-				} else {
+					if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
+						return DataType.FLOAT;
+					} else {
 					return DataType.INT;
-				}
+					}
 				
-			// Division returns always a float value.	
-			case "/":
-				return DataType.FLOAT;
+				// Division returns always a float value.	
+				case DIVIDE:
+					return DataType.FLOAT;
 				
-			default: 
-				break;	
+				default: 
+					break;	
 			}
 		}
 		

@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 public class KmodelTestUtil {
@@ -65,7 +66,7 @@ public class KmodelTestUtil {
 	public static Expression getNextExpressionWithContent(Expression expression) {
 		Expression currentExpr = expression;
 		
-		while (currentExpr.getOp() == null && currentExpr.getExpr() == null
+		while (currentExpr.getOp() == Operation.NULL && currentExpr.getExpr() == null
 				&& currentExpr.getLiteral() == null && currentExpr.getFieldRef() == null) {
 			
 			currentExpr = currentExpr.getLeft();
@@ -79,41 +80,45 @@ public class KmodelTestUtil {
 			return null;
 		}
 		
-		String operation = expression.getOp();
+		Operation operation = expression.getOp();
 		
 		if (operation != null) {
 			switch (operation) {
-			// Fallthrough, all cases are boolean.
-			case "||":
-			case "&&":
-			case "==":
-			case "!=":
-			case "!":	
-			case "<":
-			case "<=":
-			case ">=":
-			case ">":	
-				return DataType.BOOL;
+				// No Operation.
+				case NULL:
+					break;
 			
-			// Fallthrough, all cases are either int or float.
-			case "+":
-			case "-":
-			case "*":
-				DataType leftDataType = getDataType(expression.getLeft());
-				DataType rightDataType = getDataType(expression.getRight());
+				// Fallthrough, all cases are boolean.
+				case OR:
+				case AND:
+				case EQUAL:
+				case UNEQUAL:
+				case NOT:	
+				case SMALLER:
+				case SMALLER_OR_EQUAL:
+				case GREATER_OR_EQUAL:
+				case GREATER:	
+					return DataType.BOOL;
+			
+				// Fallthrough, all cases are either int or float.
+				case PLUS:
+				case MINUS:
+				case MULTIPLY:
+					DataType leftDataType = getDataType(expression.getLeft());
+					DataType rightDataType = getDataType(expression.getRight());
 				
-				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
-					return DataType.FLOAT;
-				} else {
+					if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
+						return DataType.FLOAT;
+					} else {
 					return DataType.INT;
-				}
+					}
 				
-			// Division returns always a float value.	
-			case "/":
-				return DataType.FLOAT;
+				// Division returns always a float value.	
+				case DIVIDE:
+					return DataType.FLOAT;
 				
-			default: 
-				break;	
+				default: 
+					break;	
 			}
 		}
 		

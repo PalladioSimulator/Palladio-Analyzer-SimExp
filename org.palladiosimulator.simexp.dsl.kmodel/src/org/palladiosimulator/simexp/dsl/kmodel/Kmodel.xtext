@@ -36,28 +36,28 @@ IfStatement returns Statement:
 	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
 
 Expression:
-    Conjunction ({Expression.left=current} op='||' right=Conjunction)*;
+    ConjunctionExpr =>({Expression.left=current} op=Disjunction right=ConjunctionExpr)*;
     
-Conjunction returns Expression:
-	Equality ({Conjunction.left=current} op='&&' right=Equality)*;
+ConjunctionExpr returns Expression:
+	EqualityExpr =>({ConjunctionExpr.left=current} op=Conjunction right=EqualityExpr)*;
 	
-Equality returns Expression:
-	Negation ({Equality.left=current} op=('==' | '!=') right=Negation)*;
+EqualityExpr returns Expression:
+	NegationExpr =>({EqualityExpr.left=current} op=Equality right=NegationExpr)*;
 	
-Negation returns Expression:
-	{Negation} (op='!')? left=Comparison;	
+NegationExpr returns Expression:
+	{NegationExpr} (op=Negation)? =>left=ComparisonExpr;	
 	
-Comparison returns Expression:
-	Addition ({Comparison.left=current} op=('<' | '<=' | '>=' | '>') right=Addition)?;	
+ComparisonExpr returns Expression:
+	AdditionExpr =>({ComparisonExpr.left=current} op=Comparison right=AdditionExpr)?;	
 	
-Addition returns Expression:
-	AdditiveInversion ({Addition.left=current} op=('+' | '-') right=Multiplication)*;
+AdditionExpr returns Expression:
+	AdditiveInversionExpr =>({AdditionExpr.left=current} op=Addition right=MultiplicationExpr)*;
 	
-AdditiveInversion returns Expression:
-	{AdditiveInversion} (op='-')? left=Multiplication;
+AdditiveInversionExpr returns Expression:
+	{AdditiveInversionExpr} (op=Addition)? =>left=MultiplicationExpr;
 
-Multiplication returns Expression:
-	Term ({Multiplication.left=current} op=('*' | '/') right=Term)*;			
+MultiplicationExpr returns Expression:
+	Term =>({MultiplicationExpr.left=current} op=Multiplication right=Term)*;			
 
 Term returns Expression: 
 	fieldRef=[Field] | literal=Literal | '(' expr=Expression ')';	
@@ -71,6 +71,14 @@ Literal returns Expression:
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 
 enum ParamType: PARAMETER = 'param' | VARIABLE = 'var';
+
+enum Disjunction returns Operation: NULL | OR = '||';
+enum Conjunction returns Operation: NULL | AND = '&&';
+enum Equality returns Operation: NULL | EQUAL = '==' | UNEQUAL = '!=';
+enum Negation returns Operation: NULL | NOT = '!';
+enum Comparison returns Operation: NULL | SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
+enum Addition returns Operation: NULL | PLUS = '+' | MINUS = '-';
+enum Multiplication returns Operation: NULL | MULTIPLY = '*' | DIVIDE = '/';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
 
