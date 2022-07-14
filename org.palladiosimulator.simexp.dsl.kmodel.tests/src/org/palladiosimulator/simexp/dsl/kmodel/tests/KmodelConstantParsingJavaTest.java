@@ -13,11 +13,11 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 @RunWith(XtextRunner.class)
@@ -47,7 +47,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("condition", constant.getName());
         Assert.assertEquals(DataType.BOOL, constant.getDataType());
         
-        Expression value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
+        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         Assert.assertTrue(value instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) value).isValue());
     }
@@ -72,7 +72,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.INT, constant.getDataType());
         
-        Expression value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
+        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         Assert.assertTrue(value instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) value).getValue());
     }
@@ -97,7 +97,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.FLOAT, constant.getDataType());
         
-        Expression value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
+        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         Assert.assertTrue(value instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) value).getValue(), 0.0f);
     }
@@ -122,7 +122,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("word", constant.getName());
         Assert.assertEquals(DataType.STRING, constant.getDataType());
         
-        Expression value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
+        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         Assert.assertTrue(value instanceof StringLiteral);
         Assert.assertEquals("word", ((StringLiteral) value).getValue());
     }
@@ -148,7 +148,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("count", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
 
-        Expression firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue()).getLiteral();
+        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue()).getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         
@@ -159,7 +159,7 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("word", secondConstant.getName());
         Assert.assertEquals(DataType.STRING, secondConstant.getDataType());
         
-        Expression secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue()).getLiteral();
+        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue()).getLiteral();
         Assert.assertTrue(secondValue instanceof StringLiteral);
         Assert.assertEquals("word", ((StringLiteral) secondValue).getValue());
     }

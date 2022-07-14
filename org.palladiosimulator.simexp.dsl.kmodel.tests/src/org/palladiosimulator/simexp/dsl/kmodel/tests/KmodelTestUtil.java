@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
@@ -132,7 +133,7 @@ public class KmodelTestUtil {
 			return getDataType(inner);
 		}
 		
-		Expression literal = expression.getLiteral();
+		Literal literal = expression.getLiteral();
 		if (literal != null) {
 			if (literal instanceof BoolLiteral) {
 				return DataType.BOOL;

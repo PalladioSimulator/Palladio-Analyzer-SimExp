@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.MultiplicationExpr;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.NegationExpr;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
@@ -342,7 +343,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return getDataType(inner);
 		}
 		
-		Expression literal = expression.getLiteral();
+		Literal literal = expression.getLiteral();
 		if (literal != null) {
 			if (literal instanceof BoolLiteral) {
 				return DataType.BOOL;

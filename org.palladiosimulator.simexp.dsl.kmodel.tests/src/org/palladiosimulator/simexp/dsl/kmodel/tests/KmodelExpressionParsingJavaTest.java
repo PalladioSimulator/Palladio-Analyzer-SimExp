@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
@@ -44,7 +45,7 @@ public class KmodelExpressionParsingJavaTest {
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         
-        Expression literal = expression.getLiteral();
+        Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
     }
@@ -66,7 +67,7 @@ public class KmodelExpressionParsingJavaTest {
         Expression firstExpression = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(firstExpression));
         
-        Expression firstValue = firstExpression.getLiteral();
+        Literal firstValue = firstExpression.getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         
@@ -97,7 +98,7 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertNotNull(expression.getExpr());
         
         Expression inner = KmodelTestUtil.getNextExpressionWithContent(expression.getExpr());
-        Expression literal = inner.getLiteral();
+        Literal literal = inner.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
     }
@@ -120,12 +121,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.OR, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isValue());
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
         Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isValue());
     }
@@ -148,12 +149,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.AND, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isValue());
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
         Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isValue());
     }
@@ -176,12 +177,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.EQUAL, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof StringLiteral);
         Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof StringLiteral);
         Assert.assertEquals("thing", ((StringLiteral) rightLiteral).getValue());
     }
@@ -205,7 +206,7 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertNull(expression.getRight());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isValue());
     }
@@ -228,12 +229,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -256,12 +257,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.PLUS, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -285,7 +286,7 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertNull(expression.getRight());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
     }
@@ -308,12 +309,12 @@ public class KmodelExpressionParsingJavaTest {
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
         
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
+        Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) leftLiteral).getValue(), 0.0f);
         
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
+        Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -442,6 +443,6 @@ public class KmodelExpressionParsingJavaTest {
         );
         
         KModel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input '('");
+        KmodelTestUtil.assertErrorMessages(model, 1, "missing ')' at ';'");
     }
 }
