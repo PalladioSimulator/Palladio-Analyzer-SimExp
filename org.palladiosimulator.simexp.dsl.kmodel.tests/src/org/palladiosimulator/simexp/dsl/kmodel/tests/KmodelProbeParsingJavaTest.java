@@ -12,23 +12,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelProbeParsingJavaTest {
-    @Inject private ParseHelper<KModel> parserHelper;
+    @Inject private ParseHelper<Kmodel> parserHelper;
     
     @Inject private ValidationTestHelper validationTestHelper;
 
     @Test
     public void parseSingleBoolProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe someId as bool condition;"
+                "probe bool condition = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -47,10 +47,10 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleIntProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe someId as int count;"
+                "probe int count = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -69,10 +69,10 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = String.join("\n", 
-                "probe someId as float number;"
+                "probe float number = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -91,10 +91,10 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = String.join("\n", 
-                "probe someId as string word;"
+                "probe string word = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -113,11 +113,11 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseTwoVariables() throws Exception {
         String sb = String.join("\n", 
-                "probe someId as int count;",
-                "probe someOtherId as string word;"
+                "probe int count = someId;",
+                "probe string word = someOtherId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -142,38 +142,14 @@ public class KmodelProbeParsingJavaTest {
     }
     
     @Test
-    public void parseProbeWithValue() throws Exception {
-    	String sb = String.join("\n", 
-                "probe someId as int number = 1;"
-        );
-    	
-    	KModel model = parserHelper.parse(sb);
-    	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
-    }
-    
-    @Test
     public void parseProbeWithoutId() throws Exception {
     	String sb = String.join("\n", 
                 "probe bool condition;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
     	
-    	KmodelTestUtil.assertErrorMessages(model, 2, "extraneous input 'bool' expecting RULE_ID",
-    			"mismatched input ';' expecting 'as'");
-    }
-    
-    @Test
-    public void parseLocalProbe() throws Exception {
-    	String sb = String.join("\n", 
-    			"if(true){",
-    			"probe someId as int number;",
-    			"}");
-    	
-    	KModel model = parserHelper.parse(sb);
-
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'probe' expecting '}'");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
 }
 

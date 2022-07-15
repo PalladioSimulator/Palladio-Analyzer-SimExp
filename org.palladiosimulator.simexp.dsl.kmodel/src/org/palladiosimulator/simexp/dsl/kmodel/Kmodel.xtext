@@ -4,7 +4,7 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
 generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 
-KModel:
+Kmodel:
 	(fields+=Field)*
 	(actions+=Action)*
 	(statements+=IfStatement)*;
@@ -13,63 +13,81 @@ Field:
 	Constant | Variable | Probe;
 
 Constant returns Field:
-	{Constant} 'const' dataType=DataType name=ID '=' value=Expression ';';
+	{Constant} 'const' dataType=DataType name=ID '=' value=DisjunctionExpr ';';
 	
 Variable returns Field:
-	{Variable} 'var' dataType=DataType name=ID ';';	
+	{Variable} 'var' dataType=DataType name=ID '=' values=ValueContainer ';';	
 
 Probe returns Field:
-	{Probe} 'probe' id=ID 'as' dataType=DataType name=ID ';';
+	{Probe} 'probe' dataType=DataType name=ID '=' id=ID ';';
 	
 Action:
-	{Action} 'action' name=ID '(' parameter=Parameter ')' ';';
+	'action' name=ID '(' (parameters+=Parameter  (',' parameters+=Parameter)*)? ')' ';';
+
+Parameter: ArgumentParameter | VariableParameter;
 	
-Parameter: paramType=ParamType dataType=DataType name=ID;
+ArgumentParameter returns Parameter:
+	'param' dataType=DataType name=ID;	
+	
+VariableParameter returns Parameter:
+	var?='var' dataType=DataType name=ID '=' values=ValueContainer;
+	
+ValueContainer: Array | Range | RangeWithGrowth;
+	
+Array returns ValueContainer:
+	{Array} '{' (values+=DisjunctionExpr (',' values+=DisjunctionExpr)*) '}';
+	
+Range returns ValueContainer:
+	{Range} '(' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' stepSize=DisjunctionExpr ')';
+	
+RangeWithGrowth returns ValueContainer:
+	{RangeWithGrowth} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' numSteps=DisjunctionExpr ',' growth=Growth ']' ;	
 
 Statement:
 	ActionCall | IfStatement;
 
 ActionCall returns Statement:
-	actionRef=[Action] '(' argument=Expression ')' ';';
+	actionRef=[Action] '(' (arguments+=DisjunctionExpr (',' arguments+=DisjunctionExpr)*)? ')' ';';
 	
 IfStatement returns Statement: 
-	'if' '(' condition=Expression ')' '{' (statements+=Statement)* '}';
+	'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
 
-Expression:
+DisjunctionExpr returns Expression:
     ConjunctionExpr ({Expression.left=current} op=Disjunction right=ConjunctionExpr)*;
     
 ConjunctionExpr returns Expression:
-	EqualityExpr ({ConjunctionExpr.left=current} op=Conjunction right=EqualityExpr)*;
+	EqualityExpr ({Expression.left=current} op=Conjunction right=EqualityExpr)*;
 	
 EqualityExpr returns Expression:
-	NegationExpr ({EqualityExpr.left=current} op=Equality right=NegationExpr)*;
-	
-NegationExpr returns Expression:
-	{NegationExpr} (op=Negation)? left=ComparisonExpr;	
+	ComparisonExpr ({Expression.left=current} op=Equality right=ComparisonExpr)*;	
 	
 ComparisonExpr returns Expression:
-	AdditionExpr ({ComparisonExpr.left=current} op=Comparison right=AdditionExpr)?;	
+	AdditionExpr ({Expression.left=current} op=Comparison right=AdditionExpr)?;	
 	
 AdditionExpr returns Expression:
-	AdditiveInversionExpr ({AdditionExpr.left=current} op=Addition right=MultiplicationExpr)*;
-	
-AdditiveInversionExpr returns Expression:
-	{AdditiveInversionExpr} (op=Addition)? left=MultiplicationExpr;
+	MultiplicationExpr ({Expression.left=current} op=Addition right=MultiplicationExpr)*;
 
 MultiplicationExpr returns Expression:
-	Term ({MultiplicationExpr.left=current} op=Multiplication right=Term)*;			
+	NegationExpr ({Expression.left=current} op=Multiplication right=NegationExpr)*;	
+	
+NegationExpr returns Expression:
+	(op=Negation)? left=AdditiveInversionExpr;
+	
+AdditiveInversionExpr returns Expression:
+	(op=Addition)? left=Term;			
 
 Term returns Expression: 
-	fieldRef=[Field] | literal=Literal | '(' expr=Expression ')';	
+	fieldRef=[Field] | literal=Literal | '(' left=DisjunctionExpr ')';
 
 Literal: 
 	  {BoolLiteral} value=BOOL
 	| {IntLiteral} value=INT 
 	| {FloatLiteral} value=FLOAT
-	| {StringLiteral} value=STRING;
+	| {StringLiteral} value=STRING;	
 
 enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
-enum ParamType: PARAMETER = 'param' | VARIABLE = 'var';
+
+enum Growth: LOGARITHMIC | LINEAR | POLYNOMIAL | EXPONENTIAL;	
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.
 enum Operation: NULL;
@@ -82,4 +100,4 @@ enum Addition returns Operation: PLUS = '+' | MINUS = '-';
 enum Multiplication returns Operation: MULTIPLY = '*' | DIVIDE = '/';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
-terminal FLOAT returns ecore::EFloat: INT '.' INT;
+terminal FLOAT returns ecore::EFloat: (INT)? '.' INT ('e' INT)?;

@@ -16,14 +16,14 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelConstantParsingJavaTest {
-    @Inject private ParseHelper<KModel> parserHelper;
+    @Inject private ParseHelper<Kmodel> parserHelper;
     
     @Inject private ValidationTestHelper validationTestHelper;
 
@@ -33,7 +33,7 @@ public class KmodelConstantParsingJavaTest {
                 "const bool condition = true;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -58,7 +58,7 @@ public class KmodelConstantParsingJavaTest {
                 "const int one = 1;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -83,7 +83,7 @@ public class KmodelConstantParsingJavaTest {
                 "const float one = 1.0;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -108,7 +108,7 @@ public class KmodelConstantParsingJavaTest {
                 "const string word = \"word\";"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -134,7 +134,7 @@ public class KmodelConstantParsingJavaTest {
                 "const string word = \"word\";"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -171,7 +171,7 @@ public class KmodelConstantParsingJavaTest {
                 "const int const2 = const1;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -203,7 +203,7 @@ public class KmodelConstantParsingJavaTest {
                 "const int noValue;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
     	
         KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -211,29 +211,29 @@ public class KmodelConstantParsingJavaTest {
     @Test
     public void parseConstantWithVariableValue() throws Exception {
     	String sb = String.join("\n",
-    			"var int variable;",
+    			"var int variable = {0};",
                 "const int constant = variable;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable to a constant value.");
+        		"Cannot assign an expression containing a variable value to a constant.");
     }
     
     @Test
     public void parseConstantWithExpressionContainingVariable() throws Exception {
     	String sb = String.join("\n",
-    			"var bool variable;",
+    			"var bool variable = {true};",
                 "const bool constant = variable && true;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable to a constant value.");
+        		"Cannot assign an expression containing a variable value to a constant.");
     }
     
     @Test
@@ -242,11 +242,11 @@ public class KmodelConstantParsingJavaTest {
                 "const bool constant = false || constant;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Field 'constant' must be declared before referencing.");
+        		"Field 'constant' must be declared before being referenced.");
     }
     
     @Test
@@ -256,11 +256,11 @@ public class KmodelConstantParsingJavaTest {
                 "const int const2 = const1;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Field 'const2' must be declared before referencing.");
+        		"Field 'const2' must be declared before being referenced.");
     }
     
     @Test
@@ -269,22 +269,10 @@ public class KmodelConstantParsingJavaTest {
                 "const int number = true;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Expected a value of type 'int'. Got 'bool' instead.");
-    }
-    
-    @Test
-    public void parseLocalConstant() throws Exception {
-    	String sb = String.join("\n", 
-    			"if(true){",
-    			"const int variable = 1;",
-    			"}");
-    	
-    	KModel model = parserHelper.parse(sb);
-
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'const' expecting '}'");
+        		"Expected a value of type 'int', got 'bool' instead.");
     }
 }

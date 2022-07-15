@@ -13,14 +13,14 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 
 public class KmodelTestUtil {
 	
-	public static void assertModelWithoutErrors(KModel model) {
+	public static void assertModelWithoutErrors(Kmodel model) {
         Assert.assertNotNull(model);
         EList<Diagnostic> errors = model.eResource().getErrors();
         StringBuilder joinedErrors = new StringBuilder(); 
@@ -30,7 +30,7 @@ public class KmodelTestUtil {
         Assert.assertTrue(String.format("Unexpected errors: %s", joinedErrors), errors.isEmpty());
     }
 	
-	public static void assertErrorMessages(KModel model, int numErrors, String... messages) {
+	public static void assertErrorMessages(Kmodel model, int numErrors, String... messages) {
     	Assert.assertNotNull(model);
     	EList<Diagnostic> errors = model.eResource().getErrors();
     	
@@ -42,7 +42,7 @@ public class KmodelTestUtil {
     	}
     }
 	
-	public static void assertNoValidationIssues(ValidationTestHelper helper, KModel model) {
+	public static void assertNoValidationIssues(ValidationTestHelper helper, Kmodel model) {
 		Assert.assertNotNull(model);
 		List<Issue> issues = helper.validate(model);
 		StringBuilder joinedIssues = new StringBuilder(); 
@@ -52,7 +52,7 @@ public class KmodelTestUtil {
         Assert.assertTrue(String.format("Unexpected issues: %s", joinedIssues), issues.isEmpty());
 	}
 	
-	public static void assertValidationIssues(ValidationTestHelper helper, KModel model, int numIssues, String... messages) {
+	public static void assertValidationIssues(ValidationTestHelper helper, Kmodel model, int numIssues, String... messages) {
     	Assert.assertNotNull(model);
     	List<Issue> issues = helper.validate(model);
     	
@@ -67,8 +67,8 @@ public class KmodelTestUtil {
 	public static Expression getNextExpressionWithContent(Expression expression) {
 		Expression currentExpr = expression;
 		
-		while (currentExpr.getOp() == Operation.NULL && currentExpr.getExpr() == null
-				&& currentExpr.getLiteral() == null && currentExpr.getFieldRef() == null) {
+		while (currentExpr.getOp() == Operation.NULL && currentExpr.getLiteral() == null 
+				&& currentExpr.getFieldRef() == null) {
 			
 			currentExpr = currentExpr.getLeft();
 		}
@@ -126,11 +126,6 @@ public class KmodelTestUtil {
 		Expression left = expression.getLeft();
 		if (left != null) {
 			return getDataType(left);
-		}
-		
-		Expression inner = expression.getExpr();
-		if (inner != null) {
-			return getDataType(inner);
 		}
 		
 		Literal literal = expression.getLiteral();

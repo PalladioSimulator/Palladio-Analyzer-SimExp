@@ -12,26 +12,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelFieldParsingJavaTest {
-	@Inject private ParseHelper<KModel> parserHelper;
+	@Inject private ParseHelper<Kmodel> parserHelper;
 	
 	@Inject private ValidationTestHelper validationTestHelper;
 
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
         String sb = String.join("\n", 
-                "var bool condition;",
+                "var bool condition = {true, false};",
                 "const int one = 1;",
-                "probe someId as float aliasName;"
+                "probe float aliasName = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         EList<Field> fields = model.getFields();
@@ -48,70 +48,12 @@ public class KmodelFieldParsingJavaTest {
     }
     
     @Test
-    public void parseFieldWithoutFieldType() throws Exception {
-        String sb = String.join("\n",
-        		"var int variable;",
-                "int someField;"
-        );
-        
-        KModel model = parserHelper.parse(sb);
-        
-        KmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'int'");
-    }
-    
-    @Test
-    public void parseFieldWithInvalidFieldType() throws Exception {
-        String sb = String.join("\n",
-        		"var int variable;",
-                "field int someField;"
-        );
-        
-        KModel model = parserHelper.parse(sb);
-        
-        KmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'field'");
-    }
-    
-    @Test
-    public void parseFieldWithoutDataType() throws Exception {
-        String sb = String.join("\n", 
-                "var someField;"
-        );
-        
-        KModel model = parserHelper.parse(sb);
-        
-        KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'someField'");
-    }
-    
-    @Test
-    public void parseFieldWithInvalidDataType() throws Exception {
-        String sb = String.join("\n", 
-                "var type someField;"
-        );
-        
-        KModel model = parserHelper.parse(sb);
-        
-        KmodelTestUtil.assertErrorMessages(model, 2, "no viable alternative at input 'type'",
-        		"extraneous input 'someField' expecting ';'");
-    }
-    
-    @Test
-    public void parseFieldWithoutName() throws Exception {
-        String sb = String.join("\n", 
-                "var int;"
-        );
-        
-        KModel model = parserHelper.parse(sb);
-
-        KmodelTestUtil.assertErrorMessages(model, 1, "missing RULE_ID at ';'");
-    }
-    
-    @Test
     public void parseFieldWithInvalidName() throws Exception {
         String sb = String.join("\n", 
                 "var int 123;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '123' expecting RULE_ID");
     }
@@ -122,7 +64,7 @@ public class KmodelFieldParsingJavaTest {
                 "var int const;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertErrorMessages(model, 2, "mismatched input 'const' expecting RULE_ID",
         		"no viable alternative at input ';'");
@@ -135,7 +77,7 @@ public class KmodelFieldParsingJavaTest {
                 "const int number = 1;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'number'", "Duplicate Field 'number'");
@@ -144,13 +86,25 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
         String sb = String.join("\n", 
-                "var string word;",
-                "probe someId as string word;"
+                "var string word = {\"word\"};",
+                "probe string word = someId;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'word'", "Duplicate Field 'word'");
+    }
+    
+    @Test
+    public void parseLocalField() throws Exception {
+    	String sb = String.join("\n", 
+    			"if(true){",
+    			"var int variable = {1};",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+
+    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'var' expecting '}'");
     }
 }

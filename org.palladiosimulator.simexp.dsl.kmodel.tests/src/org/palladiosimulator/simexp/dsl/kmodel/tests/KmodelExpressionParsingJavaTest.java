@@ -17,7 +17,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KModel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
@@ -25,7 +25,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelExpressionParsingJavaTest {
-	@Inject private ParseHelper<KModel> parserHelper;
+	@Inject private ParseHelper<Kmodel> parserHelper;
     
     @Inject private ValidationTestHelper validationTestHelper;
     
@@ -35,7 +35,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = 1;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -57,7 +57,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const int b = a;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -85,7 +85,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = (1);"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -94,11 +94,8 @@ public class KmodelExpressionParsingJavaTest {
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
-        Assert.assertNull(expression.getLiteral());
-        Assert.assertNotNull(expression.getExpr());
         
-        Expression inner = KmodelTestUtil.getNextExpressionWithContent(expression.getExpr());
-        Literal literal = inner.getLiteral();
+        Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
     }
@@ -109,7 +106,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = true || false;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -137,7 +134,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = true && false;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -165,7 +162,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = \"some\" == \"thing\";"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -193,7 +190,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = !true;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -217,7 +214,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = 1 <= 2;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -245,7 +242,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = 1 + 2;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -273,7 +270,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = -1;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -297,7 +294,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const float constant = 1.0 * 2;"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         
@@ -326,7 +323,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = -a > 1 == !(true || false && (a * (1 + a)) != 2.0);"
         );
     	
-    	KModel model = parserHelper.parse(sb);
+    	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
@@ -337,11 +334,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = true || 1.0;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Expected a value of type 'bool'. Got 'float' instead.");
+        		"Expected a value of type 'bool', got 'float' instead.");
     }
     
     @Test
@@ -350,11 +347,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = \"true\" && false;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Expected a value of type 'bool'. Got 'string' instead.");
+        		"Expected a value of type 'bool', got 'string' instead.");
     }
     
     @Test
@@ -363,7 +360,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = \"1.0\" == 1.0;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
@@ -377,11 +374,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = !1;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Cannot negate a 'int' value.");
+        		"Expected a value of type 'bool', got 'int' instead.");
     }
     
     @Test
@@ -390,11 +387,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = 1 >= false;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Cannot compare a 'int' value with a 'bool' value.");
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
     
     @Test
@@ -403,11 +400,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = true + 1;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Cannot add or subtract a 'bool' value with a 'int' value.");
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
     
     @Test
@@ -416,11 +413,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const int constant = -false;"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot invert a 'bool' value.");
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
     
     @Test
@@ -429,11 +426,11 @@ public class KmodelExpressionParsingJavaTest {
                 "const float constant = 1.5 * \"2\";"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Cannot multiply or divide a 'float' value with a 'string' value.");
+        		"Expected a value of type 'int' or 'float', got 'string' instead.");
     }
     
     @Test
@@ -442,7 +439,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const string word = ((\"word\");"
         );
         
-        KModel model = parserHelper.parse(sb);
+        Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertErrorMessages(model, 1, "missing ')' at ';'");
     }
 }
