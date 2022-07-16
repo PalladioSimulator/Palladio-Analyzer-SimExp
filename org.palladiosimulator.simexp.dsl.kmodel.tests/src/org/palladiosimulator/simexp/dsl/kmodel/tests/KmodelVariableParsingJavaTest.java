@@ -241,10 +241,24 @@ public class KmodelVariableParsingJavaTest {
     	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
 
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3, 
-        		"Expected only values of type 'string', got 'bool' instead.", 
-        		"Expected only values of type 'string', got 'int' instead.", 
-        		"Expected only values of type 'string', got 'float' instead.");
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+        		"Expected only values of type 'string', got {bool, int, float} instead.");
+    }
+    
+    @Test
+    public void parseNonNumberVariableWithRange() throws Exception {
+    	String sb = String.join("\n", 
+                "var bool range = (true, false, true);"
+        );
+    	
+    	Kmodel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 4, 
+        		"Cannot assign a value range to a variable of the type 'bool'.", 
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.", 
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.", 
+        		"Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
 }
 

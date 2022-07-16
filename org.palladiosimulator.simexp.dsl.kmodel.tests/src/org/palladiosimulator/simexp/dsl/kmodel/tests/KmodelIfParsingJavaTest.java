@@ -156,7 +156,7 @@ public class KmodelIfParsingJavaTest {
     	String sb = String.join("\n",
     			"action scaleOut(param float balancingFactor);",
     			"if (false) {",
-    			"scaleOut(1.0);",
+    			"scaleOut(balancingFactor=1.0);",
     			"}"
     	);
     	
@@ -215,8 +215,8 @@ public class KmodelIfParsingJavaTest {
                 
                 ,"// rule block"
                 ,"if (true) {"
-                ,"    a(i);       // execute action"
-                ,    "anotherA(i); // execute another action"
+                ,"    a(factor=i);       // execute action"
+                ,    "anotherA(factor=i); // execute another action"
                 ,"}"
         );
         

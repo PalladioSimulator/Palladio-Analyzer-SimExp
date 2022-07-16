@@ -78,49 +78,46 @@ public class KmodelTestUtil {
 	
 	public static DataType getDataType(Expression expression) {
 		if (expression == null) {
-			return null;
+			return DataType.NULL;
 		}
 		
 		Operation operation = expression.getOp();
-		
-		if (operation != null) {
-			switch (operation) {
-				// No Operation.
-				case NULL:
-					break;
+		switch (operation) {
+			// No Operation.
+			case NULL:
+				break;
 			
-				// Fallthrough, all cases are boolean.
-				case OR:
-				case AND:
-				case EQUAL:
-				case UNEQUAL:
-				case NOT:	
-				case SMALLER:
-				case SMALLER_OR_EQUAL:
-				case GREATER_OR_EQUAL:
-				case GREATER:	
-					return DataType.BOOL;
+			// Fallthrough, all cases are boolean.
+			case OR:
+			case AND:
+			case EQUAL:
+			case UNEQUAL:
+			case NOT:	
+			case SMALLER:
+			case SMALLER_OR_EQUAL:
+			case GREATER_OR_EQUAL:
+			case GREATER:	
+				return DataType.BOOL;
 			
-				// Fallthrough, all cases are either int or float.
-				case PLUS:
-				case MINUS:
-				case MULTIPLY:
-					DataType leftDataType = getDataType(expression.getLeft());
-					DataType rightDataType = getDataType(expression.getRight());
+			// Fallthrough, all cases are either int or float.
+			case PLUS:
+			case MINUS:
+			case MULTIPLY:
+				DataType leftDataType = getDataType(expression.getLeft());
+				DataType rightDataType = getDataType(expression.getRight());
 				
-					if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
-						return DataType.FLOAT;
-					} else {
-					return DataType.INT;
-					}
-				
-				// Division returns always a float value.	
-				case DIVIDE:
+				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
 					return DataType.FLOAT;
+				} else {
+				return DataType.INT;
+				}
 				
-				default: 
-					break;	
-			}
+			// Division returns always a float value.	
+			case DIVIDE:
+				return DataType.FLOAT;
+				
+			default: 
+				break;	
 		}
 		
 		Expression left = expression.getLeft();
@@ -145,10 +142,6 @@ public class KmodelTestUtil {
 		}
 		
 		Field fieldRef = expression.getFieldRef();
-		if (fieldRef != null) {
-			return fieldRef.getDataType();
-		}
-		
-		return null;
+		return fieldRef != null ? fieldRef.getDataType() : DataType.NULL;
 	}
 }

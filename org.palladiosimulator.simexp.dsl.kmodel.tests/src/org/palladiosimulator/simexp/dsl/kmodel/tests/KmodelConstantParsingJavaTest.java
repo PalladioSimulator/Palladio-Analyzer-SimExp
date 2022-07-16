@@ -246,7 +246,7 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Field 'constant' must be declared before being referenced.");
+        		"Couldn't resolve reference to Field 'constant'.");
     }
     
     @Test
@@ -260,7 +260,7 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Field 'const2' must be declared before being referenced.");
+        		"Couldn't resolve reference to Field 'const2'.");
     }
     
     @Test

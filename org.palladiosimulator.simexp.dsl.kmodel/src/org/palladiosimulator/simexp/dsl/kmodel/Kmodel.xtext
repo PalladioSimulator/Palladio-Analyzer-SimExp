@@ -13,13 +13,13 @@ Field:
 	Constant | Variable | Probe;
 
 Constant returns Field:
-	{Constant} 'const' dataType=DataType name=ID '=' value=DisjunctionExpr ';';
+	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr ';';
 	
 Variable returns Field:
-	{Variable} 'var' dataType=DataType name=ID '=' values=ValueContainer ';';	
+	{Variable} 'var' dataType=PrimitiveType name=ID '=' values=ValueContainer ';';	
 
 Probe returns Field:
-	{Probe} 'probe' dataType=DataType name=ID '=' id=ID ';';
+	{Probe} 'probe' dataType=PrimitiveType name=ID '=' id=ID ';';
 	
 Action:
 	'action' name=ID '(' (parameters+=Parameter  (',' parameters+=Parameter)*)? ')' ';';
@@ -27,10 +27,10 @@ Action:
 Parameter: ArgumentParameter | VariableParameter;
 	
 ArgumentParameter returns Parameter:
-	'param' dataType=DataType name=ID;	
+	'param' dataType=PrimitiveType name=ID;	
 	
 VariableParameter returns Parameter:
-	var?='var' dataType=DataType name=ID '=' values=ValueContainer;
+	var?='var' dataType=PrimitiveType name=ID '=' values=ValueContainer;
 	
 ValueContainer: Array | Range | RangeWithGrowth;
 	
@@ -47,7 +47,10 @@ Statement:
 	ActionCall | IfStatement;
 
 ActionCall returns Statement:
-	actionRef=[Action] '(' (arguments+=DisjunctionExpr (',' arguments+=DisjunctionExpr)*)? ')' ';';
+	actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
+	
+ArgumentKeyValue:
+	paramRef=[Parameter] '=' argument=DisjunctionExpr;	
 	
 IfStatement returns Statement: 
 	'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
@@ -85,7 +88,9 @@ Literal:
 	| {FloatLiteral} value=FLOAT
 	| {StringLiteral} value=STRING;	
 
-enum DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
+// Rule 'DataType' is not used, but is necessary to provide a default value for data types.
+enum DataType: NULL;
+enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 
 enum Growth: LOGARITHMIC | LINEAR | POLYNOMIAL | EXPONENTIAL;	
 
