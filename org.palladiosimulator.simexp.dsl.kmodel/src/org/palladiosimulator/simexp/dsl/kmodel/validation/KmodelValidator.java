@@ -281,7 +281,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 				.map(arg -> getDataType(arg.getArgument()).toString())
 				.collect(Collectors.joining(", ", "(", ")"));
 		
-		if (parameterTypes.contains(DataType.NULL.toString())) {
+		if (argumentTypes.contains(DataType.NULL.toString())) {
 			return;
 		}
 		
