@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Interpreter
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.kmodel.interpreter
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.kmodel.interpreter
+Bundle-RequiredExecutionEnvironment: JavaSE-11

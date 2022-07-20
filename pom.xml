@@ -21,6 +21,8 @@
 		<additionalTestArguments></additionalTestArguments>
 	</properties>
 	<modules>
+		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter</module>
+		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ide</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui</module>
