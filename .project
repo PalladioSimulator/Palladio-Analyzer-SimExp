@@ -3,6 +3,14 @@
 	<name>org.palladiosimulator.simexp.dsl.kmodel.parent</name>
 	<comment></comment>
 	<projects>
+		<project>org.palladiosimulator.simexp.dsl.kmodel</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.ide</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.interpreter</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.target</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.tests</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.ui</project>
+		<project>org.palladiosimulator.simexp.dsl.kmodel.ui.tests</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

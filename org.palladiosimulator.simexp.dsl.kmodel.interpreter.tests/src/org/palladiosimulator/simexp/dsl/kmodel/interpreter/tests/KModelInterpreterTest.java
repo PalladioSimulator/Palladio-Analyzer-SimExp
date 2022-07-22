@@ -1,26 +1,27 @@
 package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KModelInterpreter;
+import org.mockito.Mockito;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 
 public class KModelInterpreterTest {
+    private KmodelInterpreter interpreter;
+    private ProbeValueProvider mockedPvp;
+    private VariableValueProvider mockedVvp;
     
-    
-    KModelInterpreter interpreter;
     
     @Before
     public void setUp() {
-        interpreter = new KModelInterpreter();
-    }
-
-    @Test
-    public void testHelloWorld() {
-        String actual = interpreter.helloWorld();
+        mockedPvp = mock(ProbeValueProvider.class);
+        mockedVvp = mock(VariableValueProvider.class);
         
-        assertEquals("Hello World", actual);
+        
     }
-
+    
 }
