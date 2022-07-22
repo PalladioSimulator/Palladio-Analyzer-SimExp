@@ -66,8 +66,7 @@ public class KmodelFieldParsingJavaTest {
         
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 2, "mismatched input 'const' expecting RULE_ID",
-        		"no viable alternative at input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'const' expecting RULE_ID");
     }
     
     @Test

@@ -10,27 +10,23 @@ Kmodel:
 	(statements+=IfStatement)*;
 	
 Field:
-	Constant | Variable | Probe;
+	(Constant | Variable | Probe) ';';
 
 Constant returns Field:
-	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr ';';
+	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr;
 	
 Variable returns Field:
-	{Variable} 'var' dataType=PrimitiveType name=ID '=' values=ValueContainer ';';	
+	{Variable} 'var' dataType=PrimitiveType name=ID '=' values=ValueContainer;	
 
 Probe returns Field:
-	{Probe} 'probe' dataType=PrimitiveType name=ID '=' id=ID ';';
+	{Probe} 'probe' dataType=PrimitiveType name=ID '=' id=ID;
 	
 Action:
-	'action' name=ID '(' (parameters+=Parameter  (',' parameters+=Parameter)*)? ')' ';';
+	'action' name=ID '(' parameterList=ParameterList ')' ';';
+	
+ParameterList: ((parameters+=Parameter (',' parameters+=Parameter)*) (',' variables+=Variable)*) | {ParameterList} (variables+=Variable)*;	
 
-Parameter: ArgumentParameter | VariableParameter;
-	
-ArgumentParameter returns Parameter:
-	'param' dataType=PrimitiveType name=ID;	
-	
-VariableParameter returns Parameter:
-	var?='var' dataType=PrimitiveType name=ID '=' values=ValueContainer;
+Parameter: 'param' dataType=PrimitiveType name=ID;
 	
 ValueContainer: Array | Range | RangeWithGrowth;
 	

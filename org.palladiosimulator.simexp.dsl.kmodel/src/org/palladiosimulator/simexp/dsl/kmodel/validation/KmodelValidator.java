@@ -6,7 +6,6 @@ package org.palladiosimulator.simexp.dsl.kmodel.validation;
 import org.eclipse.xtext.validation.Check;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
@@ -88,7 +87,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		List<Expression> values = array.getValues();
 		
-		StringJoiner valueTypes = new StringJoiner(", ");
+		StringJoiner wrongValueTypes = new StringJoiner(", ");
 		
 		for (int i = 0; i < values.size(); i++) {
 			Expression value = values.get(i);
@@ -109,12 +108,12 @@ public class KmodelValidator extends AbstractKmodelValidator {
 					continue;
 				}
 				
-				valueTypes.add(valueType.toString());
+				wrongValueTypes.add(valueType.toString());
 			}
 		}
 		
-		if (valueTypes.length() != 0) {
-			error("Expected only values of type '" + dataType + "', got {" + valueTypes + "} instead.",
+		if (wrongValueTypes.length() != 0) {
+			error("Expected only values of type '" + dataType + "', got {" + wrongValueTypes + "} instead.",
 					KmodelPackage.Literals.ARRAY__VALUES);
 		}
 	}
@@ -227,52 +226,28 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkParameterOrder(Action action) {
-		List<Parameter> parameters = action.getParameters();
-		
-		boolean foundVar = false;
-		
-		for (Parameter parameter : parameters) {
-			if (foundVar && !parameter.isVar()) {
-				error("Variable parameters must be listed at the end.", KmodelPackage.Literals.ACTION__PARAMETERS);
-				return;
-			}
-			
-			if (!foundVar && parameter.isVar()) {
-				foundVar = true;
-			}
-		}
-	}
-	
-	@Check
 	public void checkArguments(Statement actionCall) {
 		Action action = actionCall.getActionRef();
 		List<ArgumentKeyValue> arguments = actionCall.getArguments();
-		List<Parameter> parameters = action.getParameters();
-		
-		// Cannot accept arguments for 'var' parameters.
-		List<Parameter> argumentableParameters = parameters
-				.stream()
-				.filter(Predicate.not(Parameter::isVar))
-				.collect(Collectors.toList());
+		List<Parameter> parameters = action.getParameterList().getParameters();
 		
 		// Check if number of arguments match number parameters for which an argument can be accepted.
-		if (arguments.size() != argumentableParameters.size()) {
-			error("Expected " + argumentableParameters.size() + " arguments, got " + arguments.size() + ".", 
+		if (arguments.size() != parameters.size()) {
+			error("Expected " + parameters.size() + " arguments, got " + arguments.size() + ".", 
 					KmodelPackage.Literals.STATEMENT__ARGUMENTS);
 			return;
 		}
 		
 		// Check if arguments are provided in correct order.
 		for (int i = 0; i < arguments.size(); i++) {
-			if (!arguments.get(i).getParamRef().equals(argumentableParameters.get(i))) {
+			if (!arguments.get(i).getParamRef().equals(parameters.get(i))) {
 				error("Arguments must be provided in the order as declared.", KmodelPackage.Literals.STATEMENT__ARGUMENTS);
 				return;
 			}
 		}
 		
 		// Check if argument types match the parameter types.
-		String parameterTypes = argumentableParameters
+		String parameterTypes = parameters
 				.stream()
 				.map(param -> param.getDataType().toString())
 				.collect(Collectors.joining(", ", "(", ")"));
@@ -346,7 +321,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 				
 				if (rightDataType != DataType.NULL && !isNumberType(rightDataType)) {
 					error("Expected a value of type '" + DataType.INT + "' or '" + DataType.FLOAT + "', got '" + rightDataType + "' instead.",
-							KmodelPackage.Literals.EXPRESSION__LEFT);
+							KmodelPackage.Literals.EXPRESSION__RIGHT);
 				}
 		}
 	}
