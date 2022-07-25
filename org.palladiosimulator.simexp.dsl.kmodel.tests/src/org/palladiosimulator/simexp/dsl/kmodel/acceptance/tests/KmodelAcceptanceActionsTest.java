@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
@@ -15,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelInjectorProvider;
@@ -43,8 +42,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        assertEquals(0, action.getParameters()
-            .size());
+        assertEquals(0, action.getParameterList().getParameters().size());
     }
 
     @Test
@@ -62,12 +60,10 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(2, actions.size());
         Action action = actions.get(0);
         assertEquals("aName1", action.getName());
-        assertEquals(0, action.getParameters()
-            .size());
+        assertEquals(0, action.getParameterList().getParameters().size());
         action = actions.get(1);
         assertEquals("aName2", action.getName());
-        assertEquals(0, action.getParameters()
-            .size());
+        assertEquals(0, action.getParameterList().getParameters().size());
     }
     
     @Test
@@ -82,12 +78,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertFalse(param.isVar());
     }
 
     @Test
@@ -102,12 +99,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("ps", param.getName());
         assertEquals(DataType.STRING, param.getDataType());
-        assertFalse(param.isVar());
     }
 
     @Test
@@ -122,12 +120,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("pi", param.getName());
         assertEquals(DataType.INT, param.getDataType());
-        assertFalse(param.isVar());
     }
 
     @Test
@@ -144,16 +143,16 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(2, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("pb1", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertFalse(param.isVar());
         param = parameters.get(1);
         assertEquals("pb2", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertFalse(param.isVar());
     }
 
     @Test
@@ -192,12 +191,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(1, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("vb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertTrue(param.isVar());
         // TODO: check bounds
     }
     
@@ -226,17 +226,17 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(2, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(2, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("vb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertTrue(param.isVar());
         // TODO: check bounds
         param = parameters.get(1);
         assertEquals("vib", param.getName());
         assertEquals(DataType.INT, param.getDataType());
-        assertTrue(param.isVar());
         // TODO: check bounds
     }
     
@@ -254,16 +254,16 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameters();
+        EList<Parameter> parameters = action.getParameterList().getParameters();
         assertEquals(2, parameters.size());
+        EList<Field> variables = action.getParameterList().getVariables();
+        assertEquals(1, variables.size());
         Parameter param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertFalse(param.isVar());
         param = parameters.get(1);
         assertEquals("vb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        assertTrue(param.isVar());
         // TODO: check bounds
     }
 
