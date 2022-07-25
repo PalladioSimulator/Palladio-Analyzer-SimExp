@@ -108,7 +108,9 @@ public class KmodelAcceptanceActionCallsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
+        		"Couldn't resolve reference to Parameter 'vi'.", "Expected 0 arguments, got 1.");
     }
 
     @Test

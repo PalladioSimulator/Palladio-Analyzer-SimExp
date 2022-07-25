@@ -226,7 +226,7 @@ public class KmodelAcceptanceVariablesTest {
     	
     	Kmodel model = parserHelper.parse(sb);
     	
-    	KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+    	KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'variable'");
     }
     
     @Test
@@ -348,7 +348,7 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -359,7 +359,7 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -370,7 +370,7 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -381,7 +381,7 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
 
 
@@ -543,7 +543,9 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
+        		"Duplicate Field 'name'", "Duplicate Field 'name'");
     }
 
     @Test
@@ -555,7 +557,9 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
+        		"Duplicate Field 'name'", "Duplicate Field 'name'");
     }
 
     @Test
@@ -567,6 +571,6 @@ public class KmodelAcceptanceVariablesTest {
         
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ']' expecting '}'");
     }
 }

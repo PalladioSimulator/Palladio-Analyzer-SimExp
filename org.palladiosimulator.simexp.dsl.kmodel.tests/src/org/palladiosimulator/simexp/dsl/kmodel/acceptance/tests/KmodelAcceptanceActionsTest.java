@@ -173,7 +173,9 @@ public class KmodelAcceptanceActionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
+        		"Duplicate Parameter 'pb'", "Duplicate Parameter 'pb'");
     }
 
     @Test
@@ -184,7 +186,9 @@ public class KmodelAcceptanceActionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
+        		"Duplicate Parameter 'p'", "Duplicate Parameter 'p'");
     }
     
     @Test
@@ -223,7 +227,7 @@ public class KmodelAcceptanceActionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
 
     @Test
@@ -252,7 +256,7 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         // TODO check bounds; accept only literals
         Variable variable2 = (Variable) variables.get(1);
-        assertEquals("vib", variable2.getName());
+        assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
         assertTrue(bounds2 instanceof Array);
@@ -300,7 +304,7 @@ public class KmodelAcceptanceActionsTest {
 
         Kmodel model = parserHelper.parse(sb);
         
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'var'");
     }
     
     @Test

@@ -24,7 +24,9 @@ Probe returns Field:
 Action:
 	'action' name=ID '(' parameterList=ParameterList ')' ';';
 	
-ParameterList: ((parameters+=Parameter (',' parameters+=Parameter)*) (',' variables+=Variable)*) | {ParameterList} (variables+=Variable)*;	
+ParameterList: {ParameterList} 
+			(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*))
+			| (variables+=Variable (',' variables+=Variable)*))?;	
 
 Parameter: 'param' dataType=PrimitiveType name=ID;
 	

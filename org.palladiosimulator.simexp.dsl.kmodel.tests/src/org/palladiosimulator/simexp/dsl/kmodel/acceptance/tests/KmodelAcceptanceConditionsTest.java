@@ -28,7 +28,7 @@ public class KmodelAcceptanceConditionsTest {
     @Test
     public void parseOneLiteral() throws Exception {
         String sb = String.join("\n", 
-                "if(true) {};"
+                "if(true) {}"
                 );
 
         Kmodel model = parserHelper.parse(sb);
@@ -45,7 +45,7 @@ public class KmodelAcceptanceConditionsTest {
     public void parseOneConst() throws Exception {
         String sb = String.join("\n",
                 "const bool cb = true;",
-                "if(cb) {};"
+                "if(cb) {}"
                 );
 
         Kmodel model = parserHelper.parse(sb);
@@ -62,7 +62,7 @@ public class KmodelAcceptanceConditionsTest {
     public void parseOneConstExpressionOr() throws Exception {
         String sb = String.join("\n",
                 "const bool cb = true;",
-                "if(cb || false) {};"
+                "if(cb || false) {}"
                 );
 
         Kmodel model = parserHelper.parse(sb);
@@ -79,7 +79,7 @@ public class KmodelAcceptanceConditionsTest {
     public void parseOneConstExpressionAnd() throws Exception {
         String sb = String.join("\n",
                 "const bool cb = true;",
-                "if(cb && false) {};"
+                "if(cb && false) {}"
                 );
         
         Kmodel model = parserHelper.parse(sb);
@@ -96,7 +96,7 @@ public class KmodelAcceptanceConditionsTest {
     public void parseOneConstExpressionNotEqual() throws Exception {
         String sb = String.join("\n",
                 "const int ci = 1;",
-                "if(ci != 0) {};"
+                "if(ci != 0) {}"
                 );
         
         Kmodel model = parserHelper.parse(sb);
@@ -159,6 +159,8 @@ public class KmodelAcceptanceConditionsTest {
 
         Kmodel model = parserHelper.parse(sb);
      
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+        		"Couldn't resolve reference to Action 'aName'.");
     }
 }
