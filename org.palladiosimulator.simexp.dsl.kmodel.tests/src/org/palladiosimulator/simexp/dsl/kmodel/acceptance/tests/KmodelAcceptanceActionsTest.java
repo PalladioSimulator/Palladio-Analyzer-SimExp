@@ -1,21 +1,31 @@
 package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
 
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ValueContainer;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelTestUtil;
 
@@ -192,13 +202,17 @@ public class KmodelAcceptanceActionsTest {
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
         EList<Parameter> parameters = action.getParameterList().getParameters();
-        assertEquals(1, parameters.size());
+        assertEquals(0, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(1, variables.size());
-        Parameter param = parameters.get(0);
-        assertEquals("vb", param.getName());
-        assertEquals(DataType.BOOL, param.getDataType());
-        // TODO: check bounds
+        Variable variable = (Variable) variables.get(0);
+        assertEquals("vb", variable.getName());
+        assertEquals(DataType.BOOL, variable.getDataType());
+        ValueContainer bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array rangeArray = (Array) bounds;
+        // TODO check bounds; accept only literals
+        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
     }
     
     @Test
@@ -227,17 +241,24 @@ public class KmodelAcceptanceActionsTest {
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
         EList<Parameter> parameters = action.getParameterList().getParameters();
-        assertEquals(2, parameters.size());
+        assertEquals(0, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(2, variables.size());
-        Parameter param = parameters.get(0);
-        assertEquals("vb", param.getName());
-        assertEquals(DataType.BOOL, param.getDataType());
-        // TODO: check bounds
-        param = parameters.get(1);
-        assertEquals("vib", param.getName());
-        assertEquals(DataType.INT, param.getDataType());
-        // TODO: check bounds
+        Variable variable1 = (Variable) variables.get(0);
+        assertEquals("vb", variable1.getName());
+        assertEquals(DataType.BOOL, variable1.getDataType());
+        ValueContainer bounds = variable1.getValues();
+        assertTrue(bounds instanceof Array);
+        Array rangeArray = (Array) bounds;
+        // TODO check bounds; accept only literals
+        Variable variable2 = (Variable) variables.get(1);
+        assertEquals("vib", variable2.getName());
+        assertEquals(DataType.INT, variable2.getDataType());
+        ValueContainer bounds2 = variable2.getValues();
+        assertTrue(bounds2 instanceof Array);
+        Array rangeArray2 = (Array) bounds2;
+        // TODO check bounds; accept only literals
+        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
     }
     
     @Test
@@ -261,10 +282,14 @@ public class KmodelAcceptanceActionsTest {
         Parameter param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        param = parameters.get(1);
-        assertEquals("vb", param.getName());
-        assertEquals(DataType.BOOL, param.getDataType());
-        // TODO: check bounds
+        Variable variable = (Variable) variables.get(0);
+        assertEquals("vb", variable.getName());
+        assertEquals(DataType.BOOL, variable.getDataType());
+        ValueContainer bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array rangeArray = (Array) bounds;
+        // TODO check bounds; accept only literals
+        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
     }
 
     @Test
