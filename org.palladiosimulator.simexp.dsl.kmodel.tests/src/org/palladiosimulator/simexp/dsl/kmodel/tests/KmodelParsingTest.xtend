@@ -21,7 +21,7 @@ class KmodelParsingTest {
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			var string dummy;
+			const string dummy = "Hello world";
 		''')
 		Assertions.assertNotNull(result)
 		val errors = result.eResource.errors
