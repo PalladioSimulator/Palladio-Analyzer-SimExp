@@ -31,13 +31,13 @@ Parameter: 'param' dataType=PrimitiveType name=ID;
 Bounds: Array | => Range | RangeWithGrowth;
 	
 Array returns Bounds:
-	{Array} '{' (values+=DisjunctionExpr (',' values+=DisjunctionExpr)*) '}';
+	{Array} '{' (values+=Literal (',' values+=Literal)*) '}';
 	
 Range returns Bounds:
-	{Range} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' stepSize=DisjunctionExpr ']';
+	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';
 	
 RangeWithGrowth returns Bounds:
-	{RangeWithGrowth} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' numSteps=DisjunctionExpr => ',' growth=Growth ']' ;	
+	{RangeWithGrowth} '[' startValue=Literal ',' endValue=Literal ',' numSteps=Literal => ',' growth=Growth ']' ;	
 
 Statement:
 	ActionCall | IfStatement;

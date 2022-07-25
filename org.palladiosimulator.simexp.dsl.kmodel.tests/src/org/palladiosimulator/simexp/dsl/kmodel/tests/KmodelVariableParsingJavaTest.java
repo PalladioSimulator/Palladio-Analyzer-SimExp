@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Growth;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.RangeWithGrowth;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -154,16 +155,16 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(bounds instanceof Array);
         
         Array valueArray = (Array) bounds;
-        List<Expression> values = valueArray.getValues();
+        List<Literal> values = valueArray.getValues();
         Assert.assertEquals(3, values.size());
         
-        int firstValue = ((IntLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(0)).getLiteral()).getValue();
+        int firstValue = ((IntLiteral) values.get(0)).getValue();
         Assert.assertEquals(1, firstValue);
         
-        int secondValue = ((IntLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(1)).getLiteral()).getValue();
+        int secondValue = ((IntLiteral) values.get(1)).getValue();
         Assert.assertEquals(2, secondValue);
         
-        int thirdValue = ((IntLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(2)).getLiteral()).getValue();
+        int thirdValue = ((IntLiteral) values.get(2)).getValue();
         Assert.assertEquals(3, thirdValue);
     }
     
@@ -188,13 +189,13 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(bounds instanceof Range);
         
         Range valueRange = (Range) bounds;
-        float startValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getStartValue()).getLiteral()).getValue();
+        float startValue = ((FloatLiteral) valueRange.getStartValue()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
         
-        float endValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getEndValue()).getLiteral()).getValue();
+        float endValue = ((FloatLiteral) valueRange.getEndValue()).getValue();
         Assert.assertEquals(2, endValue, 0.0f);
         
-        float stepSize = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getStepSize()).getLiteral()).getValue();
+        float stepSize = ((FloatLiteral) valueRange.getStepSize()).getValue();
         Assert.assertEquals(0.1f, stepSize, 0.0f);
     }
     
@@ -219,13 +220,13 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(bounds instanceof RangeWithGrowth);
         
         RangeWithGrowth valueRange = (RangeWithGrowth) bounds;
-        float startValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getStartValue()).getLiteral()).getValue();
+        float startValue = ((FloatLiteral) valueRange.getStartValue()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
         
-        float endValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getEndValue()).getLiteral()).getValue();
+        float endValue = ((FloatLiteral) valueRange.getEndValue()).getValue();
         Assert.assertEquals(2, endValue, 0.0f);
         
-        int numSteps = ((IntLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getNumSteps()).getLiteral()).getValue();
+        int numSteps = ((IntLiteral) valueRange.getNumSteps()).getValue();
         Assert.assertEquals(10, numSteps);
         
         Growth growth = valueRange.getGrowth();

@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -205,13 +206,13 @@ public class KmodelActionParsingJavaTest {
         Bounds bounds = ((Variable) variable).getValues();
         Assert.assertTrue(bounds instanceof Array);
         
-        List<Expression> values = ((Array) bounds).getValues();
+        List<Literal> values = ((Array) bounds).getValues();
         Assert.assertEquals(2, values.size());
         
-        float firstValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(0)).getLiteral()).getValue();
+        float firstValue = ((FloatLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
         
-        float secondValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(1)).getLiteral()).getValue();
+        float secondValue = ((FloatLiteral) values.get(1)).getValue();
         Assert.assertEquals(2.5, secondValue, 0.0f);
     }
     

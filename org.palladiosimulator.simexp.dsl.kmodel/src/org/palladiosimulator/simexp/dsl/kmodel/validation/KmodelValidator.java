@@ -85,18 +85,12 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return;
 		}
 		
-		List<Expression> values = array.getValues();
+		List<Literal> values = array.getValues();
 		
 		StringJoiner wrongValueTypes = new StringJoiner(", ");
 		
 		for (int i = 0; i < values.size(); i++) {
-			Expression value = values.get(i);
-			
-			// Check if one of the values contains a variable or probe reference.
-			if (containsNonConstantFieldReference(value)) {
-				error("A value array may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
-				return;
-			}
+			Literal value = values.get(i);
 			
 			DataType valueType = getDataType(value);
 			if (valueType == DataType.NULL) {
@@ -125,9 +119,9 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return;
 		}
 		
-		Expression startValue = range.getStartValue();
-		Expression endValue = range.getEndValue();
-		Expression stepSize = range.getStepSize();
+		Literal startValue = range.getStartValue();
+		Literal endValue = range.getEndValue();
+		Literal stepSize = range.getStepSize();
 		
 		DataType startValueType = getDataType(startValue);
 		DataType endValueType = getDataType(endValue);
@@ -138,26 +132,14 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return;
 		}
 		
-		if (containsNonConstantFieldReference(startValue)) {
-			error("The start value of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
-		}
-		
 		if (dataType == DataType.INT && startValueType == DataType.FLOAT || !isNumberType(startValueType)) {
 			error("Expected a value of type '" + DataType.INT + "' or '" + DataType.FLOAT + "', got '" + startValueType + "' instead.",
 					KmodelPackage.Literals.RANGE__START_VALUE);
 		}
 		
-		if (containsNonConstantFieldReference(endValue)) {
-			error("The end value of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
-		}
-		
 		if (endValueType != DataType.INT && endValueType != DataType.FLOAT || !isNumberType(endValueType)) {
 			error("Expected a value of type '" + DataType.INT + "' or '" + DataType.FLOAT + "', got '" + endValueType + "' instead.",
 					KmodelPackage.Literals.RANGE__END_VALUE);
-		}
-		
-		if (containsNonConstantFieldReference(stepSize)) {
-			error("The step size of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
 		}
 		
 		if (stepSizeType != DataType.INT && stepSizeType != DataType.FLOAT || !isNumberType(stepSizeType)) {
@@ -168,9 +150,9 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	
 	@Check
 	public void checkValueRangeWithGrowth(RangeWithGrowth range) {
-		Expression startValue = range.getStartValue();
-		Expression endValue = range.getEndValue();
-		Expression numSteps = range.getNumSteps();
+		Literal startValue = range.getStartValue();
+		Literal endValue = range.getEndValue();
+		Literal numSteps = range.getNumSteps();
 		
 		DataType startValueType = getDataType(startValue);
 		DataType endValueType = getDataType(endValue);
@@ -180,26 +162,14 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			return;
 		}
 		
-		if (containsNonConstantFieldReference(startValue)) {
-			error("The start value of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
-		}
-		
 		if (startValueType != DataType.INT && startValueType != DataType.FLOAT || !isNumberType(startValueType)) {
 			error("Expected a value of type '" + DataType.INT + "' or '" + DataType.FLOAT + "', got '" + startValueType + "' instead.",
 					KmodelPackage.Literals.RANGE_WITH_GROWTH__START_VALUE);
 		}
 		
-		if (containsNonConstantFieldReference(endValue)) {
-			error("The end value of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
-		}
-		
 		if (endValueType != DataType.INT && endValueType != DataType.FLOAT || !isNumberType(endValueType)) {
 			error("Expected a value of type '" + DataType.INT + "' or '" + DataType.FLOAT + "', got '" + endValueType + "' instead.",
 					KmodelPackage.Literals.RANGE_WITH_GROWTH__END_VALUE);
-		}
-		
-		if (containsNonConstantFieldReference(numSteps)) {
-			error("The step size of a range may not contain variable values.", KmodelPackage.Literals.ARRAY__VALUES);
 		}
 		
 		if (numStepsType != DataType.INT) {
@@ -379,22 +349,32 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		Literal literal = expression.getLiteral();
 		if (literal != null) {
-			if (literal instanceof BoolLiteral) {
-				return DataType.BOOL;
-				
-			} else if (literal instanceof IntLiteral) {
-				return DataType.INT;
-				
-			} else if (literal instanceof FloatLiteral) {
-				return DataType.FLOAT;
-				
-			} else if (literal instanceof StringLiteral) {
-				return DataType.STRING;
-			}
+			return getDataType(literal);
 		}
 		
 		Field fieldRef = expression.getFieldRef();
 		return fieldRef != null ? fieldRef.getDataType() : DataType.NULL;
+	}
+	
+	private DataType getDataType(Literal literal) {
+		if (literal == null) {
+			return DataType.NULL;
+		}
+		
+		if (literal instanceof BoolLiteral) {
+			return DataType.BOOL;
+			
+		} else if (literal instanceof IntLiteral) {
+			return DataType.INT;
+			
+		} else if (literal instanceof FloatLiteral) {
+			return DataType.FLOAT;
+			
+		} else if (literal instanceof StringLiteral) {
+			return DataType.STRING;
+		}
+		
+		return null;
 	}
 	
 	public boolean isNumberType(DataType type) {
