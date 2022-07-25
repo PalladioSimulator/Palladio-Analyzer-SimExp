@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.kmodel.interpreter
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.kmodel.interpreter
 Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.palladiosimulator.simexp.dsl.kmodel;bundle-version="1.0.0"
