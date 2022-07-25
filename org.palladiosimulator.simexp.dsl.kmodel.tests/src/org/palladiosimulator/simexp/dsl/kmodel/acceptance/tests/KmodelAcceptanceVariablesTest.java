@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
@@ -24,7 +25,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ValueContainer;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelTestUtil;
@@ -403,7 +403,7 @@ public class KmodelAcceptanceVariablesTest {
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
-        ValueContainer bounds = variable.getValues();
+        Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array rangeArray = (Array) bounds;
         // TODO accept only literals
@@ -428,7 +428,7 @@ public class KmodelAcceptanceVariablesTest {
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
-        ValueContainer bounds = variable.getValues();
+        Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
         // TODO accept only literals
@@ -453,7 +453,7 @@ public class KmodelAcceptanceVariablesTest {
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.FLOAT, variable.getDataType());
-        ValueContainer bounds = variable.getValues();
+        Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
         // TODO accept only literals
@@ -478,7 +478,7 @@ public class KmodelAcceptanceVariablesTest {
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.STRING, variable.getDataType());
-        ValueContainer bounds = variable.getValues();
+        Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
         // TODO accept only literals
@@ -503,7 +503,7 @@ public class KmodelAcceptanceVariablesTest {
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
-        ValueContainer bounds = variable.getValues();
+        Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Range);
         Range boundsRange = (Range) bounds;
         // TODO accept only literals

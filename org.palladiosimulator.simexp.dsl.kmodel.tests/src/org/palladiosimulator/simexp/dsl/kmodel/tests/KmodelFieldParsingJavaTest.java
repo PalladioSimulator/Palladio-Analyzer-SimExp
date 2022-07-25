@@ -26,9 +26,9 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
         String sb = String.join("\n", 
-                "var bool condition = {true, false};",
+                "var bool{true, false} condition;",
                 "const int one = 1;",
-                "probe float aliasName = someId;"
+                "probe float aliasName : someId;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -50,7 +50,7 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseFieldWithInvalidName() throws Exception {
         String sb = String.join("\n", 
-                "var int 123;"
+                "const int 123 = 123;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -61,12 +61,13 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseFieldWithTokenAsName() throws Exception {
         String sb = String.join("\n", 
-                "var int const;"
+                "const int const = 1;"
         );
         
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'const' expecting RULE_ID");
+        KmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID", 
+        		"no viable alternative at input '='", "mismatched input ';' expecting RULE_ID");
     }
     
     @Test
@@ -85,8 +86,8 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
         String sb = String.join("\n", 
-                "var string word = {\"word\"};",
-                "probe string word = someId;"
+                "var string{\"word\"} word;",
+                "probe string word : someId;"
         );
         
         Kmodel model = parserHelper.parse(sb);

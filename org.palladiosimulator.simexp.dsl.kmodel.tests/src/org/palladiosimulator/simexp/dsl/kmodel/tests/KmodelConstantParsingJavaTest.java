@@ -211,7 +211,7 @@ public class KmodelConstantParsingJavaTest {
     @Test
     public void parseConstantWithVariableValue() throws Exception {
     	String sb = String.join("\n",
-    			"var int variable = {0};",
+    			"var int{0} variable;",
                 "const int constant = variable;"
         );
     	
@@ -225,7 +225,7 @@ public class KmodelConstantParsingJavaTest {
     @Test
     public void parseConstantWithExpressionContainingVariable() throws Exception {
     	String sb = String.join("\n",
-    			"var bool variable = {true};",
+    			"var bool{true} variable;",
                 "const bool constant = variable && true;"
         );
     	

@@ -208,10 +208,10 @@ public class KmodelIfParsingJavaTest {
     public void parseComplexStatement() throws Exception {
         String sb = String.join("\n"
                 ,"//Variable declarations"
-                ,"var float i = {1.0, 2.0};"
+                ,"var float{1.0, 2.0} i;"
                 ,"// action declaration"
                 , "action a(param float factor);"
-                , "action anotherA(param float factor, var float anotherFactor=(1,2,1));"
+                , "action anotherA(param float factor, var float[1,2,1] anotherFactor);"
                 
                 ,"// rule block"
                 ,"if (true) {"

@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
@@ -22,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.RangeWithGrowth;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ValueContainer;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
@@ -35,7 +35,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleBoolVariable() throws Exception {
         String sb = String.join("\n", 
-                "var bool condition = {true};"
+                "var bool{true} condition;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -54,7 +54,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleIntVariable() throws Exception {
         String sb = String.join("\n", 
-                "var int count = {1};"
+                "var int{1} count;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -73,7 +73,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = String.join("\n", 
-                "var float number = {1.0};"
+                "var float{1.0} number;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -92,7 +92,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = String.join("\n", 
-                "var string word = {\"word\"};"
+                "var string{\"word\"} word;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -111,8 +111,8 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseTwoVariables() throws Exception {
         String sb = String.join("\n", 
-                "var int count = {1};",
-                "var string word = {\"word\"};"
+                "var int{1} count;",
+                "var string{\"word\"} word;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -136,7 +136,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithValueArray() throws Exception {
     	String sb = String.join("\n", 
-                "var int count = {1, 2, 3};"
+                "var int{1, 2, 3} count;"
         );
     	
     	Kmodel model = parserHelper.parse(sb);
@@ -150,10 +150,10 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(field instanceof Variable);
         
         Variable variable = (Variable) field;
-        ValueContainer valueCollection = variable.getValues();
-        Assert.assertTrue(valueCollection instanceof Array);
+        Bounds bounds = variable.getValues();
+        Assert.assertTrue(bounds instanceof Array);
         
-        Array valueArray = (Array) valueCollection;
+        Array valueArray = (Array) bounds;
         List<Expression> values = valueArray.getValues();
         Assert.assertEquals(3, values.size());
         
@@ -170,7 +170,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithValueRange() throws Exception {
     	String sb = String.join("\n", 
-                "var float values = (1.0, 2.0, 0.1);"
+                "var float[1.0, 2.0, 0.1] values;"
         );
     	
     	Kmodel model = parserHelper.parse(sb);
@@ -184,10 +184,10 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(field instanceof Variable);
         
         Variable variable = (Variable) field;
-        ValueContainer valueCollection = variable.getValues();
-        Assert.assertTrue(valueCollection instanceof Range);
+        Bounds bounds = variable.getValues();
+        Assert.assertTrue(bounds instanceof Range);
         
-        Range valueRange = (Range) valueCollection;
+        Range valueRange = (Range) bounds;
         float startValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getStartValue()).getLiteral()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
         
@@ -201,7 +201,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithValueRangeWithGrowth() throws Exception {
     	String sb = String.join("\n", 
-                "var float values =[1.0, 2.0, 10, EXPONENTIAL];"
+                "var float[1.0, 2.0, 10, EXPONENTIAL] values;"
         );
     	
     	Kmodel model = parserHelper.parse(sb);
@@ -215,10 +215,10 @@ public class KmodelVariableParsingJavaTest {
         Assert.assertTrue(field instanceof Variable);
         
         Variable variable = (Variable) field;
-        ValueContainer valueCollection = variable.getValues();
-        Assert.assertTrue(valueCollection instanceof RangeWithGrowth);
+        Bounds bounds = variable.getValues();
+        Assert.assertTrue(bounds instanceof RangeWithGrowth);
         
-        RangeWithGrowth valueRange = (RangeWithGrowth) valueCollection;
+        RangeWithGrowth valueRange = (RangeWithGrowth) bounds;
         float startValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(valueRange.getStartValue()).getLiteral()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
         
@@ -235,7 +235,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithWrongValueTypes() throws Exception {
     	String sb = String.join("\n", 
-                "var string list = {true, 1, 2.5};"
+                "var string{true, 1, 2.5} list;"
         );
     	
     	Kmodel model = parserHelper.parse(sb);
@@ -248,7 +248,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseNonNumberVariableWithRange() throws Exception {
     	String sb = String.join("\n", 
-                "var bool range = (true, false, true);"
+                "var bool[true, false, true] range;"
         );
     	
     	Kmodel model = parserHelper.parse(sb);

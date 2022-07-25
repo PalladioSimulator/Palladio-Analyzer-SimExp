@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
@@ -22,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ValueContainer;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 @RunWith(XtextRunner.class)
@@ -178,7 +178,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithVariableParameter() throws Exception {
     	String sb = String.join("\n", 
-                "action scaleOut(var float balancingFactor = {1.25, 2.5});"
+                "action scaleOut(var float{1.25, 2.5} balancingFactor);"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -202,10 +202,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         
-        ValueContainer valueCollection = ((Variable) variable).getValues();
-        Assert.assertTrue(valueCollection instanceof Array);
+        Bounds bounds = ((Variable) variable).getValues();
+        Assert.assertTrue(bounds instanceof Array);
         
-        List<Expression> values = ((Array) valueCollection).getValues();
+        List<Expression> values = ((Array) bounds).getValues();
         Assert.assertEquals(2, values.size());
         
         float firstValue = ((FloatLiteral) KmodelTestUtil.getNextExpressionWithContent(values.get(0)).getLiteral()).getValue();
@@ -328,7 +328,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithField() throws Exception {
         String sb = String.join("\n", 
-                "var float argument = {0};"
+                "var float{0} argument;"
                 , "action scaleOut(param float balancingFactor);"
                 , "if(true){"
                 , "scaleOut(balancingFactor=argument);"
@@ -370,7 +370,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
     	String sb = String.join("\n", 
-                "action scaleOut(var float balancingFactor = {1.25, 2.5});",
+                "action scaleOut(var float{1.25, 2.5} balancingFactor);",
                 "if (true) {",
                 "scaleOut();",
                 "}"
@@ -409,8 +409,8 @@ public class KmodelActionParsingJavaTest {
     public void parseComplexActionCall() throws Exception {
         String sb = String.join("\n",
         		"const int constant = 1;",
-        		"var float variable = (1, 2, 1);",
-                "action adapt(param float param1, param int param2, param bool param3, var int variable = {1, 2, 3, 4});"
+        		"var float[1, 2, 1] variable;",
+                "action adapt(param float param1, param int param2, param bool param3, var int{1, 2, 3, 4} variable);"
                 , "if(true) {"
                 , "adapt(param1=variable, param2=(constant + 1), param3=(true && false));"
                 , "}"
@@ -454,7 +454,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
     	String sb = String.join("\n",
-    			"action adapt(var int variable = {1}, param float parameter);"
+    			"action adapt(var int{1} variable, param float parameter);"
     	);
     	
     	Kmodel model = parserHelper.parse(sb);
@@ -496,7 +496,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
     	String sb = String.join("\n",
-    			"action adapt(param float parameter, var float variable = {0});",
+    			"action adapt(param float parameter, var float{0} variable);",
     			"if (true) {",
     			"adapt(parameter=1.0, variable=1.0);",
     			"}"

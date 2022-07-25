@@ -16,10 +16,10 @@ Constant returns Field:
 	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr;
 	
 Variable returns Field:
-	{Variable} 'var' dataType=PrimitiveType name=ID '=' values=ValueContainer;	
+	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;	
 
 Probe returns Field:
-	{Probe} 'probe' dataType=PrimitiveType name=ID '=' id=ID;
+	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=ID;
 	
 Action:
 	'action' name=ID '(' parameterList=ParameterList ')' ';';
@@ -28,16 +28,16 @@ ParameterList: ((parameters+=Parameter (',' parameters+=Parameter)*) (',' variab
 
 Parameter: 'param' dataType=PrimitiveType name=ID;
 	
-ValueContainer: Array | Range | RangeWithGrowth;
+Bounds: Array | => Range | RangeWithGrowth;
 	
-Array returns ValueContainer:
+Array returns Bounds:
 	{Array} '{' (values+=DisjunctionExpr (',' values+=DisjunctionExpr)*) '}';
 	
-Range returns ValueContainer:
-	{Range} '(' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' stepSize=DisjunctionExpr ')';
+Range returns Bounds:
+	{Range} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' stepSize=DisjunctionExpr ']';
 	
-RangeWithGrowth returns ValueContainer:
-	{RangeWithGrowth} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' numSteps=DisjunctionExpr ',' growth=Growth ']' ;	
+RangeWithGrowth returns Bounds:
+	{RangeWithGrowth} '[' startValue=DisjunctionExpr ',' endValue=DisjunctionExpr ',' numSteps=DisjunctionExpr => ',' growth=Growth ']' ;	
 
 Statement:
 	ActionCall | IfStatement;
