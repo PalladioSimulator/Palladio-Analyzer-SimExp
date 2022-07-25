@@ -125,4 +125,55 @@ public class KmodelAcceptanceActionCallsTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
+    
+    @Test
+    public void parseMultipleActionsNoParam() throws Exception {
+        String sb = String.join("\n", 
+                "action aName();",
+                "action bName();",
+                "if (true) {",
+                    "aName();",
+                    "bName();",
+                "}"
+                );
+
+        Kmodel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
+
+    @Test
+    public void parseMultipleActionsOneParam() throws Exception {
+        String sb = String.join("\n", 
+                "action aName(param int pia);",
+                "action bName(param int pib);",
+                "if (true) {",
+                    "aName(pia=2);",
+                    "bName(pib=2);",
+                "}"
+                );
+        
+        Kmodel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
+
+    @Test
+    public void parseMultipleActionsMixedParams() throws Exception {
+        String sb = String.join("\n", 
+                "action aName(param int pia, var int{1,2} via);",
+                "action bName(param int pib, var int{1,2} vib);",
+                "if (true) {",
+                    "aName(pia=2);",
+                    "bName(pib=2);",
+                "}"
+                );
+        
+        Kmodel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
 }
