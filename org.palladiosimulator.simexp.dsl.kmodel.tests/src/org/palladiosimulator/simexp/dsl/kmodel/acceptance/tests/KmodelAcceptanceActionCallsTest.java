@@ -125,6 +125,22 @@ public class KmodelAcceptanceActionCallsTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
+
+    
+    @Test
+    public void parseOneActionMixedParams() throws Exception {
+        String sb = String.join("\n", 
+                "action aName(param int pi, var int{1,2} vi, var int{1,2} vi2);",
+                "if (true) {",
+                "aName(pi=1);",
+                "}"
+                );
+        
+        Kmodel model = parserHelper.parse(sb);
+        
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
     
     @Test
     public void parseMultipleActionsNoParam() throws Exception {
