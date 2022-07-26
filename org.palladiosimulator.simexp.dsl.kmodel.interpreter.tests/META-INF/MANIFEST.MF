@@ -6,4 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.palladiosimulator.simexp.dsl.kmodel.interpreter;bundle-version="1.0.0"
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ org.mockito;bundle-version="2.23.0"
