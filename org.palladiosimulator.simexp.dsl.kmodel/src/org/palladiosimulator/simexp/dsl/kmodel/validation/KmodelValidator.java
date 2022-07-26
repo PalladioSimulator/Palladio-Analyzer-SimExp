@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
@@ -19,6 +20,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
@@ -179,7 +181,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	}
 	
 	@Check
-	public void checkCondition(Statement ifStatement) {
+	public void checkCondition(IfStatement ifStatement) {
 		Expression condition = ifStatement.getCondition();
 
 		DataType conditionType = getDataType(condition);
@@ -191,12 +193,12 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		if (!conditionType.equals(DataType.BOOL)) {
 			error("Expected a value of type '" + DataType.BOOL 
 					+ "', got '" + conditionType + "' instead.",
-					KmodelPackage.Literals.STATEMENT__CONDITION);
+					KmodelPackage.Literals.IF_STATEMENT__CONDITION);
 		}
 	}
 	
 	@Check
-	public void checkArguments(Statement actionCall) {
+	public void checkArguments(ActionCall actionCall) {
 		Action action = actionCall.getActionRef();
 		List<ArgumentKeyValue> arguments = actionCall.getArguments();
 		List<Parameter> parameters = action.getParameterList().getParameters();
@@ -204,14 +206,14 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		// Check if number of arguments match number parameters for which an argument can be accepted.
 		if (arguments.size() != parameters.size()) {
 			error("Expected " + parameters.size() + " arguments, got " + arguments.size() + ".", 
-					KmodelPackage.Literals.STATEMENT__ARGUMENTS);
+					KmodelPackage.Literals.ACTION_CALL__ARGUMENTS);
 			return;
 		}
 		
 		// Check if arguments are provided in correct order.
 		for (int i = 0; i < arguments.size(); i++) {
 			if (!arguments.get(i).getParamRef().equals(parameters.get(i))) {
-				error("Arguments must be provided in the order as declared.", KmodelPackage.Literals.STATEMENT__ARGUMENTS);
+				error("Arguments must be provided in the order as declared.", KmodelPackage.Literals.ACTION_CALL__ARGUMENTS);
 				return;
 			}
 		}
@@ -232,7 +234,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		if (!parameterTypes.equals(argumentTypes)) {
 			error("Expected arguments of types " + parameterTypes + ", got " + argumentTypes + " instead.",
-					KmodelPackage.Literals.STATEMENT__ARGUMENTS);
+					KmodelPackage.Literals.ACTION_CALL__ARGUMENTS);
 		}
 	}
 	

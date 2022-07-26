@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
@@ -20,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
@@ -315,7 +317,7 @@ public class KmodelActionParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement actionCall = statements.get(0).getStatements().get(0);
+        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getStatements().get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
         
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
@@ -356,7 +358,7 @@ public class KmodelActionParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement actionCall = statements.get(0).getStatements().get(0);
+        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getStatements().get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
         
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
@@ -398,7 +400,8 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         
-        Statement actionCall = model.getStatements().get(0).getStatements().get(0);
+        List<Statement> statements = model.getStatements();
+        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getStatements().get(0);
         Action actionRef = actionCall.getActionRef();
         Assert.assertEquals(action, actionRef);
         
@@ -459,7 +462,7 @@ public class KmodelActionParsingJavaTest {
     	);
     	
     	Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ',' expecting ')'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'var'");
     }
     
     @Test

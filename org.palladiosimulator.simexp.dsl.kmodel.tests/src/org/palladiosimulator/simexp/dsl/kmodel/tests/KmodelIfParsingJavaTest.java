@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
@@ -39,12 +40,12 @@ public class KmodelIfParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement statement = statements.get(0);
+        IfStatement statement = (IfStatement) statements.get(0);
         Expression condition = KmodelTestUtil.getNextExpressionWithContent(statement.getCondition());
         Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) condition.getLiteral()).isValue());
         
-        EList<Statement> thenStatements = statements.get(0).getStatements();
+        EList<Statement> thenStatements = statement.getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
     }
     
@@ -69,13 +70,13 @@ public class KmodelIfParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement statement = statements.get(0);
+        IfStatement statement = (IfStatement) statements.get(0);
         Expression condition = KmodelTestUtil.getNextExpressionWithContent(statement.getCondition());
         Assert.assertEquals(boolConditionVar, condition.getFieldRef());
         Assert.assertEquals(DataType.BOOL, condition.getFieldRef().getDataType());
         Assert.assertEquals("condition", condition.getFieldRef().getName());
         
-        EList<Statement> thenStatements = statements.get(0).getStatements();
+        EList<Statement> thenStatements = statement.getStatements();
         Assert.assertTrue(thenStatements.isEmpty());
     }
     
@@ -93,20 +94,20 @@ public class KmodelIfParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(2, statements.size());
         
-        Statement firstStatement = statements.get(0);
+        IfStatement firstStatement = (IfStatement) statements.get(0);
         Expression firstCondition = KmodelTestUtil.getNextExpressionWithContent(firstStatement.getCondition());
         Assert.assertTrue(firstCondition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) firstCondition.getLiteral()).isValue());
         
-        EList<Statement> firstThenStatements = statements.get(0).getStatements();
+        EList<Statement> firstThenStatements = firstStatement.getStatements();
         Assert.assertTrue(firstThenStatements.isEmpty());
         
-        Statement secondStatement = statements.get(1);
+        IfStatement secondStatement = (IfStatement) statements.get(1);
         Expression secondCondition = KmodelTestUtil.getNextExpressionWithContent(secondStatement.getCondition());
         Assert.assertTrue(secondCondition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) secondCondition.getLiteral()).isValue());
         
-        EList<Statement> secondThenStatements = statements.get(1).getStatements();
+        EList<Statement> secondThenStatements = secondStatement.getStatements();
         Assert.assertTrue(secondThenStatements.isEmpty());
         
     }
@@ -134,20 +135,20 @@ public class KmodelIfParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement outerStmt = statements.get(0);
-        Expression outerCondition = KmodelTestUtil.getNextExpressionWithContent(outerStmt.getCondition());
+        IfStatement outerStatement = (IfStatement) statements.get(0);
+        Expression outerCondition = KmodelTestUtil.getNextExpressionWithContent(outerStatement.getCondition());
         Field outerIfConditionField = outerCondition.getFieldRef();
         Assert.assertEquals(boolConditionField, outerIfConditionField);
         
-        EList<Statement> outerThenStatements = outerStmt.getStatements();
+        EList<Statement> outerThenStatements = outerStatement.getStatements();
         Assert.assertEquals(1, outerThenStatements.size());
         
-        Statement innerStmt = outerThenStatements.get(0);
-        Expression innerCondition = KmodelTestUtil.getNextExpressionWithContent(innerStmt.getCondition());
+        IfStatement innerStatement = (IfStatement) outerThenStatements.get(0);
+        Expression innerCondition = KmodelTestUtil.getNextExpressionWithContent(innerStatement.getCondition());
         Field innerIfConditionField = innerCondition.getFieldRef();
         Assert.assertEquals(boolConditionField, innerIfConditionField);
         
-        EList<Statement> innerThenStatements = innerStmt.getStatements();
+        EList<Statement> innerThenStatements = innerStatement.getStatements();
         Assert.assertTrue(innerThenStatements.isEmpty());
     }
     
@@ -167,12 +168,12 @@ public class KmodelIfParsingJavaTest {
         EList<Statement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         
-        Statement statement = statements.get(0);
+        IfStatement statement = (IfStatement) statements.get(0);
         Expression condition = KmodelTestUtil.getNextExpressionWithContent(statement.getCondition());
         Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
         Assert.assertEquals(false, ((BoolLiteral) condition.getLiteral()).isValue());
         
-        EList<Statement> thenStatements = statements.get(0).getStatements();
+        EList<Statement> thenStatements = statement.getStatements();
         Assert.assertEquals(1, thenStatements.size());
     }
     

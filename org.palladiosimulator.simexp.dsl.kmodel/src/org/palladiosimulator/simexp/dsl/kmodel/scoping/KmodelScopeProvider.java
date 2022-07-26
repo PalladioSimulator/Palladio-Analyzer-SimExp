@@ -15,12 +15,12 @@ import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.FilteringScope;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 
 /**
  * This class contains custom scoping description.
@@ -47,7 +47,7 @@ public class KmodelScopeProvider extends AbstractKmodelScopeProvider {
 			
 			IScope scope = Scopes.scopeFor(parameters);
 			
-			Statement parentStatement = EcoreUtil2.getContainerOfType(context, Statement.class);
+			ActionCall parentStatement = EcoreUtil2.getContainerOfType(context, ActionCall.class);
 			Action actionRef = parentStatement.getActionRef();
 			List<Parameter> scopeParameters = EcoreUtil2.getAllContentsOfType(actionRef, Parameter.class);
 			

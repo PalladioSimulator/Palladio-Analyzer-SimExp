@@ -45,13 +45,13 @@ Statement:
 	ActionCall | IfStatement;
 
 ActionCall returns Statement:
-	actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
+	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
 	
 ArgumentKeyValue:
 	paramRef=[Parameter] '=' argument=DisjunctionExpr;	
 	
 IfStatement returns Statement: 
-	'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
+	{IfStatement} 'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
 
 DisjunctionExpr returns Expression:
     ConjunctionExpr ({Expression.left=current} op=Disjunction right=ConjunctionExpr)*;
