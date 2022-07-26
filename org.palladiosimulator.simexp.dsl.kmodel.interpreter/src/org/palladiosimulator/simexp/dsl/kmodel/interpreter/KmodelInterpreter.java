@@ -26,6 +26,8 @@ public class KmodelInterpreter implements Analyzer, Planner {
 	@Override
 	public boolean analyze() {
 		// TODO Auto-generated method stub
+	    Object currentMeasurement = pvp.getValue(null);
+	    
 		return false;
 	}
 	
