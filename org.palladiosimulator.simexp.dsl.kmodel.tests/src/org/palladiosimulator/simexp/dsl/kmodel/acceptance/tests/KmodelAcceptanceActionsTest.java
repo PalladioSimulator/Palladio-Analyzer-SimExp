@@ -280,7 +280,7 @@ public class KmodelAcceptanceActionsTest {
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
         EList<Parameter> parameters = action.getParameterList().getParameters();
-        assertEquals(2, parameters.size());
+        assertEquals(1, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(1, variables.size());
         Parameter param = parameters.get(0);
