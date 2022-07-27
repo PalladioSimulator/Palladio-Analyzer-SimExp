@@ -269,8 +269,8 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray2 = (Array) bounds2;
         IntLiteral intRange1 = (IntLiteral) rangeArray2.getValues().get(0);
         IntLiteral intRange2 = (IntLiteral) rangeArray2.getValues().get(1);
-        List<String> actualIntBounds = Arrays.asList(String.valueOf(intRange1.getValue()), String.valueOf(intRange2.getValue()));
-        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems("true", "false"));
+        List<Integer> actualIntBounds = Arrays.asList(intRange1.getValue(), intRange2.getValue());
+        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems(1, 2));
     }
     
     @Test
