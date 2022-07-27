@@ -21,14 +21,15 @@ Variable returns Field:
 Probe returns Field:
 	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=ID;
 	
+Parameter returns Field: 
+	{Parameter} 'param' dataType=PrimitiveType name=ID;
+	
 Action:
 	'action' name=ID '(' parameterList=ParameterList ')' ';';
 	
 ParameterList: {ParameterList} 
 			(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*))
 			| (variables+=Variable (',' variables+=Variable)*))?;	
-
-Parameter: 'param' dataType=PrimitiveType name=ID;
 	
 Bounds: Array | => Range | RangeWithGrowth;
 	
