@@ -218,8 +218,8 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<String> actualBoolBounds = Arrays.asList(String.valueOf(boolRange1.isValue()), String.valueOf(boolRange2.isValue()));
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems("true", "false"));
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
     
     @Test
@@ -259,8 +259,8 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<String> actualBoolBounds = Arrays.asList(String.valueOf(boolRange1.isValue()), String.valueOf(boolRange2.isValue()));
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems("true", "false"));
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
         Variable variable2 = (Variable) variables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
@@ -302,8 +302,8 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<String> actualBoolBounds = Arrays.asList(String.valueOf(boolRange1.isValue()), String.valueOf(boolRange2.isValue()));
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems("true", "false"));
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
 
     @Test
