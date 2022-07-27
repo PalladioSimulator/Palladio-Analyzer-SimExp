@@ -114,6 +114,7 @@ public class KmodelInterpreterExpressionTest {
     	Constant constant3 = (Constant) model.getFields().get(2);
     	int value3 = ((Number) interpreter.getValue(constant3)).intValue();
     	
+    	Assert.assertEquals(1, value);
     	Assert.assertEquals(value, value2);
     	Assert.assertEquals(value2, value3);
     }
@@ -386,10 +387,10 @@ public class KmodelInterpreterExpressionTest {
     public void testMultiplicationExpressionValue() throws Exception {
     	String sb = String.join("\n",
     			"const int value = 0 * 1",
-    			"const int value = 2 * 1;",
-    			"const int value2 = 1 * 2;",
-    			"const int value3 = (1 * 2) * 3;",
-    			"const int value4 = 1 * (2 * 3);");
+    			"const int value2 = 2 * 1;",
+    			"const int value3 = 1 * 2;",
+    			"const int value4 = (1 * 2) * 3;",
+    			"const int value5 = 1 * (2 * 3);");
     	
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
@@ -419,7 +420,10 @@ public class KmodelInterpreterExpressionTest {
     			"const float value2 = 1 / 2;",
     			"const float value3 = 2 / 1;",
     			"const float value4 = (1 / 2) / 4;",
-    			"const float value5 = 1 / (2 / 4);");
+    			"const float value5 = 1 / (2 / 4);",
+    			"const float value6 = 0 / 0;",
+    			"const float value7 = 1 / 0;",
+    			"const float value8 = -1 / 0;");
     	
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
@@ -434,12 +438,21 @@ public class KmodelInterpreterExpressionTest {
     	float value4 = ((Number) interpreter.getValue(constant4)).floatValue();
     	Constant constant5 = (Constant) model.getFields().get(4);
     	float value5 = ((Number) interpreter.getValue(constant5)).floatValue();
+    	Constant constant6 = (Constant) model.getFields().get(5);
+    	float value6 = ((Number) interpreter.getValue(constant6)).floatValue();
+    	Constant constant7 = (Constant) model.getFields().get(6);
+    	float value7 = ((Number) interpreter.getValue(constant7)).floatValue();
+    	Constant constant8 = (Constant) model.getFields().get(7);
+    	float value8 = ((Number) interpreter.getValue(constant8)).floatValue();
     	
     	Assert.assertEquals(1f, value, 0.0f);
     	Assert.assertEquals(0.5f, value2, 0.0f);
     	Assert.assertEquals(2f, value3, 0.0f);
     	Assert.assertEquals(0.125f, value4, 0.0f);
     	Assert.assertEquals(2f, value5, 0.0f);
+    	Assert.assertEquals(Float.NaN, value6, 0.0f);
+    	Assert.assertEquals(Float.POSITIVE_INFINITY, value7, 0.0f);
+    	Assert.assertEquals(Float.NEGATIVE_INFINITY, value8, 0.0f);
     }
     
     @Test

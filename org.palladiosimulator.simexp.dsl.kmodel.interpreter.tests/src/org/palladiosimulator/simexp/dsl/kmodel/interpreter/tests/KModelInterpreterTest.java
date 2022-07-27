@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 
 public class KModelInterpreterTest {
     
@@ -105,6 +104,22 @@ public class KModelInterpreterTest {
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
     	Assert.assertTrue(interpreter.analyze());
+    }
+    
+    @Test
+    public void testAnalyzeWithInnerTrueCondition() throws Exception {
+    	String sb = String.join("\n", 
+    			"action adapt(param int parameter);",
+    			"if (false) {",
+    			"if (true) {",
+    			"adapt(parameter=1);",
+    			"}",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	Assert.assertFalse(interpreter.analyze());
     }
     
     @Test
@@ -433,7 +448,7 @@ public class KModelInterpreterTest {
     	// Check, if the expected & actual name of the resolved action match.
     	Assert.assertEquals(action.getName(), resolvedAction.getName());
     	
-    	List<Parameter> parameters = action.getParameterList().getParameters();
+    	List<Field> parameters = action.getParameterList().getParameters();
     	List<Field> variables = action.getParameterList().getVariables();
     	Map<String, Object> resolvedArguments = resolvedAction.getArguments();
     	
@@ -442,7 +457,7 @@ public class KModelInterpreterTest {
     	
     	// Check if the expected & actual names & values for parameter arguments match.
     	for (int i = 0; i < parameters.size(); i++) {
-    		Parameter parameter = parameters.get(i);
+    		Field parameter = parameters.get(i);
     		Assert.assertTrue(resolvedArguments.containsKey(parameter.getName()));
     		
     		Object value = resolvedArguments.get(parameter.getName());

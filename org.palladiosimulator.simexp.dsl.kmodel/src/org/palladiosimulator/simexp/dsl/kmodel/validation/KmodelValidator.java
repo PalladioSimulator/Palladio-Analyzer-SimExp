@@ -200,7 +200,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 	public void checkArguments(ActionCall actionCall) {
 		Action action = actionCall.getActionRef();
 		List<ArgumentKeyValue> arguments = actionCall.getArguments();
-		List<Parameter> parameters = action.getParameterList().getParameters();
+		List<Field> parameters = action.getParameterList().getParameters();
 		
 		// Check if number of arguments match number parameters for which an argument can be accepted.
 		if (arguments.size() != parameters.size()) {
@@ -211,6 +211,11 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		// Check if arguments are provided in correct order.
 		for (int i = 0; i < arguments.size(); i++) {
+			if (!parameters.contains(arguments.get(i).getParamRef())) {
+				error("Arguments cannot be provided for variable parameters.", KmodelPackage.Literals.ACTION_CALL__ARGUMENTS);
+				return;
+			}
+			
 			if (!arguments.get(i).getParamRef().equals(parameters.get(i))) {
 				error("Arguments must be provided in the order as declared.", KmodelPackage.Literals.ACTION_CALL__ARGUMENTS);
 				return;

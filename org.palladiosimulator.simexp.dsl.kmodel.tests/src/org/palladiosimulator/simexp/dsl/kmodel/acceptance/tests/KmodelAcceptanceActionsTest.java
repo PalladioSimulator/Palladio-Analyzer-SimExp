@@ -25,7 +25,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelTestUtil;
@@ -89,11 +88,11 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
+        Field param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
     }
@@ -110,11 +109,11 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
+        Field param = parameters.get(0);
         assertEquals("ps", param.getName());
         assertEquals(DataType.STRING, param.getDataType());
     }
@@ -131,11 +130,11 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
+        Field param = parameters.get(0);
         assertEquals("pi", param.getName());
         assertEquals(DataType.INT, param.getDataType());
     }
@@ -154,11 +153,11 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(2, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
+        Field param = parameters.get(0);
         assertEquals("pb1", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
         param = parameters.get(1);
@@ -176,7 +175,7 @@ public class KmodelAcceptanceActionsTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
-        		"Duplicate Parameter 'pb'", "Duplicate Parameter 'pb'");
+        		"Duplicate Field 'pb'", "Duplicate Field 'pb'");
     }
 
     @Test
@@ -189,7 +188,7 @@ public class KmodelAcceptanceActionsTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
-        		"Duplicate Parameter 'p'", "Duplicate Parameter 'p'");
+        		"Duplicate Field 'p'", "Duplicate Field 'p'");
     }
     
     @Test
@@ -206,7 +205,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(0, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(1, variables.size());
@@ -247,7 +246,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(0, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(2, variables.size());
@@ -287,11 +286,11 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList().getParameters();
+        EList<Field> parameters = action.getParameterList().getParameters();
         assertEquals(1, parameters.size());
         EList<Field> variables = action.getParameterList().getVariables();
         assertEquals(1, variables.size());
-        Parameter param = parameters.get(0);
+        Field param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
         Variable variable = (Variable) variables.get(0);
@@ -325,6 +324,8 @@ public class KmodelAcceptanceActionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';'");
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
+        		"Duplicate Field 'p'", "Duplicate Field 'p'");
     }
 }
