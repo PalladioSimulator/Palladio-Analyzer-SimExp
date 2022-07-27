@@ -103,4 +103,4 @@ enum Addition returns Operation: PLUS = '+' | MINUS = '-';
 enum Multiplication returns Operation: MULTIPLY = '*' | DIVIDE = '/';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
-terminal FLOAT returns ecore::EFloat: (INT)? '.' INT ('e' INT)?;
+terminal FLOAT returns ecore::EFloat: ((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT);

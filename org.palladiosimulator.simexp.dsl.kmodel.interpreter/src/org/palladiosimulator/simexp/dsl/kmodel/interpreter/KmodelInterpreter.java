@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
@@ -61,7 +62,11 @@ public class KmodelInterpreter implements Analyzer, Planner {
 		for (Statement statement : statements) {
 			if (statement instanceof ActionCall) {
 				ActionCall actionCall = (ActionCall) statement;
-				currentActions.add(actionCall.getActionRef());
+				Action action = actionCall.getActionRef();
+				
+				List<Object> arguments = resolveArguments(actionCall);
+				
+				currentActions.add(action);
 			}
 			
 			if (statement instanceof IfStatement) {
@@ -74,6 +79,19 @@ public class KmodelInterpreter implements Analyzer, Planner {
 		}
 		
 		return currentActions;
+	}
+	
+	public List<Object> resolveArguments(ActionCall actionCall) {
+		List<Object> resolvedArguments = actionCall.getArguments().stream()
+				.map(arg -> getValue(arg.getArgument()))
+				.collect(Collectors.toList());
+		
+		List<Field> variables = actionCall.getActionRef().getParameterList().getVariables();
+		resolvedArguments.addAll(variables.stream()
+				.map(var -> vvp.getValue((Variable) var))
+				.collect(Collectors.toList()));
+		
+		return resolvedArguments;
 	}
 	
 	public Object getValue(Expression expression) {
