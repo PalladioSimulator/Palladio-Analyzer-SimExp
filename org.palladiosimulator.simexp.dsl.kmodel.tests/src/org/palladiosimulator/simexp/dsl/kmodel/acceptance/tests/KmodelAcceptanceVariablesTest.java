@@ -3,6 +3,9 @@ package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
@@ -10,6 +13,8 @@ import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
@@ -406,8 +411,10 @@ public class KmodelAcceptanceVariablesTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array rangeArray = (Array) bounds;
-        // TODO accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
 
     @Test
@@ -431,8 +438,10 @@ public class KmodelAcceptanceVariablesTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
-        // TODO accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        IntLiteral intRange1 = (IntLiteral) boundsArray.getValues().get(0);
+        IntLiteral intRange2 = (IntLiteral) boundsArray.getValues().get(1);
+        List<Integer> actualIntBounds = Arrays.asList(intRange1.getValue(), intRange2.getValue());
+        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems(1, 3));
     }
 
     @Test
@@ -456,8 +465,10 @@ public class KmodelAcceptanceVariablesTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
-        // TODO accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        FloatLiteral floatRange1 = (FloatLiteral) boundsArray.getValues().get(0);
+        FloatLiteral floatRange2 = (FloatLiteral) boundsArray.getValues().get(1);
+        List<Double> actualFloatBounds = Arrays.asList(Double.valueOf(floatRange1.getValue()), Double.valueOf(floatRange2.getValue()));
+        MatcherAssert.assertThat(actualFloatBounds, CoreMatchers.hasItems(1.0, 3.0));
     }
 
     @Test
@@ -481,8 +492,10 @@ public class KmodelAcceptanceVariablesTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array boundsArray = (Array) bounds;
-        // TODO accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        StringLiteral stringRange1 = (StringLiteral) boundsArray.getValues().get(0);
+        StringLiteral stringRange2 = (StringLiteral) boundsArray.getValues().get(1);
+        List<String> actualStringBounds = Arrays.asList(stringRange1.getValue(), stringRange2.getValue());
+        MatcherAssert.assertThat(actualStringBounds, CoreMatchers.hasItems("s1", "s2"));
     }
 
     @Test
@@ -506,8 +519,9 @@ public class KmodelAcceptanceVariablesTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Range);
         Range boundsRange = (Range) bounds;
-        // TODO accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        assertEquals(1, ((IntLiteral) boundsRange.getStartValue()).getValue());
+        assertEquals(2, ((IntLiteral) boundsRange.getEndValue()).getValue());
+        assertEquals(1, ((IntLiteral) boundsRange.getStepSize()).getValue());
     }
 
     @Test
@@ -521,17 +535,24 @@ public class KmodelAcceptanceVariablesTest {
         Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        
         EList<Field> fields = model.getFields();
         assertEquals(3, fields.size());
-        
-        // TODO
-        //Field field = fields.get(0);
-        //assertTrue(field instanceof Probe);
-        //Probe probe = (Probe) field;
-        //assertEquals("pName", probe.getName());
-        //assertEquals(DataType.BOOL, probe.getDataType());
-        //assertEquals("ab11", probe.getId());
+        Field field1 = fields.get(0);
+        assertTrue(field1 instanceof Constant);
+        Constant constant = (Constant) field1;
+        assertEquals("cBool", constant.getName());
+        assertEquals(DataType.BOOL, constant.getDataType());
+        Field field2 = fields.get(1);
+        assertTrue(field2 instanceof Probe);
+        Probe probe = (Probe) field2;
+        assertEquals("pBool", probe.getName());
+        assertEquals(DataType.BOOL, probe.getDataType());
+        assertEquals("ab11", probe.getId());
+        Field field3 = fields.get(2);
+        assertTrue(field3 instanceof Variable);
+        Variable variable = (Variable) field3;
+        assertEquals("vBool", variable.getName());
+        assertEquals(DataType.BOOL, variable.getDataType());
     }
 
     @Test

@@ -1,12 +1,13 @@
 package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
@@ -18,12 +19,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.KmodelInjectorProvider;
@@ -215,8 +216,10 @@ public class KmodelAcceptanceActionsTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array rangeArray = (Array) bounds;
-        // TODO check bounds; accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
     
     @Test
@@ -254,15 +257,20 @@ public class KmodelAcceptanceActionsTest {
         Bounds bounds = variable1.getValues();
         assertTrue(bounds instanceof Array);
         Array rangeArray = (Array) bounds;
-        // TODO check bounds; accept only literals
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
         Variable variable2 = (Variable) variables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
         assertTrue(bounds2 instanceof Array);
         Array rangeArray2 = (Array) bounds2;
-        // TODO check bounds; accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        IntLiteral intRange1 = (IntLiteral) rangeArray2.getValues().get(0);
+        IntLiteral intRange2 = (IntLiteral) rangeArray2.getValues().get(1);
+        List<Integer> actualIntBounds = Arrays.asList(intRange1.getValue(), intRange2.getValue());
+        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems(1, 2));
     }
     
     @Test
@@ -292,8 +300,10 @@ public class KmodelAcceptanceActionsTest {
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof Array);
         Array rangeArray = (Array) bounds;
-        // TODO check bounds; accept only literals
-        //assertThat(rangeArray.getValues(), CoreMatchers.hasItems(items)
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
 
     @Test
