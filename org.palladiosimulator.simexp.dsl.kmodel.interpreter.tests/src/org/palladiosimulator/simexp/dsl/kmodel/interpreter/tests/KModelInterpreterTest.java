@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
 import static org.junit.Assert.assertFalse;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -15,6 +16,7 @@ import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
@@ -23,9 +25,11 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 
 public class KModelInterpreterTest {
     
@@ -139,11 +143,12 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Action adapt = model.getActions().get(0);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
     	
-    	Assert.assertEquals(1, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1);
     }
     
     @Test
@@ -153,19 +158,22 @@ public class KModelInterpreterTest {
     			"action adapt2(param int parameter);",
     			"if (true) {",
     			"adapt(parameter=1);",
-    			"adapt2(parameter=1);",
+    			"adapt2(parameter=2);",
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Action adapt = model.getActions().get(0);
-    	Action adapt2 = model.getActions().get(1);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(2, resolvedActions.size());
     	
-    	Assert.assertEquals(2, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
-    	Assert.assertEquals(adapt2, actionsToExecute.get(1));
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1);
+    	
+    	Action adapt2 = model.getActions().get(1);
+    	ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
+    	assertResolvedAction(adapt2, resolvedAdapt2, 2);
     }
     
     @Test
@@ -180,12 +188,15 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Action adapt = model.getActions().get(0);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(2, resolvedActions.size());
     	
-    	Assert.assertEquals(2, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
-    	Assert.assertEquals(adapt, actionsToExecute.get(1));
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1);
+    	
+    	ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
+    	assertResolvedAction(adapt, resolvedAdapt2, 2);
     }
     
     @Test
@@ -194,7 +205,7 @@ public class KModelInterpreterTest {
     			"action adapt(param int parameter);",
     			"action adapt2(param int parameter);",
     			"if (true) {",
-    			"adapt(parameter=1);",
+    			"adapt(parameter=2);",
     			"if (true) {",
     			"adapt2(parameter=1);",
     			"}",
@@ -203,13 +214,16 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Action adapt = model.getActions().get(0);
-    	Action adapt2 = model.getActions().get(1);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(2, resolvedActions.size());
     	
-    	Assert.assertEquals(2, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
-    	Assert.assertEquals(adapt2, actionsToExecute.get(1));
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 2);
+    	
+    	Action adapt2 = model.getActions().get(1);
+    	ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
+    	assertResolvedAction(adapt2, resolvedAdapt2, 1);
     }
     
     @Test
@@ -227,9 +241,8 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	List<Action> actionsToExecute = interpreter.plan();
-    	
-    	Assert.assertEquals(0, actionsToExecute.size());
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(0, resolvedActions.size());
     }
     
     @Test
@@ -247,11 +260,12 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Action adapt = model.getActions().get(0);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
     	
-    	Assert.assertEquals(1, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1);
     }
     
     @Test
@@ -262,9 +276,122 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	List<Action> actionsToExecute = interpreter.plan();
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(0, resolvedActions.size());
+    }
+    
+    @Test
+    public void testPlanWithActionWithoutParameters() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt();",
+    			"if (true) {",
+    			"adapt();",
+    			"}");
     	
-    	Assert.assertEquals(0, actionsToExecute.size());
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt);
+    }
+    
+    @Test
+    public void testPlanWithActionWithSingleParameter() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt(param int parameter);",
+    			"if (true) {",
+    			"adapt(parameter=1);",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1);
+    }
+    
+    @Test
+    public void testPlanWithActionWithMultipleParameters() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt(param int parameter, param int parameter2, param int parameter3);",
+    			"if (true) {",
+    			"adapt(parameter=1, parameter2=2, parameter3=3);",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 1, 2, 3);
+    }
+    
+    @Test
+    public void testPlanWithActionWithSingleVariable() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt(var int{5, 4, 3, 2, 1} variable);",
+    			"if (true) {",
+    			"adapt();",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 5);
+    }
+    
+    @Test
+    public void testPlanWithActionWithMultipleVariables() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt(var int{5, 4, 3, 2, 1} variable, var float{0.1, 0.2, 0.3} variable2);",
+    			"if (true) {",
+    			"adapt();",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 5, 0.1f);
+    }
+    
+    @Test
+    public void testPlanWithActionWithParameterAndVariable() throws Exception {
+    	String sb = String.join("\n",
+    			"action adapt(param int parameter, var float{0.1, 0.2, 0.3} variable);",
+    			"if (true) {",
+    			"adapt(parameter=3);",
+    			"}");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, pvp, vvp);
+    	
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(1, resolvedActions.size());
+    	
+    	Action adapt = model.getActions().get(0);
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 3, 0.1f);
     }
     
     @Test
@@ -272,13 +399,13 @@ public class KModelInterpreterTest {
     	String sb = String.join("\n", 
     			"const int constant = 1;",
     			"const int anotherConstant = constant * 2;",
-    			"var float{1.0, 2.0, 3.0} adaptationFactor;",
+    			"var float{1.5, 2.5, 3.5} adaptationFactor;",
     			"probe float someProbe : abc123;",
     			"action adapt(param int parameter, param float factor);",
     			"action adapt2(param int parameter, var float[1,5,1] someRange);",
     			"action adapt3();",
     			"if (someProbe > 0 || someProbe <= -10) {",
-    			"adapt(parameter=anotherConstant, factor=2.0);",
+    			"adapt(parameter=anotherConstant, factor=0.5);",
     			"if (someProbe > 0 && someProbe < 10) {",
     			"adapt2(parameter=adaptationFactor);",
     			"}",
@@ -290,14 +417,45 @@ public class KModelInterpreterTest {
     	Kmodel model = parserHelper.parse(sb);
     	interpreter = new KmodelInterpreter(model, pvp, vvp);
     	
-    	Assert.assertTrue(interpreter.analyze());
+    	List<ResolvedAction> resolvedActions = interpreter.plan();
+    	Assert.assertEquals(2, resolvedActions.size());
     	
     	Action adapt = model.getActions().get(0);
-    	Action adapt2 = model.getActions().get(1);
-    	List<Action> actionsToExecute = interpreter.plan();
+    	ResolvedAction resolvedAdapt = resolvedActions.get(0);
+    	assertResolvedAction(adapt, resolvedAdapt, 2.0f, 0.5f);
     	
-    	Assert.assertEquals(2, actionsToExecute.size());
-    	Assert.assertEquals(adapt, actionsToExecute.get(0));
-    	Assert.assertEquals(adapt2, actionsToExecute.get(1));
+    	Action adapt2 = model.getActions().get(1);
+    	ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
+    	assertResolvedAction(adapt2, resolvedAdapt2, 1.5f, 1);
+    }
+    
+    private void assertResolvedAction(Action action, ResolvedAction resolvedAction, Object... arguments) {
+    	// Check, if the expected & actual name of the resolved action match.
+    	Assert.assertEquals(action.getName(), resolvedAction.getName());
+    	
+    	List<Parameter> parameters = action.getParameterList().getParameters();
+    	List<Field> variables = action.getParameterList().getVariables();
+    	Map<String, Object> resolvedArguments = resolvedAction.getArguments();
+    	
+    	// Check, if the expected & actual amount of resolved arguments match.
+    	Assert.assertEquals(parameters.size() + variables.size(), resolvedArguments.size());
+    	
+    	// Check if the expected & actual names & values for parameter arguments match.
+    	for (int i = 0; i < parameters.size(); i++) {
+    		Parameter parameter = parameters.get(i);
+    		Assert.assertTrue(resolvedArguments.containsKey(parameter.getName()));
+    		
+    		Object value = resolvedArguments.get(parameter.getName());
+    		Assert.assertEquals(arguments[i], value);
+    	}
+    	
+    	// Check if the expected & actual names & values for variable arguments match.
+    	for (int i = 0; i < variables.size(); i++) {
+    		Field variable = variables.get(i);
+    		Assert.assertTrue(resolvedArguments.containsKey(variable.getName()));
+    		
+    		Object value = resolvedArguments.get(variable.getName());
+    		Assert.assertEquals(arguments[i + parameters.size()], value);
+    	}
     }
 }

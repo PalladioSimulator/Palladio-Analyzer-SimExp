@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
@@ -42,9 +43,11 @@ public class KmodelInterpreter implements Analyzer, Planner {
 		}
 		
 		for (Statement statement : statements) {
-			IfStatement ifStatement = (IfStatement) statement;
-			if ((boolean) getValue(ifStatement.getCondition())) {
-				return true;
+			if (statement instanceof IfStatement) {
+				IfStatement ifStatement = (IfStatement) statement;
+				if ((boolean) getValue(ifStatement.getCondition())) {
+					return true;
+				}
 			}
 		}
 		
@@ -52,28 +55,29 @@ public class KmodelInterpreter implements Analyzer, Planner {
 	}
 	
 	@Override
-	public List<Action> plan() {
-		return getActionsToExecute(model.getStatements());
+	public List<ResolvedAction> plan() {
+		return getResolvedActions(model.getStatements());
 	}
 	
-	private List<Action> getActionsToExecute(List<Statement> statements) {
-		List<Action> currentActions = new ArrayList<>();
+	private List<ResolvedAction> getResolvedActions(List<Statement> statements) {
+		List<ResolvedAction> currentActions = new ArrayList<>();
 		
 		for (Statement statement : statements) {
 			if (statement instanceof ActionCall) {
 				ActionCall actionCall = (ActionCall) statement;
 				Action action = actionCall.getActionRef();
 				
-				List<Object> arguments = resolveArguments(actionCall);
+				Map<String, Object> arguments = resolveArguments(actionCall);
+				ResolvedAction resolvedAction = new ResolvedAction(action.getName(), arguments);
 				
-				currentActions.add(action);
+				currentActions.add(resolvedAction);
 			}
 			
 			if (statement instanceof IfStatement) {
 				IfStatement ifStatement = (IfStatement) statement;
 				
 				if ((boolean) getValue(ifStatement.getCondition())) {
-					currentActions.addAll(getActionsToExecute(ifStatement.getStatements()));
+					currentActions.addAll(getResolvedActions(ifStatement.getStatements()));
 				}
 			}
 		}
@@ -81,15 +85,13 @@ public class KmodelInterpreter implements Analyzer, Planner {
 		return currentActions;
 	}
 	
-	public List<Object> resolveArguments(ActionCall actionCall) {
-		List<Object> resolvedArguments = actionCall.getArguments().stream()
-				.map(arg -> getValue(arg.getArgument()))
-				.collect(Collectors.toList());
+	public Map<String, Object> resolveArguments(ActionCall actionCall) {
+		Map<String, Object> resolvedArguments = actionCall.getArguments().stream()
+				.collect(Collectors.toMap(arg -> arg.getParamRef().getName(), arg -> getValue(arg.getArgument())));
 		
 		List<Field> variables = actionCall.getActionRef().getParameterList().getVariables();
-		resolvedArguments.addAll(variables.stream()
-				.map(var -> vvp.getValue((Variable) var))
-				.collect(Collectors.toList()));
+		resolvedArguments.putAll(variables.stream()
+				.collect(Collectors.toMap(Field::getName, var -> vvp.getValue((Variable) var))));
 		
 		return resolvedArguments;
 	}
@@ -123,32 +125,32 @@ public class KmodelInterpreter implements Analyzer, Planner {
 				return !(boolean) leftValue;
 				
 			case SMALLER:
-				return ((Number) leftValue).doubleValue() < ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() < ((Number) rightValue).floatValue();
 				
 			case SMALLER_OR_EQUAL:
-				return ((Number) leftValue).doubleValue() <= ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() <= ((Number) rightValue).floatValue();
 				
 			case GREATER_OR_EQUAL:	
-				return ((Number) leftValue).doubleValue() >= ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() >= ((Number) rightValue).floatValue();
 				
 			case GREATER:
-				return ((Number) leftValue).doubleValue() > ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() > ((Number) rightValue).floatValue();
 				
 			case PLUS:
 				return rightValue == null 
-					? ((Number) leftValue).doubleValue() 
-					: ((Number) leftValue).doubleValue() + ((Number) rightValue).doubleValue();
+					? ((Number) leftValue).floatValue() 
+					: ((Number) leftValue).floatValue() + ((Number) rightValue).floatValue();
 				
 			case MINUS:	
 				return rightValue == null 
-					? -((Number) leftValue).doubleValue() 
-					: ((Number) leftValue).doubleValue() - ((Number) rightValue).doubleValue();
+					? -((Number) leftValue).floatValue() 
+					: ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
 				
 			case MULTIPLY:
-				return ((Number) leftValue).doubleValue() * ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
 				
 			case DIVIDE:
-				return ((Number) leftValue).doubleValue() / ((Number) rightValue).doubleValue();
+				return ((Number) leftValue).floatValue() / ((Number) rightValue).floatValue();
 		}
 		
 		if (leftValue != null) {
