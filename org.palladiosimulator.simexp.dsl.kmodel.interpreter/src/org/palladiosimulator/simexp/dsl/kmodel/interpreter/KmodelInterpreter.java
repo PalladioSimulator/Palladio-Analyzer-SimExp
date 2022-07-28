@@ -68,7 +68,7 @@ public class KmodelInterpreter implements Analyzer, Planner {
 				Action action = actionCall.getActionRef();
 				
 				Map<String, Object> arguments = resolveArguments(actionCall);
-				ResolvedAction resolvedAction = new ResolvedAction(action.getName(), arguments);
+				ResolvedAction resolvedAction = new ResolvedAction(action, arguments);
 				
 				currentActions.add(resolvedAction);
 			}

@@ -85,7 +85,7 @@ Literal:
 	  {BoolLiteral} value=BOOL
 	| {IntLiteral} value=INT 
 	| {FloatLiteral} value=FLOAT
-	| {StringLiteral} value=STRING;	
+	| {StringLiteral} value=STRING;		
 
 // Rule 'DataType' is not used, but is necessary to provide a default value for data types.
 enum DataType: NULL;

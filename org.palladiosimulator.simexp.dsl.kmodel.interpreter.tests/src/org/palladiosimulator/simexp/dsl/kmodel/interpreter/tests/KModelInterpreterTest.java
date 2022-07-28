@@ -445,8 +445,8 @@ public class KModelInterpreterTest {
     }
     
     private void assertResolvedAction(Action action, ResolvedAction resolvedAction, Object... arguments) {
-    	// Check, if the expected & actual name of the resolved action match.
-    	Assert.assertEquals(action.getName(), resolvedAction.getName());
+    	// Check, if the expected & actual action of the resolved action match.
+    	Assert.assertEquals(action, resolvedAction.getAction());
     	
     	List<Field> parameters = action.getParameterList().getParameters();
     	List<Field> variables = action.getParameterList().getVariables();
