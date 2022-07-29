@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core2.test;
+package org.palladiosimulator.simexp.core.test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
