@@ -1,0 +1,107 @@
+grammar org.palladiosimulator.simexp.dsl.kmodel.Kmodel with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
+
+Kmodel:
+	(fields+=Field)*
+	(actions+=Action)*
+	(statements+=IfStatement)*;
+	
+Field:
+	(Constant | Variable | Probe) ';';
+
+Constant returns Field:
+	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr;
+	
+Variable returns Field:
+	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;	
+
+Probe returns Field:
+	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=ID;
+	
+Parameter returns Field: 
+	{Parameter} 'param' dataType=PrimitiveType name=ID;
+	
+Action:
+	'action' name=ID '(' parameterList=ParameterList ')' ';';
+	
+ParameterList: {ParameterList} 
+			(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*))
+			| (variables+=Variable (',' variables+=Variable)*))?;	
+	
+Bounds: Array | => Range | RangeWithGrowth;
+	
+Array returns Bounds:
+	{Array} '{' (values+=Literal (',' values+=Literal)*) '}';
+	
+Range returns Bounds:
+	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';
+	
+RangeWithGrowth returns Bounds:
+	{RangeWithGrowth} '[' startValue=Literal ',' endValue=Literal ',' numSteps=Literal => ',' growth=Growth ']' ;	
+
+Statement:
+	ActionCall | IfStatement;
+
+ActionCall returns Statement:
+	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
+	
+ArgumentKeyValue:
+	paramRef=[Parameter] '=' argument=DisjunctionExpr;	
+	
+IfStatement returns Statement: 
+	{IfStatement} 'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
+
+DisjunctionExpr returns Expression:
+    ConjunctionExpr ({Expression.left=current} op=Disjunction right=ConjunctionExpr)*;
+    
+ConjunctionExpr returns Expression:
+	EqualityExpr ({Expression.left=current} op=Conjunction right=EqualityExpr)*;
+	
+EqualityExpr returns Expression:
+	ComparisonExpr ({Expression.left=current} op=Equality right=ComparisonExpr)*;	
+	
+ComparisonExpr returns Expression:
+	AdditionExpr ({Expression.left=current} op=Comparison right=AdditionExpr)?;	
+	
+AdditionExpr returns Expression:
+	MultiplicationExpr ({Expression.left=current} op=Addition right=MultiplicationExpr)*;
+
+MultiplicationExpr returns Expression:
+	NegationExpr ({Expression.left=current} op=Multiplication right=NegationExpr)*;	
+	
+NegationExpr returns Expression:
+	(op=Negation)? left=AdditiveInversionExpr;
+	
+AdditiveInversionExpr returns Expression:
+	(op=Addition)? left=Term;			
+
+Term returns Expression: 
+	fieldRef=[Field] | literal=Literal | '(' left=DisjunctionExpr ')';
+
+Literal: 
+	  {BoolLiteral} value=BOOL
+	| {IntLiteral} value=INT 
+	| {FloatLiteral} value=FLOAT
+	| {StringLiteral} value=STRING;		
+
+// Rule 'DataType' is not used, but is necessary to provide a default value for data types.
+enum DataType: NULL;
+enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
+
+enum Growth: LOGARITHMIC | LINEAR | POLYNOMIAL | EXPONENTIAL;	
+
+// Rule 'Operation' is not used, but is necessary to provide a default value for operations.
+enum Operation: NULL;
+enum Disjunction returns Operation: OR = '||';
+enum Conjunction returns Operation: AND = '&&';
+enum Equality returns Operation: EQUAL = '==' | UNEQUAL = '!=';
+enum Negation returns Operation: NOT = '!';
+enum Comparison returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
+enum Addition returns Operation: PLUS = '+' | MINUS = '-';
+enum Multiplication returns Operation: MULTIPLY = '*' | DIVIDE = '/';
+
+terminal BOOL returns ecore::EBoolean: 'true' | 'false';
+terminal FLOAT returns ecore::EFloat: ((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT);
