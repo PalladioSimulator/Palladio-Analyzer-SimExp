@@ -16,7 +16,7 @@
 	<properties>
 		<org.palladiosimulator.maven.tychotprefresh.tplocation.2>${project.basedir}/releng/org.palladiosimulator.simexp.targetplatform/tp.target</org.palladiosimulator.maven.tychotprefresh.tplocation.2>
 		
-		<xtextVersion>2.26.0</xtextVersion>
+		<xtextVersion>2.25.0</xtextVersion>
 		<mwe2Version>2.12.2</mwe2Version>
 
 		<maven-clean-version>3.1.0</maven-clean-version>
