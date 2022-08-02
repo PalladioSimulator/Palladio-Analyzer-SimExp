@@ -10,8 +10,6 @@
 	<packaging>eclipse-plugin</packaging>
 
 	<properties>
-		<xtextVersion>2.26.0</xtextVersion>
-		<mwe2Version>2.12.2</mwe2Version>
 		<tycho-version>${tycho.version}</tycho-version>
 	</properties>
 
@@ -41,7 +39,6 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.1.0</version>
 					<configuration>
 						<filesets>
 							<fileset>
