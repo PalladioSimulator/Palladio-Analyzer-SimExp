@@ -16,7 +16,8 @@ Workflow {
 					enabled = true
 				}
 				runtimeTest = {
-					//enabled = true
+					root = "${rootPath}/../tests/org.palladiosimulator.simexp.dsl.kmodel.tests"
+					enabled = true
 				}
 				eclipsePluginTest = {
 					//enabled = true
