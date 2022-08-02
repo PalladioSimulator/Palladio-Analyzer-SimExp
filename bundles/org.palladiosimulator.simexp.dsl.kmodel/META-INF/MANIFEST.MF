@@ -3,7 +3,7 @@ Automatic-Module-Name: org.palladiosimulator.simexp.dsl.kmodel
 Bundle-ManifestVersion: 2
 Bundle-Name: org.palladiosimulator.simexp.dsl.kmodel
 Bundle-Vendor: My Company
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.kmodel; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
