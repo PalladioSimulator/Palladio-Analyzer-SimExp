@@ -68,15 +68,15 @@ public class MonteCarloPredictionTest {
         SimulatedExperience sample6 = Mockito.mock(SimulatedExperience.class);
         SimulatedExperience sample7 = Mockito.mock(SimulatedExperience.class);
         SimulatedExperience sample8 = Mockito.mock(SimulatedExperience.class);
-        when(sample6.getId()).thenReturn("A_");
+        when(sample6.getId()).thenReturn("B_");
         when(sample6.getReconfiguration()).thenReturn(RECONF_PATTERN);
-        when(sample6.getReward()).thenReturn("3.0");
+        when(sample6.getReward()).thenReturn("-2.0");
         when(sample7.getId()).thenReturn("A_");
         when(sample7.getReconfiguration()).thenReturn(RECONF_PATTERN);
-        when(sample7.getReward()).thenReturn("2.0");
+        when(sample7.getReward()).thenReturn("3.0");
         when(sample8.getId()).thenReturn("B_");
         when(sample8.getReconfiguration()).thenReturn(RECONF_PATTERN);
-        when(sample8.getReward()).thenReturn("-4.0");
+        when(sample8.getReward()).thenReturn("-3.0");
         List<SimulatedExperience> traj2 = Arrays.asList(sample6, sample7, sample8);
         
         // two trajectory
