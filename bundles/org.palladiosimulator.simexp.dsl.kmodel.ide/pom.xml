@@ -9,10 +9,6 @@
 	<artifactId>org.palladiosimulator.simexp.dsl.kmodel.ide</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<properties>
-		<tycho-version>${tycho.version}</tycho-version>
-	</properties>
-
 	<build>
 		<pluginManagement>
 			<plugins>
