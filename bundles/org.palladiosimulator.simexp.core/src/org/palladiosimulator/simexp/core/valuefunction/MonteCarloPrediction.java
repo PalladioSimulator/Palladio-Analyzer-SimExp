@@ -1,11 +1,7 @@
 package org.palladiosimulator.simexp.core.valuefunction;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
@@ -17,59 +13,35 @@ import com.google.common.collect.Maps;
 
 public class MonteCarloPrediction implements ValueFunctionEstimator {
 
-	private abstract class MonteCaroEstimator implements BiConsumer<Set<String>, List<SimulatedExperience>> {
-			
-		@Override
-		public void accept(Set<String> t, List<SimulatedExperience> u) {
-			estimate(t,u);
-		}
+	private interface MonteCarloEstimator {
 		
-		public abstract void estimate(Set<String> t, List<SimulatedExperience> u);
-		
-	}
-	
-	private static class AccumulatedReward {
-		
-		private double total = 0;
-		private int accummulations = 0;
-		
-		public static AccumulatedReward nonAccumulations() {
-			AccumulatedReward accReward = new AccumulatedReward();
-			accReward.accummulations = 1;
-			return accReward;
-		}
-		
-		public void append(double reward) {
-			total += reward;
-			accummulations++;
-		}
-		
-		public void mergeWith(AccumulatedReward accReward) {
-			total += accReward.total;
-			accummulations += accReward.accummulations;
-		}
-		
-		public double calculateAverage() {
-			return total / accummulations;
-		}
+		public abstract void estimate(List<SimulatedExperience> traj);
 		
 	}
 	
 	private static class AccumulatedRewardManager {
 		
-		private final Map<String, AccumulatedReward> accRewards = Maps.newHashMap();
+		private final Map<String, List<Double>> managedAccRewards = Maps.newHashMap();
 		
-		public void append(String state, AccumulatedReward accReward) {
-			AccumulatedReward accRewardToUpdate = accRewards.get(state);
-			if (accRewardToUpdate == null) {
-				accRewards.put(state, accReward);
+		public void append(String state, Double accReward) {
+			List<Double> accRewards = managedAccRewards.get(state);
+			if (accRewards == null) {
+				managedAccRewards.put(state, Lists.newArrayList(accReward));
 			} else {
-				accRewardToUpdate.mergeWith(accReward);
+				accRewards.add(accReward);
 			}
 		}
 		
-		public AccumulatedReward getAccumulatedRewardFor(String state) {
-			return Optional.ofNullable(accRewards.get(state)).orElse(AccumulatedReward.nonAccumulations());
+		public Double getAccumulatedRewardFor(String state) {
+			List<Double> accRewards = managedAccRewards.get(state);
+			if (accRewards == null) {
+				return 0.0;
+			}
+			
+			return accRewards.stream()
+		            .mapToDouble(a -> a)
+		            .average()
+		            .getAsDouble();
 		}
 		
 	}
@@ -77,7 +49,7 @@ public class MonteCarloPrediction implements ValueFunctionEstimator {
 	private final ValueFunction valueFunction;
 	private final AccumulatedRewardManager accRewardManager;
 	
-	private MonteCaroEstimator predictionEstimator;
+	private MonteCarloEstimator predictionEstimator;
 	
 	private MonteCarloPrediction() {
 		this.valueFunction = new ValueFunction();
@@ -94,60 +66,40 @@ public class MonteCarloPrediction implements ValueFunctionEstimator {
 	public ValueFunction estimate(SampleModelIterator iterator) {	
 		while(iterator.hasNext()) {
 			List<SimulatedExperience> traj = iterator.next();
-			
-			Set<String> distinctTrajStates = traj.stream()
-					.map(each -> DefaultSimulatedExperience.getCurrentStateFrom(each))
-					.distinct()
-					.collect(Collectors.toSet());
-			
-			predictionEstimator.estimate(distinctTrajStates, traj);			
+			predictionEstimator.estimate(traj);			
 		}
 		
 		return valueFunction;
 	}
 	
-	private MonteCaroEstimator firstVisitEstimator() {
-		return new MonteCaroEstimator() {
+	
+	private MonteCarloEstimator firstVisitEstimator() {
+		return new MonteCarloEstimator() {
 			
 			@Override
-			public void estimate(Set<String> states, List<SimulatedExperience> traj) {
-				for (String each : states) {
-					AccumulatedReward accReward = calculateAccRewardAfterFirstVisit(each, traj);
+			public void estimate(List<SimulatedExperience> traj) {
+				double accReward = 0;
+				for (int t = traj.size() - 1; t >= 0; t--) {
+					SimulatedExperience sample = traj.get(t);
 					
-					accRewardManager.append(each, accReward);
+					accReward += Double.parseDouble(sample.getReward());
 					
-					AccumulatedReward currentAccReward = accRewardManager.getAccumulatedRewardFor(each);
-					valueFunction.updateExpectedReward(each, currentAccReward.calculateAverage());
+					String current = DefaultSimulatedExperience.getCurrentStateFrom(sample);
+					List<String> predecessors = traj.subList(0, t).stream()
+							.map(each -> DefaultSimulatedExperience.getCurrentStateFrom(each))
+							.collect(Collectors.toList());
+					if (isNotIncluded(current, predecessors)) {
+						accRewardManager.append(current, accReward);
+						
+						double expectedReward = accRewardManager.getAccumulatedRewardFor(current);
+						valueFunction.updateExpectedReward(current, expectedReward);
+					}					
 				}
 			}
 
-			private AccumulatedReward calculateAccRewardAfterFirstVisit(String state, List<SimulatedExperience> traj) {
-				AccumulatedReward accReward = new AccumulatedReward();
-				for (SimulatedExperience each : extractSubTrajectoryAfterFirstVisit(state, traj)) {
-					double reward = Double.parseDouble(each.getReward());
-					accReward.append(reward);
-				}
-				
-				return accReward;
+			private boolean isNotIncluded(String current, List<String> predecessors) {
+				return predecessors.stream().noneMatch(each -> each.equals(current));
 			}
-			
-			private List<SimulatedExperience> extractSubTrajectoryAfterFirstVisit(String state, List<SimulatedExperience> traj) {
-				List<SimulatedExperience> subTraj = Lists.newArrayList();
-				
-				Iterator<SimulatedExperience> iterator = traj.iterator();
-				while (iterator.hasNext()) {
-					SimulatedExperience next = iterator.next();
-
-					if (DefaultSimulatedExperience.getCurrentStateFrom(next).equals(state)) {
-						subTraj.add(next);
-						iterator.forEachRemaining(subTraj::add);
-						return subTraj;
-					}
-				}
-				
-				return subTraj;
-			}
-			
 		};
 	}
 
