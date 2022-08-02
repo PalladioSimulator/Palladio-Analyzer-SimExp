@@ -12,10 +12,10 @@ Workflow {
 			project = StandardProjectConfig {
 				baseName = "org.palladiosimulator.simexp.dsl.kmodel"
 				rootPath = rootPath
-				runtimeTest = {
-					//enabled = true
-				}
 				eclipsePlugin = {
+					enabled = true
+				}
+				runtimeTest = {
 					//enabled = true
 				}
 				eclipsePluginTest = {

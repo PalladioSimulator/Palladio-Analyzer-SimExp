@@ -44,6 +44,8 @@
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
 -->			
 		<module>org.palladiosimulator.simexp.dsl.kmodel</module>
+		<module>org.palladiosimulator.simexp.dsl.kmodel.ide</module>
+		<module>org.palladiosimulator.simexp.dsl.kmodel.ui</module>
 	</modules>
 	
 </project>
