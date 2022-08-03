@@ -15,6 +15,7 @@
 		<module>org.palladiosimulator.simexp.pcm.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests</module>
 	</modules>
 	
 </project>
