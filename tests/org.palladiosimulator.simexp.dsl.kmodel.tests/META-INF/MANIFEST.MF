@@ -6,8 +6,8 @@ Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.kmodel.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.palladiosimulator.simexp.dsl.kmodel,
- org.junit.jupiter.api;bundle-version="[5.1.0,6.0.0)",
+Require-Bundle: org.junit;bundle-version="4.13.2",
+ org.palladiosimulator.simexp.dsl.kmodel,
  org.eclipse.xtext.testing,
  org.eclipse.xtext.xbase.testing,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0"

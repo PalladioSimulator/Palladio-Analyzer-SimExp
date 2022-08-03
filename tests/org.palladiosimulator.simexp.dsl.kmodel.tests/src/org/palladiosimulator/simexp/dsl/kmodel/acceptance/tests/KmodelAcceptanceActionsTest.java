@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
