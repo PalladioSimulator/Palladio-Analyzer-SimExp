@@ -20,7 +20,8 @@ Workflow {
 					enabled = true
 				}
 				eclipsePluginTest = {
-					//enabled = true
+					root = "${rootPath}/../tests/org.palladiosimulator.simexp.dsl.kmodel.ui.tests"
+					enabled = true
 				}
 				createEclipseMetaData = true
 			}
