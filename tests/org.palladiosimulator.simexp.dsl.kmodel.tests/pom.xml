@@ -9,19 +9,4 @@
 	<artifactId>org.palladiosimulator.simexp.dsl.kmodel.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<!-- TODO: find out why this is needed at all -->
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<compilerArgument>-err:-forbidden</compilerArgument>
-					<useProjectSettings>false</useProjectSettings>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
