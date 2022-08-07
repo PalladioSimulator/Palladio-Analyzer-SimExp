@@ -9,6 +9,7 @@ public class ModelTypeConstants {
 	public static final String RESOURCETYPE_EXTENSION = "resourcetype";
 	public static final String USAGEMODEL_EXTENSION = "usagemodel";
 	public static final String MONITOR_REPOSITORY_EXTENSION = "monitorrepository";
+	public static final String KMODEL_EXTENSION = "kmodel";
 	
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP = "pathmap://PCM_MODELS/Palladio.resourcetype";
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP_TARGET = "platform:/plugin/org.palladiosimulator.pcm.resources/defaultModels/Palladio.resourcetype";
