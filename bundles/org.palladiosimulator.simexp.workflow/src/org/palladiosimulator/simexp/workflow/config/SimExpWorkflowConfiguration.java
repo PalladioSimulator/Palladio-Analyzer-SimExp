@@ -4,10 +4,13 @@ import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflo
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
     
+
     /**
      * This class serves as container configuration class to hold all relevant configuration informationa
      * 
      * */
+    private String kmodelFile;
+    
     
     public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration inputModels) {
         
@@ -19,6 +22,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * */
         this.setUsageModelFile(inputModels.getUsageModelFile());
         this.setAllocationFiles(inputModels.getAllocationFiles());
+        kmodelFile = inputModels.getKmodelFile();
     }
 
     @Override
@@ -31,6 +35,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public void setDefaults() {
         // FIXME: check what shall be done here
+    }
+    
+    public String getKmodelFile(){
+        return kmodelFile;
     }
 
 }
