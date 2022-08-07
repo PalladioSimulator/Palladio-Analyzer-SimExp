@@ -11,7 +11,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
+import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
@@ -30,6 +32,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
+        
         return new SimExpAnalyzerRootJob(config, launch);
     }
 
@@ -57,7 +60,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
                     Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE));
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE)
+                    , (String) launchConfigurationParams.get(ModelFileTypeConstants.KMODEL_FILE));
 
             workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels);
 
