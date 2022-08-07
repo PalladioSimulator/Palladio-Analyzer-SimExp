@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.service,
  org.palladiosimulator.envdyn.api,
  org.apache.log4j,
- com.google.guava;bundle-version="27.1.0"
+ com.google.guava;bundle-version="27.1.0",
+ org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples
 Bundle-ActivationPolicy: lazy

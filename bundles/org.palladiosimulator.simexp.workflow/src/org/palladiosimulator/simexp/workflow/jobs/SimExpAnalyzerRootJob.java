@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.workflow.jobs;
 
 import org.eclipse.debug.core.ILaunch;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 
 import de.uka.ipd.sdq.workflow.jobs.ICompositeJob;
@@ -14,7 +15,8 @@ public class SimExpAnalyzerRootJob extends SequentialBlackboardInteractingJob<MD
         
         // add all contained jobs here
         this.addJob(new SimExpServiceRegistrationJob());
-        this.addJob(new PcmExperienceSimulationJob());
+        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
+        this.addJob(new PcmExperienceSimulationJob(config, loadBalancingSimulationExecutorFactory));
 //         this.addJob(PerformabilityWorkflowJobFactory.createPerformabilityBlackboardInitializePartitionsJob()); //new PreparePCMBlackboardPartitionJob());
          
     }
