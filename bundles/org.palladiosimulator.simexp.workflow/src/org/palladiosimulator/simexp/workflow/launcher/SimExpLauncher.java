@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
+import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
@@ -32,7 +33,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
-        LoadBalancingSimulationExecutor simulationExecutor = createSimulationExecutor();
+        SimulationExecution simulationExecutor = createSimulationExecutor();
         return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
     }
 
@@ -44,9 +45,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     
-    private LoadBalancingSimulationExecutor createSimulationExecutor() {
+    private SimulationExecution createSimulationExecutor() {
         LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
         LoadBalancingSimulationExecutor simulationExecutor = loadBalancingSimulationExecutorFactory.create();
+        // FIXME: add creation of fault-tolerant loadbalancing simulation executor
         return simulationExecutor;
     }
     

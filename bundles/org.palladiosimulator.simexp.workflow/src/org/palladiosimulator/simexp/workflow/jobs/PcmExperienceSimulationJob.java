@@ -1,15 +1,8 @@
 package org.palladiosimulator.simexp.workflow.jobs;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
+import org.palladiosimulator.core.simulation.SimulationExecution;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
@@ -21,11 +14,11 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
 
     private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationJob.class.getName());
     
-    private final  LoadBalancingSimulationExecutor simulationExecutor;
+    private final  SimulationExecution simulationExecutor;
     
     private MDSDBlackboard blackboard;
     
-    public PcmExperienceSimulationJob( LoadBalancingSimulationExecutor simulationExecutor) {
+    public PcmExperienceSimulationJob(SimulationExecution simulationExecutor) {
         this.simulationExecutor = simulationExecutor;
     }
     
