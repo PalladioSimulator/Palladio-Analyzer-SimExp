@@ -15,6 +15,7 @@ import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
@@ -46,9 +47,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     
     private SimulationExecution createSimulationExecutor() {
-        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
-        LoadBalancingSimulationExecutor simulationExecutor = loadBalancingSimulationExecutorFactory.create();
+//        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
+//        LoadBalancingSimulationExecutor simulationExecutor = loadBalancingSimulationExecutorFactory.create();
         // FIXME: add creation of fault-tolerant loadbalancing simulation executor
+        FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
+        SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create();
         return simulationExecutor;
     }
     
