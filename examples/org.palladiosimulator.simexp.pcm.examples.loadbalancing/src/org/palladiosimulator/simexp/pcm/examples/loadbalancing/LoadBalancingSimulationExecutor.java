@@ -60,8 +60,7 @@ public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final NStepLoadBalancerStrategy reconfSelectionPolicy;
 	
-	private LoadBalancingSimulationExecutor(Kmodel kmodel) {
-	    super(kmodel);
+	private LoadBalancingSimulationExecutor() {
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
@@ -75,14 +74,14 @@ public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    
-	    public LoadBalancingSimulationExecutorFactory() {
-	    }
-	    
-	    public LoadBalancingSimulationExecutor create(Kmodel kmodel) {
-	        return new LoadBalancingSimulationExecutor(kmodel);
-	    }
-	}
+
+        public LoadBalancingSimulationExecutorFactory() {
+        }
+
+        public LoadBalancingSimulationExecutor create() {
+            return new LoadBalancingSimulationExecutor();
+        }
+    }
 
 	@Override
 	protected String getExperimentFile() {

@@ -14,9 +14,6 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
     //private Path kmodelFile;
 	protected Experiment experiment;
 	
-//	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
-	//private static PcmExperienceSimulationExecutor instance;
-	
 	public PcmExperienceSimulationExecutor() {
 	    String experimentFile = getExperimentFile();
 		this.experiment = new ExperimentLoader().loadExperiment(experimentFile);
@@ -24,13 +21,6 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
 
-	/*public static PcmExperienceSimulationExecutor get() {
-	    if (instance == null) {
-	        instance = ServiceRegistry.get().findService(PcmExperienceSimulationExecutor.class).orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
-	    }
-		return instance;
-	}*/
-	
 	public void execute() {
 		createSimulator().run();
 	}
