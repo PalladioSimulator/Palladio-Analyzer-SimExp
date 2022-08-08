@@ -12,6 +12,7 @@
 	
 	<modules>
 		<!-- insert test folders here -->
+		<module>org.palladiosimulator.simexp.core.tests</module>
 		<module>org.palladiosimulator.simexp.pcm.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui.tests</module>
