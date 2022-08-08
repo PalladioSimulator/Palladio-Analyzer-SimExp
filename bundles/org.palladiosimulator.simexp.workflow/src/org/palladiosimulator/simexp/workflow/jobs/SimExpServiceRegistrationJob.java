@@ -31,7 +31,7 @@ public class SimExpServiceRegistrationJob implements IJob {
 		LOGGER.info("Start registration of the required services.");
 		
 //		registerService(service(PcmExperienceSimulationExecutor.class).isProvidedBy(LoadBalancingSimulationExecutor.class));
-		registerService(service(PcmExperienceSimulationExecutor.class).isProvidedBy(FaultTolerantLoadBalancingSimulationExecutor.class));
+//		registerService(service(PcmExperienceSimulationExecutor.class).isProvidedBy(FaultTolerantLoadBalancingSimulationExecutor.class));
 
 		//FIXME: Prism service registration should be customized
 //		registerService(service(PrismService.class).isProvidedBy(PrismInvocationService.class));

@@ -58,7 +58,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final NStepLoadBalancerStrategy reconfSelectionPolicy;
 	
-	public LoadBalancingSimulationExecutor() {
+	private LoadBalancingSimulationExecutor() {
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
@@ -70,6 +70,16 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
+	
+	public static final class LoadBalancingSimulationExecutorFactory {
+
+        public LoadBalancingSimulationExecutorFactory() {
+        }
+
+        public LoadBalancingSimulationExecutor create() {
+            return new LoadBalancingSimulationExecutor();
+        }
+    }
 
 	@Override
 	protected String getExperimentFile() {
