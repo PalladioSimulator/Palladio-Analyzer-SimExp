@@ -20,7 +20,6 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
@@ -39,7 +38,7 @@ import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
-public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
+public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
     private static final Logger LOGGER = Logger.getLogger(LoadBalancingSimulationExecutor.class.getName());
 

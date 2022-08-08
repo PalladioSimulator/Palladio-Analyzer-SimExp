@@ -40,14 +40,15 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
         LOGGER.info("**** PcmExperienceSimulationJob.execute - Done.****");
     }
 
-    private Kmodel loadModel(URI kmodelUri) throws IOException {
-        KmodelStandaloneSetup.doSetup();
-        ResourceSet resourceSet = new ResourceSetImpl();
-        Resource resource = resourceSet.getResource(kmodelUri, true);
-        EList<EObject> contents = resource.getContents();
-        Kmodel model = (Kmodel) contents.get(0);
-        return model;
-    }
+  
+//    private Kmodel loadModel(URI kmodelUri) throws IOException {
+//        KmodelStandaloneSetup.doSetup();
+//        ResourceSet resourceSet = new ResourceSetImpl();
+//        Resource resource = resourceSet.getResource(kmodelUri, true);
+//        EList<EObject> contents = resource.getContents();
+//        Kmodel model = (Kmodel) contents.get(0);
+//        return model;
+//    }
 
     @Override
     public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
