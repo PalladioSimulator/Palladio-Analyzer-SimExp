@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
@@ -79,7 +78,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	public FaultTolerantLoadBalancingSimulationExecutor(Kmodel kmodel) {
+	private FaultTolerantLoadBalancingSimulationExecutor(Kmodel kmodel) {
 	    super(kmodel);
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
@@ -104,6 +103,16 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+	}
+	
+	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
+	        
+	    public FaultTolerantLoadBalancingSimulationExecutorFactory() {
+	    }
+	        
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Kmodel kmodel) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(kmodel);
+	    }
 	}
 
 	@Override
