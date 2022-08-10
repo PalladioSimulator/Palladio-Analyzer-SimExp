@@ -21,9 +21,17 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
+import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
+import org.palladiosimulator.simexp.core.strategy.mape.Executer;
+import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -99,7 +107,15 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 //        this.reconfigurationPlanningStrategy = new FaultTolerantScalingPlanningStrategy(responseTimeMeasurementSpec, strategyConfiguration
 //                , nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
 
-        this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
+		
+        ProbeValueProvider pvp = new DummyProbeValueProvider();
+        VariableValueProvider vvp = new DummyVariableValueProvider();
+        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, pvp, vvp );
+        org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
+        Analyzer analyzer = kmodelInterpreter;
+        Planner planner = kmodelInterpreter;
+        Executer executer = null;
+        this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy, monitor, analyzer, planner, executer);
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
