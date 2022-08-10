@@ -20,11 +20,10 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
-import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
@@ -38,7 +37,7 @@ import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
-public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
+public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
     
     private static final Logger LOGGER = Logger.getLogger(LoadBalancingSimulationExecutor.class.getName());
 
@@ -59,7 +58,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final NStepLoadBalancerStrategy reconfSelectionPolicy;
 	
-	private LoadBalancingSimulationExecutor() {
+	private LoadBalancingSimulationExecutor(Kmodel kmodel) {
+	    super(kmodel);
 		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
@@ -77,8 +77,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
         public LoadBalancingSimulationExecutorFactory() {
         }
 
-        public LoadBalancingSimulationExecutor create() {
-            return new LoadBalancingSimulationExecutor();
+        public LoadBalancingSimulationExecutor create(Kmodel kmodel) {
+            return new LoadBalancingSimulationExecutor(kmodel);
         }
     }
 

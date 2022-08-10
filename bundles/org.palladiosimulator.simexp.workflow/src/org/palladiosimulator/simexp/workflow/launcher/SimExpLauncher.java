@@ -24,6 +24,8 @@ import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -75,7 +77,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     
     private SimulationExecution createSimulationExecutor(Kmodel kmodel) {
 //        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
-//        LoadBalancingSimulationExecutor simulationExecutor = loadBalancingSimulationExecutorFactory.create();
+//        SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
         SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create(kmodel);
         return simulationExecutor;
