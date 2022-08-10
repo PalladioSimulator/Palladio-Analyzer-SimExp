@@ -2,22 +2,19 @@ package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
 
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 
-public class DummyProbeValueProvider implements ProbeValueProvider {
+public class DummyProbeValueProvider implements ProbeValueProvider, ProbeValueProviderMeasurementInjector {
     
-    
-    
-//    protected Double retrieveResponseTime(SelfAdaptiveSystemState<?> sasState) {
-//        SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
-//            .findMeasurementWith(responseTimeSpec)
-//            .orElseThrow();
-//        return simMeasurement.getValue();
+    private double currentMeasurementValue;
     
 
     @Override
     public Object getValue(Probe probe) {
-        // TODO: lookup current measured responseTime from probe
-        double currentMeasurementValue = 2.1;
+        // TODO: lookup current measured responseTime from probe instead of using ProbeValueProviderMeasurementInjector
         return currentMeasurementValue;
+    }
+    
+    public void injectMeasurement(double measurementValue) {
+        this.currentMeasurementValue = measurementValue;
     }
 
 }

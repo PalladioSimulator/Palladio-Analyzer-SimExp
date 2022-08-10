@@ -7,10 +7,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
 import org.palladiosimulator.simexp.core.strategy.mape.Executer;
 import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
 import org.palladiosimulator.simexp.core.strategy.mape.Planner;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -26,14 +30,18 @@ public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> impl
     private final Analyzer analyzer;
     private final Planner planner;
     private final Executer executer;
+    private final SimulatedMeasurementSpecification measurementSpec;
+    private final ProbeValueProviderMeasurementInjector pvpInjector;
 
     
-    public ReconfigurationStrategy(Monitor monitor, Analyzer analyzer, Planner planner, Executer executer) {
+    public ReconfigurationStrategy(Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
         this.monitor = monitor;
         this.analyzer = analyzer;
         this.planner = planner;
         this.executer = executer;
         this.knowledge = new SharedKnowledge();
+        this.measurementSpec = measurementSpec;
+        this.pvpInjector = pvpInjector;
     }
     
 
@@ -47,6 +55,18 @@ public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> impl
 //	    monitor.monitor();
 		LOGGER.info("'MONITOR' step done");
 		LOGGER.info("'ANALYZE' step start");
+		
+		 /**
+	     * FIXME: workaround to provide current measurements
+	     * 
+	     * */
+        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+        SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
+                .findMeasurementWith(measurementSpec)
+                .orElseThrow();
+        double currentMeasurement = simMeasurement.getValue();
+        pvpInjector.injectMeasurement(currentMeasurement);
+		
 	    boolean isAnalyzable = analyzer.analyze();
 		LOGGER.info("'ANALYZE' step done");
 	    

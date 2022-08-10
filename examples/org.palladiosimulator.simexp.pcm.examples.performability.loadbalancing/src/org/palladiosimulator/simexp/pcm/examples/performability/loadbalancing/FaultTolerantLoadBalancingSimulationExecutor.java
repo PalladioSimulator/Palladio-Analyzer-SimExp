@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyProbeValueProvid
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -108,14 +109,16 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 //                , nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
 
 		
-        ProbeValueProvider pvp = new DummyProbeValueProvider();
+		DummyProbeValueProvider dummyPvp = new DummyProbeValueProvider();
+        ProbeValueProvider pvp = dummyPvp;
+        ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
         VariableValueProvider vvp = new DummyVariableValueProvider();
         KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, pvp, vvp );
         org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
         Analyzer analyzer = kmodelInterpreter;
         Planner planner = kmodelInterpreter;
         Executer executer = null;
-        this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy, monitor, analyzer, planner, executer);
+        this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy, monitor, analyzer, planner, executer, responseTimeMeasurementSpec, pvpMeasurementInjector);
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
