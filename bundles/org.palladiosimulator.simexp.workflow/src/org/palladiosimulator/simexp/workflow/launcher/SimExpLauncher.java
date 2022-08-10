@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -8,13 +9,21 @@ import java.util.Map.Entry;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -34,8 +43,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
-        SimulationExecution simulationExecutor = createSimulationExecutor();
-        return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
+        
+        try {
+            URI uri = URI.createURI(config.getKmodelFile());
+            Kmodel kmodel = loadModel(uri);
+            LOGGER.debug(String.format("Loaded kmodel from '%s'", uri.path()));
+            SimulationExecution simulationExecutor = createSimulationExecutor(kmodel);
+            return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
+        } catch (IOException e) {
+            IStatus status = Status.error(e.getMessage(), e);
+            throw new CoreException(status);
+        }
     }
 
     @Override
@@ -44,14 +62,22 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Derive workflow configuration");
         return buildWorkflowConfiguration(configuration, mode);
     }
+    
+    private Kmodel loadModel(URI kmodelUri) throws IOException {
+        KmodelStandaloneSetup.doSetup();
+        ResourceSet resourceSet = new ResourceSetImpl();
+        Resource resource = resourceSet.getResource(kmodelUri, true);
+        EList<EObject> contents = resource.getContents();
+        Kmodel model = (Kmodel) contents.get(0);
+        return model;
+    }
 
     
-    private SimulationExecution createSimulationExecutor() {
+    private SimulationExecution createSimulationExecutor(Kmodel kmodel) {
 //        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //        LoadBalancingSimulationExecutor simulationExecutor = loadBalancingSimulationExecutorFactory.create();
-        // FIXME: add creation of fault-tolerant loadbalancing simulation executor
         FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-        SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create();
+        SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create(kmodel);
         return simulationExecutor;
     }
     

@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
@@ -50,7 +49,7 @@ import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
-public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
+public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
     
     private static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     private static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
@@ -79,8 +78,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	private FaultTolerantLoadBalancingSimulationExecutor() {
-//	    super(kmodel);
+	private FaultTolerantLoadBalancingSimulationExecutor(Kmodel kmodel) {
+	    super(kmodel);
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
@@ -111,8 +110,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	    public FaultTolerantLoadBalancingSimulationExecutorFactory() {
 	    }
 	        
-	    public FaultTolerantLoadBalancingSimulationExecutor create() {
-	        return new FaultTolerantLoadBalancingSimulationExecutor();
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Kmodel kmodel) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(kmodel);
 	    }
 	}
 
