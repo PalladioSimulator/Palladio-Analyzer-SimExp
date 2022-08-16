@@ -13,6 +13,8 @@ import com.google.common.collect.Lists;
 
 public class RandomizedAdaptationStrategy extends ReliabilityPrioritizedStrategy {
 
+	private final Random random = new Random();
+	
 	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec) {
 		super(responseTimeSpec);
 	}
@@ -23,23 +25,39 @@ public class RandomizedAdaptationStrategy extends ReliabilityPrioritizedStrategy
 	}
 	
 	@Override
+	protected boolean analyse(State source, SharedKnowledge knowledge) {
+		return true;
+	}
+	
+	@Override
 	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-		List<QVToReconfiguration> availableOptions = Lists.newArrayList();
+		List<String> availableOptions = Lists.newArrayList();
+		availableOptions.add("EmptyReconf");
 		
 		if (isFilteringActivated) {
-			availableOptions.add(deactivateFilteringReconfiguration(options));
+			availableOptions.add("DeactivateFilterComponent");
 		} else {
-			availableOptions.add(activateFilteringReconfiguration(options));
+			availableOptions.add("ActivateFilterComponent");
 		}
 		
 		if (isDefaultMLModelActivated) {
-			availableOptions.add(switchToRobustMLModel(options));
+			availableOptions.add("SwitchToRobustMLModel");
 		} else {
-			availableOptions.add(switchToDefaultMLModel(options));
+			availableOptions.add("SwitchToDefaultMLModel");
 		}
 		
-		var randomlySelect = new Random().nextInt(2);
-		return availableOptions.get(randomlySelect);
+		var randomlySelect = availableOptions.get(random.nextInt(3));
+		if (randomlySelect.equals("ActivateFilterComponent")) {
+			return activateFilteringReconfiguration(options);
+		} else if (randomlySelect.equals("DeactivateFilterComponent")) {
+			return deactivateFilteringReconfiguration(options);
+		} else if (randomlySelect.equals("SwitchToDefaultMLModel")) {
+			return switchToDefaultMLModel(options);
+		} else if (randomlySelect.equals("SwitchToRobustMLModel")) {
+			return switchToRobustMLModel(options);
+		} else {
+			return QVToReconfiguration.empty();
+		}
 	}
 	
 }
