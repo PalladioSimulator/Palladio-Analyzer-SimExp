@@ -39,14 +39,13 @@
 		<module>org.palladiosimulator.simexp.pcm.prism</module>
 		<module>org.palladiosimulator.simexp.pcm.prism.wrapper</module>
 -->	
-		<!-- requires org.palladiosimulator.dependability.reliability.uncertainty.solver 1.0.0; is part of Palladio-Analyzer-Dependability-ML -->
-<!--
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
--->			
+
 		<module>org.palladiosimulator.simexp.dsl.kmodel</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ide</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter</module>
+
 	</modules>
 	
 </project>

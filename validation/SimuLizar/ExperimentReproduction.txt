@@ -1,0 +1,22 @@
+* Since the SimExp UI is currently work-in-progress, we created a corresponding project which includes the java sources for experiment reproduction
+
+* Clone and import SimExp
+** Clone the latest git repository of SimExp
+** Import all bundles into your eclipse workspace
+** Import the org.palladiosimulator.simexp.pcm.examples.loadbalancing project from the examples folder
+
+* Setup
+** Check whether in SimExpServiceRegistration.java (.\Palladio-Analyzer-SimExp\bundles\org.palladiosimulator.simexp.workflow\src\org\palladiosimulator\simexp\workflow\jobs) the class LoadBalancingSimulationExecutor is registered. If not, replace the class with currently registered class.
+** Moreover, LoadBalancingSimulationExecutor contains all experiments settings (e.g. number of trajectories, ...) and the adaptation strategy to be evaluated. Therefore, comment out the strategy to be evaluated.
+** Afterwards configure and run a new eclipse instance in the run configurations and let it run.
+** Import the project org.palladiosimulator.simexp.pcm.examples.loadbalancer (located in this folder) in the newly created eclipse instance.
+
+* Execute SimExp
+** To select the usage evolution for evluation, navigate to the InterarrivalRateEvolution.usageevolution file. Within the file, the respective usage evolutions can be selected (i.e. constant, linear and peak evolution).
+** Depending on the adaptatio strategy to be evaluated, copy the corresponding model transformations (representing the adaptations) from the reconfigurations_simexp-folder to the reconfigurations_active-folder.
+** Create a new SimExp run configuration and let it run.
+** Important remark: For some reasons the first SimExp run craches (we could not identify the source of error). If you run SimExp again, everything works as expected.
+
+* Execute SimuLizar
+** Within the inner eclipse instance, create a respective Simulizar run config.
+** Before execution, copy the model transformations (depending on the adaptation strategy to be evaluated) from the reconfigurations_simulizar-folder to the reconfigurations_active-folder.

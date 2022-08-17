@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dynamicmodel:DynamicBehaviourRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_Aa7c0LZiEey0O8znMCGiVQ" entityName="InterArrivalTimeDistributionDynamicsRepo">
+  <extensions id="_Aa8D4LZiEey0O8znMCGiVQ" entityName="InterArrivalTimeDistributionDynamics">
+    <model href="LoadBalancingLinearInterarrivalRateStativEnv.staticmodel#_Aa61wbZiEey0O8znMCGiVQ"/>
+    <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+      <localModels id="_Aa7c0bZiEey0O8znMCGiVQ" entityName="DynamicInterArrivalTime">
+        <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="LoadBalancerLinearInterarrivalRateTemplates.templatevariable#_Aa6OtLZiEey0O8znMCGiVQ"/>
+        <distributionFunction href="LoadBalancerLinearInterarrivalRateDist.distributionfunction#_AcSHsLZiEey0O8znMCGiVQ"/>
+      </localModels>
+      <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_Aa7c0bZiEey0O8znMCGiVQ">
+        <appliedGroundVariable href="LoadBalancingLinearInterarrivalRateStativEnv.staticmodel#_Aa61wLZiEey0O8znMCGiVQ"/>
+        <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="LoadBalancerLinearInterarrivalRateTemplates.templatevariable#//@relation.0"/>
+      </timeSliceInductions>
+    </behaviour>
+  </extensions>
+</dynamicmodel:DynamicBehaviourRepository>
