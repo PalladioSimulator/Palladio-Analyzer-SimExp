@@ -11,7 +11,12 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
+import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
+import org.palladiosimulator.simexp.core.strategy.mape.Executer;
+import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
+import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
@@ -28,7 +33,8 @@ public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVTo
 	protected boolean isDefaultMLModelActivated = true;
 	protected boolean isFilteringActivated = false;
 	
-	public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec) {
+	public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
+	    super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
 		this.responseTimeSpec = responseTimeSpec;
 	}
 	

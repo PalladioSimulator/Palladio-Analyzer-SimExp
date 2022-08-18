@@ -21,13 +21,24 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
+import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
+import org.palladiosimulator.simexp.core.strategy.mape.Executer;
+import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
@@ -44,7 +55,7 @@ import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
-public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
+public class RobotCognitionSimulationExecutor extends KmodelSimulationExecutor {
     
     private static final Logger LOGGER = Logger.getLogger(RobotCognitionSimulationExecutor.class.getName());
 
@@ -74,18 +85,42 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final ReconfigurationStrategy<?> reconfigurationStrategy;
 	
-	public RobotCognitionSimulationExecutor() {
+	private RobotCognitionSimulationExecutor(Kmodel kmodel) {
+	    super(kmodel);
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
 		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
 		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
-		this.reconfigurationStrategy = new StaticSystemSimulation();
+		
+        DummyProbeValueProvider dummyPvp = new DummyProbeValueProvider();
+        ProbeValueProvider pvp = dummyPvp;
+        ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
+        VariableValueProvider vvp = new DummyVariableValueProvider();
+        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, pvp, vvp);
+        org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
+        Analyzer analyzer = kmodelInterpreter;
+        Planner planner = kmodelInterpreter;
+        Executer executer = null;
+ 
+		this.reconfigurationStrategy = new StaticSystemSimulation(monitor, analyzer, planner, executer, responseTimeSpec, pvpMeasurementInjector);
 		
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
+	
+	
+    public static final class RobotCognitionSimulationExecutorFactory {
+
+        public RobotCognitionSimulationExecutorFactory() {
+        }
+
+        public RobotCognitionSimulationExecutor create(Kmodel kmodel) {
+            return new RobotCognitionSimulationExecutor(kmodel);
+        }
+    }
+	
 	
 	@Override
 	public void evaluate() {
