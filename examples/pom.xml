@@ -19,8 +19,9 @@
 		<module>org.palladiosimulator.simexp.pcm.examples</module>
 		<module>org.palladiosimulator.simexp.pcm.examples.loadbalancing</module>
 
-<!--	//models are currenlty not considered in this build	
 		<module>org.palladiosimulator.simexp.pcm.examples.hri</module>
+<!--	//models are currenlty not considered in this build	
+
 		<module>org.palladiosimulator.simexp.pcm.examples.deltaiot</module>
 		
 		// requires: org.palladiosimulator.simexp.pcm.reliability 0.0.0

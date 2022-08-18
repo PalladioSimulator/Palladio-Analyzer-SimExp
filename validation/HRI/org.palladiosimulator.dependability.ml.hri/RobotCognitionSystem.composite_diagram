@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:composition="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2" xsi:schemaLocation="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//core/composition http://palladiosimulator.org/PalladioComponentModel/System/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//system" xmi:id="_9807oMr6EeylqaZ-C_Z_cg" type="CompositeModel" measurementUnit="Pixel">
+  <children xmi:type="notation:Shape" xmi:id="_-ZtE4Mr6EeylqaZ-C_Z_cg" type="2002" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_-ZuTAMr6EeylqaZ-C_Z_cg" type="5012"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_-ZuTAcr6EeylqaZ-C_Z_cg" type="7002">
+      <children xmi:type="notation:Shape" xmi:id="_-abdoMr6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-abdosr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_yM83YNDbEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-abdocr6EeylqaZ-C_Z_cg"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-abdo8r6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-acEscr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_PGlVINDcEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-acEsMr6EeylqaZ-C_Z_cg" x="353" y="205"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-acEssr6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-acrwMr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_vH-OANDcEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-acEs8r6EeylqaZ-C_Z_cg" x="653" y="270"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-acrwcr6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-acrw8r6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_a4j48NDdEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-acrwsr6EeylqaZ-C_Z_cg" x="600"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-adS0Mr6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-adS0sr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_nwE98NDdEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-adS0cr6EeylqaZ-C_Z_cg" x="800"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-adS08r6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-adS1cr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_4u1lINDdEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-adS1Mr6EeylqaZ-C_Z_cg" x="1000"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-ad54Mr6EeylqaZ-C_Z_cg" type="3006" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-ad54sr6EeylqaZ-C_Z_cg" type="5009"/>
+        <element xmi:type="composition:AssemblyContext" href="RobotCognitionSystem.system#_IROnAN36Eeq3EYM7_fX0uw"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-ad54cr6EeylqaZ-C_Z_cg" x="1200"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-ad548r6EeylqaZ-C_Z_cg" type="3017" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-aeg8Mr6EeylqaZ-C_Z_cg" type="5019"/>
+        <element xmi:type="composition:EventChannel" href="RobotCognitionSystem.system#_cTR_8NDcEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-ad55Mr6EeylqaZ-C_Z_cg" x="1400"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-aeg8cr6EeylqaZ-C_Z_cg" type="3017" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-aeg88r6EeylqaZ-C_Z_cg" type="5019"/>
+        <element xmi:type="composition:EventChannel" href="RobotCognitionSystem.system#_7VmogNDcEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-aeg8sr6EeylqaZ-C_Z_cg" x="1540"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-aeg9Mr6EeylqaZ-C_Z_cg" type="3017" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-afIAMr6EeylqaZ-C_Z_cg" type="5019"/>
+        <element xmi:type="composition:EventChannel" href="RobotCognitionSystem.system#_gpWL0NDdEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-aeg9cr6EeylqaZ-C_Z_cg" x="1680"/>
+      </children>
+      <children xmi:type="notation:Shape" xmi:id="_-afIAcr6EeylqaZ-C_Z_cg" type="3017" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-afIA8r6EeylqaZ-C_Z_cg" type="5019"/>
+        <element xmi:type="composition:EventChannel" href="RobotCognitionSystem.system#_0bHGINDdEeqWne3bdagE9g"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-afIAsr6EeylqaZ-C_Z_cg" x="1820"/>
+      </children>
+    </children>
+    <element xmi:type="system:System" href="RobotCognitionSystem.system#_qSosMNDbEeqWne3bdagE9g"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-ZtE4cr6EeylqaZ-C_Z_cg" width="1211"/>
+  </children>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_9807ocr6EeylqaZ-C_Z_cg"/>
+  <element xmi:type="system:System" href="RobotCognitionSystem.system#_qSosMNDbEeqWne3bdagE9g"/>
+</notation:Diagram>

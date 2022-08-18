@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
@@ -20,9 +23,10 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
-import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -30,8 +34,10 @@ import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import tools.descartes.dlim.generator.ModelEvaluator;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
@@ -41,8 +47,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
     
     private static final Logger LOGGER = Logger.getLogger(LoadBalancingSimulationExecutor.class.getName());
 
-	public final static double UPPER_THRESHOLD_RT = 2.0;
-	public final static double LOWER_THRESHOLD_RT = 1.0;
+    public final static double UPPER_THRESHOLD_RT = 2.0;
+	public final static double LOWER_THRESHOLD_RT = 0.3;
 	
 	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
 	private final static String SIMULIZAR_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuLizarElasticity.experiments";
@@ -56,24 +62,36 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
-	private final NStepLoadBalancerStrategy reconfSelectionPolicy;
+	private final Policy<Action<?>> reconfSelectionPolicy;
+	private final boolean simulateWithUsageEvolution = true;
 	
 	public LoadBalancingSimulationExecutor() {
-		this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
-		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
-								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
-								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
-//		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
-//		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
-		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+		
+		if (simulateWithUsageEvolution) {
+			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
+			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
+			var bn = new BayesianNetwork(null, dynBehaviour.getModel());
+			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour);
+		} else {
+			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+		}
+		
+		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
+								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
+								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
+
+//		this.reconfSelectionPolicy = new NonAdaptiveStrategy();
+//		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
+//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
+		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
+//		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 	}
 
 	@Override
 	protected String getExperimentFile() {
-		return SIMULIZAR_EXPERIMENT_FILE;
+		return EXPERIMENT_FILE;
 	}
 
 	@Override
@@ -95,8 +113,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(3) //500
-					.andNumberOfSimulationsPerRun(5) //100
+					.withNumberOfRuns(1) //500
+					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -108,17 +126,17 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 				  	.andReconfigurationStrategy(reconfSelectionPolicy)
 				  	.done()
 				.specifyRewardHandling()
-				  	//.withRewardEvaluator(getSimpleRewardEvaluator())
-				  	.withRewardEvaluator(getRewardEvaluator())
+				  	.withRewardEvaluator(getSimpleRewardEvaluator())
+				  	//.withRewardEvaluator(getRewardEvaluator())
 				  	.done()
 				.build();
 	}
 
 	private RewardEvaluator getSimpleRewardEvaluator() {
-		return ThresholdBasedRewardEvaluator.with(upperResponseTimeThreshold(),
+		return ThresholdBasedRewardEvaluator.with(upperResponseTimeThreshold());
 			// lowerResponseTimeThreshold(),
 			// cpuServer1Threshold(),
-			   cpuServer2Threshold());
+			// cpuServer2Threshold());
 	}
 	
 	private RewardEvaluator getRewardEvaluator() {

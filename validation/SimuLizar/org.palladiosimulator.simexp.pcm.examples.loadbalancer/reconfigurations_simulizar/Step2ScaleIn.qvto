@@ -1,0 +1,131 @@
+/*
+ * This simple QVTO SimuLizar reconfiguration rule increases the processing rate of all
+ * resources in case the monitored mean response time is greater than 3.0 (seconds). 
+ *
+ */
+
+/*
+ * Two modeltypes are declared. The http NS URIs correspond to those used to register the 
+ * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
+ * in conjunction with mappings defined in the project properties.
+ */
+modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
+modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
+modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
+modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
+modeltype PCM_SYS uses 'http://palladiosimulator.org/PalladioComponentModel/System/5.2';
+modeltype PCM_RES_ENV uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2';
+modeltype PCM_RES_TYPE uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2';
+modeltype PCM_USAGE uses 'http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2';
+modeltype PCM_FEATURE_CONF uses 'http://sdq.ipd.uka.de/FeatureConfig/2.0';
+modeltype PCM_FEATURE_MOD uses 'http://sdq.ipd.uka.de/FeatureModel/2.0';
+modeltype PCM_CORE uses 'http://palladiosimulator.org/PalladioComponentModel/Core/5.2';
+modeltype PCM_COMP uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2';
+modeltype PCM_ENTITY uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2';
+modeltype PCM_PARAM uses 'http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2';
+modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
+
+/*
+ * The transformation signature declares that a PRM modeltype is required as input, while an PCM
+ * modeltype is transformed inplace. The PRM modeltype is referenced as 'prm' throughout the 
+ * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
+ * type and namespace notation are used in operational QVT (: and :: respectively).
+ */
+transformation Step2ScaleIn(in runtimeMeasurement : RUNTIMEMEASUREMENT,
+							in pcmAllocation : PCM_ALLOC ) {
+							
+							
+	// Define Threshold and Scale Out
+	property threshold : Real = 0.3;
+	property defaultOutsourceFactor : Real = 0.2;
+	property reducedOutsourceFactor : Real = 0.1;
+
+	/**
+	 * The main transformation.
+	 * This is the entry point to the overall transformation.
+	 */
+	main() {
+	
+		var adaptationRequired = runtimeMeasurement.rootObjects()[RuntimeMeasurement]->checkCondition();
+		if (adaptationRequired) {
+			log('SimuLizar ScaleIn Rule Transformation started');
+			pcmAllocation.rootObjects()[Allocation]->forAll(
+					allocation : Allocation | 
+					scaleIn(allocation.allocationContexts_Allocation)
+				);	
+		} else {
+			assert error (false) with log ("No reconfiguration required");
+		}
+
+	}
+	
+	helper Set(RuntimeMeasurement) :: checkCondition() : Boolean {		
+		var rt : Real = runtimeMeasurement.rootObjects()[RuntimeMeasurement]->getRTMeasurement();
+		
+		log('Measured value is ' + rt.toString());
+		
+		if (rt < threshold) {	
+				log('Threshold is exceeded');
+				return true;
+		};
+		
+		log('No measurements match the condition. Number of measurements is ' + self->size().toString());
+		return false;
+	}
+	
+	helper Set(RuntimeMeasurement) :: getRTMeasurement() : Real {
+	
+		self->forEach(measurement) {
+		log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
+		                                                           
+			if (measurement.measuringPoint.stringRepresentation="Usage Scenario: overloadUsageScenario") {
+				return measurement.measuringValue;				
+			};
+		};
+		assert fatal(false) with log("No response time measurement found.")
+	}
+	
+	/**
+	 * scaleIn Processing.
+	 */
+	helper scaleIn(allocationContexts : Set(AllocationContext)) : Boolean {
+	log('*********************************ScaleIn***********************************');
+	log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
+	
+		allocationContexts->forEach(allocation){
+
+			if( allocation.assemblyContext_AllocationContext.id = "_6F6LYAEnEeS7FKokKTKFow" ) {
+			log('found load balancer: AC_LoadBalancer');
+								allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
+					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
+						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_tjFukAEoEeS7FKokKTKFow");
+						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_ridTkAEoEeS7FKokKTKFow");
+						if(branch2.branchProbability > 0.0 and branch1.branchProbability < 1.0) {
+						log('Balancing Load...');
+							var outsourceFactor : Real = computeScaleInFactor(branch1);
+							branch2.branchProbability := branch2.branchProbability - outsourceFactor;
+							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							branch1.branchProbability := branch1.branchProbability + outsourceFactor;
+							log('Set branchProbability to ' + branch1.branchProbability.toString());
+							return true;
+						} else {
+							log('Balancing Load... UNCHANGED...');
+							log('Set branchProbability to ' + branch2.branchProbability.toString());
+							log('Set branchProbability to ' + branch1.branchProbability.toString());
+						}
+					}
+				}
+			}
+		};
+		
+		return false;
+	}
+	
+	helper computeScaleInFactor(branch : ProbabilisticBranchTransition) : Real {
+		if (branch.branchProbability + defaultOutsourceFactor > 1.0) {
+			return reducedOutsourceFactor;
+		};
+		return defaultOutsourceFactor;
+	}
+	
+}

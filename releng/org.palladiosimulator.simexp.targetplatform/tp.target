@@ -320,9 +320,10 @@
 	</location>	
 	
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-        	<repository location="https://updatesite.mdsd.tools/build-licensefeature/releases/latest" />
-        	<unit id="tools.mdsd.license.epl2.feature.group" version="0.0.0" />
-    	</location>
+        <repository location="https://updatesite.mdsd.tools/build-licensefeature/releases/latest" />
+        <unit id="tools.mdsd.license.epl2.feature.group" version="0.0.0" />
+   	</location>
+   	
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly">
         	<unit id="tools.mdsd.library.emfeditutils.feature.feature.group" version="0.0.0"/>
         	<repository location="https://updatesite.mdsd.tools/library-emfeditutils/nightly/"/>
@@ -330,6 +331,35 @@
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release">
 		<unit id="tools.mdsd.library.emfeditutils.feature.feature.group" version="0.0.0"/>
 		<repository location="https://updatesite.mdsd.tools/library-emfeditutils/releases/latest/"/>
+	</location>
+	
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-analyzer-dependability-ml/releases/latest/"/>
+		<unit id="org.palladiosimulator.dependability.ml.feature.feature.group" version="0.0.0"/>
+		<unit id="org.palladiosimulator.dependability.reliability.uncertainty.feature.feature.group" version="0.0.0"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-analyzer-dependability-ml/nightly/"/>
+		<unit id="org.palladiosimulator.dependability.ml.feature.feature.group" version="0.0.0"/>
+		<unit id="org.palladiosimulator.dependability.reliability.uncertainty.feature.feature.group" version="0.0.0"/>
+	</location>
+	
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release">
+		<repository location="https://updatesite.mdsd.tools/library-standaloneinitialization/releases/latest"/>
+		<unit id="tools.mdsd.library.standalone.initialization.core.feature.feature.group" version="0.0.0"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly">
+		<repository location="https://updatesite.mdsd.tools/library-standaloneinitialization/nightly/"/>
+		<unit id="tools.mdsd.library.standalone.initialization.core.feature.feature.group" version="0.0.0"/>
+	</location>
+	
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-addon-architecturaltemplates/releases/latest/"/>
+		<unit id="org.palladiosimulator.architecturaltemplates.feature.feature.group" version="tbd"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-addon-architecturaltemplates/nightly/"/>
+		<unit id="org.palladiosimulator.architecturaltemplates.feature.feature.group" version="tbd"/>
 	</location>
 </locations>
 </target>

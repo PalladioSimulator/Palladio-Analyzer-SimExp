@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ASCII"?>
+<templatevariable:TemplateVariableDefinitions xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_Aa6OsLZiEey0O8znMCGiVQ" entityName="LoadBalancerTemplateDefs">
+  <variables id="_Aa6OsrZiEey0O8znMCGiVQ" entityName="InterArrivalTimeTemplate">
+    <signature argument="_Aa6OsbZiEey0O8znMCGiVQ"/>
+  </variables>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_Aa6Os7ZiEey0O8znMCGiVQ" entityName="StaticInterArrivalTimeFactor" scope="_Aa6OsrZiEey0O8znMCGiVQ">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_Aa6OtLZiEey0O8znMCGiVQ" entityName="DynamicInterArrivalTimeFactor" scope="_Aa6OsrZiEey0O8znMCGiVQ" temporal="true">
+    <distributionFamily href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <arguments id="_Aa6OsbZiEey0O8znMCGiVQ" entityName="OpenWorkload"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="InterArrivalTimeDynamics" interfaceVariable="_Aa6OsrZiEey0O8znMCGiVQ"/>
+</templatevariable:TemplateVariableDefinitions>
