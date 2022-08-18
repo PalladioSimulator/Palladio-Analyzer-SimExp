@@ -147,8 +147,8 @@ public class RobotCognitionSimulationExecutor extends KmodelSimulationExecutor {
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(50) //50
-					.andNumberOfSimulationsPerRun(100) //100
+					.withNumberOfRuns(5) //50
+					.andNumberOfSimulationsPerRun(10) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()

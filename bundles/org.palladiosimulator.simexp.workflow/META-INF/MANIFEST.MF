@@ -19,5 +19,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm,
  com.google.inject;bundle-version="3.0.0",
- org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0"
+ org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.pcm.examples.hri
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
