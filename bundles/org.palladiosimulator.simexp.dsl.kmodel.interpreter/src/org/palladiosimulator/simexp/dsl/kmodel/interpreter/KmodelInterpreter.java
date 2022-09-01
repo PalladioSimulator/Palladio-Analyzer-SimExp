@@ -5,199 +5,112 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
 import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.util.KmodelSwitch;
 
-public class KmodelInterpreter implements Analyzer, Planner {
+public class KmodelInterpreter extends KmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
 	
 	private final Kmodel model;
-	private final ProbeValueProvider pvp;
-	private final VariableValueProvider vvp;
+	private final KmodelValueSwitch valueSwitch;
 
-	public KmodelInterpreter(Kmodel model, ProbeValueProvider pvp, VariableValueProvider vvp) {
+	public KmodelInterpreter(Kmodel model, VariableValueProvider vvp, ProbeValueProvider pvp) {
 		this.model = model;
-		this.pvp = pvp;
-		this.vvp = vvp;
+		this.valueSwitch = new KmodelValueSwitch(vvp, pvp);
 	}
 	
 	@Override
 	public boolean analyze() {
-		List<Statement> statements = model.getStatements();
-		
-		if (statements.isEmpty()) {
-			return false;
-		}
-		
-		for (Statement statement : statements) {
-			if (statement instanceof IfStatement) {
-				IfStatement ifStatement = (IfStatement) statement;
-				if ((boolean) getValue(ifStatement.getCondition())) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
+		return model.getStatements()
+				.stream()
+				.anyMatch(statement -> {
+					IfStatement ifStatement = (IfStatement) statement;
+					return ifStatement.isWithElse() || (boolean) getValue(ifStatement.getCondition());
+				});
 	}
 	
 	@Override
 	public List<ResolvedAction> plan() {
-		return getResolvedActions(model.getStatements());
+		return doSwitch(model);
 	}
 	
-	private List<ResolvedAction> getResolvedActions(List<Statement> statements) {
-		List<ResolvedAction> currentActions = new ArrayList<>();
+	@Override
+	public List<ResolvedAction> doSwitch(EObject object) {
+		if (object == null) {
+			throw new RuntimeException("Couldn't interpret an object that is null.");
+		}
 		
-		for (Statement statement : statements) {
-			if (statement instanceof ActionCall) {
-				ActionCall actionCall = (ActionCall) statement;
-				Action action = actionCall.getActionRef();
-				
-				Map<String, Object> arguments = resolveArguments(actionCall);
-				ResolvedAction resolvedAction = new ResolvedAction(action, arguments);
-				
-				currentActions.add(resolvedAction);
+		List<ResolvedAction> result = super.doSwitch(object);
+		
+		if (result == null) {
+			throw new RuntimeException("Couldn't interpret an object of class + '" + object.eClass().getName() + "'.");
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public List<ResolvedAction> caseKmodel(Kmodel model) {
+		List<ResolvedAction> resolvedActions = new ArrayList<>();
+		
+		for (Statement statement : model.getStatements()) {
+			resolvedActions.addAll(doSwitch(statement));
+		}
+		
+		return resolvedActions;
+	}
+	
+	@Override
+	public List<ResolvedAction> caseIfStatement(IfStatement ifStatement) {
+		List<ResolvedAction> resolvedActions = new ArrayList<>();
+		boolean condition = (boolean) getValue(ifStatement.getCondition());
+		
+		if (condition) {
+			for (Statement statement : ifStatement.getThenStatements()) {
+				resolvedActions.addAll(doSwitch(statement));
 			}
-			
-			if (statement instanceof IfStatement) {
-				IfStatement ifStatement = (IfStatement) statement;
-				
-				if ((boolean) getValue(ifStatement.getCondition())) {
-					currentActions.addAll(getResolvedActions(ifStatement.getStatements()));
-				}
+		} else if (ifStatement.isWithElse()) {
+			for (Statement statement : ifStatement.getElseStatements()) {
+				resolvedActions.addAll(doSwitch(statement));
 			}
 		}
 		
-		return currentActions;
+		return resolvedActions;
+ 	}
+	
+	@Override
+	public List<ResolvedAction> caseActionCall(ActionCall actionCall) {
+		List<ResolvedAction> resolvedActions = new ArrayList<>();
+		
+		Action action = actionCall.getActionRef();
+		Map<String, Object> arguments = resolveArguments(actionCall);
+		ResolvedAction resolvedAction = new ResolvedAction(action, arguments);
+		resolvedActions.add(resolvedAction);
+		
+		return resolvedActions;
 	}
 	
-	public Map<String, Object> resolveArguments(ActionCall actionCall) {
-		Map<String, Object> resolvedArguments = actionCall.getArguments().stream()
-				.collect(Collectors.toMap(arg -> arg.getParamRef().getName(), arg -> getValue(arg.getArgument())));
+	public Object getValue(EObject object) {
+		return valueSwitch.doSwitch(object);
+	}
+	
+	private Map<String, Object> resolveArguments(ActionCall actionCall) {
+		Map<String, Object> resolvedArguments = actionCall.getArguments()
+				.stream()
+				.collect(Collectors.toMap(arg -> arg.getParamRef().getName(), this::getValue));
 		
 		List<Field> variables = actionCall.getActionRef().getParameterList().getVariables();
-		resolvedArguments.putAll(variables.stream()
-				.collect(Collectors.toMap(Field::getName, var -> vvp.getValue((Variable) var))));
+		resolvedArguments.putAll(variables
+				.stream()
+				.collect(Collectors.toMap(Field::getName, this::getValue)));
 		
 		return resolvedArguments;
-	}
-	
-	public Object getValue(Expression expression) {
-		if (expression == null) {
-			return null;
-		}
-		
-		Object leftValue = getValue(expression.getLeft());
-		Object rightValue = getValue(expression.getRight());
-		
-		Operation operation = expression.getOp();
-		switch (operation) {
-			case NULL:
-				break;
-				
-			case OR:
-				return (boolean) leftValue || (boolean) rightValue;
-				
-			case AND:
-				return (boolean) leftValue && (boolean) rightValue;
-				
-			case EQUAL:
-				return leftValue.equals(rightValue);
-				
-			case UNEQUAL:
-				return !leftValue.equals(rightValue);
-				
-			case NOT:
-				return !(boolean) leftValue;
-				
-			case SMALLER:
-				return ((Number) leftValue).floatValue() < ((Number) rightValue).floatValue();
-				
-			case SMALLER_OR_EQUAL:
-				return ((Number) leftValue).floatValue() <= ((Number) rightValue).floatValue();
-				
-			case GREATER_OR_EQUAL:	
-				return ((Number) leftValue).floatValue() >= ((Number) rightValue).floatValue();
-				
-			case GREATER:
-				return ((Number) leftValue).floatValue() > ((Number) rightValue).floatValue();
-				
-			case PLUS:
-				return rightValue == null 
-					? ((Number) leftValue).floatValue() 
-					: ((Number) leftValue).floatValue() + ((Number) rightValue).floatValue();
-				
-			case MINUS:	
-				return rightValue == null 
-					? -((Number) leftValue).floatValue() 
-					: ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
-				
-			case MULTIPLY:
-				return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
-				
-			case DIVIDE:
-				return ((Number) leftValue).floatValue() / ((Number) rightValue).floatValue();
-		}
-		
-		if (leftValue != null) {
-			return leftValue;
-		}
-		
-		Literal literal = expression.getLiteral();
-		if (literal != null) {
-			return getValue(literal);
-		}
-		
-		Field field = expression.getFieldRef();
-		if (field != null) {
-			return getValue(field);
-		}
-		
-		return null;
-	}
-	
-	public Object getValue(Literal literal) {
-		if (literal instanceof BoolLiteral) {
-			return ((BoolLiteral) literal).isValue();
-		}
-		if (literal instanceof IntLiteral) {
-			return ((IntLiteral) literal).getValue();
-		}
-		if (literal instanceof FloatLiteral) {
-			return ((FloatLiteral) literal).getValue();
-		}
-		if (literal instanceof StringLiteral) {
-			return ((StringLiteral) literal).getValue();
-		}
-		return null;
-	}
-	
-	public Object getValue(Field field) {
-		if (field instanceof Constant) {
-			return getValue(((Constant) field).getValue());
-		}
-		if (field instanceof Variable) {
-			return vvp.getValue((Variable) field);
-		}
-		if (field instanceof Probe) {
-			return pvp.getValue((Probe) field);
-		}
-		return null;
 	}
 }
