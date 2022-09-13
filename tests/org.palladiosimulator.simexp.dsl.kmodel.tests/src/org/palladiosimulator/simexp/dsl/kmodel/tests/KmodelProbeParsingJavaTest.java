@@ -26,7 +26,7 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleBoolProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe bool condition : someId;"
+                "probe bool condition : \"someId\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -48,7 +48,7 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleIntProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe int count : someId;"
+                "probe int count : \"someId\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -70,7 +70,7 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = String.join("\n", 
-                "probe float number : someId;"
+                "probe float number : \"someId\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -92,7 +92,7 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = String.join("\n", 
-                "probe string word : someId;"
+                "probe string word : \"someId\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -114,8 +114,8 @@ public class KmodelProbeParsingJavaTest {
     @Test
     public void parseTwoProbes() throws Exception {
         String sb = String.join("\n", 
-                "probe int count : someId;",
-                "probe string word : someOtherId;"
+                "probe int count : \"someId\";",
+                "probe string word : \"someOtherId\";"
         );
         
         Kmodel model = parserHelper.parse(sb);

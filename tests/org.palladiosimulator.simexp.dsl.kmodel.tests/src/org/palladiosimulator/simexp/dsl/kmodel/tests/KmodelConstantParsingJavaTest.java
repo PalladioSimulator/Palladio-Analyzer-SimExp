@@ -50,7 +50,7 @@ public class KmodelConstantParsingJavaTest {
         
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         Assert.assertTrue(value instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) value).isValue());
+        Assert.assertEquals(true, ((BoolLiteral) value).isTrue());
     }
     
     @Test
@@ -186,7 +186,9 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("const1", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
 
-        // TODO Test Value
+        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue()).getLiteral();
+        Assert.assertTrue(firstValue instanceof IntLiteral);
+        Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         
         Field secondField = fields.get(1);
         Assert.assertTrue(secondField instanceof Constant);
@@ -195,7 +197,10 @@ public class KmodelConstantParsingJavaTest {
         Assert.assertEquals("const2", secondConstant.getName());
         Assert.assertEquals(DataType.INT, secondConstant.getDataType());
         
-        // TODO Test Value
+        Field fieldReference = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue()).getFieldRef();
+        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(((Constant) fieldReference).getValue()).getLiteral();
+        Assert.assertEquals(firstConstant, fieldReference);
+        Assert.assertEquals(((IntLiteral) firstValue).getValue(), ((IntLiteral) secondValue).getValue());
     }
     
     @Test
@@ -220,7 +225,21 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable value to a constant.");
+        		"Cannot assign an expression containing a variable or probe value to a constant.");
+    }
+    
+    @Test
+    public void parseConstantWithProbeValue() throws Exception {
+    	String sb = String.join("\n",
+    			"probe int someProbe : \"someId\";",
+                "const int constant = someProbe;"
+        );
+    	
+    	Kmodel model = parserHelper.parse(sb);
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        		"Cannot assign an expression containing a variable or probe value to a constant.");
     }
     
     @Test
@@ -234,7 +253,7 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable value to a constant.");
+        		"Cannot assign an expression containing a variable or probe value to a constant.");
     }
     
     @Test

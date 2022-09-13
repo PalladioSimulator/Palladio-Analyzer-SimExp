@@ -1,24 +1,22 @@
 package org.palladiosimulator.simexp.dsl.kmodel.tests;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
+import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.validation.KmodelValidator;
 
 public class KmodelTestUtil {
+	private static final KmodelValidator validator = new KmodelValidator();
 	
 	public static void assertModelWithoutErrors(Kmodel model) {
         Assert.assertNotNull(model);
@@ -45,103 +43,41 @@ public class KmodelTestUtil {
 	public static void assertNoValidationIssues(ValidationTestHelper helper, Kmodel model) {
 		Assert.assertNotNull(model);
 		List<Issue> issues = helper.validate(model);
+		List<Issue> errors = issues
+    			.stream()
+    			.filter(issue -> issue.getSeverity() == Severity.ERROR)
+    			.collect(Collectors.toList());
+		
 		StringBuilder joinedIssues = new StringBuilder(); 
-        for (Issue issue : issues) {
-            joinedIssues.append(String.join(",", issue.getMessage()));
+        for (Issue issue : errors) {
+        	joinedIssues.append(String.join(",", issue.getMessage()));
         }
-        Assert.assertTrue(String.format("Unexpected issues: %s", joinedIssues), issues.isEmpty());
+        Assert.assertTrue(String.format("Unexpected issues: %s", joinedIssues), errors.isEmpty());
 	}
 	
 	public static void assertValidationIssues(ValidationTestHelper helper, Kmodel model, int numIssues, String... messages) {
     	Assert.assertNotNull(model);
     	List<Issue> issues = helper.validate(model);
+    	List<Issue> errors = issues
+    			.stream()
+    			.filter(issue -> issue.getSeverity() == Severity.ERROR)
+    			.collect(Collectors.toList());
     	
-    	Assert.assertEquals(numIssues, issues.size());
+    	Assert.assertEquals(numIssues, errors.size());
     	
     	for (int i = 0; i < numIssues; i++) {
-    		String errorMessage = "Expected issue: \"" + messages[i] + "\", got \"" + issues.get(i).getMessage() + "\" instead.";
-    		Assert.assertEquals(errorMessage, messages[i], issues.get(i).getMessage());
+    		Issue issue = errors.get(i);
+    		String errorMessage = "Expected issue: \"" + messages[i] + "\", got \"" + issue.getMessage() + "\" instead.";
+        	Assert.assertEquals(errorMessage, messages[i], issue.getMessage());
     	}
     }
 	
+	// Returns the next expression in the tree that contains either a operation, a field reference or a literal.
 	public static Expression getNextExpressionWithContent(Expression expression) {
-		Expression currentExpr = expression;
-		
-		while (currentExpr.getOp() == Operation.NULL && currentExpr.getLiteral() == null 
-				&& currentExpr.getFieldRef() == null) {
-			
-			currentExpr = currentExpr.getLeft();
-		}
-		
-		return currentExpr;
+		return validator.getNextExpressionWithContent(expression);
 	}
 	
-	public static DataType getDataType(Expression expression) {
-		if (expression == null) {
-			return DataType.NULL;
-		}
-		
-		Operation operation = expression.getOp();
-		switch (operation) {
-			// No Operation.
-			case NULL:
-				break;
-			
-			// Fallthrough, all cases are boolean.
-			case OR:
-			case AND:
-			case EQUAL:
-			case UNEQUAL:
-			case NOT:	
-			case SMALLER:
-			case SMALLER_OR_EQUAL:
-			case GREATER_OR_EQUAL:
-			case GREATER:	
-				return DataType.BOOL;
-			
-			// Fallthrough, all cases are either int or float.
-			case PLUS:
-			case MINUS:
-			case MULTIPLY:
-				DataType leftDataType = getDataType(expression.getLeft());
-				DataType rightDataType = getDataType(expression.getRight());
-				
-				if (leftDataType == DataType.FLOAT || rightDataType == DataType.FLOAT) {
-					return DataType.FLOAT;
-				} else {
-				return DataType.INT;
-				}
-				
-			// Division returns always a float value.	
-			case DIVIDE:
-				return DataType.FLOAT;
-				
-			default: 
-				break;	
-		}
-		
-		Expression left = expression.getLeft();
-		if (left != null) {
-			return getDataType(left);
-		}
-		
-		Literal literal = expression.getLiteral();
-		if (literal != null) {
-			if (literal instanceof BoolLiteral) {
-				return DataType.BOOL;
-				
-			} else if (literal instanceof IntLiteral) {
-				return DataType.INT;
-				
-			} else if (literal instanceof FloatLiteral) {
-				return DataType.FLOAT;
-				
-			} else if (literal instanceof StringLiteral) {
-				return DataType.STRING;
-			}
-		}
-		
-		Field fieldRef = expression.getFieldRef();
-		return fieldRef != null ? fieldRef.getDataType() : DataType.NULL;
+	public static DataType getDataType(EObject object) {
+		return validator.getDataType(object);
 	}
 }
