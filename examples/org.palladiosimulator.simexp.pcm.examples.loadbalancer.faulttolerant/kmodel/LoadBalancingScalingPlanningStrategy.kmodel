@@ -1,8 +1,7 @@
-
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
 
-probe int responseTime:id;
+probe float responseTime : "Usage Scenario: EnvironmentPerception_Response Time";
 
 action scaleOut();
 action scaleIn();
