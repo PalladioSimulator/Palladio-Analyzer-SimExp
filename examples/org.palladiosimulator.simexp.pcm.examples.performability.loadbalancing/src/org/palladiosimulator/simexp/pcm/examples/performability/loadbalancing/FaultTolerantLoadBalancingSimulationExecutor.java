@@ -113,7 +113,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
         ProbeValueProvider pvp = dummyPvp;
         ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
         VariableValueProvider vvp = new DummyVariableValueProvider();
-        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, pvp, vvp );
+        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp );
         org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
         Analyzer analyzer = kmodelInterpreter;
         Planner planner = kmodelInterpreter;
