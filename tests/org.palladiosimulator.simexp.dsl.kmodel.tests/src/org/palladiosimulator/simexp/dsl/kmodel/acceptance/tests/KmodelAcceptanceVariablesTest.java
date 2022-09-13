@@ -63,7 +63,7 @@ public class KmodelAcceptanceVariablesTest {
         
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue()).getLiteral();
         assertTrue(value instanceof BoolLiteral);
-        assertEquals(true, ((BoolLiteral) value).isValue());
+        assertEquals(true, ((BoolLiteral) value).isTrue());
     }
     
     @Test
@@ -248,7 +248,7 @@ public class KmodelAcceptanceVariablesTest {
     }
 
     @Test
-    public void parseIntConstantWithIntValue() throws Exception {
+    public void parseIntConstantWithBoolValue() throws Exception {
         String sb = String.join("\n", 
                 "const int number = true;"
         );
@@ -264,7 +264,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseBoolProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe bool pName:ab11;"
+                "probe bool pName:\"ab11\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -285,7 +285,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseIntProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe int pName:ab11;"
+                "probe int pName:\"ab11\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -306,7 +306,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseFloatProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe float pName:ab11;"
+                "probe float pName:\"ab11\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -327,7 +327,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseStringProbe() throws Exception {
         String sb = String.join("\n", 
-                "probe string pName:ab11;"
+                "probe string pName:\"ab11\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -348,7 +348,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseBoolProbeAssignment() throws Exception {
         String sb = String.join("\n", 
-                "probe bool pName:ab11 = true;"
+                "probe bool pName:\"ab11\" = true;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -359,7 +359,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseIntProbeAssignment() throws Exception {
         String sb = String.join("\n", 
-                "probe int pName:ab11 = 1;"
+                "probe int pName:\"ab11\" = 1;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -370,7 +370,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseFloatProbeAssignment() throws Exception {
         String sb = String.join("\n", 
-                "probe float pName:ab11 = 1.0;"
+                "probe float pName:\"ab11\" = 1.0;"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -381,7 +381,7 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseStringProbeAssignment() throws Exception {
         String sb = String.join("\n", 
-                "probe string pName:ab11 = \"s\";"
+                "probe string pName:\"ab11\" = \"s\";"
         );
         
         Kmodel model = parserHelper.parse(sb);
@@ -413,7 +413,7 @@ public class KmodelAcceptanceVariablesTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
 
@@ -528,7 +528,7 @@ public class KmodelAcceptanceVariablesTest {
     public void parseMultipleVariableTypes() throws Exception {
         String sb = String.join("\n",
                 "const bool cBool = true;",
-                "probe bool pBool:ab11;",
+                "probe bool pBool:\"ab11\";",
                 "var bool{true,false} vBool;"
         );
         
@@ -572,8 +572,8 @@ public class KmodelAcceptanceVariablesTest {
     @Test
     public void parseDuplicateProbeNames() throws Exception {
         String sb = String.join("\n", 
-                "probe bool name:ax10;",
-                "probe int name:ax11;"
+                "probe bool name:\"ax10\";",
+                "probe int name:\"ax11\";"
         );
         
         Kmodel model = parserHelper.parse(sb);

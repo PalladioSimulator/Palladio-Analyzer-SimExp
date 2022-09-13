@@ -3,13 +3,10 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel.scoping;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
@@ -18,8 +15,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 
 /**
@@ -32,51 +28,47 @@ public class KmodelScopeProvider extends AbstractKmodelScopeProvider {
 	
 	@Override
 	public IScope getScope(EObject context, EReference reference) {
+		IScope scope = super.getScope(context, reference);
+		
 		if (context instanceof Expression) {
-			EObject rootElement = EcoreUtil2.getRootContainer(context);
-			List<Field> fields = EcoreUtil2.getAllContentsOfType(rootElement, Field.class);
-			
-			IScope scope = Scopes.scopeFor(fields);
-			
-			return new FilteringScope(scope, field -> fieldDeclaredBefore(field.getEObjectOrProxy(), context));
+			if (reference == KmodelPackage.Literals.EXPRESSION__FIELD_REF) {
+				return new FilteringScope(scope, field -> isBefore(field.getEObjectOrProxy(), context));
+			}
+		}
+		
+		if (context instanceof ActionCall) {
+			if (reference == KmodelPackage.Literals.ACTION_CALL__ACTION_REF) {
+				return new FilteringScope(scope, action -> isBefore(action.getEObjectOrProxy(), context));
+			}
 		}
 		
 		if (context instanceof ArgumentKeyValue) {
-			EObject rootElement = EcoreUtil2.getRootContainer(context);
-			List<Parameter> parameters = EcoreUtil2.getAllContentsOfType(rootElement, Parameter.class);
-			
-			IScope scope = Scopes.scopeFor(parameters);
-			
-			ActionCall parentStatement = EcoreUtil2.getContainerOfType(context, ActionCall.class);
-			Action actionRef = parentStatement.getActionRef();
-			List<Parameter> scopeParameters = EcoreUtil2.getAllContentsOfType(actionRef, Parameter.class);
-			
-			return new FilteringScope(scope, param -> scopeParameters.contains(param.getEObjectOrProxy()));
+			if (reference == KmodelPackage.Literals.ARGUMENT_KEY_VALUE__PARAM_REF) {
+				ActionCall actionCall = EcoreUtil2.getContainerOfType(context, ActionCall.class);
+				Action action = actionCall.getActionRef();
+				List<Parameter> parameters = EcoreUtil2.getAllContentsOfType(action, Parameter.class);
+				return Scopes.scopeFor(parameters);
+			}
 		}
 		
-		return super.getScope(context, reference);
+		return scope;
 	}
 	
-	/*
-	 * Returns true iff the field was declared before beeing referenced in the expression.
-	 */
-	private boolean fieldDeclaredBefore(EObject field, EObject expression) {
-		Kmodel kmodel = EcoreUtil2.getContainerOfType(expression, Kmodel.class);
-		List<EObject> contents = EcoreUtil2.eAllContentsAsList(kmodel);
-		List<EObject> fieldsDefinedBefore;
-		
-		try {
-			EObject first = contents
-					.stream()
-					.filter(object -> EcoreUtil.isAncestor(object, expression))
-					.findFirst()
-					.get();
-			fieldsDefinedBefore = contents.subList(0 , contents.indexOf(first));
-		
-		} catch (NoSuchElementException e) {
-			fieldsDefinedBefore = Collections.emptyList();
+	// Returns true iff 'objectA' was created before 'objectB'.
+	private boolean isBefore(EObject objectA, EObject objectB) {
+		// To avoid recursive definitions, if objectB is created within objectA, it is not considered as created after objectA.
+		if (EcoreUtil2.isAncestor(objectA, objectB)) {
+			return false;
 		}
 		
-		return fieldsDefinedBefore.contains(field);
+		EObject root = EcoreUtil2.getRootContainer(objectA);
+		List<EObject> contents = EcoreUtil2.eAllContentsAsList(root);
+		
+		// No need to check containment of objectA, as root is derived from it.
+		if (!contents.contains(objectB)) {
+			return true;
+		}
+		
+		return contents.indexOf(objectA) < contents.indexOf(objectB);
 	}
 }

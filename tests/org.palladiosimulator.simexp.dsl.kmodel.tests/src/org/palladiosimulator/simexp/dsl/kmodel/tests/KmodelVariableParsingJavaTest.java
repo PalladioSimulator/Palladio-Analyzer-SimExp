@@ -17,12 +17,10 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Growth;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.RangeWithGrowth;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 
@@ -200,40 +198,6 @@ public class KmodelVariableParsingJavaTest {
     }
     
     @Test
-    public void parseVariableWithValueRangeWithGrowth() throws Exception {
-    	String sb = String.join("\n", 
-                "var float[1.0, 2.0, 10, EXPONENTIAL] values;"
-        );
-    	
-    	Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        
-        EList<Field> variables = model.getFields();
-        Assert.assertEquals(1, variables.size());
-        
-        Field field = variables.get(0);
-        Assert.assertTrue(field instanceof Variable);
-        
-        Variable variable = (Variable) field;
-        Bounds bounds = variable.getValues();
-        Assert.assertTrue(bounds instanceof RangeWithGrowth);
-        
-        RangeWithGrowth valueRange = (RangeWithGrowth) bounds;
-        float startValue = ((FloatLiteral) valueRange.getStartValue()).getValue();
-        Assert.assertEquals(1, startValue, 0.0f);
-        
-        float endValue = ((FloatLiteral) valueRange.getEndValue()).getValue();
-        Assert.assertEquals(2, endValue, 0.0f);
-        
-        int numSteps = ((IntLiteral) valueRange.getNumSteps()).getValue();
-        Assert.assertEquals(10, numSteps);
-        
-        Growth growth = valueRange.getGrowth();
-        Assert.assertEquals(Growth.EXPONENTIAL, growth);
-    }
-    
-    @Test
     public void parseVariableWithWrongValueTypes() throws Exception {
     	String sb = String.join("\n", 
                 "var string{true, 1, 2.5} list;"
@@ -242,8 +206,10 @@ public class KmodelVariableParsingJavaTest {
     	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
 
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
-        		"Expected only values of type 'string', got {bool, int, float} instead.");
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3, 
+        		"Expected a value of type 'string', got 'bool' instead.",
+        		"Expected a value of type 'string', got 'int' instead.",
+        		"Expected a value of type 'string', got 'float' instead.");
     }
     
     @Test
@@ -255,11 +221,8 @@ public class KmodelVariableParsingJavaTest {
     	Kmodel model = parserHelper.parse(sb);
         KmodelTestUtil.assertModelWithoutErrors(model);
 
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 4, 
-        		"Cannot assign a value range to a variable of the type 'bool'.", 
-        		"Expected a value of type 'int' or 'float', got 'bool' instead.", 
-        		"Expected a value of type 'int' or 'float', got 'bool' instead.", 
-        		"Expected a value of type 'int' or 'float', got 'bool' instead.");
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+        		"Cannot assign a range to a variable of the type 'bool'.");
     }
 }
 

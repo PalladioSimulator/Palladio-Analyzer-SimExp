@@ -110,7 +110,7 @@ public class KmodelAcceptanceActionCallsTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, 
-        		"Couldn't resolve reference to Parameter 'vi'.", "Expected 0 arguments, got 1.");
+        		"Couldn't resolve reference to Parameter 'vi'.", "Expected 0 arguments, got 1 instead.");
     }
 
     @Test

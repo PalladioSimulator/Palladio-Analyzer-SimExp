@@ -217,7 +217,7 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
     
@@ -258,7 +258,7 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
         Variable variable2 = (Variable) variables.get(1);
         assertEquals("vi", variable2.getName());
@@ -301,7 +301,7 @@ public class KmodelAcceptanceActionsTest {
         Array rangeArray = (Array) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues().get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues().get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isValue(), boolRange2.isValue());
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
     }
 

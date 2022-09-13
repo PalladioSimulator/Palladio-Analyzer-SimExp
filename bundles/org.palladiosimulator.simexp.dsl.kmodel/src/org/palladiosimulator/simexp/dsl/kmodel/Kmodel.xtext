@@ -13,34 +13,26 @@ Field:
 	(Constant | Variable | Probe) ';';
 
 Constant returns Field:
-	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctionExpr;
+	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr;
 	
 Variable returns Field:
 	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;	
 
 Probe returns Field:
-	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=ID;
+	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=STRING;
 	
 Parameter returns Field: 
 	{Parameter} 'param' dataType=PrimitiveType name=ID;
 	
-Action:
-	'action' name=ID '(' parameterList=ParameterList ')' ';';
+Bounds:
+	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |
+	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';	
 	
-ParameterList: {ParameterList} 
-			(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*))
-			| (variables+=Variable (',' variables+=Variable)*))?;	
+Action: 'action' name=ID '(' parameterList=ParameterList ')' ';';	
 	
-Bounds: Array | => Range | RangeWithGrowth;
-	
-Array returns Bounds:
-	{Array} '{' (values+=Literal (',' values+=Literal)*) '}';
-	
-Range returns Bounds:
-	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';
-	
-RangeWithGrowth returns Bounds:
-	{RangeWithGrowth} '[' startValue=Literal ',' endValue=Literal ',' numSteps=Literal => ',' growth=Growth ']' ;	
+ParameterList: {ParameterList}
+	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*)) |
+	(variables+=Variable (',' variables+=Variable)*))?;
 
 Statement:
 	ActionCall | IfStatement;
@@ -49,59 +41,55 @@ ActionCall returns Statement:
 	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
 	
 ArgumentKeyValue:
-	paramRef=[Parameter] '=' argument=DisjunctionExpr;	
+	paramRef=[Parameter] '=' argument=DisjunctiveExpr;
 	
-IfStatement returns Statement: 
-	{IfStatement} 'if' '(' condition=DisjunctionExpr ')' '{' (statements+=Statement)* '}';
+IfStatement returns Statement: {IfStatement}
+	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
+	(withElse?='else' '{' (elseStatements+=Statement)* '}')?;	
 
-DisjunctionExpr returns Expression:
-    ConjunctionExpr ({Expression.left=current} op=Disjunction right=ConjunctionExpr)*;
+DisjunctiveExpr returns Expression:
+    ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*;
     
-ConjunctionExpr returns Expression:
-	EqualityExpr ({Expression.left=current} op=Conjunction right=EqualityExpr)*;
+ConjunctiveExpr returns Expression:
+	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*;
 	
-EqualityExpr returns Expression:
-	ComparisonExpr ({Expression.left=current} op=Equality right=ComparisonExpr)*;	
+EquativeExpr returns Expression:
+	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*;	
 	
-ComparisonExpr returns Expression:
-	AdditionExpr ({Expression.left=current} op=Comparison right=AdditionExpr)?;	
+RelationalExpr returns Expression:
+	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?;	
 	
-AdditionExpr returns Expression:
-	MultiplicationExpr ({Expression.left=current} op=Addition right=MultiplicationExpr)*;
+AdditiveExpr returns Expression:
+	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*;
 
-MultiplicationExpr returns Expression:
-	NegationExpr ({Expression.left=current} op=Multiplication right=NegationExpr)*;	
+MultiplicativeExpr returns Expression:
+	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*;	
 	
-NegationExpr returns Expression:
-	(op=Negation)? left=AdditiveInversionExpr;
-	
-AdditiveInversionExpr returns Expression:
-	(op=Addition)? left=Term;			
+UnaryExpr returns Expression:
+	{Expression} op=UnaryOp? left=Term;			
 
 Term returns Expression: 
-	fieldRef=[Field] | literal=Literal | '(' left=DisjunctionExpr ')';
+	{Expression} (fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')');
 
 Literal: 
-	  {BoolLiteral} value=BOOL
-	| {IntLiteral} value=INT 
-	| {FloatLiteral} value=FLOAT
-	| {StringLiteral} value=STRING;		
+	{BoolLiteral} true=BOOL |
+	{IntLiteral} value=INT |
+	{FloatLiteral} value=FLOAT |
+	{StringLiteral} value=STRING;
 
 // Rule 'DataType' is not used, but is necessary to provide a default value for data types.
-enum DataType: NULL;
-enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
-
-enum Growth: LOGARITHMIC | LINEAR | POLYNOMIAL | EXPONENTIAL;	
+enum DataType: UNDEFINED;
+enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';	
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.
-enum Operation: NULL;
-enum Disjunction returns Operation: OR = '||';
-enum Conjunction returns Operation: AND = '&&';
-enum Equality returns Operation: EQUAL = '==' | UNEQUAL = '!=';
-enum Negation returns Operation: NOT = '!';
-enum Comparison returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
-enum Addition returns Operation: PLUS = '+' | MINUS = '-';
-enum Multiplication returns Operation: MULTIPLY = '*' | DIVIDE = '/';
+enum Operation: UNDEFINED;
+enum DisjunctiveOp returns Operation: OR = '||';
+enum ConjunctiveOp returns Operation: AND = '&&';
+enum EquativeOp returns Operation: EQUAL = '==' | UNEQUAL = '!=';
+enum RelativeOp returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
+enum AdditiveOp returns Operation: PLUS = '+' | MINUS = '-';
+enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO = '%';
+enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
 terminal FLOAT returns ecore::EFloat: ((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT);

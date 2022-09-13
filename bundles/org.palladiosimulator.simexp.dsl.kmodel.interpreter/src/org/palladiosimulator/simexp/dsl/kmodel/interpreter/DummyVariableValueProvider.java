@@ -30,7 +30,7 @@ public class DummyVariableValueProvider implements VariableValueProvider {
 
     private Object getValue(Literal literal) {
         if (literal instanceof BoolLiteral) {
-            return ((BoolLiteral) literal).isValue();
+            return ((BoolLiteral) literal).isTrue();
         }
         
         if (literal instanceof IntLiteral) {
