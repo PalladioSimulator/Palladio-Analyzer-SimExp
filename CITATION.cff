@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+authors:
+- family-names: "Scheerer"
+  given-names: "Max"
+- family-names: "Rapp"
+  given-names: "Martina"
+title: "SimExp Framework - Evaluation of adaptation strategies for self-adaptive systems"
+url: "https://github.com/PalladioSimulator/Palladio-Analyzer-SimExp"
