@@ -6,6 +6,7 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -148,14 +149,25 @@ public class RobotCognitionEnvironmentalDynamics {
 
 			@Override
 			public String toString() {
+				List<String> ordered = sample.stream()
+						.map(each -> String.format("(Variable: %1s, Value: %2s),", 
+								each.variable.getEntityName(),
+								each.value.toString()))
+						.sorted()
+						.collect(Collectors.toList());
+				
+//				StringBuilder builder = new StringBuilder();
+//				for (InputValue each : sample) {
+//					builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
+//							each.value.toString()));
+//				}
+//
+//				String stringValues = builder.toString();
+				
+				//return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
 				StringBuilder builder = new StringBuilder();
-				for (InputValue each : sample) {
-					builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-							each.value.toString()));
-				}
-
-				String stringValues = builder.toString();
-				return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
+				ordered.forEach(builder::append);
+				return String.format("Samples: [%s])", builder.toString());
 			}
 
 		};
