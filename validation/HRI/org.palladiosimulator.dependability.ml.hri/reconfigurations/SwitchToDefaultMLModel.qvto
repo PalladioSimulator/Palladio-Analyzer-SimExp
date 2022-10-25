@@ -27,8 +27,8 @@ transformation SwitchToDefaultMLModel(inout pcmSystem : PCM_SYS, in pcmRepo : PC
 							
 	property mlModelAssemblyId : String = "_vH-OANDcEeqWne3bdagE9g";
 	//property defaultMlModelComponentId : String = "_a4yjcNDSEeqWne3bdagE9g"; //Mask R-CNN
-	//property defaultMlModelComponentId : String = "_-Jmo0Mr5EeylqaZ-C_Z_cg"; // Worst prediction model
-	property defaultMlModelComponentId : String = "_CZFhAMr6EeylqaZ-C_Z_cg"; // Perfect prediction model
+	property defaultMlModelComponentId : String = "_-Jmo0Mr5EeylqaZ-C_Z_cg"; // Worst prediction model
+	//property defaultMlModelComponentId : String = "_CZFhAMr6EeylqaZ-C_Z_cg"; // Perfect prediction model
 	property mlAssemblyConnectorId : String = "_WLAugPJ4EeqofrndBLNacw";
 
 	/**
