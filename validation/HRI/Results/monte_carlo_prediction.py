@@ -115,7 +115,13 @@ def estimateExpectedReward(strategy, sampleSpaceFile):
         value = values[each]._value
         expected += prob * value
 
+    total = 0
+    for episode in episodes:
+        for sample in episode:
+            total += sample.reward
+
     print('Expected reward of strategy ' + strategy + ': ' + str(expected))
+    print('Total reward of strategy ' + strategy + ': ' + str(total))
 
 
 if __name__ == "__main__":
