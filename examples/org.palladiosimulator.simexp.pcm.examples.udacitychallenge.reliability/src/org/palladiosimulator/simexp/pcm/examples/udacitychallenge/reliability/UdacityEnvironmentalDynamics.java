@@ -109,14 +109,16 @@ public class UdacityEnvironmentalDynamics {
 
 			@Override
 			public String toString() {
+				List<String> ordered = sample.stream()
+						.map(each -> String.format("(Variable: %1s, Value: %2s),", 
+								each.variable.getEntityName(),
+								each.value.toString()))
+						.sorted()
+						.collect(toList());
+				
 				var builder = new StringBuilder();
-				for (InputValue each : sample) {
-					builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-							each.value.toString()));
-				}
-
-				var stringValues = builder.toString();
-				return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
+				ordered.forEach(builder::append);
+				return String.format("Samples: [%s])", builder.toString());
 			}
 
 		};
