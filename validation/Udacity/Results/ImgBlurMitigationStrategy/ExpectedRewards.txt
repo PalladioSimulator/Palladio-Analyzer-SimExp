@@ -1,4 +1,8 @@
-Rambo: 0.9247814493736278
-Perfect: 0.9801935710436833
-Chauffeur: 0.912099952066407
-Worst: 0.0
+* Rambo:
+** Expected: 82.4237, Total: 13733.3172
+* Perfect:
+** Expected: 86.3162, Total: 14555.8745
+* Chauffeur:
+** Expected: 81.8193, Total: 13663.8185
+* Worst:
+** Expected: 0.0, Total: 0.0
