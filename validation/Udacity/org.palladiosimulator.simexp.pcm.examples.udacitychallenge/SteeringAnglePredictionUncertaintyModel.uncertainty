@@ -13,7 +13,7 @@
   <architecturalPreconditions xsi:type="uncertainty:ActiveComponent" id="_R31Eg7pzEeyZT639BONGyg" entityName="SteeringAnglePredictionModelComponentMustBeActive">
     <requiredActiveComponent xsi:type="repository:BasicComponent" href="AutonomousSystemComponents.repository#_7yXvILu4Eey6j5H-iqteUQ"/>
   </architecturalPreconditions>
-  <architecturalPreconditions xsi:type="uncertainty:ActiveComponent" id="_uFzmU8YdEeyiNd6DFUWDnw" entityName="FilterComponentMustBective">
+  <architecturalPreconditions xsi:type="uncertainty:ActiveComponent" id="_uFzmU8YdEeyiNd6DFUWDnw" entityName="FilterComponentMustBeActive">
     <requiredActiveComponent xsi:type="repository:BasicComponent" href="AutonomousSystemComponents.repository#_FX_iIMYYEeyiNd6DFUWDnw"/>
   </architecturalPreconditions>
 </uncertainty:UncertaintyRepository>

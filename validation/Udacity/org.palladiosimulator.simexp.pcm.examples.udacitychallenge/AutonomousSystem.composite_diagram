@@ -115,7 +115,7 @@
       <children xmi:type="notation:Shape" xmi:id="_z_Ynn8bHEeyOxtg3mPZ3yg" type="3006" fontName="Segoe UI">
         <children xmi:type="notation:DecorationNode" xmi:id="_z_YnocbHEeyOxtg3mPZ3yg" type="5009"/>
         <element xmi:type="composition:AssemblyContext" href="AutonomousSystem.system#_hM4QwAZqEeyBeaTSQFCmQg"/>
-        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_z_YnoMbHEeyOxtg3mPZ3yg" x="1083" y="205"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_z_YnoMbHEeyOxtg3mPZ3yg" x="1040" y="205" width="183"/>
       </children>
       <children xmi:type="notation:Shape" xmi:id="_z_YnosbHEeyOxtg3mPZ3yg" type="3006" fontName="Segoe UI">
         <children xmi:type="notation:DecorationNode" xmi:id="_z_YnpMbHEeyOxtg3mPZ3yg" type="5009"/>
@@ -140,7 +140,7 @@
         <children xmi:type="notation:DecorationNode" xmi:id="_z_Ynp8bHEeyOxtg3mPZ3yg" type="5009"/>
         <children xmi:type="notation:Shape" xmi:id="_0BcdEMbHEeyOxtg3mPZ3yg" type="3007" fontName="Segoe UI">
           <children xmi:type="notation:DecorationNode" xmi:id="_0BcdEsbHEeyOxtg3mPZ3yg" type="5007">
-            <layoutConstraint xmi:type="notation:Location" xmi:id="_0BcdE8bHEeyOxtg3mPZ3yg" y="5"/>
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_0BcdE8bHEeyOxtg3mPZ3yg" x="-242" y="-66"/>
           </children>
           <element xmi:type="repository:OperationProvidedRole" href="AutonomousSystemComponents.repository#_zAmhIDJIEey3M8R0wBejUA"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_0BcdEcbHEeyOxtg3mPZ3yg"/>
