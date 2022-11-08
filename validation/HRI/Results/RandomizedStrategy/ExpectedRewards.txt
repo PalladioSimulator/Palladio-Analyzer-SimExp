@@ -1,6 +1,6 @@
 * Perfect: 
-** Expected: 76.33, Total: 9421.9012
-* Default: 
-** Expected: 74.82, Total: 9252.7448
+** Expected: 75.3367, Total: 14124.2012
+* Default:
+** Expected: 72.5963, Total: 13885.8926
 * Worst: 
-** Expected: 38.34, Total: 4654.8485
+** Expected: 37.1407, Total: 7038.42860

@@ -202,7 +202,7 @@ def visualizeWithAdjustedRewardFunction():
     time, rewards, modelLabels = loadPerformanceBasedRewards(sampleSpaceFile, simExpStoreFile, r'$\pi_{\delta_{Rel}}[b_D]$', rel_pref=1, perf_pref = 0)
     setOrAppend(d, time, rewards, modelLabels)
 
-    print('Visualize all strategies regarding reliability.')
+    print('Visualize all pi[b_D] regarding reliability.')
     visualize(pd.DataFrame(data=d), custom_xlim=(0,100), custom_ylim=(0.9,0.97), custom_yticks=np.arange(0.9, 0.98, 0.01).tolist())
 
     d = {}
@@ -219,7 +219,7 @@ def visualizeWithAdjustedRewardFunction():
     time, rewards, modelLabels = loadPerformanceBasedRewards(sampleSpaceFile, simExpStoreFile, r'$\pi_{\delta_{Rel}}[b_D]$')
     setOrAppend(d, time, rewards, modelLabels)
     
-    print('Visualize all strategies regarding performability.')
+    print('Visualize all pi[b_D] regarding performability.')
     visualize(pd.DataFrame(data=d), custom_xlim=(0,100), custom_ylim=(1.4,2), custom_yticks=np.arange(1.4, 2.2, 0.2).tolist())
 
 
@@ -233,21 +233,21 @@ if __name__ == "__main__":
             print('Visualize non-adaptive strategy results')
             strategy_dir = os.path.join(dir, subdir)
             visualizeStrategyResults(strategy_dir)
-            visualizePerformanceBasedStrategyResults(strategy_dir)
+            #visualizePerformanceBasedStrategyResults(strategy_dir)
             global strategy_dir_non
             strategy_dir_non = strategy_dir
         elif subdir.startswith('RandomizedStrategy'):
             print('Visualize randomized strategy results')
             strategy_dir = os.path.join(dir, subdir)
             visualizeStrategyResults(strategy_dir)
-            visualizePerformanceBasedStrategyResults(strategy_dir)
+            #visualizePerformanceBasedStrategyResults(strategy_dir)
             global strategy_dir_ran
             strategy_dir_ran = strategy_dir
         elif subdir.startswith('ReliabilityPrioritizedStrategy'):
             print('Visualize reliability prioritized strategy results')
             strategy_dir = os.path.join(dir, subdir)
             visualizeStrategyResults(strategy_dir)
-            visualizePerformanceBasedStrategyResults(strategy_dir)
+            #visualizePerformanceBasedStrategyResults(strategy_dir)
             global strategy_dir_rel
             strategy_dir_rel = strategy_dir
 

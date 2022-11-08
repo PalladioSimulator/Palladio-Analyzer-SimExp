@@ -28,10 +28,6 @@ class ValueFunction:
         
 class MonteCarlo:
     def estimate(self, episodes):
-        #sample1 = [Sample("A", 3), Sample("A", 2), Sample("B", -4), Sample("A", 4), Sample("B", -3)]
-        #sample2 = [Sample("B", -2), Sample("A", 3), Sample("B", -3)]
-        #episodes = [sample1, sample2]
-        
         valueFunctions = self.initMonteCarlo(episodes)
         self.monteCarlo(episodes, valueFunctions)
         return valueFunctions
@@ -116,13 +112,15 @@ def estimateExpectedReward(strategy, sampleSpaceFile):
         expected += prob * value
 
     total = 0
+    count = 0
     for episode in episodes:
         for sample in episode:
             total += sample.reward
+            count += 1
 
     print('Expected reward of strategy ' + strategy + ': ' + str(expected))
     print('Total reward of strategy ' + strategy + ': ' + str(total))
-
+    #print('Avg rel of strategy ' + strategy + ': ' + str(total/count))
 
 if __name__ == "__main__":
     dir = os.getcwd()
