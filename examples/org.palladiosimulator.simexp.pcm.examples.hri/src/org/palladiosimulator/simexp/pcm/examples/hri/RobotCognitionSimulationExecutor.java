@@ -78,9 +78,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
-		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
+		this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
 		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
-		this.reconfigurationStrategy = new StaticSystemSimulation();
+		//this.reconfigurationStrategy = new StaticSystemSimulation();
 		
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
@@ -112,7 +112,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(100) //50
+					.withNumberOfRuns(150) //50
 					.andNumberOfSimulationsPerRun(100) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
