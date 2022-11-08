@@ -2,7 +2,7 @@
 <uncertainty:UncertaintyRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:reliability="http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:uncertainty="http://palladiosimulator.org/Uncertainty/1.0" id="_mJ0AUN36Eeq3EYM7_fX0uw" entityName="UncertaintyRepo">
   <uncertaintyInducedFailureTypes id="_jny3MPKNEeqz1MDQAu5L-Q" entityName="MLInducedUncertaintyOfDefaultMLModel">
     <refines xsi:type="reliability:SoftwareInducedFailureType" href="RobotCognitionComponents.repository#_ZkNuedDYEeqWne3bdagE9g"/>
-    <uncertaintyModel href="ProbabilisticSensitivityModel.staticmodel#_U5FzuMqkEeqObY-eK2jOOA"/>
+    <uncertaintyModel href="ProbabilisticSensitivityModel.staticmodel#_s80i0MrwEeylqaZ-C_Z_cg"/>
   </uncertaintyInducedFailureTypes>
   <architecturalCountermeasures xsi:type="uncertainty:UncertaintySpecificCountermeasure" id="_pVSd0N36Eeq3EYM7_fX0uw" entityName="PreprocessInput" architecturalPreconditions="_jofawPKNEeqz1MDQAu5L-Q" appliedFailureType="_jny3MPKNEeqz1MDQAu5L-Q">
     <targetUncertainty href="HRITemplateDefinitions.templatevariable#_0uh4oCpGEeuMpaabmuiN-Q"/>
