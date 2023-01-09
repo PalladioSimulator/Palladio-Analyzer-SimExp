@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.jobs;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
@@ -14,15 +15,20 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
     
     private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationJob.class.getName());
     
+    private final SimulationExecutor simulationExecutor;
+    
     private MDSDBlackboard blackboard;
     
+    public PcmExperienceSimulationJob(SimulationExecutor simulationExecutor) {
+    	this.simulationExecutor = simulationExecutor;
+    }
 
     @Override
     public void execute(IProgressMonitor monitor) throws JobFailedException, UserCanceledException {
         LOGGER.info("**** PcmExperienceSimulationJob.execute ****");
         
-        PcmExperienceSimulationExecutor.get().execute();
-        PcmExperienceSimulationExecutor.get().evaluate();
+        simulationExecutor.execute();
+        simulationExecutor.evaluate();
         
         LOGGER.info("**** PcmExperienceSimulationJob.execute - Done.****");
     }

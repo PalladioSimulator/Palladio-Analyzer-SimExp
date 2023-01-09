@@ -18,3 +18,5 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.examples.loadbalancing;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
+Import-Package: org.palladiosimulator.core.simulation,
+ org.palladiosimulator.experimentautomation.experiments
