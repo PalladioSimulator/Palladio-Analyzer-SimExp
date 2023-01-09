@@ -29,7 +29,7 @@ public class ExperimentLoader {
 		registerFactories();
 		ResourceSet rs = new ResourceSetImpl();
 		registerDefaultPackages(rs);
-		EList<EObject> experiments = rs.getResource(URI.createPlatformResourceURI(file, true), true).getContents();
+		EList<EObject> experiments = rs.getResource(URI.createURI(file, true), true).getContents();
 		return (ExperimentRepository) getFirstElement(experiments);
 	}
 	
