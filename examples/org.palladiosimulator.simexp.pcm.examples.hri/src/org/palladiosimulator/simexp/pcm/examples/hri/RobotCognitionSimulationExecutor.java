@@ -9,6 +9,7 @@ import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
@@ -74,7 +75,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final ReconfigurationStrategy<?> reconfigurationStrategy;
 	
-	public RobotCognitionSimulationExecutor() {
+	public RobotCognitionSimulationExecutor(Experiment experiment) {
+		super(experiment);
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
@@ -94,11 +96,6 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
-	}
-
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
 	}
 
 	@Override

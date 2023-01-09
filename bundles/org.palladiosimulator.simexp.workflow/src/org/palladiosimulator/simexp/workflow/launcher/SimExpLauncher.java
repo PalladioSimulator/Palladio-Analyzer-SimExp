@@ -18,6 +18,7 @@ import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchC
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
@@ -73,11 +74,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     private SimulationExecutor createSimulationExecutor(Experiment experiment) {
 //      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
-      //FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-      //SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create(kmodel);
-      //return simulationExecutor;
-    	// TODO
-    	return null;
+        FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
+        return factory.create(experiment);
   }
 
     
