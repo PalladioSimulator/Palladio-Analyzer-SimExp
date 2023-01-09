@@ -57,7 +57,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
                     Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE));
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
 
             workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels);
 

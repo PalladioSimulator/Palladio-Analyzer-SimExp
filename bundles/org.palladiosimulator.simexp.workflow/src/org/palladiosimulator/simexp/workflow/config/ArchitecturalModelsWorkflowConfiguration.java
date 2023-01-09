@@ -9,11 +9,14 @@ public class ArchitecturalModelsWorkflowConfiguration {
     private String usageModelFile;
 	// Simulizar intergration
 	private String monitorRepositoryFile;
+	private String experimentsFile;
 	
-	public ArchitecturalModelsWorkflowConfiguration(final String usageModelFile, final List<String> allocationFiles, final String monitorRepositoryFile) {
+	public ArchitecturalModelsWorkflowConfiguration(final String usageModelFile, final List<String> allocationFiles, 
+			final String monitorRepositoryFile, final String experimentsFile) {
 		
 		this.usageModelFile = usageModelFile;
 		this.monitorRepositoryFile = monitorRepositoryFile;
+		this.experimentsFile = experimentsFile;
 		this.allocationFiles = new ArrayList<String>();
 		this.allocationFiles.addAll(allocationFiles);
 	}
@@ -32,5 +35,7 @@ public class ArchitecturalModelsWorkflowConfiguration {
 		return usageModelFile;
 	}
 	
-
+	public String getExperimentsFile() {
+		return experimentsFile;
+	}
 }
