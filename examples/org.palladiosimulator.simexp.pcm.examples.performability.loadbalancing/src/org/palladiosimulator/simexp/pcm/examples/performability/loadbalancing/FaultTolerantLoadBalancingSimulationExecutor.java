@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.metricspec.MetricDescription;
 import org.palladiosimulator.metricspec.MetricSetDescription;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
@@ -53,7 +54,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
     private static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     private static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/experiments/simexp.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -77,7 +77,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	public FaultTolerantLoadBalancingSimulationExecutor() {
+	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment) {
+		super(experiment);
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
@@ -102,10 +103,11 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
-
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
+	
+	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment);
+	    }
 	}
 
 	@Override

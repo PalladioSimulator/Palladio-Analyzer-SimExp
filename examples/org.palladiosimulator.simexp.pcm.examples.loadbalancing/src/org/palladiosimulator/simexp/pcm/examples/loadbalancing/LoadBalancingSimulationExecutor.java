@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
@@ -34,10 +33,8 @@ import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import tools.descartes.dlim.generator.ModelEvaluator;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
@@ -50,8 +47,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
     public final static double UPPER_THRESHOLD_RT = 2.0;
 	public final static double LOWER_THRESHOLD_RT = 0.3;
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/elasticity.experiments";
-	private final static String SIMULIZAR_EXPERIMENT_FILE = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer/simExpExperiments/simuLizarElasticity.experiments";
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
@@ -65,7 +60,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	public LoadBalancingSimulationExecutor() {
+	private LoadBalancingSimulationExecutor(Experiment experiment) {
+		super(experiment);
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 		
@@ -88,10 +84,11 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 	}
-
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
+	
+	public static final class LoadBalancingSimulationExecutorFactory {
+	    public LoadBalancingSimulationExecutor create(Experiment experiment) {
+	        return new LoadBalancingSimulationExecutor(experiment);
+	    }
 	}
 
 	@Override

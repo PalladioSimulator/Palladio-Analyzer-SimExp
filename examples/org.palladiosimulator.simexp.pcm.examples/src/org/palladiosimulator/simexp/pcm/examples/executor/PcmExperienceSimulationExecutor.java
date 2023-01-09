@@ -1,13 +1,14 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public abstract class PcmExperienceSimulationExecutor {
+public abstract class PcmExperienceSimulationExecutor implements SimulationExecutor {
     
     protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
 	
@@ -16,9 +17,8 @@ public abstract class PcmExperienceSimulationExecutor {
 //	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
 	private static PcmExperienceSimulationExecutor instance;
 	
-	public PcmExperienceSimulationExecutor() {
-	    String experimentFile = getExperimentFile();
-		this.experiment = new ExperimentLoader().loadExperiment(experimentFile);
+	public PcmExperienceSimulationExecutor(Experiment experiment) {
+		this.experiment = experiment;
 		ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
@@ -30,13 +30,11 @@ public abstract class PcmExperienceSimulationExecutor {
 		return instance;
 	}
 	
+	@Override
 	public void execute() {
 		createSimulator().run();
 	}
-	
-	public abstract void evaluate();
 
-	protected abstract String getExperimentFile();
 	protected abstract ExperienceSimulator createSimulator();
 	
 	private String getReconfigurationRulesLocation() {
