@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -8,9 +9,14 @@ import java.util.Map.Entry;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
+import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -30,7 +36,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
-        return new SimExpAnalyzerRootJob(config, launch);
+        
+        try {
+            URI uri = URI.createURI(config.getExperimentsFile());
+            Experiment experiment = loadExperiment(uri);
+            LOGGER.debug(String.format("Loaded experiment from '%s'", uri.path()));
+            
+            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment);
+            return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
+        } catch (IOException e) {
+            IStatus status = Status.error(e.getMessage(), e);
+            throw new CoreException(status);
+        }
     }
 
     @Override
@@ -39,6 +56,29 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Derive workflow configuration");
         return buildWorkflowConfiguration(configuration, mode);
     }
+    
+    private Experiment loadExperiment(URI experimentUri) throws IOException {
+    	/*
+        KmodelStandaloneSetup.doSetup();
+        ResourceSet resourceSet = new ResourceSetImpl();
+        Resource resource = resourceSet.getResource(kmodelUri, true);
+        EList<EObject> contents = resource.getContents();
+        Kmodel model = (Kmodel) contents.get(0);
+        return model;
+        */
+    	// TODO
+    	return null;
+    }
+    
+    private SimulationExecutor createSimulationExecutor(Experiment experiment) {
+//      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
+//      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
+      //FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
+      //SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create(kmodel);
+      //return simulationExecutor;
+    	// TODO
+    	return null;
+  }
 
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
