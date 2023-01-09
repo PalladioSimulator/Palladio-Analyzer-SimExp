@@ -28,6 +28,7 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     private Text textAllocation;
     private Text textUsage;
     private Text textMonitorRepository;
+    private Text textExperiments;
     
     
     private Composite container;
@@ -56,6 +57,9 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         textMonitorRepository = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "MonitorRepository File"
                 , ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        textExperiments = new Text(container, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(container, modifyListener, "Experiments File"
+                , ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
     }
 
@@ -82,7 +86,11 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(),"MonitorRepository File", e.getMessage());
         }
-        
+        try {
+            textExperiments.setText(configuration.getAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, ModelFileTypeConstants.EMPTY_STRING));
+        } catch (CoreException e) {
+            LaunchConfigPlugin.errorLogger(getName(),"Experiments File", e.getMessage());
+        }
     }
 
     @Override
@@ -90,6 +98,7 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         configuration.setAttribute(ModelFileTypeConstants.ALLOCATION_FILE, textAllocation.getText());
         configuration.setAttribute(ModelFileTypeConstants.USAGE_FILE, textUsage.getText());
         configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
+        configuration.setAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, textExperiments.getText());
     }
     
     
@@ -107,6 +116,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         }
         if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(), ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
             setErrorMessage("Monitor Repository is missing.");
+            return false;
+        }
+        if (!TabHelper.validateFilenameExtension(textExperiments.getText(), ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION)) {
+            setErrorMessage("Experiments is missing.");
             return false;
         }
         return true;
