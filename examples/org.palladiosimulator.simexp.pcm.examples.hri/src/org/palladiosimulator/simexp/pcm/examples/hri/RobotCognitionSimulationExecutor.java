@@ -65,7 +65,6 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public static final double UPPER_THRESHOLD_RT = 0.1;
 	public static final double LOWER_THRESHOLD_REL = 0.9;
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
 	private final static String SIMULATION_ID = "RobotCognition";
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
