@@ -12,3 +12,4 @@ Require-Bundle: org.junit,
  net.bytebuddy.byte-buddy;bundle-version="1.10.9",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0"
+Import-Package: org.palladiosimulator.simexp.pcm.examples.executor
