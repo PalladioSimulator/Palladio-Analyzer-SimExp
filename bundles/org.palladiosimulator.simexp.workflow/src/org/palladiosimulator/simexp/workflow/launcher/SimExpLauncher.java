@@ -45,7 +45,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             URI experimentsFileURI = config.getExperimentsURI();
             
-            //TODO: ExperimentRepositoryLoader; ExperimentRepositoryResolver
             ExperimentRepositoryLoader loader = new ExperimentRepositoryLoader();
             ResourceSet rs = new ResourceSetImpl();
             LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
@@ -53,7 +52,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             
             ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository); 
-//            Experiment experiment = new ExperimentLoader().loadExperiment(experimentsFile);
             
             SimulationExecutor simulationExecutor = createSimulationExecutor(experiment);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
