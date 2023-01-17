@@ -38,9 +38,6 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         // FIXME: check what shall be done here
     }
 
-    public String getExperimentsFile() {
-        return experimentsFile.toString();
-    }
     
     public URI getExperimentsURI() {
         return experimentsFile;
