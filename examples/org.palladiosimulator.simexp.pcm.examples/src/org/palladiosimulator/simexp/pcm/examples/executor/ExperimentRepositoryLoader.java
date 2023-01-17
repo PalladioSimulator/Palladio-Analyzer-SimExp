@@ -13,14 +13,33 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsPackage;
 
-public class ExperimentLoader {
+public class ExperimentRepositoryLoader {
 
-	public ExperimentLoader() {
+	public ExperimentRepositoryLoader() {
 		registerFactories();
 	}
 	
+	/**
+	 * precondition:
+	 * - resource set empty
+	 * 
+	 * postcondition:
+	 * - resource set 1 resource containing returned ExperimentRepository 
+	 * 
+	 */
+	public ExperimentRepository load(ResourceSet rs, URI uri) {
+	    Resource resource = rs.getResource(uri, true);
+	    EList<EObject> experiments = resource.getContents();
+	    if (experiments.isEmpty())  {
+	        return null;
+	    }
+	    return (ExperimentRepository) experiments.get(0);
+	}
+	
 	public Experiment loadExperiment(String file) {
-		Experiment exp = getFirstElement(loadExperimentRepository(file).getExperiments());
+		ExperimentRepository loadExperimentRepository = loadExperimentRepository(file);
+        EList<Experiment> experiments = loadExperimentRepository.getExperiments();
+        Experiment exp = getFirstElement(experiments);
 		EcoreUtil.resolveAll(exp);
 		return exp;
 	}
@@ -29,7 +48,9 @@ public class ExperimentLoader {
 		registerFactories();
 		ResourceSet rs = new ResourceSetImpl();
 		registerDefaultPackages(rs);
-		EList<EObject> experiments = rs.getResource(URI.createURI(file, true), true).getContents();
+		
+		URI uri = URI.createURI(file, true);
+        EList<EObject> experiments = rs.getResource(uri, true).getContents();
 		return (ExperimentRepository) getFirstElement(experiments);
 	}
 	
@@ -49,5 +70,4 @@ public class ExperimentLoader {
 		}
 		return list.get(0);
 	}
-	
 }

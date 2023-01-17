@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests
+Bundle-Name: org.palladiosimulator.simexp.pcm.tests
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.tests
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.palladiosimulator.simexp.pcm;bundle-version="1.0.0"
