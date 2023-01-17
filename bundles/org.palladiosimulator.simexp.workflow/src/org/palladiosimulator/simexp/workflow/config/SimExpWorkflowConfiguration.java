@@ -1,26 +1,29 @@
 package org.palladiosimulator.simexp.workflow.config;
 
+import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
-    
+
     /**
-     * This class serves as container configuration class to hold all relevant configuration information
+     * This class serves as container configuration class to hold all relevant configuration
+     * information
      * 
-     * */
-	private String experimentsFile;
-    
+     */
+    private final URI experimentsFile;
+
     public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration inputModels) {
-        
+
         /**
-         * workaround: 
-         * allocation files are required by the parent class AbstractPCMWorkflowRunConfiguration.validateAndFreeze when loading PCMModels;
-         * this existence check for PCM models should be done during configuration validation !!! needs refactoring
-         * for performability analysis it is current not required; therefore pass empty list in order to successfully execute workflow
-         * */
+         * workaround: allocation files are required by the parent class
+         * AbstractPCMWorkflowRunConfiguration.validateAndFreeze when loading PCMModels; this
+         * existence check for PCM models should be done during configuration validation !!! needs
+         * refactoring for performability analysis it is current not required; therefore pass empty
+         * list in order to successfully execute workflow
+         */
         this.setUsageModelFile(inputModels.getUsageModelFile());
         this.setAllocationFiles(inputModels.getAllocationFiles());
-        this.experimentsFile = inputModels.getExperimentsFile();
+        this.experimentsFile = URI.createURI(inputModels.getExperimentsFile());
     }
 
     @Override
@@ -34,8 +37,12 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     public void setDefaults() {
         // FIXME: check what shall be done here
     }
-    
+
     public String getExperimentsFile() {
-    	return experimentsFile;
+        return experimentsFile.toString();
+    }
+    
+    public URI getExperimentsURI() {
+        return experimentsFile;
     }
 }
