@@ -12,11 +12,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentLoader;
+import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
+import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -38,10 +43,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Create SimExp workflow root job");
         
         try {
-            String experimentsFile = config.getExperimentsFile();
-            Experiment experiment = new ExperimentLoader().loadExperiment(experimentsFile);
-        	
-            LOGGER.debug(String.format("Loaded experiment from '%s'", experimentsFile));
+            URI experimentsFileURI = config.getExperimentsURI();
+            
+            //TODO: ExperimentRepositoryLoader; ExperimentRepositoryResolver
+            ExperimentRepositoryLoader loader = new ExperimentRepositoryLoader();
+            ResourceSet rs = new ResourceSetImpl();
+            LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
+            ExperimentRepository experimentRepository = loader.load(rs, experimentsFileURI);
+            
+            ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
+            Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository); 
+//            Experiment experiment = new ExperimentLoader().loadExperiment(experimentsFile);
             
             SimulationExecutor simulationExecutor = createSimulationExecutor(experiment);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
