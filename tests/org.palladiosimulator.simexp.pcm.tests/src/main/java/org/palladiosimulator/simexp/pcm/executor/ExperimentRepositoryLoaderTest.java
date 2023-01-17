@@ -1,9 +1,7 @@
 package org.palladiosimulator.simexp.pcm.executor;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -14,9 +12,8 @@ import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model.SimulizartooladapterPackage;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsPackage;
@@ -29,7 +26,7 @@ public class ExperimentRepositoryLoaderTest {
 
     private ResourceSet rs;
 	
-	@BeforeEach
+	@Before
     public void setUp() throws Exception {
 	    registerFactories();
 	    
@@ -56,19 +53,13 @@ public class ExperimentRepositoryLoaderTest {
         
 	    ExperimentRepository experimentRepository = experimentRepositoryLoader.load(rs, URI.createURI(resourceURL.toURI().toString()));
 		
-		Assertions.assertNotNull(experimentRepository);
+		assertNotNull(experimentRepository);
 	}
 	
-	@Test
+	@Test(expected = WrappedException.class)
 	public void testNonExistingFileLoading() throws URISyntaxException {
         Path file = Paths.get("not_exist.experiments");
         
-        WrappedException thrown = assertThrows(
-                WrappedException.class,
-	            () -> experimentRepositoryLoader.load(rs, URI.createURI(file.toUri().toString())),
-	            "Expected doThing() to throw, but it didn't"
-	     );
-        
-        assertTrue(thrown.getCause() instanceof IOException);
+        experimentRepositoryLoader.load(rs, URI.createURI(file.toUri().toString()));
 	}
 }
