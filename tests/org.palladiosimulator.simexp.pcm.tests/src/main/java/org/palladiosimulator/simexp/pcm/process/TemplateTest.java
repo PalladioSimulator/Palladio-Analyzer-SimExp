@@ -1,28 +1,28 @@
 package org.palladiosimulator.simexp.pcm.process;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 
-@ExtendWith(MockitoExtension.class)
-class TemplateTest {
+public class TemplateTest {
     
     @Mock private List<String> mockedList;
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        initMocks(this);
     }
 
     @Test
-    void testUseMockObjects() {
+    public void testUseMockObjects() {
         // using mock object
         mockedList.add("one");
         mockedList.clear();
