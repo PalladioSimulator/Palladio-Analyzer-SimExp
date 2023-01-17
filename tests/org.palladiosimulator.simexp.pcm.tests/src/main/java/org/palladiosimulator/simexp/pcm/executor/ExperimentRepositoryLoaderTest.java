@@ -14,13 +14,13 @@ import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model.SimulizartooladapterPackage;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsPackage;
+import org.palladiosimulator.experimentautomation.experiments.util.ExperimentsResourceFactoryImpl;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
 
 public class ExperimentRepositoryLoaderTest {
@@ -40,7 +40,7 @@ public class ExperimentRepositoryLoaderTest {
 	
     private void registerFactories() {
         Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-        reg.getExtensionToFactoryMap().put("experiments", new XMIResourceFactoryImpl());       
+        reg.getExtensionToFactoryMap().put("experiments", new ExperimentsResourceFactoryImpl());
     }
     
     private void registerDefaultPackages(ResourceSet set) {
