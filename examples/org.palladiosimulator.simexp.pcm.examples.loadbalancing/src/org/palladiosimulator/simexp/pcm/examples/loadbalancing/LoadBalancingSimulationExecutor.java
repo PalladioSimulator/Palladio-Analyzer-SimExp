@@ -60,7 +60,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn) {
 		super(experiment);
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -71,7 +71,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 			var bn = new BayesianNetwork(null, dynBehaviour.getModel());
 			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour);
 		} else {
-			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+			this.dbn = dbn;
 		}
 		
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
@@ -86,8 +86,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment) {
-	        return new LoadBalancingSimulationExecutor(experiment);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn) {
+	        return new LoadBalancingSimulationExecutor(experiment, dbn);
 	    }
 	}
 

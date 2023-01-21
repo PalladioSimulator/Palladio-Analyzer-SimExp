@@ -33,7 +33,6 @@ import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowC
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
-import tools.mdsd.probdist.distributiontype.ProbabilityDistributionSkeleton;
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
 
@@ -73,7 +72,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             BayesianNetwork bn = new BayesianNetwork(null, gpn);
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe);
             
-            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment);
+            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, dbn);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -88,11 +87,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
-    private SimulationExecutor createSimulationExecutor(Experiment experiment) {
-//      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
-//      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
+    private SimulationExecutor createSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn) {
+    	// LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
+    	// SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-        return factory.create(experiment);
+        return factory.create(experiment, dbn);
     }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {

@@ -77,9 +77,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment) {
+	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn) {
 		super(experiment);
-		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+		this.dbn = dbn;
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR),
@@ -105,8 +105,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	}
 	
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
-	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment) {
-	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment);
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn);
 	    }
 	}
 

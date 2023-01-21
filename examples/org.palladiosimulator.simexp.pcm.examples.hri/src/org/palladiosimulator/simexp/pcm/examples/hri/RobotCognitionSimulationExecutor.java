@@ -74,9 +74,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final ReconfigurationStrategy<?> reconfigurationStrategy;
 	
-	public RobotCognitionSimulationExecutor(Experiment experiment) {
+	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn) {
 		super(experiment);
-		this.dbn = RobotCognitionDBNLoader.load();
+		this.dbn = dbn;
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
 		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
@@ -86,6 +86,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+	}
+	
+	public static final class RobotCognitionSimulationExecutorFactory {
+	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn) {
+	        return new RobotCognitionSimulationExecutor(experiment, dbn);
+	    }
 	}
 	
 	@Override
