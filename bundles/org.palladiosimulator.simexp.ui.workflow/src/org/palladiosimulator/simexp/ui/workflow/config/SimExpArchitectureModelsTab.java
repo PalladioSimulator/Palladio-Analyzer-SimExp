@@ -50,16 +50,19 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         
         textAllocation = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "Allocation File"
-                , ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ,ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
         textUsage = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "Usage File"
-                , ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ,ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
         textMonitorRepository = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "MonitorRepository File"
-                , ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ,ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
         textExperiments = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "Experiments File"
-                , ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ,ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
     }
 
@@ -76,16 +79,19 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(),"Allocation File", e.getMessage());
         }
+        
         try {
             textUsage.setText(configuration.getAttribute(ModelFileTypeConstants.USAGE_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(),"Usage File", e.getMessage());
         }
+        
         try {
             textMonitorRepository.setText(configuration.getAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(),"MonitorRepository File", e.getMessage());
         }
+        
         try {
             textExperiments.setText(configuration.getAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
@@ -110,14 +116,17 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
             setErrorMessage("Allocation is missing.");
             return false;
         }
+        
         if (!TabHelper.validateFilenameExtension(textUsage.getText(), ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION)) {
             setErrorMessage("Usage is missing.");
             return false;
         }
+        
         if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(), ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
             setErrorMessage("Monitor Repository is missing.");
             return false;
         }
+        
         if (!TabHelper.validateFilenameExtension(textExperiments.getText(), ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION)) {
             setErrorMessage("Experiments is missing.");
             return false;
@@ -125,8 +134,9 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         return true;
     }
     
+    @Override
     public Image getImage() {
-        return ImageRegistryHelper.getTabImage(PLUGIN_ID,FILENAME_TAB_IMAGE_PATH);
+        return ImageRegistryHelper.getTabImage(PLUGIN_ID, FILENAME_TAB_IMAGE_PATH);
     }
 
     @Override
@@ -138,5 +148,4 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     public String getId() {
         return "org.palladiosimulator.simexp.ui.workflow.config.SimExpArchitectureModelsTab";
     }
-
 }
