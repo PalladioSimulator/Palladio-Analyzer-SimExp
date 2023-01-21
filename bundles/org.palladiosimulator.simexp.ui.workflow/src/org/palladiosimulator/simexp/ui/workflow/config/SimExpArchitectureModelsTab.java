@@ -49,20 +49,20 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         
         
         textAllocation = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Allocation File"
-                ,ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        TabHelper.createFileInputSection(container, modifyListener, "Allocation File",
+                ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
         textUsage = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Usage File"
-                ,ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        TabHelper.createFileInputSection(container, modifyListener, "Usage File",
+                ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
         textMonitorRepository = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "MonitorRepository File"
-                ,ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        TabHelper.createFileInputSection(container, modifyListener, "MonitorRepository File",
+                ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
         textExperiments = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Experiments File"
-                ,ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        TabHelper.createFileInputSection(container, modifyListener, "Experiments File",
+                ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
     }
 
@@ -131,6 +131,7 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
             setErrorMessage("Experiments is missing.");
             return false;
         }
+        
         return true;
     }
     
