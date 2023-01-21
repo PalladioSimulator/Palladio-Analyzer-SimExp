@@ -11,8 +11,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * 
      */
     private final URI experimentsFile;
+    private final URI staticModelFile;
+    private final URI dynamicModelFile;
 
-    public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration inputModels) {
+    public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration architecturalModels,
+    		EnvironmentalModelsWorkflowConfiguration environmentalModels) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -21,9 +24,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * refactoring for performability analysis it is current not required; therefore pass empty
          * list in order to successfully execute workflow
          */
-        this.setUsageModelFile(inputModels.getUsageModelFile());
-        this.setAllocationFiles(inputModels.getAllocationFiles());
-        this.experimentsFile = URI.createURI(inputModels.getExperimentsFile());
+        this.setUsageModelFile(architecturalModels.getUsageModelFile());
+        this.setAllocationFiles(architecturalModels.getAllocationFiles());
+        this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
+        this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
+        this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
     }
 
     @Override
@@ -41,5 +46,13 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     
     public URI getExperimentsURI() {
         return experimentsFile;
+    }
+    
+    public URI getStaticModelFile() {
+    	return staticModelFile;
+    }
+    
+    public URI getDynamicModelFile() {
+    	return dynamicModelFile;
     }
 }

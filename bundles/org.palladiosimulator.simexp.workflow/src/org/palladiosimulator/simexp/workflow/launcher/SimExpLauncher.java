@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLo
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
@@ -89,12 +90,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
 
             ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
-                    Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
+            		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
+            
+            EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
+            		
 
-            workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels);
+            workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels, environmentalModels);
 
         } catch (CoreException e) {
             LOGGER.error(
