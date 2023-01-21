@@ -48,11 +48,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         return experimentsFile;
     }
     
-    public URI getStaticModelFile() {
+    public URI getStaticModelURI() {
     	return staticModelFile;
     }
     
-    public URI getDynamicModelFile() {
+    public URI getDynamicModelURI() {
     	return dynamicModelFile;
     }
 }

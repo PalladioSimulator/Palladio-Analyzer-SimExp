@@ -22,3 +22,6 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.palladiosimulator.simexp.pcm.examples.executor,
  org.palladiosimulator.simexp.pcm.examples.measurements.aggregator,
  org.palladiosimulator.simexp.pcm.examples.utils
+Import-Package: org.palladiosimulator.envdyn.environment.dynamicmodel,
+ org.palladiosimulator.envdyn.environment.staticmodel,
+ tools.mdsd.modelingfoundations.identifier
