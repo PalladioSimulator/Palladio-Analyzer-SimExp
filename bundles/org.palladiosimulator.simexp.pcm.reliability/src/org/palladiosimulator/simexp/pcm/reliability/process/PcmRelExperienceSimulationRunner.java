@@ -25,15 +25,18 @@ import com.google.common.collect.Lists;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 
 public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRunner {
 
 	private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
 	private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
+	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
 
-	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig) {
+	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
 		this.globalConfig = globalConfig;
 		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
+		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 	}
 
 	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
@@ -49,14 +52,14 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 			throw new RuntimeException();
 		}
 
-		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState);
+		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry);
 		retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
 	}
 
-	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState) {
+	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
 		var config = deriveConfigFrom(pcmState);
 		var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
-		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config);
+		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry);
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {

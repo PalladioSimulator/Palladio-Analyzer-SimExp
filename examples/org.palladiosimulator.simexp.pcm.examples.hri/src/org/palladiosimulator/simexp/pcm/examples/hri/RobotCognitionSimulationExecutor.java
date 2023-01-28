@@ -42,7 +42,7 @@ import com.google.common.collect.Sets;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
@@ -73,8 +73,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final SimulatedMeasurementSpecification responseTimeSpec;
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final ReconfigurationStrategy<?> reconfigurationStrategy;
+	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
 	
-	public RobotCognitionSimulationExecutor(Experiment experiment) {
+	public RobotCognitionSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
 		super(experiment);
 		this.dbn = RobotCognitionDBNLoader.load();
 		this.responseTimeSpec = buildResponseTimeSpec();
@@ -85,7 +86,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier());
 	}
 	
 	@Override
@@ -103,7 +105,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
-					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner())
+					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner(probabilityDistributionRegistry))
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
@@ -166,8 +168,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		return Pair.of(reliabilitySpec, Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL));
 	}
 
-	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner() {
-		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig());
+	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner(IProbabilityDistributionRegistry probabilityDistributionRegistry) {
+		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig(), probabilityDistributionRegistry);
 	}
 	
 	private SimulatedMeasurementSpecification buildReliabilitySpec() {
