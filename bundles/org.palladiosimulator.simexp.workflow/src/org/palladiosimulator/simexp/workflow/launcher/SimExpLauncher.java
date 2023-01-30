@@ -56,7 +56,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository); 
             
-            ProbabilityDistributionFactory defaultProbabilityDistributionFactory = ProbabilityDistributionFactory.get();
+            ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
             IProbabilityDistributionRegistry probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
             IProbabilityDistributionFactory probabilityDistributionFactory = defaultProbabilityDistributionFactory;
 
