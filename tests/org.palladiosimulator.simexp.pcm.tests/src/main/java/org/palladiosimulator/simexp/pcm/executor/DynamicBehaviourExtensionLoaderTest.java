@@ -11,11 +11,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
-import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.util.DynamicmodelAdapterFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 
 public class DynamicBehaviourExtensionLoaderTest {
@@ -31,8 +31,8 @@ public class DynamicBehaviourExtensionLoaderTest {
     }
 	
 	private void register(ResourceSet set) {
-    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    	set.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
+    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("dynamicmodel", new DynamicmodelAdapterFactory());
+    	set.getPackageRegistry().put(DynamicmodelPackage.eNS_URI, DynamicmodelPackage.eINSTANCE);
     }
 	
 	@Test

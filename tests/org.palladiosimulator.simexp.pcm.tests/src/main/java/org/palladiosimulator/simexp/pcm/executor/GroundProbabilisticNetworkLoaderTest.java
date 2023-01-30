@@ -11,11 +11,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
-import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
+import org.palladiosimulator.envdyn.environment.staticmodel.util.StaticmodelAdapterFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
 
 public class GroundProbabilisticNetworkLoaderTest {
@@ -31,8 +31,8 @@ public class GroundProbabilisticNetworkLoaderTest {
     }
 	
 	private void register(ResourceSet set) {
-    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
-    	set.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
+    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("staticmodel", new StaticmodelAdapterFactory());
+    	set.getPackageRegistry().put(StaticmodelPackage.eNS_URI, StaticmodelPackage.eINSTANCE);
     }
 	
 	@Test
