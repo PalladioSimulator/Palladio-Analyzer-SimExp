@@ -27,6 +27,7 @@ import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRunner {
 
@@ -34,12 +35,14 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 	private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
 	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
 	private final IProbabilityDistributionFactory probabilityDistributionFactory;
+	private final ParameterParser parameterParser;
 
-	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		this.globalConfig = globalConfig;
 		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		this.probabilityDistributionFactory = probabilityDistributionFactory;
+		this.parameterParser = parameterParser;
 	}
 
 	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
@@ -55,14 +58,14 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 			throw new RuntimeException();
 		}
 
-		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry, probabilityDistributionFactory);
+		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 		retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
 	}
 
-	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		var config = deriveConfigFrom(pcmState);
 		var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
-		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry, probabilityDistributionFactory);
+		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {

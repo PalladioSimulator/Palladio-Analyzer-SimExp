@@ -32,6 +32,8 @@ import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.parser.DefaultParameterParser;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
@@ -56,11 +58,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository); 
             
+            ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
             IProbabilityDistributionRegistry probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
             IProbabilityDistributionFactory probabilityDistributionFactory = defaultProbabilityDistributionFactory;
 
-            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory);
+            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -75,11 +78,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
-    private SimulationExecutor createSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+    private SimulationExecutor createSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 //      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-        return factory.create(experiment, probabilityDistributionRegistry, probabilityDistributionFactory);
+        return factory.create(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
     }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {

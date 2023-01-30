@@ -39,6 +39,7 @@ import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
@@ -61,10 +62,10 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier());
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
 		
 		if (simulateWithUsageEvolution) {
 			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
@@ -87,8 +88,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
-	        return new LoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	        return new LoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 	    }
 	}
 

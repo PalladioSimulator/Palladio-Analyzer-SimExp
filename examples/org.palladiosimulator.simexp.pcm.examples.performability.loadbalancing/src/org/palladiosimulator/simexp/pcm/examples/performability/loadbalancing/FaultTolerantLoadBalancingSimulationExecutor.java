@@ -48,6 +48,7 @@ import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
@@ -78,7 +79,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
 		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment, probabilityDistributionFactory);
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
@@ -102,12 +103,12 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
         this.reconfSelectionPolicy = new PerformabilityStrategy(responseTimeMeasurementSpec, strategyConfiguration, reconfigurationPlanningStrategy);
 		
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier());
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
 	}
 	
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
-	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
-	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory);
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 	    }
 	}
 
