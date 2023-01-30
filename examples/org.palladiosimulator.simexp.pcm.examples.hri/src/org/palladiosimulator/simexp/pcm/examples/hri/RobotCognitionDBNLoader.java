@@ -11,6 +11,7 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 
 public class RobotCognitionDBNLoader {
 
@@ -20,13 +21,13 @@ public class RobotCognitionDBNLoader {
 			"DynamicRobotCognitionEnvironment", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 
-	public static DynamicBayesianNetwork load() {
+	public static DynamicBayesianNetwork load(IProbabilityDistributionFactory probabilityDistributionFactory) {
 		var partition = new ResourceSetPartition();
 		partition.loadModel(DBN_URI);
 		partition.resolveAllProxies();
 
-		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork(partition));
-		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension(partition));
+		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork(partition), probabilityDistributionFactory);
+		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension(partition), probabilityDistributionFactory);
 	}
 
 	private static GroundProbabilisticNetwork loadGroundProbabilisticNetwork(ResourceSetPartition partition) {

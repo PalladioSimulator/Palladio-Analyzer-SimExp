@@ -21,6 +21,8 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+
 public class LoadBalancingDBNLoader {
 
 	private final static String LOAD_BALANCER_PATH = "/org.palladiosimulator.simexp.pcm.examples.loadbalancer";
@@ -37,7 +39,7 @@ public class LoadBalancingDBNLoader {
 		RESOURCE_SET.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
 		RESOURCE_SET.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
 	}
-
+	
 	private static void persist(EObject eObj, String path) {
 		Resource resource = RESOURCE_SET.createResource(URI.createFileURI(path));
 		resource.getContents().add(eObj);
@@ -48,9 +50,9 @@ public class LoadBalancingDBNLoader {
 		}
 	}
 
-	public static DynamicBayesianNetwork loadDBN() {
-		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
-		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension());
+	public static DynamicBayesianNetwork loadDBN(IProbabilityDistributionFactory probabilityDistributionFactory) {
+		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork(), probabilityDistributionFactory);
+		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension(), probabilityDistributionFactory);
 	}
 
 	private static DynamicBehaviourExtension loadDynamicBehaviourExtension() {
@@ -61,37 +63,37 @@ public class LoadBalancingDBNLoader {
 		return GroundProbabilisticNetwork.class.cast(RESOURCE_SET.getResource(BN_URI, true).getContents().get(0));
 	}
 
-	public static DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp) {
+	public static DynamicBayesianNetwork loadOrGenerateDBN(Experiment exp, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		try {
-			return loadDBN();
+			return loadDBN(probabilityDistributionFactory);
 		} catch (Exception e) {
-			return generateDBN(exp);
+			return generateDBN(exp, probabilityDistributionFactory);
 		}
 	}
 
-	private static DynamicBayesianNetwork generateDBN(Experiment exp) {
+	private static DynamicBayesianNetwork generateDBN(Experiment exp, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		TemplateVariableDefinitions templates = loadTemplates();
 
 		BayesianNetwork bn = null;
 		try {
-			bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
+			bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork(), probabilityDistributionFactory);
 		} catch (Exception e) {
-			bn = generateBN(templates, exp);
+			bn = generateBN(templates, exp, probabilityDistributionFactory);
 			persist(bn.get(), BN_FILE);
 		}
 
 		DynamicBayesianNetwork dbn = new DynamicBayesianNetworkGenerator(templates)
-				.createProbabilisticNetwork(bn.get());
+				.createProbabilisticNetwork(bn.get(), probabilityDistributionFactory);
 
 		persist(dbn.getDynamics(), DBN_FILE);
 
 		return dbn;
 	}
 
-	private static BayesianNetwork generateBN(TemplateVariableDefinitions templates, Experiment exp) {
+	private static BayesianNetwork generateBN(TemplateVariableDefinitions templates, Experiment exp, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		ResourceSet appliedModels = new ResourceSetImpl();
 		appliedModels.getResources().add(exp.getInitialModel().getUsageModel().eResource());
-		return new BayesianNetworkGenerator(templates).generate(appliedModels);
+		return new BayesianNetworkGenerator(templates).generate(appliedModels, probabilityDistributionFactory);
 	}
 
 	private static TemplateVariableDefinitions loadTemplates() {

@@ -37,6 +37,7 @@ import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
@@ -60,7 +61,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		super(experiment);
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier());
@@ -68,10 +69,10 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		if (simulateWithUsageEvolution) {
 			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
 			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
-			var bn = new BayesianNetwork(null, dynBehaviour.getModel());
-			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour);
+			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), probabilityDistributionFactory);
+			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour, probabilityDistributionFactory);
 		} else {
-			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment, probabilityDistributionFactory);
 		}
 		
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
@@ -86,8 +87,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
-	        return new LoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
+	        return new LoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory);
 	    }
 	}
 

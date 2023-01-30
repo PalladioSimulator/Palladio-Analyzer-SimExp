@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 
 public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRunner {
@@ -32,11 +33,13 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 	private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
 	private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
 	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
+	private final IProbabilityDistributionFactory probabilityDistributionFactory;
 
-	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
+	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		this.globalConfig = globalConfig;
 		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+		this.probabilityDistributionFactory = probabilityDistributionFactory;
 	}
 
 	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
@@ -52,14 +55,14 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 			throw new RuntimeException();
 		}
 
-		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry);
+		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry, probabilityDistributionFactory);
 		retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
 	}
 
-	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry) {
+	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory) {
 		var config = deriveConfigFrom(pcmState);
 		var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
-		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry);
+		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry, probabilityDistributionFactory);
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {
