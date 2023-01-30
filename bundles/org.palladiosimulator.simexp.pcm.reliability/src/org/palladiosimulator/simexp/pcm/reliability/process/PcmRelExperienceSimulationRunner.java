@@ -39,15 +39,15 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 
 	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		this.globalConfig = globalConfig;
-		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
+		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository(), parameterParser);
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		this.probabilityDistributionFactory = probabilityDistributionFactory;
 		this.parameterParser = parameterParser;
 	}
 
-	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
+	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo, ParameterParser parameterParser) {
 		var stateSpace = uncertaintyRepo.getUncertaintyInducedFailureTypes().stream()
-				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each).stream()).collect(toList());
+				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each, parameterParser).stream()).collect(toList());
 		return DiscreteUncertaintyStateSpace.of(stateSpace);
 	}
 
