@@ -41,7 +41,7 @@ import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
@@ -89,7 +89,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		this.reconfigurationStrategy = new StaticSystemSimulation();
 		
 		
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
+		ProbabilityDistributionRepositoryLookup.get(BasicDistributionTypesLoader.loadRepository());
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
 		this.probabilityDistributionFactory = probabilityDistributionFactory;

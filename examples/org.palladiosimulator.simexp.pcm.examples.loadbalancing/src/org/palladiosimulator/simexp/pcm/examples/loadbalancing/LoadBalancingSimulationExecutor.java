@@ -36,7 +36,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.Measur
 import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
@@ -64,7 +64,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
+		ProbabilityDistributionRepositoryLookup.get(BasicDistributionTypesLoader.loadRepository());
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
 		
 		if (simulateWithUsageEvolution) {
