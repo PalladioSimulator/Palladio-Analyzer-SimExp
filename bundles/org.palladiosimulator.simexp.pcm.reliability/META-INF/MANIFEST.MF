@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
  de.uka.ipd.sdq.workflow.mdsd,
  org.palladiosimulator.analyzer.workflow,
- org.palladiosimulator.commons
+ org.palladiosimulator.commons,
+ tools.mdsd.probdist.api.apache
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.reliability
 Bundle-ActivationPolicy: lazy

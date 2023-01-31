@@ -17,7 +17,10 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.core.store.csv,
  org.palladiosimulator.simexp.pcm.examples.loadbalancing;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;bundle-version="1.0.0",
- tools.mdsd.probdist.api;bundle-version="1.0.0"
+ tools.mdsd.probdist.api;bundle-version="1.0.0",
+ tools.mdsd.probdist.api.apache,
+ tools.mdsd.probdist.model.basic,
+ tools.mdsd.probdist.model
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
 Import-Package: org.palladiosimulator.core.simulation,
  org.palladiosimulator.envdyn.api.entity.bn,

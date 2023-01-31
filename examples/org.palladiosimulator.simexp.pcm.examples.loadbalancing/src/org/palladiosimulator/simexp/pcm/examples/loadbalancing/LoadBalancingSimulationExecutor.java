@@ -36,11 +36,10 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.Measur
 import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -62,10 +61,9 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
 		super(experiment);
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 		
 		if (simulateWithUsageEvolution) {
 			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
@@ -88,8 +86,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
-	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
 	    }
 	}
 
