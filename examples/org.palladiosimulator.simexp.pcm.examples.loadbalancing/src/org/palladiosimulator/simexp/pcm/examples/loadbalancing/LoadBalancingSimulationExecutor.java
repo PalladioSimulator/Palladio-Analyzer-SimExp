@@ -62,7 +62,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
 		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
@@ -73,7 +73,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), probabilityDistributionFactory);
 			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour, probabilityDistributionFactory);
 		} else {
-			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment, probabilityDistributionFactory);
+		    this.dbn = dbn;
 		}
 		
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
@@ -88,8 +88,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
-	        return new LoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 	    }
 	}
 

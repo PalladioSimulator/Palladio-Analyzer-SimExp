@@ -20,4 +20,8 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  tools.mdsd.probdist.api;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
 Import-Package: org.palladiosimulator.core.simulation,
- org.palladiosimulator.experimentautomation.experiments
+ org.palladiosimulator.envdyn.api.entity.bn,
+ org.palladiosimulator.envdyn.environment.dynamicmodel,
+ org.palladiosimulator.envdyn.environment.staticmodel,
+ org.palladiosimulator.experimentautomation.experiments,
+ tools.mdsd.probdist.distributiontype

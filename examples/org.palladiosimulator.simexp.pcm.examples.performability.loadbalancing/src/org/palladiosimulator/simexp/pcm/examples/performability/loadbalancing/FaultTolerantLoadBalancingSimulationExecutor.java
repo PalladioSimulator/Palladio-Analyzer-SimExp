@@ -79,9 +79,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private PerformabilityStrategyConfiguration strategyConfiguration;
 	private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 		
-	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
-		this.dbn = FaultTolerantLoadBalancingDBNLoader.loadOrGenerateDBN(experiment, probabilityDistributionFactory);
+		this.dbn = dbn;
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR),
@@ -107,8 +107,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	}
 	
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
-	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
-	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
+	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
 	    }
 	}
 

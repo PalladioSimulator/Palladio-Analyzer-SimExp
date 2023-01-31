@@ -79,9 +79,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final IProbabilityDistributionFactory probabilityDistributionFactory;
 	private final ParameterParser parameterParser;
 	
-	public RobotCognitionSimulationExecutor(Experiment experiment, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
 		super(experiment);
-		this.dbn = RobotCognitionDBNLoader.load(probabilityDistributionFactory);
+		this.dbn = dbn;
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
 		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
@@ -94,6 +94,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser));
 		this.probabilityDistributionFactory = probabilityDistributionFactory;
 		this.parameterParser = parameterParser;
+	}
+	
+	public static final class RobotCognitionSimulationExecutorFactory {
+	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser) {
+	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser);
+	    }
 	}
 	
 	@Override

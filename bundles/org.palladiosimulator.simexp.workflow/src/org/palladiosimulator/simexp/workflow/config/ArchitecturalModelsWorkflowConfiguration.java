@@ -11,18 +11,14 @@ public class ArchitecturalModelsWorkflowConfiguration {
 	private String monitorRepositoryFile;
 	private String experimentsFile;
 	
-	public ArchitecturalModelsWorkflowConfiguration(final String usageModelFile, final List<String> allocationFiles, 
-			final String monitorRepositoryFile, final String experimentsFile) {
+	public ArchitecturalModelsWorkflowConfiguration(final List<String> allocationFiles, 
+			final String usageModelFile, final String monitorRepositoryFile, final String experimentsFile) {
 		
+		this.allocationFiles = new ArrayList<String>();
+		this.allocationFiles.addAll(allocationFiles);
 		this.usageModelFile = usageModelFile;
 		this.monitorRepositoryFile = monitorRepositoryFile;
 		this.experimentsFile = experimentsFile;
-		this.allocationFiles = new ArrayList<String>();
-		this.allocationFiles.addAll(allocationFiles);
-	}
-
-	public String getMonitorRepositoryFile() {
-		return monitorRepositoryFile;
 	}
 
 	public List<String> getAllocationFiles() {
@@ -33,6 +29,10 @@ public class ArchitecturalModelsWorkflowConfiguration {
 
 	public String getUsageModelFile() {
 		return usageModelFile;
+	}
+	
+	public String getMonitorRepositoryFile() {
+		return monitorRepositoryFile;
 	}
 	
 	public String getExperimentsFile() {
