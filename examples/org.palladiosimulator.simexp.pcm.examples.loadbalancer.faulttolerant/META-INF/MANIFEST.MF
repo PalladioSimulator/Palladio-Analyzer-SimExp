@@ -4,4 +4,4 @@ Bundle-Name: Faulttolerant
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
