@@ -4,7 +4,7 @@ Bundle-Name: Hri
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.hri
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.hri
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.simexp.pcm.examples.hri
 Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.envdyn.api;bundle-version="1.0.0",

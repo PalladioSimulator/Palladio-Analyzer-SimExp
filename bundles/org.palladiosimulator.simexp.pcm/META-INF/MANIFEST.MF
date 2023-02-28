@@ -32,7 +32,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.envdyn.api,
  tools.mdsd.probdist.api,
  org.palladiosimulator.envdyn.model
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm
 Bundle-ActivationPolicy: lazy
 Export-Package: org.palladiosimulator.core.simulation,

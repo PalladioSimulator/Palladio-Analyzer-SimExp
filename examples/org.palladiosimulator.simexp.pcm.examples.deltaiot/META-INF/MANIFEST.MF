@@ -4,7 +4,7 @@ Bundle-Name: Deltaiot
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.apache.log4j;bundle-version="1.2.15",
  com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.envdyn.api;bundle-version="1.0.0",

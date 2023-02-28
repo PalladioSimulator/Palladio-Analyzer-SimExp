@@ -4,7 +4,7 @@ Bundle-Name: Performability
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.performability
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.performability
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.apache.log4j,
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.simexp.markovian.model,

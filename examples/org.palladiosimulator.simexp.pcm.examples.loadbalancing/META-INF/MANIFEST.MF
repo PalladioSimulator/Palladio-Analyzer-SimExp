@@ -4,7 +4,7 @@ Bundle-Name: Loadbalancing
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.loadbalancing
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.loadbalancing
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.pcm;bundle-version="4.3.0",
  org.palladiosimulator.simexp.core;bundle-version="1.0.0",
