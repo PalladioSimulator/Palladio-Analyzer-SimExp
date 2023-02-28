@@ -18,6 +18,7 @@ import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -59,7 +60,6 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
 			+ "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
 	private final static String SIMULATION_ID = "DeltaIoT";
-	private final static String EXPERIMENT_FILE = DELTAIOT_PATH + "/model/DeltaIoTExperiment.experiments";
 	private final static String PRISM_FOLDER = "prism";
 	private final static String PRISM_PACKET_LOSS_MODULE_NAME = "PacketLoss.prism";
 	private final static String PRISM_PACKET_LOSS_PROPERTY_NAME = "PacketLoss.props";
@@ -73,7 +73,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
-	public DeltaIoTSimulationExecutor() {
+	public DeltaIoTSimulationExecutor(Experiment experiment) {
+		super(experiment);
 		this.prismSpecs = Lists.newArrayList();
 		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForPacketLoss());
 		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForEnergyConsumption());
@@ -153,10 +154,6 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		LOGGER.info("***********************************************************************");
 	}
 
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
-	}
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
