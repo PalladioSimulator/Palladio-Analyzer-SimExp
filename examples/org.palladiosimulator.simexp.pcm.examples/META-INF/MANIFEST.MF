@@ -24,4 +24,5 @@ Export-Package: org.palladiosimulator.simexp.pcm.examples.executor,
  org.palladiosimulator.simexp.pcm.examples.utils
 Import-Package: org.palladiosimulator.envdyn.environment.dynamicmodel,
  org.palladiosimulator.envdyn.environment.staticmodel,
+ org.palladiosimulator.simexp.workflow.config,
  tools.mdsd.modelingfoundations.identifier

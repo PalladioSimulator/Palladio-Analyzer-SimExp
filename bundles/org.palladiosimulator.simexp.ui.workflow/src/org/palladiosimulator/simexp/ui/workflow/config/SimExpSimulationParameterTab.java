@@ -18,7 +18,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
 
-public class SimExpSimulationConfigurationTab extends AbstractLaunchConfigurationTab {
+public class SimExpSimulationParameterTab extends AbstractLaunchConfigurationTab {
 	public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
 	public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 	
@@ -155,11 +155,11 @@ public class SimExpSimulationConfigurationTab extends AbstractLaunchConfiguratio
 
 	@Override
     public String getName() {
-        return "Simulation Configuration";
+        return "Simulation Parameter";
     }
     
     @Override
     public String getId() {
-        return "org.palladiosimulator.simexp.ui.workflow.config.SimExpSimulationConfigurationTab";
+        return "org.palladiosimulator.simexp.ui.workflow.config.SimExpSimulationParameterTab";
     }
 }

@@ -7,20 +7,23 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
+import org.palladiosimulator.simexp.workflow.config.SimulationParameterConfiguration;
 
 public abstract class PcmExperienceSimulationExecutor implements SimulationExecutor {
     
     protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
 	
 	protected final Experiment experiment;
+	protected final SimulationParameterConfiguration simulationParameters;
 	
 //	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
 	private static PcmExperienceSimulationExecutor instance;
 	
-	public PcmExperienceSimulationExecutor(Experiment experiment) {
+	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters) {
 		this.experiment = experiment;
 		ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
+		this.simulationParameters = simulationParameters;
 	}
 
 	public static PcmExperienceSimulationExecutor get() {

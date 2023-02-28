@@ -35,6 +35,7 @@ import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.workflow.config.SimulationParameterConfiguration;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import com.google.common.collect.Sets;
@@ -79,8 +80,11 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private final ParameterParser parameterParser;
 	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 	
-	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-	    super(experiment);
+	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
+			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	    super(experiment, simulationParameters);
 		this.dbn = dbn;
 		this.responseTimeSpec = buildResponseTimeSpec();
 		this.reliabilitySpec = buildReliabilitySpec();
@@ -97,8 +101,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	}
 	
 	public static final class RobotCognitionSimulationExecutorFactory {
-	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
+	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
+	        		parameterParser, probDistRepoLookup, simulationParameters);
 	    }
 	}
 	
@@ -121,9 +129,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(50) //50
-					.andNumberOfSimulationsPerRun(100) //100
+					.withSimulationID(simulationParameters.getSimulationID())
+					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //50
+					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()

@@ -12,6 +12,7 @@ public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
         ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { 
                 new SimExpArchitectureModelsTab(),
                 new SimExpEnvironmentalModelsTab(),
+                new SimExpSimulationParameterTab(),
                 new CommonTab()
         };
         
