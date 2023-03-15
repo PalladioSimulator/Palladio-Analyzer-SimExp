@@ -24,6 +24,7 @@ import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticN
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
@@ -110,6 +111,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 //      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
+//    	DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
         return factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
     }
     

@@ -20,7 +20,8 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  tools.mdsd.probdist.api;bundle-version="1.0.0",
  tools.mdsd.probdist.api.apache,
  tools.mdsd.probdist.model.basic,
- tools.mdsd.probdist.model
+ tools.mdsd.probdist.model,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
 Import-Package: org.palladiosimulator.core.simulation,
  org.palladiosimulator.envdyn.api.entity.bn,
