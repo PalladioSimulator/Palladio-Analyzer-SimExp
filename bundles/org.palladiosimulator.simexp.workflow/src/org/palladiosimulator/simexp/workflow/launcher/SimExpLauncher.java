@@ -24,20 +24,17 @@ import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticN
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-<<<<<<< HEAD
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
-=======
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
->>>>>>> master
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
-import org.palladiosimulator.simexp.workflow.config.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;

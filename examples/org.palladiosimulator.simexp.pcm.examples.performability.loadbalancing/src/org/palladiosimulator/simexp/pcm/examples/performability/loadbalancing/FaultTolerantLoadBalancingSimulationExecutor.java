@@ -41,7 +41,8 @@ import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitializat
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
-import org.palladiosimulator.simexp.workflow.config.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+
 import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;

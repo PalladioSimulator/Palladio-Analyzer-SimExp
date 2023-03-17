@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.config;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
 

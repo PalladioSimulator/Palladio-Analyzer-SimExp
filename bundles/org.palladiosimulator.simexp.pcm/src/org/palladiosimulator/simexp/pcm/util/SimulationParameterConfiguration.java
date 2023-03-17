@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.workflow.config;
+package org.palladiosimulator.simexp.pcm.util;
 
 public class SimulationParameterConfiguration {
 	private String simulationID;

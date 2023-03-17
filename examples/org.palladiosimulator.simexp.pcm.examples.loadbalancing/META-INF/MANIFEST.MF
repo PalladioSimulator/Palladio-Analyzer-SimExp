@@ -29,4 +29,3 @@ Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.apache.log4j,
  org.apache.commons.lang
 Export-Package: org.palladiosimulator.simexp.pcm.examples.loadbalancing
-Import-Package: org.palladiosimulator.simexp.workflow.config

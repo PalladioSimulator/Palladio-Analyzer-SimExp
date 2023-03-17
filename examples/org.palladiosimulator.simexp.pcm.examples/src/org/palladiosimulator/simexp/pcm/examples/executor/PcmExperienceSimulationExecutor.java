@@ -6,8 +6,8 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
-import org.palladiosimulator.simexp.workflow.config.SimulationParameterConfiguration;
 
 public abstract class PcmExperienceSimulationExecutor implements SimulationExecutor {
     
