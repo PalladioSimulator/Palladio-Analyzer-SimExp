@@ -42,8 +42,9 @@ public class DeltaIoTDBNLoader {
 	}
 
 	public static DynamicBayesianNetwork loadDBN() {
-		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
-		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension());
+//		BayesianNetwork bn = new BayesianNetwork(null, loadGroundProbabilisticNetwork());
+//		return new DynamicBayesianNetwork(null, bn, loadDynamicBehaviourExtension());
+		return null;
 	}
 
 //	private static DynamicBehaviourExtension loadDynamicBehaviourExtension() {

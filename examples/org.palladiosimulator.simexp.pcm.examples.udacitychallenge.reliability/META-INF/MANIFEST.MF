@@ -4,7 +4,7 @@ Bundle-Name: Reliability
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.udacitychallenge.reliability
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.udacitychallenge.reliability
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.pcm,

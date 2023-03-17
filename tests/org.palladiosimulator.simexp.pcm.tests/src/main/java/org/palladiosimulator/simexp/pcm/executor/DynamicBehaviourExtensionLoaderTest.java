@@ -9,13 +9,15 @@ import java.nio.file.Paths;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.util.DynamicmodelAdapterFactory;
+import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 
 public class DynamicBehaviourExtensionLoaderTest {
@@ -25,15 +27,23 @@ public class DynamicBehaviourExtensionLoaderTest {
 	
 	@Before
     public void setUp() throws Exception {
+		registerFactories();
+		
 	    rs = new ResourceSetImpl();
-	    register(rs);
+	    registerDefaultPackages(rs);
 		this.dbeLoader = new DynamicBehaviourExtensionLoader();
     }
 	
-	private void register(ResourceSet set) {
-    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("dynamicmodel", new DynamicmodelAdapterFactory());
-    	set.getPackageRegistry().put(DynamicmodelPackage.eNS_URI, DynamicmodelPackage.eINSTANCE);
+	private void registerFactories() {
+        Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+        reg.getExtensionToFactoryMap().put("dynamicmodel", new XMIResourceFactoryImpl());
+	}
+	
+	private void registerDefaultPackages(ResourceSet set) {
+		set.getPackageRegistry().put(DynamicmodelPackage.eNS_URI, DynamicmodelPackage.eINSTANCE);
+		set.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
     }
+	
 	
 	@Test
 	public void testExistingFileLoading() throws URISyntaxException {
