@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.config;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
 
@@ -13,9 +14,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final URI experimentsFile;
     private final URI staticModelFile;
     private final URI dynamicModelFile;
+    private final SimulationParameterConfiguration simulationParameters;
 
     public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration architecturalModels,
-    		EnvironmentalModelsWorkflowConfiguration environmentalModels) {
+    		EnvironmentalModelsWorkflowConfiguration environmentalModels,
+    		SimulationParameterConfiguration simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -29,6 +32,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
         this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
+        this.simulationParameters = simulationParameters;
     }
 
     @Override
@@ -55,4 +59,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     public URI getDynamicModelURI() {
     	return dynamicModelFile;
     }
+    
+    public SimulationParameterConfiguration getSimulationParameters() {
+		return simulationParameters;
+	}
 }

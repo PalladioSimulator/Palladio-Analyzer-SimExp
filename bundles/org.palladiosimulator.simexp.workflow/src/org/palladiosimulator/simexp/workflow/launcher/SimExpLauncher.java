@@ -24,12 +24,14 @@ import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticN
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -92,7 +94,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             BayesianNetwork bn = new BayesianNetwork(null, gpn, probabilityDistributionFactory);
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
 
-            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, 
+            		probabilityDistributionFactory, parameterParser, probDistRepoLookup, config.getSimulationParameters());
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -107,12 +110,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
-    private SimulationExecutor createSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+    private SimulationExecutor createSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
+    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
+    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
 //      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
 //    	DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
-        return factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+        return factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
+        		probDistRepoLookup, simulationParameters);
     }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
@@ -137,9 +143,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
             		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
+            
+            SimulationParameterConfiguration simulationParameters = new SimulationParameterConfiguration(
+            		(String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
+            		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
+            		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
             		
 
-            workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels, environmentalModels);
+            workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels, environmentalModels, simulationParameters);
 
         } catch (CoreException e) {
             LOGGER.error(

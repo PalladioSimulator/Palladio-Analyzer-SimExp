@@ -29,6 +29,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import com.google.common.collect.Lists;
@@ -70,8 +71,8 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	private final ParameterParser parameterParser;
 	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 	
-	private UdacitySimExpExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-		super(experiment);
+	private UdacitySimExpExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+		super(experiment, simulationParameters);
 		this.dbn = dbn;
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		this.probabilityDistributionFactory = probabilityDistributionFactory;
@@ -86,8 +87,8 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	}
 	
 	public static final class UdacitySimExpExecutorFactory {
-	    public UdacitySimExpExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-	        return new UdacitySimExpExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+	    public UdacitySimExpExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	        return new UdacitySimExpExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters);
 	    }
 	}
 	
