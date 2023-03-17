@@ -25,20 +25,32 @@ import com.google.common.collect.Lists;
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRunner {
 
 	private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
 	private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
+	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
+	private final IProbabilityDistributionFactory probabilityDistributionFactory;
+	private final ParameterParser parameterParser;
+	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
-	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig) {
+	public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
 		this.globalConfig = globalConfig;
-		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository());
+		this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository(), parameterParser);
+		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+		this.probabilityDistributionFactory = probabilityDistributionFactory;
+		this.parameterParser = parameterParser;
+		this.probDistRepoLookup = probDistRepoLookup;
 	}
 
-	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo) {
+	private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo, ParameterParser parameterParser) {
 		var stateSpace = uncertaintyRepo.getUncertaintyInducedFailureTypes().stream()
-				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each).stream()).collect(toList());
+				.flatMap(each -> DiscreteUncertaintyStateSpace.valueSpaceOf(each, parameterParser).stream()).collect(toList());
 		return DiscreteUncertaintyStateSpace.of(stateSpace);
 	}
 
@@ -49,14 +61,14 @@ public class PcmRelExperienceSimulationRunner implements ExperienceSimulationRun
 			throw new RuntimeException();
 		}
 
-		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState);
+		var result = makePrediction((PcmSelfAdaptiveSystemState) sasState, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
 		retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
 	}
 
-	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState) {
+	private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState pcmState, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
 		var config = deriveConfigFrom(pcmState);
 		var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
-		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config);
+		return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
 	}
 
 	private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState pcmState) {

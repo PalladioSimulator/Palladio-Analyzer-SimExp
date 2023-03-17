@@ -36,9 +36,10 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.Measur
 import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -60,18 +61,17 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	private LoadBalancingSimulationExecutor(Experiment experiment) {
+	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
 		super(experiment);
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 		
 		if (simulateWithUsageEvolution) {
 			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
 			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
-			var bn = new BayesianNetwork(null, dynBehaviour.getModel());
-			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour);
+			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), probabilityDistributionFactory);
+			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour, probabilityDistributionFactory);
 		} else {
-			this.dbn = LoadBalancingDBNLoader.loadOrGenerateDBN(experiment);
+		    this.dbn = dbn;
 		}
 		
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
@@ -86,8 +86,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(Experiment experiment) {
-	        return new LoadBalancingSimulationExecutor(experiment);
+	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
 	    }
 	}
 

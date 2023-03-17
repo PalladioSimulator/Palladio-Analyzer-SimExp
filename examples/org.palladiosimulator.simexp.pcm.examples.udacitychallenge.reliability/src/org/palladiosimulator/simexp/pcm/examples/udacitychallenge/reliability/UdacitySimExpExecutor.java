@@ -9,11 +9,11 @@ import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
-import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
@@ -36,9 +36,10 @@ import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 
@@ -64,15 +65,30 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<QVToReconfiguration> reconfigurationStrategy;
 	
-	public UdacitySimExpExecutor() {
-		this.dbn = UdacityEnvironmentLoader.load();
+	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
+	private final IProbabilityDistributionFactory probabilityDistributionFactory;
+	private final ParameterParser parameterParser;
+	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
+	
+	private UdacitySimExpExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+		super(experiment);
+		this.dbn = dbn;
+		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+		this.probabilityDistributionFactory = probabilityDistributionFactory;
+		this.parameterParser = parameterParser;
+		this.probDistRepoLookup = probDistRepoLookup;
 		this.pcmSpecs = createSimMeasurementSpecs();
 		//this.reconfigurationStrategy = new ImageBlurMitigationStrategy();
 		this.reconfigurationStrategy = new RandomizedFilterActivationStrategy();
 		//this.reconfigurationStrategy = new StaticSystemSimulation();
 		
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
+	}
+	
+	public static final class UdacitySimExpExecutorFactory {
+	    public UdacitySimExpExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+	        return new UdacitySimExpExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+	    }
 	}
 	
 	@Override
@@ -85,10 +101,6 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 		LOGGER.info("***********************************************************************");
 	}
 
-	@Override
-	protected String getExperimentFile() {
-		return "/org.palladiosimulator.simexp.pcm.examples.udacitychallenge/UdacityExperiment.experiments";
-	}
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
@@ -96,7 +108,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig(), probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup))
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(SIMULATION_ID)
@@ -149,9 +161,6 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 		return Lists.newArrayList(buildReliabilitySpec());
 	}
 	
-	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner() {
-		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig());
-	}
 	
 	private SimulatedMeasurementSpecification buildReliabilitySpec() {
 		var usageScenario = experiment.getInitialModel().getUsageModel().getUsageScenario_UsageModel().get(0);
