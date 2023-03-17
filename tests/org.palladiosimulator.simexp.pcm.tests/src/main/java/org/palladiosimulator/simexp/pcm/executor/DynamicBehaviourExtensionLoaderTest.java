@@ -16,10 +16,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelFactory;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.impl.DynamicmodelFactoryImpl;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.impl.DynamicmodelPackageImpl;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 
