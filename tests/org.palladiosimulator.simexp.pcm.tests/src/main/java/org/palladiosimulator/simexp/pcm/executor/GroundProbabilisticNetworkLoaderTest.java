@@ -9,13 +9,15 @@ import java.nio.file.Paths;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
-import org.palladiosimulator.envdyn.environment.staticmodel.util.StaticmodelAdapterFactory;
+import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
 import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
 
 public class GroundProbabilisticNetworkLoaderTest {
@@ -25,14 +27,21 @@ public class GroundProbabilisticNetworkLoaderTest {
 	
 	@Before
     public void setUp() throws Exception {
+		registerFactories();
+		
 	    rs = new ResourceSetImpl();
-	    register(rs);
+	    registerDefaultPackages(rs);
 		this.gpnLoader = new GroundProbabilisticNetworkLoader();
     }
 	
-	private void register(ResourceSet set) {
-    	set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("staticmodel", new StaticmodelAdapterFactory());
+	private void registerFactories() {
+        Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+        reg.getExtensionToFactoryMap().put("staticmodel", new XMIResourceFactoryImpl());
+	}
+	
+	private void registerDefaultPackages(ResourceSet set) {
     	set.getPackageRegistry().put(StaticmodelPackage.eNS_URI, StaticmodelPackage.eINSTANCE);
+		set.getPackageRegistry().put(TemplatevariablePackage.eNS_URI, TemplatevariablePackage.eINSTANCE);
     }
 	
 	@Test
