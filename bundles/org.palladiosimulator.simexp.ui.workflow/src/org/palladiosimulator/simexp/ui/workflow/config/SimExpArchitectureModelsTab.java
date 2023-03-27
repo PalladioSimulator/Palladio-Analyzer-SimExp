@@ -8,8 +8,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 
@@ -29,6 +35,8 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     private Text textUsage;
     private Text textMonitorRepository;
     private Text textExperiments;
+    private List availableMonitors;
+	private List selectedMonitors;
     
     
     private Composite container;
@@ -64,6 +72,96 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         TabHelper.createFileInputSection(container, modifyListener, "Experiments File",
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
+        createMonitorLists();
+    }
+    
+    private void createMonitorLists() {
+        Composite monitorComposite = new Composite(container, SWT.NONE);
+        monitorComposite.setLayout(new GridLayout(3, false));
+        monitorComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        Group leftGroup = new Group(monitorComposite, SWT.NONE);
+        leftGroup.setText("Available monitors");
+        leftGroup.setLayout(new GridLayout(1, false));
+        leftGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        availableMonitors = new List(leftGroup, SWT.MULTI | SWT.BORDER);
+        availableMonitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        Composite buttons = new Composite(monitorComposite, SWT.NONE);
+        buttons.setLayout(new GridLayout(1, false));
+        
+        Button moveAllRight = new Button(buttons, SWT.PUSH);
+        moveAllRight.setText(">>");
+        moveAllRight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+        moveAllRight.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					String[] items = availableMonitors.getItems();
+					for (String s : items) {
+						availableMonitors.remove(s);
+						selectedMonitors.add(s);
+					}
+				}
+			}
+		});
+
+        Button moveRight = new Button(buttons, SWT.PUSH);
+        moveRight.setText(">");
+        moveRight.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+        moveRight.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					String[] selection = availableMonitors.getSelection();
+					for (String s : selection) {
+						availableMonitors.remove(s);
+						selectedMonitors.add(s);
+					}
+				}
+			}
+		});
+        
+        Button moveLeft = new Button(buttons, SWT.PUSH);
+        moveLeft.setText("<");
+        moveLeft.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+        moveLeft.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					String[] selection = selectedMonitors.getSelection();
+					for (String s : selection) {
+						availableMonitors.add(s);
+						selectedMonitors.remove(s);
+					}
+				}
+			}
+		});
+        
+        Button moveAllLeft = new Button(buttons, SWT.PUSH);
+        moveAllLeft.setText("<<");
+        moveAllLeft.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+        moveAllLeft.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Selection) {
+					String[] items = selectedMonitors.getItems();
+					for (String s : items) {
+						availableMonitors.add(s);
+						selectedMonitors.remove(s);
+					}
+				}
+			}
+		});
+
+        Group rightGroup = new Group(monitorComposite, SWT.NONE);
+        rightGroup.setText("Selected monitors");
+        rightGroup.setLayout(new GridLayout(1, false));
+        rightGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        selectedMonitors = new List(rightGroup, SWT.MULTI | SWT.BORDER);
+        selectedMonitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
     @Override
