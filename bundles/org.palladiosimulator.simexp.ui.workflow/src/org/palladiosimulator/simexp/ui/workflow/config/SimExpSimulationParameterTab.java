@@ -127,7 +127,12 @@ public class SimExpSimulationParameterTab extends AbstractLaunchConfigurationTab
 		}
 		
 		try {
-			Integer.parseInt(textNumberOfRuns.getText());
+			int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
+			
+			if (numberOfRuns < 0) {
+				setErrorMessage("Number of runs must not be negative");
+				return false;
+			}
 		} catch (Exception e) {
 			setErrorMessage("Number of runs must be an integer");
 			return false;
@@ -139,7 +144,12 @@ public class SimExpSimulationParameterTab extends AbstractLaunchConfigurationTab
 		}
 		
 		try {
-			Integer.parseInt(textNumerOfSimulationsPerRun.getText());
+			int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
+			
+			if (numberOfSimulationsPerRun < 0) {
+				setErrorMessage("Number of simulations per run must not be negative");
+				return false;
+			}
 		} catch (NumberFormatException e) {
 			setErrorMessage("Number of simulations per run must be an integer");
 			return false;
