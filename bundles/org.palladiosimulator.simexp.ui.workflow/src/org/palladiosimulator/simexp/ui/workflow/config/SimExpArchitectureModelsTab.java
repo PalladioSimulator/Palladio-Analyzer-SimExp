@@ -4,6 +4,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -17,8 +20,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.palladiosimulator.monitorrepository.MonitorRepository;
+import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-
+import org.palladiosimulator.simexp.pcm.examples.executor.MonitorRepositoryLoader;
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
@@ -68,6 +73,14 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         TabHelper.createFileInputSection(container, modifyListener, "MonitorRepository File",
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select MonitorRepository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
+        textMonitorRepository.addModifyListener(new ModifyListener() {	
+			@Override
+			public void modifyText(ModifyEvent e) {
+				availableMonitors.setItems(getMonitors(textMonitorRepository.getText()));
+	            selectedMonitors.removeAll();
+			}
+		});
+        
         textExperiments = new Text(container, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(container, modifyListener, "Experiments File",
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
@@ -103,6 +116,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
 						availableMonitors.remove(s);
 						selectedMonitors.add(s);
 					}
+					if (items.length != 0) {
+						setDirty(true);
+		                updateLaunchConfigurationDialog();
+					}
 				}
 			}
 		});
@@ -118,6 +135,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
 					for (String s : selection) {
 						availableMonitors.remove(s);
 						selectedMonitors.add(s);
+					}
+					if (selection.length != 0) {
+						setDirty(true);
+		                updateLaunchConfigurationDialog();
 					}
 				}
 			}
@@ -135,6 +156,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
 						availableMonitors.add(s);
 						selectedMonitors.remove(s);
 					}
+					if (selection.length != 0) {
+						setDirty(true);
+		                updateLaunchConfigurationDialog();
+					}
 				}
 			}
 		});
@@ -150,6 +175,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
 					for (String s : items) {
 						availableMonitors.add(s);
 						selectedMonitors.remove(s);
+					}
+					if (items.length != 0) {
+						setDirty(true);
+		                updateLaunchConfigurationDialog();
 					}
 				}
 			}
@@ -167,7 +196,6 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -230,6 +258,11 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
             return false;
         }
         
+        if (selectedMonitors.getItems().length == 0) {
+        	setErrorMessage("At least one monitor must be selected");
+        	return false;
+        }
+        
         return true;
     }
     
@@ -246,5 +279,21 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     @Override
     public String getId() {
         return "org.palladiosimulator.simexp.ui.workflow.config.SimExpArchitectureModelsTab";
+    }
+    
+    private String[] getMonitors(String monitorRepositoryFile) {
+    	try {
+    		ResourceSet rs = new ResourceSetImpl();
+        	URI monitorRepositoryUri = URI.createURI(monitorRepositoryFile);
+        	MonitorRepositoryLoader loader = new MonitorRepositoryLoader();
+        	MonitorRepository repository = loader.load(rs, monitorRepositoryUri);
+        	
+        	return repository.getMonitors()
+        			.stream()
+        			.map(NamedElement::getEntityName)
+        			.toArray(String[]::new);
+    	} catch (Exception e) {
+			return new String[0];
+		}
     }
 }
