@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -206,26 +207,38 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         try {
             textAllocation.setText(configuration.getAttribute(ModelFileTypeConstants.ALLOCATION_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(),"Allocation File", e.getMessage());
+            LaunchConfigPlugin.errorLogger(getName(), "Allocation File", e.getMessage());
         }
         
         try {
             textUsage.setText(configuration.getAttribute(ModelFileTypeConstants.USAGE_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(),"Usage File", e.getMessage());
+            LaunchConfigPlugin.errorLogger(getName(), "Usage File", e.getMessage());
         }
         
         try {
             textMonitorRepository.setText(configuration.getAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(),"MonitorRepository File", e.getMessage());
+            LaunchConfigPlugin.errorLogger(getName(), "MonitorRepository File", e.getMessage());
         }
         
         try {
             textExperiments.setText(configuration.getAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, ModelFileTypeConstants.EMPTY_STRING));
         } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(),"Experiments File", e.getMessage());
+            LaunchConfigPlugin.errorLogger(getName(), "Experiments File", e.getMessage());
         }
+        
+        try {
+        	java.util.List<String> selectedMonitors = configuration.getAttribute(ModelFileTypeConstants.MONITORS, Collections.emptyList());
+        	this.selectedMonitors.setItems(selectedMonitors.toArray(String[]::new));
+        	
+        	for (String s : selectedMonitors) {
+        		availableMonitors.remove(s);
+        	}
+        	
+        } catch (CoreException e) {
+			LaunchConfigPlugin.errorLogger(getName(), "Monitors", e.getMessage());
+		}
     }
 
     @Override
