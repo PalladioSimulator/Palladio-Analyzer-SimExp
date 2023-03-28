@@ -17,6 +17,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final SimulationParameterConfiguration simulationParameters;
 
     public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration architecturalModels,
+    		MonitorConfiguration monitors,
     		EnvironmentalModelsWorkflowConfiguration environmentalModels,
     		SimulationParameterConfiguration simulationParameters) {
 
