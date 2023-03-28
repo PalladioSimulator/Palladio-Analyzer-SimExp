@@ -5,26 +5,27 @@ import java.util.List;
 
 public class ArchitecturalModelsWorkflowConfiguration {
 	
-    private List<String> allocationFiles;
-    private String usageModelFile;
+    private final List<String> allocationFiles;
+    private final String usageModelFile;
 	// Simulizar intergration
-	private String monitorRepositoryFile;
-	private String experimentsFile;
+	private final String monitorRepositoryFile;
+	private final String experimentsFile;
+	private final List<String> monitors;
 	
 	public ArchitecturalModelsWorkflowConfiguration(final List<String> allocationFiles, 
-			final String usageModelFile, final String monitorRepositoryFile, final String experimentsFile) {
+			final String usageModelFile, final String monitorRepositoryFile, final String experimentsFile,
+			final List<String> monitors) {
 		
 		this.allocationFiles = new ArrayList<String>();
 		this.allocationFiles.addAll(allocationFiles);
 		this.usageModelFile = usageModelFile;
 		this.monitorRepositoryFile = monitorRepositoryFile;
 		this.experimentsFile = experimentsFile;
+		this.monitors = monitors;
 	}
 
 	public List<String> getAllocationFiles() {
-		 List<String> copyAllocationFiles = new ArrayList<String>();
-		 copyAllocationFiles.addAll(allocationFiles);
-		 return copyAllocationFiles;
+		return List.copyOf(allocationFiles);
 	}
 
 	public String getUsageModelFile() {
@@ -37,5 +38,9 @@ public class ArchitecturalModelsWorkflowConfiguration {
 	
 	public String getExperimentsFile() {
 		return experimentsFile;
+	}
+	
+	public List<String> getMonitors() {
+		return List.copyOf(monitors);
 	}
 }

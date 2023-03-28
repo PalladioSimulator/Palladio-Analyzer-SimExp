@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,7 +26,6 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
@@ -133,12 +133,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                             String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
                 }
             }
-
-            ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
+            
+            @SuppressWarnings("unchecked")
+			ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
             		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
             		(String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE),
+            		(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
             
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
             		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),

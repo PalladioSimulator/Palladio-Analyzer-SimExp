@@ -11,6 +11,7 @@ public class ModelFileTypeConstants {
 	public static final String EXPERIMENTS_FILE = "experimentsFile";
 	public static final String STATIC_MODEL_FILE = "staticModelFile";
 	public static final String DYNAMIC_MODEL_FILE = "dynamicModelFile";
+	public static final String MONITORS = "monitors";
 
 	public static final String[] ALLOCATION_FILE_EXTENSION = new String[] { "*." + ModelTypeConstants.ALLOCATION_EXTENSION };
 	public static final String[] USAGEMODEL_FILE_EXTENSION = new String[] { "*." + ModelTypeConstants.USAGEMODEL_EXTENSION };

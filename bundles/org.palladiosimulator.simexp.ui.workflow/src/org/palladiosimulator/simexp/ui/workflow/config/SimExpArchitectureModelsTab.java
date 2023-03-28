@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -23,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.monitorrepository.MonitorRepository;
 import org.palladiosimulator.pcm.core.entity.NamedElement;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.ModelTypeConstants;
 import org.palladiosimulator.simexp.pcm.examples.executor.MonitorRepositoryLoader;
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
@@ -231,6 +234,7 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         configuration.setAttribute(ModelFileTypeConstants.USAGE_FILE, textUsage.getText());
         configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
         configuration.setAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, textExperiments.getText());
+        configuration.setAttribute(ModelFileTypeConstants.MONITORS, Arrays.asList(selectedMonitors.getItems()));
     }
     
     
@@ -282,6 +286,10 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     }
     
     private String[] getMonitors(String monitorRepositoryFile) {
+    	if (monitorRepositoryFile == null || !monitorRepositoryFile.endsWith(ModelTypeConstants.MONITOR_REPOSITORY_EXTENSION)) {
+    		return new String[0];
+    	}
+    	
     	try {
     		ResourceSet rs = new ResourceSetImpl();
         	URI monitorRepositoryUri = URI.createURI(monitorRepositoryFile);
