@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.util.KmodelSwitch;
@@ -24,11 +25,13 @@ public class KmodelValueSwitch extends KmodelSwitch<Object> {
 	
 	private final VariableValueProvider vvp;
 	private final ProbeValueProvider pvp;
+	private final RuntimeValueProvider rvp;
 	private final Map<Constant, Object> resolvedConstants;
 	
-	public KmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp) {
+	public KmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp, RuntimeValueProvider rvp) {
 		this.vvp = vvp;
 		this.pvp = pvp;
+		this.rvp = rvp;
 		this.resolvedConstants = new HashMap<>();
 	}
 	
@@ -81,6 +84,17 @@ public class KmodelValueSwitch extends KmodelSwitch<Object> {
 		
 		if (value == null) {
 			throw new RuntimeException("The ProbeValueProvider couldn't provide a value for probe '" + probe.getName() + "'.");
+		}
+		
+		return value;
+	}
+	
+	@Override
+	public Object caseRuntime(Runtime runtime) {
+		Object value = rvp.getValue(runtime);
+		
+		if (value == null) {
+			throw new RuntimeException("The RuntimeValueProvider couldn't provide a value for runtime '" + runtime.getName() + "'.");
 		}
 		
 		return value;

@@ -8,28 +8,34 @@ Kmodel:
 	(fields+=Field)*
 	(actions+=Action)*
 	(statements+=IfStatement)*;
-	
+
 Field:
-	(Constant | Variable | Probe) ';';
+	(Constant | Variable | Probe | Runtime) ';';
 
 Constant returns Field:
 	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr;
-	
+
 Variable returns Field:
-	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;	
+	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;
 
 Probe returns Field:
 	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=STRING;
-	
-Parameter returns Field: 
+
+Runtime returns Field:
+	{Runtime} 'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression;
+
+Parameter returns Field:
 	{Parameter} 'param' dataType=PrimitiveType name=ID;
-	
+
 Bounds:
 	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |
-	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';	
+	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';
+
+EcoreExpression: name=ID ((withIndex?='[' index=INT ']') | 
+	(withPredicate?='{' param=ID '=' value=Literal '}'))? ('.' exp=EcoreExpression)?;
 	
-Action: 'action' name=ID '(' parameterList=ParameterList ')' ';';	
-	
+Action: 'action' name=ID '(' parameterList=ParameterList ')' ';';
+
 ParameterList: {ParameterList}
 	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*)) |
 	(variables+=Variable (',' variables+=Variable)*))?;
@@ -39,39 +45,39 @@ Statement:
 
 ActionCall returns Statement:
 	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
-	
+
 ArgumentKeyValue:
 	paramRef=[Parameter] '=' argument=DisjunctiveExpr;
-	
+
 IfStatement returns Statement: {IfStatement}
 	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
-	(withElse?='else' '{' (elseStatements+=Statement)* '}')?;	
+	(withElse?='else' '{' (elseStatements+=Statement)* '}')?;
 
 DisjunctiveExpr returns Expression:
     ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*;
-    
+
 ConjunctiveExpr returns Expression:
 	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*;
-	
+
 EquativeExpr returns Expression:
-	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*;	
-	
+	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*;
+
 RelationalExpr returns Expression:
-	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?;	
-	
+	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?;
+
 AdditiveExpr returns Expression:
 	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*;
 
 MultiplicativeExpr returns Expression:
-	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*;	
-	
-UnaryExpr returns Expression:
-	{Expression} op=UnaryOp? left=Term;			
+	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*;
 
-Term returns Expression: 
+UnaryExpr returns Expression:
+	{Expression} op=UnaryOp? left=Term;
+
+Term returns Expression:
 	{Expression} (fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')');
 
-Literal: 
+Literal:
 	{BoolLiteral} true=BOOL |
 	{IntLiteral} value=INT |
 	{FloatLiteral} value=FLOAT |
@@ -79,7 +85,7 @@ Literal:
 
 // Rule 'DataType' is not used, but is necessary to provide a default value for data types.
 enum DataType: UNDEFINED;
-enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';	
+enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.
 enum Operation: UNDEFINED;

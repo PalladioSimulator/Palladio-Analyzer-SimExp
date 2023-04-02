@@ -225,7 +225,7 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable or probe value to a constant.");
+        		"Cannot assign an expression containing a non-constant value to a constant.");
     }
     
     @Test
@@ -239,7 +239,20 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable or probe value to a constant.");
+        		"Cannot assign an expression containing a non-constant value to a constant.");
+    }
+    
+    @Test
+    public void parseConstantWithRuntimeValue() throws Exception {
+    	String sb = String.join("\n",
+    			"runtime int rint : simple: a;",
+    			"const int constant = rint;");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	KmodelTestUtil.assertModelWithoutErrors(model);
+    	
+    	KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, 
+    			"Cannot assign an expression containing a non-constant value to a constant.");
     }
     
     @Test
@@ -253,7 +266,7 @@ public class KmodelConstantParsingJavaTest {
         KmodelTestUtil.assertModelWithoutErrors(model);
         
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-        		"Cannot assign an expression containing a variable or probe value to a constant.");
+        		"Cannot assign an expression containing a non-constant value to a constant.");
     }
     
     @Test

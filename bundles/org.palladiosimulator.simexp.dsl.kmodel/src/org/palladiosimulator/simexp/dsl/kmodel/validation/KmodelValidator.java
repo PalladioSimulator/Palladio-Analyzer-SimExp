@@ -74,14 +74,16 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		
 		if (value != null) {
 			if (containsNonConstantFieldReference(value)) {
-				error("Cannot assign an expression containing a variable or probe value to a constant.",
+				error("Cannot assign an expression containing a non-constant value to a constant.",
 						KmodelPackage.Literals.CONSTANT__VALUE);
 				return;
 			}
 			
 			DataType constantDataType = getDataType(constant);
 			DataType valueDataType = getDataType(value);
-			checkTypes(constantDataType, valueDataType, KmodelPackage.Literals.CONSTANT__VALUE);
+			if (!checkTypes(constantDataType, valueDataType, KmodelPackage.Literals.CONSTANT__VALUE)) {
+				return;
+			}
 				
 			if (containsOnlySingleConstant(value)) {
 				warning("Constant '" + constant.getName() + "' is probably redundant.",
@@ -265,17 +267,17 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		return typeSwitch.doSwitch(object);
 	}
 	
-	private void checkTypes(DataType expected, DataType actual, EStructuralFeature feature) {
-		checkTypes(expected, actual, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+	private boolean checkTypes(DataType expected, DataType actual, EStructuralFeature feature) {
+		return checkTypes(expected, actual, feature, ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
 	}
 	
-	private void checkTypes(DataType expected, DataType actual, EStructuralFeature feature, int index) {
+	private boolean checkTypes(DataType expected, DataType actual, EStructuralFeature feature, int index) {
 		/* 
 		 * The type UNDEFINED can only occur as a default value in unresolved field references, or when an expression
 		 * isn't complete. In this cases, no error message regarding the type should be shown.
 		 */
 		if (actual == DataType.UNDEFINED) {
-			return;
+			return false;
 		}
 		
 		if (!compatibleTypes(expected, actual)) {
@@ -290,7 +292,11 @@ public class KmodelValidator extends AbstractKmodelValidator {
 			errorMessage.append("', got '" + actual + "' instead.");
 
 			error(errorMessage.toString(), feature, index);
+			
+			return false;
 		}
+		
+		return true;
 	}
 	
 	private boolean compatibleTypes(DataType expected, DataType actual) {
@@ -318,7 +324,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 		}
 		
 		Field field = expression.getFieldRef();
-		return field != null && (field instanceof Variable || field instanceof Probe);
+		return field != null && field.getDataType() != DataType.UNDEFINED && !(field instanceof Constant);
 	}
 	
 	private boolean containsOnlySingleConstant(Expression expression) {

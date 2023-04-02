@@ -7,11 +7,16 @@ import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -21,26 +26,28 @@ public class KmodelInterpreterExpressionTest {
 	
 	private ParseHelper<Kmodel> parserHelper;
 	private KmodelInterpreter interpreter;
-	private ProbeValueProvider pvp;
 	private VariableValueProvider vvp;
+	private ProbeValueProvider pvp;
+	private RuntimeValueProvider rvp;
     
     @Before
     public void setUp() {
     	Injector injector = new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
     	parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {}));
     	
+    	vvp = new TestVariableValueProvider();
         pvp = new TestProbeValueProvider();
-        vvp = new TestVariableValueProvider(pvp);
+        rvp = new TestRuntimeValueProvider();
     }
     
     @Test
     public void testBoolExpressionValue() throws Exception {
     	String sb = String.join("\n", 
     			"const bool value = true;",
-    			"const bool value = false;");
+    			"const bool value2 = false;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -54,15 +61,19 @@ public class KmodelInterpreterExpressionTest {
     @Test
     public void testIntExpressionValue() throws Exception {
     	String sb = String.join("\n", 
-    			"const int value = 1;");
+    			"const int value = 1;",
+    			"const int value2 = -1;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = (int) interpreter.getValue(constant);
+    	Constant constant2 = (Constant) model.getFields().get(1);
+    	int value2 = (int) interpreter.getValue(constant2);
     	
     	Assert.assertEquals(1, value);
+    	Assert.assertEquals(-1, value2);
     }
     
     @Test
@@ -72,7 +83,7 @@ public class KmodelInterpreterExpressionTest {
     			"const float value2 = .5e-1;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	float value = (float) interpreter.getValue(constant);
@@ -89,7 +100,7 @@ public class KmodelInterpreterExpressionTest {
     			"const string value = \"word\";");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	String value = (String) interpreter.getValue(constant);
@@ -105,7 +116,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value3 = value2;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -120,6 +131,52 @@ public class KmodelInterpreterExpressionTest {
     }
     
     @Test
+    public void testVariableExpressionValue() throws Exception {
+    	String sb = String.join("\n",
+    			"var int{2, 1} value;",
+    			"var int[0, 1, 1] value2;");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+    	
+    	Variable variable = (Variable) model.getFields().get(0);
+    	int value = ((Number) interpreter.getValue(variable)).intValue();
+    	Variable variable2 = (Variable) model.getFields().get(1);
+    	int value2 = ((Number) interpreter.getValue(variable2)).intValue();
+    	
+    	Assert.assertEquals(2, value);
+    	Assert.assertEquals(0, value2);
+    }
+    
+    @Test
+    public void testProbeExpressionValue() throws Exception {
+    	String sb = String.join("\n,",
+    			"probe bool value: \"someId\";");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+    	
+    	Probe probe = (Probe) model.getFields().get(0);
+    	boolean value = (boolean) interpreter.getValue(probe);
+    	
+    	Assert.assertTrue(value);
+    }
+    
+    @Test
+    public void testRuntimeExpressionValue() throws Exception {
+    	String sb = String.join("\n,",
+    			"runtime int value: simple: a[0].b;");
+    	
+    	Kmodel model = parserHelper.parse(sb);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+    	
+    	Runtime runtime = (Runtime) model.getFields().get(0);
+    	int value = ((Number) interpreter.getValue(runtime)).intValue();
+    	
+    	Assert.assertEquals(1, value);
+    }
+    
+    @Test
     public void testOrExpressionValue() throws Exception {
     	String sb = String.join("\n", 
     			"const bool value = true || true;",
@@ -128,7 +185,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value4 = false || false;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -154,7 +211,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value4 = false && false;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -178,7 +235,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value2 = !true;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -196,7 +253,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value2 = \"word\" == \"anotherWord\";");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -214,7 +271,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value2 = 1.0 != 1.0;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -233,7 +290,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value3 = 2 < 1;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -255,7 +312,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value3 = 2 <= 1;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -277,7 +334,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value3 = 1 >= 2;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -299,7 +356,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value3 = 1 > 2;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -322,7 +379,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value4 = 1 + (2 + 3);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -348,7 +405,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value4 = 1 - (2 - 3);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -372,7 +429,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value2 = -(-1);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -395,7 +452,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value7 = 1 * (2 * 3);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -436,7 +493,7 @@ public class KmodelInterpreterExpressionTest {
     			"const float value10 = -1 / 0;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	float value = ((Number) interpreter.getValue(constant)).floatValue();
@@ -481,7 +538,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value5 = 1 % -2");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -508,7 +565,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value = 2 * 3 + 2 * 4;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -526,7 +583,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value2 = (true || true) && false;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	boolean value = (boolean) interpreter.getValue(constant);
@@ -544,7 +601,7 @@ public class KmodelInterpreterExpressionTest {
     			"const int value2 = (1 + 1) * 2;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	int value = ((Number) interpreter.getValue(constant)).intValue();
@@ -562,7 +619,7 @@ public class KmodelInterpreterExpressionTest {
     			"const float value2 = (2 - 1) / 2;");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	float value = ((Number) interpreter.getValue(constant)).floatValue();
@@ -581,7 +638,7 @@ public class KmodelInterpreterExpressionTest {
     			"const float value3 = 1.17549435e-38");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	float value = ((Number) interpreter.getValue(constant)).floatValue();
@@ -602,7 +659,7 @@ public class KmodelInterpreterExpressionTest {
     			"const bool value2 = !((value < 0 || value >= 10) && value == -20);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Constant constant = (Constant) model.getFields().get(0);
     	float value = ((Number) interpreter.getValue(constant)).floatValue();

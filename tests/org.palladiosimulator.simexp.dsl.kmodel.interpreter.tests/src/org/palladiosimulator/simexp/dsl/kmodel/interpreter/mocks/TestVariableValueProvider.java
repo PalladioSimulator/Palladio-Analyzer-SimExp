@@ -1,22 +1,17 @@
 package org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks;
 
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelValueSwitch;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 public class TestVariableValueProvider implements VariableValueProvider {
-	
-	private final KmodelValueSwitch valueSwitch;
-	
-	public TestVariableValueProvider(ProbeValueProvider pvp) {
-		this.valueSwitch = new KmodelValueSwitch(this, pvp);
-	}
-
     @Override
     public Object getValue(Variable variable) {
         Bounds bounds = variable.getValues();
@@ -34,6 +29,20 @@ public class TestVariableValueProvider implements VariableValueProvider {
     }
 
     private Object getValue(Literal literal) {
-    	return valueSwitch.doSwitch(literal);
+    	if (literal instanceof BoolLiteral) {
+    		BoolLiteral boolLiteral = (BoolLiteral) literal;
+    		return boolLiteral.isTrue();
+    	} else if (literal instanceof IntLiteral) {
+    		IntLiteral intLiteral = (IntLiteral) literal;
+    		return intLiteral.getValue();
+    	} else if (literal instanceof FloatLiteral) {
+    		FloatLiteral floatLiteral = (FloatLiteral) literal;
+    		return floatLiteral.getValue();
+    	} else if (literal instanceof StringLiteral) {
+    		StringLiteral stringLiteral = (StringLiteral) literal;
+    		return stringLiteral.getValue();
+    	}
+    	
+    	return null;
     }
 }

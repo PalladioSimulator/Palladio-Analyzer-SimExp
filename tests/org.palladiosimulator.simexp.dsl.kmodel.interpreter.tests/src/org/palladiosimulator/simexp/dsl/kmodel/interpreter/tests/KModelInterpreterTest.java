@@ -17,8 +17,10 @@ import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
@@ -34,8 +36,9 @@ public class KModelInterpreterTest {
     
 	private ParseHelper<Kmodel> parserHelper;
     private KmodelInterpreter interpreter;
-    private ProbeValueProvider pvp;
     private VariableValueProvider vvp;
+    private ProbeValueProvider pvp;
+    private RuntimeValueProvider rvp;
     
     
     @Before
@@ -44,7 +47,8 @@ public class KModelInterpreterTest {
     	parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {}));
     	
         pvp = new TestProbeValueProvider();
-        vvp = new TestVariableValueProvider(pvp);
+        vvp = new TestVariableValueProvider();
+        rvp = new TestRuntimeValueProvider();
     }
     
     @Test
@@ -68,7 +72,7 @@ public class KModelInterpreterTest {
         BoolLiteral boolLiteral = kmodelFactory.createBoolLiteral();
         condExpr.setLiteral(boolLiteral);
         rule.setCondition(condExpr);
-        interpreter = new KmodelInterpreter(kmodel, vvp, pvp);
+        interpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
         
         boolean actual = interpreter.analyze();
         
@@ -84,7 +88,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertTrue(interpreter.analyze());
     }
@@ -101,7 +105,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertTrue(interpreter.analyze());
     }
@@ -115,7 +119,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertTrue(interpreter.analyze());
     }
@@ -131,7 +135,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertFalse(interpreter.analyze());
     }
@@ -145,7 +149,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertFalse(interpreter.analyze());
     }
@@ -156,7 +160,7 @@ public class KModelInterpreterTest {
     			"action adapt(param int parameter);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	Assert.assertFalse(interpreter.analyze());
     }
@@ -170,7 +174,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -191,7 +195,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(2, resolvedActions.size());
@@ -215,7 +219,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(2, resolvedActions.size());
@@ -241,7 +245,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(2, resolvedActions.size());
@@ -264,7 +268,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -287,7 +291,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(0, resolvedActions.size());
@@ -306,7 +310,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -322,7 +326,7 @@ public class KModelInterpreterTest {
     			"action adapt(param int parameter);");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(0, resolvedActions.size());
@@ -337,7 +341,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -356,7 +360,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -375,7 +379,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -394,7 +398,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -413,7 +417,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -432,7 +436,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(1, resolvedActions.size());
@@ -449,12 +453,13 @@ public class KModelInterpreterTest {
     			"const int anotherConstant = constant * 2;",
     			"var float{1.5, 2.5, 3.5} adaptationFactor;",
     			"probe float someProbe : abc123;",
+    			"runtime string someRuntime: simple: a[0].b;",
     			
     			"action adapt(param int parameter, param float factor);",
     			"action adapt2(param float parameter, var float[1,5,1] someRange);",
     			"action adapt3();",
     			
-    			"if (someProbe > 0 || someProbe <= -10) {",
+    			"if (someProbe > 0 || someProbe <= -10 && someRuntime == \"string\") {",
     				"adapt(parameter=anotherConstant, factor=0.5);",
     				"if (someProbe > 0 && someProbe < 10) {",
     					"adapt2(parameter=adaptationFactor);",
@@ -465,7 +470,7 @@ public class KModelInterpreterTest {
     			"}");
     	
     	Kmodel model = parserHelper.parse(sb);
-    	interpreter = new KmodelInterpreter(model, vvp, pvp);
+    	interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
     	
     	List<ResolvedAction> resolvedActions = interpreter.plan();
     	Assert.assertEquals(2, resolvedActions.size());
