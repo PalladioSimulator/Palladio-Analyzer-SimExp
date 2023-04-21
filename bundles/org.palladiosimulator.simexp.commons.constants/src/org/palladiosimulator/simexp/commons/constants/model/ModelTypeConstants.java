@@ -12,6 +12,7 @@ public class ModelTypeConstants {
 	public static final String EXPERIMENTS_EXTENSION = "experiments";
 	public static final String STATIC_MODEL_EXTENSION = "staticmodel";
 	public static final String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
+	public static final String FAILURE_SCENARIO_MODEL_EXTENSION = "failurescenario";
 	
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP = "pathmap://PCM_MODELS/Palladio.resourcetype";
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP_TARGET = "platform:/plugin/org.palladiosimulator.pcm.resources/defaultModels/Palladio.resourcetype";
