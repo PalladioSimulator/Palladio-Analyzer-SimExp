@@ -43,8 +43,10 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 	
 	private Text textMonitorRepository;
 	private List monitors;
-	
 	private Text textFailureScenarioModel;
+	
+	private Text textModuleFiles;
+	private Text textPropertyFiles;
 	
 	private Composite container;
 	private ModifyListener modifyListener;
@@ -97,9 +99,26 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		});
         
         createPcmTab();
-        
-        TabItem prismTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
+        createPrismTab();
+	}
+	
+	private void createPrismTab() {
+		TabItem prismTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
         prismTab.setText("PRISM");
+        
+        final Composite prismContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
+        prismContainer.setLayout(new GridLayout());
+        prismTab.setControl(prismContainer);
+        
+        textModuleFiles = new Text(prismContainer, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(prismContainer, modifyListener, "Module Files",
+                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, 
+                "Select Module Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
+        
+        textPropertyFiles = new Text(prismContainer, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(prismContainer, modifyListener, "Property Files",
+                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles, 
+                "Select Property Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
 	}
 	
 	private void createPcmTab() {
@@ -149,7 +168,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		
 		textMonitorRepository = new Text(pcmContainer, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(pcmContainer, modifyListener, "Monitor Repository File",
-                ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, "Select Monitor Repository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository, 
+                "Select Monitor Repository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
         final Group monitorsGroup = new Group(pcmContainer, SWT.NONE);
         monitorsGroup.setText("Monitors");
@@ -161,7 +181,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         
         textFailureScenarioModel = new Text(pcmContainer, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(pcmContainer, modifyListener, "Failure Scenario File",
-                ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel, "Select Failure Scenario File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel, 
+                "Select Failure Scenario File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
 	}
 
 	@Override
@@ -240,30 +261,38 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage());
         }
+		
+		try {
+			textModuleFiles.setText(configuration.getAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, ModelFileTypeConstants.EMPTY_STRING));
+		} catch (CoreException e) {
+			LaunchConfigPlugin.errorLogger(getName(), "Prism Module File", e.getMessage());
+		}
+		
+		try {
+			textPropertyFiles.setText(configuration.getAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE, ModelFileTypeConstants.EMPTY_STRING));
+		} catch (CoreException e) {
+			LaunchConfigPlugin.errorLogger(getName(), "Prism Property FIle", e.getMessage());
+		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(SimulationConstants.SIMULATION_ID, textSimulationID.getText());
 		
-		try {
-			int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
-			configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, numberOfRuns);
-		} catch (NumberFormatException ignore) {
-			
-		}
-		
-		try {
-			int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
-			configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
-		} catch (NumberFormatException ignore) {
-			
-		}
+		int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
+		configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, numberOfRuns);
+		int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
+		configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
 		
 		configuration.setAttribute("Simulation Engine", simulationEngineTabFolder.getSelectionIndex());
 		configuration.setAttribute("Performance", buttonPerformance.getSelection());
 		configuration.setAttribute("Reliability", buttonReliability.getSelection());
 		configuration.setAttribute("Performability", buttonPerformability.getSelection());
+		
+		configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
+		configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE, textFailureScenarioModel.getText());
+		configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, textModuleFiles.getText());
+		configuration.setAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE, textPropertyFiles.getText());
 	}
 
 	@Override
@@ -322,7 +351,25 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		        }
 			}
 		} else if (simulationEngineTabFolder.getSelection()[0].getText().equals("PRISM")) {
-			// TODO
+			if (!textModuleFiles.getText().isBlank()) {
+				String[] moduleFiles = textModuleFiles.getText().split(";");
+				for (String moduleFile : moduleFiles) {
+					if (!TabHelper.validateFilenameExtension(moduleFile, ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION)) {
+						setErrorMessage("Illegal extension for prism module file");
+						return false;
+					}
+				}
+			}
+			
+			if (!textPropertyFiles.getText().isBlank()) {
+				String[] propertyFiles = textPropertyFiles.getText().split(";");
+				for (String propertyFile : propertyFiles) {
+					if (!TabHelper.validateFilenameExtension(propertyFile, ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION)) {
+						setErrorMessage("Illegal extension for prism property file");
+						return false;
+					}
+				}
+			}
 		}
 		
 		return true;
