@@ -8,23 +8,22 @@ import org.palladiosimulator.metricspec.MetricDescription;
 import org.palladiosimulator.metricspec.MetricSetDescription;
 import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
-import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
-public class SimulatedMeasurementSpecificationProvider {
+public class PcmMeasurementSpecificationProvider {
 	private static final String RESPONSE_TIME_MONITOR = "System Response Time";
 	private static final String SYSTEM_EXECUTION_RESULTTYPE = "System ExecutionResultType";
 
 	private final Experiment experiment;
 
-	public SimulatedMeasurementSpecificationProvider(Experiment experiment) {
+	public PcmMeasurementSpecificationProvider(Experiment experiment) {
 		this.experiment = experiment;
 	}
 
-	public SimulatedMeasurementSpecification getSpecification(String monitorName) {
+	public PcmMeasurementSpecification getSpecification(String monitorName) {
 		return switch (monitorName) {
 			case RESPONSE_TIME_MONITOR -> buildResponseTimeSpec();
 			case SYSTEM_EXECUTION_RESULTTYPE -> buildSystemExecutionResultTypeSpec();

@@ -82,13 +82,18 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private FaultTolerantLoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+			List<PcmMeasurementSpecification> pcmSpecs) {
 		super(experiment, simulationParameters);
 		this.dbn = dbn;
+		this.pcmSpecs = pcmSpecs;
+		
+		/*
 		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec(),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR),
 								 	 buildSystemExecutionResultTypeSpec(SYSTEM_EXECUTION_RESULTTYPE));
+								 	 */
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
 		
 		this.responseTimeMeasurementSpec = pcmSpecs.get(0);
@@ -111,9 +116,10 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
 	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
-	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+	    		List<PcmMeasurementSpecification> pcmSpecs) {
 	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
 	    }
 	}
 

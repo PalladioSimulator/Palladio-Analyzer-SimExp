@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.emf.ecore,
  org.palladiosimulator.envdyn.model
 Automatic-Module-Name: org.palladiosimulator.simexp.model.io
 Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: org.palladiosimulator.simexp.model.io

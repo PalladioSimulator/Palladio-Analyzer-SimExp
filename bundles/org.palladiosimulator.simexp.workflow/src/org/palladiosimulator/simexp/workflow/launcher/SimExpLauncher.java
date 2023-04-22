@@ -26,11 +26,13 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
-import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
-import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
-import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
+import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.pcm.examples.performability.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -61,7 +63,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
-        
         try {
         	ResourceSet rs = new ResourceSetImpl();
         	
@@ -93,9 +94,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             BayesianNetwork bn = new BayesianNetwork(null, gpn, probabilityDistributionFactory);
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
+            
+            PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
+            List<PcmMeasurementSpecification> pcmSpecs = config.getMonitorNames()
+            		.stream()
+            		.map(provider::getSpecification)
+            		.toList();
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, 
-            		probabilityDistributionFactory, parameterParser, probDistRepoLookup, config.getSimulationParameters());
+            		probabilityDistributionFactory, parameterParser, probDistRepoLookup, config.getSimulationParameters(), pcmSpecs);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -112,13 +119,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     
     private SimulationExecutor createSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
     		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
-    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+    		List<PcmMeasurementSpecification> pcmSpecs) {
 //      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
 //      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
 //    	DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
         return factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
-        		probDistRepoLookup, simulationParameters);
+        		probDistRepoLookup, simulationParameters, pcmSpecs);
     }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {

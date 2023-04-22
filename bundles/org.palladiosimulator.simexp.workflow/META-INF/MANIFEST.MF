@@ -29,4 +29,6 @@ Import-Package: org.palladiosimulator.core.simulation,
  org.palladiosimulator.envdyn.environment.dynamicmodel,
  org.palladiosimulator.envdyn.environment.staticmodel,
  org.palladiosimulator.experimentautomation.experiments,
+ org.palladiosimulator.simexp.model.io,
+ org.palladiosimulator.simexp.pcm.examples.performability,
  tools.mdsd.probdist.distributiontype
