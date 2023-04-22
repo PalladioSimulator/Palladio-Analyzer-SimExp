@@ -83,7 +83,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
             DynamicBehaviourExtension dbe = dbeLoader.load(rs, dynamicModelURI);
             
-
             ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
             IProbabilityDistributionRegistry probabilityDistributionRegistry = defaultProbabilityDistributionFactory;

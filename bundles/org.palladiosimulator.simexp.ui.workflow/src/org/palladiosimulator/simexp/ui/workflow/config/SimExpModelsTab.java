@@ -8,15 +8,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab {
+public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
     
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
@@ -27,6 +29,8 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
     private Text textAllocation;
     private Text textUsage;
     private Text textExperiments;
+    private Text textStaticModel;
+	private Text textDynamicModel;
     
     private Composite container;
     private ModifyListener modifyListener;  
@@ -43,18 +47,40 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         setControl(container);
         container.setLayout(new GridLayout());
         
+        Group architecturalModelsGroup = new Group(container, SWT.NONE);
+        architecturalModelsGroup.setText("Architectural Models");
+        architecturalModelsGroup.setLayout(new GridLayout());
+        architecturalModelsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         
-        textAllocation = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Allocation File",
-                ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        textAllocation = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "Allocation File",
+                ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION, textAllocation, 
+                "Select Allocation File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
-        textUsage = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Usage File",
-                ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        textUsage = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "Usage File",
+                ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION, textUsage, 
+                "Select Usage File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
-        textExperiments = new Text(container, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(container, modifyListener, "Experiments File",
-                ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        textExperiments = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "Experiments File",
+                ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, 
+                "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
+        Group environmentalModelsGroup = new Group(container, SWT.NONE);
+        environmentalModelsGroup.setText("Environmental Models");
+        environmentalModelsGroup.setLayout(new GridLayout());
+        environmentalModelsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        
+        textStaticModel = new Text(environmentalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(environmentalModelsGroup, modifyListener, "Static Model File", 
+        		ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION, textStaticModel, 
+        		"Select Static Model File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
+        textDynamicModel = new Text(environmentalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(environmentalModelsGroup, modifyListener, "Dynamic Model File", 
+        		ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION, textDynamicModel, 
+        		"Select Dynamic Model File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
     }
 
     @Override
@@ -81,6 +107,18 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(), "Experiments File", e.getMessage());
         }
+        
+        try {
+            textStaticModel.setText(configuration.getAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE, ModelFileTypeConstants.EMPTY_STRING));
+        } catch (CoreException e) {
+            LaunchConfigPlugin.errorLogger(getName(),"Static Model File", e.getMessage());
+        }
+		
+		try {
+            textDynamicModel.setText(configuration.getAttribute(ModelFileTypeConstants.DYNAMIC_MODEL_FILE, ModelFileTypeConstants.EMPTY_STRING));
+        } catch (CoreException e) {
+            LaunchConfigPlugin.errorLogger(getName(),"Dynamic Model File", e.getMessage());
+        }
     }
 
     @Override
@@ -88,6 +126,8 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
         configuration.setAttribute(ModelFileTypeConstants.ALLOCATION_FILE, textAllocation.getText());
         configuration.setAttribute(ModelFileTypeConstants.USAGE_FILE, textUsage.getText());
         configuration.setAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, textExperiments.getText());
+        configuration.setAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE, textStaticModel.getText());
+		configuration.setAttribute(ModelFileTypeConstants.DYNAMIC_MODEL_FILE, textDynamicModel.getText());
     }
     
     
@@ -110,6 +150,16 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
             return false;
         }
         
+        if (!TabHelper.validateFilenameExtension(textStaticModel.getText(), ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION)) {
+            setErrorMessage("Static Model is missing.");
+            return false;
+        }
+		
+		if (!TabHelper.validateFilenameExtension(textDynamicModel.getText(), ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION)) {
+            setErrorMessage("Dynamic Model is missing.");
+            return false;
+        }
+        
         return true;
     }
     
@@ -120,11 +170,11 @@ public class SimExpArchitectureModelsTab extends AbstractLaunchConfigurationTab 
 
     @Override
     public String getName() {
-        return "Architecture Model(s)";
+        return "Simulation Model(s)";
     }
     
     @Override
     public String getId() {
-        return "org.palladiosimulator.simexp.ui.workflow.config.SimExpArchitectureModelsTab";
+        return "org.palladiosimulator.simexp.ui.workflow.config.SimExpModelsTab";
     }
 }
