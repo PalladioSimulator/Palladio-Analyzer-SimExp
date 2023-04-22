@@ -121,7 +121,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 			public void widgetSelected(SelectionEvent e) {
 				setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("ResponseTime");
+                monitors.setItems("System Response Time");
 			}
 		});
 
@@ -132,7 +132,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 			public void widgetSelected(SelectionEvent e) {
 				setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("ResponseTime");
+                monitors.setItems("System Response Time");
 			}
 		});
 		
@@ -143,7 +143,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 			public void widgetSelected(SelectionEvent e) {
 				setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("ResponseTime", "SystemExecutionResultType");
+                monitors.setItems("System Response Time", "System ExecutionResultType");
 			}
 		});
 		
