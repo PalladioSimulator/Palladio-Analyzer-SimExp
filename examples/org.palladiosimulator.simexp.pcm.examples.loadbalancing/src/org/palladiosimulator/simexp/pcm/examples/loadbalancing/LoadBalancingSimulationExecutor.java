@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +64,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+			List<PcmMeasurementSpecification> pcmSpecs) {
 		super(experiment, simulationParameters);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 		
@@ -78,7 +78,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		    this.dbn = dbn;
 		}
 		
-		this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
+		this.pcmSpecs = pcmSpecs;
+		//this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
 								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
 								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
 
@@ -91,11 +92,11 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
 	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
-	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
-	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
-	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
+	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
+	    		SimulationParameterConfiguration simulationParameters, List<PcmMeasurementSpecification> pcmSpecs) {
 	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
 	    }
 	}
 

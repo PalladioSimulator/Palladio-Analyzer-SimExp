@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.simexp.pcm.examples.executor.DynamicBehaviourExtensionLoader;
+import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 
 public class DynamicBehaviourExtensionLoaderTest {
 	
