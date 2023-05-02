@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -105,7 +107,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 	
 	private void createPrismTab() {
 		TabItem prismTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-        prismTab.setText("PRISM");
+        prismTab.setText(SimulationConstants.SIMULATION_ENGINE_PRISM);
         
         final Composite prismContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
         prismContainer.setLayout(new GridLayout());
@@ -124,18 +126,18 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 	
 	private void createPcmTab() {
 		TabItem pcmTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-		pcmTab.setText("PCM");
+		pcmTab.setText(SimulationConstants.SIMULATION_ENGINE_PCM);
 		
 		final Composite pcmContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
 		pcmContainer.setLayout(new GridLayout());
 		pcmTab.setControl(pcmContainer);
 		
 		final Group qualityObjectivesGroup = new Group(pcmContainer, SWT.NONE);
-		qualityObjectivesGroup.setText("Quality objectives");
+		qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
 		qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 
 		buttonPerformance = new Button(qualityObjectivesGroup, SWT.RADIO);
-		buttonPerformance.setText("Performance");
+		buttonPerformance.setText(SimulationConstants.PERFORMANCE);
 		buttonPerformance.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -146,7 +148,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		});
 
 		buttonReliability = new Button(qualityObjectivesGroup, SWT.RADIO);
-		buttonReliability.setText("Reliability");
+		buttonReliability.setText(SimulationConstants.RELIABILITY);
 		buttonReliability.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -157,7 +159,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		});
 		
 		buttonPerformability = new Button(qualityObjectivesGroup, SWT.RADIO);
-		buttonPerformability.setText("Performability");
+		buttonPerformability.setText(SimulationConstants.PERFORMABILITY);
 		buttonPerformability.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -201,10 +203,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		ctrl.setEnabled(enabled);
 		
 		if (ctrl instanceof Composite cmp) {
-			if (cmp instanceof Group group) {
-				
-			}
-			
 			for (Control c : cmp.getChildren())
 				recursiveSetEnabled(c, enabled);
 			}
@@ -239,37 +237,33 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         }
 		
 		try {
-			int selectedEngine = configuration.getAttribute("Simulation Engine", 0);
-			simulationEngineTabFolder.setSelection(selectedEngine);
+			String selectedEngine = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE, SimulationConstants.DEFAULT_SIMULATION_ENGINE);
+			Arrays.stream(simulationEngineTabFolder.getItems())
+					.filter(item -> item.getText().equals(selectedEngine))
+					.findAny()
+					.ifPresent(simulationEngineTabFolder::setSelection);
 		} catch (CoreException e) {
 			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
 		}
 		
 		try {
-			boolean performanceSelected = configuration.getAttribute("Performance", true);
-			buttonPerformance.setSelection(performanceSelected);
-			if (performanceSelected) {
-				monitors.setItems("ResponseTime");
-			}
-		} catch (CoreException e) {
-			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
-		}
-		
-		try {
-			boolean reliabilitySelected = configuration.getAttribute("Reliability", false);
-			buttonReliability.setSelection(reliabilitySelected);
-			if (reliabilitySelected) {
-				monitors.setItems("ResponseTime");
-			}
-		} catch (CoreException e) {
-			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
-		}
-		
-		try {
-			boolean performabilitySelected = configuration.getAttribute("Performability", false);
-			buttonPerformability.setSelection(performabilitySelected);
-			if (performabilitySelected) {
-				monitors.setItems("ResponseTime", "SystemExecutionResultType");
+			String selectedQualityObjective = configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE, SimulationConstants.DEFAULT_QUALITY_OBJECTIVE);
+			
+			switch (selectedQualityObjective) {
+				case SimulationConstants.PERFORMANCE -> {
+					buttonPerformance.setSelection(true);
+					monitors.setItems("System Response Time");
+				}
+				
+				case SimulationConstants.RELIABILITY -> {
+					buttonReliability.setSelection(true);
+					monitors.setItems("System Response Time");
+				}
+				
+				case SimulationConstants.PERFORMABILITY -> {
+					buttonPerformability.setSelection(true);
+					monitors.setItems("System Response Time", "System ExecutionResultType");
+				}
 			}
 		} catch (CoreException e) {
 			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
@@ -309,10 +303,12 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
 		configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
 		
-		configuration.setAttribute("Simulation Engine", simulationEngineTabFolder.getSelectionIndex());
-		configuration.setAttribute("Performance", buttonPerformance.getSelection());
-		configuration.setAttribute("Reliability", buttonReliability.getSelection());
-		configuration.setAttribute("Performability", buttonPerformability.getSelection());
+		configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE, simulationEngineTabFolder.getSelection()[0].getText());
+		configuration.setAttribute(SimulationConstants.QUALITY_OBJECTIVE, 
+				  buttonPerformability.getSelection() ? SimulationConstants.PERFORMANCE
+				: buttonReliability.getSelection() ? SimulationConstants.RELIABILITY
+			    : buttonPerformability.getSelection() ? SimulationConstants.PERFORMABILITY
+			    : null);
 		
 		configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
 		configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE, textFailureScenarioModel.getText());
@@ -363,7 +359,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 			return false;
 		}
 		
-		if (simulationEngineTabFolder.getSelection()[0].getText().equals("PCM")) {
+		if (simulationEngineTabFolder.getSelection()[0].getText().equals(SimulationConstants.SIMULATION_ENGINE_PCM)) {
 			if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(), ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
 	            setErrorMessage("Monitor Repository is missing.");
 	            return false;
@@ -375,7 +371,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		            return false;
 		        }
 			}
-		} else if (simulationEngineTabFolder.getSelection()[0].getText().equals("PRISM")) {
+		} else if (simulationEngineTabFolder.getSelection()[0].getText().equals(SimulationConstants.SIMULATION_ENGINE_PRISM)) {
 			if (!textModuleFiles.getText().isBlank()) {
 				String[] moduleFiles = textModuleFiles.getText().split(";");
 				for (String moduleFile : moduleFiles) {

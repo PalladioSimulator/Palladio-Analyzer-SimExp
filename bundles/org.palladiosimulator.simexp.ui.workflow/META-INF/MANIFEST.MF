@@ -11,6 +11,3 @@ Require-Bundle: org.eclipse.debug.ui;bundle-version="3.14.500",
  org.palladiosimulator.analyzer.workflow;bundle-version="4.3.0",
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
  org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0"
-Import-Package: org.palladiosimulator.monitorrepository,
- org.palladiosimulator.pcm.core.entity,
- org.palladiosimulator.simexp.pcm.examples.executor

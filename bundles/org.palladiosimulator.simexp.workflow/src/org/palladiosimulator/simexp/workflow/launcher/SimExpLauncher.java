@@ -30,7 +30,7 @@ import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
-import org.palladiosimulator.simexp.pcm.examples.performability.PcmMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.pcm.examples.measurements.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
