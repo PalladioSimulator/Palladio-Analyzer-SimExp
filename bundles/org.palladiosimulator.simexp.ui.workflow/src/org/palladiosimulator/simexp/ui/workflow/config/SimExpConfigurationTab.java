@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
@@ -179,11 +180,35 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         monitors = new List(monitorsGroup, SWT.MULTI | SWT.BORDER);
         monitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        textFailureScenarioModel = new Text(pcmContainer, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(pcmContainer, modifyListener, "Failure Scenario File",
+        final Composite failureComposite = new Composite(pcmContainer, SWT.NONE);
+        failureComposite.setLayout(new GridLayout());
+        failureComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false));
+        
+        textFailureScenarioModel = new Text(failureComposite, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
                 ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel, 
                 "Select Failure Scenario File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
+        buttonPerformability.addSelectionListener(new SelectionAdapter() {
+        	@Override
+			public void widgetSelected(SelectionEvent e) {
+				recursiveSetEnabled(failureComposite, buttonPerformability.getSelection());
+			}
+		});
 	}
+	
+	private void recursiveSetEnabled(Control ctrl, boolean enabled) {
+		ctrl.setEnabled(enabled);
+		
+		if (ctrl instanceof Composite cmp) {
+			if (cmp instanceof Group group) {
+				
+			}
+			
+			for (Control c : cmp.getChildren())
+				recursiveSetEnabled(c, enabled);
+			}
+		}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
