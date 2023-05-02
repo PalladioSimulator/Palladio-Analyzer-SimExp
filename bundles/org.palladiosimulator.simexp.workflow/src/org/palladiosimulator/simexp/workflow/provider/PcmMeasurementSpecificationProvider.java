@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.measurements.provider;
+package org.palladiosimulator.simexp.workflow.provider;
 
 import java.util.stream.Stream;
 

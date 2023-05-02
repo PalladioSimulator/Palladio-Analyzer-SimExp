@@ -53,7 +53,6 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	private final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
 			+ "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
-	private final static String SIMULATION_ID = "DeltaIoT";
 	private final static String PRISM_FOLDER = "prism";
 	private final static String PRISM_PACKET_LOSS_MODULE_NAME = "PacketLoss.prism";
 	private final static String PRISM_PACKET_LOSS_PROPERTY_NAME = "PacketLoss.props";
@@ -67,7 +66,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
-	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
+			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
 		super(experiment, simulationParameters);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 
@@ -142,8 +143,12 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	
 	
 	public static final class DeltaIoTSimulationExecutorFactory {
-	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
-	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters);
+	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
+	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
+	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
+	    		SimulationParameterConfiguration simulationParameters) {
+	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
+	        		parameterParser, probDistRepoLookup, simulationParameters);
 	    }
 	}
 	
@@ -151,9 +156,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID,
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(),
 				reconfSelectionPolicy.getId());
-		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
+		Double totalReward = SimulatedExperienceEvaluator.of(simulationParameters.getSimulationID(), sampleSpaceId).computeTotalReward();
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
 		LOGGER.info("***********************************************************************");
@@ -169,9 +174,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.addExperienceSimulationRunner(getSimualtionRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2)
-					.andNumberOfSimulationsPerRun(100)
+					.withSimulationID(simulationParameters.getSimulationID()) // DeltaIoT
+					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) // 2
+					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) // 100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()

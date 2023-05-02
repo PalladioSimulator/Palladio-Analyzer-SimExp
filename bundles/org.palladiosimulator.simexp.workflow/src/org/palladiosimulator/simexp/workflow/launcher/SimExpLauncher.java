@@ -30,7 +30,8 @@ import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
-import org.palladiosimulator.simexp.pcm.examples.measurements.provider.PcmMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.RobotCognitionSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
@@ -39,6 +40,7 @@ import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowC
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
+import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
@@ -95,14 +97,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             BayesianNetwork bn = new BayesianNetwork(null, gpn, probabilityDistributionFactory);
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
             
-            PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
-            List<PcmMeasurementSpecification> pcmSpecs = config.getMonitorNames()
-            		.stream()
-            		.map(provider::getSpecification)
-            		.toList();
-
-            SimulationExecutor simulationExecutor = createSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, 
-            		probabilityDistributionFactory, parameterParser, probDistRepoLookup, config.getSimulationParameters(), pcmSpecs);
+            SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(), config.getQualityObjective(), 
+            		experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, 
+            		config.getSimulationParameters(), config.getMonitorNames());
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -117,20 +114,52 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
-    private SimulationExecutor createSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
-    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
-    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-    		List<PcmMeasurementSpecification> pcmSpecs) {
-//      LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
-//      SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
-        FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-//    	DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
-        return factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
-        		probDistRepoLookup, simulationParameters, pcmSpecs);
+    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment, 
+    		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+    		List<String> monitorNames) {
+    	
+    	return switch (simulationEngine) {
+    		case SimulationConstants.SIMULATION_ENGINE_PCM ->{
+    			PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
+    			List<PcmMeasurementSpecification> pcmSpecs = monitorNames
+    		        		.stream()
+    		        		.map(provider::getSpecification)
+    		        		.toList();
+    			 
+    			yield switch (qualityObjective) {
+     				case SimulationConstants.PERFORMANCE -> {
+     					LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory();
+     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     				}
+     			
+     				case SimulationConstants.RELIABILITY -> {
+     					RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory();
+     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     				}
+     			
+     				case SimulationConstants.PERFORMABILITY -> {
+     					FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
+     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     				}
+     			
+     				default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
+    			};
+    		}
+    		
+    		case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
+    			yield null;
+    		}
+    		
+    		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
+    	};
     }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
-
         SimExpWorkflowConfiguration workflowConfiguration = null;
         try {
             Map<String, Object> launchConfigurationParams = configuration.getAttributes();
@@ -141,6 +170,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                             String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
                 }
             }
+            
+            String simulationEngine = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
+            String qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
             
 			ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
             		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
@@ -161,13 +193,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
             		
-
-            workflowConfiguration = new SimExpWorkflowConfiguration(architecturalModels, monitors, environmentalModels, simulationParameters);
-
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective, architecturalModels, monitors, environmentalModels, simulationParameters);
         } catch (CoreException e) {
-            LOGGER.error(
-                    "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
-                    e);
+            LOGGER.error("Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration", e);
         }
 
         return workflowConfiguration;

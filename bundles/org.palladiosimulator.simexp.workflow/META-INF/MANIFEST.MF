@@ -7,7 +7,6 @@ Automatic-Module-Name: org.palladiosimulator.simexp.workflow
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.palladiosimulator.analyzer.workflow,
  de.uka.ipd.sdq.workflow.mdsd;bundle-version="4.3.0",
- org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.simexp.commons.constants,
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
  org.palladiosimulator.simexp.distribution,
@@ -27,5 +26,8 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.experimentautomation,
  org.palladiosimulator.envdyn.model,
  org.palladiosimulator.envdyn.api,
- org.palladiosimulator.simexp.pcm.examples.performability
+ org.palladiosimulator.simexp.pcm.examples,
+ org.palladiosimulator.simexp.pcm.examples.performability,
+ org.palladiosimulator.metricspec,
+ org.palladiosimulator.simexp.pcm.examples.hri
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

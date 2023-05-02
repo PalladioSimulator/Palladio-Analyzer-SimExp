@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,7 +61,6 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	private final static String CPU_SERVER_1_MONITOR = "cpuServer1";
 	private final static String CPU_SERVER_2_MONITOR = "cpuServer2";
     private final static String SYSTEM_EXECUTION_RESULTTYPE = "System ExecutionResultType";
-	private final static String SIMULATION_ID = "LoadBalancing";
 	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
     private static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
@@ -125,8 +123,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-		TotalRewardCalculation evaluator = new PerformabilityEvaluator(SIMULATION_ID, sampleSpaceId);
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfSelectionPolicy.getId());
+		TotalRewardCalculation evaluator = new PerformabilityEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		double computeTotalReward = evaluator.computeTotalReward();
         LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), computeTotalReward));
@@ -142,7 +140,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(simulationParameters.getSimulationID())
+					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())

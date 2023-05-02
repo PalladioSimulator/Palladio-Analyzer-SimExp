@@ -53,7 +53,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static String CPU_SERVER_1_MONITOR = "cpuServer1";
 	private final static String CPU_SERVER_2_MONITOR = "cpuServer2";
-	private final static String SIMULATION_ID = "LoadBalancing";
 	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
 	private final DynamicBayesianNetwork dbn;
@@ -102,8 +101,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfSelectionPolicy.getId());
-		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfSelectionPolicy.getId());
+		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(simulationParameters.getSimulationID(), sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
@@ -118,7 +117,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(simulationParameters.getSimulationID())
+					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())

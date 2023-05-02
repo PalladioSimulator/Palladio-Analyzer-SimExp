@@ -13,6 +13,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * information
      * 
      */
+	private final String simulationEngine;
+	private final String qualityObjective;
     private final URI experimentsFile;
     private final URI staticModelFile;
     private final URI dynamicModelFile;
@@ -20,7 +22,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameterConfiguration simulationParameters;
 
-    public SimExpWorkflowConfiguration(ArchitecturalModelsWorkflowConfiguration architecturalModels,
+    public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective, 
+    		ArchitecturalModelsWorkflowConfiguration architecturalModels,
     		MonitorConfiguration monitors,
     		EnvironmentalModelsWorkflowConfiguration environmentalModels,
     		SimulationParameterConfiguration simulationParameters) {
@@ -32,6 +35,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * refactoring for performability analysis it is current not required; therefore pass empty
          * list in order to successfully execute workflow
          */
+    	this.simulationEngine = simulationEngine;
+    	this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
@@ -54,6 +59,13 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         // FIXME: check what shall be done here
     }
 
+    public String getSimulationEngine() {
+		return simulationEngine;
+	}
+    
+    public String getQualityObjective() {
+		return qualityObjective;
+	}
     
     public URI getExperimentsURI() {
         return experimentsFile;

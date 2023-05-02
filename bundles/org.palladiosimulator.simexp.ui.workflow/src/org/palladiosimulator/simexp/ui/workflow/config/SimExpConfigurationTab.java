@@ -141,9 +141,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		buttonPerformance.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (buttonPerformance.getSelection()) {
+					monitors.setItems("System Response Time");
+				}
 				setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("System Response Time");
 			}
 		});
 
@@ -152,9 +154,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		buttonReliability.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (buttonReliability.getSelection()) {
+					monitors.setItems("System Response Time");
+				}
 				setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("System Response Time");
 			}
 		});
 		
@@ -163,9 +167,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		buttonPerformability.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setDirty(true);
+                if (buttonPerformability.getSelection()) {
+                	monitors.setItems("System Response Time", "System ExecutionResultType");
+                }
+                setDirty(true);
                 updateLaunchConfigurationDialog();
-                monitors.setItems("System Response Time", "System ExecutionResultType");
 			}
 		});
 		
@@ -245,26 +251,17 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		} catch (CoreException e) {
 			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
 		}
-		
+
 		try {
 			String selectedQualityObjective = configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE, SimulationConstants.DEFAULT_QUALITY_OBJECTIVE);
+			buttonPerformance.setSelection(selectedQualityObjective.equals(SimulationConstants.PERFORMANCE));
+			buttonPerformability.notifyListeners(SWT.Selection, null);
 			
-			switch (selectedQualityObjective) {
-				case SimulationConstants.PERFORMANCE -> {
-					buttonPerformance.setSelection(true);
-					monitors.setItems("System Response Time");
-				}
-				
-				case SimulationConstants.RELIABILITY -> {
-					buttonReliability.setSelection(true);
-					monitors.setItems("System Response Time");
-				}
-				
-				case SimulationConstants.PERFORMABILITY -> {
-					buttonPerformability.setSelection(true);
-					monitors.setItems("System Response Time", "System ExecutionResultType");
-				}
-			}
+			buttonReliability.setSelection(selectedQualityObjective.equals(SimulationConstants.RELIABILITY));
+			buttonReliability.notifyListeners(SWT.Selection, null);
+			
+			buttonPerformability.setSelection(selectedQualityObjective.equals(SimulationConstants.PERFORMABILITY));
+			buttonPerformability.notifyListeners(SWT.Selection, null);
 		} catch (CoreException e) {
 			LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
 		}
@@ -305,7 +302,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		
 		configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE, simulationEngineTabFolder.getSelection()[0].getText());
 		configuration.setAttribute(SimulationConstants.QUALITY_OBJECTIVE, 
-				  buttonPerformability.getSelection() ? SimulationConstants.PERFORMANCE
+				  buttonPerformance.getSelection() ? SimulationConstants.PERFORMANCE
 				: buttonReliability.getSelection() ? SimulationConstants.RELIABILITY
 			    : buttonPerformability.getSelection() ? SimulationConstants.PERFORMABILITY
 			    : null);
@@ -371,12 +368,13 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		            return false;
 		        }
 			}
+			
 		} else if (simulationEngineTabFolder.getSelection()[0].getText().equals(SimulationConstants.SIMULATION_ENGINE_PRISM)) {
 			if (!textModuleFiles.getText().isBlank()) {
 				String[] moduleFiles = textModuleFiles.getText().split(";");
 				for (String moduleFile : moduleFiles) {
 					if (!TabHelper.validateFilenameExtension(moduleFile, ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION)) {
-						setErrorMessage("Illegal extension for prism module file");
+						setErrorMessage("Invalid prism module file");
 						return false;
 					}
 				}
@@ -386,7 +384,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 				String[] propertyFiles = textPropertyFiles.getText().split(";");
 				for (String propertyFile : propertyFiles) {
 					if (!TabHelper.validateFilenameExtension(propertyFile, ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION)) {
-						setErrorMessage("Illegal extension for prism property file");
+						setErrorMessage("Invalid prism property file");
 						return false;
 					}
 				}
