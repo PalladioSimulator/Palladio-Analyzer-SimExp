@@ -19,9 +19,6 @@ Require-Bundle: org.apache.log4j,
  org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
  org.palladiosimulator.solver;bundle-version="5.0.0",
  org.palladiosimulator.pcm.query,
- com.google.guava;bundle-version="27.1.0"
+ com.google.guava;bundle-version="27.1.0",
+ org.palladiosimulator.experimentautomation
 Export-Package: org.palladiosimulator.simexp.pcm.examples.performability
-Import-Package: org.palladiosimulator.edp2.models.measuringpoint,
- org.palladiosimulator.experimentautomation.experiments,
- org.palladiosimulator.metricspec,
- org.palladiosimulator.monitorrepository
