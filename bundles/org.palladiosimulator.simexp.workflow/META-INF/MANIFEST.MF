@@ -29,5 +29,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.simexp.pcm.examples.performability,
  org.palladiosimulator.metricspec,
- org.palladiosimulator.simexp.pcm.examples.hri
+ org.palladiosimulator.simexp.pcm.examples.hri,
+ org.palladiosimulator.simexp.pcm.prism
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

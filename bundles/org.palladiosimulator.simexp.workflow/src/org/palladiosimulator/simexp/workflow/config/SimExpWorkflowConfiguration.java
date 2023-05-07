@@ -19,12 +19,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final URI staticModelFile;
     private final URI dynamicModelFile;
     private final URI monitorRepositoryFile;
+    private final List<URI> propertyFiles;
+    private final List<URI> moduleFiles;
     private final List<String> monitorNames;
     private final SimulationParameterConfiguration simulationParameters;
 
     public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective, 
     		ArchitecturalModelsWorkflowConfiguration architecturalModels,
     		MonitorConfiguration monitors,
+    		PrismConfiguration prismConfiguration,
     		EnvironmentalModelsWorkflowConfiguration environmentalModels,
     		SimulationParameterConfiguration simulationParameters) {
 
@@ -44,6 +47,16 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
         this.monitorRepositoryFile = URI.createURI(monitors.getMonitorRepositoryFile());
         this.monitorNames = monitors.getMonitors();
+        
+        this.propertyFiles = prismConfiguration.getPropertyFiles()
+        		.stream()
+        		.map(URI::createURI)
+        		.toList();
+        this.moduleFiles = prismConfiguration.getModuleFIles()
+        		.stream()
+        		.map(URI::createURI)
+        		.toList();
+        
         this.simulationParameters = simulationParameters;
     }
 
@@ -85,6 +98,14 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     
     public List<String> getMonitorNames() {
     	return List.copyOf(monitorNames);
+    }
+    
+    public List<URI> getPropertyFiles() {
+    	return List.copyOf(propertyFiles);
+    }
+    
+    public List<URI> getModuleFiles() {
+    	return List.copyOf(moduleFiles);
     }
     
     public SimulationParameterConfiguration getSimulationParameters() {

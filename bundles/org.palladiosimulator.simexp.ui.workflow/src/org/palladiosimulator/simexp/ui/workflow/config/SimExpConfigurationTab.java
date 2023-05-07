@@ -311,8 +311,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(ModelFileTypeConstants.MONITORS, Arrays.asList(monitors.getItems()));
 		configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
 		configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE, textFailureScenarioModel.getText());
-		configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, textModuleFiles.getText());
-		configuration.setAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE, textPropertyFiles.getText());
+		configuration.setAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE, Arrays.asList(textPropertyFiles.getText().split(";")));
+		configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, Arrays.asList(textModuleFiles.getText().split(";")));
 	}
 
 	@Override

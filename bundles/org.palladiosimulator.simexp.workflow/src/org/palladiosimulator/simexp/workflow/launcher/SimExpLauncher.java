@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -30,17 +31,21 @@ import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
+import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
@@ -99,7 +104,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(), config.getQualityObjective(), 
             		experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, 
-            		config.getSimulationParameters(), config.getMonitorNames());
+            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles());
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -118,7 +123,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
     		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-    		List<String> monitorNames) {
+    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
     	
     	return switch (simulationEngine) {
     		case SimulationConstants.SIMULATION_ENGINE_PCM ->{
@@ -152,7 +157,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		}
     		
     		case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
-    			yield null;
+    			PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
+    			List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
+    					.range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
+    					.mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
+    					.toList();
+    			
+    			DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
+    			yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
+    					probDistRepoLookup, simulationParameters, prismSpecs);
     		}
     		
     		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
@@ -183,6 +196,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             MonitorConfiguration monitors = new MonitorConfiguration(
             		(String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
             		(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
+			
+			@SuppressWarnings("unchecked")
+			PrismConfiguration prismConfig = new PrismConfiguration(
+					(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_PROPERTY_FILE),
+					(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_MODULE_FILE));
             
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
             		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
@@ -193,7 +211,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
             		
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective, architecturalModels, monitors, environmentalModels, simulationParameters);
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective, architecturalModels, monitors, prismConfig, 
+            		environmentalModels, simulationParameters);
         } catch (CoreException e) {
             LOGGER.error("Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration", e);
         }
