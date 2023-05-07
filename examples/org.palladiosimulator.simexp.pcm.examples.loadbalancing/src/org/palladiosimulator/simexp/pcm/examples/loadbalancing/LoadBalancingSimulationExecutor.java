@@ -3,14 +3,11 @@ package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.monitorrepository.MeasurementSpecification;
-import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -26,11 +23,9 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
-import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 import com.google.common.collect.Sets;
@@ -50,10 +45,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	private final static double THRESHOLD_UTIL_1 = 0.7;
 	private final static double THRESHOLD_UTIL_2 = 0.5;
-	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
-	private final static String CPU_SERVER_1_MONITOR = "cpuServer1";
-	private final static String CPU_SERVER_2_MONITOR = "cpuServer2";
-	private final static Threshold STEADY_STATE_EVALUATOR = Threshold.lessThan(0.1);
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
@@ -78,10 +69,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		}
 		
 		this.pcmSpecs = pcmSpecs;
-		//this.pcmSpecs = Arrays.asList(buildResponseTimeSpec());
-								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_1_MONITOR),
-								 	  //buildCpuUtilizationSpecOf(CPU_SERVER_2_MONITOR));
-
+		
 //		this.reconfSelectionPolicy = new NonAdaptiveStrategy();
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
 //		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
@@ -167,36 +155,4 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private Set<Reconfiguration<?>> getAllReconfigurations() {
 		return new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
 	}
-	
-	private PcmMeasurementSpecification buildResponseTimeSpec() {
-		Monitor rtMonitor = findMonitor(RESPONSE_TIME_MONITOR);
-		MeasurementSpecification rtSpec = rtMonitor.getMeasurementSpecifications().get(0);
-		return PcmMeasurementSpecification.newBuilder()
-				.withName(rtMonitor.getEntityName())
-				.measuredAt(rtMonitor.getMeasuringPoint())
-				.withMetric(rtSpec.getMetricDescription())
-				.useDefaultMeasurementAggregation()
-				.withOptionalSteadyStateEvaluator(STEADY_STATE_EVALUATOR)
-				.build();
-	}
-	
-	private PcmMeasurementSpecification buildCpuUtilizationSpecOf(String monitorName) {
-		Monitor monitor = findMonitor(monitorName);
-		MeasurementSpecification spec = monitor.getMeasurementSpecifications().get(1);
-		MeasurementAggregator utilizationAggregator = new UtilizationAggregator();
-        return PcmMeasurementSpecification.newBuilder()
-				.withName(monitor.getEntityName())
-				.measuredAt(monitor.getMeasuringPoint())
-				.withMetric(spec.getMetricDescription())
-				.aggregateMeasurementsBy(utilizationAggregator)
-				.build();
-	}
-
-	private Monitor findMonitor(String monitorName) {
-		Stream<Monitor> monitors = experiment.getInitialModel().getMonitorRepository().getMonitors().stream();
-		return monitors.filter(m -> m.getEntityName().equals(monitorName))
-					   .findFirst()
-					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
-	}
-	
 }
