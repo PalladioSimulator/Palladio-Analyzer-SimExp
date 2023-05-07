@@ -11,6 +11,5 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  net.bytebuddy.byte-buddy;bundle-version="1.10.9",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
- org.palladiosimulator.envdyn.model
-Import-Package: org.palladiosimulator.simexp.model.io,
- org.palladiosimulator.simexp.pcm.examples.executor
+ org.palladiosimulator.envdyn.model,
+ org.palladiosimulator.simexp.model.io
