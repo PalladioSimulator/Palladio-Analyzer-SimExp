@@ -254,8 +254,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
 		try {
 			String selectedQualityObjective = configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE, SimulationConstants.DEFAULT_QUALITY_OBJECTIVE);
+			
 			buttonPerformance.setSelection(selectedQualityObjective.equals(SimulationConstants.PERFORMANCE));
-			buttonPerformability.notifyListeners(SWT.Selection, null);
+			buttonPerformance.notifyListeners(SWT.Selection, null);
 			
 			buttonReliability.setSelection(selectedQualityObjective.equals(SimulationConstants.RELIABILITY));
 			buttonReliability.notifyListeners(SWT.Selection, null);
