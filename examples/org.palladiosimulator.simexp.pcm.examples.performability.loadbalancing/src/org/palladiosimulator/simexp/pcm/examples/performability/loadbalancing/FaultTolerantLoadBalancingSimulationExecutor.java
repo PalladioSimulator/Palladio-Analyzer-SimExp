@@ -95,7 +95,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 		this.strategyConfiguration = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID, LOAD_BALANCER_ID);
 		
 		this.responseTimeMeasurementSpec = pcmSpecs.get(0);
-        this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(3);
+        this.systemResultExectutionTypeTimeMeasurementSpec = pcmSpecs.get(1);
 		this.nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(strategyConfiguration, new RepositoryModelLookup()
 		        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
 

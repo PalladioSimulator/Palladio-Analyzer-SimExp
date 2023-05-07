@@ -308,6 +308,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 			    : buttonPerformability.getSelection() ? SimulationConstants.PERFORMABILITY
 			    : null);
 		
+		configuration.setAttribute(ModelFileTypeConstants.MONITORS, Arrays.asList(monitors.getItems()));
 		configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
 		configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE, textFailureScenarioModel.getText());
 		configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, textModuleFiles.getText());
