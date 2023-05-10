@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.executor;
+package org.palladiosimulator.simexp.model.io;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -7,8 +7,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 
-public class DynamicBehaviourExtensionLoader {
+public class DynamicBehaviourExtensionLoader implements ModelLoader<DynamicBehaviourExtension> {
 	
+	@Override
 	public DynamicBehaviourExtension load(ResourceSet rs, URI uri) {
 		Resource resource = rs.getResource(uri, true);
 		EList<EObject> contents = resource.getContents();

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.executor;
+package org.palladiosimulator.simexp.model.io;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;

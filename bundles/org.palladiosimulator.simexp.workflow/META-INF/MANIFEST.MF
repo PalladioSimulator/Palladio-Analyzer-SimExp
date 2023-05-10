@@ -7,7 +7,6 @@ Automatic-Module-Name: org.palladiosimulator.simexp.workflow
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.palladiosimulator.analyzer.workflow,
  de.uka.ipd.sdq.workflow.mdsd;bundle-version="4.3.0",
- org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.simexp.commons.constants,
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
  org.palladiosimulator.simexp.distribution,
@@ -22,11 +21,15 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  tools.mdsd.probdist.model.basic,
  tools.mdsd.probdist.model,
  org.palladiosimulator.simexp.pcm.examples.deltaiot,
- org.palladiosimulator.simexp.pcm
+ org.palladiosimulator.simexp.pcm,
+ org.palladiosimulator.simexp.model.io,
+ org.palladiosimulator.experimentautomation,
+ org.palladiosimulator.envdyn.model,
+ org.palladiosimulator.envdyn.api,
+ org.palladiosimulator.simexp.pcm.examples,
+ org.palladiosimulator.simexp.pcm.examples.performability,
+ org.palladiosimulator.metricspec,
+ org.palladiosimulator.simexp.pcm.examples.hri,
+ org.palladiosimulator.simexp.pcm.prism,
+ org.apache.commons.lang3;bundle-version="3.1.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
-Import-Package: org.palladiosimulator.core.simulation,
- org.palladiosimulator.envdyn.api.entity.bn,
- org.palladiosimulator.envdyn.environment.dynamicmodel,
- org.palladiosimulator.envdyn.environment.staticmodel,
- org.palladiosimulator.experimentautomation.experiments,
- tools.mdsd.probdist.distributiontype

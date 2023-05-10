@@ -18,7 +18,7 @@ import org.palladiosimulator.experimentautomation.application.tooladapter.simuli
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsPackage;
 import org.palladiosimulator.experimentautomation.experiments.util.ExperimentsResourceFactoryImpl;
-import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryLoader;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 
 public class ExperimentRepositoryLoaderTest {
     

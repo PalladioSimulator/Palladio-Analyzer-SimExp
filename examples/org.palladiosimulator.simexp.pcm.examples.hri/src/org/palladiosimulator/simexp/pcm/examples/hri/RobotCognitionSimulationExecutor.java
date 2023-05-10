@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -10,8 +10,6 @@ import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRe
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.monitorrepository.MeasurementSpecification;
-import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
@@ -67,12 +65,10 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public static final double UPPER_THRESHOLD_RT = 0.1;
 	public static final double LOWER_THRESHOLD_REL = 0.9;
 	
-	private final static String SIMULATION_ID = "RobotCognition";
-	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 	
 	private final DynamicBayesianNetwork dbn;
-	private final SimulatedMeasurementSpecification responseTimeSpec;
+	private final PcmMeasurementSpecification responseTimeSpec;
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final ReconfigurationStrategy<?> reconfigurationStrategy;
 	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
@@ -83,15 +79,15 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+			List<PcmMeasurementSpecification> pcmSpecs) {
 	    super(experiment, simulationParameters);
 		this.dbn = dbn;
-		this.responseTimeSpec = buildResponseTimeSpec();
+		this.responseTimeSpec = pcmSpecs.get(0);
 		this.reliabilitySpec = buildReliabilitySpec();
 		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
 		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
 		this.reconfigurationStrategy = new StaticSystemSimulation();
-		
 		
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
@@ -104,16 +100,17 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
-	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+	    		List<PcmMeasurementSpecification> pcmSpecs) {
 	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
 	    }
 	}
 	
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfigurationStrategy.getId());
-		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(SIMULATION_ID, sampleSpaceId);
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfigurationStrategy.getId());
+		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
@@ -129,7 +126,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(simulationParameters.getSimulationID())
+					.withSimulationID(simulationParameters.getSimulationID()) // RobotCognition
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //50
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
@@ -195,24 +192,6 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private SimulatedMeasurementSpecification buildReliabilitySpec() {
 		var usageScenario = experiment.getInitialModel().getUsageModel().getUsageScenario_UsageModel().get(0);
 		return new PcmRelSimulatedMeasurementSpec(usageScenario);
-	}
-
-	private SimulatedMeasurementSpecification buildResponseTimeSpec() {
-		Monitor rtMonitor = findMonitor(RESPONSE_TIME_MONITOR);
-		MeasurementSpecification rtSpec = rtMonitor.getMeasurementSpecifications().get(0);
-		return PcmMeasurementSpecification.newBuilder()
-				.withName(rtMonitor.getEntityName())
-				.measuredAt(rtMonitor.getMeasuringPoint())
-				.withMetric(rtSpec.getMetricDescription())
-				.useDefaultMeasurementAggregation()
-				.build();
-	}
-	
-	private Monitor findMonitor(String monitorName) {
-		Stream<Monitor> monitors = experiment.getInitialModel().getMonitorRepository().getMonitors().stream();
-		return monitors.filter(m -> m.getEntityName().equals(monitorName))
-					   .findFirst()
-					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
 	}
 	
 	private UncertaintyBasedReliabilityPredictionConfig createDefaultReliabilityConfig() {

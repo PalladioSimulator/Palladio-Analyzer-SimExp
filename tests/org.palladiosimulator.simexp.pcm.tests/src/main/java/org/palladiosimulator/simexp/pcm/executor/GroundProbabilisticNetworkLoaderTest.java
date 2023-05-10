@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.simexp.pcm.examples.executor.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
 
 public class GroundProbabilisticNetworkLoaderTest {
 	

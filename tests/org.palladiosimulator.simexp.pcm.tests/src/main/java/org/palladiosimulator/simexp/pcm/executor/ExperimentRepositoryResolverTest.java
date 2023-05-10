@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsFactory;
-import org.palladiosimulator.simexp.pcm.examples.executor.ExperimentRepositoryResolver;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 
 public class ExperimentRepositoryResolverTest {
 
