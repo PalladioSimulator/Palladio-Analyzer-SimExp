@@ -2,11 +2,13 @@ package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -185,32 +187,49 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
             
             String simulationEngine = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
-            String qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
-            
-			ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
-            		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
-            
-			@SuppressWarnings("unchecked")
-            MonitorConfiguration monitors = new MonitorConfiguration(
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE),
-            		(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
-			
-			@SuppressWarnings("unchecked")
-			PrismConfiguration prismConfig = new PrismConfiguration(
-					(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_PROPERTY_FILE),
-					(List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_MODULE_FILE));
-            
-            EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
             
             SimulationParameterConfiguration simulationParameters = new SimulationParameterConfiguration(
             		(String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
-            		
+
+            ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
+            		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
+            
+            EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
+            		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
+
+            /** simulation type = PCM */
+            String qualityObjective = StringUtils.EMPTY;
+            String monitorRepositoryFile = StringUtils.EMPTY;
+            List<String> configuredMonitors = new ArrayList<String>();
+            if (0 == SimulationConstants.SIMULATION_ENGINE_PCM.compareTo(simulationEngine)) {
+	            qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
+	            
+	            monitorRepositoryFile = (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
+        		configuredMonitors.addAll((List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
+            }
+	            
+            @SuppressWarnings("unchecked")
+            MonitorConfiguration monitors = new MonitorConfiguration(monitorRepositoryFile, configuredMonitors);
+
+            /** simulation type = PRISM */
+            List<String> prismProperties = new ArrayList<String>();
+            List<String> prismModules = new ArrayList<String>();
+            if (0 == SimulationConstants.SIMULATION_ENGINE_PRISM.compareTo(simulationEngine)) {
+            	List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);
+            	List<String> launchConfigModulesProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_MODULE_FILE);
+            	prismProperties.addAll(launchConfigPrismProperties);
+            	prismModules.addAll(launchConfigModulesProperties);
+            }
+            @SuppressWarnings("unchecked")
+            PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
+            
+            
+            /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective, architecturalModels, monitors, prismConfig, 
             		environmentalModels, simulationParameters);
         } catch (CoreException e) {
