@@ -31,5 +31,5 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.metricspec,
  org.palladiosimulator.simexp.pcm.examples.hri,
  org.palladiosimulator.simexp.pcm.prism,
- org.apache.commons.lang3;bundle-version="3.1.0"
+ org.apache.commons.lang;bundle-version="2.6.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
