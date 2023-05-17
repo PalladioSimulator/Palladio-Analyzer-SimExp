@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.metricspec.MetricDescription;
 import org.palladiosimulator.metricspec.MetricSetDescription;
@@ -30,8 +31,10 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -113,7 +116,10 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
         ProbeValueProvider pvp = dummyPvp;
         ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
         VariableValueProvider vvp = new DummyVariableValueProvider();
-        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp );
+		// FIXME: check integration of knowledge lookup
+        EObject knowledgeModel;
+        RuntimeValueProvider rvp = new KnowledgeLookup(knowledgeModel);
+        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
         org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
         Analyzer analyzer = kmodelInterpreter;
         Planner planner = kmodelInterpreter;
