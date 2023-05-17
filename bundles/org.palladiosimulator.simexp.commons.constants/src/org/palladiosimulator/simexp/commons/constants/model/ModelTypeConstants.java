@@ -10,6 +10,13 @@ public class ModelTypeConstants {
 	public static final String USAGEMODEL_EXTENSION = "usagemodel";
 	public static final String MONITOR_REPOSITORY_EXTENSION = "monitorrepository";
 	public static final String KMODEL_EXTENSION = "kmodel";
+	public static final String EXPERIMENTS_EXTENSION = "experiments";
+	public static final String STATIC_MODEL_EXTENSION = "staticmodel";
+	public static final String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
+	public static final String FAILURE_SCENARIO_MODEL_EXTENSION = "failurescenario";
+	
+	public static final String PRISM_MODULE_EXTENSION = "prism";
+	public static final String PRISM_PROPERTY_EXTENSION = "props";
 	
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP = "pathmap://PCM_MODELS/Palladio.resourcetype";
 	public static final String PALLADIO_RESOURCETYPES_PATHMAP_TARGET = "platform:/plugin/org.palladiosimulator.pcm.resources/defaultModels/Palladio.resourcetype";
@@ -18,4 +25,3 @@ public class ModelTypeConstants {
 	public static final String PRIMITIVE_TYPES_REPO_PATHMAP_TARGET = "platform:/plugin/org.palladiosimulator.pcm.resources/defaultModels/PrimitiveTypes.repository";
 
 }
-

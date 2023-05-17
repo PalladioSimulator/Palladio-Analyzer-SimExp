@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Io
+Bundle-SymbolicName: org.palladiosimulator.simexp.model.io
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.emf.ecore,
+ org.palladiosimulator.envdyn.model,
+ org.palladiosimulator.experimentautomation,
+ org.palladiosimulator.monitorrepository
+Automatic-Module-Name: org.palladiosimulator.simexp.model.io
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: org.palladiosimulator.simexp.model.io

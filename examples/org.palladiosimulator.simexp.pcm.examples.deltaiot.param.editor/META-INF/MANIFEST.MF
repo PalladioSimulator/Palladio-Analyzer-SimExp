@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.deltaiot.param.editor;singleton:=true
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot.param.editor
 Bundle-Version: 1.0.0.qualifier

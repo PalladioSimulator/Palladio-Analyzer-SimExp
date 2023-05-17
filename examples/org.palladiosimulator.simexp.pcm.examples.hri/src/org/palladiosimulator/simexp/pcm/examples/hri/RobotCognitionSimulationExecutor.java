@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.examples.hri;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -10,21 +9,22 @@ import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
-import org.palladiosimulator.monitorrepository.MeasurementSpecification;
-import org.palladiosimulator.monitorrepository.Monitor;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -33,16 +33,17 @@ import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -54,7 +55,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		public void initialize() {
 			super.initialize();
 			
-			Initializable.class.cast(reconfigurationStrategy).initialize();
+			if (reconfigurationStrategy instanceof Initializable) {
+				Initializable.class.cast(reconfigurationStrategy).initialize();
+			}
 		}
 		
 	}
@@ -62,36 +65,55 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	public static final double UPPER_THRESHOLD_RT = 0.1;
 	public static final double LOWER_THRESHOLD_REL = 0.9;
 	
-	private final static String EXPERIMENT_FILE = "/org.palladiosimulator.dependability.ml.hri/RobotCognitionExperiment.experiments";
-	private final static String SIMULATION_ID = "Robot Cognition";
-	private final static String RESPONSE_TIME_MONITOR = "System Response Time";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 	
 	private final DynamicBayesianNetwork dbn;
-	private final List<SimulatedMeasurementSpecification> pcmSpecs;
-	private final Policy<Action<?>> reconfigurationStrategy;
+	private final PcmMeasurementSpecification responseTimeSpec;
+	private final SimulatedMeasurementSpecification reliabilitySpec;
+	private final ReconfigurationStrategy<?> reconfigurationStrategy;
+	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
+	private final IProbabilityDistributionFactory probabilityDistributionFactory;
+	private final ParameterParser parameterParser;
+	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 	
-	public RobotCognitionSimulationExecutor() {
-		this.dbn = RobotCognitionDBNLoader.load();
-		this.pcmSpecs = createSimMeasurementSpecs();
-		this.reconfigurationStrategy = new RobotCognitionReconfigurationStrategy(pcmSpecs.get(1), pcmSpecs.get(0));
+	public RobotCognitionSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
+			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+			List<PcmMeasurementSpecification> pcmSpecs) {
+	    super(experiment, simulationParameters);
+		this.dbn = dbn;
+		this.responseTimeSpec = pcmSpecs.get(0);
+		this.reliabilitySpec = buildReliabilitySpec();
+		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
+		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
+		this.reconfigurationStrategy = new StaticSystemSimulation();
 		
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
+		this.probabilityDistributionFactory = probabilityDistributionFactory;
+		this.parameterParser = parameterParser;
+		this.probDistRepoLookup = probDistRepoLookup;
+	}
+	
+	public static final class RobotCognitionSimulationExecutorFactory {
+	    public RobotCognitionSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
+	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	    }
 	}
 	
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID, reconfigurationStrategy.getId());
-		TotalRewardCalculation evaluator = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId);
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfigurationStrategy.getId());
+		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
-	}
-
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
 	}
 
 	@Override
@@ -99,14 +121,14 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		return PcmExperienceSimulationBuilder.newBuilder()
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
-					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner())
+					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
+					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner(probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup))
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2) //500
-					.andNumberOfSimulationsPerRun(3) //100
+					.withSimulationID(simulationParameters.getSimulationID()) // RobotCognition
+					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //50
+					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
 					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -118,7 +140,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 				  	.andReconfigurationStrategy(reconfigurationStrategy)
 				  	.done()
 				.specifyRewardHandling()
-				  	.withRewardEvaluator(getRewardEvaluator())
+				  	.withRewardEvaluator(getPureReliabilityBasedRewardEvaluator())
 				  	.done()
 				.build();
 	}
@@ -130,44 +152,46 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	private RewardEvaluator getRewardEvaluator() {
 		return new RobotCognitionRewardEvaluation(responseTimeThreshold(), reliabilityThreshold());
 	}
+	
+	private RewardEvaluator getPureReliabilityBasedRewardEvaluator() {
+		class RealValuedReward extends RewardImpl<Double> {
+			
+			private RealValuedReward(double value) {
+				super.setValue(value);
+			}
+			
+			@Override
+			public String toString() {
+				return Double.toString(getValue());
+			}
+
+		}
+		
+		return new RewardEvaluator() {
+			
+			@Override
+			public Reward<?> evaluate(StateQuantity quantifiedState) {
+				var reliability = quantifiedState.findMeasurementWith(reliabilitySpec).get().getValue();
+				return new RealValuedReward(reliability);
+			}
+		};
+	}
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold() {
-		return Pair.of(pcmSpecs.get(0), Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
+		return Pair.of(responseTimeSpec, Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
 	}
 	
 	private Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold() {
-		return Pair.of(pcmSpecs.get(1), Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL));
+		return Pair.of(reliabilitySpec, Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL));
 	}
 
-	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner() {
-		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig());
-	}
-
-	private List<SimulatedMeasurementSpecification> createSimMeasurementSpecs() {
-		return Lists.newArrayList(buildResponseTimeSpec(), buildReliabilitySpec());
+	private ExperienceSimulationRunner createPcmRelExperienceSimulationRunner(IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+		return new PcmRelExperienceSimulationRunner(createDefaultReliabilityConfig(), probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
 	}
 	
 	private SimulatedMeasurementSpecification buildReliabilitySpec() {
 		var usageScenario = experiment.getInitialModel().getUsageModel().getUsageScenario_UsageModel().get(0);
 		return new PcmRelSimulatedMeasurementSpec(usageScenario);
-	}
-
-	private SimulatedMeasurementSpecification buildResponseTimeSpec() {
-		Monitor rtMonitor = findMonitor(RESPONSE_TIME_MONITOR);
-		MeasurementSpecification rtSpec = rtMonitor.getMeasurementSpecifications().get(0);
-		return PcmMeasurementSpecification.newBuilder()
-				.withName(rtMonitor.getEntityName())
-				.measuredAt(rtMonitor.getMeasuringPoint())
-				.withMetric(rtSpec.getMetricDescription())
-				.useDefaultMeasurementAggregation()
-				.build();
-	}
-	
-	private Monitor findMonitor(String monitorName) {
-		Stream<Monitor> monitors = experiment.getInitialModel().getMonitorRepository().getMonitors().stream();
-		return monitors.filter(m -> m.getEntityName().equals(monitorName))
-					   .findFirst()
-					   .orElseThrow(() -> new RuntimeException("There is no monitor."));
 	}
 	
 	private UncertaintyBasedReliabilityPredictionConfig createDefaultReliabilityConfig() {

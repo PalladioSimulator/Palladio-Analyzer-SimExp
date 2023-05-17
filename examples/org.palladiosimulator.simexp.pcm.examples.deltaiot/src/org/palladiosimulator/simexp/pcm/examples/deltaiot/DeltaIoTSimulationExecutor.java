@@ -10,14 +10,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
-import org.palladiosimulator.envdyn.api.generator.BayesianNetworkGenerator;
-import org.palladiosimulator.envdyn.api.generator.DynamicBayesianNetworkGenerator;
-import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
-import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -39,16 +33,16 @@ import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitializat
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
-import tools.mdsd.probdist.api.apache.util.DistributionTypeModelUtil;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
+import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
+import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -58,25 +52,21 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	private final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
 			+ "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
-	private final static String SIMULATION_ID = "DeltaIoT";
-	private final static String EXPERIMENT_FILE = DELTAIOT_PATH + "/model/DeltaIoTExperiment.experiments";
 	private final static String PRISM_FOLDER = "prism";
-	private final static String PRISM_PACKET_LOSS_MODULE_NAME = "PacketLoss.prism";
-	private final static String PRISM_PACKET_LOSS_PROPERTY_NAME = "PacketLoss.props";
-	private final static String PRISM_PACKET_LOSS_PROPERTY = "P=? [ F \"Packetloss\" ]";
-	private final static String PRISM_ENERGY_CONSUMPTION_MODULE_NAME = "EnergyConsumption.prism";
-	private final static String PRISM_ENERGY_CONSUMPTION_PROPERTY_NAME = "EnergyConsumption.props";
-	private final static String PRISM_ENERGY_CONSUMPTION_PROPERTY = "Rmax=? [ F \"EnergyConsumption\" ]";
 
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
-	public DeltaIoTSimulationExecutor() {
-		this.prismSpecs = Lists.newArrayList();
-		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForPacketLoss());
-		this.prismSpecs.add(createPrismSimulatedMeasurementSpecificationForEnergyConsumption());
+	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
+			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+			List<PrismSimulatedMeasurementSpec> prismSpecs) {
+		super(experiment, simulationParameters);
+		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
+
+		this.prismSpecs = prismSpecs;
 
 		this.reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader().load(DISTRIBUTION_FACTORS);
 //		this.reconfSelectionPolicy = GlobalQualityBasedReconfigurationStrategy.newBuilder()
@@ -89,74 +79,36 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 				.andEnergyConsumptionSpec(this.prismSpecs.get(1))
 				.build();
 
-		this.dbn = loadOrGenerateDBN();
+		this.dbn = dbn; //loadOrGenerateDBN();
 
 		QVToReconfigurationManager.get().addModelsToTransform(reconfParamsRepo.eResource());
 
-		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
-		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
+//		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
+//		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
 	}
 
-	private DynamicBayesianNetwork loadOrGenerateDBN() {
-		try {
-			return DeltaIoTDBNLoader.loadDBN();
-		} catch (Exception e) {
-			return generateDBN();
-		}
+	public static final class DeltaIoTSimulationExecutorFactory {
+	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
+	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
+	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
+	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs) {
+	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
+	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs);
+	    }
 	}
-
-	private DynamicBayesianNetwork generateDBN() {
-		TemplateVariableDefinitions templates = loadTemplates();
-
-		BayesianNetwork bn = null;
-		try {
-			bn = new BayesianNetwork(null, DeltaIoTDBNLoader.loadGroundProbabilisticNetwork());
-		} catch (Exception e) {
-			bn = generateBN(templates);
-			DeltaIoTDBNLoader.persist(bn.get(), DELTAIOT_PATH + "/model/DeltaIoTNonTemporalEnvironment.staticmodel");
-		}
-
-		DynamicBayesianNetwork dbn = new DynamicBayesianNetworkGenerator(templates)
-				.createProbabilisticNetwork(bn.get());
-
-		DeltaIoTDBNLoader.persist(dbn.getDynamics(),
-				DELTAIOT_PATH + "/model/DeltaIoTEnvironmentalDynamics.dynamicmodel");
-
-		return dbn;
-	}
-
-	private BayesianNetwork generateBN(TemplateVariableDefinitions templates) {
-		ResourceSet appliedModels = new ResourceSetImpl();
-		appliedModels.getResources().add(experiment.getInitialModel().getSystem().eResource());
-		appliedModels.getResources().add(experiment.getInitialModel().getResourceEnvironment().eResource());
-		return new BayesianNetworkGenerator(templates).generate(appliedModels);
-	}
-
-	private TemplateVariableDefinitions loadTemplates() {
-		List<TemplateVariableDefinitions> result = ExperimentProvider.get().getExperimentRunner()
-				.getWorkingPartition()
-				.getElement(TemplatevariablePackage.eINSTANCE.getTemplateVariableDefinitions());
-		if (result.isEmpty()) {
-			// TODO exception handling
-			throw new RuntimeException("There are no templates.");
-		}
-		return result.get(0);
-	}
+	
+	
 
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(SIMULATION_ID,
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(),
 				reconfSelectionPolicy.getId());
-		Double totalReward = SimulatedExperienceEvaluator.of(SIMULATION_ID, sampleSpaceId).computeTotalReward();
+		Double totalReward = SimulatedExperienceEvaluator.of(simulationParameters.getSimulationID(), sampleSpaceId).computeTotalReward();
 		LOGGER.info("***********************************************************************");
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
 		LOGGER.info("***********************************************************************");
 	}
 
-	@Override
-	protected String getExperimentFile() {
-		return EXPERIMENT_FILE;
-	}
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
@@ -167,9 +119,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.addExperienceSimulationRunner(getSimualtionRunner())
 					.done()
 				.createSimulationConfiguration()
-					.withSimulationID(SIMULATION_ID)
-					.withNumberOfRuns(2)
-					.andNumberOfSimulationsPerRun(100)
+					.withSimulationID(simulationParameters.getSimulationID()) // DeltaIoT
+					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) // 2
+					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) // 100
 					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
 					.done()
 				.specifySelfAdaptiveSystemState()
@@ -235,38 +187,6 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	private Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold() {
 		return Pair.of(prismSpecs.get(1), GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
-	}
-
-	private PrismSimulatedMeasurementSpec createPrismSimulatedMeasurementSpecificationForPacketLoss() {
-		return PrismSimulatedMeasurementSpec.newBuilder().withProperty(PRISM_PACKET_LOSS_PROPERTY)
-				.andModuleFile(getPacketLossModuleFile()).andPropertyFile(getPacketLossPropertyFile()).build();
-	}
-
-	private PrismSimulatedMeasurementSpec createPrismSimulatedMeasurementSpecificationForEnergyConsumption() {
-		return PrismSimulatedMeasurementSpec.newBuilder().withProperty(PRISM_ENERGY_CONSUMPTION_PROPERTY)
-				.andModuleFile(getEnergyConsumptionModuleFile()).andPropertyFile(getEnergyConsumptionPropertyFile())
-				.build();
-	}
-
-	private File getPacketLossPropertyFile() {
-		return resolvePrismFile(PRISM_PACKET_LOSS_PROPERTY_NAME);
-	}
-
-	private File getPacketLossModuleFile() {
-		return resolvePrismFile(PRISM_PACKET_LOSS_MODULE_NAME);
-	}
-
-	private File getEnergyConsumptionPropertyFile() {
-		return resolvePrismFile(PRISM_ENERGY_CONSUMPTION_PROPERTY_NAME);
-	}
-
-	private File getEnergyConsumptionModuleFile() {
-		return resolvePrismFile(PRISM_ENERGY_CONSUMPTION_MODULE_NAME);
-	}
-
-	private File resolvePrismFile(String prismFileName) {
-		URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER, prismFileName).toString(), true);
-		return new File(CommonPlugin.resolve(uri).toFileString());
 	}
 
 	private Set<SimulatedMeasurementSpecification> getPrismSpecs() {

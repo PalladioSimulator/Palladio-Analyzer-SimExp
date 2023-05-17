@@ -4,6 +4,6 @@ Bundle-Name: Query
 Bundle-SymbolicName: org.palladiosimulator.pcm.query
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.pcm.query
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.pcm.query
 Require-Bundle: org.palladiosimulator.pcm;bundle-version="5.0.0"

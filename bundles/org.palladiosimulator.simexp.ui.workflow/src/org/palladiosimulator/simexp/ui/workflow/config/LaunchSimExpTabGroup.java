@@ -6,21 +6,15 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
-    
-    
-    public LaunchSimExpTabGroup() {}
-
-
     @Override
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
         // Assemble the tab pages:
         ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { 
-                new SimExpArchitectureModelsTab()
-                , new CommonTab()
+                new SimExpModelsTab(),
+                new SimExpConfigurationTab(),
+                new CommonTab()
         };
         
         setTabs(tabs);
-        
     }
-
 }

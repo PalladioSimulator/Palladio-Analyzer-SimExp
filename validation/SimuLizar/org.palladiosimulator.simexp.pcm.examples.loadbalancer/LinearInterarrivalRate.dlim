@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tools.descartes.dlim:Sequence xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tools.descartes.dlim="http://descartes.tools/dlim/0.1" name="LinearInterarrivalRate" terminateAfterLoops="100" firstIterationEnd="100.0" loopDuration="1.0" finalDuration="100.0">
+  <combine operator="MULT">
+    <function xsi:type="tools.descartes.dlim:Sequence" name="trends" terminateAfterLoops="1" firstIterationEnd="100.0" loopDuration="100.0" finalDuration="100.0">
+      <sequenceFunctionContainers name="trend1" duration="100.0" firstIterationEnd="100.0">
+        <function xsi:type="tools.descartes.dlim:LinearTrend" functionOutputAtStart="3.0" functionOutputAtEnd="5.0"/>
+      </sequenceFunctionContainers>
+    </function>
+  </combine>
+  <sequenceFunctionContainers name="constantSeasonal" firstIterationEnd="1.0">
+    <function xsi:type="tools.descartes.dlim:Constant" constant="1.0"/>
+  </sequenceFunctionContainers>
+</tools.descartes.dlim:Sequence>

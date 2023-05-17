@@ -4,22 +4,23 @@ Bundle-Name: Examples
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.palladiosimulator.simexp.pcm.examples.Activator
-Require-Bundle: org.eclipse.core.runtime,
- com.google.inject;bundle-version="3.0.0",
- org.palladiosimulator.simexp.core;bundle-version="1.0.0",
- org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
- org.palladiosimulator.experimentautomation;bundle-version="1.1.0",
- org.palladiosimulator.experimentautomation.application;bundle-version="1.1.0",
- org.palladiosimulator.experimentautomation.application.tooladapter.simulizar;bundle-version="1.0.0",
- org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model;bundle-version="1.0.0",
- org.palladiosimulator.simexp.service,
- org.palladiosimulator.envdyn.api,
- org.apache.log4j,
- com.google.guava;bundle-version="27.1.0",
- org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples
 Bundle-ActivationPolicy: lazy
+Require-Bundle: com.google.guava;bundle-version="27.1.0",
+ org.apache.log4j,
+ com.google.guava;bundle-version="27.1.0",
+ org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0",
+ org.palladiosimulator.envdyn.api,
+ org.palladiosimulator.simexp.service,
+ org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model;bundle-version="1.0.0",
+ org.palladiosimulator.experimentautomation.application.tooladapter.simulizar;bundle-version="1.0.0",
+ org.palladiosimulator.experimentautomation.application;bundle-version="1.1.0",
+ org.palladiosimulator.experimentautomation;bundle-version="1.1.0",
+ org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.core;bundle-version="1.0.0",
+ com.google.inject;bundle-version="3.0.0",
+ org.eclipse.core.runtime
 Export-Package: org.palladiosimulator.simexp.pcm.examples.executor,
  org.palladiosimulator.simexp.pcm.examples.measurements.aggregator,
  org.palladiosimulator.simexp.pcm.examples.utils

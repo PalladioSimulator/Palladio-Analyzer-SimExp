@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ASCII"?>
+<distributionfunction:ProbabilityDistributionFunctionRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:distributionfunction="http://www.mdsd.tools/probdist/distributionfunction/1.0" id="_dte2ELZQEeyfrbFISrM2lQ" entityName="DistributionRepo">
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_dtigcLZQEeyfrbFISrM2lQ" entityName="InitialInterArrivalTimeDist" params="_dtgEMLZQEeyfrbFISrM2lQ">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_dtjHgLZQEeyfrbFISrM2lQ" entityName="TemporalInterArrivalTimeDist" params="_dthSULZQEeyfrbFISrM2lQ">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <params id="_dtgEMLZQEeyfrbFISrM2lQ" entityName="InitialInterArrivalTimeParam">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.2,1.0}"/>
+  </params>
+  <params id="_dthSULZQEeyfrbFISrM2lQ" entityName="TemporalInterArrivalTimeParam">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.2</conditonals>
+        <entry type="SAMPLESPACE" value="{0.2,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+</distributionfunction:ProbabilityDistributionFunctionRepository>

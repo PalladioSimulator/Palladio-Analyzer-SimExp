@@ -22,6 +22,7 @@
 		<module>org.palladiosimulator.simexp.core</module>
 		<module>org.palladiosimulator.simexp.core.store.csv</module>
 		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
+		<module>org.palladiosimulator.simexp.model.io</module>
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
 		<module>org.palladiosimulator.simexp.pcm</module>
 		
@@ -35,18 +36,16 @@
 -->		
 		<module>org.palladiosimulator.simexp.workflow</module>
 		
-<!--
 		<module>org.palladiosimulator.simexp.pcm.prism</module>
 		<module>org.palladiosimulator.simexp.pcm.prism.wrapper</module>
--->	
-		<!-- requires org.palladiosimulator.dependability.reliability.uncertainty.solver 1.0.0; is part of Palladio-Analyzer-Dependability-ML -->
-<!--
+	
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
--->			
+			
 		<module>org.palladiosimulator.simexp.dsl.kmodel</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ide</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter</module>
+
 	</modules>
 	
 </project>

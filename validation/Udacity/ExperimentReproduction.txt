@@ -1,0 +1,16 @@
+* Since the SimExp UI is currently work-in-progress, we created a corresponding project which includes the java sources for experiment reproduction
+
+* Clone and import SimExp
+** Clone the latest git repository of SimExp
+** Import all bundles into your eclipse workspace
+** Import the org.palladiosimulator.simexp.pcm.examples.udacitychallenge.reliability project from the example folder
+
+* Setup
+** Check whether in SimExpServiceRegistration.java (.\Palladio-Analyzer-SimExp\bundles\org.palladiosimulator.simexp.workflow\src\org\palladiosimulator\simexp\workflow\jobs) the class UdacitySimExpExecutor is registered. If not, replace the class with currently registered class.
+** Moreover, UdacitySimExpExecutor contains all experiments settings (e.g. number of trajectories, ...) and the adaptation strategy to be evaluated. Therefore, comment out the strategy to be evaluated.
+** Afterwards configure and run a new eclipse instance in the run configurations and let it run.
+** Import the project org.palladiosimulator.simexp.pcm.examples.udacitychallenge (located in this folder) in the newly created eclipse instance.
+
+* Execute SimExp
+** Create a new SimExp run configuration and let it run.
+** Important remark: For every steering angle prediction model to be evaluated, the corresponding component must be instantiated in the system model. That is, the system model must be adjusted accordingly (i.e. switching the basic component and respective sink and source roles). Moreover, in the uncertainty-refined failure model, the sensitivity model in the uncertainty refined failure type element and architectural precondition must be adapted as well.
