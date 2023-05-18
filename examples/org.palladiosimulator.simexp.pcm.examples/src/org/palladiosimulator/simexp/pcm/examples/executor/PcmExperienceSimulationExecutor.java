@@ -13,13 +13,15 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
     
     protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
 	
+    protected final ExperienceSimulator experienceSimulator;
 	protected final Experiment experiment;
 	protected final SimulationParameterConfiguration simulationParameters;
 	
 //	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
 	private static PcmExperienceSimulationExecutor instance;
 	
-	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters) {
+	public PcmExperienceSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters) {
+		this.experienceSimulator = experienceSimulator;
 		this.experiment = experiment;
 		ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
@@ -28,17 +30,17 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 
 	public static PcmExperienceSimulationExecutor get() {
 	    if (instance == null) {
-	        instance = ServiceRegistry.get().findService(PcmExperienceSimulationExecutor.class).orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
+	        instance = ServiceRegistry.get()
+	        		.findService(PcmExperienceSimulationExecutor.class)
+	        		.orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
 	    }
 		return instance;
 	}
 	
 	@Override
 	public void execute() {
-		createSimulator().run();
+		experienceSimulator.run();
 	}
-
-	protected abstract ExperienceSimulator createSimulator();
 	
 	private String getReconfigurationRulesLocation() {
 		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();

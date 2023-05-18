@@ -59,11 +59,11 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
-	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
+	public DeltaIoTSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
 			List<PrismSimulatedMeasurementSpec> prismSpecs) {
-		super(experiment, simulationParameters);
+		super(experienceSimulator, experiment, simulationParameters);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 
 		this.prismSpecs = prismSpecs;
@@ -88,11 +88,11 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	}
 
 	public static final class DeltaIoTSimulationExecutorFactory {
-	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
+	    public DeltaIoTSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
 	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs) {
-	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
+	        return new DeltaIoTSimulationExecutor(experienceSimulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
 	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs);
 	    }
 	}

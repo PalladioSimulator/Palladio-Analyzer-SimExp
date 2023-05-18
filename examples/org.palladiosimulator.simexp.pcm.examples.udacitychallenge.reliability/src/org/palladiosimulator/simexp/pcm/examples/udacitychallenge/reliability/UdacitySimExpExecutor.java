@@ -20,6 +20,8 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -64,15 +66,15 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	
 	private final DynamicBayesianNetwork dbn;
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
-	private final ReconfigurationStrategy<QVToReconfiguration> reconfigurationStrategy;
+	private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy;
 	
 	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
 	private final IProbabilityDistributionFactory probabilityDistributionFactory;
 	private final ParameterParser parameterParser;
 	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 	
-	private UdacitySimExpExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
-		super(experiment, simulationParameters);
+	private UdacitySimExpExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+		super(experienceSimulator, experiment, simulationParameters);
 		this.dbn = dbn;
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		this.probabilityDistributionFactory = probabilityDistributionFactory;
@@ -87,8 +89,8 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	}
 	
 	public static final class UdacitySimExpExecutorFactory {
-	    public UdacitySimExpExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
-	        return new UdacitySimExpExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters);
+	    public UdacitySimExpExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	        return new UdacitySimExpExecutor(experienceSimulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters);
 	    }
 	}
 	
@@ -104,6 +106,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected ExperienceSimulator createSimulator() {
 		return PcmExperienceSimulationBuilder.newBuilder()
 				.makeGlobalPcmSettings()
@@ -122,7 +125,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
-				  	.andReconfigurationStrategy(reconfigurationStrategy)
+				  	.andReconfigurationStrategy((Policy<Action<?>>) reconfigurationStrategy)
 				  	.done()
 				.specifyRewardHandling()
 				  	.withRewardEvaluator(getRewardEvaluator())

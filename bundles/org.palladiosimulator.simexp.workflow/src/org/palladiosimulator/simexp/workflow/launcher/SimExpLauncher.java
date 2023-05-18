@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,25 +19,73 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
+import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
+import org.palladiosimulator.pcm.query.RepositoryModelLookup;
+import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
+import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.core.action.Reconfiguration;
+import org.palladiosimulator.simexp.core.builder.ExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
+import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
+import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
+import org.palladiosimulator.simexp.core.util.Pair;
+import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.hri.RealValuedReward;
+import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionEnvironmentalDynamics;
+import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.RobotCognitionBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.RobotCognitionSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.hri.StaticSystemSimulation;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.NStepLoadBalancerStrategy;
+import org.palladiosimulator.simexp.pcm.examples.loadbalancing.VaryingInterarrivelRateProcess;
+import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityRewardEvaluation;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
+import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
+import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantScalingNodeFailureRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutor.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantVaryingInterarrivelRateProcess;
+import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.LoadBalancingEmptyReconfigurationPlanningStrategy;
+import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
+import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
+import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
@@ -47,9 +96,14 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
+
+import com.google.common.base.Objects;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
@@ -120,6 +174,38 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
+    private ExperienceSimulator createExperienceSimulator(Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs, 
+    		List<ExperienceSimulationRunner> runners, SimulationParameterConfiguration params, Initializable beforeExecution, EnvironmentProcess envProcess,
+    		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, RewardEvaluator evaluator, boolean hidden) {
+    	
+    	return PcmExperienceSimulationBuilder.newBuilder()
+    			.makeGlobalPcmSettings()
+    				.withInitialExperiment(experiment)
+    				.andSimulatedMeasurementSpecs(new HashSet<>(specs))
+    				.addExperienceSimulationRunners(new HashSet<>(runners))
+    				.done()
+    			.createSimulationConfiguration()
+    				.withSimulationID(params.getSimulationID())
+    				.withNumberOfRuns(params.getNumberOfRuns())
+    				.andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
+    				.andOptionalExecutionBeforeEachRun(beforeExecution)
+    				.done()
+    			.specifySelfAdaptiveSystemState()
+    				.asEnvironmentalDrivenProcess(envProcess)
+    				.asPartiallyEnvironmentalDrivenProcess(navigator)
+    				.asHiddenProcess(hidden)
+    				.done()
+    			.createReconfigurationSpace()
+    				.addReconfigurations(new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations()))
+    				.andReconfigurationStrategy(reconfStrategy)
+    				.done()
+    			.specifyRewardHandling()
+    				.withRewardEvaluator(evaluator)
+    				.done()
+    			.build();	
+    }
+    
+    @SuppressWarnings("unchecked")
     private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment, 
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
@@ -136,20 +222,69 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     			 
     			yield switch (qualityObjective) {
      				case SimulationConstants.PERFORMANCE -> {
+     					Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(pcmSpecs.get(0), 
+     							Threshold.lessThanOrEqualTo(LoadBalancingSimulationExecutor.UPPER_THRESHOLD_RT));
+     					RewardEvaluator evaluator = ThresholdBasedRewardEvaluator.with(threshold);
+     					
+     					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, List.of(new PcmExperienceSimulationRunner()), 
+     							simulationParameters, new GlobalPcmBeforeExecutionInitialization(), VaryingInterarrivelRateProcess.get(dbn), null, 
+     							new NStepLoadBalancerStrategy(2, pcmSpecs.get(0)), evaluator, false);
+     					
      					LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory();
-     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
      							probDistRepoLookup, simulationParameters, pcmSpecs);
      				}
      			
      				case SimulationConstants.RELIABILITY -> {
+     					UsageScenario usageScenario = experiment.getInitialModel().getUsageModel().getUsageScenario_UsageModel().get(0);
+     					SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
+     					List<SimulatedMeasurementSpecification> specs = new ArrayList<>(pcmSpecs);
+     					specs.add(reliabilitySpec);
+     					
+     					UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(),
+     							null, loadUncertaintyRepository(), null);
+     					ExperienceSimulationRunner runner = new PcmRelExperienceSimulationRunner(predictionConfig, 
+     							probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+     					
+     					RewardEvaluator evaluator = new RewardEvaluator() {	
+							@Override
+							public Reward<?> evaluate(StateQuantity quantifiedState) {
+								var reliability = quantifiedState.findMeasurementWith(reliabilitySpec).get().getValue();
+								return new RealValuedReward(reliability);
+							}
+						};
+						
+						ReconfigurationStrategy<?> reconfStrategy = new StaticSystemSimulation();
+     					
+     					ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, List.of(runner), simulationParameters, 
+     							new RobotCognitionBeforeExecutionInitialization(), RobotCognitionEnvironmentalDynamics.get(dbn), null,
+     							(Policy<Action<?>>) reconfStrategy, evaluator, true);
+     					
      					RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory();
-     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
      							probDistRepoLookup, simulationParameters, pcmSpecs);
      				}
      			
      				case SimulationConstants.PERFORMABILITY -> {
+     					Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(pcmSpecs.get(0), 
+     							Threshold.lessThanOrEqualTo(FaultTolerantLoadBalancingSimulationExecutor.UPPER_THRESHOLD_RT.getValue()));
+     					Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(pcmSpecs.get(0), 
+     							Threshold.lessThanOrEqualTo(FaultTolerantLoadBalancingSimulationExecutor.LOWER_THRESHOLD_RT.getValue()));
+     					RewardEvaluator evaluator = new PerformabilityRewardEvaluation(pcmSpecs.get(0), pcmSpecs.get(1), upperThresh, lowerThresh);
+     					
+     					PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(FaultTolerantLoadBalancingSimulationExecutor.SERVER_FAILURE_TEMPLATE_ID, 
+     							FaultTolerantLoadBalancingSimulationExecutor.LOAD_BALANCER_ID);
+     					NodeRecoveryStrategy strategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(config, new RepositoryModelLookup()
+     					        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
+     					LoadBalancingEmptyReconfigurationPlanningStrategy reconfStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(pcmSpecs.get(0), config, strategy);
+     					ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), config, reconfStrategy);
+     					
+     					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, List.of(new PerformabilityPcmExperienceSimulationRunner()), 
+     							simulationParameters, new GlobalPcmBeforeExecutionInitialization(), FaultTolerantVaryingInterarrivelRateProcess.get(dbn), null, 
+     							(Policy<Action<?>>) reconfSelectionPolicy, evaluator, false);
+     					
      					FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-     					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+     					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
      							probDistRepoLookup, simulationParameters, pcmSpecs);
      				}
      			
@@ -159,13 +294,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		
     		case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
     			PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
-    			List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
+    			List<SimulatedMeasurementSpecification> prismSpecs = IntStream
     					.range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
     					.mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
+    					.filter(SimulatedMeasurementSpecification.class::isInstance)
+    					.map(SimulatedMeasurementSpecification.class::cast)
     					.toList();
     			
+    			//ExperienceSimulator simulator = createExperienceSimulator(experiment, prismSpecs);
+    			
     			DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
-    			yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
+    			yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
     					probDistRepoLookup, simulationParameters, prismSpecs);
     		}
     		
@@ -173,6 +312,50 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     	};
     }
     
+    private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {
+		var config = new PCMSolverWorkflowRunConfiguration();
+        config.setReliabilityAnalysis(true);
+        config.setPrintMarkovStatistics(false);
+        config.setPrintMarkovSingleResults(false);
+        config.setSensitivityModelEnabled(false);
+        config.setSensitivityModelFileName(null);
+        config.setSensitivityLogFileName(null);
+        
+        config.setDeleteTemporaryDataAfterAnalysis(true);
+        config.setDistance(1.0);
+        config.setDomainSize(32);
+        config.setIterationOverPhysicalSystemStatesEnabled(true);
+        config.setMarkovModelReductionEnabled(true);
+        config.setNumberOfEvaluatedSystemStates(1);
+        config.setNumberOfEvaluatedSystemStatesEnabled(false);
+        config.setSolvingTimeLimitEnabled(false);
+        
+        // TODO check
+        config.setLogFile(null);
+        config.setNumberOfEvaluatedSystemStatesEnabled(false);
+        config.setNumberOfEvaluatedSystemStates(0);
+        config.setNumberOfExactDecimalPlacesEnabled(false);
+        config.setNumberOfExactDecimalPlaces(0);
+        config.setSolvingTimeLimitEnabled(false);
+        config.setMarkovModelStorageEnabled(false);
+        config.setIterationOverPhysicalSystemStatesEnabled(true);
+        // TODO check
+        config.setMarkovEvaluationMode("POINTSOFFAILURE"); 
+        config.setSaveResultsToFileEnabled(false);
+        
+        config.setRMIMiddlewareFile(ConstantsContainer.DEFAULT_RMI_MIDDLEWARE_REPOSITORY_FILE);
+        config.setEventMiddlewareFile(ConstantsContainer.DEFAULT_EVENT_MIDDLEWARE_FILE);
+        return config;
+	}
+    
+    private UncertaintyRepository loadUncertaintyRepository() {
+		var partition = new ResourceSetPartition();
+		partition.loadModel(RobotCognitionSimulationExecutor.UNCERTAINTY_MODEL_URI);
+		partition.resolveAllProxies();
+		return (UncertaintyRepository) partition.getFirstContentElement(RobotCognitionSimulationExecutor.UNCERTAINTY_MODEL_URI);
+	}
+    
+    @SuppressWarnings("unchecked")
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
         SimExpWorkflowConfiguration workflowConfiguration = null;
         try {
@@ -205,7 +388,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             String qualityObjective = StringUtils.EMPTY;
             String monitorRepositoryFile = StringUtils.EMPTY;
             List<String> configuredMonitors = new ArrayList<String>();
-            if (0 == SimulationConstants.SIMULATION_ENGINE_PCM.compareTo(simulationEngine)) {
+            if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PCM, simulationEngine)) {
 	            qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
 	            
 	            monitorRepositoryFile = (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
@@ -218,7 +401,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             /** simulation type = PRISM */
             List<String> prismProperties = new ArrayList<String>();
             List<String> prismModules = new ArrayList<String>();
-            if (0 == SimulationConstants.SIMULATION_ENGINE_PRISM.compareTo(simulationEngine)) {
+            if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PRISM, simulationEngine)) {
             	List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);
             	List<String> launchConfigModulesProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_MODULE_FILE);
             	prismProperties.addAll(launchConfigPrismProperties);

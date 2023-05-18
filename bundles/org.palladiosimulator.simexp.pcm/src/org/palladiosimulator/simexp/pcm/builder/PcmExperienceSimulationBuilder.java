@@ -39,6 +39,11 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 			return this;
 		}
 		
+		public GlobalPcmSettingsBuilder addExperienceSimulationRunners(Set<ExperienceSimulationRunner> runners) {
+			PcmExperienceSimulationBuilder.this.simRunner.addAll(runners);
+			return this;
+		}
+		
 		public PcmExperienceSimulationBuilder done() {
 			return PcmExperienceSimulationBuilder.this;
 		}
