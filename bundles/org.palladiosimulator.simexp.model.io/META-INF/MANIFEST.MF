@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.emf.ecore,
  org.palladiosimulator.envdyn.model,
  org.palladiosimulator.experimentautomation,
- org.palladiosimulator.monitorrepository
+ org.palladiosimulator.monitorrepository,
+ org.palladiosimulator.simexp.dsl.kmodel
 Automatic-Module-Name: org.palladiosimulator.simexp.model.io
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.simexp.model.io
