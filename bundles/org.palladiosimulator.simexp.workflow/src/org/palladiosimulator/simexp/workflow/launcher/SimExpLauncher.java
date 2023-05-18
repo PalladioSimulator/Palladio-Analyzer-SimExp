@@ -38,6 +38,7 @@ import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.model.io.KModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutor.LoadBalancingSimulationExecutorFactory;
@@ -80,10 +81,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
         	ResourceSet rs = new ResourceSetImpl();
         	
-            URI uri = config.getKmodelURI();
-            // FIXME: refactor; move model loading to separate class
-            Kmodel kmodel = loadModel(uri);
-            LOGGER.debug(String.format("Loaded kmodel from '%s'", uri.path()));
+            URI kmodelURI = config.getKmodelURI();
+            KModelLoader kmodelLoader = new KModelLoader();
+            Kmodel kmodel = kmodelLoader.load(rs, kmodelURI);
+            LOGGER.debug(String.format("Loaded kmodel from '%s'", kmodelURI.path()));
         	
             URI experimentsFileURI = config.getExperimentsURI();
             ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
@@ -132,16 +133,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
     
     
-    // FIXME: extract to separate class
-    private Kmodel loadModel(URI kmodelUri) throws IOException {
-        KmodelStandaloneSetup.doSetup();
-        ResourceSet resourceSet = new ResourceSetImpl();
-        Resource resource = resourceSet.getResource(kmodelUri, true);
-        EList<EObject> contents = resource.getContents();
-        Kmodel model = (Kmodel) contents.get(0);
-        return model;
-    }
-
     private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment, 
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
