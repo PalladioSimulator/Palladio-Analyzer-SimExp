@@ -13,7 +13,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * information
      * 
      * */
-    private String kmodelFile;
+    private final URI kmodelFile;
 	private final String simulationEngine;
 	private final String qualityObjective;
     private final URI experimentsFile;
@@ -45,6 +45,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
+        this.kmodelFile = URI.createURI(architecturalModels.getKmodelFile());
         this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
         this.monitorRepositoryFile = URI.createURI(monitors.getMonitorRepositoryFile());
@@ -74,7 +75,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         // FIXME: check what shall be done here
     }
     
-    public String getKmodelFile(){
+    public URI getKmodelURI(){
         return kmodelFile;
     }
 

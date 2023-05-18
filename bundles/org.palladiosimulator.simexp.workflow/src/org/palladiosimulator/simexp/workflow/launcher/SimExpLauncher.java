@@ -80,8 +80,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
         	ResourceSet rs = new ResourceSetImpl();
         	
-        	// FIXME: KModel integration
-            URI uri = URI.createURI(config.getKmodelFile());
+            URI uri = config.getKmodelURI();
+            // FIXME: refactor; move model loading to separate class
             Kmodel kmodel = loadModel(uri);
             LOGGER.debug(String.format("Loaded kmodel from '%s'", uri.path()));
         	

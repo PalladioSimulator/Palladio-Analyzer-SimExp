@@ -31,6 +31,7 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
     private Text textExperiments;
     private Text textStaticModel;
 	private Text textDynamicModel;
+	private Text textKModel;
     
     private Composite container;
     private ModifyListener modifyListener;  
@@ -66,6 +67,11 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
         TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "Experiments File",
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, 
                 "Select Experiments File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        
+        textKModel = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "KModel File",
+                ModelFileTypeConstants.KMODEL_FILE_EXTENSION, textKModel, 
+                "Select KModel File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
         
         Group environmentalModelsGroup = new Group(container, SWT.NONE);
         environmentalModelsGroup.setText("Environmental Models");
@@ -107,6 +113,12 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(), "Experiments File", e.getMessage());
         }
+
+        try {
+        	textKModel.setText(configuration.getAttribute(ModelFileTypeConstants.KMODEL_FILE, ModelFileTypeConstants.EMPTY_STRING));
+        } catch (CoreException e) {
+        	LaunchConfigPlugin.errorLogger(getName(), "KModel File", e.getMessage());
+        }
         
         try {
             textStaticModel.setText(configuration.getAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE, ModelFileTypeConstants.EMPTY_STRING));
@@ -126,6 +138,7 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
         configuration.setAttribute(ModelFileTypeConstants.ALLOCATION_FILE, textAllocation.getText());
         configuration.setAttribute(ModelFileTypeConstants.USAGE_FILE, textUsage.getText());
         configuration.setAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, textExperiments.getText());
+        configuration.setAttribute(ModelFileTypeConstants.KMODEL_FILE, textKModel.getText());
         configuration.setAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE, textStaticModel.getText());
 		configuration.setAttribute(ModelFileTypeConstants.DYNAMIC_MODEL_FILE, textDynamicModel.getText());
     }
@@ -148,6 +161,11 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
         if (!TabHelper.validateFilenameExtension(textExperiments.getText(), ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION)) {
             setErrorMessage("Experiments is missing.");
             return false;
+        }
+
+        if (!TabHelper.validateFilenameExtension(textKModel.getText(), ModelFileTypeConstants.KMODEL_FILE_EXTENSION)) {
+        	setErrorMessage("KModel is missing.");
+        	return false;
         }
         
         if (!TabHelper.validateFilenameExtension(textStaticModel.getText(), ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION)) {
