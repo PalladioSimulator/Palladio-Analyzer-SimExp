@@ -6,6 +6,11 @@ import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
+import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
+import org.palladiosimulator.simexp.core.strategy.mape.Executer;
+import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
+import org.palladiosimulator.simexp.core.strategy.mape.Planner;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
@@ -15,8 +20,8 @@ public class RandomizedAdaptationStrategy extends ReliabilityPrioritizedStrategy
 
 	private final Random random = new Random();
 	
-	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec) {
-		super(responseTimeSpec);
+	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
+		super(responseTimeSpec, monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
 	}
 
 	@Override

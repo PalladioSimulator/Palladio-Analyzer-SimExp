@@ -18,19 +18,12 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-<<<<<<< HEAD
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
-import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
-=======
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
->>>>>>> master
+import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -59,13 +52,12 @@ public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
 	private final Policy<Action<?>> reconfSelectionPolicy;
 	private final boolean simulateWithUsageEvolution = true;
 	
-	// FIXME: add constructor param Kmodel kmodel + super(kmodel);
 	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-		super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
+		super(kmodel, experiment, simulationParameters);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 		
 		if (simulateWithUsageEvolution) {
@@ -87,13 +79,12 @@ public class LoadBalancingSimulationExecutor extends KmodelSimulationExecutor {
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-		//FIXME: add constructor param Kmodel kmodel in create method;
 	    public LoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
-	    		SimulationParameterConfiguration simulationParameters, List<PcmMeasurementSpecification> pcmSpecs) {
+	    		SimulationParameterConfiguration simulationParameters, List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
 	        return new LoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
 	    }
 	}
 

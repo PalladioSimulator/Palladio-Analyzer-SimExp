@@ -84,8 +84,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-		super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
+		super(kmodel, experiment, simulationParameters);
 		this.dbn = dbn;
 		this.pcmSpecs = pcmSpecs;
 		
@@ -109,7 +109,7 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
         ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
         VariableValueProvider vvp = new DummyVariableValueProvider();
 		// FIXME: check integration of knowledge lookup
-        EObject knowledgeModel;
+        EObject knowledgeModel = null;
         RuntimeValueProvider rvp = new KnowledgeLookup(knowledgeModel);
         KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
         org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
@@ -122,13 +122,12 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends KmodelSimulati
 	}
 	
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
-		//FIXME: add constructor param Kmodel kmodel in create method;
 	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
 	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
 	    }
 	}
 

@@ -23,7 +23,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
-import org.palladiosimulator.core.simulation.SimulationExecution;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -117,7 +116,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(), config.getQualityObjective(), 
             		experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, 
-            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles());
+            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), kmodel);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -147,7 +146,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
     		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
+    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Kmodel kmodel) {
     	
     	return switch (simulationEngine) {
     		case SimulationConstants.SIMULATION_ENGINE_PCM ->{
@@ -161,19 +160,19 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      				case SimulationConstants.PERFORMANCE -> {
      					LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory();
      					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     							probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
      				}
      			
      				case SimulationConstants.RELIABILITY -> {
      					RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory();
      					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     							probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
      				}
      			
      				case SimulationConstants.PERFORMABILITY -> {
      					FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
      					yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-     							probDistRepoLookup, simulationParameters, pcmSpecs);
+     							probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
      				}
      			
      				default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
@@ -196,13 +195,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     	};
     }
     
-    private SimulationExecution createSimulationExecutor(Kmodel kmodel) {
-//        LoadBalancingSimulationExecutorFactory loadBalancingSimulationExecutorFactory = new LoadBalancingSimulationExecutorFactory();
-//        SimulationExecution simulationExecutor = loadBalancingSimulationExecutorFactory.create(kmodel);
-        FaultTolerantLoadBalancingSimulationExecutorFactory ftLoadBalancingSimulationExecutorFactory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-        SimulationExecution simulationExecutor = ftLoadBalancingSimulationExecutorFactory.create(kmodel);
-        return simulationExecutor;
-    }
     
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
         SimExpWorkflowConfiguration workflowConfiguration = null;

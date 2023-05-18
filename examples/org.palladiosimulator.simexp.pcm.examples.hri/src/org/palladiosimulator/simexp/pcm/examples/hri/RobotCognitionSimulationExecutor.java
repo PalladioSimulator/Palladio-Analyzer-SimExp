@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
@@ -20,13 +21,26 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
+import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
+import org.palladiosimulator.simexp.core.strategy.mape.Executer;
+import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.examples.executor.KmodelSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
@@ -45,7 +59,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
+public class RobotCognitionSimulationExecutor extends KmodelSimulationExecutor {
     
     private static final Logger LOGGER = Logger.getLogger(RobotCognitionSimulationExecutor.class.getName());
 
@@ -80,14 +94,29 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-	    super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
+	    super(kmodel, experiment, simulationParameters);
 		this.dbn = dbn;
 		this.responseTimeSpec = pcmSpecs.get(0);
 		this.reliabilitySpec = buildReliabilitySpec();
 		//this.reconfigurationStrategy = new ReliabilityPrioritizedStrategy(responseTimeSpec);
 		//this.reconfigurationStrategy = new RandomizedAdaptationStrategy(responseTimeSpec);
-		this.reconfigurationStrategy = new StaticSystemSimulation();
+		
+		
+		DummyProbeValueProvider dummyPvp = new DummyProbeValueProvider();
+        ProbeValueProvider pvp = dummyPvp;
+        ProbeValueProviderMeasurementInjector pvpMeasurementInjector = dummyPvp;
+        VariableValueProvider vvp = new DummyVariableValueProvider();
+		// FIXME: check integration of knowledge lookup
+        EObject knowledgeModel = null;
+        RuntimeValueProvider rvp = new KnowledgeLookup(knowledgeModel);
+        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
+        org.palladiosimulator.simexp.core.strategy.mape.Monitor monitor = null;
+        Analyzer analyzer = kmodelInterpreter;
+        Planner planner = kmodelInterpreter;
+        Executer executer = null;
+		
+		this.reconfigurationStrategy = new StaticSystemSimulation(monitor, analyzer, planner, executer, responseTimeSpec, pvpMeasurementInjector);
 		
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
@@ -101,9 +130,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, Kmodel kmodel) {
 	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, kmodel);
 	    }
 	}
 	
