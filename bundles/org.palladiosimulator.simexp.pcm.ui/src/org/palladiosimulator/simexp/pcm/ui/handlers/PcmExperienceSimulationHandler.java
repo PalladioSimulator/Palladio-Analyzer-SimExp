@@ -15,8 +15,8 @@ public class PcmExperienceSimulationHandler extends AbstractHandler {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 		MessageDialog.openInformation(window.getShell(), "Ui", "Hello, Eclipse world");
 
-		PcmExperienceSimulationExecutor.get().execute();
-		PcmExperienceSimulationExecutor.get().evaluate();
+//		PcmExperienceSimulationExecutor.get().execute();
+//		PcmExperienceSimulationExecutor.get().evaluate();
 	
 		return null;
 	}
