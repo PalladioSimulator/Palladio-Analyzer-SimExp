@@ -40,5 +40,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.reliability,
  org.palladiosimulator.solver,
  org.palladiosimulator.dependability.reliability.uncertainty,
- org.palladiosimulator.dependability.reliability.uncertainty.solver
+ org.palladiosimulator.dependability.reliability.uncertainty.solver,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.param
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

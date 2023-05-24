@@ -20,17 +20,12 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
-import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
@@ -104,7 +99,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 		LOGGER.info("***********************************************************************");
 	}
 
-
+/*
 	@Override
 	@SuppressWarnings("unchecked")
 	protected ExperienceSimulator createSimulator() {
@@ -132,6 +127,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 				  	.done()
 				.build();
 	}
+	*/
 	
 	private RewardEvaluator getRewardEvaluator() {
 		class RealValuedReward extends RewardImpl<Double> {

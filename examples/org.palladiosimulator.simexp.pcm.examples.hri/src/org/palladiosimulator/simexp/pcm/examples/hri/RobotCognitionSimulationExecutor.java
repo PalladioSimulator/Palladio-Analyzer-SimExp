@@ -28,7 +28,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
     
     private static final Logger LOGGER = Logger.getLogger(RobotCognitionSimulationExecutor.class.getName());
 
-	public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
+	public static class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
+		private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy;
+		
+		public RobotCognitionBeforeExecutionInitialization(ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy) {
+			this.reconfigurationStrategy = reconfigurationStrategy;
+		}
 		
 		@Override
 		public void initialize() {

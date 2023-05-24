@@ -1,10 +1,13 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
 
@@ -16,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -36,7 +40,6 @@ import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
-import org.palladiosimulator.simexp.core.builder.ExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -59,7 +62,18 @@ import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.EnergyConsumptionPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.GlobalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.LocalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.PacketLossPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTEnvironemtalDynamics;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationParamsLoader;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.hri.RealValuedReward;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionEnvironmentalDynamics;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor;
@@ -82,6 +96,9 @@ import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.Fa
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.LoadBalancingEmptyReconfigurationPlanningStrategy;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
+import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
+import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
+import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
@@ -96,10 +113,10 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
@@ -174,41 +191,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
     
-    private ExperienceSimulator createExperienceSimulator(Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs, 
-    		List<ExperienceSimulationRunner> runners, SimulationParameterConfiguration params, Initializable beforeExecution, EnvironmentProcess envProcess,
-    		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, RewardEvaluator evaluator, boolean hidden) {
-    	
-    	return PcmExperienceSimulationBuilder.newBuilder()
-    			.makeGlobalPcmSettings()
-    				.withInitialExperiment(experiment)
-    				.andSimulatedMeasurementSpecs(new HashSet<>(specs))
-    				.addExperienceSimulationRunners(new HashSet<>(runners))
-    				.done()
-    			.createSimulationConfiguration()
-    				.withSimulationID(params.getSimulationID())
-    				.withNumberOfRuns(params.getNumberOfRuns())
-    				.andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
-    				.andOptionalExecutionBeforeEachRun(beforeExecution)
-    				.done()
-    			.specifySelfAdaptiveSystemState()
-    				.asEnvironmentalDrivenProcess(envProcess)
-    				.asPartiallyEnvironmentalDrivenProcess(navigator)
-    				.asHiddenProcess(hidden)
-    				.done()
-    			.createReconfigurationSpace()
-    				.addReconfigurations(new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations()))
-    				.andReconfigurationStrategy(reconfStrategy)
-    				.done()
-    			.specifyRewardHandling()
-    				.withRewardEvaluator(evaluator)
-    				.done()
-    			.build();	
-    }
-    
     @SuppressWarnings("unchecked")
-    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment, 
-    		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
-    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
+    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment,
+    		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
+    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
     		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
     		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
     	
@@ -226,9 +212,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      							Threshold.lessThanOrEqualTo(LoadBalancingSimulationExecutor.UPPER_THRESHOLD_RT));
      					RewardEvaluator evaluator = ThresholdBasedRewardEvaluator.with(threshold);
      					
+     					Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+     					
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, List.of(new PcmExperienceSimulationRunner()), 
      							simulationParameters, new GlobalPcmBeforeExecutionInitialization(), VaryingInterarrivelRateProcess.get(dbn), null, 
-     							new NStepLoadBalancerStrategy(2, pcmSpecs.get(0)), evaluator, false);
+     							new NStepLoadBalancerStrategy(2, pcmSpecs.get(0)), reconfigurations, evaluator, false);
      					
      					LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory();
      					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
@@ -255,10 +243,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 						};
 						
 						ReconfigurationStrategy<?> reconfStrategy = new StaticSystemSimulation();
+						
+						Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
      					
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, List.of(runner), simulationParameters, 
-     							new RobotCognitionBeforeExecutionInitialization(), RobotCognitionEnvironmentalDynamics.get(dbn), null,
-     							(Policy<Action<?>>) reconfStrategy, evaluator, true);
+     							new RobotCognitionBeforeExecutionInitialization(reconfStrategy), RobotCognitionEnvironmentalDynamics.get(dbn), null,
+     							(Policy<Action<?>>) reconfStrategy, reconfigurations, evaluator, true);
      					
      					RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory();
      					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
@@ -279,9 +269,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      					LoadBalancingEmptyReconfigurationPlanningStrategy reconfStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(pcmSpecs.get(0), config, strategy);
      					ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), config, reconfStrategy);
      					
+     					Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+     					
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, List.of(new PerformabilityPcmExperienceSimulationRunner()), 
-     							simulationParameters, new GlobalPcmBeforeExecutionInitialization(), FaultTolerantVaryingInterarrivelRateProcess.get(dbn), null, 
-     							(Policy<Action<?>>) reconfSelectionPolicy, evaluator, false);
+     							simulationParameters, new GlobalPcmBeforeExecutionInitialization(), FaultTolerantVaryingInterarrivelRateProcess.get(dbn), null,
+     							(Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, false);
      					
      					FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
      					yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
@@ -294,22 +286,92 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		
     		case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
     			PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
-    			List<SimulatedMeasurementSpecification> prismSpecs = IntStream
+    			List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
     					.range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
     					.mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
-    					.filter(SimulatedMeasurementSpecification.class::isInstance)
-    					.map(SimulatedMeasurementSpecification.class::cast)
     					.toList();
     			
-    			//ExperienceSimulator simulator = createExperienceSimulator(experiment, prismSpecs);
+    			URI uri = URI.createPlatformResourceURI(Paths.get(DeltaIoTSimulationExecutor.DELTAIOT_PATH, DeltaIoTSimulationExecutor.PRISM_FOLDER).toString(), true);
+    			File prismLogFile = new File(CommonPlugin.resolve(uri).toFileString());
+    			
+    			Set<PrismFileUpdater> prismFileUpdaters = new HashSet<>();
+    			prismFileUpdaters.add(new PacketLossPrismFileUpdater((PrismSimulatedMeasurementSpec) prismSpecs.get(0)));
+    			prismFileUpdaters.add(new EnergyConsumptionPrismFileUpdater((PrismSimulatedMeasurementSpec) prismSpecs.get(1)));
+    			PrismGenerator prismGenerator = new PrismFileUpdateGenerator(prismFileUpdaters);
+    			
+    			DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader().load(DeltaIoTSimulationExecutor.DISTRIBUTION_FACTORS);
+    			ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner(prismGenerator, prismLogFile, reconfParamsRepo);
+    			
+    			Policy<Action<?>> reconfSelectionPolicy =  LocalQualityBasedReconfigurationStrategy.newBuilder()
+    					.withReconfigurationParams(reconfParamsRepo)
+    					.andPacketLossSpec((PrismSimulatedMeasurementSpec) prismSpecs.get(0))
+    					.andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) prismSpecs.get(1))
+    					.build();
+    			
+    			Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(prismSpecs.get(0), GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
+    			Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(prismSpecs.get(1), GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
+    			
+    			ExperienceSimulator simulator = createExperienceSimulator(experiment, prismSpecs, List.of(runner), simulationParameters, new GlobalPcmBeforeExecutionInitialization(),
+    					null, DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn), reconfSelectionPolicy,  getAllReconfigurations(reconfParamsRepo),
+    					ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold, lowerEnergyConsumptionThreshold), false);
     			
     			DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
-    			yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, 
+    			yield factory.create(simulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
     					probDistRepoLookup, simulationParameters, prismSpecs);
     		}
     		
     		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
     	};
+    }
+    
+    private Set<Reconfiguration<?>> getAllReconfigurations(DeltaIoTReconfigurationParamRepository reconfParamsRepo) {
+		Set<Reconfiguration<?>> reconfs = Sets.newHashSet();
+
+		List<QVToReconfiguration> qvts = QVToReconfigurationManager.get().loadReconfigurations();
+		for (QVToReconfiguration each : qvts) {
+			if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(each)) {
+				reconfs.add(new DistributionFactorReconfiguration(each, reconfParamsRepo.getDistributionFactors()));
+			} else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
+				reconfs.add(new TransmissionPowerReconfiguration(each, reconfParamsRepo.getTransmissionPower()));
+			}
+		}
+
+		if (reconfs.isEmpty()) {
+			// TODO exception handling
+			throw new RuntimeException("No DeltaIoT reconfigutations could be found or generated");
+		}
+		return reconfs;
+	}
+    
+    private ExperienceSimulator createExperienceSimulator(Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs, 
+    		List<ExperienceSimulationRunner> runners, SimulationParameterConfiguration params, Initializable beforeExecution, EnvironmentProcess envProcess,
+    		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, RewardEvaluator evaluator, boolean hidden) {
+    	
+    	return PcmExperienceSimulationBuilder.newBuilder()
+    			.makeGlobalPcmSettings()
+    				.withInitialExperiment(experiment)
+    				.andSimulatedMeasurementSpecs(new HashSet<>(specs))
+    				.addExperienceSimulationRunners(new HashSet<>(runners))
+    				.done()
+    			.createSimulationConfiguration()
+    				.withSimulationID(params.getSimulationID())
+    				.withNumberOfRuns(params.getNumberOfRuns())
+    				.andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
+    				.andOptionalExecutionBeforeEachRun(beforeExecution)
+    				.done()
+    			.specifySelfAdaptiveSystemState()
+    				.asEnvironmentalDrivenProcess(envProcess)
+    				.asPartiallyEnvironmentalDrivenProcess(navigator)
+    				.asHiddenProcess(hidden)
+    				.done()
+    			.createReconfigurationSpace()
+    				.addReconfigurations(reconfigurations)
+    				.andReconfigurationStrategy(reconfStrategy)
+    				.done()
+    			.specifyRewardHandling()
+    				.withRewardEvaluator(evaluator)
+    				.done()
+    			.build();	
     }
     
     private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {
@@ -395,7 +457,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         		configuredMonitors.addAll((List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
             }
 	            
-            @SuppressWarnings("unchecked")
             MonitorConfiguration monitors = new MonitorConfiguration(monitorRepositoryFile, configuredMonitors);
 
             /** simulation type = PRISM */
@@ -407,7 +468,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             	prismProperties.addAll(launchConfigPrismProperties);
             	prismModules.addAll(launchConfigModulesProperties);
             }
-            @SuppressWarnings("unchecked")
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
             
             
