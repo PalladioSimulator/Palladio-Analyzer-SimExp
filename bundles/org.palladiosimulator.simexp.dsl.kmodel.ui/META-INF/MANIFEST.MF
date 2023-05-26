@@ -17,7 +17,7 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.kmodel;bundle-version="[0.1.0,1
  org.eclipse.compare,
  org.eclipse.xtext.builder
 Import-Package: org.apache.log4j
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.simexp.dsl.kmodel.ui.quickfix,
  org.palladiosimulator.simexp.dsl.kmodel.ui.contentassist,
  org.palladiosimulator.simexp.dsl.kmodel.ui.internal

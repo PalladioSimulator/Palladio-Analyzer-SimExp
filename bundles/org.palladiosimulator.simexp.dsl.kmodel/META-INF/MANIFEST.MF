@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.util,
  org.eclipse.emf.common,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.simexp.dsl.kmodel.kmodel.util,
  org.palladiosimulator.simexp.dsl.kmodel.validation,
  org.palladiosimulator.simexp.dsl.kmodel.kmodel,

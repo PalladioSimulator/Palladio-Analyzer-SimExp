@@ -10,6 +10,6 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.kmodel;bundle-version="[0.1.0,1
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.palladiosimulator.simexp.dsl.kmodel.ide.contentassist.antlr.internal,
  org.palladiosimulator.simexp.dsl.kmodel.ide.contentassist.antlr
