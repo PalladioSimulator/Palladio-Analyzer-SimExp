@@ -46,7 +46,6 @@ import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 
 import com.google.common.collect.Lists;

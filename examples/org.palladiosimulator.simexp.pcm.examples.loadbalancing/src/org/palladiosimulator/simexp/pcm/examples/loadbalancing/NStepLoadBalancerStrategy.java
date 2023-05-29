@@ -17,15 +17,17 @@ public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
 	
 	private final static String SIMPLE_ADAPTATION_STRATEGY_NAME = "StepAdaptationStrategy";
 	
-	private final Threshold upperRtThreshold = Threshold.lessThanOrEqualTo(LoadBalancingSimulationExecutor.UPPER_THRESHOLD_RT);
-	private final Threshold lowerRtThreshold = Threshold.greaterThanOrEqualTo(LoadBalancingSimulationExecutor.LOWER_THRESHOLD_RT);
+	private final Threshold upperRtThreshold;;
+	private final Threshold lowerRtThreshold;
 	
 	private final int stepSize;
 	private final PcmMeasurementSpecification pcmSpec;
 	
-	public NStepLoadBalancerStrategy(int stepSize, PcmMeasurementSpecification pcmSpec) {
+	public NStepLoadBalancerStrategy(int stepSize, PcmMeasurementSpecification pcmSpec, double upperThresholdRt, double lowerThresholdRt) {
 		this.stepSize = stepSize;
 		this.pcmSpec = pcmSpec;
+		this.upperRtThreshold = Threshold.lessThanOrEqualTo(upperThresholdRt);
+		this.lowerRtThreshold = Threshold.greaterThanOrEqualTo(lowerThresholdRt);
 	}
 	
 	@Override
