@@ -3,14 +3,14 @@ package org.palladiosimulator.simexp.pcm.examples.hri;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
-import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -21,27 +21,24 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	
 	public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 	
-	private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy;
-	
-	public RobotCognitionSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment , SimulationParameterConfiguration simulationParameters, 
-			ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy) {
-	    super(experienceSimulator, experiment, simulationParameters);
-		this.reconfigurationStrategy = reconfigurationStrategy;
+	public RobotCognitionSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment , SimulationParameters simulationParameters, 
+			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+	    super(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	}
 	
 	public static final class RobotCognitionSimulationExecutorFactory {
-	    public RobotCognitionSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters,
-	    		ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy) {
-	        return new RobotCognitionSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfigurationStrategy);
+	    public RobotCognitionSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters,
+	    		Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+	        return new RobotCognitionSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	    }
 	}
 	
 	@Override
 	public void evaluate() {
-		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfigurationStrategy.getId());
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfSelectionPolicy.getId());
 		TotalRewardCalculation evaluator = new ExpectedRewardEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
 		LOGGER.info("***********************************************************************");
-		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
+		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
 	}
 }

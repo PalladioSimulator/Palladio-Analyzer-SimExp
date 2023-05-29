@@ -10,7 +10,7 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -19,18 +19,15 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
     public final static double UPPER_THRESHOLD_RT = 2.0;
 	public final static double LOWER_THRESHOLD_RT = 0.3;
 	
-	private final Policy<Action<?>> reconfSelectionPolicy;
-	
-	private LoadBalancingSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters,
-			Policy<Action<?>> reconfSelectionPolicy) {
-		super(experienceSimulator, experiment, simulationParameters);
-		this.reconfSelectionPolicy = reconfSelectionPolicy;
+	private LoadBalancingSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters,
+			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+		super(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	}
 	
 	public static final class LoadBalancingSimulationExecutorFactory {
-	    public LoadBalancingSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters, 
-	    		Policy<Action<?>> reconfSelectionPolicy) {
-	        return new LoadBalancingSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy);
+	    public LoadBalancingSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters, 
+	    		Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+	        return new LoadBalancingSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	    }
 	}
 

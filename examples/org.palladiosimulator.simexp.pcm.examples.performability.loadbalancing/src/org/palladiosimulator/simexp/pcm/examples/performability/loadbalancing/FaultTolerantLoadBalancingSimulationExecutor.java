@@ -8,8 +8,10 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceSimulationExecutor {
     
@@ -18,19 +20,16 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
-	
-	private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy;
 		
-	private FaultTolerantLoadBalancingSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters, 
-			ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy) {
-		super(experienceSimulator, experiment, simulationParameters);
-        this.reconfSelectionPolicy = reconfSelectionPolicy;
+	private FaultTolerantLoadBalancingSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters, 
+			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+		super(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	}
 	
 	public static final class FaultTolerantLoadBalancingSimulationExecutorFactory {
-	    public FaultTolerantLoadBalancingSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameterConfiguration simulationParameters, 
-				ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy) {
-	        return new FaultTolerantLoadBalancingSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy);
+	    public FaultTolerantLoadBalancingSimulationExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters, 
+				Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+	        return new FaultTolerantLoadBalancingSimulationExecutor(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
 	    }
 	}
 

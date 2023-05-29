@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import com.google.common.collect.Lists;
@@ -59,22 +59,13 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	private final static String SIMULATION_ID = "UdacityChallenge";
 	private final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI("org.palladiosimulator.simexp.pcm.examples.udacitychallenge/SteeringAnglePredictionUncertaintyModel.uncertainty", true);
 	
-	private final DynamicBayesianNetwork dbn;
 	private final List<SimulatedMeasurementSpecification> pcmSpecs;
 	private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy;
 	
-	private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
-	private final IProbabilityDistributionFactory probabilityDistributionFactory;
-	private final ParameterParser parameterParser;
-	private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-	
-	private UdacitySimExpExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
-		super(experienceSimulator, experiment, simulationParameters);
-		this.dbn = dbn;
-		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
-		this.probabilityDistributionFactory = probabilityDistributionFactory;
-		this.parameterParser = parameterParser;
-		this.probDistRepoLookup = probDistRepoLookup;
+	private UdacitySimExpExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, 
+			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
+			SimulationParameters simulationParameters) {
+		super(experienceSimulator, experiment, simulationParameters, null, null);
 		this.pcmSpecs = createSimMeasurementSpecs();
 		//this.reconfigurationStrategy = new ImageBlurMitigationStrategy();
 		this.reconfigurationStrategy = new RandomizedFilterActivationStrategy();
@@ -84,7 +75,7 @@ public class UdacitySimExpExecutor extends PcmExperienceSimulationExecutor {
 	}
 	
 	public static final class UdacitySimExpExecutorFactory {
-	    public UdacitySimExpExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters) {
+	    public UdacitySimExpExecutor create(ExperienceSimulator experienceSimulator, Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters) {
 	        return new UdacitySimExpExecutor(experienceSimulator, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters);
 	    }
 	}

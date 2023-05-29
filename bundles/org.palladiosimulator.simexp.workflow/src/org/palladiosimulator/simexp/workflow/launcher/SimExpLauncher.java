@@ -41,6 +41,10 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -49,6 +53,7 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
+import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -102,7 +107,7 @@ import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimul
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
@@ -193,7 +198,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment,
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
-    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
+    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
     		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
     	
     	probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
@@ -232,8 +237,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, simulationRunners, 
      							simulationParameters, beforeExecutionInitializable, envProcess, null, reconfPolicy, reconfigurations, evaluator, false);
      					
+     					String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfPolicy.getId());
+     					TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(simulationParameters.getSimulationID(), sampleSpaceId);
+     					
      					LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory();
-     					yield factory.create(simulator, experiment, simulationParameters, reconfPolicy);
+     					yield factory.create(simulator, experiment, simulationParameters, reconfPolicy, rewardCalculation);
      				}
      			
      				case SimulationConstants.RELIABILITY -> {
@@ -254,8 +262,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, simulationParameters, 
      							beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfStrategy, reconfigurations, evaluator, true);
      					
+     					String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfStrategy.getId());
+     					TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
+     					
      					RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory();
-     					yield factory.create(simulator, experiment,  simulationParameters, reconfStrategy);
+     					yield factory.create(simulator, experiment,  simulationParameters, (Policy<Action<?>>) reconfStrategy, rewardCalculation);
      				}
      			
      				case SimulationConstants.PERFORMABILITY -> {
@@ -271,16 +282,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
      					
      					PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(FaultTolerantLoadBalancingSimulationExecutor.SERVER_FAILURE_TEMPLATE_ID, 
      							FaultTolerantLoadBalancingSimulationExecutor.LOAD_BALANCER_ID);
-     					NodeRecoveryStrategy strategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(config, new RepositoryModelLookup()
+     					NodeRecoveryStrategy nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy(config, new RepositoryModelLookup()
      					        , new ResourceEnvironmentModelLookup(), new RepositoryModelUpdater());
-     					LoadBalancingEmptyReconfigurationPlanningStrategy reconfStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(pcmSpecs.get(0), config, strategy);
-     					ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new PerformabilityStrategy(pcmSpecs.get(0), config, reconfStrategy);
+     					LoadBalancingEmptyReconfigurationPlanningStrategy emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy(pcmSpecs.get(0), config, nodeRecoveryStrategy);
+     					ReconfigurationStrategy<? extends Reconfiguration<?>> reconfStrategy = new PerformabilityStrategy(pcmSpecs.get(0), config, emptyStrategy);
+     					Policy<Action<?>> reconfSelectionPolicy = (Policy<Action<?>>) reconfStrategy;
      					
      					ExperienceSimulator simulator = createExperienceSimulator(experiment, pcmSpecs, runners, simulationParameters, 
      							beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, false);
      					
+     					String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfSelectionPolicy.getId());
+     					TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(simulationParameters.getSimulationID(), sampleSpaceId);
+     					
      					FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory();
-     					yield factory.create(simulator, experiment, simulationParameters, reconfSelectionPolicy);
+     					yield factory.create(simulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
      				}
      			
      				default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
@@ -332,8 +347,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     			ExperienceSimulator simulator = createExperienceSimulator(experiment, prismSpecs, List.of(runner), simulationParameters, 
     					beforeExecutionInitializable, null, navigator, reconfSelectionPolicy,  reconfigurations, evaluator, false);
     			
+    			String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationParameters.getSimulationID(), reconfSelectionPolicy.getId());
+					TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(simulationParameters.getSimulationID(), sampleSpaceId);
+    			
     			DeltaIoTSimulationExecutorFactory factory = new DeltaIoTSimulationExecutorFactory();
-    			yield factory.create(simulator, experiment, simulationParameters, reconfSelectionPolicy);
+    			yield factory.create(simulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation);
     		}
     		
     		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
@@ -341,7 +359,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
     
     private ExperienceSimulator createExperienceSimulator(Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs, 
-    		List<ExperienceSimulationRunner> runners, SimulationParameterConfiguration params, Initializable beforeExecution, EnvironmentProcess envProcess,
+    		List<ExperienceSimulationRunner> runners, SimulationParameters params, Initializable beforeExecution, EnvironmentProcess envProcess,
     		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, RewardEvaluator evaluator, boolean hidden) {
     	
     	return PcmExperienceSimulationBuilder.newBuilder()
@@ -429,7 +447,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             
             String simulationEngine = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
             
-            SimulationParameterConfiguration simulationParameters = new SimulationParameterConfiguration(
+            SimulationParameters simulationParameters = new SimulationParameters(
             		(String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
             		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
