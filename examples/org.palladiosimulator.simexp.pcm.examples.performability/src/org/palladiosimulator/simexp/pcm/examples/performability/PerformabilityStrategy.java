@@ -24,7 +24,6 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
-import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 
 import com.google.common.collect.Maps;
 

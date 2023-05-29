@@ -33,6 +33,7 @@ public class LoadBalancerNodeFailureRecoveryStrategy extends AbstractNodeRecover
     
 
     @Override
+    @SuppressWarnings("unchecked")
     public void execute(SelfAdaptiveSystemState<?> sasState, SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ", LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
         

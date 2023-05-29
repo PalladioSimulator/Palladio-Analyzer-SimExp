@@ -28,6 +28,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -59,28 +60,28 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 	@SuppressWarnings("unchecked")
 	public PcmExperienceSimulationExecutor create() {
 		UsageScenario usageScenario = experiment.getInitialModel().getUsageModel().getUsageScenario_UsageModel().get(0);
-			SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-			List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
-			relSpecs.add(reliabilitySpec);
+		SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
+		List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
+		relSpecs.add(reliabilitySpec);
 			
-			UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
-			List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner(predictionConfig, 
-					probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup));
+		UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
+		List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner(predictionConfig, 
+				probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup), new PcmExperienceSimulationRunner());
 			
-			ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new StaticSystemSimulation();
-			Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization(reconfSelectionPolicy);
-			EnvironmentProcess envProcess = RobotCognitionEnvironmentalDynamics.get(dbn);
-			RewardEvaluator evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
+		ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new StaticSystemSimulation();
+		Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization(reconfSelectionPolicy);
+		EnvironmentProcess envProcess = RobotCognitionEnvironmentalDynamics.get(dbn);
+		RewardEvaluator evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 			
-			Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
 			
-			ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
-					beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, true);
+		ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
+				beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, true);
 			
-			String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
-			TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(params.getSimulationID(), sampleSpaceId);
+		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
+		TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(params.getSimulationID(), sampleSpaceId);
 			
-			return new PcmExperienceSimulationExecutor(simulator, experiment, params, (Policy<Action<?>>) reconfSelectionPolicy, rewardCalculation);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, (Policy<Action<?>>) reconfSelectionPolicy, rewardCalculation);
 	}
 	
 	private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

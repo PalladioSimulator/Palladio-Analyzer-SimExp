@@ -67,10 +67,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     private static final Logger LOGGER = Logger.getLogger(SimExpLauncher.class.getName());
 
-    public SimExpLauncher() {
-
-    }
-
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
