@@ -6,6 +6,7 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 public abstract class PcmExperienceSimulationExecutor implements SimulationExecutor {
@@ -14,11 +15,12 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 	
 	protected final Experiment experiment;
 	protected final SimulationParameterConfiguration simulationParameters;
+	protected final IExperimentProvider experimentProvider;
 	
 	
 	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters) {
 		this.experiment = experiment;
-		ExperimentProvider.create(this.experiment);
+		this.experimentProvider = ExperimentProvider.create(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 		this.simulationParameters = simulationParameters;
 	}

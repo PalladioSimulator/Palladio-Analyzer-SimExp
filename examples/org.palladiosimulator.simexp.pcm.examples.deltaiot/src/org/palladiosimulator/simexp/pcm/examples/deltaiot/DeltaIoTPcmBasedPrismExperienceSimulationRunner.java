@@ -20,7 +20,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPower;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPrismExperienceSimulationRunner implements Initializable {
 
@@ -28,18 +28,19 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner extends PcmBasedPri
 	private final static int INITIAL_POWER_VALUE = 0;
 
 	private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
+	private final IExperimentProvider experimentProvider;
 
 	public DeltaIoTPcmBasedPrismExperienceSimulationRunner(PrismGenerator prismGenerator, File prismFolder,
-			DeltaIoTReconfigurationParamRepository reconfParamsRepo) {
+			DeltaIoTReconfigurationParamRepository reconfParamsRepo, IExperimentProvider experimentProvider) {
 		super(prismGenerator, prismFolder);
 
 		this.reconfParamsRepo = reconfParamsRepo;
+		this.experimentProvider = experimentProvider;
 	}
 	
 	@Override
 	public void initialize() {
-		PCMResourceSetPartition pcmPartition = ExperimentProvider.get().getExperimentRunner()
-				.getWorkingPartition();
+		PCMResourceSetPartition pcmPartition = experimentProvider.getExperimentRunner().getWorkingPartition();
 		updateModelReferences(pcmPartition);
 	}
 

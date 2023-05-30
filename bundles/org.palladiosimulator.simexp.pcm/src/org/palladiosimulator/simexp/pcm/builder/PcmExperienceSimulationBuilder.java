@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -21,6 +22,7 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 	private List<ExperienceSimulationRunner> simRunner = Lists.newArrayList();
 	private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
 	private Experiment initial = null;
+	private final IExperimentProvider experimentProvider;
 	
 	public class GlobalPcmSettingsBuilder {
 		
@@ -45,6 +47,10 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 		
 	}
 	
+	public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider) {
+		this.experimentProvider = experimentProvider;
+	}
+
 	@Override
 	public ExperienceSimulator build() {
 		//TODO Exception handling
@@ -58,8 +64,8 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 		return super.build();
 	}
 
-	public static PcmExperienceSimulationBuilder newBuilder() {
-		return new PcmExperienceSimulationBuilder();
+	public static PcmExperienceSimulationBuilder newBuilder(IExperimentProvider experimentProvider) {
+		return new PcmExperienceSimulationBuilder(experimentProvider);
 	}
 	
 	public GlobalPcmSettingsBuilder makeGlobalPcmSettings() {
@@ -73,7 +79,7 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 
 	@Override
 	protected InitialSelfAdaptiveSystemStateCreator createInitialSassCreator() {
-		return new InitialPcmStateCreator(specs);
+		return new InitialPcmStateCreator(specs, experimentProvider);
 	}
 
 }

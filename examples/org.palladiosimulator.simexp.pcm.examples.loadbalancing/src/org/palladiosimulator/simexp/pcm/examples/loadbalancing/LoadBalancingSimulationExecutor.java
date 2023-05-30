@@ -98,21 +98,21 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner(experimentProvider))
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	//.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get())
-				  	.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get(dbn))
+				  	.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get(dbn, experimentProvider))
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())

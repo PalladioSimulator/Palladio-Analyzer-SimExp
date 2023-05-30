@@ -11,7 +11,6 @@ import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
@@ -21,15 +20,17 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
     
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
+    private final IExperimentProvider experimentProvider;
 
-    public PerformabilityPcmExperienceSimulationRunner() {
-        this(new EDP2DataSource(), ExperimentProvider.get());
+    public PerformabilityPcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
+        this(new EDP2DataSource(), experimentProvider);
     }
 
     public PerformabilityPcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
         super(dataSource, experimentProvider);
         failureTypeCeator = new NodeFailureTypeCreator();
         failureStateCreator = new NodeFailureStateCreator();
+        this.experimentProvider = experimentProvider;
     }
 
     
@@ -41,13 +42,13 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
             // create and inject failure models into blackboard partition
             FailureTypeRepository failureTypeRepo = failureTypeCeator.create();
             FailureScenarioRepository failureScenarioRepo = failureStateCreator.createRepo();
-            ExperimentProvider.get().getExperimentRunner().injectFailureScenario(failureScenarioRepo, failureTypeRepo);
+            experimentProvider.getExperimentRunner().injectFailureScenario(failureScenarioRepo, failureTypeRepo);
             LOGGER.info("Initialized failure scenario models.");
         } catch (IOException e) {
             LOGGER.error("Failed to inject failurescenario models into blackboard partition", e);
         }
         
-        ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
+        ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner().getPlainWorkingPartition();
         
         FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);;
         FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition.getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository()).get(0);
@@ -59,8 +60,8 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
     
     @Override
         protected void postSimulate(SelfAdaptiveSystemState<?> sasState) {
-            ExperimentRunner expRunner = ExperimentProvider.get().getExperimentRunner();
-            expRunner.clearFailureScenarios();
+            ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
+            expRunner.clearFailureScenarios(experimentProvider);
             LOGGER.info("Cleared failurescenarios model.");
         }
     

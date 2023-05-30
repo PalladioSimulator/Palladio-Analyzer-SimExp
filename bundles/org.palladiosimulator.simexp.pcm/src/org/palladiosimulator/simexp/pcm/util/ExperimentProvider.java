@@ -4,7 +4,6 @@ import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.lo
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -129,9 +128,6 @@ public class ExperimentProvider implements IExperimentProvider {
 		return providerInstance;
 	}
 
-	public static IExperimentProvider get() {
-		return Objects.requireNonNull(providerInstance, "Blackboard has not been initialized yet.");
-	}
 
 	@Override
 	public void initializeExperimentRunner() {

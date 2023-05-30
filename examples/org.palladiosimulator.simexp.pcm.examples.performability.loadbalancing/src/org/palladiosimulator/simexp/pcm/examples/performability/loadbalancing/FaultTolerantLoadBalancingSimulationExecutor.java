@@ -113,20 +113,20 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner(experimentProvider))
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
 					.done()
 				.specifySelfAdaptiveSystemState()
-				  	.asEnvironmentalDrivenProcess(FaultTolerantVaryingInterarrivelRateProcess.get(dbn))
+				  	.asEnvironmentalDrivenProcess(FaultTolerantVaryingInterarrivelRateProcess.get(dbn, experimentProvider))
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())
