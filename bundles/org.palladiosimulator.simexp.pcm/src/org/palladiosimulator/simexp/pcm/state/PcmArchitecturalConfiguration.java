@@ -11,8 +11,8 @@ import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.compare.PcmModelComparison;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -25,14 +25,16 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
     
     private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class.getName());
     private final IExperimentProvider experimentProvider;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-	private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider) {
+	private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		super(configuration);
 		this.experimentProvider = experimentProvider;
+		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 	}
 
-	public static PcmArchitecturalConfiguration of(PCMInstance configuration, IExperimentProvider experimentProvider) {
-		return new PcmArchitecturalConfiguration(configuration, experimentProvider);
+	public static PcmArchitecturalConfiguration of(PCMInstance configuration, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+		return new PcmArchitecturalConfiguration(configuration, experimentProvider, qvtoReconfigurationManager);
 	}
 
 	@Override
@@ -74,11 +76,11 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		if (qvtoReconf.isEmptyReconfiguration() == false) {
 		    String transformationName = qvtoReconf.getTransformation().getTransformationName();
             LOGGER.info(String.format("'EXECUTE' apply reconfiguration '%s'", transformationName));
-			doApply(qvtoReconf, new ResourceTableManager());
+			doApply(qvtoReconf, new ResourceTableManager(), qvtoReconfigurationManager);
 		}
 
 		LOGGER.info("'EXECUTE' step done");
-		PcmArchitecturalConfiguration updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration(makeSnapshot(experimentProvider), experimentProvider);
+		PcmArchitecturalConfiguration updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration(makeSnapshot(experimentProvider), experimentProvider, qvtoReconfigurationManager);
 		return updatedArchitecturalConfiguration;
 	}
 
@@ -86,9 +88,9 @@ public class PcmArchitecturalConfiguration extends ArchitecturalConfiguration<PC
 		return experimentProvider.getExperimentRunner().makeSnapshotOfPCM();
 	}
 
-	private void doApply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager) {
+	private void doApply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager, IQVToReconfigurationManager qvtoReconfigurationManager) {
 	    boolean succeded = false;
-		QVTOReconfigurator qvtoReconf = QVToReconfigurationManager.get().getReconfigurator(experimentProvider);
+		QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
 		succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
 		String transformationName = reconf.getTransformation().getTransformationName();
 		if (succeded) {

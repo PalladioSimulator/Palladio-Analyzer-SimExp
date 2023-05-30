@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ import com.google.common.collect.Maps;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 //TODO Refactor to QVTOTransformationJob
-public class QVToReconfigurationManager {
+public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
 	private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
 
@@ -36,23 +35,7 @@ public class QVToReconfigurationManager {
 	private final List<ModelTransformation<? extends Object>> transformations = Lists.newArrayList();
 	private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
-	public static QVToReconfigurationManager managerInstance = null;
-
-	public static QVToReconfigurationManager create(String qvtoFilePath) {
-		if (managerInstance == null) {
-			managerInstance = new QVToReconfigurationManager(qvtoFilePath);
-		} else {
-			// TODO logging
-		}
-		return managerInstance;
-	}
-
-	public static QVToReconfigurationManager get() {
-		// TODO exception handling
-		return Objects.requireNonNull(managerInstance, "");
-	}
-
-	private QVToReconfigurationManager(String qvtoFilePath) {
+	public QVToReconfigurationManager(String qvtoFilePath) {
 		this.reconfigurator = new QVTOReconfigurator(null, null);
 		this.loadTransformations(qvtoFilePath);
 	}
@@ -67,11 +50,13 @@ public class QVToReconfigurationManager {
 		transformationCache.getAll().forEach(t -> this.transformations.add(t));
 	}
 
+	@Override
 	public List<QVToReconfiguration> loadReconfigurations() {
 		return transformations.stream().filter(each -> each instanceof QvtoModelTransformation)
 				.map(each -> QVToReconfiguration.of((QvtoModelTransformation) each)).collect(Collectors.toList());
 	}
 
+	@Override
 	public QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider) {
 		reconfigurator.setPCMPartitionManager(getPartitionManager(experimentProvider));
 		return reconfigurator;
@@ -106,10 +91,12 @@ public class QVToReconfigurationManager {
 		return config;
 	}
 
+	@Override
 	public void resetReconfigurator() {
 		reconfigurator = new QVTOReconfigurator(null, null);
 	}
 
+	@Override
 	public void addModelsToTransform(Resource modelsToTransform) {
 		additonalModelsToTransform.add(modelsToTransform);
 	}

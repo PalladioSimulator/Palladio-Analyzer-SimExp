@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
@@ -15,12 +15,13 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 	protected final Experiment experiment;
 	protected final SimulationParameterConfiguration simulationParameters;
 	protected final IExperimentProvider experimentProvider;
+	protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 	
 	
-	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters, IExperimentProvider experimentProvider) {
+	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		this.experiment = experiment;
 		this.experimentProvider = experimentProvider;
-		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
+		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 		this.simulationParameters = simulationParameters;
 	}
 
@@ -32,10 +33,6 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 
 	protected abstract ExperienceSimulator createSimulator();
 	
-	private String getReconfigurationRulesLocation() {
-		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
-		experiment.getInitialModel().setReconfigurationRules(null);
-		return path;
-	}
+
 	
 }

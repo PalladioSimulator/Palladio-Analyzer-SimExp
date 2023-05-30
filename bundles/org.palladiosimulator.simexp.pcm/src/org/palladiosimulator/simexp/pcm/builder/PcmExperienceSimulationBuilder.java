@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
@@ -22,6 +23,7 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 	private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
 	private Experiment initial = null;
 	private final IExperimentProvider experimentProvider;
+	private final IQVToReconfigurationManager qvtoReconfigurationManager;
 	
 	public class GlobalPcmSettingsBuilder {
 		
@@ -46,8 +48,9 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 		
 	}
 	
-	public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider) {
+	public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		this.experimentProvider = experimentProvider;
+		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 	}
 
 	@Override
@@ -60,8 +63,8 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 		return super.build();
 	}
 
-	public static PcmExperienceSimulationBuilder newBuilder(IExperimentProvider experimentProvider) {
-		return new PcmExperienceSimulationBuilder(experimentProvider);
+	public static PcmExperienceSimulationBuilder newBuilder(IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+		return new PcmExperienceSimulationBuilder(experimentProvider, qvtoReconfigurationManager);
 	}
 	
 	public GlobalPcmSettingsBuilder makeGlobalPcmSettings() {
@@ -75,7 +78,7 @@ public class PcmExperienceSimulationBuilder extends ExperienceSimulationBuilder 
 
 	@Override
 	protected InitialSelfAdaptiveSystemStateCreator createInitialSassCreator() {
-		return new InitialPcmStateCreator(specs, experimentProvider);
+		return new InitialPcmStateCreator(specs, experimentProvider, qvtoReconfigurationManager);
 	}
 
 }
