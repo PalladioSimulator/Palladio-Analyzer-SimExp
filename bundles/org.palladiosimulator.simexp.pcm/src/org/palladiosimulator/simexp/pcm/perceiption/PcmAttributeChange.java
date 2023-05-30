@@ -6,31 +6,33 @@ import java.util.function.Function;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class PcmAttributeChange implements PcmModelChange {
 
 	private final Function<ExperimentRunner, EObject> retrieveTargetHandler;
 	private final String attributeName;
+	private final IExperimentProvider experimentProvider;
 	
-	public PcmAttributeChange(Function<ExperimentRunner, EObject> retrieveTargetHandler, String attributeName) {
+	public PcmAttributeChange(Function<ExperimentRunner, EObject> retrieveTargetHandler, String attributeName, IExperimentProvider experimentProvider) {
 		this.retrieveTargetHandler = retrieveTargetHandler;
 		this.attributeName = attributeName;
+		this. experimentProvider = experimentProvider;
 	}
 	
 	@Override
 	public void apply(PerceivedValue<?> change) {
 		Optional<?> newValue = change.getElement(attributeName);
 		if (newValue.isPresent()) {
-			applyChange(retrieveTarget(), newValue.get());
+			applyChange(retrieveTarget(experimentProvider), newValue.get());
 		} else {
 			//TODO logging or exception...
 		}
 	}
 
-	private EObject retrieveTarget() {
-		return retrieveTargetHandler.apply(ExperimentProvider.get().getExperimentRunner());
+	private EObject retrieveTarget(IExperimentProvider experimentProvider) {
+		return retrieveTargetHandler.apply(experimentProvider.getExperimentRunner());
 	}
 	
 	private void applyChange(EObject target, Object newValue) {

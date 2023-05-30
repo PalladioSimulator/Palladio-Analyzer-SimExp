@@ -8,18 +8,20 @@ import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class InitialPcmStateCreator implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator {
 
 	private static Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs = null;
+	private final IExperimentProvider experimentProvider;
 	
-	public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs) { 
+	public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider) { 
 		pcmMeasurementSpecs = specs;
+		this.experimentProvider = experimentProvider;
 	}
 	
-	public static InitialPcmStateCreator with(Set<SimulatedMeasurementSpecification> specs) {
-		return new InitialPcmStateCreator(specs);
+	public static InitialPcmStateCreator with(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider) {
+		return new InitialPcmStateCreator(specs, experimentProvider);
 	}
 
 	public static Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
@@ -39,7 +41,7 @@ public class InitialPcmStateCreator implements SelfAdaptiveSystemStateSpaceNavig
 
 	@Override
 	public ArchitecturalConfiguration<?> getInitialArchitecturalConfiguration() {
-		return PcmArchitecturalConfiguration.of(ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM());
+		return PcmArchitecturalConfiguration.of(experimentProvider.getExperimentRunner().makeSnapshotOfPCM(), experimentProvider);
 	}
 	
 }

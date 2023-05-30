@@ -33,8 +33,9 @@ import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitializat
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 import com.google.common.collect.Sets;
 
@@ -62,8 +63,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PrismSimulatedMeasurementSpec> prismSpecs) {
-		super(experiment, simulationParameters);
+			List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
+		super(experiment, simulationParameters, experimentProvider);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 
 		this.prismSpecs = prismSpecs;
@@ -91,9 +92,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
-	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs) {
+	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
 	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs, experimentProvider);
 	    }
 	}
 	
@@ -112,7 +113,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(getPrismSpecs())
@@ -122,7 +123,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.withSimulationID(simulationParameters.getSimulationID()) // DeltaIoT
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) // 2
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) // 100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
 					.done()
 				.specifySelfAdaptiveSystemState()
 					.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
@@ -141,7 +142,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 		// return new PcmBasedPrismExperienceSimulationRunner(getPrismGenerator(),
 		// createPrismLogFile());
 		return new DeltaIoTPcmBasedPrismExperienceSimulationRunner(getPrismGenerator(), createPrismLogFile(),
-				reconfParamsRepo);
+				reconfParamsRepo, experimentProvider);
 	}
 
 	private File createPrismLogFile() {

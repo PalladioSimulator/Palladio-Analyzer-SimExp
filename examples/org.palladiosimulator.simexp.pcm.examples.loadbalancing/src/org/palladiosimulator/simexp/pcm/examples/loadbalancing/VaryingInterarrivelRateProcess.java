@@ -3,18 +3,13 @@ package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 import static java.util.stream.Collectors.toList;
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
-import static org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentalProcessBuilder.describedBy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -29,25 +24,17 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Conditi
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.usagemodel.OpenWorkload;
-import org.palladiosimulator.simexp.core.util.Pair;
-import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentModelBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.ScalarValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
-import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuilder;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
-import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -83,15 +70,15 @@ public class VaryingInterarrivelRateProcess {
 	private final EnvironmentProcess envProcess;
 	private final ProbabilityMassFunction initialDist;
 
-	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn) {
-	    initPcmAttributeChange();
+	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
+	    initPcmAttributeChange(experimentProvider);
 		this.initialDist = createInitialDist(dbn);
 		this.envProcess = createEnvironmentalProcess(dbn);
 	}
 	
-    private void initPcmAttributeChange() {
+    private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
         attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
-                PCM_SPECIFICATION_ATTRIBUTE);
+                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
         //attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE);
@@ -109,9 +96,9 @@ public class VaryingInterarrivelRateProcess {
 	}
 
 
-	public static EnvironmentProcess get(DynamicBayesianNetwork dbn) {
+	public static EnvironmentProcess get(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
 		if (processInstance == null) {
-			processInstance = new VaryingInterarrivelRateProcess(dbn);
+			processInstance = new VaryingInterarrivelRateProcess(dbn, experimentProvider);
 		}
 		return processInstance.envProcess;
 	}

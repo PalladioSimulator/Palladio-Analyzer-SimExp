@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelU
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 import com.google.common.collect.Sets;
@@ -67,8 +68,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-		super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
+		super(experiment, simulationParameters, experimentProvider);
 		this.dbn = dbn;
 		this.pcmSpecs = pcmSpecs;
 		
@@ -95,9 +96,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
 	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider);
 	    }
 	}
 
@@ -113,20 +114,20 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
-					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PerformabilityPcmExperienceSimulationRunner(experimentProvider))
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization())
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
 					.done()
 				.specifySelfAdaptiveSystemState()
-				  	.asEnvironmentalDrivenProcess(FaultTolerantVaryingInterarrivelRateProcess.get(dbn))
+				  	.asEnvironmentalDrivenProcess(FaultTolerantVaryingInterarrivelRateProcess.get(dbn, experimentProvider))
 					.done()
 				.createReconfigurationSpace()
 					.addReconfigurations(getAllReconfigurations())

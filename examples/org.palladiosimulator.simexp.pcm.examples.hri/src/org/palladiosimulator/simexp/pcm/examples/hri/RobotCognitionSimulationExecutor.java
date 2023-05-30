@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
@@ -51,6 +52,10 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 
 	public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
 		
+		public RobotCognitionBeforeExecutionInitialization(IExperimentProvider experimentProvider) {
+			super(experimentProvider);
+		}
+
 		@Override
 		public void initialize() {
 			super.initialize();
@@ -80,8 +85,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-	    super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
+	    super(experiment, simulationParameters, experimentProvider);
 		this.dbn = dbn;
 		this.responseTimeSpec = pcmSpecs.get(0);
 		this.reliabilitySpec = buildReliabilitySpec();
@@ -101,9 +106,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
 	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider);
 	    }
 	}
 	
@@ -118,18 +123,18 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder()
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
 					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner(probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup))
-					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner())
+					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner(experimentProvider))
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(simulationParameters.getSimulationID()) // RobotCognition
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //50
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization())
+					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization(experimentProvider))
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(RobotCognitionEnvironmentalDynamics.get(dbn))

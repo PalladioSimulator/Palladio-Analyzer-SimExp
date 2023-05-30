@@ -13,7 +13,7 @@ import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJ
 import org.palladiosimulator.commons.eclipseutils.FileHelper;
 import org.palladiosimulator.monitorrepository.MonitorRepository;
 import org.palladiosimulator.monitorrepository.MonitorRepositoryPackage;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.util.ModelTransformationCache;
@@ -72,26 +72,25 @@ public class QVToReconfigurationManager {
 				.map(each -> QVToReconfiguration.of((QvtoModelTransformation) each)).collect(Collectors.toList());
 	}
 
-	public QVTOReconfigurator getReconfigurator() {
-		reconfigurator.setPCMPartitionManager(getPartitionManager());
+	public QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider) {
+		reconfigurator.setPCMPartitionManager(getPartitionManager(experimentProvider));
 		return reconfigurator;
 	}
 
-	private PCMPartitionManager getPartitionManager() {
-		PCMResourceSetPartition partition = ExperimentProvider.get().getExperimentRunner()
-				.getWorkingPartition();
+	private PCMPartitionManager getPartitionManager(IExperimentProvider experimentProvider) {
+		PCMResourceSetPartition partition = experimentProvider.getExperimentRunner().getWorkingPartition();
 		for (Resource each : additonalModelsToTransform) {
 			partition.getResourceSet().getResources().add(each);
 		}
 		
 		MDSDBlackboard blackboard = new MDSDBlackboard();
 		blackboard.addPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID, partition);
-		return new PCMPartitionManager(blackboard, createNewConfig());
+		return new PCMPartitionManager(blackboard, createNewConfig(experimentProvider));
 	}
 
-	private SimuLizarWorkflowConfiguration createNewConfig() {
+	private SimuLizarWorkflowConfiguration createNewConfig(IExperimentProvider experimentProvider) {
 		Optional<MonitorRepository> monitorRepo = Optional.empty();
-		List<EObject> result = ExperimentProvider.get().getExperimentRunner().getWorkingPartition()
+		List<EObject> result = experimentProvider.getExperimentRunner().getWorkingPartition()
 				.getElement(MonitorRepositoryPackage.eINSTANCE.getMonitorRepository());
 		if (result.isEmpty() == false) {
 			monitorRepo = Optional.of(MonitorRepository.class.cast(result.get(0)));
