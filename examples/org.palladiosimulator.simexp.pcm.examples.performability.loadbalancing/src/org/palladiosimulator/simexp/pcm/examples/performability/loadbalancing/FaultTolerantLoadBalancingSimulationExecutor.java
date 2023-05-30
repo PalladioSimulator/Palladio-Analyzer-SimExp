@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelU
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 import com.google.common.collect.Sets;
@@ -67,8 +68,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs) {
-		super(experiment, simulationParameters);
+			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
+		super(experiment, simulationParameters, experimentProvider);
 		this.dbn = dbn;
 		this.pcmSpecs = pcmSpecs;
 		
@@ -95,9 +96,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
 	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider);
 	    }
 	}
 

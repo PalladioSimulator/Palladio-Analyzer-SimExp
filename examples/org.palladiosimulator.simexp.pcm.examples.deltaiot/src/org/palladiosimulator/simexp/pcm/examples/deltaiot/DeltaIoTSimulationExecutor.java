@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSp
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
 
 import com.google.common.collect.Sets;
@@ -62,8 +63,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PrismSimulatedMeasurementSpec> prismSpecs) {
-		super(experiment, simulationParameters);
+			List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
+		super(experiment, simulationParameters, experimentProvider);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 
 		this.prismSpecs = prismSpecs;
@@ -91,9 +92,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
-	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs) {
+	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
 	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs);
+	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs, experimentProvider);
 	    }
 	}
 	
