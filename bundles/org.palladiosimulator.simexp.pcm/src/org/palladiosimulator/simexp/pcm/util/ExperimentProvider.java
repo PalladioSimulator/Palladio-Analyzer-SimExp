@@ -113,20 +113,20 @@ public class ExperimentProvider implements IExperimentProvider {
 	private final Experiment initialExperiment;
 	private final PCMResourceSetPartition initialPartition;
 
-	private static ExperimentProvider providerInstance;
+//	private static ExperimentProvider providerInstance;
 
-	private ExperimentProvider(Experiment initialExperiment) {
+	public ExperimentProvider(Experiment initialExperiment) {
 		this.initialExperiment = normalizeExperiment(initialExperiment);
 		this.initialPartition = loadInitialPcmPartition(initialExperiment);
 		this.currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
-	public static ExperimentProvider create(Experiment initialExperiment) {
-		if (providerInstance == null) {
-			providerInstance = new ExperimentProvider(initialExperiment);
-		}
-		return providerInstance;
-	}
+//	public static ExperimentProvider create(Experiment initialExperiment) {
+//		if (providerInstance == null) {
+//			providerInstance = new ExperimentProvider(initialExperiment);
+//		}
+//		return providerInstance;
+//	}
 
 
 	@Override

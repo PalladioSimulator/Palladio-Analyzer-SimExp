@@ -20,7 +20,7 @@ public abstract class PcmExperienceSimulationExecutor implements SimulationExecu
 	
 	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters) {
 		this.experiment = experiment;
-		this.experimentProvider = ExperimentProvider.create(this.experiment);
+		this.experimentProvider = new ExperimentProvider(this.experiment);
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 		this.simulationParameters = simulationParameters;
 	}
