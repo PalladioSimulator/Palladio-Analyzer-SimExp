@@ -10,7 +10,6 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class PcmExperienceSimulationExecutor implements SimulationExecutor {
     
@@ -22,8 +21,6 @@ public class PcmExperienceSimulationExecutor implements SimulationExecutor {
 	protected final Policy<Action<?>> reconfSelectionPolicy;
 	protected final TotalRewardCalculation rewardCalculation;
 	
-//	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
-	private static PcmExperienceSimulationExecutor instance;
 	
 	public PcmExperienceSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters,
 			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
@@ -37,14 +34,6 @@ public class PcmExperienceSimulationExecutor implements SimulationExecutor {
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
 
-	public static PcmExperienceSimulationExecutor get() {
-	    if (instance == null) {
-	        instance = ServiceRegistry.get()
-	        		.findService(PcmExperienceSimulationExecutor.class)
-	        		.orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
-	    }
-		return instance;
-	}
 	
 	@Override
 	public void execute() {
