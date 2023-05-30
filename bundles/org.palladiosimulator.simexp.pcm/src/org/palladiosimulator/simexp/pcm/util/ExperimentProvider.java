@@ -22,7 +22,7 @@ import org.palladiosimulator.experimentautomation.experiments.InitialModel;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 
-public class ExperimentProvider {
+public class ExperimentProvider implements IExperimentProvider {
     
     private static final Logger LOGGER = Logger.getLogger(ExperimentProvider.class.getName());
 
@@ -128,14 +128,16 @@ public class ExperimentProvider {
 		}
 	}
 
-	public static ExperimentProvider get() {
+	public static IExperimentProvider get() {
 		return Objects.requireNonNull(providerInstance, "Blackboard has not been initialized yet.");
 	}
 
+	@Override
 	public void initializeExperimentRunner() {
 		currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
+	@Override
 	public ExperimentRunner getExperimentRunner() {
 		return currentRunner;
 	}

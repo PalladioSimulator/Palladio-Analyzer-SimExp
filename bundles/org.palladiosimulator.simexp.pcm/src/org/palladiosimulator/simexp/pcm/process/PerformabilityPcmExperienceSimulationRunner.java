@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
@@ -25,7 +26,7 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
         this(new EDP2DataSource(), ExperimentProvider.get());
     }
 
-    public PerformabilityPcmExperienceSimulationRunner(DataSource dataSource, ExperimentProvider experimentProvider) {
+    public PerformabilityPcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
         super(dataSource, experimentProvider);
         failureTypeCeator = new NodeFailureTypeCreator();
         failureStateCreator = new NodeFailureStateCreator();
