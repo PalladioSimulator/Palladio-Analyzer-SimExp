@@ -35,18 +35,7 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 	private final List<ModelTransformation<? extends Object>> transformations = Lists.newArrayList();
 	private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
-	public static QVToReconfigurationManager managerInstance = null;
-
-	public static QVToReconfigurationManager create(String qvtoFilePath) {
-		if (managerInstance == null) {
-			managerInstance = new QVToReconfigurationManager(qvtoFilePath);
-		} else {
-			// TODO logging
-		}
-		return managerInstance;
-	}
-
-	private QVToReconfigurationManager(String qvtoFilePath) {
+	public QVToReconfigurationManager(String qvtoFilePath) {
 		this.reconfigurator = new QVTOReconfigurator(null, null);
 		this.loadTransformations(qvtoFilePath);
 	}
