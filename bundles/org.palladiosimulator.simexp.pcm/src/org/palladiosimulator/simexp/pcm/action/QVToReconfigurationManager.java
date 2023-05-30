@@ -27,7 +27,7 @@ import com.google.common.collect.Maps;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 //TODO Refactor to QVTOTransformationJob
-public class QVToReconfigurationManager {
+public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
 	private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
 
@@ -47,7 +47,7 @@ public class QVToReconfigurationManager {
 		return managerInstance;
 	}
 
-	public static QVToReconfigurationManager get() {
+	public static IQVToReconfigurationManager get() {
 		// TODO exception handling
 		return Objects.requireNonNull(managerInstance, "");
 	}
