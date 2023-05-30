@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,11 +46,6 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 		return managerInstance;
 	}
 
-	public static IQVToReconfigurationManager get() {
-		// TODO exception handling
-		return Objects.requireNonNull(managerInstance, "");
-	}
-
 	private QVToReconfigurationManager(String qvtoFilePath) {
 		this.reconfigurator = new QVTOReconfigurator(null, null);
 		this.loadTransformations(qvtoFilePath);
@@ -67,11 +61,13 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 		transformationCache.getAll().forEach(t -> this.transformations.add(t));
 	}
 
+	@Override
 	public List<QVToReconfiguration> loadReconfigurations() {
 		return transformations.stream().filter(each -> each instanceof QvtoModelTransformation)
 				.map(each -> QVToReconfiguration.of((QvtoModelTransformation) each)).collect(Collectors.toList());
 	}
 
+	@Override
 	public QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider) {
 		reconfigurator.setPCMPartitionManager(getPartitionManager(experimentProvider));
 		return reconfigurator;
@@ -106,10 +102,12 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 		return config;
 	}
 
+	@Override
 	public void resetReconfigurator() {
 		reconfigurator = new QVTOReconfigurator(null, null);
 	}
 
+	@Override
 	public void addModelsToTransform(Resource modelsToTransform) {
 		additonalModelsToTransform.add(modelsToTransform);
 	}

@@ -25,7 +25,6 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -60,6 +59,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private final DynamicBayesianNetwork dbn;
 	private final List<PrismSimulatedMeasurementSpec> prismSpecs;
 
+	
 	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
@@ -82,7 +82,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 		this.dbn = dbn; //loadOrGenerateDBN();
 
-		QVToReconfigurationManager.get().addModelsToTransform(reconfParamsRepo.eResource());
+		qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
 //		DistributionTypeModelUtil.get(BasicDistributionTypesLoader.loadRepository());
 //		ProbabilityDistributionFactory.get().register(new MultinomialDistributionSupplier());
@@ -113,7 +113,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider, qvtoReconfigurationManager)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(getPrismSpecs())
@@ -123,7 +123,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 					.withSimulationID(simulationParameters.getSimulationID()) // DeltaIoT
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) // 2
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) // 100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager))
 					.done()
 				.specifySelfAdaptiveSystemState()
 					.asPartiallyEnvironmentalDrivenProcess(DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn))
@@ -162,7 +162,7 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	private Set<Reconfiguration<?>> getAllReconfigurations() {
 		Set<Reconfiguration<?>> reconfs = Sets.newHashSet();
 
-		List<QVToReconfiguration> qvts = QVToReconfigurationManager.get().loadReconfigurations();
+		List<QVToReconfiguration> qvts = qvtoReconfigurationManager.loadReconfigurations();
 		for (QVToReconfiguration each : qvts) {
 			if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(each)) {
 				reconfs.add(new DistributionFactorReconfiguration(each, reconfParamsRepo.getDistributionFactors()));

@@ -20,7 +20,6 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -99,7 +98,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider, qvtoReconfigurationManager)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(pcmSpecs))
@@ -109,7 +108,7 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 					.withSimulationID(simulationParameters.getSimulationID()) // LoadBalancing
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //500
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider))
+					.andOptionalExecutionBeforeEachRun(new GlobalPcmBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager))
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	//.asEnvironmentalDrivenProcess(VaryingInterarrivelRateProcess.get())
@@ -154,6 +153,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	}
 
 	private Set<Reconfiguration<?>> getAllReconfigurations() {
-		return new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+		return new HashSet<Reconfiguration<?>>(qvtoReconfigurationManager.loadReconfigurations());
 	}
 }

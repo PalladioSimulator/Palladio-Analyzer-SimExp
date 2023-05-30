@@ -25,7 +25,7 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -52,8 +52,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 
 	public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
 		
-		public RobotCognitionBeforeExecutionInitialization(IExperimentProvider experimentProvider) {
-			super(experimentProvider);
+		public RobotCognitionBeforeExecutionInitialization(IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+			super(experimentProvider, qvtoReconfigurationManager);
 		}
 
 		@Override
@@ -123,7 +123,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
-		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
+		return PcmExperienceSimulationBuilder.newBuilder(experimentProvider, qvtoReconfigurationManager)
 				.makeGlobalPcmSettings()
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
@@ -134,7 +134,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.withSimulationID(simulationParameters.getSimulationID()) // RobotCognition
 					.withNumberOfRuns(simulationParameters.getNumberOfRuns()) //50
 					.andNumberOfSimulationsPerRun(simulationParameters.getNumberOfSimulationsPerRun()) //100
-					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization(experimentProvider))
+					.andOptionalExecutionBeforeEachRun(new RobotCognitionBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager))
 					.done()
 				.specifySelfAdaptiveSystemState()
 				  	.asEnvironmentalDrivenProcess(RobotCognitionEnvironmentalDynamics.get(dbn))
@@ -151,7 +151,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	}
 	
 	private Set<Reconfiguration<?>> getAllReconfigurations() {
-		return Sets.newHashSet(QVToReconfigurationManager.get().loadReconfigurations());
+		return Sets.newHashSet(qvtoReconfigurationManager.loadReconfigurations());
 	}
 	
 	private RewardEvaluator getRewardEvaluator() {
