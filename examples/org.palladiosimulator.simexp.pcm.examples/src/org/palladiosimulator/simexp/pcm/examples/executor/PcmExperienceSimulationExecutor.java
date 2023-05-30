@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class PcmExperienceSimulationExecutor implements SimulationExecutor {
@@ -18,19 +18,19 @@ public class PcmExperienceSimulationExecutor implements SimulationExecutor {
     protected final ExperienceSimulator experienceSimulator;
 	protected final Experiment experiment;
 	protected final SimulationParameters simulationParameters;
+	protected final IExperimentProvider experimentProvider;
 	protected final Policy<Action<?>> reconfSelectionPolicy;
 	protected final TotalRewardCalculation rewardCalculation;
 	
 	
 	public PcmExperienceSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters,
-			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation) {
+			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider) {
 		this.experienceSimulator = experienceSimulator;
 		this.experiment = experiment;
 		this.simulationParameters = simulationParameters;
 		this.reconfSelectionPolicy = reconfSelectionPolicy;
 		this.rewardCalculation = rewardCalculation;
-		
-		ExperimentProvider.create(this.experiment);
+		this.experimentProvider = experimentProvider;
 		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
 	}
 

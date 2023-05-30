@@ -17,6 +17,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
@@ -35,10 +36,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
 	protected final IProbabilityDistributionRegistry probabilityDistributionRegistry;
 	protected final ParameterParser parameterParser;
 	protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
+	protected final IExperimentProvider experimentProvider;
 	
 	public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory, IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser, 
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
 		this.experiment = experiment;
 		this.dbn = dbn;
 		this.specs = specs;
@@ -47,6 +49,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
 		this.probabilityDistributionRegistry = probabilityDistributionRegistry;
 		this.parameterParser = parameterParser;
 		this.probDistRepoLookup = probDistRepoLookup;
+		this.experimentProvider = experimentProvider;
 		
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 	}
@@ -58,7 +61,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
     		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, 
     		RewardEvaluator evaluator, boolean hidden) {
     	
-    	return PcmExperienceSimulationBuilder.newBuilder()
+    	return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
     			.makeGlobalPcmSettings()
     				.withInitialExperiment(experiment)
     				.andSimulatedMeasurementSpecs(new HashSet<>(specs))

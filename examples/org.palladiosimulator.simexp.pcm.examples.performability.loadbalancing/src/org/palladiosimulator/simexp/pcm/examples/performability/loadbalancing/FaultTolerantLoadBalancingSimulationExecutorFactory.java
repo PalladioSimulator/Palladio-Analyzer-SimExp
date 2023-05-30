@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelU
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -52,17 +53,17 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends PcmExpe
 			List<PcmMeasurementSpecification> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory,
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
 		super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-				probDistRepoLookup);
+				probDistRepoLookup, experimentProvider);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public PcmExperienceSimulationExecutor create() {
-		List<ExperienceSimulationRunner> runners = List.of(new PerformabilityPcmExperienceSimulationRunner());
-		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization();
-		EnvironmentProcess envProcess = FaultTolerantVaryingInterarrivelRateProcess.get(dbn);
+		List<ExperienceSimulationRunner> runners = List.of(new PerformabilityPcmExperienceSimulationRunner(experimentProvider));
+		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider);
+		EnvironmentProcess envProcess = FaultTolerantVaryingInterarrivelRateProcess.get(dbn, experimentProvider);
 			
 		Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(specs.get(0), 
 				Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
@@ -80,11 +81,11 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends PcmExpe
 		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
 			
 		ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
-				beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, false);
+				beforeExecutionInitializable, envProcess, null, reconfSelectionPolicy, reconfigurations, evaluator, false);
 			
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
 		TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(params.getSimulationID(), sampleSpaceId);
 			
-		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation, experimentProvider);
 	}
 }

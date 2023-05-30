@@ -32,8 +32,9 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
-import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -50,9 +51,9 @@ public class DeltaIoTSimulationExecutorFactory extends PcmExperienceSimulationEx
 			List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory,
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
 		super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-				probDistRepoLookup);
+				probDistRepoLookup, experimentProvider);
 	}
 
 	@Override
@@ -68,8 +69,8 @@ public class DeltaIoTSimulationExecutorFactory extends PcmExperienceSimulationEx
 		DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader().load(DISTRIBUTION_FACTORS);
 		QVToReconfigurationManager.get().addModelsToTransform(reconfParamsRepo.eResource());
 		
-		ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner(prismGenerator, prismLogFile, reconfParamsRepo);
-		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization();
+		ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner(prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
+		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider);
 		SelfAdaptiveSystemStateSpaceNavigator navigator = DeltaIoTEnvironemtalDynamics.getPartiallyEnvironmentalDrivenProcess(dbn);
 		
 		Policy<Action<?>> reconfSelectionPolicy =  LocalQualityBasedReconfigurationStrategy.newBuilder()
@@ -98,6 +99,6 @@ public class DeltaIoTSimulationExecutorFactory extends PcmExperienceSimulationEx
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
 			TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(), sampleSpaceId);
 			
-		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation, experimentProvider);
 	}
 }

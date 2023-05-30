@@ -266,8 +266,8 @@ public class ExperimentRunner {
             resourceSet.getResources().add(newResource);
         }
 
-        public void clearFailureScenarios() {
-            ResourceSetPartition plainPartition = ExperimentProvider.get().getExperimentRunner().getPlainWorkingPartition();
+        public void clearFailureScenarios(IExperimentProvider experimentProvider) {
+            ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner().getPlainWorkingPartition();
             URI modelURIFailureScenario = URI.createURI(FAILURE_SCENARIO_MODEL_URI);
             FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);
             failureScenarioRepo.getFailurescenarios().clear();
@@ -319,8 +319,8 @@ public class ExperimentRunner {
         simulationContext.updateFailureScenario(failureScenarioRepo);
     }
     
-    public void clearFailureScenarios() {
-        simulationContext.clearFailureScenarios();
+    public void clearFailureScenarios(IExperimentProvider experimentProvider) {
+        simulationContext.clearFailureScenarios(experimentProvider);
     }
     
 

@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -69,15 +70,15 @@ public class VaryingInterarrivelRateProcess {
 	private final EnvironmentProcess envProcess;
 	private final ProbabilityMassFunction initialDist;
 
-	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn) {
-	    initPcmAttributeChange();
+	public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
+	    initPcmAttributeChange(experimentProvider);
 		this.initialDist = createInitialDist(dbn);
 		this.envProcess = createEnvironmentalProcess(dbn);
 	}
 	
-    private void initPcmAttributeChange() {
+    private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
         attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
-                PCM_SPECIFICATION_ATTRIBUTE);
+                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
         //attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE);
@@ -95,9 +96,9 @@ public class VaryingInterarrivelRateProcess {
 	}
 
 
-	public static EnvironmentProcess get(DynamicBayesianNetwork dbn) {
+	public static EnvironmentProcess get(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
 		if (processInstance == null) {
-			processInstance = new VaryingInterarrivelRateProcess(dbn);
+			processInstance = new VaryingInterarrivelRateProcess(dbn, experimentProvider);
 		}
 		return processInstance.envProcess;
 	}

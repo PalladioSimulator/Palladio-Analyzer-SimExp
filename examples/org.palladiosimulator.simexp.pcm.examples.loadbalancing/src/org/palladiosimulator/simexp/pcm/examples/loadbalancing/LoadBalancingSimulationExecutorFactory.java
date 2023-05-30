@@ -28,6 +28,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -43,15 +44,15 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 			List<PcmMeasurementSpecification> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory,
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
 		super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-				probDistRepoLookup);
+				probDistRepoLookup, experimentProvider);
 	}
 	
 	@Override
 	public PcmExperienceSimulationExecutor create() {
-		List<ExperienceSimulationRunner> simulationRunners = List.of(new PcmExperienceSimulationRunner());
-		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization();
+		List<ExperienceSimulationRunner> simulationRunners = List.of(new PcmExperienceSimulationRunner(experimentProvider));
+		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider);
 		Policy<Action<?>> reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 			
 		Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0), 
@@ -64,9 +65,9 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
 			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
 			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), distributionFactory);
-		envProcess = VaryingInterarrivelRateProcess.get(new DynamicBayesianNetwork(null, bn, dynBehaviour, distributionFactory));
+		envProcess = VaryingInterarrivelRateProcess.get(new DynamicBayesianNetwork(null, bn, dynBehaviour, distributionFactory), experimentProvider);
 		} else {
-			envProcess = VaryingInterarrivelRateProcess.get(dbn);
+			envProcess = VaryingInterarrivelRateProcess.get(dbn, experimentProvider);
 		}
 		
 		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
@@ -77,6 +78,6 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
 		TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(), sampleSpaceId);
 		
-		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation, experimentProvider);
 	}
 }

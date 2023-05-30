@@ -47,6 +47,7 @@ import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -195,26 +196,26 @@ public class FaultTolerantVaryingInterarrivelRateProcess {
 	private final EnvironmentProcess envProcess;
 	private final ProbabilityMassFunction initialDist;
 
-	public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn) {
-	    initPcmAttributeChange();
+	public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
+	    initPcmAttributeChange(experimentProvider);
 		this.initialDist = createInitialDist(dbn);
 		this.envProcess = createEnvironmentalProcess(dbn);
 	}
 
-	public FaultTolerantVaryingInterarrivelRateProcess() {
-	    initPcmAttributeChange();
+	public FaultTolerantVaryingInterarrivelRateProcess(IExperimentProvider experimentProvider) {
+	    initPcmAttributeChange(experimentProvider);
 		EnvironmentalStateSpace stateSpace = createStateSpace();
 		this.initialDist = createInitialDistributionOver(stateSpace.asSamples());
 		this.envProcess = createEnvironmentalProcess(stateSpace.asList());
 	}
 	
-    private void initPcmAttributeChange() {
+    private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
         attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
-                PCM_SPECIFICATION_ATTRIBUTE);
+                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
-        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE);
-        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE);
+        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, experimentProvider);
+        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, experimentProvider);
     }
 
 	private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
@@ -228,9 +229,9 @@ public class FaultTolerantVaryingInterarrivelRateProcess {
 	}
 
 
-	public static EnvironmentProcess get(DynamicBayesianNetwork dbn) {
+	public static EnvironmentProcess get(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
 		if (processInstance == null) {
-			processInstance = new FaultTolerantVaryingInterarrivelRateProcess(dbn);
+			processInstance = new FaultTolerantVaryingInterarrivelRateProcess(dbn, experimentProvider);
 		}
 		return processInstance.envProcess;
 	}
@@ -379,9 +380,9 @@ public class FaultTolerantVaryingInterarrivelRateProcess {
 //		return i -> i.variable.getEntityName().equals(variableName);
 	}
 
-	public static EnvironmentProcess get() {
+	public static EnvironmentProcess get(IExperimentProvider experimentProvider) {
 		if (processInstance == null) {
-			processInstance = new FaultTolerantVaryingInterarrivelRateProcess();
+			processInstance = new FaultTolerantVaryingInterarrivelRateProcess(experimentProvider);
 		}
 		return processInstance.envProcess;
 	}

@@ -15,19 +15,19 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class PcmExperienceSimulationRunner extends AbstractExperienceSimulationRunner {
 
 	private final DataSource dataSource;
-	private final ExperimentProvider experimentProvider;
+	private final IExperimentProvider experimentProvider;
 
-	public PcmExperienceSimulationRunner() {
-		this(new EDP2DataSource(), ExperimentProvider.get());
+	public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
+		this(new EDP2DataSource(), experimentProvider);
 	}
 	
-	PcmExperienceSimulationRunner(DataSource dataSource, ExperimentProvider experimentProvider) {
+	PcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
 	    this.dataSource = dataSource; 
 	    this.experimentProvider = experimentProvider;
 	}

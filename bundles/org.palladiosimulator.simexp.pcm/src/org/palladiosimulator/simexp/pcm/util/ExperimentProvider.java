@@ -4,7 +4,6 @@ import static org.palladiosimulator.simexp.pcm.util.InitialPcmPartitionLoader.lo
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -22,7 +21,7 @@ import org.palladiosimulator.experimentautomation.experiments.InitialModel;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.usagemodel.UsageModel;
 
-public class ExperimentProvider {
+public class ExperimentProvider implements IExperimentProvider {
     
     private static final Logger LOGGER = Logger.getLogger(ExperimentProvider.class.getName());
 
@@ -114,28 +113,28 @@ public class ExperimentProvider {
 	private final Experiment initialExperiment;
 	private final PCMResourceSetPartition initialPartition;
 
-	private static ExperimentProvider providerInstance;
+//	private static ExperimentProvider providerInstance;
 
-	private ExperimentProvider(Experiment initialExperiment) {
+	public ExperimentProvider(Experiment initialExperiment) {
 		this.initialExperiment = normalizeExperiment(initialExperiment);
 		this.initialPartition = loadInitialPcmPartition(initialExperiment);
 		this.currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
-	public static void create(Experiment initialExperiment) {
-		if (providerInstance == null) {
-			providerInstance = new ExperimentProvider(initialExperiment);
-		}
-	}
+//	public static ExperimentProvider create(Experiment initialExperiment) {
+//		if (providerInstance == null) {
+//			providerInstance = new ExperimentProvider(initialExperiment);
+//		}
+//		return providerInstance;
+//	}
 
-	public static ExperimentProvider get() {
-		return Objects.requireNonNull(providerInstance, "Blackboard has not been initialized yet.");
-	}
 
+	@Override
 	public void initializeExperimentRunner() {
 		currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
+	@Override
 	public ExperimentRunner getExperimentRunner() {
 		return currentRunner;
 	}

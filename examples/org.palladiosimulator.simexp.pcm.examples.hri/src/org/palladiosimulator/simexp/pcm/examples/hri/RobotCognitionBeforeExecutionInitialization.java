@@ -4,11 +4,13 @@ import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class RobotCognitionBeforeExecutionInitialization extends GlobalPcmBeforeExecutionInitialization {
 	private final ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy;
 	
-	public RobotCognitionBeforeExecutionInitialization(ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy) {
+	public RobotCognitionBeforeExecutionInitialization(ReconfigurationStrategy<? extends Reconfiguration<?>> reconfigurationStrategy, IExperimentProvider experimentProvider) {
+		super(experimentProvider);
 		this.reconfigurationStrategy = reconfigurationStrategy;
 	}
 	
