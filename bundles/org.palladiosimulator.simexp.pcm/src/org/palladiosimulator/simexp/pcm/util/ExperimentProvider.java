@@ -122,10 +122,11 @@ public class ExperimentProvider implements IExperimentProvider {
 		this.currentRunner = new ExperimentRunner(getInitialExperiment());
 	}
 
-	public static void create(Experiment initialExperiment) {
+	public static ExperimentProvider create(Experiment initialExperiment) {
 		if (providerInstance == null) {
 			providerInstance = new ExperimentProvider(initialExperiment);
 		}
+		return providerInstance;
 	}
 
 	public static IExperimentProvider get() {
