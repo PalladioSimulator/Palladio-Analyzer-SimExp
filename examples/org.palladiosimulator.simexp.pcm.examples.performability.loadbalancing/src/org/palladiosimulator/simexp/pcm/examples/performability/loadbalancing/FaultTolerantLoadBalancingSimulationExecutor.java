@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -67,8 +68,8 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
-		super(experiment, simulationParameters, experimentProvider);
+			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+		super(experiment, simulationParameters, experimentProvider, qvtoReconfigurationManager);
 		this.dbn = dbn;
 		this.pcmSpecs = pcmSpecs;
 		
@@ -95,9 +96,9 @@ public class FaultTolerantLoadBalancingSimulationExecutor extends PcmExperienceS
 	    public FaultTolerantLoadBalancingSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 	        return new FaultTolerantLoadBalancingSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider, qvtoReconfigurationManager);
 	    }
 	}
 

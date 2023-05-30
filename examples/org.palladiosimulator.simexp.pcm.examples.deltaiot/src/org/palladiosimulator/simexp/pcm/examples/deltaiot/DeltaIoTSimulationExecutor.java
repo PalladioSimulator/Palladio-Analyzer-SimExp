@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
@@ -63,8 +64,8 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	public DeltaIoTSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
-		super(experiment, simulationParameters, experimentProvider);
+			List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+		super(experiment, simulationParameters, experimentProvider, qvtoReconfigurationManager);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 
 		this.prismSpecs = prismSpecs;
@@ -92,9 +93,9 @@ public class DeltaIoTSimulationExecutor extends PcmExperienceSimulationExecutor 
 	    public DeltaIoTSimulationExecutor create(Experiment experiment, DynamicBayesianNetwork dbn, 
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, IProbabilityDistributionFactory probabilityDistributionFactory, 
 	    		ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup, 
-	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider) {
+	    		SimulationParameterConfiguration simulationParameters, List<PrismSimulatedMeasurementSpec> prismSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 	        return new DeltaIoTSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs, experimentProvider);
+	        		parameterParser, probDistRepoLookup, simulationParameters, prismSpecs, experimentProvider, qvtoReconfigurationManager);
 	    }
 	}
 	

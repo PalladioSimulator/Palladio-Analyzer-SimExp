@@ -85,8 +85,8 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 			IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 			IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
-	    super(experiment, simulationParameters, experimentProvider);
+			List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+	    super(experiment, simulationParameters, experimentProvider, qvtoReconfigurationManager);
 		this.dbn = dbn;
 		this.responseTimeSpec = pcmSpecs.get(0);
 		this.reliabilitySpec = buildReliabilitySpec();
@@ -106,9 +106,9 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 	    		IProbabilityDistributionRegistry probabilityDistributionRegistry, 
 	    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser, 
 	    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameterConfiguration simulationParameters,
-	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider) {
+	    		List<PcmMeasurementSpecification> pcmSpecs, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 	        return new RobotCognitionSimulationExecutor(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, 
-	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider);
+	        		parameterParser, probDistRepoLookup, simulationParameters, pcmSpecs, experimentProvider, qvtoReconfigurationManager);
 	    }
 	}
 	
