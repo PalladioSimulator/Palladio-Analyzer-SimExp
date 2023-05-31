@@ -64,8 +64,8 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		
 //		this.reconfSelectionPolicy = new NonAdaptiveStrategy();
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
-		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
+		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
+//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 	}
 	
