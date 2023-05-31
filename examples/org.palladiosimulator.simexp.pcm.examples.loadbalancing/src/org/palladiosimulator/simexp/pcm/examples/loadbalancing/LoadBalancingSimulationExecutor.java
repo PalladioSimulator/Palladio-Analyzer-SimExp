@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
@@ -50,7 +49,6 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 	private final DynamicBayesianNetwork dbn;
 	private final List<PcmMeasurementSpecification> pcmSpecs;
 	private final Policy<Action<?>> reconfSelectionPolicy;
-	private final boolean simulateWithUsageEvolution = true;
 	
 	private LoadBalancingSimulationExecutor(Experiment experiment, DynamicBayesianNetwork dbn, 
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, 
@@ -60,21 +58,14 @@ public class LoadBalancingSimulationExecutor extends PcmExperienceSimulationExec
 		super(experiment, simulationParameters, experimentProvider, qvtoReconfigurationManager);
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 		
-		if (simulateWithUsageEvolution) {
-			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
-			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
-			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), probabilityDistributionFactory);
-			this.dbn = new DynamicBayesianNetwork(null, bn, dynBehaviour, probabilityDistributionFactory);
-		} else {
-		    this.dbn = dbn;
-		}
+		this.dbn = dbn;
 		
 		this.pcmSpecs = pcmSpecs;
 		
 //		this.reconfSelectionPolicy = new NonAdaptiveStrategy();
 //		this.reconfSelectionPolicy = new RandomizedStrategy<Action<?>>();
-//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
-		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
+		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, pcmSpecs.get(0));
+//		this.reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, pcmSpecs.get(0));
 //		this.reconfSelectionPolicy = new LinearLoadBalancerStrategy(pcmSpecs.get(0));
 	}
 	
