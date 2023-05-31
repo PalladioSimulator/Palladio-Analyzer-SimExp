@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
@@ -59,16 +58,7 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 				Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
 		RewardEvaluator evaluator = ThresholdBasedRewardEvaluator.with(threshold);
 				
-		boolean simulateWithUsageEvolution = true; // FIXME
-		EnvironmentProcess envProcess;
-		if (simulateWithUsageEvolution) {
-			var usage = experiment.getInitialModel().getUsageEvolution().getUsages().get(0);
-			var dynBehaviour = new UsageScenarioToDBNTransformer().transformAndPersist(usage);
-			var bn = new BayesianNetwork(null, dynBehaviour.getModel(), distributionFactory);
-		envProcess = VaryingInterarrivelRateProcess.get(new DynamicBayesianNetwork(null, bn, dynBehaviour, distributionFactory), experimentProvider);
-		} else {
-			envProcess = VaryingInterarrivelRateProcess.get(dbn, experimentProvider);
-		}
+		EnvironmentProcess envProcess = VaryingInterarrivelRateProcess.get(dbn, experimentProvider);
 		
 		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(qvtoReconfigurationManager.loadReconfigurations());
 			
