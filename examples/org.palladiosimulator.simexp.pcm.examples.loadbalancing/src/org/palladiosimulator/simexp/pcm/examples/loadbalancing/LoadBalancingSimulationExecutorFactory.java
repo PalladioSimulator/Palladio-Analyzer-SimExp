@@ -52,7 +52,7 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 	public PcmExperienceSimulationExecutor create() {
 		List<ExperienceSimulationRunner> simulationRunners = List.of(new PcmExperienceSimulationRunner(experimentProvider));
 		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager);
-		Policy<Action<?>> reconfSelectionPolicy = new NStepLoadBalancerStrategy(2, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
+		Policy<Action<?>> reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 			
 		Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0), 
 				Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
