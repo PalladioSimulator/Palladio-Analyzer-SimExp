@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
@@ -53,16 +53,16 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends PcmExpe
 			List<PcmMeasurementSpecification> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory,
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-				probDistRepoLookup, experimentProvider);
+				probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public PcmExperienceSimulationExecutor create() {
 		List<ExperienceSimulationRunner> runners = List.of(new PerformabilityPcmExperienceSimulationRunner(experimentProvider));
-		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider);
+		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager);
 		EnvironmentProcess envProcess = FaultTolerantVaryingInterarrivelRateProcess.get(dbn, experimentProvider);
 			
 		Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(specs.get(0), 
@@ -78,7 +78,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends PcmExpe
 		ReconfigurationStrategy<? extends Reconfiguration<?>> reconfStrategy = new PerformabilityStrategy(specs.get(0), config, emptyStrategy);
 		Policy<Action<?>> reconfSelectionPolicy = (Policy<Action<?>>) reconfStrategy;
 			
-		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(qvtoReconfigurationManager.loadReconfigurations());
 			
 		ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
 				beforeExecutionInitializable, envProcess, null, reconfSelectionPolicy, reconfigurations, evaluator, false);
@@ -86,6 +86,6 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends PcmExpe
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
 		TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(params.getSimulationID(), sampleSpaceId);
 			
-		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation, experimentProvider);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
 	}
 }

@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
@@ -37,10 +38,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
 	protected final ParameterParser parameterParser;
 	protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 	protected final IExperimentProvider experimentProvider;
+	protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 	
 	public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory, IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser, 
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		this.experiment = experiment;
 		this.dbn = dbn;
 		this.specs = specs;
@@ -50,6 +52,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
 		this.parameterParser = parameterParser;
 		this.probDistRepoLookup = probDistRepoLookup;
 		this.experimentProvider = experimentProvider;
+		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 		
 		probabilityDistributionRegistry.register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
 	}
@@ -61,7 +64,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
     		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, 
     		RewardEvaluator evaluator, boolean hidden) {
     	
-    	return PcmExperienceSimulationBuilder.newBuilder(experimentProvider)
+    	return PcmExperienceSimulationBuilder.newBuilder(experimentProvider, qvtoReconfigurationManager)
     			.makeGlobalPcmSettings()
     				.withInitialExperiment(experiment)
     				.andSimulatedMeasurementSpecs(new HashSet<>(specs))

@@ -25,7 +25,7 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
@@ -52,9 +52,9 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 			List<PcmMeasurementSpecification> specs, SimulationParameters params,
 			IProbabilityDistributionFactory distributionFactory,
 			IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider) {
+			IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-				probDistRepoLookup, experimentProvider);
+				probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
 	}
 	
 	@Override
@@ -70,11 +70,11 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 				probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup), new PcmExperienceSimulationRunner(experimentProvider));
 			
 		ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new StaticSystemSimulation();
-		Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization(reconfSelectionPolicy, experimentProvider);
+		Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization(reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 		EnvironmentProcess envProcess = RobotCognitionEnvironmentalDynamics.get(dbn);
 		RewardEvaluator evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 			
-		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(QVToReconfigurationManager.get().loadReconfigurations());
+		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(qvtoReconfigurationManager.loadReconfigurations());
 			
 		ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
 				beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, true);
@@ -82,7 +82,7 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
 		TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(params.getSimulationID(), sampleSpaceId);
 			
-		return new PcmExperienceSimulationExecutor(simulator, experiment, params, (Policy<Action<?>>) reconfSelectionPolicy, rewardCalculation, experimentProvider);
+		return new PcmExperienceSimulationExecutor(simulator, experiment, params, (Policy<Action<?>>) reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
 	}
 	
 	private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

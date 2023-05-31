@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
@@ -21,17 +21,18 @@ public class PcmExperienceSimulationExecutor implements SimulationExecutor {
 	protected final IExperimentProvider experimentProvider;
 	protected final Policy<Action<?>> reconfSelectionPolicy;
 	protected final TotalRewardCalculation rewardCalculation;
+	protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 	
 	
 	public PcmExperienceSimulationExecutor(ExperienceSimulator experienceSimulator, Experiment experiment, SimulationParameters simulationParameters,
-			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider) {
+			Policy<Action<?>> reconfSelectionPolicy, TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 		this.experienceSimulator = experienceSimulator;
 		this.experiment = experiment;
 		this.simulationParameters = simulationParameters;
 		this.reconfSelectionPolicy = reconfSelectionPolicy;
 		this.rewardCalculation = rewardCalculation;
 		this.experimentProvider = experimentProvider;
-		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
+		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 	}
 
 	
@@ -40,12 +41,6 @@ public class PcmExperienceSimulationExecutor implements SimulationExecutor {
 		experienceSimulator.run();
 	}
 	
-	private String getReconfigurationRulesLocation() {
-		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
-		experiment.getInitialModel().setReconfigurationRules(null);
-		return path;
-	}
-
 	@Override
 	public void evaluate() {
 		double totalReward = rewardCalculation.computeTotalReward();

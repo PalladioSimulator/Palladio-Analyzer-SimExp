@@ -32,6 +32,8 @@ import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
@@ -105,16 +107,23 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
             
             IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
+            IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(getReconfigurationRulesLocation(experiment));
             
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(), config.getQualityObjective(), 
             		experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, 
-            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider);
+            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
     }
+    
+	private String getReconfigurationRulesLocation(Experiment experiment) {
+		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
+		experiment.getInitialModel().setReconfigurationRules(null);
+		return path;
+	}
 
     @Override
     protected SimExpWorkflowConfiguration deriveConfiguration(ILaunchConfiguration configuration, String mode)
@@ -127,7 +136,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
     		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
     		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, IExperimentProvider experimentProvider) {
+    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
     	
     	PcmExperienceSimulationExecutorFactory<?> factory = switch (simulationEngine) {
     		case SimulationConstants.SIMULATION_ENGINE_PCM ->{
@@ -138,13 +147,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     			 
     			yield switch (qualityObjective) {
     				case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs, 
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider);
+    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
     				
     				case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn, pcmSpecs,
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider);
+    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
     				
     				case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider);
+    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
      			
      				default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
     			};
@@ -157,7 +166,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     					.toList();
     			
     			yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters, probabilityDistributionFactory,
-    					probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider);
+    					probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
     		}
     		
     		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
