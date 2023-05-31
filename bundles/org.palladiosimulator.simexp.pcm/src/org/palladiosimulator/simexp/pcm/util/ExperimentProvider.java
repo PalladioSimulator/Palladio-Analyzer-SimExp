@@ -136,7 +136,6 @@ public class ExperimentProvider implements IExperimentProvider {
 
 	private Experiment normalizeExperiment(Experiment experiment) {
 		experiment.setRepetitions(DEFAULT_REPETITIONS);
-		experiment.getInitialModel().setUsageEvolution(null);
 		return experiment;
 	}
 
