@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 
-public class DynamicBehaviourExtensionLoader implements ModelLoader<DynamicBehaviourRepository> {
+public class DynamicBehaviourLoader implements ModelLoader<DynamicBehaviourRepository> {
 	
 	@Override
 	public DynamicBehaviourRepository load(ResourceSet rs, URI uri) {
