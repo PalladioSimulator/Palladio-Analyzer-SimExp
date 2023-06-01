@@ -33,7 +33,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutor.DeltaIoTSimulationExecutorFactory;
@@ -89,7 +89,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository);
             
             URI staticModelURI = config.getStaticModelURI();
-            GroundProbabilisticNetworkLoader gpnLoader = new GroundProbabilisticNetworkLoader();
+            ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
             LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
             // env model assumption: a ProbabilisticModelRepository (root) contains a single GroundProbabilisticNetwork
             ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);

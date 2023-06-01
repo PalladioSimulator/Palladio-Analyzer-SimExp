@@ -19,9 +19,9 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
 
-public class GroundProbabilisticNetworkLoaderTest {
+public class ProbabilisticModelLoaderTest {
 	
-	private GroundProbabilisticNetworkLoader gpnLoader;
+	private ProbabilisticModelLoader gpnLoader;
 	private ResourceSet rs;
 	
 	@Before
@@ -30,7 +30,7 @@ public class GroundProbabilisticNetworkLoaderTest {
 		
 	    rs = new ResourceSetImpl();
 	    registerDefaultPackages(rs);
-		this.gpnLoader = new GroundProbabilisticNetworkLoader();
+		this.gpnLoader = new ProbabilisticModelLoader();
     }
 	
 	private void registerFactories() {

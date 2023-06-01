@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 
-public class GroundProbabilisticNetworkLoader implements ModelLoader<ProbabilisticModelRepository> {
+public class ProbabilisticModelLoader implements ModelLoader<ProbabilisticModelRepository> {
 	
 	@Override
 	public ProbabilisticModelRepository load(ResourceSet rs, URI uri) {
