@@ -25,6 +25,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
@@ -90,7 +91,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             URI staticModelURI = config.getStaticModelURI();
             GroundProbabilisticNetworkLoader gpnLoader = new GroundProbabilisticNetworkLoader();
             LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
-            GroundProbabilisticNetwork gpn = gpnLoader.load(rs, staticModelURI);
+            // env model assumption: a ProbabilisticModelRepository (root) contains a single GroundProbabilisticNetwork
+            ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
+            GroundProbabilisticNetwork gpn = probModelRepo.getModels().get(0);
             
             URI dynamicModelURI = config.getDynamicModelURI();
             DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
