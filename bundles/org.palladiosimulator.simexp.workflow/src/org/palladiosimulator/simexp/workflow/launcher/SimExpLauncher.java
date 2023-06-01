@@ -23,12 +23,13 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
-import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
+import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
@@ -92,9 +93,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             GroundProbabilisticNetwork gpn = gpnLoader.load(rs, staticModelURI);
             
             URI dynamicModelURI = config.getDynamicModelURI();
-            DynamicBehaviourExtensionLoader dbeLoader = new DynamicBehaviourExtensionLoader();
+            DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
             LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
-            DynamicBehaviourExtension dbe = dbeLoader.load(rs, dynamicModelURI);
+            // env model assumption: a DynamicBehaviourRepository (root) contains a single DynamicBehaviourExtension
+            DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
+            DynamicBehaviourExtension dbe = dynBehaveRepo.getExtensions().get(0);
             
             ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();

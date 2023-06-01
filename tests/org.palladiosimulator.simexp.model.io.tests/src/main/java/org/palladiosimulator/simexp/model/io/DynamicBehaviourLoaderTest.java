@@ -19,9 +19,9 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
 
-public class DynamicBehaviourExtensionLoaderTest {
+public class DynamicBehaviourLoaderTest {
 	
-	private DynamicBehaviourExtensionLoader dbeLoader;
+	private DynamicBehaviourLoader dbeLoader;
 	private ResourceSet rs;
 	
 	@Before
@@ -30,7 +30,7 @@ public class DynamicBehaviourExtensionLoaderTest {
 		
 	    rs = new ResourceSetImpl();
 	    registerDefaultPackages(rs);
-		this.dbeLoader = new DynamicBehaviourExtensionLoader();
+		this.dbeLoader = new DynamicBehaviourLoader();
     }
 	
 	private void registerFactories() {
