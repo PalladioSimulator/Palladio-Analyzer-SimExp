@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.executor;
+package org.palladiosimulator.simexp.model.io;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -15,10 +15,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
 
 public class DynamicBehaviourExtensionLoaderTest {
 	
@@ -51,7 +50,7 @@ public class DynamicBehaviourExtensionLoaderTest {
 	    String resourcePath = getClass().getPackageName().replace(".", "/") + "/environmentalDynamics.dynamicmodel";
         URL resourceURL = classLoader.getResource(resourcePath);
         
-	    DynamicBehaviourExtension experimentRepository = dbeLoader.load(rs, URI.createURI(resourceURL.toURI().toString()));
+	    DynamicBehaviourRepository experimentRepository = dbeLoader.load(rs, URI.createURI(resourceURL.toURI().toString()));
 		
 		assertNotNull(experimentRepository);
 	}
