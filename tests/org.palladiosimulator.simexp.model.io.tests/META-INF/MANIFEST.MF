@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.model.io.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.model.io.tests
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.palladiosimulator.simexp.model.io;bundle-version="1.0.0"
+Automatic-Module-Name: org.palladiosimulator.simexp.model.io.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
