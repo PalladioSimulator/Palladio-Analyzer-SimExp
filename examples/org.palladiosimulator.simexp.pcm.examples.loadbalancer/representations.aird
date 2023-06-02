@@ -74,7 +74,6 @@
     <semanticResources>/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancingTemplates.templatevariable</semanticResources>
     <semanticResources>environment/LoadBalancerNonTemporalEnvironmentBackup.staticmodel</semanticResources>
     <semanticResources>environment/LoadBalancerNonTemporalEnvironment.staticmodel</semanticResources>
-    <semanticResources>environment/LoadBalancerEnvironmentalDynamicsBackup.dynamicmodel</semanticResources>
     <semanticResources>environment/LoadBalancerEnvironmentalDynamics.dynamicmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_O3G7sDpVEee6JY3Ca_2Bfw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.palladiosimulator.editors.sirius.seff/description/seff.odesign#//@ownedViewpoints[name='Seff']"/>
