@@ -71,9 +71,11 @@
     <semanticResources>pathmap://PCM_MODELS/Glassfish.repository</semanticResources>
     <semanticResources>pathmap://PCM_MODELS/default_event_middleware.repository</semanticResources>
     <semanticResources>environment/LoabBalancingDistributions.distributionfunction</semanticResources>
-    <semanticResources>environment/LoadBalancerEnvironmentalDynamics.dynamicmodel</semanticResources>
-    <semanticResources>environment/LoadBalancingTemplates.templatevariable</semanticResources>
+    <semanticResources>/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancingTemplates.templatevariable</semanticResources>
+    <semanticResources>environment/LoadBalancerNonTemporalEnvironmentBackup.staticmodel</semanticResources>
     <semanticResources>environment/LoadBalancerNonTemporalEnvironment.staticmodel</semanticResources>
+    <semanticResources>environment/LoadBalancerEnvironmentalDynamicsBackup.dynamicmodel</semanticResources>
+    <semanticResources>environment/LoadBalancerEnvironmentalDynamics.dynamicmodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_O3G7sDpVEee6JY3Ca_2Bfw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.palladiosimulator.editors.sirius.seff/description/seff.odesign#//@ownedViewpoints[name='Seff']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_O4D98DpVEee6JY3Ca_2Bfw" name="Seff Diagram" repPath="#_O4D98TpVEee6JY3Ca_2Bfw">
