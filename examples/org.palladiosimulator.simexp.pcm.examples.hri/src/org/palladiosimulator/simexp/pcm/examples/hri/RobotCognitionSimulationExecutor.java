@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
-import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -120,6 +119,7 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 		LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfigurationStrategy.getId(), evaluator.computeTotalReward()));
 		LOGGER.info("***********************************************************************");
 	}
+	
 
 	@Override
 	protected ExperienceSimulator createSimulator() {
@@ -128,7 +128,12 @@ public class RobotCognitionSimulationExecutor extends PcmExperienceSimulationExe
 					.withInitialExperiment(experiment)
 					.andSimulatedMeasurementSpecs(Sets.newHashSet(responseTimeSpec, reliabilitySpec))
 					.addExperienceSimulationRunner(createPcmRelExperienceSimulationRunner(probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup))
+					/**
+					 * disabled PCM performance analysis based on SimuCom for RobotCognition example;
+					 * SimuCom is deprecated and simulation currently fails
+					 * 
 					.addExperienceSimulationRunner(new PcmExperienceSimulationRunner(experimentProvider))
+					 * */
 					.done()
 				.createSimulationConfiguration()
 					.withSimulationID(simulationParameters.getSimulationID()) // RobotCognition

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.executor;
+package org.palladiosimulator.simexp.model.io;
 
 import static org.junit.Assert.*;
 
