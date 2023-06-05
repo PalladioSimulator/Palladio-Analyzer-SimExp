@@ -28,7 +28,6 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.process.PcmExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -66,8 +65,15 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 		relSpecs.add(reliabilitySpec);
 			
 		UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
-		List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner(predictionConfig, 
-				probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup), new PcmExperienceSimulationRunner(experimentProvider));
+		List<ExperienceSimulationRunner> runners = List.of(
+				new PcmRelExperienceSimulationRunner(predictionConfig, probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup)
+				/**
+				 * disabled PCM performance analysis based on SimuCom for RobotCognition example;
+				 * SimuCom is deprecated and simulation currently fails
+				 * 
+				, new PcmExperienceSimulationRunner(experimentProvider)
+				 * */
+		);
 			
 		ReconfigurationStrategy<? extends Reconfiguration<?>> reconfSelectionPolicy = new StaticSystemSimulation();
 		Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization(reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
