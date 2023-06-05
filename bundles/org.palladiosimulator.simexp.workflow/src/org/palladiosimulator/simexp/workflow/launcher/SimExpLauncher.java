@@ -23,15 +23,17 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
-import org.palladiosimulator.simexp.model.io.DynamicBehaviourExtensionLoader;
+import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
+import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -86,14 +88,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository);
             
             URI staticModelURI = config.getStaticModelURI();
-            GroundProbabilisticNetworkLoader gpnLoader = new GroundProbabilisticNetworkLoader();
+            ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
             LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
-            GroundProbabilisticNetwork gpn = gpnLoader.load(rs, staticModelURI);
+            // env model assumption: a ProbabilisticModelRepository (root) contains a single GroundProbabilisticNetwork
+            ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
+            GroundProbabilisticNetwork gpn = probModelRepo.getModels().get(0);
             
             URI dynamicModelURI = config.getDynamicModelURI();
-            DynamicBehaviourExtensionLoader dbeLoader = new DynamicBehaviourExtensionLoader();
+            DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
             LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
-            DynamicBehaviourExtension dbe = dbeLoader.load(rs, dynamicModelURI);
+            // env model assumption: a DynamicBehaviourRepository (root) contains a single DynamicBehaviourExtension
+            DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
+            DynamicBehaviourExtension dbe = dynBehaveRepo.getExtensions().get(0);
             
             ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.executor;
+package org.palladiosimulator.simexp.model.io;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -15,14 +15,13 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.StaticmodelPackage;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariablePackage;
-import org.palladiosimulator.simexp.model.io.GroundProbabilisticNetworkLoader;
 
-public class GroundProbabilisticNetworkLoaderTest {
+public class ProbabilisticModelLoaderTest {
 	
-	private GroundProbabilisticNetworkLoader gpnLoader;
+	private ProbabilisticModelLoader gpnLoader;
 	private ResourceSet rs;
 	
 	@Before
@@ -31,7 +30,7 @@ public class GroundProbabilisticNetworkLoaderTest {
 		
 	    rs = new ResourceSetImpl();
 	    registerDefaultPackages(rs);
-		this.gpnLoader = new GroundProbabilisticNetworkLoader();
+		this.gpnLoader = new ProbabilisticModelLoader();
     }
 	
 	private void registerFactories() {
@@ -50,7 +49,7 @@ public class GroundProbabilisticNetworkLoaderTest {
 	    String resourcePath = getClass().getPackageName().replace(".", "/") + "/environmentalStatics.staticmodel";
         URL resourceURL = classLoader.getResource(resourcePath);
         
-	    GroundProbabilisticNetwork experimentRepository = gpnLoader.load(rs, URI.createURI(resourceURL.toURI().toString()));
+	    ProbabilisticModelRepository experimentRepository = gpnLoader.load(rs, URI.createURI(resourceURL.toURI().toString()));
 		
 		assertNotNull(experimentRepository);
 	}
