@@ -217,6 +217,11 @@ public abstract class ExperienceSimulationBuilder {
 			ExperienceSimulationBuilder.this.isHiddenProcess = true;
 			return this;
 		}
+		
+		public SelfAdaptiveSystemBuilder asHiddenProcess(boolean hidden) {
+			ExperienceSimulationBuilder.this.isHiddenProcess = hidden;
+			return this;
+		}
 
 		public SelfAdaptiveSystemBuilder andInitialDistributionOptionally(ProbabilityMassFunction initialDist) {
 			ExperienceSimulationBuilder.this.initialDistribution = Optional.ofNullable(initialDist);
@@ -275,7 +280,7 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 		
-		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy strategy) {
+		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy<Reconfiguration<?>> strategy) {
 		    // todo: setup mape-k executor here
 			ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
 			return this;

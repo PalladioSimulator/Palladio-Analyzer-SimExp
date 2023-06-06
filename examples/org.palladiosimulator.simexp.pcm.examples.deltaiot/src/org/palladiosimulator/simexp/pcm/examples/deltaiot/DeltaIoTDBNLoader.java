@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
@@ -17,11 +16,12 @@ import org.palladiosimulator.envdyn.environment.templatevariable.Templatevariabl
 
 public class DeltaIoTDBNLoader {
 
+	private final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
 	private final static String STATIC_MODEL_EXTENSION = "staticmodel";
 	private final static String DYNAMIC_MODEL_EXTENSION = "dynamicmodel";
-	private final static String BN_FILE = String.format("%1s/model/%2s.%3s", DeltaIoTSimulationExecutor.DELTAIOT_PATH,
+	private final static String BN_FILE = String.format("%1s/model/%2s.%3s", DELTAIOT_PATH,
 			"DeltaIoTNonTemporalEnvironment", STATIC_MODEL_EXTENSION);
-	private final static String DBN_FILE = String.format("%1s/model/%2s.%3s", DeltaIoTSimulationExecutor.DELTAIOT_PATH,
+	private final static String DBN_FILE = String.format("%1s/model/%2s.%3s", DELTAIOT_PATH,
 			"DeltaIoTEnvironmentalDynamics", DYNAMIC_MODEL_EXTENSION);
 	private final static URI DBN_URI = URI.createPlatformResourceURI(DBN_FILE, true);
 	private final static URI BN_URI = URI.createPlatformResourceURI(BN_FILE, true);

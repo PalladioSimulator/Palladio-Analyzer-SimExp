@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
-import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.UPPER_THRESHOLD_RT;
-
 import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
@@ -18,18 +16,18 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVToReconfiguration> implements Initializable {
-
-	private static final Threshold THRESHOLD_RT = Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT);
 	private static final String IMG_BRIGHTNESS_TEMPLATE = "_U5Fzu8qkEeqObY-eK2jOOA";
 	private static final String IMG_NOISE_TEMPLATE = "_0uh4oCpGEeuMpaabmuiN-Q";
 	
 	private final SimulatedMeasurementSpecification responseTimeSpec;
+	private final Threshold thresholdRt;
 	
 	protected boolean isDefaultMLModelActivated = true;
 	protected boolean isFilteringActivated = false;
 	
-	public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec) {
+	public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
 		this.responseTimeSpec = responseTimeSpec;
+		this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
 	}
 	
 	@Override
@@ -64,7 +62,7 @@ public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVTo
 		var rtSimMeasurement = knowledge.getValue(responseTimeSpec.getId())
 				.map(SimulatedMeasurement.class::cast)
 				.get();
-		var isResponseTimeNotSatisfied = THRESHOLD_RT.isNotSatisfied(rtSimMeasurement.getValue());
+		var isResponseTimeNotSatisfied = thresholdRt.isNotSatisfied(rtSimMeasurement.getValue());
 		if (isResponseTimeNotSatisfied) {
 			return true;
 		}
@@ -105,7 +103,7 @@ public class ReliabilityPrioritizedStrategy extends ReconfigurationStrategy<QVTo
 		var rtSimMeasurement = knowledge.getValue(responseTimeSpec.getId())
 				.map(SimulatedMeasurement.class::cast)
 				.get();
-		var isResponseTimeNotSatisfied = THRESHOLD_RT.isNotSatisfied(rtSimMeasurement.getValue());
+		var isResponseTimeNotSatisfied = thresholdRt.isNotSatisfied(rtSimMeasurement.getValue());
 		if (isResponseTimeNotSatisfied) {
 			return managePerformance(options);
 		}

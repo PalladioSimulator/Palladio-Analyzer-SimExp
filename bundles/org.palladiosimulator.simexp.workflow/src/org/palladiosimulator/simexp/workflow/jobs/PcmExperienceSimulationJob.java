@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.workflow.jobs;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;

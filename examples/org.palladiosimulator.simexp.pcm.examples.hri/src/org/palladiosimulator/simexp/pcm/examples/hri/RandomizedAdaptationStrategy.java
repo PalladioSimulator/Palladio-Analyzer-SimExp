@@ -15,8 +15,8 @@ public class RandomizedAdaptationStrategy extends ReliabilityPrioritizedStrategy
 
 	private final Random random = new Random();
 	
-	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec) {
-		super(responseTimeSpec);
+	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
+		super(responseTimeSpec, thresholdRt);
 	}
 
 	@Override

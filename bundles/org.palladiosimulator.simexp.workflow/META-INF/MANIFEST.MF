@@ -31,5 +31,15 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.metricspec,
  org.palladiosimulator.simexp.pcm.examples.hri,
  org.palladiosimulator.simexp.pcm.prism,
- org.apache.commons.lang;bundle-version="2.6.0"
+ org.apache.commons.lang;bundle-version="2.6.0",
+ org.palladiosimulator.simexp.environmentaldynamics,
+ org.palladiosimulator.simexp.markovian,
+ org.palladiosimulator.simexp.markovian.model,
+ org.palladiosimulator.simulizar.reconfiguration.qvto,
+ org.palladiosimulator.pcm.query,
+ org.palladiosimulator.simexp.pcm.reliability,
+ org.palladiosimulator.solver,
+ org.palladiosimulator.dependability.reliability.uncertainty,
+ org.palladiosimulator.dependability.reliability.uncertainty.solver,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.param
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

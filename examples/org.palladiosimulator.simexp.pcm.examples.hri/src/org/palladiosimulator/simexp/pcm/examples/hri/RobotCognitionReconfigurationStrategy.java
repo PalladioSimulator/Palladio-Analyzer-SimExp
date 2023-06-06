@@ -1,8 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
-import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.LOWER_THRESHOLD_REL;
-import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.UPPER_THRESHOLD_RT;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,8 +16,8 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
 public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>, Initializable {
 
-	private static final Threshold THRESHOLD_RT = Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT);
-	private static final Threshold THRESHOLD_REL = Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL);
+	private final Threshold thresholdRt;
+	private final Threshold thresholdRel;;
 
 	private final SimulatedMeasurementSpecification reliabilitySpec;
 	private final SimulatedMeasurementSpecification responseTimeSpec;
@@ -29,9 +26,11 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>,
 	private boolean isFilteringActivated = false;
 
 	public RobotCognitionReconfigurationStrategy(SimulatedMeasurementSpecification reliabilitySpec,
-			SimulatedMeasurementSpecification responseTimeSpec) {
+			SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt, double thresholdRel) {
 		this.reliabilitySpec = reliabilitySpec;
 		this.responseTimeSpec = responseTimeSpec;
+		this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
+		this.thresholdRel = Threshold.greaterThanOrEqualTo(thresholdRel);
 	}
 
 	@Override
@@ -55,8 +54,8 @@ public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>,
 		SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec).orElseThrow();
 		SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec).orElseThrow();
 
-		var isReliabilityNotSatisfied = THRESHOLD_REL.isNotSatisfied(relSimMeasurement.getValue());
-		var isResponseTimeNotSatisfied = THRESHOLD_RT.isNotSatisfied(rtSimMeasurement.getValue());
+		var isReliabilityNotSatisfied = thresholdRel.isNotSatisfied(relSimMeasurement.getValue());
+		var isResponseTimeNotSatisfied = thresholdRt.isNotSatisfied(rtSimMeasurement.getValue());
 
 		if (isReliabilityNotSatisfied) {
 			return manageReliability(asReconfigurations(options));
