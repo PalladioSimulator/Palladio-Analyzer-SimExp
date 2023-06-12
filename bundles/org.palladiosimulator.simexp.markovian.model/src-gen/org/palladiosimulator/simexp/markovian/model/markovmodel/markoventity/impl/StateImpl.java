@@ -33,7 +33,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  *
  * @generated
  */
-public class StateImpl extends MinimalEObjectImpl.Container implements State {
+public class StateImpl<T> extends MinimalEObjectImpl.Container implements State<T> {
 	/**
 	 * The cached value of the '{@link #getProduces() <em>Produces</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -42,7 +42,7 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Observation> produces;
+	protected EList<Observation<T>> produces;
 
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -89,9 +89,9 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State {
 	 * @generated
 	 */
 	@Override
-	public EList<Observation> getProduces() {
+	public EList<Observation<T>> getProduces() {
 		if (produces == null) {
-			produces = new EObjectResolvingEList<Observation>(Observation.class, this,
+			produces = new EObjectResolvingEList<Observation<T>>(Observation.class, this,
 					MarkovEntityPackage.STATE__PRODUCES);
 		}
 		return produces;
@@ -147,7 +147,7 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State {
 		switch (featureID) {
 		case MarkovEntityPackage.STATE__PRODUCES:
 			getProduces().clear();
-			getProduces().addAll((Collection<? extends Observation>) newValue);
+			getProduces().addAll((Collection<? extends Observation<T>>) newValue);
 			return;
 		case MarkovEntityPackage.STATE__NAME:
 			setName((String) newValue);

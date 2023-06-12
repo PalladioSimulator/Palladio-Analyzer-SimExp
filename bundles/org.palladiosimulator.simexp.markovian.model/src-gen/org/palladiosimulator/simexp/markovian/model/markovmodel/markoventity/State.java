@@ -23,10 +23,10 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface State extends EObject {
+public interface State<T> extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Produces</b></em>' reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}.
+	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}<code>&lt;T&gt;</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Produces</em>' reference list.
@@ -34,7 +34,7 @@ public interface State extends EObject {
 	 * @model
 	 * @generated
 	 */
-	EList<Observation> getProduces();
+	EList<Observation<T>> getProduces();
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.

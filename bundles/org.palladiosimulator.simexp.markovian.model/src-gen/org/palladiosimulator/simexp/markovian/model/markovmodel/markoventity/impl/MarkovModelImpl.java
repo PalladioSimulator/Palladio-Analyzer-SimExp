@@ -41,7 +41,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Tra
  *
  * @generated
  */
-public class MarkovModelImpl extends MinimalEObjectImpl.Container implements MarkovModel {
+public class MarkovModelImpl<T> extends MinimalEObjectImpl.Container implements MarkovModel<T> {
 	/**
 	 * The cached value of the '{@link #getTransitions() <em>Transitions</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -50,7 +50,7 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Transition> transitions;
+	protected EList<Transition<T>> transitions;
 
 	/**
 	 * The cached value of the '{@link #getStateSpace() <em>State Space</em>}' containment reference list.
@@ -60,7 +60,7 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<State> stateSpace;
+	protected EList<State<T>> stateSpace;
 
 	/**
 	 * The cached value of the '{@link #getReward() <em>Reward</em>}' containment reference list.
@@ -70,7 +70,7 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Reward> reward;
+	protected EList<Reward<T>> reward;
 
 	/**
 	 * The cached value of the '{@link #getActions() <em>Actions</em>}' containment reference list.
@@ -80,7 +80,7 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Action> actions;
+	protected EList<Action<T>> actions;
 
 	/**
 	 * The cached value of the '{@link #getObservations() <em>Observations</em>}' containment reference list.
@@ -90,7 +90,7 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Observation<?>> observations;
+	protected EList<Observation<T>> observations;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -117,9 +117,9 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 */
 	@Override
-	public EList<Transition> getTransitions() {
+	public EList<Transition<T>> getTransitions() {
 		if (transitions == null) {
-			transitions = new EObjectContainmentEList<Transition>(Transition.class, this,
+			transitions = new EObjectContainmentEList<Transition<T>>(Transition.class, this,
 					MarkovEntityPackage.MARKOV_MODEL__TRANSITIONS);
 		}
 		return transitions;
@@ -131,9 +131,9 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 */
 	@Override
-	public EList<State> getStateSpace() {
+	public EList<State<T>> getStateSpace() {
 		if (stateSpace == null) {
-			stateSpace = new EObjectContainmentEList<State>(State.class, this,
+			stateSpace = new EObjectContainmentEList<State<T>>(State.class, this,
 					MarkovEntityPackage.MARKOV_MODEL__STATE_SPACE);
 		}
 		return stateSpace;
@@ -145,9 +145,10 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 */
 	@Override
-	public EList<Reward> getReward() {
+	public EList<Reward<T>> getReward() {
 		if (reward == null) {
-			reward = new EObjectContainmentEList<Reward>(Reward.class, this, MarkovEntityPackage.MARKOV_MODEL__REWARD);
+			reward = new EObjectContainmentEList<Reward<T>>(Reward.class, this,
+					MarkovEntityPackage.MARKOV_MODEL__REWARD);
 		}
 		return reward;
 	}
@@ -158,9 +159,9 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 */
 	@Override
-	public EList<Action> getActions() {
+	public EList<Action<T>> getActions() {
 		if (actions == null) {
-			actions = new EObjectContainmentEList<Action>(Action.class, this,
+			actions = new EObjectContainmentEList<Action<T>>(Action.class, this,
 					MarkovEntityPackage.MARKOV_MODEL__ACTIONS);
 		}
 		return actions;
@@ -172,9 +173,9 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 	 * @generated
 	 */
 	@Override
-	public EList<Observation<?>> getObservations() {
+	public EList<Observation<T>> getObservations() {
 		if (observations == null) {
-			observations = new EObjectContainmentEList<Observation<?>>(Observation.class, this,
+			observations = new EObjectContainmentEList<Observation<T>>(Observation.class, this,
 					MarkovEntityPackage.MARKOV_MODEL__OBSERVATIONS);
 		}
 		return observations;
@@ -235,23 +236,23 @@ public class MarkovModelImpl extends MinimalEObjectImpl.Container implements Mar
 		switch (featureID) {
 		case MarkovEntityPackage.MARKOV_MODEL__TRANSITIONS:
 			getTransitions().clear();
-			getTransitions().addAll((Collection<? extends Transition>) newValue);
+			getTransitions().addAll((Collection<? extends Transition<T>>) newValue);
 			return;
 		case MarkovEntityPackage.MARKOV_MODEL__STATE_SPACE:
 			getStateSpace().clear();
-			getStateSpace().addAll((Collection<? extends State>) newValue);
+			getStateSpace().addAll((Collection<? extends State<T>>) newValue);
 			return;
 		case MarkovEntityPackage.MARKOV_MODEL__REWARD:
 			getReward().clear();
-			getReward().addAll((Collection<? extends Reward>) newValue);
+			getReward().addAll((Collection<? extends Reward<T>>) newValue);
 			return;
 		case MarkovEntityPackage.MARKOV_MODEL__ACTIONS:
 			getActions().clear();
-			getActions().addAll((Collection<? extends Action>) newValue);
+			getActions().addAll((Collection<? extends Action<T>>) newValue);
 			return;
 		case MarkovEntityPackage.MARKOV_MODEL__OBSERVATIONS:
 			getObservations().clear();
-			getObservations().addAll((Collection<? extends Observation<?>>) newValue);
+			getObservations().addAll((Collection<? extends Observation<T>>) newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);

@@ -88,7 +88,7 @@ public class RewardImpl<U> extends MinimalEObjectImpl.Container implements Rewar
 	 * @generated
 	 */
 	@Override
-	public Reward addWith(Reward other) {
+	public Reward<U> addWith(Reward<U> other) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -159,10 +159,11 @@ public class RewardImpl<U> extends MinimalEObjectImpl.Container implements Rewar
 	 * @generated
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
 		case MarkovEntityPackage.REWARD___ADD_WITH__REWARD:
-			return addWith((Reward) arguments.get(0));
+			return addWith((Reward<U>) arguments.get(0));
 		}
 		return super.eInvoke(operationID, arguments);
 	}

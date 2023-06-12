@@ -32,7 +32,7 @@ public class EnvironmentModelBuilder extends BasicMarkovModelBuilder {
 	}
 
 	private void checkValidity(MarkovModel build) {
-		isHidden = isHidden(build.getStateSpace().get(0));
+		isHidden = isHidden((State) build.getStateSpace().get(0));
 		if (isNotConsistent(build)) {
 			//TODO exception handling
 			throw new RuntimeException("");
