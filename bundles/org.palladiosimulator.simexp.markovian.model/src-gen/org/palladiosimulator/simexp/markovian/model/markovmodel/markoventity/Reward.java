@@ -49,6 +49,6 @@ public interface Reward<U> extends EObject {
 	 * @model required="true"
 	 * @generated
 	 */
-	Reward addWith(Reward other);
+	Reward<U> addWith(Reward<U> other);
 
 } // Reward

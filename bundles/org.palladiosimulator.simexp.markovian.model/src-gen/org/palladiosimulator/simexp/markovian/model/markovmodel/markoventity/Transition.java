@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Transition extends EObject {
+public interface Transition<T> extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Source</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -34,7 +34,7 @@ public interface Transition extends EObject {
 	 * @model required="true"
 	 * @generated
 	 */
-	State getSource();
+	State<T> getSource();
 
 	/**
 	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getSource <em>Source</em>}' reference.
@@ -44,7 +44,7 @@ public interface Transition extends EObject {
 	 * @see #getSource()
 	 * @generated
 	 */
-	void setSource(State value);
+	void setSource(State<T> value);
 
 	/**
 	 * Returns the value of the '<em><b>Target</b></em>' reference.
@@ -56,7 +56,7 @@ public interface Transition extends EObject {
 	 * @model required="true"
 	 * @generated
 	 */
-	State getTarget();
+	State<T> getTarget();
 
 	/**
 	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getTarget <em>Target</em>}' reference.
@@ -66,7 +66,7 @@ public interface Transition extends EObject {
 	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTarget(State value);
+	void setTarget(State<T> value);
 
 	/**
 	 * Returns the value of the '<em><b>Label</b></em>' reference.
@@ -78,7 +78,7 @@ public interface Transition extends EObject {
 	 * @model
 	 * @generated
 	 */
-	Action getLabel();
+	Action<T> getLabel();
 
 	/**
 	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getLabel <em>Label</em>}' reference.
@@ -88,7 +88,7 @@ public interface Transition extends EObject {
 	 * @see #getLabel()
 	 * @generated
 	 */
-	void setLabel(Action value);
+	void setLabel(Action<T> value);
 
 	/**
 	 * Returns the value of the '<em><b>Probability</b></em>' attribute.

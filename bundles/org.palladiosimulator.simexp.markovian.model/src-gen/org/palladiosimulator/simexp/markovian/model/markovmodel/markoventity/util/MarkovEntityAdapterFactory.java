@@ -67,12 +67,12 @@ public class MarkovEntityAdapterFactory extends AdapterFactoryImpl {
 	 */
 	protected MarkovEntitySwitch<Adapter> modelSwitch = new MarkovEntitySwitch<Adapter>() {
 		@Override
-		public Adapter caseMarkovModel(MarkovModel object) {
+		public <T> Adapter caseMarkovModel(MarkovModel<T> object) {
 			return createMarkovModelAdapter();
 		}
 
 		@Override
-		public Adapter caseState(State object) {
+		public <T> Adapter caseState(State<T> object) {
 			return createStateAdapter();
 		}
 
@@ -82,7 +82,7 @@ public class MarkovEntityAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
-		public Adapter caseTransition(Transition object) {
+		public <T> Adapter caseTransition(Transition<T> object) {
 			return createTransitionAdapter();
 		}
 
