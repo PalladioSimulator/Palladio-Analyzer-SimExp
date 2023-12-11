@@ -16,13 +16,12 @@ import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class LinearLoadBalancerStrategy implements Policy<Action<?>> {
+public class LinearLoadBalancerStrategy implements Policy<QVToReconfiguration> {
 
 	private final static String LINEAR_ADAPTATION_STRATEGY_NAME = "LinearLoadBalancerAdaptationStrategy";
 	private final static String OUT_SOURCE = "LinearOutsourcing";
@@ -49,7 +48,7 @@ public class LinearLoadBalancerStrategy implements Policy<Action<?>> {
 	}
 
 	@Override
-	public Action<?> select(State source, Set<Action<?>> options) {
+	public QVToReconfiguration select(State<QVToReconfiguration> source, Set<QVToReconfiguration> options) {
 		// TODO Exception handling
 		if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
 			throw new RuntimeException("");
@@ -114,7 +113,7 @@ public class LinearLoadBalancerStrategy implements Policy<Action<?>> {
 		return normalize(outsourceFactor);
 	}
 
-	private Action<?> linearOutSource(int outSourceFactor, List<QVToReconfiguration> options) {
+	private QVToReconfiguration linearOutSource(int outSourceFactor, List<QVToReconfiguration> options) {
 		if (outSourceFactor == 0) {
 			return QVToReconfiguration.empty();
 		}
@@ -140,7 +139,7 @@ public class LinearLoadBalancerStrategy implements Policy<Action<?>> {
 		return normalize(scaleInFactor);
 	}
 
-	private Action<?> linearScaleIn(int scaleInFactor, List<QVToReconfiguration> options) {
+	private QVToReconfiguration linearScaleIn(int scaleInFactor, List<QVToReconfiguration> options) {
 		if (scaleInFactor == 0) {
 			return QVToReconfiguration.empty();
 		}
@@ -161,8 +160,8 @@ public class LinearLoadBalancerStrategy implements Policy<Action<?>> {
 				.map(each -> each.getValue()).findFirst().get();
 	}
 
-	private List<QVToReconfiguration> asReconfigurations(Set<Action<?>> options) {
-		return options.stream().map(each -> (QVToReconfiguration) each).collect(Collectors.toList());
+	private List<QVToReconfiguration> asReconfigurations(Set<QVToReconfiguration> options) {
+		return options.stream().map(each -> each).collect(Collectors.toList());
 	}
 
 	private QVToReconfiguration findReconfiguration(String name, List<QVToReconfiguration> options) {

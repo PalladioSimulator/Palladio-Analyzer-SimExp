@@ -15,8 +15,8 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
@@ -61,7 +61,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
 	
 	protected ExperienceSimulator createExperienceSimulator(Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs, 
     		List<ExperienceSimulationRunner> runners, SimulationParameters params, Initializable beforeExecution, EnvironmentProcess envProcess,
-    		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<Action<?>> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, 
+    		SelfAdaptiveSystemStateSpaceNavigator navigator, Policy<QVToReconfiguration> reconfStrategy, Set<Reconfiguration<?>> reconfigurations, 
     		RewardEvaluator evaluator, boolean hidden) {
     	
     	return PcmExperienceSimulationBuilder.newBuilder(experimentProvider, qvtoReconfigurationManager)

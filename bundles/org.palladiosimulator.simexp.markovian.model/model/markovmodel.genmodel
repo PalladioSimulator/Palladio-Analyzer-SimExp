@@ -61,9 +61,11 @@
     <nestedGenPackages prefix="SampleModel" basePackage="org.palladiosimulator.simexp.markovian.model.markovmodel"
         disposableProviderFactory="true" ecorePackage="markovmodel.ecore#//samplemodel">
       <genClasses ecoreClass="markovmodel.ecore#//samplemodel/Trajectory">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//samplemodel/Trajectory/T"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Trajectory/samplePath"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//samplemodel/Sample">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//samplemodel/Sample/T"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/reward"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -77,6 +79,7 @@
             ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/Sample/observation"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//samplemodel/SampleModel">
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//samplemodel/SampleModel/T"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//samplemodel/SampleModel/trajectories"/>
       </genClasses>
     </nestedGenPackages>

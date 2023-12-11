@@ -24,17 +24,18 @@ public class SampleModelEvaluator {
 		
 		private final static int CACHE_SIZE = 100;
 		
-		private final Map<Integer, Transition> cache;
+		private final Map<Integer, Transition<Double>> cache;
 		
 		public TransitionCache() {
 			cache = new HashMap<>();
 		}
 		
-		public Optional<Transition> findTransition(Sample sample) {
-			return Optional.ofNullable(cache.get((Object) sample));
+		public Optional<Transition<Double>> findTransition(Sample<Double> sample) {
+			Transition<Double> value = cache.get(sample.hashCode());
+			return Optional.ofNullable(value);
 		}
 		
-		public void put(Sample sample, Transition transition) {
+		public void put(Sample<Double> sample, Transition<Double> transition) {
 			if (isCacheFull() == false) {
 				cache.put(sample.hashCode(), transition);
 			}
@@ -46,52 +47,52 @@ public class SampleModelEvaluator {
 	}
 	
 	private final TransitionCache transitionCache;
-	private final MarkovModelAccessor modelAccessor;
+	private final MarkovModelAccessor<Double> modelAccessor;
 	private final ProbabilityMassFunction initialStateDist;
 	
-	private SampleModelEvaluator(MarkovModel model, ProbabilityMassFunction initialStateDist) {
+	private SampleModelEvaluator(MarkovModel<Double> model, ProbabilityMassFunction initialStateDist) {
 		this.transitionCache = new TransitionCache();
 		this.modelAccessor = MarkovModelAccessor.of(model);
 		this.initialStateDist = initialStateDist;
 	}
 	
-	public static SampleModelEvaluator of(MarkovModel model, ProbabilityMassFunction initialStateDist) {
+	public static SampleModelEvaluator of(MarkovModel<Double> model, ProbabilityMassFunction initialStateDist) {
 		return new SampleModelEvaluator(model, initialStateDist);
 	}
 	
-	public List<MarkovianResult> evaluate(SampleModel sampleModelToEval) {
+	public List<MarkovianResult> evaluate(SampleModel<Double> sampleModelToEval) {
 		return sampleModelToEval.getTrajectories().stream().map(this::evaluate).collect(Collectors.toList());
 	}
 	
-	public MarkovianResult evaluate(Trajectory trajToEval) {
+	public MarkovianResult evaluate(Trajectory<Double> trajToEval) {
 		double total = 0;
 		double probability = computeInitial(trajToEval);
 		
-		for (Sample each : trajToEval.getSamplePath()) {
-			total += (double) each.getReward().getValue();
+		for (Sample<Double> each : trajToEval.getSamplePath()) {
+			total += each.getReward().getValue();
 			probability *= getProbability(each);
 		}
 		
-		Reward<?> totalReward = MarkovModelFactory.get().createRewardSignal(total);
+		Reward<Double> totalReward = MarkovModelFactory.get().createRewardSignal(total);
 		return MarkovianResult.of(trajToEval).withProbability(probability)
 											 .andReward(totalReward)
 											 .build();
 	}
 
-	private double computeInitial(Trajectory trajToEval) {
-		State initial = trajToEval.getSamplePath().get(0).getCurrent();
+	private double computeInitial(Trajectory<Double> trajToEval) {
+		State<Double> initial = trajToEval.getSamplePath().get(0).getCurrent();
 		return initialStateDist.probability(ProbabilityMassFunction.Sample.of(initial));
 	}
 
-	private double getProbability(Sample sample) {
-		Transition result = transitionCache.findTransition(sample)
+	private double getProbability(Sample<Double> sample) {
+		Transition<Double> result = transitionCache.findTransition(sample)
 										   .orElse(queryMarkovModelAndCacheResult(sample));
 		return result.getProbability();
 	}
 
-	private Transition queryMarkovModelAndCacheResult(Sample sample) {
+	private Transition<Double> queryMarkovModelAndCacheResult(Sample<Double> sample) {
 		//TODO exception handling
-		Transition result = modelAccessor.findTransition(sample.getCurrent(), sample.getNext())
+		Transition<Double> result = modelAccessor.findTransition(sample.getCurrent(), sample.getNext())
 										 .orElseThrow(() -> new RuntimeException(""));
 		transitionCache.put(sample, result);
 		return result;

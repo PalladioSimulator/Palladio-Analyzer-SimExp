@@ -8,5 +8,5 @@ public interface Policy<T> {
 
 	public String getId();
 	
-	public T select(State source, Set<T> options);
+	public T select(State<T> source, Set<T> options);
 }

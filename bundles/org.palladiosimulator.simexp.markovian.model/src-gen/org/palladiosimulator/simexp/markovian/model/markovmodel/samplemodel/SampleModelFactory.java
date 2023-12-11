@@ -29,7 +29,7 @@ public interface SampleModelFactory extends EFactory {
 	 * @return a new object of class '<em>Trajectory</em>'.
 	 * @generated
 	 */
-	Trajectory createTrajectory();
+	<T> Trajectory<T> createTrajectory();
 
 	/**
 	 * Returns a new object of class '<em>Sample</em>'.
@@ -38,7 +38,7 @@ public interface SampleModelFactory extends EFactory {
 	 * @return a new object of class '<em>Sample</em>'.
 	 * @generated
 	 */
-	Sample createSample();
+	<T> Sample<T> createSample();
 
 	/**
 	 * Returns a new object of class '<em>Sample Model</em>'.
@@ -47,7 +47,7 @@ public interface SampleModelFactory extends EFactory {
 	 * @return a new object of class '<em>Sample Model</em>'.
 	 * @generated
 	 */
-	SampleModel createSampleModel();
+	<T> SampleModel<T> createSampleModel();
 
 	/**
 	 * Returns the package supported by this factory.

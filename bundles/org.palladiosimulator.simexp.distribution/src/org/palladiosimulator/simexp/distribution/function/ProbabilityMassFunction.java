@@ -2,24 +2,24 @@ package org.palladiosimulator.simexp.distribution.function;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
-public interface ProbabilityMassFunction extends ProbabilityDistributionFunction<Sample> {
+public interface ProbabilityMassFunction<T> extends ProbabilityDistributionFunction<Sample<T>> {
 
-	public static class Sample {
+	public static class Sample<T> {
 		
-		private Object value;
+		private T value;
 		private double probability;
 		
-		private Sample(Object value, double probability) {
+		private Sample(T value, double probability) {
 			this.value = value;
 			this.probability = probability;
 		}
 		
-		public static Sample of(Object value) {
-			return new Sample(value, 0);
+		public static <T> Sample<T> of(T value) {
+			return new Sample<>(value, 0);
 		}
 		
-		public static Sample of(Object value, double probability) {
-			return new Sample(value, probability);
+		public static <T> Sample<T> of(T value, double probability) {
+			return new Sample<>(value, probability);
 		}
 
 		public Object getValue() {
@@ -33,11 +33,11 @@ public interface ProbabilityMassFunction extends ProbabilityDistributionFunction
 		@Override
 		public boolean equals(Object other) {
 			if (other instanceof Sample) {
-				return ((Sample) other).getValue().equals(value);
+				return ((Sample<?>) other).getValue().equals(value);
 			}
 			return false;
 		}
 	}
 	
-	public double probability(ProbabilityMassFunction.Sample sample);
+	public double probability(ProbabilityMassFunction.Sample<T> sample);
 }
