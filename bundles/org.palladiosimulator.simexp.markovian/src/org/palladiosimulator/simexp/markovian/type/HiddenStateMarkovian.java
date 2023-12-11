@@ -4,36 +4,36 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class HiddenStateMarkovian extends MarkovianDecorator {
+public class HiddenStateMarkovian <T> extends MarkovianDecorator<T> {
 
-	private final ObservationProducer obsDistribution;
+	private final ObservationProducer<T> obsDistribution;
 	
-	public HiddenStateMarkovian(Markovian decoratedMarkovian, ObservationProducer obsDistribution) {
+	public HiddenStateMarkovian(Markovian<T> decoratedMarkovian, ObservationProducer<T> obsDistribution) {
 		super(decoratedMarkovian);
 		this.obsDistribution = obsDistribution;
 	}
 
 	@Override
-	public void drawSample(Sample sample) {
+	public void drawSample(Sample<T> sample) {
 		decoratedMarkovian.drawSample(sample);
 		produceObservation(sample);
 	}
 
-	private void produceObservation(Sample sample) {
-		Observation<?> result = obsDistribution.produceObservationGiven(sample.getNext());
+	private void produceObservation(Sample<T> sample) {
+		Observation<T> result = obsDistribution.produceObservationGiven(sample.getNext());
 		sample.setObservation(result);
 	}
 	
 	@Override
-	public Sample determineInitialState() {
-		Sample initial = decoratedMarkovian.determineInitialState();
+	public Sample<T> determineInitialState() {
+		Sample<T> initial = decoratedMarkovian.determineInitialState();
 		produceObservationForInitial(initial);
 		return initial;
 	}
 
-	private void produceObservationForInitial(Sample sample) {
+	private void produceObservationForInitial(Sample<T> sample) {
 		//TODO this could be better solved...
-		Observation<?> result = obsDistribution.produceObservationGiven(sample.getCurrent());
+		Observation<T> result = obsDistribution.produceObservationGiven(sample.getCurrent());
 		sample.getCurrent().getProduces().add(result);
 	}
 	

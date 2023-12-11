@@ -8,12 +8,11 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
+public class NStepLoadBalancerStrategy implements Policy<QVToReconfiguration> {
 	
 	private final static String SIMPLE_ADAPTATION_STRATEGY_NAME = "StepAdaptationStrategy";
 	
@@ -36,7 +35,7 @@ public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
 	}
 
 	@Override
-	public Action<?> select(State source, Set<Action<?>> options) {
+	public QVToReconfiguration select(State<QVToReconfiguration> source, Set<QVToReconfiguration> options) {
 		// TODO Exception handling
 		if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
 			throw new RuntimeException("");
@@ -57,7 +56,7 @@ public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
 		return QVToReconfiguration.empty();
 	}
 
-	private Action<?> outSource(List<QVToReconfiguration> options) {
+	private QVToReconfiguration outSource(List<QVToReconfiguration> options) {
 		for (QVToReconfiguration each : options) {
 			String reconfName = each.getStringRepresentation();
 			if (reconfName.equals(outsource())) {
@@ -68,7 +67,7 @@ public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
 		throw new RuntimeException("");
 	}
 
-	private Action<?> scaleIn(List<QVToReconfiguration> options) {
+	private QVToReconfiguration scaleIn(List<QVToReconfiguration> options) {
 		for (QVToReconfiguration each : options) {
 			String reconfName = each.getStringRepresentation();
 			if (reconfName.equals(scaleIn())) {
@@ -79,8 +78,8 @@ public class NStepLoadBalancerStrategy implements Policy<Action<?>> {
 		throw new RuntimeException("");
 	}
 	
-	private List<QVToReconfiguration> asReconfigurations(Set<Action<?>> options) {
-		return options.stream().map(each -> (QVToReconfiguration) each).collect(Collectors.toList());
+	private List<QVToReconfiguration> asReconfigurations(Set<QVToReconfiguration> options) {
+		return options.stream().map(each -> each).collect(Collectors.toList());
 	}
 	
 	private String scaleIn() {

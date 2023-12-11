@@ -23,15 +23,15 @@ public class MarkovianUtil {
 		}
 	}
 	
-	public static Set<Action<?>> toActions(Set<Transition> transitions) {
-		return new TransitionMapper<Transition,Action<?>>(transitions).apply(t -> t.getLabel());
+	public static <T> Set<Action<T>> toActions(Set<Transition<T>> transitions) {
+		return new TransitionMapper<Transition<T>,Action<T>>(transitions).apply(t -> t.getLabel());
 	}
 	
-	public static Set<ProbabilityMassFunction.Sample> toSamples(Set<Transition> transitions) {
-		return new TransitionMapper<Transition,ProbabilityMassFunction.Sample>(transitions).apply(t -> ProbabilityMassFunction.Sample.of(t, t.getProbability()));
+	public static Set<ProbabilityMassFunction.Sample<Transition<Double>>> toSamples(Set<Transition<Double>> transitions) {
+		return new TransitionMapper<Transition<Double>,ProbabilityMassFunction.Sample<Transition<Double>>>(transitions).apply(t -> ProbabilityMassFunction.Sample.of(t, t.getProbability()));
 	}
 		
-	public static Transition maxTransition(Set<Transition> transitions) {
+	public static <T> Transition<T> maxTransition(Set<Transition<T>> transitions) {
 		//TODO ExceptionHandling
 		return transitions.stream().max((t1, t2) -> Double.valueOf(t1.getProbability()).compareTo(t2.getProbability()))
 								   .orElseThrow(() -> new RuntimeException(""));

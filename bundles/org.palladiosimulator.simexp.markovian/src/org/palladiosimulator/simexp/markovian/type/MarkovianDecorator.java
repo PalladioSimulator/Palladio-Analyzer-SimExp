@@ -3,21 +3,21 @@ package org.palladiosimulator.simexp.markovian.type;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public abstract class MarkovianDecorator implements Markovian {
+public abstract class MarkovianDecorator<T> implements Markovian<T> {
 
-	protected Markovian decoratedMarkovian = null;
+	protected Markovian<T> decoratedMarkovian = null;
 	
-	public MarkovianDecorator(Markovian decoratedMarkovian) {
+	public MarkovianDecorator(Markovian<T> decoratedMarkovian) {
 		this.decoratedMarkovian = decoratedMarkovian;
 	}
 	
 	@Override
-	public Sample determineInitialState() {
+	public Sample<T> determineInitialState() {
 		return decoratedMarkovian.determineInitialState();
 	}
 	
 	@Override
-	public ProbabilityMassFunction getInitialStateDistribution() {
+	public ProbabilityMassFunction<T> getInitialStateDistribution() {
 		return decoratedMarkovian.getInitialStateDistribution();
 	}
 }

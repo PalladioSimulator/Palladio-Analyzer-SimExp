@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.markovian.activity;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public interface ObservationProducer {
+public interface ObservationProducer<T> {
 
-	public Observation<?> produceObservationGiven(State emittingState);
+	public Observation<T> produceObservationGiven(State<T> emittingState);
 }

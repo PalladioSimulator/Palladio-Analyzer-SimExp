@@ -20,8 +20,8 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -52,7 +52,7 @@ public class LoadBalancingSimulationExecutorFactory extends PcmExperienceSimulat
 	public PcmExperienceSimulationExecutor create() {
 		List<ExperienceSimulationRunner> simulationRunners = List.of(new PcmExperienceSimulationRunner(experimentProvider));
 		Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider, qvtoReconfigurationManager);
-		Policy<Action<?>> reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
+		Policy<QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy(1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 			
 		Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0), 
 				Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));

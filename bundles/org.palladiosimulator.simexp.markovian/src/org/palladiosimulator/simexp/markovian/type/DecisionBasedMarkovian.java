@@ -8,16 +8,17 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DecisionBasedMarkovian extends MarkovianDecorator {
+public class DecisionBasedMarkovian <T> extends MarkovianDecorator<T> {
 
-	private final Policy<Action<?>> policy;
-	private final RewardReceiver rewardReceiver;
-	private final Set<Action<?>> actionSpace;
+	//private final Policy<Action<?>> policy;
+	private final Policy<Action<T>> policy;
+	private final RewardReceiver<T> rewardReceiver;
+	private final Set<Action<T>> actionSpace;
 	
-	public DecisionBasedMarkovian(Markovian decoratedMarkovian, 
-								  Policy<Action<?>> policy, 
-								  RewardReceiver rewardReceiver,
-								  Set<Action<?>> actionSpace) {
+	public DecisionBasedMarkovian(Markovian<T> decoratedMarkovian, 
+								  Policy<Action<T>> policy, 
+								  RewardReceiver<T> rewardReceiver,
+								  Set<Action<T>> actionSpace) {
 		super(decoratedMarkovian);
 		this.policy = policy;
 		this.rewardReceiver = rewardReceiver;
@@ -25,23 +26,26 @@ public class DecisionBasedMarkovian extends MarkovianDecorator {
 	}
 
 	@Override
-	public void drawSample(Sample sample) {
+	public void drawSample(Sample<T> sample) {
 		addSelectedAction(sample);
 		addNextState(sample);
 		addObtainedReward(sample);
 	}
 
-	private void addSelectedAction(Sample sample) {
-		Action<?> choice = policy.select(sample.getCurrent(), actionSpace);
+	private void addSelectedAction(Sample<T> sample) {
+		// public T select(State<T> source, Set<T> options);
+		T choice = policy.select(sample.getCurrent(), actionSpace);
+		// void setAction(Action<T> value);
+		//Action<Action<T>> choice2 = null;
 		sample.setAction(choice);
 	}
 
-	private void addNextState(Sample sample) {
+	private void addNextState(Sample<T> sample) {
 		decoratedMarkovian.drawSample(sample);
 	}
 	
-	private void addObtainedReward(Sample sample) {
-		Reward<?> reward = rewardReceiver.obtain(sample);
+	private void addObtainedReward(Sample<T> sample) {
+		Reward<T> reward = rewardReceiver.obtain(sample);
 		sample.setReward(reward);
 	}
 

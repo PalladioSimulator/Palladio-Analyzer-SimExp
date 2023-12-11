@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
+import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage;
@@ -304,6 +305,9 @@ public class SampleModelPackageImpl extends EPackageImpl implements SampleModelP
 				.getEPackage(MarkovEntityPackage.eNS_URI);
 
 		// Create type parameters
+		ETypeParameter trajectoryEClass_T = addETypeParameter(trajectoryEClass, "T");
+		ETypeParameter sampleEClass_T = addETypeParameter(sampleEClass, "T");
+		ETypeParameter sampleModelEClass_T = addETypeParameter(sampleModelEClass, "T");
 
 		// Set bounds for type parameters
 
@@ -312,27 +316,38 @@ public class SampleModelPackageImpl extends EPackageImpl implements SampleModelP
 		// Initialize classes, features, and operations; add parameters
 		initEClass(trajectoryEClass, Trajectory.class, "Trajectory", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getTrajectory_SamplePath(), this.getSample(), null, "samplePath", null, 1, -1, Trajectory.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		EGenericType g1 = createEGenericType(this.getSample());
+		EGenericType g2 = createEGenericType(trajectoryEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getTrajectory_SamplePath(), g1, null, "samplePath", null, 1, -1, Trajectory.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+				IS_ORDERED);
 
 		initEClass(sampleEClass, Sample.class, "Sample", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSample_Reward(), theMarkovEntityPackage.getReward(), null, "reward", null, 0, 1, Sample.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSample_Action(), theMarkovEntityPackage.getAction(), null, "action", null, 0, 1, Sample.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		g1 = createEGenericType(theMarkovEntityPackage.getReward());
+		g2 = createEGenericType(sampleEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getSample_Reward(), g1, null, "reward", null, 0, 1, Sample.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		g1 = createEGenericType(theMarkovEntityPackage.getAction());
+		g2 = createEGenericType(sampleEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getSample_Action(), g1, null, "action", null, 0, 1, Sample.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSample_PointInTime(), ecorePackage.getEInt(), "pointInTime", null, 1, 1, Sample.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSample_Current(), theMarkovEntityPackage.getState(), null, "current", null, 1, 1,
-				Sample.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSample_Next(), theMarkovEntityPackage.getState(), null, "next", null, 1, 1, Sample.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		EGenericType g1 = createEGenericType(theMarkovEntityPackage.getObservation());
-		EGenericType g2 = createEGenericType();
+		g1 = createEGenericType(theMarkovEntityPackage.getState());
+		g2 = createEGenericType(sampleEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getSample_Current(), g1, null, "current", null, 1, 1, Sample.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		g1 = createEGenericType(theMarkovEntityPackage.getState());
+		g2 = createEGenericType(sampleEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getSample_Next(), g1, null, "next", null, 1, 1, Sample.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		g1 = createEGenericType(theMarkovEntityPackage.getObservation());
+		g2 = createEGenericType(sampleEClass_T);
 		g1.getETypeArguments().add(g2);
 		initEReference(getSample_Observation(), g1, null, "observation", null, 0, 1, Sample.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
@@ -340,9 +355,12 @@ public class SampleModelPackageImpl extends EPackageImpl implements SampleModelP
 
 		initEClass(sampleModelEClass, SampleModel.class, "SampleModel", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSampleModel_Trajectories(), this.getTrajectory(), null, "trajectories", null, 1, -1,
-				SampleModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		g1 = createEGenericType(this.getTrajectory());
+		g2 = createEGenericType(sampleModelEClass_T);
+		g1.getETypeArguments().add(g2);
+		initEReference(getSampleModel_Trajectories(), g1, null, "trajectories", null, 1, -1, SampleModel.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

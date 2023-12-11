@@ -16,35 +16,35 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class MarkovModelAccessor {
+public class MarkovModelAccessor<T> {
 	
-	private final MarkovModel model;
+	private final MarkovModel<T> model;
 	
-	private MarkovModelAccessor(MarkovModel model) {
+	private MarkovModelAccessor(MarkovModel<T> model) {
 		this.model = model;
 	}
 	
-	public static MarkovModelAccessor of(MarkovModel model) {
-		return new MarkovModelAccessor(model);
+	public  static <T> MarkovModelAccessor<T> of(MarkovModel<T> model) {
+		return new MarkovModelAccessor<T>(model);
 	}
 	
-	private Stream<Transition> getTransitionStream() {
+	private Stream<Transition<T>> getTransitionStream() {
 		return model.getTransitions().stream();
 	}
 	
-	public Set<State> getStates() {
-		return new HashSet<State>(model.getStateSpace());
+	public Set<State<T>> getStates() {
+		return new HashSet<State<T>>(model.getStateSpace());
 	}
 	
-	public Set<Transition> filterTransitions(Predicate<Transition> criterion) {
+	public Set<Transition<T>> filterTransitions(Predicate<Transition<T>> criterion) {
 		return getTransitionStream().filter(criterion).collect(Collectors.toSet());
 	}
 	
-	public Optional<Transition> findTransition(State source, Action<?> label) {
+	public Optional<Transition<T>> findTransition(State<T> source, Action<T> label) {
 		return getTransitionStream().filter(withSource(source).and(withLabel(label))).findFirst();
 	}
 	
-	public Optional<Transition> findTransition(State source, State target) {
+	public Optional<Transition<T>> findTransition(State<T> source, State<T> target) {
 		return getTransitionStream().filter(withSource(source).and(withTarget(target))).findFirst();
 	}
 }

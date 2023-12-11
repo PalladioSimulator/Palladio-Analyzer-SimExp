@@ -4,5 +4,5 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 
 public interface HiddenStateMarkovianBuilderTemplate<T> {
 	
-	public T handleObservationsWith(ObservationProducer obsHandler);
+	public HiddenStateMarkovianBuilder<T> handleObservationsWith(ObservationProducer<T> obsHandler);
 }

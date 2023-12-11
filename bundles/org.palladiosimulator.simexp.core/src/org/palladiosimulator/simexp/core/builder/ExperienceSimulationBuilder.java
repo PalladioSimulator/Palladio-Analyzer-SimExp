@@ -38,20 +38,19 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class ExperienceSimulationBuilder {
-    
+public abstract class ExperienceSimulationBuilder <T >{
     
     private String simulationID = "";
     private int numberOfRuns = 0;
     private int numberOfSamplesPerRun = 0;
     private Set<Reconfiguration<?>> reconfigurationSpace = null;
     private RewardEvaluator rewardEvaluator = null;
-    private Policy<Action<?>> policy = null;
+    private Policy<Action<T>> policy = null;
     private EnvironmentProcess envProcess = null;
     private boolean isHiddenProcess = false;
-    private Optional<MarkovModel> markovModel = Optional.empty();
+    private Optional<MarkovModel<T>> markovModel = Optional.empty();
     private SelfAdaptiveSystemStateSpaceNavigator navigator = null;
-    private Optional<ProbabilityMassFunction> initialDistribution = Optional.empty();
+    private Optional<ProbabilityMassFunction<T>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
@@ -110,14 +109,14 @@ public abstract class ExperienceSimulationBuilder {
 
     private Markovian buildMarkovian() {
         StateSpaceNavigator navigator = buildStateSpaceNavigator();
-        ProbabilityMassFunction initial = initialDistribution.orElse(getInitialDistribution(navigator));
+        ProbabilityMassFunction<T> initial = initialDistribution.orElse(getInitialDistribution(navigator));
         if (isHiddenProcess) {
             return buildPOMDP(initial, navigator);
         }
         return buildMDP(initial, navigator);
     }
 
-    private ProbabilityMassFunction getInitialDistribution(StateSpaceNavigator navigator) {
+    private ProbabilityMassFunction<T> getInitialDistribution(StateSpaceNavigator navigator) {
         if ((navigator instanceof SelfAdaptiveSystemStateSpaceNavigator) == false) {
             // TODO Exception handling
             throw new RuntimeException("");
@@ -127,7 +126,7 @@ public abstract class ExperienceSimulationBuilder {
                 .createInitialDistribution(createInitialSassCreator());
     }
 
-    private Markovian buildPOMDP(ProbabilityMassFunction initialDist, StateSpaceNavigator navigator) {
+    private Markovian buildPOMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
         if (UnobservableEnvironmentProcess.class.isInstance(envProcess) == false) {
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
         }
@@ -143,7 +142,7 @@ public abstract class ExperienceSimulationBuilder {
                 .build();
     }
 
-    private Markovian buildMDP(ProbabilityMassFunction initialDist, StateSpaceNavigator navigator) {
+    private Markovian buildMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
         return MarkovianBuilder.createMarkovDecisionProcess()
                 .createStateSpaceNavigator(navigator)
                 .calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
@@ -195,7 +194,7 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 
-		public ExperienceSimulationBuilder done() {
+		public ExperienceSimulationBuilder<T> done() {
 			return ExperienceSimulationBuilder.this;
 		}
 	}
@@ -223,12 +222,12 @@ public abstract class ExperienceSimulationBuilder {
 			return this;
 		}
 
-		public SelfAdaptiveSystemBuilder andInitialDistributionOptionally(ProbabilityMassFunction initialDist) {
+		public SelfAdaptiveSystemBuilder andInitialDistributionOptionally(ProbabilityMassFunction<T> initialDist) {
 			ExperienceSimulationBuilder.this.initialDistribution = Optional.ofNullable(initialDist);
 			return this;
 		}
 
-		public ExperienceSimulationBuilder done() {
+		public ExperienceSimulationBuilder<T> done() {
 			return ExperienceSimulationBuilder.this;
 		}
 	}
