@@ -16,7 +16,6 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
@@ -33,19 +32,18 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.ObservationImpl;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class ExperienceSimulationBuilder <T >{
-    
+public abstract class ExperienceSimulationBuilder<T> {
+
     private String simulationID = "";
     private int numberOfRuns = 0;
     private int numberOfSamplesPerRun = 0;
     private Set<Reconfiguration<?>> reconfigurationSpace = null;
     private RewardEvaluator rewardEvaluator = null;
-    private Policy<Action<T>> policy = null;
+    private Policy<? extends Action<T>> policy = null;
     private EnvironmentProcess envProcess = null;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<T>> markovModel = Optional.empty();
@@ -77,13 +75,13 @@ public abstract class ExperienceSimulationBuilder <T >{
         checkValidity();
 
         ExperienceSimulationConfiguration config = ExperienceSimulationConfiguration.newBuilder()
-                .withSimulationID(simulationID)
-                .withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
-                .withNumberOfRuns(numberOfRuns)
-                .executeBeforeEachRun(beforeExecutionInitialization)
-                .addSimulationRunner(getSimulationRunner())
-                .sampleWith(buildMarkovSampler())
-                .build();
+            .withSimulationID(simulationID)
+            .withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
+            .withNumberOfRuns(numberOfRuns)
+            .executeBeforeEachRun(beforeExecutionInitialization)
+            .addSimulationRunner(getSimulationRunner())
+            .sampleWith(buildMarkovSampler())
+            .build();
         return ExperienceSimulator.createSimulator(config);
     }
 
@@ -103,11 +101,13 @@ public abstract class ExperienceSimulationBuilder <T >{
     }
 
     private MarkovianConfig buildMarkovianConfig() {
-        return new MarkovianConfig(numberOfSamplesPerRun, buildMarkovian(), null); // TODO bring in accordance with
-                                                                                    // ReconfigurationFilter...
+        return new MarkovianConfig(numberOfSamplesPerRun, buildMarkovian(), null); // TODO bring in
+                                                                                   // accordance
+                                                                                   // with
+                                                                                   // ReconfigurationFilter...
     }
 
-    private Markovian buildMarkovian() {
+    private Markovian<T> buildMarkovian() {
         StateSpaceNavigator navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<T> initial = initialDistribution.orElse(getInitialDistribution(navigator));
         if (isHiddenProcess) {
@@ -123,42 +123,45 @@ public abstract class ExperienceSimulationBuilder <T >{
         }
 
         return ((SelfAdaptiveSystemStateSpaceNavigator) navigator)
-                .createInitialDistribution(createInitialSassCreator());
+            .createInitialDistribution(createInitialSassCreator());
     }
 
-    private Markovian buildPOMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
+    private Markovian<T> buildPOMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
         if (UnobservableEnvironmentProcess.class.isInstance(envProcess) == false) {
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
         }
-         
+
         SimulatedRewardReceiver rewardReceiver = SimulatedRewardReceiver.with(rewardEvaluator);
         return MarkovianBuilder.createPartiallyObservableMDP()
-                .createStateSpaceNavigator(navigator)
-                .calculateRewardWith(rewardReceiver)
-                .selectActionsAccordingTo(policy)
-                .withActionSpace(getReconfigurationSpace())
-                .withInitialStateDistribution(initialDist)
-                .handleObservationsWith(PASS_THROUGH_OBS_PRODUCER)
-                .build();
+            .createStateSpaceNavigator(navigator)
+            .calculateRewardWith(rewardReceiver)
+            .selectActionsAccordingTo(policy)
+            .withActionSpace(getReconfigurationSpace())
+            .withInitialStateDistribution(initialDist)
+            .handleObservationsWith(PASS_THROUGH_OBS_PRODUCER)
+            .build();
     }
 
-    private Markovian buildMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
+    private Markovian<T> buildMDP(ProbabilityMassFunction<T> initialDist, StateSpaceNavigator navigator) {
         return MarkovianBuilder.createMarkovDecisionProcess()
-                .createStateSpaceNavigator(navigator)
-                .calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
-                .selectActionsAccordingTo(policy)
-                .withActionSpace(getReconfigurationSpace())
-                .withInitialStateDistribution(initialDist)
-                .build();
+            .createStateSpaceNavigator(navigator)
+            .calculateRewardWith(SimulatedRewardReceiver.with(rewardEvaluator))
+            .selectActionsAccordingTo(policy)
+            .withActionSpace(getReconfigurationSpace())
+            .withInitialStateDistribution(initialDist)
+            .build();
     }
 
     private Set<Action<?>> getReconfigurationSpace() {
-        return reconfigurationSpace.stream().map(each -> (Action<?>) each).collect(Collectors.toSet());
+        return reconfigurationSpace.stream()
+            .map(each -> (Action<?>) each)
+            .collect(Collectors.toSet());
     }
 
     private StateSpaceNavigator buildStateSpaceNavigator() {
         if (markovModel.isPresent()) {
-            return StateSpaceNavigatorBuilder.createStateSpaceNavigator(markovModel.get()).build();
+            return StateSpaceNavigatorBuilder.createStateSpaceNavigator(markovModel.get())
+                .build();
         } else {
             return createInductiveStateSpaceNavigator();
         }
@@ -170,154 +173,173 @@ public abstract class ExperienceSimulationBuilder <T >{
         }
         return navigator;
     }
-    
 
-	public class SimulationConfigurationBuilder {
+    public class SimulationConfigurationBuilder {
 
-		public SimulationConfigurationBuilder withSimulationID(String simulationID) {
-			ExperienceSimulationBuilder.this.simulationID = simulationID;
-			return this;
-		}
+        public SimulationConfigurationBuilder withSimulationID(String simulationID) {
+            ExperienceSimulationBuilder.this.simulationID = simulationID;
+            return this;
+        }
 
-		public SimulationConfigurationBuilder withNumberOfRuns(int numberOfRuns) {
-			ExperienceSimulationBuilder.this.numberOfRuns = numberOfRuns;
-			return this;
-		}
+        public SimulationConfigurationBuilder withNumberOfRuns(int numberOfRuns) {
+            ExperienceSimulationBuilder.this.numberOfRuns = numberOfRuns;
+            return this;
+        }
 
-		public SimulationConfigurationBuilder andNumberOfSimulationsPerRun(int numberOfSamplesPerRun) {
-			ExperienceSimulationBuilder.this.numberOfSamplesPerRun = numberOfSamplesPerRun;
-			return this;
-		}
-		
-		public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(Initializable beforeExecutionInitialization) {
-			ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
-			return this;
-		}
+        public SimulationConfigurationBuilder andNumberOfSimulationsPerRun(int numberOfSamplesPerRun) {
+            ExperienceSimulationBuilder.this.numberOfSamplesPerRun = numberOfSamplesPerRun;
+            return this;
+        }
 
-		public ExperienceSimulationBuilder<T> done() {
-			return ExperienceSimulationBuilder.this;
-		}
-	}
+        public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(
+                Initializable beforeExecutionInitialization) {
+            ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
+            return this;
+        }
 
-	public class SelfAdaptiveSystemBuilder {
+        public ExperienceSimulationBuilder<T> done() {
+            return ExperienceSimulationBuilder.this;
+        }
+    }
 
-		public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess envProcess) {
-			ExperienceSimulationBuilder.this.envProcess = envProcess;
-			return this;
-		}
+    public class SelfAdaptiveSystemBuilder {
 
-		public SelfAdaptiveSystemBuilder asPartiallyEnvironmentalDrivenProcess(
-				SelfAdaptiveSystemStateSpaceNavigator navigator) {
-			ExperienceSimulationBuilder.this.navigator = navigator;
-			return this;
-		}
+        public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess envProcess) {
+            ExperienceSimulationBuilder.this.envProcess = envProcess;
+            return this;
+        }
 
-		public SelfAdaptiveSystemBuilder isHiddenProcess() {
-			ExperienceSimulationBuilder.this.isHiddenProcess = true;
-			return this;
-		}
-		
-		public SelfAdaptiveSystemBuilder asHiddenProcess(boolean hidden) {
-			ExperienceSimulationBuilder.this.isHiddenProcess = hidden;
-			return this;
-		}
+        public SelfAdaptiveSystemBuilder asPartiallyEnvironmentalDrivenProcess(
+                SelfAdaptiveSystemStateSpaceNavigator navigator) {
+            ExperienceSimulationBuilder.this.navigator = navigator;
+            return this;
+        }
 
-		public SelfAdaptiveSystemBuilder andInitialDistributionOptionally(ProbabilityMassFunction<T> initialDist) {
-			ExperienceSimulationBuilder.this.initialDistribution = Optional.ofNullable(initialDist);
-			return this;
-		}
+        public SelfAdaptiveSystemBuilder isHiddenProcess() {
+            ExperienceSimulationBuilder.this.isHiddenProcess = true;
+            return this;
+        }
 
-		public ExperienceSimulationBuilder<T> done() {
-			return ExperienceSimulationBuilder.this;
-		}
-	}
+        public SelfAdaptiveSystemBuilder asHiddenProcess(boolean hidden) {
+            ExperienceSimulationBuilder.this.isHiddenProcess = hidden;
+            return this;
+        }
 
-	public class ReconfigurationSpaceBuilder {
+        public SelfAdaptiveSystemBuilder andInitialDistributionOptionally(ProbabilityMassFunction<T> initialDist) {
+            ExperienceSimulationBuilder.this.initialDistribution = Optional.ofNullable(initialDist);
+            return this;
+        }
 
-		private class ReconfigurationStrategyAdapter implements Policy<Action<?>> {
+        public ExperienceSimulationBuilder<T> done() {
+            return ExperienceSimulationBuilder.this;
+        }
+    }
 
-			private final Policy<Reconfiguration<?>> adaptedStrategy; 
-			
-			public ReconfigurationStrategyAdapter(Policy<Reconfiguration<?>> adaptedStrategy) {
-				this.adaptedStrategy = adaptedStrategy;
-			}
-			
-			@Override
-			public String getId() {
-				return adaptedStrategy.getId();
-			}
+    public class ReconfigurationSpaceBuilder {
 
-			@Override
-			public Action<?> select(State source, Set<Action<?>> options) {
-				Set<Reconfiguration<?>> reconfigurationOptions = options.stream()
-						.map(each -> (Reconfiguration<?>) each)
-						.collect(Collectors.toSet());
-				// FIXME: simplify: execution of action should be part of MAPE-K -> no return type of Action required
-				return adaptedStrategy.select(source, reconfigurationOptions);
-			}
-			
-		}
-		
-		public ReconfigurationSpaceBuilder addReconfiguration(Reconfiguration<?> reconf) {
-			if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-				ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
-			}
-			ExperienceSimulationBuilder.this.reconfigurationSpace.add(reconf);
-			return this;
-		}
+        private class ReconfigurationStrategyAdapter<A> implements Policy<Reconfiguration<A>> {
 
-		public ReconfigurationSpaceBuilder addReconfigurations(Set<Reconfiguration<?>> reconfs) {
-			if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-				ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
-			}
-			ExperienceSimulationBuilder.this.reconfigurationSpace.addAll(reconfs);
-			return this;
-		}
+            private final Policy<Reconfiguration<A>> adaptedStrategy;
 
-		public ReconfigurationSpaceBuilder andReconfigurationStrategy(Policy<Action<?>> policy) {
-			ExperienceSimulationBuilder.this.policy = policy;
-			return this;
-		}
-		
-		public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy<Reconfiguration<?>> strategy) {
-		    // todo: setup mape-k executor here
-			ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
-			return this;
-		}
+            public ReconfigurationStrategyAdapter(Policy<Reconfiguration<A>> adaptedStrategy) {
+                this.adaptedStrategy = adaptedStrategy;
+            }
 
-		public ExperienceSimulationBuilder done() {
-			return ExperienceSimulationBuilder.this;
-		}
-	}
+            @Override
+            public String getId() {
+                return adaptedStrategy.getId();
+            }
 
-	public class RewardReceiverBuilder {
+            @Override
+            public Reconfiguration<A> select(State<Reconfiguration<A>> source, Set<Reconfiguration<A>> options) {
+                Set<Reconfiguration<A>> reconfigurationOptions = options.stream()
+                    .map(each -> each)
+                    .collect(Collectors.toSet());
+                // FIXME: simplify: execution of action should be part of MAPE-K -> no return type
+                // of Action required
+                return adaptedStrategy.select(source, reconfigurationOptions);
+            }
 
-		public RewardReceiverBuilder withRewardEvaluator(RewardEvaluator evaluator) {
-			ExperienceSimulationBuilder.this.rewardEvaluator = evaluator;
-			return this;
-		}
+        }
 
-		public ExperienceSimulationBuilder done() {
-			return ExperienceSimulationBuilder.this;
-		}
-	}
+        public ReconfigurationSpaceBuilder addReconfiguration(Reconfiguration<?> reconf) {
+            if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+            }
+            ExperienceSimulationBuilder.this.reconfigurationSpace.add(reconf);
+            return this;
+        }
 
-	// Note that in POMDPs only the environment is unobservable captured by the handler of the nested HMM.
-	// Therefore, only a pass through obs handler is required.
-	private final static ObservationProducer PASS_THROUGH_OBS_PRODUCER = new ObservationProducer() {
-		
-		@Override
-		public Observation<?> produceObservationGiven(State emittingState) {
-			return new ObservationImpl<SelfAdaptiveSystemState<?>>() {
-				
-				@Override
-				public SelfAdaptiveSystemState<?> getValue() {
-					return (SelfAdaptiveSystemState<?>) emittingState;
-				};
-			};
-		}
-	};
-	
+        public ReconfigurationSpaceBuilder addReconfigurations(Set<Reconfiguration<?>> reconfs) {
+            if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+            }
+            ExperienceSimulationBuilder.this.reconfigurationSpace.addAll(reconfs);
+            return this;
+        }
 
+        public ReconfigurationSpaceBuilder andReconfigurationStrategy(Policy<Action<T>> policy) {
+            ExperienceSimulationBuilder.this.policy = policy;
+            return this;
+        }
+
+        public ReconfigurationSpaceBuilder andReconfigurationStrategy(
+                ReconfigurationStrategy<Reconfiguration<T>> strategy) {
+            // todo: setup mape-k executor here
+            ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter<>(strategy);
+            return this;
+        }
+
+        public ExperienceSimulationBuilder<T> done() {
+            return ExperienceSimulationBuilder.this;
+        }
+    }
+
+    public class RewardReceiverBuilder {
+
+        public RewardReceiverBuilder withRewardEvaluator(RewardEvaluator evaluator) {
+            ExperienceSimulationBuilder.this.rewardEvaluator = evaluator;
+            return this;
+        }
+
+        public ExperienceSimulationBuilder<T> done() {
+            return ExperienceSimulationBuilder.this;
+        }
+    }
+
+//  private final static ObservationProducer PASS_THROUGH_OBS_PRODUCER = new ObservationProducer() {
+//      
+//      @Override
+//      public Observation<?> produceObservationGiven(State emittingState) {
+//          return new ObservationImpl<SelfAdaptiveSystemState<?>>() {
+//              
+//              @Override
+//              public SelfAdaptiveSystemState<?> getValue() {
+//                  return (SelfAdaptiveSystemState<?>) emittingState;
+//              };
+//          };
+//      }
+//  };
+
+    // Note that in POMDPs only the environment is unobservable captured by the handler of the
+    // nested HMM.
+    // Therefore, only a pass through obs handler is required.
+    private static class OP<T> implements ObservationProducer<T> {
+
+        @Override
+        public Observation<T> produceObservationGiven(State<T> emittingState) {
+            // return new ObservationImpl<T>() {
+            //
+            // @Override
+            // public T getValue() {
+            // return emittingState;
+            // };
+            // };
+            return emittingState.getProduces()
+                .get(0);
+        }
+    };
+
+    private final ObservationProducer<T> PASS_THROUGH_OBS_PRODUCER = new OP<T>();
 
 }
