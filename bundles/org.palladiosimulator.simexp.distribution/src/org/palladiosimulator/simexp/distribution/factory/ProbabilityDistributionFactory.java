@@ -8,17 +8,19 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunctio
 
 public interface ProbabilityDistributionFactory {
 
-	public static <T> Set<Object> toValueSpace(Set<T> values) {
-		return values.stream().map(each -> (Object) each).collect(Collectors.toSet());
-	}
-	
-	public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator();
-	
-	public ProbabilityMassFunction pmfOver(ProbabilityMassFunction.Sample...samples);
-	
-	public ProbabilityMassFunction pmfOver(Set<ProbabilityMassFunction.Sample> samples);
-	
-	public ProbabilityMassFunction uniformPmfOver(Set<Object> values);
-	
-	public ProbabilityDensityFunction normalDistributionWith(double mean, double variance);
+    public static <T> Set<Object> toValueSpace(Set<T> values) {
+        return values.stream()
+            .map(each -> (Object) each)
+            .collect(Collectors.toSet());
+    }
+
+    public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator();
+
+    public <T> ProbabilityMassFunction<T> pmfOver(ProbabilityMassFunction.Sample<T>... samples);
+
+    public <T> ProbabilityMassFunction<T> pmfOver(Set<ProbabilityMassFunction.Sample<T>> samples);
+
+    public <T> ProbabilityMassFunction<T> uniformPmfOver(Set<Object> values);
+
+    public ProbabilityDensityFunction normalDistributionWith(double mean, double variance);
 }

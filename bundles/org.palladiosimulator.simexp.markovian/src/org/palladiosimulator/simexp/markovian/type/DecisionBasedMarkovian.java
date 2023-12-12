@@ -6,6 +6,7 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
 public class DecisionBasedMarkovian <T> extends MarkovianDecorator<T> {
@@ -34,7 +35,8 @@ public class DecisionBasedMarkovian <T> extends MarkovianDecorator<T> {
 
 	private void addSelectedAction(Sample<T> sample) {
 		// public T select(State<T> source, Set<T> options);
-		T choice = policy.select(sample.getCurrent(), actionSpace);
+		State<T> current = sample.getCurrent();
+        T choice = policy.select(current, actionSpace);
 		// void setAction(Action<T> value);
 		//Action<Action<T>> choice2 = null;
 		sample.setAction(choice);
