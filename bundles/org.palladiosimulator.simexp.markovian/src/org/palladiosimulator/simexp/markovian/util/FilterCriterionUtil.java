@@ -7,16 +7,19 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
 public class FilterCriterionUtil {
-	
-	public static Predicate<Transition> withSource(State source) {
-		return t -> t.getSource().equals(source);
-	}
-	
-	public static Predicate<Transition> withTarget(State target) {
-		return t -> t.getTarget().equals(target);
-	}
-	
-	public static Predicate<Transition> withLabel(Action<?> label) {
-		return t -> t.getLabel().equals(label);
-	}
+
+    public static <T, A> Predicate<Transition<T, A>> withSource(State<T> source) {
+        return t -> t.getSource()
+            .equals(source);
+    }
+
+    public static <T, A> Predicate<Transition<T, A>> withTarget(State<T> target) {
+        return t -> t.getTarget()
+            .equals(target);
+    }
+
+    public static <T, A> Predicate<Transition<T, A>> withLabel(Action<A> label) {
+        return t -> t.getLabel()
+            .equals(label);
+    }
 }

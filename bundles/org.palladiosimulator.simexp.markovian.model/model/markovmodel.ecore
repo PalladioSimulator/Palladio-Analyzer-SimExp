@@ -6,10 +6,13 @@
       nsPrefix="markoventity">
     <eClassifiers xsi:type="ecore:EClass" name="MarkovModel">
       <eTypeParameters name="T"/>
+      <eTypeParameters name="A"/>
+      <eTypeParameters name="R"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" lowerBound="1"
           upperBound="-1" containment="true">
         <eGenericType eClassifier="#//markoventity/Transition">
           <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/A"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="stateSpace" lowerBound="1"
@@ -21,13 +24,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="reward" upperBound="-1"
           containment="true">
         <eGenericType eClassifier="#//markoventity/Reward">
-          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/R"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
           containment="true">
         <eGenericType eClassifier="#//markoventity/Action">
-          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/A"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="observations" upperBound="-1"
@@ -47,13 +50,14 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
-      <eTypeParameters name="O"/>
+      <eTypeParameters name="T"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Observation/O"/>
+        <eGenericType eTypeParameter="#//markoventity/Observation/T"/>
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
       <eTypeParameters name="T"/>
+      <eTypeParameters name="A"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1">
         <eGenericType eClassifier="#//markoventity/State">
           <eTypeArguments eTypeParameter="#//markoventity/Transition/T"/>
@@ -66,31 +70,31 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="label">
         <eGenericType eClassifier="#//markoventity/Action">
-          <eTypeArguments eTypeParameter="#//markoventity/Transition/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/Transition/A"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="probability" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Reward">
-      <eTypeParameters name="U"/>
+      <eTypeParameters name="R"/>
       <eOperations name="addWith" lowerBound="1">
         <eGenericType eClassifier="#//markoventity/Reward">
-          <eTypeArguments eTypeParameter="#//markoventity/Reward/U"/>
+          <eTypeArguments eTypeParameter="#//markoventity/Reward/R"/>
         </eGenericType>
         <eParameters name="other">
           <eGenericType eClassifier="#//markoventity/Reward">
-            <eTypeArguments eTypeParameter="#//markoventity/Reward/U"/>
+            <eTypeArguments eTypeParameter="#//markoventity/Reward/R"/>
           </eGenericType>
         </eParameters>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Reward/U"/>
+        <eGenericType eTypeParameter="#//markoventity/Reward/R"/>
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Action">
-      <eTypeParameters name="T"/>
+      <eTypeParameters name="A"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Action/T"/>
+        <eGenericType eTypeParameter="#//markoventity/Action/A"/>
       </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>

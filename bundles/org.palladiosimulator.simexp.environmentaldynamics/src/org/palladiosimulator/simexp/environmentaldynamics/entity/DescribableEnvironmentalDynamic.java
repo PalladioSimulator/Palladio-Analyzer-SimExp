@@ -1,80 +1,108 @@
 package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.exploitation.ProbabilityBasedTransitionPolicy;
 import org.palladiosimulator.simexp.markovian.exploration.RandomizedStrategy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 import org.palladiosimulator.simexp.markovian.statespace.PolicyBasedDeductiveNavigator;
 
-public class DescribableEnvironmentalDynamic extends PolicyBasedDeductiveNavigator implements EnvironmentalDynamic {
+public class DescribableEnvironmentalDynamic<T> extends PolicyBasedDeductiveNavigator<T>
+        implements EnvironmentalDynamic {
 
-	private static class PolicyController implements Policy<Transition> {
+    /*
+     * private static class PolicyController<T> implements Policy<Transition<T>> {
+     * 
+     * private final static String POLICY_NAME = "PolicyControllerOf";
+     * 
+     * private final static int EXPLOITATION_INDEX = 0; private final static int EXPLORATION_INDEX =
+     * 1;
+     */
+    /*
+     * private final static PolicyController<T> controllerInstance = new PolicyController();
+     * 
+     * public static <T> PolicyController<T> get() { return controllerInstance; }
+     */
 
-		private final static String POLICY_NAME = "PolicyControllerOf";
+    // private final List<Policy<Transition<?>>> strategies;
+    // private int chosenStrategyIndex;
+    /*
+     * private final Policy<Transition<T>> policy;
+     * 
+     * private PolicyController(boolean isExploration) {
+     */
+    /*
+     * RandomizedStrategy<Transition<T>> randomizedStrategy = new
+     * RandomizedStrategy<Transition<T>>(); ProbabilityBasedTransitionPolicy
+     * probabilityBasedTransitionPolicy = new ProbabilityBasedTransitionPolicy();
+     * 
+     * this.strategies = Arrays.asList(randomizedStrategy, probabilityBasedTransitionPolicy);
+     * this.chosenStrategyIndex = EXPLOITATION_INDEX;
+     */
 
-		private final static int EXPLOITATION_INDEX = 0;
-		private final static int EXPLORATION_INDEX = 1;
-		private final static PolicyController controllerInstance = new PolicyController();
+    /*
+     * if (isExploration) { ProbabilityBasedTransitionPolicy probabilityBasedTransitionPolicy = new
+     * ProbabilityBasedTransitionPolicy(); policy = probabilityBasedTransitionPolicy; } else { //
+     * exploitation RandomizedStrategy<Transition<T>> randomizedStrategy = new
+     * RandomizedStrategy<Transition<T>>(); policy = randomizedStrategy; } }
+     * 
+     * @Override public Transition<T> select(State<Transition<T>> source, Set<Transition<T>>
+     * options) { // Policy<Transition<?>> strategy = strategies.get(chosenStrategyIndex); return
+     * policy.select(source, options); }
+     */
 
-		public static PolicyController get() {
-			return controllerInstance;
-		}
+    /*
+     * public void pursueExplorationStrategy() { chosenStrategyIndex = EXPLORATION_INDEX; }
+     * 
+     * public void pursueExploitationStrategy() { chosenStrategyIndex = EXPLOITATION_INDEX; }
+     */
 
-		private final List<Policy<Transition>> strategies;
-		private int chosenStrategyIndex;
+    /*
+     * @Override public String getId() { /* return String.format("%1s%2sAnd%3s", POLICY_NAME,
+     * strategies.get(0) .getId(), strategies.get(1) .getId());
+     */
+    /*
+     * return String.format("%s:%s", POLICY_NAME, policy); }
+     * 
+     * }
+     */
 
-		private PolicyController() {
-			this.strategies = Arrays.asList(new RandomizedStrategy<Transition>(),
-					new ProbabilityBasedTransitionPolicy());
-			this.chosenStrategyIndex = EXPLOITATION_INDEX;
-		}
+    private final boolean isHiddenProcess;
+    // private final PolicyController<T> policy;
 
-		@Override
-		public Transition select(State source, Set<Transition> options) {
-			return strategies.get(chosenStrategyIndex).select(source, options);
-		}
+    protected DescribableEnvironmentalDynamic(MarkovModel<T> markovModel, boolean isHiddenProcess,
+            boolean isExploration) {
+        super(markovModel, createPolicy(isExploration));
+        // this.policy = (PolicyController<T>) getPolicy();
+        this.isHiddenProcess = isHiddenProcess;
+    }
 
-		public void pursueExplorationStrategy() {
-			chosenStrategyIndex = EXPLORATION_INDEX;
-		}
+    private static <T> Policy<Transition<T>> createPolicy(boolean isExploration) {
+        /*
+         * PolicyController<T> policyController = new PolicyController<T>(isExploration); if
+         * (isExploration) { policyController.pursueExplorationStrategy(); } else {
+         * policyController.pursueExploitationStrategy(); } return policyController;
+         */
+        if (isExploration) {
+            ProbabilityBasedTransitionPolicy probabilityBasedTransitionPolicy = new ProbabilityBasedTransitionPolicy();
+            return probabilityBasedTransitionPolicy;
+        } else {
+            // exploitation
+            RandomizedStrategy<Transition<T>> randomizedStrategy = new RandomizedStrategy<Transition<T>>();
+            return randomizedStrategy;
+        }
+    }
 
-		public void pursueExploitationStrategy() {
-			chosenStrategyIndex = EXPLOITATION_INDEX;
-		}
+    @Override
+    public boolean isHiddenProcess() {
+        return isHiddenProcess;
+    }
 
-		@Override
-		public String getId() {
-			return String.format("%1s%2sAnd%3s", POLICY_NAME, strategies.get(0).getId(), strategies.get(1).getId());
-		}
-
-	}
-	
-	private final boolean isHiddenProcess;
-	
-	protected DescribableEnvironmentalDynamic(MarkovModel markovModel, boolean isHiddenProcess) {
-		super(markovModel, PolicyController.get());
-		
-		this.isHiddenProcess = isHiddenProcess;
-	}
-
-	@Override
-	public boolean isHiddenProcess() {
-		return isHiddenProcess;
-	}
-
-	@Override
-	public void pursueExplorationStrategy() {
-		PolicyController.get().pursueExplorationStrategy();
-	}
-
-	@Override
-	public void pursueExploitationStrategy() {
-		PolicyController.get().pursueExploitationStrategy();
-	}
+    /*
+     * @Override public void pursueExplorationStrategy() { // policy.pursueExplorationStrategy();
+     * throw new RuntimeException("invalid call, not dynamic"); }
+     * 
+     * @Override public void pursueExploitationStrategy() { // policy.pursueExploitationStrategy();
+     * throw new RuntimeException("invalid call, not dynamic"); }
+     */
 }

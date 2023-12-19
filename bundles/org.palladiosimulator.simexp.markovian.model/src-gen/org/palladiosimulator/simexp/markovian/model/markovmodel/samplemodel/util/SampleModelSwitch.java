@@ -23,134 +23,134 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.*;
  * @generated
  */
 public class SampleModelSwitch<T1> extends Switch<T1> {
-	/**
-	 * The cached model package
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected static SampleModelPackage modelPackage;
+    /**
+     * The cached model package
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected static SampleModelPackage modelPackage;
 
-	/**
-	 * Creates an instance of the switch.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public SampleModelSwitch() {
-		if (modelPackage == null) {
-			modelPackage = SampleModelPackage.eINSTANCE;
-		}
-	}
+    /**
+     * Creates an instance of the switch.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public SampleModelSwitch() {
+        if (modelPackage == null) {
+            modelPackage = SampleModelPackage.eINSTANCE;
+        }
+    }
 
-	/**
-	 * Checks whether this is a switch for the given package.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param ePackage the package in question.
-	 * @return whether this is a switch for the given package.
-	 * @generated
-	 */
-	@Override
-	protected boolean isSwitchFor(EPackage ePackage) {
-		return ePackage == modelPackage;
-	}
+    /**
+     * Checks whether this is a switch for the given package.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param ePackage the package in question.
+     * @return whether this is a switch for the given package.
+     * @generated
+     */
+    @Override
+    protected boolean isSwitchFor(EPackage ePackage) {
+        return ePackage == modelPackage;
+    }
 
-	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
-	 * @generated
-	 */
-	@Override
-	protected T1 doSwitch(int classifierID, EObject theEObject) {
-		switch (classifierID) {
-		case SampleModelPackage.TRAJECTORY: {
-			Trajectory<?> trajectory = (Trajectory<?>) theEObject;
-			T1 result = caseTrajectory(trajectory);
-			if (result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
-		case SampleModelPackage.SAMPLE: {
-			Sample<?> sample = (Sample<?>) theEObject;
-			T1 result = caseSample(sample);
-			if (result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
-		case SampleModelPackage.SAMPLE_MODEL: {
-			SampleModel<?> sampleModel = (SampleModel<?>) theEObject;
-			T1 result = caseSampleModel(sampleModel);
-			if (result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
-		default:
-			return defaultCase(theEObject);
-		}
-	}
+    /**
+     * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the first non-null result returned by a <code>caseXXX</code> call.
+     * @generated
+     */
+    @Override
+    protected T1 doSwitch(int classifierID, EObject theEObject) {
+        switch (classifierID) {
+        case SampleModelPackage.TRAJECTORY: {
+            Trajectory<?> trajectory = (Trajectory<?>) theEObject;
+            T1 result = caseTrajectory(trajectory);
+            if (result == null)
+                result = defaultCase(theEObject);
+            return result;
+        }
+        case SampleModelPackage.SAMPLE: {
+            Sample<?> sample = (Sample<?>) theEObject;
+            T1 result = caseSample(sample);
+            if (result == null)
+                result = defaultCase(theEObject);
+            return result;
+        }
+        case SampleModelPackage.SAMPLE_MODEL: {
+            SampleModel<?> sampleModel = (SampleModel<?>) theEObject;
+            T1 result = caseSampleModel(sampleModel);
+            if (result == null)
+                result = defaultCase(theEObject);
+            return result;
+        }
+        default:
+            return defaultCase(theEObject);
+        }
+    }
 
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Trajectory</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Trajectory</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public <T> T1 caseTrajectory(Trajectory<T> object) {
-		return null;
-	}
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Trajectory</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Trajectory</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public <T> T1 caseTrajectory(Trajectory<T> object) {
+        return null;
+    }
 
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Sample</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Sample</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public <T> T1 caseSample(Sample<T> object) {
-		return null;
-	}
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Sample</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Sample</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public <T> T1 caseSample(Sample<T> object) {
+        return null;
+    }
 
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Sample Model</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Sample Model</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public <T> T1 caseSampleModel(SampleModel<T> object) {
-		return null;
-	}
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Sample Model</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Sample Model</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public <T> T1 caseSampleModel(SampleModel<T> object) {
+        return null;
+    }
 
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch, but this is the last case anyway.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>EObject</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
-	 * @generated
-	 */
-	@Override
-	public T1 defaultCase(EObject object) {
-		return null;
-	}
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch, but this is the last case anyway.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>EObject</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject)
+     * @generated
+     */
+    @Override
+    public T1 defaultCase(EObject object) {
+        return null;
+    }
 
 } //SampleModelSwitch

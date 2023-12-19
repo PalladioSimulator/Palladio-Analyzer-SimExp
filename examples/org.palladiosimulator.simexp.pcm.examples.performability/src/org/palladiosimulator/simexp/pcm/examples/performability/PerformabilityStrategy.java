@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Maps;
 
@@ -34,7 +35,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * This policy aims to provide a strategy to compensate server node failures
  * 
  */
-public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfiguration> {
+public class PerformabilityStrategy<T> extends ReconfigurationStrategy<T, QVTOReconfigurator, QVToReconfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
@@ -51,8 +52,8 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration
-            , ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
+            PerformabilityStrategyConfiguration strategyConfiguration,
+            ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
@@ -65,7 +66,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     }
 
     @Override
-    protected void monitor(State source, SharedKnowledge knowledge) {
+    protected void monitor(State<T> source, SharedKnowledge knowledge) {
         /**
          * transfer status of server nodes to knowledge base
          */
@@ -81,7 +82,8 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
     }
 
-    protected boolean analyse(State source, SharedKnowledge knowledge) {
+    @Override
+    protected boolean analyse(State<T> source, SharedKnowledge knowledge) {
         boolean hasConstraintViolations = false;
         /**
          * check for any constraint violations that require a reconfiguration of the system, e.g.
@@ -105,7 +107,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     }
 
     @Override
-    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State<T> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         /**
          * The role of the planner function is to select the best adaptation option and generate a
          * plan for adapting the managed system from its current configuration to the new
@@ -268,12 +270,12 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     }
 
     private QVToReconfiguration outSource(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options).orElseThrow(
+        return findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options).orElseThrow(
                 () -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_OUT_SOURCE_QVTO_NAME)));
     }
 
     private QVToReconfiguration nodeRecovery(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
+        return findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
             .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(NODE_RECOVERY_QVTO_NAME)));
     }
 

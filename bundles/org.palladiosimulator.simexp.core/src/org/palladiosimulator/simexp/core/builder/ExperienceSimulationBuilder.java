@@ -284,7 +284,7 @@ public abstract class ExperienceSimulationBuilder<T> {
         }
 
         public ReconfigurationSpaceBuilder andReconfigurationStrategy(
-                ReconfigurationStrategy<Reconfiguration<T>> strategy) {
+                ReconfigurationStrategy<T, Reconfiguration<T>> strategy) {
             // todo: setup mape-k executor here
             ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter<>(strategy);
             return this;

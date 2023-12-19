@@ -9,57 +9,59 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class BasicMarkovModelBuilder {
+public class BasicMarkovModelBuilder<T, A, R> {
 
-	public class TransitionBuilder {
+    public class TransitionBuilder {
 
-		private Transition transition;
+        private Transition<T, A> transition;
 
-		public TransitionBuilder(State source, State target) {
-			this.transition = markovModelFactory.createTransitionBetween(source, target);
-		}
+        public TransitionBuilder(State<T> source, State<T> target) {
+            this.transition = markovModelFactory.<T, A> createTransitionBetween(source, target);
+        }
 
-		public BasicMarkovModelBuilder andProbability(double value) {
-			transition.setProbability(value);
-			markovModel.getTransitions().add(transition);
-			return BasicMarkovModelBuilder.this;
-		}
+        public BasicMarkovModelBuilder<T, A, R> andProbability(double value) {
+            transition.setProbability(value);
+            markovModel.getTransitions()
+                .add(transition);
+            return BasicMarkovModelBuilder.this;
+        }
 
-		public TransitionBuilder withOptionalLabel(Action<?> action) {
-			transition.setLabel(action);
-			return this;
-		}
+        public TransitionBuilder withOptionalLabel(Action<A> action) {
+            transition.setLabel(action);
+            return this;
+        }
 
-	}
+    }
 
-	private static BasicMarkovModelBuilder builderInstance = null;
+    private static BasicMarkovModelBuilder builderInstance = null;
 
-	private final MarkovModelFactory markovModelFactory;
+    private final MarkovModelFactory markovModelFactory;
 
-	private MarkovModel markovModel;
+    private MarkovModel<T, A, R> markovModel;
 
-	protected BasicMarkovModelBuilder() {
-		this.markovModelFactory = MarkovModelFactory.get();
-		this.markovModel = MarkovEntityFactory.eINSTANCE.createMarkovModel();
-	}
+    protected BasicMarkovModelBuilder() {
+        this.markovModelFactory = MarkovModelFactory.get();
+        this.markovModel = MarkovEntityFactory.eINSTANCE.<T, A, R> createMarkovModel();
+    }
 
-	public static BasicMarkovModelBuilder get() {
-		if (builderInstance == null) {
-			builderInstance = new BasicMarkovModelBuilder();
-		}
-		return builderInstance;
-	}
+    public static <T, A, R> BasicMarkovModelBuilder<T, A, R> get() {
+        if (builderInstance == null) {
+            builderInstance = new BasicMarkovModelBuilder<>();
+        }
+        return builderInstance;
+    }
 
-	public BasicMarkovModelBuilder withStateSpace(Set<State> states) {
-		markovModel.getStateSpace().addAll(states);
-		return this;
-	}
+    public BasicMarkovModelBuilder<T, A, R> withStateSpace(Set<State<T>> states) {
+        markovModel.getStateSpace()
+            .addAll(states);
+        return this;
+    }
 
-	public TransitionBuilder andTransitionBetween(State source, State target) {
-		return new TransitionBuilder(source, target);
-	}
+    public TransitionBuilder andTransitionBetween(State<T> source, State<T> target) {
+        return new TransitionBuilder(source, target);
+    }
 
-	public MarkovModel build() {
-		return markovModel;
-	}
+    public MarkovModel<T, A, R> build() {
+        return markovModel;
+    }
 }

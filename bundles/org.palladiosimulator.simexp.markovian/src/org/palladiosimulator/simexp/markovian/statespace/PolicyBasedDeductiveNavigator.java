@@ -9,19 +9,24 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class PolicyBasedDeductiveNavigator extends DeductiveStateSpaceNavigator {
+public class PolicyBasedDeductiveNavigator<T> extends DeductiveStateSpaceNavigator<T> {
 
-	private final Policy<Transition> policy;
-	
-	public PolicyBasedDeductiveNavigator(MarkovModel markovModel, Policy<Transition> policy) {
-		super(markovModel);
-		this.policy = policy;
-	}
+    private final Policy<Transition<T>> policy;
 
-	@Override
-	public State navigate(NavigationContext context) {
-		Set<Transition> options = markovModelAccessor.filterTransitions(withSource(context.getSource()));
-		return policy.select(context.getSource(), options).getTarget();
-	}
+    public PolicyBasedDeductiveNavigator(MarkovModel<T> markovModel, Policy<Transition<T>> policy) {
+        super(markovModel);
+        this.policy = policy;
+    }
+
+    protected Policy<Transition<T>> getPolicy() {
+        return policy;
+    }
+
+    @Override
+    public State<T> navigate(NavigationContext context) {
+        Set<Transition<T>> options = markovModelAccessor.filterTransitions(withSource(context.getSource()));
+        Transition<T> select = policy.select(context.getSource(), options);
+        return select.getTarget();
+    }
 
 }
