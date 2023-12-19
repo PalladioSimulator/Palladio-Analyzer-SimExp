@@ -13,76 +13,76 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface MarkovEntityFactory extends EFactory {
-	/**
-	 * The singleton instance of the factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	MarkovEntityFactory eINSTANCE = org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.MarkovEntityFactoryImpl
-			.init();
+    /**
+     * The singleton instance of the factory.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    MarkovEntityFactory eINSTANCE = org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.MarkovEntityFactoryImpl
+        .init();
 
-	/**
-	 * Returns a new object of class '<em>Markov Model</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Markov Model</em>'.
-	 * @generated
-	 */
-	<T> MarkovModel<T> createMarkovModel();
+    /**
+     * Returns a new object of class '<em>Markov Model</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Markov Model</em>'.
+     * @generated
+     */
+    <T, A, R> MarkovModel<T, A, R> createMarkovModel();
 
-	/**
-	 * Returns a new object of class '<em>State</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>State</em>'.
-	 * @generated
-	 */
-	<T> State<T> createState();
+    /**
+     * Returns a new object of class '<em>State</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>State</em>'.
+     * @generated
+     */
+    <T> State<T> createState();
 
-	/**
-	 * Returns a new object of class '<em>Observation</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Observation</em>'.
-	 * @generated
-	 */
-	<O> Observation<O> createObservation();
+    /**
+     * Returns a new object of class '<em>Observation</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Observation</em>'.
+     * @generated
+     */
+    <T> Observation<T> createObservation();
 
-	/**
-	 * Returns a new object of class '<em>Transition</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Transition</em>'.
-	 * @generated
-	 */
-	<T> Transition<T> createTransition();
+    /**
+     * Returns a new object of class '<em>Transition</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Transition</em>'.
+     * @generated
+     */
+    <T, A> Transition<T, A> createTransition();
 
-	/**
-	 * Returns a new object of class '<em>Reward</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reward</em>'.
-	 * @generated
-	 */
-	<U> Reward<U> createReward();
+    /**
+     * Returns a new object of class '<em>Reward</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Reward</em>'.
+     * @generated
+     */
+    <R> Reward<R> createReward();
 
-	/**
-	 * Returns a new object of class '<em>Action</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Action</em>'.
-	 * @generated
-	 */
-	<T> Action<T> createAction();
+    /**
+     * Returns a new object of class '<em>Action</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Action</em>'.
+     * @generated
+     */
+    <A> Action<A> createAction();
 
-	/**
-	 * Returns the package supported by this factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the package supported by this factory.
-	 * @generated
-	 */
-	MarkovEntityPackage getMarkovEntityPackage();
+    /**
+     * Returns the package supported by this factory.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the package supported by this factory.
+     * @generated
+     */
+    MarkovEntityPackage getMarkovEntityPackage();
 
 } //MarkovEntityFactory

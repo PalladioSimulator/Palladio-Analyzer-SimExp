@@ -9,46 +9,45 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 // This class is not yet integrated in the simulated experience process. This is rather a reminder for future work. 
 // The idea is to introduce a dedicated concept for reconfiguration strategies following the MAPE-K principles.
-public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> implements Policy<T> {
-    
+public abstract class ReconfigurationStrategy<T, P, A extends Reconfiguration<P>> implements Policy<T, P, A> {
+
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationStrategy.class);
-    
+
     private final SharedKnowledge knowledge;
-    
+
     public ReconfigurationStrategy() {
         this.knowledge = new SharedKnowledge();
     }
-    
 
-	@Override
-	public T select(State source, Set<T> options) {
-	    T reconfiguration = emptyReconfiguration();
-	    
-	    LOGGER.info("==== Start MAPE-K loop ====");
-	    LOGGER.info("'MONITOR' step start");
-		monitor(source, knowledge);
+    @Override
+    public A select(State<T> source, Set<A> options) {
+        A reconfiguration = emptyReconfiguration();
+
+        LOGGER.info("==== Start MAPE-K loop ====");
+        LOGGER.info("'MONITOR' step start");
+        monitor(source, knowledge);
         LOGGER.debug(String.format("'MONITOR' knowledge snapshot: %s", knowledge.toString()));
-		LOGGER.info("'MONITOR' step done");
-		
-		LOGGER.info("'ANALYZE' step start");
-		boolean isAnalyzable = analyse(source, knowledge);
-		LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
-		LOGGER.info("'ANALYZE' step done");
-		if (isAnalyzable) {
-		    LOGGER.info("'PLANNING' step start");
-			reconfiguration = plan(source, options, knowledge);
+        LOGGER.info("'MONITOR' step done");
+
+        LOGGER.info("'ANALYZE' step start");
+        boolean isAnalyzable = analyse(source, knowledge);
+        LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
+        LOGGER.info("'ANALYZE' step done");
+        if (isAnalyzable) {
+            LOGGER.info("'PLANNING' step start");
+            reconfiguration = plan(source, options, knowledge);
             LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
             LOGGER.info("'PLANNING' step done");
-		}
-		LOGGER.info("'EXECUTE' step start");
-		return reconfiguration;
-	}
+        }
+        LOGGER.info("'EXECUTE' step start");
+        return reconfiguration;
+    }
 
-	protected abstract void monitor(State source, SharedKnowledge knowledge);
+    protected abstract void monitor(State<T> source, SharedKnowledge knowledge);
 
-	protected abstract boolean analyse(State source, SharedKnowledge knowledge);
+    protected abstract boolean analyse(State<T> source, SharedKnowledge knowledge);
 
-	protected abstract T plan(State source, Set<T> options, SharedKnowledge knowledge);
-	
-	protected abstract T emptyReconfiguration();
+    protected abstract A plan(State<T> source, Set<A> options, SharedKnowledge knowledge);
+
+    protected abstract A emptyReconfiguration();
 }

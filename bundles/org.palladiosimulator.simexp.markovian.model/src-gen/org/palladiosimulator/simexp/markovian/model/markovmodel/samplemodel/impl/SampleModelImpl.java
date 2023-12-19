@@ -34,121 +34,121 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
  * @generated
  */
 public class SampleModelImpl<T> extends MinimalEObjectImpl.Container implements SampleModel<T> {
-	/**
-	 * The cached value of the '{@link #getTrajectories() <em>Trajectories</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getTrajectories()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Trajectory<T>> trajectories;
+    /**
+     * The cached value of the '{@link #getTrajectories() <em>Trajectories</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTrajectories()
+     * @generated
+     * @ordered
+     */
+    protected EList<Trajectory<T>> trajectories;
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected SampleModelImpl() {
-		super();
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected SampleModelImpl() {
+        super();
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	protected EClass eStaticClass() {
-		return SampleModelPackage.Literals.SAMPLE_MODEL;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    protected EClass eStaticClass() {
+        return SampleModelPackage.Literals.SAMPLE_MODEL;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public EList<Trajectory<T>> getTrajectories() {
-		if (trajectories == null) {
-			trajectories = new EObjectContainmentEList<Trajectory<T>>(Trajectory.class, this,
-					SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES);
-		}
-		return trajectories;
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public EList<Trajectory<T>> getTrajectories() {
+        if (trajectories == null) {
+            trajectories = new EObjectContainmentEList<Trajectory<T>>(Trajectory.class, this,
+                    SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES);
+        }
+        return trajectories;
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-		case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
-			return ((InternalEList<?>) getTrajectories()).basicRemove(otherEnd, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+        switch (featureID) {
+        case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
+            return ((InternalEList<?>) getTrajectories()).basicRemove(otherEnd, msgs);
+        }
+        return super.eInverseRemove(otherEnd, featureID, msgs);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
-		case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
-			return getTrajectories();
-		}
-		return super.eGet(featureID, resolve, coreType);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+        switch (featureID) {
+        case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
+            return getTrajectories();
+        }
+        return super.eGet(featureID, resolve, coreType);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
-		case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
-			getTrajectories().clear();
-			getTrajectories().addAll((Collection<? extends Trajectory<T>>) newValue);
-			return;
-		}
-		super.eSet(featureID, newValue);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void eSet(int featureID, Object newValue) {
+        switch (featureID) {
+        case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
+            getTrajectories().clear();
+            getTrajectories().addAll((Collection<? extends Trajectory<T>>) newValue);
+            return;
+        }
+        super.eSet(featureID, newValue);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public void eUnset(int featureID) {
-		switch (featureID) {
-		case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
-			getTrajectories().clear();
-			return;
-		}
-		super.eUnset(featureID);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public void eUnset(int featureID) {
+        switch (featureID) {
+        case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
+            getTrajectories().clear();
+            return;
+        }
+        super.eUnset(featureID);
+    }
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public boolean eIsSet(int featureID) {
-		switch (featureID) {
-		case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
-			return trajectories != null && !trajectories.isEmpty();
-		}
-		return super.eIsSet(featureID);
-	}
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public boolean eIsSet(int featureID) {
+        switch (featureID) {
+        case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
+            return trajectories != null && !trajectories.isEmpty();
+        }
+        return super.eIsSet(featureID);
+    }
 
 } //SampleModelImpl

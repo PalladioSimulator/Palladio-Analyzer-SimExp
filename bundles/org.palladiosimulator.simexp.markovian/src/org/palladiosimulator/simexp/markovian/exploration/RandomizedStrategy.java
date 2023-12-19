@@ -20,6 +20,9 @@ public class RandomizedStrategy<T> implements Policy<T> {
 
     private T selectRandomly(Set<T> values) {
         int randomizedIndex = random.nextInt(values.size());
+        // TODO: order of set entries is not guaranteed
+        // but on each call the same order is implied
+        // to get value randomly by index.
         return new ArrayList<T>(values).get(randomizedIndex);
     }
 

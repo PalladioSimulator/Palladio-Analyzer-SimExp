@@ -20,6 +20,8 @@
         disposableProviderFactory="true" ecorePackage="markovmodel.ecore#//markoventity">
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/MarkovModel">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/MarkovModel/T"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/MarkovModel/A"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/MarkovModel/R"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/transitions"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/stateSpace"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/MarkovModel/reward"/>
@@ -33,11 +35,12 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/State/name"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Observation">
-        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Observation/O"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Observation/T"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Observation/value"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Transition">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/T"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/A"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Transition/source"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -47,14 +50,14 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Transition/probability"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Reward">
-        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Reward/U"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Reward/R"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Reward/value"/>
         <genOperations ecoreOperation="markovmodel.ecore#//markoventity/Reward/addWith">
           <genParameters ecoreParameter="markovmodel.ecore#//markoventity/Reward/addWith/other"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Action">
-        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Action/T"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Action/A"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Action/action"/>
       </genClasses>
     </nestedGenPackages>

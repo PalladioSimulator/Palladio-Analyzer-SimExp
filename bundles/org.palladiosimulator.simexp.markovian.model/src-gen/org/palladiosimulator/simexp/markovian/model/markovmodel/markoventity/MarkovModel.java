@@ -26,65 +26,65 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface MarkovModel<T> extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Transitions</b></em>' containment reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition}<code>&lt;T&gt;</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Transitions</em>' containment reference list.
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Transitions()
-	 * @model containment="true" required="true"
-	 * @generated
-	 */
-	EList<Transition<T>> getTransitions();
+public interface MarkovModel<T, A, R> extends EObject {
+    /**
+     * Returns the value of the '<em><b>Transitions</b></em>' containment reference list.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition}<code>&lt;T, A&gt;</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Transitions</em>' containment reference list.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Transitions()
+     * @model containment="true" required="true"
+     * @generated
+     */
+    EList<Transition<T, A>> getTransitions();
 
-	/**
-	 * Returns the value of the '<em><b>State Space</b></em>' containment reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State}<code>&lt;T&gt;</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>State Space</em>' containment reference list.
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_StateSpace()
-	 * @model containment="true" required="true"
-	 * @generated
-	 */
-	EList<State<T>> getStateSpace();
+    /**
+     * Returns the value of the '<em><b>State Space</b></em>' containment reference list.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State}<code>&lt;T&gt;</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>State Space</em>' containment reference list.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_StateSpace()
+     * @model containment="true" required="true"
+     * @generated
+     */
+    EList<State<T>> getStateSpace();
 
-	/**
-	 * Returns the value of the '<em><b>Reward</b></em>' containment reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward}<code>&lt;T&gt;</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Reward</em>' containment reference list.
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Reward()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Reward<T>> getReward();
+    /**
+     * Returns the value of the '<em><b>Reward</b></em>' containment reference list.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward}<code>&lt;R&gt;</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Reward</em>' containment reference list.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Reward()
+     * @model containment="true"
+     * @generated
+     */
+    EList<Reward<R>> getReward();
 
-	/**
-	 * Returns the value of the '<em><b>Actions</b></em>' containment reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action}<code>&lt;T&gt;</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Actions</em>' containment reference list.
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Actions()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Action<T>> getActions();
+    /**
+     * Returns the value of the '<em><b>Actions</b></em>' containment reference list.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action}<code>&lt;A&gt;</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Actions</em>' containment reference list.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Actions()
+     * @model containment="true"
+     * @generated
+     */
+    EList<Action<A>> getActions();
 
-	/**
-	 * Returns the value of the '<em><b>Observations</b></em>' containment reference list.
-	 * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}<code>&lt;T&gt;</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Observations</em>' containment reference list.
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Observations()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Observation<T>> getObservations();
+    /**
+     * Returns the value of the '<em><b>Observations</b></em>' containment reference list.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}<code>&lt;T&gt;</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Observations</em>' containment reference list.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getMarkovModel_Observations()
+     * @model containment="true"
+     * @generated
+     */
+    EList<Observation<T>> getObservations();
 
 } // MarkovModel

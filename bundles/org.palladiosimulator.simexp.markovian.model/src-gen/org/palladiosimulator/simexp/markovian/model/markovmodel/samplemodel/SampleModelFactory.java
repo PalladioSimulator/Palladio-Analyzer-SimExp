@@ -13,49 +13,49 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface SampleModelFactory extends EFactory {
-	/**
-	 * The singleton instance of the factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	SampleModelFactory eINSTANCE = org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.impl.SampleModelFactoryImpl
-			.init();
+    /**
+     * The singleton instance of the factory.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    SampleModelFactory eINSTANCE = org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.impl.SampleModelFactoryImpl
+        .init();
 
-	/**
-	 * Returns a new object of class '<em>Trajectory</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Trajectory</em>'.
-	 * @generated
-	 */
-	<T> Trajectory<T> createTrajectory();
+    /**
+     * Returns a new object of class '<em>Trajectory</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Trajectory</em>'.
+     * @generated
+     */
+    <T> Trajectory<T> createTrajectory();
 
-	/**
-	 * Returns a new object of class '<em>Sample</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Sample</em>'.
-	 * @generated
-	 */
-	<T> Sample<T> createSample();
+    /**
+     * Returns a new object of class '<em>Sample</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Sample</em>'.
+     * @generated
+     */
+    <T> Sample<T> createSample();
 
-	/**
-	 * Returns a new object of class '<em>Sample Model</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Sample Model</em>'.
-	 * @generated
-	 */
-	<T> SampleModel<T> createSampleModel();
+    /**
+     * Returns a new object of class '<em>Sample Model</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Sample Model</em>'.
+     * @generated
+     */
+    <T> SampleModel<T> createSampleModel();
 
-	/**
-	 * Returns the package supported by this factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the package supported by this factory.
-	 * @generated
-	 */
-	SampleModelPackage getSampleModelPackage();
+    /**
+     * Returns the package supported by this factory.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the package supported by this factory.
+     * @generated
+     */
+    SampleModelPackage getSampleModelPackage();
 
 } //SampleModelFactory

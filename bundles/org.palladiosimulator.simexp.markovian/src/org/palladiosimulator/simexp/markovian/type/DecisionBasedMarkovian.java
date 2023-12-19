@@ -9,46 +9,58 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DecisionBasedMarkovian <T> extends MarkovianDecorator<T> {
+public class DecisionBasedMarkovian<T, A extends Action<T>> extends MarkovianDecorator<T> {
 
-	//private final Policy<Action<?>> policy;
-	private final Policy<Action<T>> policy;
-	private final RewardReceiver<T> rewardReceiver;
-	private final Set<Action<T>> actionSpace;
-	
-	public DecisionBasedMarkovian(Markovian<T> decoratedMarkovian, 
-								  Policy<Action<T>> policy, 
-								  RewardReceiver<T> rewardReceiver,
-								  Set<Action<T>> actionSpace) {
-		super(decoratedMarkovian);
-		this.policy = policy;
-		this.rewardReceiver = rewardReceiver;
-		this.actionSpace = actionSpace;
-	}
+    // private final Policy<Action<?>> policy;
+    // private final RewardReceiver rewardReceiver;
+    // private final Set<Action<?>> actionSpace;
+    private final Policy<T> policy;
+    private final RewardReceiver<T> rewardReceiver;
+    private final Set<T> actionSpace;
 
-	@Override
-	public void drawSample(Sample<T> sample) {
-		addSelectedAction(sample);
-		addNextState(sample);
-		addObtainedReward(sample);
-	}
+    public DecisionBasedMarkovian(Markovian<T> decoratedMarkovian, Policy<Action<T>> policy,
+            RewardReceiver<T> rewardReceiver, Set<Action<T>> actionSpace) {
+        super(decoratedMarkovian);
+        this.policy = policy;
+        this.rewardReceiver = rewardReceiver;
+        this.actionSpace = actionSpace;
+    }
 
-	private void addSelectedAction(Sample<T> sample) {
-		// public T select(State<T> source, Set<T> options);
-		State<T> current = sample.getCurrent();
+    @Override
+    public void drawSample(Sample<T> sample) {
+        addSelectedAction(sample);
+        addNextState(sample);
+        addObtainedReward(sample);
+    }
+
+    private void addSelectedAction(Sample<T> sample) {
+        // private void addSelectedAction(Sample sample) {
+        // Action<?> choice = policy.select(sample.getCurrent(), actionSpace);
+        // sample.setAction(choice);
+
+        // public T select(State<T> source, Set<T> options);
+        State<T> current = sample.getCurrent();
+        // State<PCMInstance>
+
+        // Action<T> select(State<Action<T>> source, Set<Action<T>> options);
+
+        // public T select(State<T> source, Set<T> options);
         T choice = policy.select(current, actionSpace);
-		// void setAction(Action<T> value);
-		//Action<Action<T>> choice2 = null;
-		sample.setAction(choice);
-	}
 
-	private void addNextState(Sample<T> sample) {
-		decoratedMarkovian.drawSample(sample);
-	}
-	
-	private void addObtainedReward(Sample<T> sample) {
-		Reward<T> reward = rewardReceiver.obtain(sample);
-		sample.setReward(reward);
-	}
+        // QVToReconfiguration choice = null;
+        // void setAction(Action<T> value);
+        // Action<Action<T>> choice2 = null;
+        // void setAction(Action<Action<T>> value);
+        sample.setAction(choice);
+    }
+
+    private void addNextState(Sample<T> sample) {
+        decoratedMarkovian.drawSample(sample);
+    }
+
+    private void addObtainedReward(Sample<T> sample) {
+        Reward<T> reward = rewardReceiver.obtain(sample);
+        sample.setReward(reward);
+    }
 
 }
