@@ -7,170 +7,176 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class MarkovianBuilder {
+public class MarkovianBuilder<S, A, R> {
 
-	public class MarkovChainBuilder implements BasicMarkovianBuilderTemplate<MarkovChainBuilder>, Builder<Markovian> {
+    public class MarkovChainBuilder
+            implements BasicMarkovianBuilderTemplate<MarkovChainBuilder, S, A>, Builder<Markovian<S, A, R>> {
 
-		@Override
-		public Markovian build() {
-			return basicBuilder.build();
-		}
+        @Override
+        public Markovian<S, A, R> build() {
+            return basicBuilder.build();
+        }
 
-		@Override
-		public MarkovChainBuilder createStateSpaceNavigator(StateSpaceNavigator stateSpaceNavigator) {
-			basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
-			return this;
-		}
+        @Override
+        public MarkovChainBuilder createStateSpaceNavigator(StateSpaceNavigator<S, A> stateSpaceNavigator) {
+            basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
+            return this;
+        }
 
-		@Override
-		public MarkovChainBuilder withInitialStateDistribution(ProbabilityMassFunction initialDistribution) {
-			basicBuilder.withInitialStateDistribution(initialDistribution);
-			return this;
-		}
-	}
-	
-	public class HMMBuilder implements BasicMarkovianBuilderTemplate<HMMBuilder>, HiddenStateMarkovianBuilderTemplate<HMMBuilder>, Builder<Markovian> {
+        @Override
+        public MarkovChainBuilder withInitialStateDistribution(ProbabilityMassFunction<State<S>> initialDistribution) {
+            basicBuilder.withInitialStateDistribution(initialDistribution);
+            return this;
+        }
+    }
 
-		@Override
-		public Markovian build() {
-			hiddenBuilder.decorates(basicBuilder.build());
-			return hiddenBuilder.build();
-		}
+    public class HMMBuilder implements BasicMarkovianBuilderTemplate<HMMBuilder, S, A>,
+            HiddenStateMarkovianBuilderTemplate<HMMBuilder, S>, Builder<Markovian<S, A, R>> {
 
-		@Override
-		public HMMBuilder handleObservationsWith(ObservationProducer obsHandler) {
-			hiddenBuilder.handleObservationsWith(obsHandler);
-			return this;
-		}
+        @Override
+        public Markovian<S, A, R> build() {
+            hiddenBuilder.decorates(basicBuilder.build());
+            return hiddenBuilder.build();
+        }
 
-		@Override
-		public HMMBuilder createStateSpaceNavigator(StateSpaceNavigator stateSpaceNavigator) {
-			basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
-			return this;
-		}
+        @Override
+        public HMMBuilder handleObservationsWith(ObservationProducer<S> obsHandler) {
+            hiddenBuilder.handleObservationsWith(obsHandler);
+            return this;
+        }
 
-		@Override
-		public HMMBuilder withInitialStateDistribution(ProbabilityMassFunction initialDistribution) {
-			basicBuilder.withInitialStateDistribution(initialDistribution);
-			return this;
-		}
-	}
-	
-	public class MDPBuilder <T> implements BasicMarkovianBuilderTemplate<T>, DecisionBasedMarkovionBuilderTemplate<T>, Builder<Markovian<T>> {
+        @Override
+        public HMMBuilder createStateSpaceNavigator(StateSpaceNavigator<S, A> stateSpaceNavigator) {
+            basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
+            return this;
+        }
 
-		@Override
-		public Markovian<T> build() {
-			decisionBuilder.decorates(basicBuilder.build());
-			return decisionBuilder.build();
-		}
+        @Override
+        public HMMBuilder withInitialStateDistribution(ProbabilityMassFunction<State<S>> initialDistribution) {
+            basicBuilder.withInitialStateDistribution(initialDistribution);
+            return this;
+        }
+    }
 
-		@Override
-		public MDPBuilder<T> calculateRewardWith(RewardReceiver rewardCalc) {
-			decisionBuilder.calculateRewardWith(rewardCalc);
-			return this;
-		}
+    public class MDPBuilder implements BasicMarkovianBuilderTemplate<MDPBuilder, S, A>,
+            DecisionBasedMarkovionBuilderTemplate<MDPBuilder, S, A, Action<A>, R>, Builder<Markovian<S, A, R>> {
 
-		@Override
-		public MDPBuilder<T> withActionSpace(Set<Action<?>> actions) {
-			decisionBuilder.withActionSpace(actions);
-			return this;
-		}
+        @Override
+        public Markovian<S, A, R> build() {
+            decisionBuilder.decorates(basicBuilder.build());
+            return decisionBuilder.build();
+        }
 
-		@Override
-		public MDPBuilder<T> selectActionsAccordingTo(Policy<Action<?>> policy) {
-			decisionBuilder.selectActionsAccordingTo(policy);
-			return this;
-		}
+        @Override
+        public MDPBuilder calculateRewardWith(RewardReceiver<S, A, R> rewardCalc) {
+            decisionBuilder.calculateRewardWith(rewardCalc);
+            return this;
+        }
 
-		@Override
-		public MDPBuilder<T> createStateSpaceNavigator(StateSpaceNavigator stateSpaceNavigator) {
-			basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
-			return this;
-		}
+        @Override
+        public MDPBuilder withActionSpace(Set<Action<A>> actions) {
+            decisionBuilder.withActionSpace(actions);
+            return this;
+        }
 
-		@Override
-		public MDPBuilder<T> withInitialStateDistribution(ProbabilityMassFunction<T> initialDistribution) {
-			basicBuilder.withInitialStateDistribution(initialDistribution);
-			return this;
-		}
-	}
+        @Override
+        public MDPBuilder selectActionsAccordingTo(Policy<S, A, Action<A>> policy) {
+            decisionBuilder.selectActionsAccordingTo(policy);
+            return this;
+        }
 
-	public class POMDPBuilder <T> implements BasicMarkovianBuilderTemplate<POMDPBuilder<T>>, DecisionBasedMarkovionBuilderTemplate<POMDPBuilder<T>>, HiddenStateMarkovianBuilderTemplate<POMDPBuilder<T>>, Builder<Markovian<T>> {
+        @Override
+        public MDPBuilder createStateSpaceNavigator(StateSpaceNavigator<S, A> stateSpaceNavigator) {
+            basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
+            return this;
+        }
 
-		@Override
-		public Markovian<T> build() {
-			decisionBuilder.decorates(basicBuilder.build());
-			hiddenBuilder.decorates(decisionBuilder.build());
-			return hiddenBuilder.build();
-		}
+        @Override
+        public MDPBuilder withInitialStateDistribution(ProbabilityMassFunction<State<S>> initialDistribution) {
+            basicBuilder.withInitialStateDistribution(initialDistribution);
+            return this;
+        }
+    }
 
-		@Override
-		public POMDPBuilder<T> handleObservationsWith(ObservationProducer obsHandler) {
-			hiddenBuilder.handleObservationsWith(obsHandler);
-			return this;
-		}
+    public class POMDPBuilder implements BasicMarkovianBuilderTemplate<POMDPBuilder, S, A>,
+            DecisionBasedMarkovionBuilderTemplate<POMDPBuilder, S, A, Action<A>, R>,
+            HiddenStateMarkovianBuilderTemplate<POMDPBuilder, S>, Builder<Markovian<S, A, R>> {
 
-		@Override
-		public POMDPBuilder<T> calculateRewardWith(RewardReceiver rewardCalc) {
-			decisionBuilder.calculateRewardWith(rewardCalc);
-			return this;
-		}
+        @Override
+        public Markovian<S, A, R> build() {
+            decisionBuilder.decorates(basicBuilder.build());
+            hiddenBuilder.decorates(decisionBuilder.build());
+            return hiddenBuilder.build();
+        }
 
-		@Override
-		public POMDPBuilder<T> withActionSpace(Set<Action<?>> actions) {
-			decisionBuilder.withActionSpace(actions);
-			return this;
-		}
+        @Override
+        public POMDPBuilder handleObservationsWith(ObservationProducer<S> obsHandler) {
+            hiddenBuilder.handleObservationsWith(obsHandler);
+            return this;
+        }
 
-		@Override
-		public POMDPBuilder<T> selectActionsAccordingTo(Policy<Action<?>> policy) {
-			decisionBuilder.selectActionsAccordingTo(policy);
-			return this;
-		}
+        @Override
+        public POMDPBuilder calculateRewardWith(RewardReceiver<S, A, R> rewardCalc) {
+            decisionBuilder.calculateRewardWith(rewardCalc);
+            return this;
+        }
 
-		@Override
-		public POMDPBuilder<T> createStateSpaceNavigator(StateSpaceNavigator stateSpaceNavigator) {
-			basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
-			return this;
-		}
+        @Override
+        public POMDPBuilder withActionSpace(Set<Action<A>> actions) {
+            decisionBuilder.withActionSpace(actions);
+            return this;
+        }
 
-		@Override
-		public POMDPBuilder<T> withInitialStateDistribution(ProbabilityMassFunction<POMDPBuilder<T>> initialDistribution) {
-			basicBuilder.withInitialStateDistribution(initialDistribution);
-			return this;
-		}
-	}
-	
-	private BasicMarkovianBuilder basicBuilder;
-	private HiddenStateMarkovianBuilder hiddenBuilder;
-	private DecisionBasedMarkovianBuilder decisionBuilder;
-	
-	private MarkovianBuilder() {
-		this.basicBuilder = BasicMarkovianBuilder.createBasicMarkovian();
-		this.hiddenBuilder = HiddenStateMarkovianBuilder.createHiddenStateMarkovianBuilder();
-		this.decisionBuilder = DecisionBasedMarkovianBuilder.createDecisionBasedMarkovianBuilder();
-	}
-	
-	private static MarkovianBuilder createBuilder() {
-		return new MarkovianBuilder();
-	}
-	
-	public static MarkovChainBuilder createMarkovChain() {
-		return createBuilder().new MarkovChainBuilder();
-	}
-	
-	public static HMMBuilder createHiddenMarkovModel() {
-		return createBuilder().new HMMBuilder();
-	}
-	
-	public static MDPBuilder createMarkovDecisionProcess() {
-		return createBuilder().new MDPBuilder();
-	}
-	
-	public static POMDPBuilder createPartiallyObservableMDP() {
-		return createBuilder().new POMDPBuilder();
-	}
+        @Override
+        public POMDPBuilder selectActionsAccordingTo(Policy<S, A, Action<A>> policy) {
+            decisionBuilder.selectActionsAccordingTo(policy);
+            return this;
+        }
+
+        @Override
+        public POMDPBuilder createStateSpaceNavigator(StateSpaceNavigator<S, A> stateSpaceNavigator) {
+            basicBuilder.createStateSpaceNavigator(stateSpaceNavigator);
+            return this;
+        }
+
+        @Override
+        public POMDPBuilder withInitialStateDistribution(ProbabilityMassFunction<State<S>> initialDistribution) {
+            basicBuilder.withInitialStateDistribution(initialDistribution);
+            return this;
+        }
+    }
+
+    private BasicMarkovianBuilder<S, A, R> basicBuilder;
+    private HiddenStateMarkovianBuilder<S, A, R> hiddenBuilder;
+    private DecisionBasedMarkovianBuilder<S, A, Action<A>, R> decisionBuilder;
+
+    private MarkovianBuilder() {
+        this.basicBuilder = BasicMarkovianBuilder.createBasicMarkovian();
+        this.hiddenBuilder = HiddenStateMarkovianBuilder.createHiddenStateMarkovianBuilder();
+        this.decisionBuilder = DecisionBasedMarkovianBuilder.createDecisionBasedMarkovianBuilder();
+    }
+
+    private static <S, A, R> MarkovianBuilder<S, A, R> createBuilder() {
+        return new MarkovianBuilder<>();
+    }
+
+    public static <S, A, R> MarkovianBuilder<S, A, R>.MarkovChainBuilder createMarkovChain() {
+        return MarkovianBuilder.<S, A, R> createBuilder().new MarkovChainBuilder();
+    }
+
+    public static <S, A, R> MarkovianBuilder<S, A, R>.HMMBuilder createHiddenMarkovModel() {
+        return MarkovianBuilder.<S, A, R> createBuilder().new HMMBuilder();
+    }
+
+    public static <S, A, R> MarkovianBuilder<S, A, R>.MDPBuilder createMarkovDecisionProcess() {
+        return MarkovianBuilder.<S, A, R> createBuilder().new MDPBuilder();
+    }
+
+    public static <S, A, R> MarkovianBuilder<S, A, R>.POMDPBuilder createPartiallyObservableMDP() {
+        return MarkovianBuilder.<S, A, R> createBuilder().new POMDPBuilder();
+    }
 }

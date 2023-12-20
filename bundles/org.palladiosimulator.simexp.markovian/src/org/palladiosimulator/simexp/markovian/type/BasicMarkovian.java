@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
 
-public class BasicMarkovian<S, A, R> implements Markovian<S, A, R, State<S>> {
+public class BasicMarkovian<S, A, R> implements Markovian<S, A, R> {
 
     private final ProbabilityMassFunction<State<S>> initialStateDistribution;
     private final StateSpaceNavigator<S, A> stateSpaceNavigator;

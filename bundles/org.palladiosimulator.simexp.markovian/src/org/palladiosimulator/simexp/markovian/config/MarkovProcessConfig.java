@@ -6,13 +6,13 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModel;
 import org.palladiosimulator.simexp.markovian.termination.TerminationCriterion;
 
-public class MarkovProcessConfig {
-	public int horizonLength;
-	public MarkovModel markovModel;
-	public TerminationCriterion criterion;
-	private SampleModel sampleModel;
-	
-	public Optional<SampleModel> getSampleModel() {
-		return sampleModel == null ? Optional.empty() : Optional.of(sampleModel);
-	}
+public class MarkovProcessConfig<S, A, R> {
+    public int horizonLength;
+    public MarkovModel<S, A, R> markovModel;
+    public TerminationCriterion<S, A, R> criterion;
+    private SampleModel<S, A, R> sampleModel;
+
+    public Optional<SampleModel<S, A, R>> getSampleModel() {
+        return sampleModel == null ? Optional.empty() : Optional.of(sampleModel);
+    }
 }

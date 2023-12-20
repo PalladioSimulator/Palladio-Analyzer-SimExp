@@ -3,14 +3,15 @@ package org.palladiosimulator.simexp.markovian.exploration;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public interface ExplorationStrategy<T> extends Policy<T> {
+public interface ExplorationStrategy<S, A, Aa extends Action<A>> extends Policy<S, A, Aa> {
 
     @Override
-    default T select(State<T> source, Set<T> options) {
+    default Aa select(State<S> source, Set<Aa> options) {
         return select(options);
     }
 
-    public T select(Set<T> options);
+    public Aa select(Set<Aa> options);
 }
