@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class StaticSystemSimulation<T> extends ReconfigurationStrategy<T, QVTOReconfigurator, QVToReconfiguration> {
+public class StaticSystemSimulation<S> extends ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> {
 
     @Override
     public String getId() {
@@ -16,17 +16,17 @@ public class StaticSystemSimulation<T> extends ReconfigurationStrategy<T, QVTORe
     }
 
     @Override
-    protected void monitor(State<T> source, SharedKnowledge knowledge) {
+    protected void monitor(State<S> source, SharedKnowledge knowledge) {
 
     }
 
     @Override
-    protected boolean analyse(State<T> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
         return false;
     }
 
     @Override
-    protected QVToReconfiguration plan(State<T> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         return emptyReconfiguration();
     }
 

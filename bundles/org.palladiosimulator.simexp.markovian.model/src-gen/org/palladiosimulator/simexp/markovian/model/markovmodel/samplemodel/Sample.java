@@ -30,7 +30,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  * @model
  * @generated
  */
-public interface Sample<T> extends EObject {
+public interface Sample<S, A, R> extends EObject {
     /**
      * Returns the value of the '<em><b>Reward</b></em>' reference.
      * <!-- begin-user-doc -->
@@ -41,7 +41,7 @@ public interface Sample<T> extends EObject {
      * @model
      * @generated
      */
-    Reward<T> getReward();
+    Reward<R> getReward();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getReward <em>Reward</em>}' reference.
@@ -51,7 +51,7 @@ public interface Sample<T> extends EObject {
      * @see #getReward()
      * @generated
      */
-    void setReward(Reward<T> value);
+    void setReward(Reward<R> value);
 
     /**
      * Returns the value of the '<em><b>Action</b></em>' reference.
@@ -63,7 +63,7 @@ public interface Sample<T> extends EObject {
      * @model
      * @generated
      */
-    Action<T> getAction();
+    Action<A> getAction();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getAction <em>Action</em>}' reference.
@@ -73,7 +73,7 @@ public interface Sample<T> extends EObject {
      * @see #getAction()
      * @generated
      */
-    void setAction(Action<T> value);
+    void setAction(Action<A> value);
 
     /**
      * Returns the value of the '<em><b>Point In Time</b></em>' attribute.
@@ -107,7 +107,7 @@ public interface Sample<T> extends EObject {
      * @model required="true"
      * @generated
      */
-    State<T> getCurrent();
+    State<S> getCurrent();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getCurrent <em>Current</em>}' reference.
@@ -117,7 +117,7 @@ public interface Sample<T> extends EObject {
      * @see #getCurrent()
      * @generated
      */
-    void setCurrent(State<T> value);
+    void setCurrent(State<S> value);
 
     /**
      * Returns the value of the '<em><b>Next</b></em>' reference.
@@ -129,7 +129,7 @@ public interface Sample<T> extends EObject {
      * @model required="true"
      * @generated
      */
-    State<T> getNext();
+    State<S> getNext();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getNext <em>Next</em>}' reference.
@@ -139,7 +139,7 @@ public interface Sample<T> extends EObject {
      * @see #getNext()
      * @generated
      */
-    void setNext(State<T> value);
+    void setNext(State<S> value);
 
     /**
      * Returns the value of the '<em><b>Observation</b></em>' reference.
@@ -151,7 +151,7 @@ public interface Sample<T> extends EObject {
      * @model
      * @generated
      */
-    Observation<T> getObservation();
+    Observation<S> getObservation();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getObservation <em>Observation</em>}' reference.
@@ -161,6 +161,6 @@ public interface Sample<T> extends EObject {
      * @see #getObservation()
      * @generated
      */
-    void setObservation(Observation<T> value);
+    void setObservation(Observation<S> value);
 
 } // Sample

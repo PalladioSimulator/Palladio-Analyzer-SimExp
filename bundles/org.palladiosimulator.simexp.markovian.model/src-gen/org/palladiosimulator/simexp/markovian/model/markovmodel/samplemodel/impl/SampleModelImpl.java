@@ -33,7 +33,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
  *
  * @generated
  */
-public class SampleModelImpl<T> extends MinimalEObjectImpl.Container implements SampleModel<T> {
+public class SampleModelImpl<S, A, R> extends MinimalEObjectImpl.Container implements SampleModel<S, A, R> {
     /**
      * The cached value of the '{@link #getTrajectories() <em>Trajectories</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -42,7 +42,7 @@ public class SampleModelImpl<T> extends MinimalEObjectImpl.Container implements 
      * @generated
      * @ordered
      */
-    protected EList<Trajectory<T>> trajectories;
+    protected EList<Trajectory<S, A, R>> trajectories;
 
     /**
      * <!-- begin-user-doc -->
@@ -69,9 +69,9 @@ public class SampleModelImpl<T> extends MinimalEObjectImpl.Container implements 
      * @generated
      */
     @Override
-    public EList<Trajectory<T>> getTrajectories() {
+    public EList<Trajectory<S, A, R>> getTrajectories() {
         if (trajectories == null) {
-            trajectories = new EObjectContainmentEList<Trajectory<T>>(Trajectory.class, this,
+            trajectories = new EObjectContainmentEList<Trajectory<S, A, R>>(Trajectory.class, this,
                     SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES);
         }
         return trajectories;
@@ -116,7 +116,7 @@ public class SampleModelImpl<T> extends MinimalEObjectImpl.Container implements 
         switch (featureID) {
         case SampleModelPackage.SAMPLE_MODEL__TRAJECTORIES:
             getTrajectories().clear();
-            getTrajectories().addAll((Collection<? extends Trajectory<T>>) newValue);
+            getTrajectories().addAll((Collection<? extends Trajectory<S, A, R>>) newValue);
             return;
         }
         super.eSet(featureID, newValue);

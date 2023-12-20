@@ -16,8 +16,8 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class ReliabilityPrioritizedStrategy<T>
-        extends ReconfigurationStrategy<T, QVTOReconfigurator, QVToReconfiguration> implements Initializable {
+public class ReliabilityPrioritizedStrategy<S>
+        extends ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> implements Initializable {
     private static final String IMG_BRIGHTNESS_TEMPLATE = "_U5Fzu8qkEeqObY-eK2jOOA";
     private static final String IMG_NOISE_TEMPLATE = "_0uh4oCpGEeuMpaabmuiN-Q";
 
@@ -38,7 +38,7 @@ public class ReliabilityPrioritizedStrategy<T>
     }
 
     @Override
-    protected void monitor(State<T> source, SharedKnowledge knowledge) {
+    protected void monitor(State<S> source, SharedKnowledge knowledge) {
         if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
             throw new RuntimeException("");
         }
@@ -65,7 +65,7 @@ public class ReliabilityPrioritizedStrategy<T>
     }
 
     @Override
-    protected boolean analyse(State<T> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
         var rtSimMeasurement = knowledge.getValue(responseTimeSpec.getId())
             .map(SimulatedMeasurement.class::cast)
             .get();
@@ -96,7 +96,7 @@ public class ReliabilityPrioritizedStrategy<T>
     }
 
     @Override
-    protected QVToReconfiguration plan(State<T> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         var sensorNoise = knowledge.getValue(IMG_NOISE_TEMPLATE)
             .map(CategoricalValue.class::cast)
             .get();

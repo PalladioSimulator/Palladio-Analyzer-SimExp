@@ -15,8 +15,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class RobotCognitionReconfigurationStrategy<T>
-        implements Policy<T, QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
+public class RobotCognitionReconfigurationStrategy<S>
+        implements Policy<S, QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
 
     private final Threshold thresholdRt;
     private final Threshold thresholdRel;;
@@ -47,7 +47,7 @@ public class RobotCognitionReconfigurationStrategy<T>
     }
 
     @Override
-    public Action<QVTOReconfigurator> select(State<T> source, Set<Action<QVTOReconfigurator>> options) {
+    public Action<QVTOReconfigurator> select(State<S> source, Set<Action<QVTOReconfigurator>> options) {
         if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
             throw new RuntimeException("");
         }

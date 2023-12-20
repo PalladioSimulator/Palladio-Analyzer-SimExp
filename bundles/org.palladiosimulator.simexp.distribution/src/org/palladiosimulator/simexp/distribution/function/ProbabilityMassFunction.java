@@ -2,14 +2,14 @@ package org.palladiosimulator.simexp.distribution.function;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
-public interface ProbabilityMassFunction<T> extends ProbabilityDistributionFunction<Sample<T>> {
+public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunction<Sample<S>> {
 
-    public static class Sample<T> {
+    public static class Sample<S> {
 
-        private T value;
+        private S value;
         private double probability;
 
-        private Sample(T value, double probability) {
+        private Sample(S value, double probability) {
             this.value = value;
             this.probability = probability;
         }
@@ -22,7 +22,7 @@ public interface ProbabilityMassFunction<T> extends ProbabilityDistributionFunct
             return new Sample<>(value, probability);
         }
 
-        public T getValue() {
+        public S getValue() {
             return value;
         }
 
@@ -40,5 +40,5 @@ public interface ProbabilityMassFunction<T> extends ProbabilityDistributionFunct
         }
     }
 
-    public double probability(ProbabilityMassFunction.Sample<T> sample);
+    public double probability(ProbabilityMassFunction.Sample<S> sample);
 }

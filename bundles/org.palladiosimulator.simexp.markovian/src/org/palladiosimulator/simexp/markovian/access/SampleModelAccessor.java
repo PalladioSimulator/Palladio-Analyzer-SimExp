@@ -11,67 +11,67 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModelFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 
-public class SampleModelAccessor<T> {
+public class SampleModelAccessor<S, A, R> {
     private final static SampleModelFactory sampleModelFactory = SampleModelFactory.eINSTANCE;
-    private final SampleModel<T> sampleModel;
+    private final SampleModel<S, A, R> sampleModel;
 
-    public SampleModelAccessor(Optional<SampleModel<T>> sampleModel) {
+    public SampleModelAccessor(Optional<SampleModel<S, A, R>> sampleModel) {
         this.sampleModel = sampleModel.orElse(sampleModelFactory.createSampleModel());
     }
 
-    public void addNewTrajectory(Sample<T> initial) {
-        Trajectory<T> traj = sampleModelFactory.createTrajectory();
+    public void addNewTrajectory(Sample<S, A, R> initial) {
+        Trajectory<S, A, R> traj = sampleModelFactory.createTrajectory();
         traj.getSamplePath()
             .add(initial);
         sampleModel.getTrajectories()
             .add(traj);
     }
 
-    public Trajectory<T> getCurrentTrajectory() {
+    public Trajectory<S, A, R> getCurrentTrajectory() {
         int index = sampleModel.getTrajectories()
             .size() - 1;
         return sampleModel.getTrajectories()
             .get(index);
     }
 
-    public void addSample(Sample<T> sample) {
+    public void addSample(Sample<S, A, R> sample) {
         getCurrentTrajectory().getSamplePath()
             .add(sample);
     }
 
-    public SampleModel<T> getSampleModel() {
+    public SampleModel<S, A, R> getSampleModel() {
         return sampleModel;
     }
 
-    public Sample<T> getCurrentSample() {
-        List<Sample<T>> samplePath = getCurrentTrajectory().getSamplePath();
+    public Sample<S, A, R> getCurrentSample() {
+        List<Sample<S, A, R>> samplePath = getCurrentTrajectory().getSamplePath();
         return samplePath.get(samplePath.size() - 1);
     }
 
-    public Sample<T> createTemplateSampleBy(Sample<T> ref) {
+    public Sample<S, A, R> createTemplateSampleBy(Sample<S, A, R> ref) {
         if (isInitialSample(ref)) {
             return ref;
         }
         return createSampleBy(ref.getNext(), ref.getPointInTime() + 1);
     }
 
-    private boolean isInitialSample(Sample<T> sample) {
+    private boolean isInitialSample(Sample<S, A, R> sample) {
         return sample.getPointInTime() == STARTING_TIME && sample.getNext() == null;
     }
 
-    public static <T> Sample<T> createSampleBy(State<T> current) {
-        Sample<T> newSample = sampleModelFactory.createSample();
+    public static <S, A, R> Sample<S, A, R> createSampleBy(State<S> current) {
+        Sample<S, A, R> newSample = sampleModelFactory.createSample();
         newSample.setCurrent(current);
         return newSample;
     }
 
-    public static <T> Sample<T> createSampleBy(State<T> current, int pointInTime) {
-        Sample<T> newSample = createSampleBy(current);
+    public static <S, A, R> Sample<S, A, R> createSampleBy(State<S> current, int pointInTime) {
+        Sample<S, A, R> newSample = createSampleBy(current);
         newSample.setPointInTime(pointInTime);
         return newSample;
     }
 
-    public static <T> Sample<T> createInitialSample(State<T> initial) {
+    public static <S, A, R> Sample<S, A, R> createInitialSample(State<S> initial) {
         return createSampleBy(initial, STARTING_TIME);
     }
 

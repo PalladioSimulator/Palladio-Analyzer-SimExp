@@ -11,53 +11,53 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
 import com.google.common.collect.Lists;
 
-public class RandomizedAdaptationStrategy extends ReliabilityPrioritizedStrategy {
+public class RandomizedAdaptationStrategy<S> extends ReliabilityPrioritizedStrategy<S> {
 
-	private final Random random = new Random();
-	
-	public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
-		super(responseTimeSpec, thresholdRt);
-	}
+    private final Random random = new Random();
 
-	@Override
-	public String getId() {
-		return "RandomizedAdaptationStrategy";
-	}
-	
-	@Override
-	protected boolean analyse(State source, SharedKnowledge knowledge) {
-		return true;
-	}
-	
-	@Override
-	protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-		List<String> availableOptions = Lists.newArrayList();
-		availableOptions.add("EmptyReconf");
-		
-		if (isFilteringActivated) {
-			availableOptions.add("DeactivateFilterComponent");
-		} else {
-			availableOptions.add("ActivateFilterComponent");
-		}
-		
-		if (isDefaultMLModelActivated) {
-			availableOptions.add("SwitchToRobustMLModel");
-		} else {
-			availableOptions.add("SwitchToDefaultMLModel");
-		}
-		
-		var randomlySelect = availableOptions.get(random.nextInt(3));
-		if (randomlySelect.equals("ActivateFilterComponent")) {
-			return activateFilteringReconfiguration(options);
-		} else if (randomlySelect.equals("DeactivateFilterComponent")) {
-			return deactivateFilteringReconfiguration(options);
-		} else if (randomlySelect.equals("SwitchToDefaultMLModel")) {
-			return switchToDefaultMLModel(options);
-		} else if (randomlySelect.equals("SwitchToRobustMLModel")) {
-			return switchToRobustMLModel(options);
-		} else {
-			return QVToReconfiguration.empty();
-		}
-	}
-	
+    public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
+        super(responseTimeSpec, thresholdRt);
+    }
+
+    @Override
+    public String getId() {
+        return "RandomizedAdaptationStrategy";
+    }
+
+    @Override
+    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
+        return true;
+    }
+
+    @Override
+    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+        List<String> availableOptions = Lists.newArrayList();
+        availableOptions.add("EmptyReconf");
+
+        if (isFilteringActivated) {
+            availableOptions.add("DeactivateFilterComponent");
+        } else {
+            availableOptions.add("ActivateFilterComponent");
+        }
+
+        if (isDefaultMLModelActivated) {
+            availableOptions.add("SwitchToRobustMLModel");
+        } else {
+            availableOptions.add("SwitchToDefaultMLModel");
+        }
+
+        var randomlySelect = availableOptions.get(random.nextInt(3));
+        if (randomlySelect.equals("ActivateFilterComponent")) {
+            return activateFilteringReconfiguration(options);
+        } else if (randomlySelect.equals("DeactivateFilterComponent")) {
+            return deactivateFilteringReconfiguration(options);
+        } else if (randomlySelect.equals("SwitchToDefaultMLModel")) {
+            return switchToDefaultMLModel(options);
+        } else if (randomlySelect.equals("SwitchToRobustMLModel")) {
+            return switchToRobustMLModel(options);
+        } else {
+            return QVToReconfiguration.empty();
+        }
+    }
+
 }

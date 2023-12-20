@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class NonAdaptiveStrategy<T> implements Policy<T, QVTOReconfigurator, QVToReconfiguration> {
+public class NonAdaptiveStrategy<S> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
 
     @Override
     public String getId() {
@@ -15,7 +15,7 @@ public class NonAdaptiveStrategy<T> implements Policy<T, QVTOReconfigurator, QVT
     }
 
     @Override
-    public QVToReconfiguration select(State<T> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
         return QVToReconfiguration.empty();
     }
 

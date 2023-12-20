@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.*;
  * @see org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModelPackage
  * @generated
  */
-public class SampleModelSwitch<T1> extends Switch<T1> {
+public class SampleModelSwitch<T> extends Switch<T> {
     /**
      * The cached model package
      * <!-- begin-user-doc -->
@@ -64,25 +64,25 @@ public class SampleModelSwitch<T1> extends Switch<T1> {
      * @generated
      */
     @Override
-    protected T1 doSwitch(int classifierID, EObject theEObject) {
+    protected T doSwitch(int classifierID, EObject theEObject) {
         switch (classifierID) {
         case SampleModelPackage.TRAJECTORY: {
-            Trajectory<?> trajectory = (Trajectory<?>) theEObject;
-            T1 result = caseTrajectory(trajectory);
+            Trajectory<?, ?, ?> trajectory = (Trajectory<?, ?, ?>) theEObject;
+            T result = caseTrajectory(trajectory);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case SampleModelPackage.SAMPLE: {
-            Sample<?> sample = (Sample<?>) theEObject;
-            T1 result = caseSample(sample);
+            Sample<?, ?, ?> sample = (Sample<?, ?, ?>) theEObject;
+            T result = caseSample(sample);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case SampleModelPackage.SAMPLE_MODEL: {
-            SampleModel<?> sampleModel = (SampleModel<?>) theEObject;
-            T1 result = caseSampleModel(sampleModel);
+            SampleModel<?, ?, ?> sampleModel = (SampleModel<?, ?, ?>) theEObject;
+            T result = caseSampleModel(sampleModel);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
@@ -103,7 +103,7 @@ public class SampleModelSwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <T> T1 caseTrajectory(Trajectory<T> object) {
+    public <S, A, R> T caseTrajectory(Trajectory<S, A, R> object) {
         return null;
     }
 
@@ -118,7 +118,7 @@ public class SampleModelSwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <T> T1 caseSample(Sample<T> object) {
+    public <S, A, R> T caseSample(Sample<S, A, R> object) {
         return null;
     }
 
@@ -133,7 +133,7 @@ public class SampleModelSwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <T> T1 caseSampleModel(SampleModel<T> object) {
+    public <S, A, R> T caseSampleModel(SampleModel<S, A, R> object) {
         return null;
     }
 
@@ -149,7 +149,7 @@ public class SampleModelSwitch<T1> extends Switch<T1> {
      * @generated
      */
     @Override
-    public T1 defaultCase(EObject object) {
+    public T defaultCase(EObject object) {
         return null;
     }
 
