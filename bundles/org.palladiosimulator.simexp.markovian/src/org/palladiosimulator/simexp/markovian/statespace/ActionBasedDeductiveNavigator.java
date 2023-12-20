@@ -4,22 +4,24 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class ActionBasedDeductiveNavigator extends DeductiveStateSpaceNavigator {
+public class ActionBasedDeductiveNavigator<S, A, R> extends DeductiveStateSpaceNavigator<S, A, R> {
 
-	public ActionBasedDeductiveNavigator(MarkovModel markovModel) {
-		super(markovModel);
-	}
+    public ActionBasedDeductiveNavigator(MarkovModel<S, A, R> markovModel) {
+        super(markovModel);
+    }
 
-	@Override
-	public State navigate(NavigationContext context) {
-		//TODO exception handling
-		if (context.getAction().isPresent() == false) {
-			throw new RuntimeException("");
-		}
-		
-		Transition result = markovModelAccessor.findTransition(context.getSource(), context.getAction().get())
-											   .orElseThrow(() -> new RuntimeException(""));
-		return result.getTarget();
-	}
+    @Override
+    public State<S> navigate(NavigationContext<S, A> context) {
+        // TODO exception handling
+        if (context.getAction()
+            .isPresent() == false) {
+            throw new RuntimeException("");
+        }
+
+        Transition<S, A> result = markovModelAccessor.findTransition(context.getSource(), context.getAction()
+            .get())
+            .orElseThrow(() -> new RuntimeException(""));
+        return result.getTarget();
+    }
 
 }

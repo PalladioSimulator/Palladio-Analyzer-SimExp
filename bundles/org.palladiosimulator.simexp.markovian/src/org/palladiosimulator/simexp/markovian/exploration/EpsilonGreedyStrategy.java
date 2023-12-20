@@ -11,29 +11,29 @@ import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.BasePolicy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class EpsilonGreedyStrategy<T> implements Policy<Transition<T>> {
+public class EpsilonGreedyStrategy<S, A> implements BasePolicy<S, Transition<S, A>> {
 
     private final static String STRATEGY_ID = "EpsilonGreedy";
     private final static double DEFAULT_INIT_EPSILON = 0.01;
     private final static int EXPLORATION_FACTOR = 100;
 
-    private static class TransitionHelper<T> {
+    private static class TransitionHelper<S, A> {
 
-        private Set<Transition<T>> transitions;
+        private Set<Transition<S, A>> transitions;
 
-        public TransitionHelper(Set<Transition<T>> transitions) {
+        public TransitionHelper(Set<Transition<S, A>> transitions) {
             this.transitions = transitions;
         }
 
-        public Transition<T> getMostProbableTransition() {
+        public Transition<S, A> getMostProbableTransition() {
             return maxTransition(transitions);
         }
 
-        public Set<Transition<T>> filterAllExcept(Transition<T> transition) {
+        public Set<Transition<S, A>> filterAllExcept(Transition<S, A> transition) {
             return transitions.stream()
                 .filter(t -> t.equals(transition) == false)
                 .collect(Collectors.toSet());
@@ -67,28 +67,31 @@ public class EpsilonGreedyStrategy<T> implements Policy<Transition<T>> {
 //	}
 
     @Override
-    public Transition<T> select(State<Transition<T>> source, Set<Transition<T>> options) {
-        TransitionHelper<T> transHelper = new TransitionHelper<>(options);
-        Transition<T> max = transHelper.getMostProbableTransition();
-        ProbabilityMassFunction.Sample<Transition<T>> maxSample = ProbabilityMassFunction.Sample.of(max, epsilon);
-        ProbabilityMassFunction.Sample<Transition<T>> otherSamples = ProbabilityMassFunction.Sample.of(null,
+    public Transition<S, A> select(State<S> source, Set<Transition<S, A>> options) {
+        TransitionHelper<S, A> transHelper = new TransitionHelper<>(options);
+        Transition<S, A> max = transHelper.getMostProbableTransition();
+        ProbabilityMassFunction.Sample<Transition<S, A>> maxSample = ProbabilityMassFunction.Sample.of(max, epsilon);
+        ProbabilityMassFunction.Sample<Transition<S, A>> otherSamples = ProbabilityMassFunction.Sample.of(null,
                 1 - epsilon);
-        Set<ProbabilityMassFunction.Sample<Transition<T>>> samples = new HashSet<>(
+        Set<ProbabilityMassFunction.Sample<Transition<S, A>>> samples = new HashSet<>(
                 Arrays.asList(maxSample, otherSamples));
-        ProbabilityMassFunction<Transition<T>> pmfOver = ProbabilityDistributionFactory.INSTANCE.pmfOver(samples);
-        ProbabilityMassFunction.Sample<Transition<T>> result = pmfOver.drawSample();
+        ProbabilityMassFunction<Transition<S, A>> pmfOver = ProbabilityDistributionFactory.INSTANCE.pmfOver(samples);
+        ProbabilityMassFunction.Sample<Transition<S, A>> result = pmfOver.drawSample();
         if (result.getValue() == max) {
             return max;
         }
-        return selectRandomly(transHelper.filterAllExcept(max));
+        Set<Transition<S, A>> all = transHelper.filterAllExcept(max);
+        return selectRandomly(all);
     }
 
     public void adjust(int numberOfIteration) {
         epsilon = epsilonAdjustementLaw.apply(numberOfIteration);
     }
 
-    private Transition<T> selectRandomly(Set<Transition<T>> transitions) {
-        return new RandomizedStrategy<Transition<T>>().select(null, transitions);
+    private Transition<S, A> selectRandomly(Set<Transition<S, A>> transitions) {
+        RandomizedStrategy<S, Transition<S, A>> randomizedStrategy = new RandomizedStrategy<S, Transition<S, A>>();
+        Transition<S, A> transition = randomizedStrategy.select(null, transitions);
+        return transition;
     }
 
     private Function<Integer, Double> getDefaultEpsilonAdjustementLaw() {

@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends MarkovianDecorator<S, A, R, D> {
+public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends MarkovianDecorator<S, A, R> {
 
     // private final Policy<Action<?>> policy;
     // private final RewardReceiver rewardReceiver;
@@ -18,7 +18,7 @@ public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends Ma
     private final RewardReceiver<S, A, R> rewardReceiver;
     private final Set<Aa> actionSpace;
 
-    public DecisionBasedMarkovian(Markovian<S, A, R, D> decoratedMarkovian, Policy<S, A, Aa> policy,
+    public DecisionBasedMarkovian(Markovian<S, A, R> decoratedMarkovian, Policy<S, A, Aa> policy,
             RewardReceiver<S, A, R> rewardReceiver, Set<Aa> actionSpace) {
         super(decoratedMarkovian);
         this.policy = policy;

@@ -1,13 +1,14 @@
 package org.palladiosimulator.simexp.markovian.type;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public abstract class MarkovianDecorator<S, A, R, D> implements Markovian<S, A, R, D> {
+public abstract class MarkovianDecorator<S, A, R> implements Markovian<S, A, R> {
 
-    protected Markovian<S, A, R, D> decoratedMarkovian = null;
+    protected Markovian<S, A, R> decoratedMarkovian = null;
 
-    public MarkovianDecorator(Markovian<S, A, R, D> decoratedMarkovian) {
+    public MarkovianDecorator(Markovian<S, A, R> decoratedMarkovian) {
         this.decoratedMarkovian = decoratedMarkovian;
     }
 
@@ -17,7 +18,7 @@ public abstract class MarkovianDecorator<S, A, R, D> implements Markovian<S, A, 
     }
 
     @Override
-    public ProbabilityMassFunction<D> getInitialStateDistribution() {
+    public ProbabilityMassFunction<State<S>> getInitialStateDistribution() {
         return decoratedMarkovian.getInitialStateDistribution();
     }
 }
