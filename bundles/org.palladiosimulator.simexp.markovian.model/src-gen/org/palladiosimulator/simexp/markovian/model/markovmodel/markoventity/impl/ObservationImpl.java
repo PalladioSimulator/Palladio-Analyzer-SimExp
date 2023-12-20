@@ -25,7 +25,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Obs
  *
  * @generated
  */
-public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements Observation<T> {
+public class ObservationImpl<S> extends MinimalEObjectImpl.Container implements Observation<S> {
     /**
      * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -34,7 +34,7 @@ public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements 
      * @generated
      * @ordered
      */
-    protected T value;
+    protected S value;
 
     /**
      * <!-- begin-user-doc -->
@@ -61,7 +61,7 @@ public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements 
      * @generated
      */
     @Override
-    public T getValue() {
+    public S getValue() {
         return value;
     }
 
@@ -71,8 +71,8 @@ public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements 
      * @generated
      */
     @Override
-    public void setValue(T newValue) {
-        T oldValue = value;
+    public void setValue(S newValue) {
+        S oldValue = value;
         value = newValue;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, MarkovEntityPackage.OBSERVATION__VALUE, oldValue,
@@ -103,7 +103,7 @@ public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements 
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
         case MarkovEntityPackage.OBSERVATION__VALUE:
-            setValue((T) newValue);
+            setValue((S) newValue);
             return;
         }
         super.eSet(featureID, newValue);
@@ -118,7 +118,7 @@ public class ObservationImpl<T> extends MinimalEObjectImpl.Container implements 
     public void eUnset(int featureID) {
         switch (featureID) {
         case MarkovEntityPackage.OBSERVATION__VALUE:
-            setValue((T) null);
+            setValue((S) null);
             return;
         }
         super.eUnset(featureID);

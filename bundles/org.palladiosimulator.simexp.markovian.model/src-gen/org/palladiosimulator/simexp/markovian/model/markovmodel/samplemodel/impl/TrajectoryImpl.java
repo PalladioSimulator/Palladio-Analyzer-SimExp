@@ -33,7 +33,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
  *
  * @generated
  */
-public class TrajectoryImpl<T> extends MinimalEObjectImpl.Container implements Trajectory<T> {
+public class TrajectoryImpl<S, A, R> extends MinimalEObjectImpl.Container implements Trajectory<S, A, R> {
     /**
      * The cached value of the '{@link #getSamplePath() <em>Sample Path</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -42,7 +42,7 @@ public class TrajectoryImpl<T> extends MinimalEObjectImpl.Container implements T
      * @generated
      * @ordered
      */
-    protected EList<Sample<T>> samplePath;
+    protected EList<Sample<S, A, R>> samplePath;
 
     /**
      * <!-- begin-user-doc -->
@@ -69,9 +69,9 @@ public class TrajectoryImpl<T> extends MinimalEObjectImpl.Container implements T
      * @generated
      */
     @Override
-    public EList<Sample<T>> getSamplePath() {
+    public EList<Sample<S, A, R>> getSamplePath() {
         if (samplePath == null) {
-            samplePath = new EObjectContainmentEList<Sample<T>>(Sample.class, this,
+            samplePath = new EObjectContainmentEList<Sample<S, A, R>>(Sample.class, this,
                     SampleModelPackage.TRAJECTORY__SAMPLE_PATH);
         }
         return samplePath;
@@ -116,7 +116,7 @@ public class TrajectoryImpl<T> extends MinimalEObjectImpl.Container implements T
         switch (featureID) {
         case SampleModelPackage.TRAJECTORY__SAMPLE_PATH:
             getSamplePath().clear();
-            getSamplePath().addAll((Collection<? extends Sample<T>>) newValue);
+            getSamplePath().addAll((Collection<? extends Sample<S, A, R>>) newValue);
             return;
         }
         super.eSet(featureID, newValue);

@@ -454,11 +454,11 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         setNsURI(eNS_URI);
 
         // Create type parameters
-        ETypeParameter markovModelEClass_T = addETypeParameter(markovModelEClass, "T");
+        ETypeParameter markovModelEClass_S = addETypeParameter(markovModelEClass, "S");
         ETypeParameter markovModelEClass_A = addETypeParameter(markovModelEClass, "A");
         ETypeParameter markovModelEClass_R = addETypeParameter(markovModelEClass, "R");
-        ETypeParameter stateEClass_T = addETypeParameter(stateEClass, "T");
-        ETypeParameter observationEClass_T = addETypeParameter(observationEClass, "T");
+        ETypeParameter stateEClass_S = addETypeParameter(stateEClass, "S");
+        ETypeParameter observationEClass_S = addETypeParameter(observationEClass, "S");
         ETypeParameter transitionEClass_T = addETypeParameter(transitionEClass, "T");
         ETypeParameter transitionEClass_A = addETypeParameter(transitionEClass, "A");
         ETypeParameter rewardEClass_R = addETypeParameter(rewardEClass, "R");
@@ -472,7 +472,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         initEClass(markovModelEClass, MarkovModel.class, "MarkovModel", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         EGenericType g1 = createEGenericType(this.getTransition());
-        EGenericType g2 = createEGenericType(markovModelEClass_T);
+        EGenericType g2 = createEGenericType(markovModelEClass_S);
         g1.getETypeArguments()
             .add(g2);
         g2 = createEGenericType(markovModelEClass_A);
@@ -482,7 +482,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
                 IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(markovModelEClass_T);
+        g2 = createEGenericType(markovModelEClass_S);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getMarkovModel_StateSpace(), g1, null, "stateSpace", null, 1, -1, MarkovModel.class,
@@ -503,7 +503,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
                 !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
         g1 = createEGenericType(this.getObservation());
-        g2 = createEGenericType(markovModelEClass_T);
+        g2 = createEGenericType(markovModelEClass_S);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getMarkovModel_Observations(), g1, null, "observations", null, 0, -1, MarkovModel.class,
@@ -512,7 +512,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
 
         initEClass(stateEClass, State.class, "State", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         g1 = createEGenericType(this.getObservation());
-        g2 = createEGenericType(stateEClass_T);
+        g2 = createEGenericType(stateEClass_S);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getState_Produces(), g1, null, "produces", null, 0, -1, State.class, !IS_TRANSIENT, !IS_VOLATILE,
@@ -522,7 +522,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
 
         initEClass(observationEClass, Observation.class, "Observation", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
-        g1 = createEGenericType(observationEClass_T);
+        g1 = createEGenericType(observationEClass_S);
         initEAttribute(getObservation_Value(), g1, "value", null, 1, 1, Observation.class, !IS_TRANSIENT, !IS_VOLATILE,
                 IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

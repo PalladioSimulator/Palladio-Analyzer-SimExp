@@ -6,53 +6,57 @@ import java.util.Set;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.type.BasicMarkovian;
 import org.palladiosimulator.simexp.markovian.type.DecisionBasedMarkovian;
 
-public class DecisionBasedMarkovianBuilder implements DecisionBasedMarkovionBuilderTemplate<DecisionBasedMarkovianBuilder>, Builder<DecisionBasedMarkovian> {
+public class DecisionBasedMarkovianBuilder<S, A, Aa extends Action<A>, R>
+        implements DecisionBasedMarkovionBuilderTemplate<DecisionBasedMarkovianBuilder<S, A, Aa, R>, S, A, Aa, R>,
+        Builder<DecisionBasedMarkovian<S, A, Aa, R, State<S>>> {
 
-	private RewardReceiver rewardCalc;
-	private Set<Action<?>> actionSpace;
-	private Policy<Action<?>> policy;
-	private BasicMarkovian basicMarkovian;
-	
-	private DecisionBasedMarkovianBuilder() {
-		
-	}
-	
-	public static DecisionBasedMarkovianBuilder createDecisionBasedMarkovianBuilder() {
-		return new DecisionBasedMarkovianBuilder();
-	}
-	
-	@Override
-	public DecisionBasedMarkovianBuilder calculateRewardWith(RewardReceiver reCalc) {
-		this.rewardCalc = reCalc;
-		return this;
-	}
-	
-	@Override
-	public DecisionBasedMarkovianBuilder withActionSpace(Set<Action<?>> actions) {
-		this.actionSpace = actions;
-		return this;
-	}
+    private RewardReceiver<S, A, R> rewardCalc;
+    private Set<Aa> actionSpace;
+    private Policy<S, A, Aa> policy;
+    private BasicMarkovian<S, A, R> basicMarkovian;
 
-	@Override
-	public DecisionBasedMarkovianBuilder selectActionsAccordingTo(Policy<Action<?>> policy) {
-		this.policy = policy;
-		return this;
-	}
-	
-	public DecisionBasedMarkovianBuilder decorates(BasicMarkovian basicMarkovian) {
-		this.basicMarkovian = basicMarkovian;
-		return this;
-	}
-	
-	@Override
-	public DecisionBasedMarkovian build() {
-		Objects.requireNonNull(policy, "");
-		Objects.requireNonNull(rewardCalc, "");
-		Objects.requireNonNull(actionSpace, "");
-		
-		return new DecisionBasedMarkovian(basicMarkovian, policy, rewardCalc, actionSpace);
-	}
+    private DecisionBasedMarkovianBuilder() {
+    }
+
+    public static <S, A, Aa extends Action<A>, R> DecisionBasedMarkovianBuilder<S, A, Aa, R> createDecisionBasedMarkovianBuilder() {
+        return new DecisionBasedMarkovianBuilder<>();
+    }
+
+    @Override
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> calculateRewardWith(RewardReceiver<S, A, R> reCalc) {
+        this.rewardCalc = reCalc;
+        return this;
+    }
+
+    @Override
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> withActionSpace(Set<Aa> actions) {
+        this.actionSpace = actions;
+        return this;
+    }
+
+    @Override
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> selectActionsAccordingTo(Policy<S, A, Aa> policy) {
+        this.policy = policy;
+        return this;
+    }
+
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> decorates(BasicMarkovian<S, A, R> basicMarkovian) {
+        this.basicMarkovian = basicMarkovian;
+        return this;
+    }
+
+    @Override
+    public DecisionBasedMarkovian<S, A, Aa, R, State<S>> build() {
+        Objects.requireNonNull(policy, "");
+        Objects.requireNonNull(rewardCalc, "");
+        Objects.requireNonNull(actionSpace, "");
+
+        DecisionBasedMarkovian<S, A, Aa, R, State<S>> decisionBasedMarkovian = new DecisionBasedMarkovian<S, A, Aa, R, State<S>>(
+                basicMarkovian, policy, rewardCalc, actionSpace);
+        return decisionBasedMarkovian;
+    }
 }

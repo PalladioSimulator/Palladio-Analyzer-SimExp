@@ -1,13 +1,7 @@
 package org.palladiosimulator.simexp.markovian.activity;
 
-import java.util.Set;
-
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public interface Policy<T, P, A extends Action<P>> {
+public interface Policy<S, A, Aa extends Action<A>> extends BasePolicy<S, Aa> {
 
-    public String getId();
-
-    public A select(State<T> source, Set<A> options);
 }

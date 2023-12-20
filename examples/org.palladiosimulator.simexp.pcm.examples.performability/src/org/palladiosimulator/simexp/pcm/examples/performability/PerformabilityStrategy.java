@@ -35,7 +35,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * This policy aims to provide a strategy to compensate server node failures
  * 
  */
-public class PerformabilityStrategy<T> extends ReconfigurationStrategy<T, QVTOReconfigurator, QVToReconfiguration> {
+public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
@@ -66,7 +66,7 @@ public class PerformabilityStrategy<T> extends ReconfigurationStrategy<T, QVTORe
     }
 
     @Override
-    protected void monitor(State<T> source, SharedKnowledge knowledge) {
+    protected void monitor(State<S> source, SharedKnowledge knowledge) {
         /**
          * transfer status of server nodes to knowledge base
          */
@@ -83,7 +83,7 @@ public class PerformabilityStrategy<T> extends ReconfigurationStrategy<T, QVTORe
     }
 
     @Override
-    protected boolean analyse(State<T> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
         boolean hasConstraintViolations = false;
         /**
          * check for any constraint violations that require a reconfiguration of the system, e.g.
@@ -107,7 +107,7 @@ public class PerformabilityStrategy<T> extends ReconfigurationStrategy<T, QVTORe
     }
 
     @Override
-    protected QVToReconfiguration plan(State<T> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         /**
          * The role of the planner function is to select the best adaptation option and generate a
          * plan for adapting the managed system from its current configuration to the new

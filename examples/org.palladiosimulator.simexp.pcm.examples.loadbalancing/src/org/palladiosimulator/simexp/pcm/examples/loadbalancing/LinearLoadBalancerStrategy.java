@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class LinearLoadBalancerStrategy<T> implements Policy<T, QVTOReconfigurator, QVToReconfiguration> {
+public class LinearLoadBalancerStrategy<S> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
 
     private final static String LINEAR_ADAPTATION_STRATEGY_NAME = "LinearLoadBalancerAdaptationStrategy";
     private final static String OUT_SOURCE = "LinearOutsourcing";
@@ -49,7 +49,7 @@ public class LinearLoadBalancerStrategy<T> implements Policy<T, QVTOReconfigurat
     }
 
     @Override
-    public QVToReconfiguration select(State<T> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
         // TODO Exception handling
         if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
             throw new RuntimeException("");

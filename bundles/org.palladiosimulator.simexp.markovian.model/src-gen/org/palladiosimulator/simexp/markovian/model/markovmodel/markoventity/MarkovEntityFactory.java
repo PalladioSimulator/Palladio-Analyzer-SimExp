@@ -29,7 +29,7 @@ public interface MarkovEntityFactory extends EFactory {
      * @return a new object of class '<em>Markov Model</em>'.
      * @generated
      */
-    <T, A, R> MarkovModel<T, A, R> createMarkovModel();
+    <S, A, R> MarkovModel<S, A, R> createMarkovModel();
 
     /**
      * Returns a new object of class '<em>State</em>'.
@@ -38,7 +38,7 @@ public interface MarkovEntityFactory extends EFactory {
      * @return a new object of class '<em>State</em>'.
      * @generated
      */
-    <T> State<T> createState();
+    <S> State<S> createState();
 
     /**
      * Returns a new object of class '<em>Observation</em>'.
@@ -47,7 +47,7 @@ public interface MarkovEntityFactory extends EFactory {
      * @return a new object of class '<em>Observation</em>'.
      * @generated
      */
-    <T> Observation<T> createObservation();
+    <S> Observation<S> createObservation();
 
     /**
      * Returns a new object of class '<em>Transition</em>'.

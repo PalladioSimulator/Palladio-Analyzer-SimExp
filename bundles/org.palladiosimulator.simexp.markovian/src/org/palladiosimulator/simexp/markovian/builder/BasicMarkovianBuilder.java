@@ -3,40 +3,42 @@ package org.palladiosimulator.simexp.markovian.builder;
 import java.util.Objects;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.BasicMarkovian;
 
-public class BasicMarkovianBuilder implements BasicMarkovianBuilderTemplate<BasicMarkovianBuilder>, Builder<BasicMarkovian> {
-	
-	private ProbabilityMassFunction initialDist;
-	private StateSpaceNavigator stateSpaceNavigator;
-	
-	private BasicMarkovianBuilder() {
+public class BasicMarkovianBuilder<S, A, R> implements
+        BasicMarkovianBuilderTemplate<BasicMarkovianBuilder<S, A, R>, S, A>, Builder<BasicMarkovian<S, A, R>> {
 
-	}
-	
-	public static BasicMarkovianBuilder createBasicMarkovian() {
-		return new BasicMarkovianBuilder();
-	}
-	
-	@Override
-	public BasicMarkovianBuilder createStateSpaceNavigator(StateSpaceNavigator stateSpaceNavigator) {
-		this.stateSpaceNavigator = stateSpaceNavigator;
-		return this;
-	}
-	
-	@Override
-	public BasicMarkovianBuilder withInitialStateDistribution(ProbabilityMassFunction initialDistribution) {
-		initialDist = initialDistribution;
-		return this;
-	}
-	
-	@Override
-	public BasicMarkovian build() {
-		//TODO Exception handling
-		Objects.requireNonNull(initialDist, "");
-		Objects.requireNonNull(stateSpaceNavigator, "");
-		
-		return new BasicMarkovian(initialDist, stateSpaceNavigator);
-	}
+    private ProbabilityMassFunction<State<S>> initialDist;
+    private StateSpaceNavigator<S, A> stateSpaceNavigator;
+
+    private BasicMarkovianBuilder() {
+    }
+
+    public static <S, A, R> BasicMarkovianBuilder<S, A, R> createBasicMarkovian() {
+        return new BasicMarkovianBuilder<>();
+    }
+
+    @Override
+    public BasicMarkovianBuilder<S, A, R> createStateSpaceNavigator(StateSpaceNavigator<S, A> stateSpaceNavigator) {
+        this.stateSpaceNavigator = stateSpaceNavigator;
+        return this;
+    }
+
+    @Override
+    public BasicMarkovianBuilder<S, A, R> withInitialStateDistribution(
+            ProbabilityMassFunction<State<S>> initialDistribution) {
+        initialDist = initialDistribution;
+        return this;
+    }
+
+    @Override
+    public BasicMarkovian<S, A, R> build() {
+        // TODO Exception handling
+        Objects.requireNonNull(initialDist, "");
+        Objects.requireNonNull(stateSpaceNavigator, "");
+
+        return new BasicMarkovian<>(initialDist, stateSpaceNavigator);
+    }
 }

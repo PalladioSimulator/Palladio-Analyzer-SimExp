@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Observation<T> extends EObject {
+public interface Observation<S> extends EObject {
     /**
      * Returns the value of the '<em><b>Value</b></em>' attribute.
      * <!-- begin-user-doc -->
@@ -31,7 +31,7 @@ public interface Observation<T> extends EObject {
      * @model required="true"
      * @generated
      */
-    T getValue();
+    S getValue();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getValue <em>Value</em>}' attribute.
@@ -41,6 +41,6 @@ public interface Observation<T> extends EObject {
      * @see #getValue()
      * @generated
      */
-    void setValue(T value);
+    void setValue(S value);
 
 } // Observation
