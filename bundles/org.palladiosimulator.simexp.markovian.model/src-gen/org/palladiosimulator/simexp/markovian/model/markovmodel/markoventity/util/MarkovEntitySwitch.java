@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.*;
  * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage
  * @generated
  */
-public class MarkovEntitySwitch<T1> extends Switch<T1> {
+public class MarkovEntitySwitch<T> extends Switch<T> {
     /**
      * The cached model package
      * <!-- begin-user-doc -->
@@ -64,46 +64,46 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @generated
      */
     @Override
-    protected T1 doSwitch(int classifierID, EObject theEObject) {
+    protected T doSwitch(int classifierID, EObject theEObject) {
         switch (classifierID) {
         case MarkovEntityPackage.MARKOV_MODEL: {
             MarkovModel<?, ?, ?> markovModel = (MarkovModel<?, ?, ?>) theEObject;
-            T1 result = caseMarkovModel(markovModel);
+            T result = caseMarkovModel(markovModel);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case MarkovEntityPackage.STATE: {
             State<?> state = (State<?>) theEObject;
-            T1 result = caseState(state);
+            T result = caseState(state);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case MarkovEntityPackage.OBSERVATION: {
             Observation<?> observation = (Observation<?>) theEObject;
-            T1 result = caseObservation(observation);
+            T result = caseObservation(observation);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case MarkovEntityPackage.TRANSITION: {
             Transition<?, ?> transition = (Transition<?, ?>) theEObject;
-            T1 result = caseTransition(transition);
+            T result = caseTransition(transition);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case MarkovEntityPackage.REWARD: {
             Reward<?> reward = (Reward<?>) theEObject;
-            T1 result = caseReward(reward);
+            T result = caseReward(reward);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case MarkovEntityPackage.ACTION: {
             Action<?> action = (Action<?>) theEObject;
-            T1 result = caseAction(action);
+            T result = caseAction(action);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
@@ -124,7 +124,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S, A, R> T1 caseMarkovModel(MarkovModel<S, A, R> object) {
+    public <S, A, R> T caseMarkovModel(MarkovModel<S, A, R> object) {
         return null;
     }
 
@@ -139,7 +139,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S> T1 caseState(State<S> object) {
+    public <S> T caseState(State<S> object) {
         return null;
     }
 
@@ -154,7 +154,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S> T1 caseObservation(Observation<S> object) {
+    public <S> T caseObservation(Observation<S> object) {
         return null;
     }
 
@@ -169,7 +169,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <T, A> T1 caseTransition(Transition<T, A> object) {
+    public <S, A> T caseTransition(Transition<S, A> object) {
         return null;
     }
 
@@ -184,7 +184,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <R> T1 caseReward(Reward<R> object) {
+    public <R> T caseReward(Reward<R> object) {
         return null;
     }
 
@@ -199,7 +199,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <A> T1 caseAction(Action<A> object) {
+    public <A> T caseAction(Action<A> object) {
         return null;
     }
 
@@ -215,7 +215,7 @@ public class MarkovEntitySwitch<T1> extends Switch<T1> {
      * @generated
      */
     @Override
-    public T1 defaultCase(EObject object) {
+    public T defaultCase(EObject object) {
         return null;
     }
 

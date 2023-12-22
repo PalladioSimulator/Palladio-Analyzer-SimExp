@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityDensityFunction;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 
-public interface ProbabilityDistributionFactory {
+public interface ProbabilityDistributionFactory<S> {
 
-    public static <T> Set<Object> toValueSpace(Set<T> values) {
+    public static <S> Set<Object> toValueSpace(Set<S> values) {
         return values.stream()
             .map(each -> (Object) each)
             .collect(Collectors.toSet());
@@ -16,11 +16,11 @@ public interface ProbabilityDistributionFactory {
 
     public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator();
 
-    public <T> ProbabilityMassFunction<T> pmfOver(ProbabilityMassFunction.Sample<T>... samples);
+    public ProbabilityMassFunction<S> pmfOver(ProbabilityMassFunction.Sample<S>... samples);
 
-    public <T> ProbabilityMassFunction<T> pmfOver(Set<ProbabilityMassFunction.Sample<T>> samples);
+    public ProbabilityMassFunction<S> pmfOver(Set<ProbabilityMassFunction.Sample<S>> samples);
 
-    public <T> ProbabilityMassFunction<T> uniformPmfOver(Set<Object> values);
+    public ProbabilityMassFunction<S> uniformPmfOver(Set<S> values);
 
     public ProbabilityDensityFunction normalDistributionWith(double mean, double variance);
 }
