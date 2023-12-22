@@ -56,16 +56,16 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
-      <eTypeParameters name="T"/>
+      <eTypeParameters name="S"/>
       <eTypeParameters name="A"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1">
         <eGenericType eClassifier="#//markoventity/State">
-          <eTypeArguments eTypeParameter="#//markoventity/Transition/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/Transition/S"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1">
         <eGenericType eClassifier="#//markoventity/State">
-          <eTypeArguments eTypeParameter="#//markoventity/Transition/T"/>
+          <eTypeArguments eTypeParameter="#//markoventity/Transition/S"/>
         </eGenericType>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="label">
