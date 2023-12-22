@@ -12,32 +12,33 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityDensityFunc
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
-public class ProbabilityDistributionFactoryAdapter implements ProbabilityDistributionFactory {
-	
-	@Override
-	public ProbabilityMassFunction pmfOver(Sample... samples) {
-		return pmfOver(new HashSet<Sample>(Arrays.asList(samples)));
-	}
+public class ProbabilityDistributionFactoryAdapter<S> implements ProbabilityDistributionFactory<S> {
 
-	@Override
-	public ProbabilityMassFunction pmfOver(Set<Sample> samples) {
-		return new SimpleProbabilityMassFunction(samples);
-	}
+    @Override
+    public ProbabilityMassFunction<S> pmfOver(Sample<S>... samples) {
+        return pmfOver(new HashSet<>(Arrays.asList(samples)));
+    }
 
-	@Override
-	public ProbabilityMassFunction uniformPmfOver(Set<Object> values) {
-		return new SimpleProbabilityMassFunction(asUniformSampleSpace(values));
-	}
+    @Override
+    public ProbabilityMassFunction<S> pmfOver(Set<Sample<S>> samples) {
+        return new SimpleProbabilityMassFunction<>(samples);
+    }
 
-	@Override
-	public ProbabilityDensityFunction normalDistributionWith(double mean, double variance) {
-		return new NormalDistributionAdapter(mean, Math.sqrt(variance));
-	}
+    @Override
+    public ProbabilityMassFunction<S> uniformPmfOver(Set<S> values) {
+        return new SimpleProbabilityMassFunction<>(asUniformSampleSpace(values));
+    }
 
-	private Set<Sample> asUniformSampleSpace(Set<Object> values) {
-		int spaceSize = values.size();
-		return values.stream().map(each -> ProbabilityMassFunction.Sample.of(each, (1 / spaceSize)))
-							  .collect(Collectors.toSet());
-	}
-	
+    @Override
+    public ProbabilityDensityFunction normalDistributionWith(double mean, double variance) {
+        return new NormalDistributionAdapter(mean, Math.sqrt(variance));
+    }
+
+    private Set<Sample<S>> asUniformSampleSpace(Set<S> values) {
+        int spaceSize = values.size();
+        return values.stream()
+            .map(each -> ProbabilityMassFunction.Sample.of(each, (1 / spaceSize)))
+            .collect(Collectors.toSet());
+    }
+
 }

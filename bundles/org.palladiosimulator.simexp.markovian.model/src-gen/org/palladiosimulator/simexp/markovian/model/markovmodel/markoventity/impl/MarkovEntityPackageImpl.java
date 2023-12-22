@@ -459,7 +459,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         ETypeParameter markovModelEClass_R = addETypeParameter(markovModelEClass, "R");
         ETypeParameter stateEClass_S = addETypeParameter(stateEClass, "S");
         ETypeParameter observationEClass_S = addETypeParameter(observationEClass, "S");
-        ETypeParameter transitionEClass_T = addETypeParameter(transitionEClass, "T");
+        ETypeParameter transitionEClass_S = addETypeParameter(transitionEClass, "S");
         ETypeParameter transitionEClass_A = addETypeParameter(transitionEClass, "A");
         ETypeParameter rewardEClass_R = addETypeParameter(rewardEClass, "R");
         ETypeParameter actionEClass_A = addETypeParameter(actionEClass, "A");
@@ -529,14 +529,14 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         initEClass(transitionEClass, Transition.class, "Transition", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(transitionEClass_T);
+        g2 = createEGenericType(transitionEClass_S);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getTransition_Source(), g1, null, "source", null, 1, 1, Transition.class, !IS_TRANSIENT,
                 !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
         g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(transitionEClass_T);
+        g2 = createEGenericType(transitionEClass_S);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getTransition_Target(), g1, null, "target", null, 1, 1, Transition.class, !IS_TRANSIENT,

@@ -112,8 +112,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <T, A> Transition<T, A> createTransition() {
-        TransitionImpl<T, A> transition = new TransitionImpl<T, A>();
+    public <S, A> Transition<S, A> createTransition() {
+        TransitionImpl<S, A> transition = new TransitionImpl<S, A>();
         return transition;
     }
 

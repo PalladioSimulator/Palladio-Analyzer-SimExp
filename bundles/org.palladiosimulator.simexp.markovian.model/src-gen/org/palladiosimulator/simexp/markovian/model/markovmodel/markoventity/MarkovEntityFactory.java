@@ -56,7 +56,7 @@ public interface MarkovEntityFactory extends EFactory {
      * @return a new object of class '<em>Transition</em>'.
      * @generated
      */
-    <T, A> Transition<T, A> createTransition();
+    <S, A> Transition<S, A> createTransition();
 
     /**
      * Returns a new object of class '<em>Reward</em>'.

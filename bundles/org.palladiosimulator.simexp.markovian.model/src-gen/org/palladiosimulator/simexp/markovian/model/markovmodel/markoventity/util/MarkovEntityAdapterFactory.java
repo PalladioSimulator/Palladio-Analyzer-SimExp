@@ -83,7 +83,7 @@ public class MarkovEntityAdapterFactory extends AdapterFactoryImpl {
         }
 
         @Override
-        public <T, A> Adapter caseTransition(Transition<T, A> object) {
+        public <S, A> Adapter caseTransition(Transition<S, A> object) {
             return createTransitionAdapter();
         }
 

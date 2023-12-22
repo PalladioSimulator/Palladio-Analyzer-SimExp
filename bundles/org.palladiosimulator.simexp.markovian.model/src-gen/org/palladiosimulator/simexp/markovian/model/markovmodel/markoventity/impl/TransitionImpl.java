@@ -31,7 +31,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Tra
  *
  * @generated
  */
-public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implements Transition<T, A> {
+public class TransitionImpl<S, A> extends MinimalEObjectImpl.Container implements Transition<S, A> {
     /**
      * The cached value of the '{@link #getSource() <em>Source</em>}' reference.
      * <!-- begin-user-doc -->
@@ -40,7 +40,7 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * @generated
      * @ordered
      */
-    protected State<T> source;
+    protected State<S> source;
 
     /**
      * The cached value of the '{@link #getTarget() <em>Target</em>}' reference.
@@ -50,7 +50,7 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * @generated
      * @ordered
      */
-    protected State<T> target;
+    protected State<S> target;
 
     /**
      * The cached value of the '{@link #getLabel() <em>Label</em>}' reference.
@@ -108,10 +108,10 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      */
     @SuppressWarnings("unchecked")
     @Override
-    public State<T> getSource() {
+    public State<S> getSource() {
         if (source != null && source.eIsProxy()) {
             InternalEObject oldSource = (InternalEObject) source;
-            source = (State<T>) eResolveProxy(oldSource);
+            source = (State<S>) eResolveProxy(oldSource);
             if (source != oldSource) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, MarkovEntityPackage.TRANSITION__SOURCE,
@@ -126,7 +126,7 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * <!-- end-user-doc -->
      * @generated
      */
-    public State<T> basicGetSource() {
+    public State<S> basicGetSource() {
         return source;
     }
 
@@ -136,8 +136,8 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * @generated
      */
     @Override
-    public void setSource(State<T> newSource) {
-        State<T> oldSource = source;
+    public void setSource(State<S> newSource) {
+        State<S> oldSource = source;
         source = newSource;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, MarkovEntityPackage.TRANSITION__SOURCE, oldSource,
@@ -151,10 +151,10 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      */
     @SuppressWarnings("unchecked")
     @Override
-    public State<T> getTarget() {
+    public State<S> getTarget() {
         if (target != null && target.eIsProxy()) {
             InternalEObject oldTarget = (InternalEObject) target;
-            target = (State<T>) eResolveProxy(oldTarget);
+            target = (State<S>) eResolveProxy(oldTarget);
             if (target != oldTarget) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, MarkovEntityPackage.TRANSITION__TARGET,
@@ -169,7 +169,7 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * <!-- end-user-doc -->
      * @generated
      */
-    public State<T> basicGetTarget() {
+    public State<S> basicGetTarget() {
         return target;
     }
 
@@ -179,8 +179,8 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
      * @generated
      */
     @Override
-    public void setTarget(State<T> newTarget) {
-        State<T> oldTarget = target;
+    public void setTarget(State<S> newTarget) {
+        State<S> oldTarget = target;
         target = newTarget;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, MarkovEntityPackage.TRANSITION__TARGET, oldTarget,
@@ -290,10 +290,10 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
         case MarkovEntityPackage.TRANSITION__SOURCE:
-            setSource((State<T>) newValue);
+            setSource((State<S>) newValue);
             return;
         case MarkovEntityPackage.TRANSITION__TARGET:
-            setTarget((State<T>) newValue);
+            setTarget((State<S>) newValue);
             return;
         case MarkovEntityPackage.TRANSITION__LABEL:
             setLabel((Action<A>) newValue);
@@ -314,10 +314,10 @@ public class TransitionImpl<T, A> extends MinimalEObjectImpl.Container implement
     public void eUnset(int featureID) {
         switch (featureID) {
         case MarkovEntityPackage.TRANSITION__SOURCE:
-            setSource((State<T>) null);
+            setSource((State<S>) null);
             return;
         case MarkovEntityPackage.TRANSITION__TARGET:
-            setTarget((State<T>) null);
+            setTarget((State<S>) null);
             return;
         case MarkovEntityPackage.TRANSITION__LABEL:
             setLabel((Action<A>) null);
