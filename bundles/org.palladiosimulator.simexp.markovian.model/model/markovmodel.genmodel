@@ -39,7 +39,7 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Observation/value"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Transition">
-        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/T"/>
+        <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/S"/>
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/A"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Transition/source"/>
