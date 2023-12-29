@@ -49,7 +49,7 @@ public abstract class SelfAdaptiveSystemState<T> extends StateImpl<T> {
         getSimulationRunner().forEach(runner -> runner.simulate(this));
     }
 
-    public abstract SelfAdaptiveSystemState<?> transitToNext(PerceivableEnvironmentalState perceivedState,
-            ArchitecturalConfiguration<?> archConf);
+    public abstract SelfAdaptiveSystemState<T> transitToNext(PerceivableEnvironmentalState perceivedState,
+            ArchitecturalConfiguration<T> archConf);
 
 }
