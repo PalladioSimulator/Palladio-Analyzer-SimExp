@@ -11,57 +11,61 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
-public class ExperienceSimulator {
-    
+public class ExperienceSimulator<S, A, R> {
+
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
-	private final MarkovSampling markovSampler;
-	private final List<ExperienceSimulationRunner> simulationRunner;
-	private final Optional<Initializable> beforeExecutionInitialization;
+    private final MarkovSampling<S, A, R> markovSampler;
+    private final List<ExperienceSimulationRunner> simulationRunner;
+    private final Optional<Initializable> beforeExecutionInitialization;
 
-	private int numberOfRuns;
+    private int numberOfRuns;
 
-	private ExperienceSimulator(ExperienceSimulationConfiguration config) {
-		this.numberOfRuns = config.getNumberOfRuns();
-		this.markovSampler = config.getMarkovSampler();
-		this.simulationRunner = config.getSimulationRunner();
-		this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
+    private ExperienceSimulator(ExperienceSimulationConfiguration<S, A, R> config) {
+        this.numberOfRuns = config.getNumberOfRuns();
+        this.markovSampler = config.getMarkovSampler();
+        this.simulationRunner = config.getSimulationRunner();
+        this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
 
-		this.simulationRunner.forEach(SelfAdaptiveSystemState::registerSimulationRunner);
+        this.simulationRunner.forEach(SelfAdaptiveSystemState::registerSimulationRunner);
 
-		SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
-				.withSimulationId(config.getSimulationID())
-				.andSampleSpaceId(config.getSampleSpaceID())
-				.andSampleHorizon(markovSampler.getHorizon())
-				.build();
-		SimulatedExperienceStore.create(desc);
-	}
+        SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
+            .withSimulationId(config.getSimulationID())
+            .andSampleSpaceId(config.getSampleSpaceID())
+            .andSampleHorizon(markovSampler.getHorizon())
+            .build();
+        SimulatedExperienceStore.create(desc);
+    }
 
-	public static ExperienceSimulator createSimulator(ExperienceSimulationConfiguration config) {
-		return new ExperienceSimulator(config);
-	}
+    public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
+            ExperienceSimulationConfiguration<S, A, R> config) {
+        return new ExperienceSimulator<>(config);
+    }
 
-	public void run() {
-		do {
-			initExperienceSimulator();
+    public void run() {
+        do {
+            initExperienceSimulator();
 
-			Trajectory traj = markovSampler.sampleTrajectory();
-			for (Sample each : traj.getSamplePath()) {
-				SimulatedExperienceStore.get().store(each);
-			}
-			SimulatedExperienceStore.get().store(traj);
-		} while (stillRunsToExecute());
-	}
+            Trajectory<S, A, R> traj = markovSampler.sampleTrajectory();
+            SimulatedExperienceStore<S, A, R> simulatedExperienceStore = SimulatedExperienceStore.get();
+            for (Sample<S, A, R> each : traj.getSamplePath()) {
+                simulatedExperienceStore.store(each);
+            }
+            simulatedExperienceStore.store(traj);
+        } while (stillRunsToExecute());
+    }
 
-	private void initExperienceSimulator() {
-		beforeExecutionInitialization.ifPresent(Initializable::initialize);
-		
-		simulationRunner.stream().filter(Initializable.class::isInstance).map(Initializable.class::cast)
-				.forEach(Initializable::initialize);
-	}
+    private void initExperienceSimulator() {
+        beforeExecutionInitialization.ifPresent(Initializable::initialize);
 
-	private boolean stillRunsToExecute() {
-		return 0 != (--numberOfRuns);
-	}
+        simulationRunner.stream()
+            .filter(Initializable.class::isInstance)
+            .map(Initializable.class::cast)
+            .forEach(Initializable::initialize);
+    }
+
+    private boolean stillRunsToExecute() {
+        return 0 != (--numberOfRuns);
+    }
 
 }

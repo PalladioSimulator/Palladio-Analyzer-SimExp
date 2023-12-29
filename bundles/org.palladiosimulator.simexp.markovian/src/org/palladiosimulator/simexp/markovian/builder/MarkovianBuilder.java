@@ -11,7 +11,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class MarkovianBuilder<S, A, R> {
+public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
 
     public class MarkovChainBuilder
             implements BasicMarkovianBuilderTemplate<MarkovChainBuilder, S, A>, Builder<Markovian<S, A, R>> {
@@ -63,7 +63,7 @@ public class MarkovianBuilder<S, A, R> {
     }
 
     public class MDPBuilder implements BasicMarkovianBuilderTemplate<MDPBuilder, S, A>,
-            DecisionBasedMarkovionBuilderTemplate<MDPBuilder, S, A, Action<A>, R>, Builder<Markovian<S, A, R>> {
+            DecisionBasedMarkovionBuilderTemplate<MDPBuilder, S, A, Aa, R>, Builder<Markovian<S, A, R>> {
 
         @Override
         public Markovian<S, A, R> build() {
@@ -78,13 +78,13 @@ public class MarkovianBuilder<S, A, R> {
         }
 
         @Override
-        public MDPBuilder withActionSpace(Set<Action<A>> actions) {
+        public MDPBuilder withActionSpace(Set<Aa> actions) {
             decisionBuilder.withActionSpace(actions);
             return this;
         }
 
         @Override
-        public MDPBuilder selectActionsAccordingTo(Policy<S, A, Action<A>> policy) {
+        public MDPBuilder selectActionsAccordingTo(Policy<S, A, Aa> policy) {
             decisionBuilder.selectActionsAccordingTo(policy);
             return this;
         }
@@ -103,7 +103,7 @@ public class MarkovianBuilder<S, A, R> {
     }
 
     public class POMDPBuilder implements BasicMarkovianBuilderTemplate<POMDPBuilder, S, A>,
-            DecisionBasedMarkovionBuilderTemplate<POMDPBuilder, S, A, Action<A>, R>,
+            DecisionBasedMarkovionBuilderTemplate<POMDPBuilder, S, A, Aa, R>,
             HiddenStateMarkovianBuilderTemplate<POMDPBuilder, S>, Builder<Markovian<S, A, R>> {
 
         @Override
@@ -126,13 +126,13 @@ public class MarkovianBuilder<S, A, R> {
         }
 
         @Override
-        public POMDPBuilder withActionSpace(Set<Action<A>> actions) {
+        public POMDPBuilder withActionSpace(Set<Aa> actions) {
             decisionBuilder.withActionSpace(actions);
             return this;
         }
 
         @Override
-        public POMDPBuilder selectActionsAccordingTo(Policy<S, A, Action<A>> policy) {
+        public POMDPBuilder selectActionsAccordingTo(Policy<S, A, Aa> policy) {
             decisionBuilder.selectActionsAccordingTo(policy);
             return this;
         }
@@ -152,7 +152,7 @@ public class MarkovianBuilder<S, A, R> {
 
     private BasicMarkovianBuilder<S, A, R> basicBuilder;
     private HiddenStateMarkovianBuilder<S, A, R> hiddenBuilder;
-    private DecisionBasedMarkovianBuilder<S, A, Action<A>, R> decisionBuilder;
+    private DecisionBasedMarkovianBuilder<S, A, Aa, R> decisionBuilder;
 
     private MarkovianBuilder() {
         this.basicBuilder = BasicMarkovianBuilder.createBasicMarkovian();
@@ -160,23 +160,23 @@ public class MarkovianBuilder<S, A, R> {
         this.decisionBuilder = DecisionBasedMarkovianBuilder.createDecisionBasedMarkovianBuilder();
     }
 
-    private static <S, A, R> MarkovianBuilder<S, A, R> createBuilder() {
+    private static <S, A, Aa extends Action<A>, R> MarkovianBuilder<S, A, Aa, R> createBuilder() {
         return new MarkovianBuilder<>();
     }
 
-    public static <S, A, R> MarkovianBuilder<S, A, R>.MarkovChainBuilder createMarkovChain() {
-        return MarkovianBuilder.<S, A, R> createBuilder().new MarkovChainBuilder();
+    public static <S, A, Aa extends Action<A>, R> MarkovianBuilder<S, A, Aa, R>.MarkovChainBuilder createMarkovChain() {
+        return MarkovianBuilder.<S, A, Aa, R> createBuilder().new MarkovChainBuilder();
     }
 
-    public static <S, A, R> MarkovianBuilder<S, A, R>.HMMBuilder createHiddenMarkovModel() {
-        return MarkovianBuilder.<S, A, R> createBuilder().new HMMBuilder();
+    public static <S, A, Aa extends Action<A>, R> MarkovianBuilder<S, A, Aa, R>.HMMBuilder createHiddenMarkovModel() {
+        return MarkovianBuilder.<S, A, Aa, R> createBuilder().new HMMBuilder();
     }
 
-    public static <S, A, R> MarkovianBuilder<S, A, R>.MDPBuilder createMarkovDecisionProcess() {
-        return MarkovianBuilder.<S, A, R> createBuilder().new MDPBuilder();
+    public static <S, A, Aa extends Action<A>, R> MarkovianBuilder<S, A, Aa, R>.MDPBuilder createMarkovDecisionProcess() {
+        return MarkovianBuilder.<S, A, Aa, R> createBuilder().new MDPBuilder();
     }
 
-    public static <S, A, R> MarkovianBuilder<S, A, R>.POMDPBuilder createPartiallyObservableMDP() {
-        return MarkovianBuilder.<S, A, R> createBuilder().new POMDPBuilder();
+    public static <S, A, Aa extends Action<A>, R> MarkovianBuilder<S, A, Aa, R>.POMDPBuilder createPartiallyObservableMDP() {
+        return MarkovianBuilder.<S, A, Aa, R> createBuilder().new POMDPBuilder();
     }
 }
