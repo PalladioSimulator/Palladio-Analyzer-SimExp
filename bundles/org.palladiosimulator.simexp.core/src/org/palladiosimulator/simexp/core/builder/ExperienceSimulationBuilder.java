@@ -40,7 +40,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private String simulationID = "";
     private int numberOfRuns = 0;
     private int numberOfSamplesPerRun = 0;
-    private Set<Reconfiguration<A>> reconfigurationSpace = null;
+    private Set<Aa> reconfigurationSpace = null;
     private RewardEvaluator<R> rewardEvaluator = null;
     private Policy<S, A, Aa> policy = null;
     private EnvironmentProcess envProcess = null;
@@ -156,7 +156,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
     private Set<Aa> getReconfigurationSpace() {
         return reconfigurationSpace.stream()
-            .map(each -> (Aa) each)
+            .map(each -> each)
             .collect(Collectors.toSet());
     }
 
@@ -265,7 +265,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
         }
 
-        public ReconfigurationSpaceBuilder addReconfiguration(Reconfiguration<A> reconf) {
+        public ReconfigurationSpaceBuilder addReconfiguration(Aa reconf) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
                 ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
             }
@@ -273,7 +273,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             return this;
         }
 
-        public ReconfigurationSpaceBuilder addReconfigurations(Set<Reconfiguration<A>> reconfs) {
+        public ReconfigurationSpaceBuilder addReconfigurations(Set<Aa> reconfs) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
                 ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
             }
