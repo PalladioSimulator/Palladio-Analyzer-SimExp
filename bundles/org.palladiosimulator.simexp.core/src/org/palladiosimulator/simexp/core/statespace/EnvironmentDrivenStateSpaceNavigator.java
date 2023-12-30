@@ -20,14 +20,14 @@ public class EnvironmentDrivenStateSpaceNavigator<S, A> extends SelfAdaptiveSyst
     }
 
     @Override
-    public SelfAdaptiveSystemState<S> determineStructuralState(NavigationContext<S, A> context) {
+    public SelfAdaptiveSystemState<S, A> determineStructuralState(NavigationContext<S, A> context) {
         Optional<Action<A>> action = context.getAction();
-        Reconfiguration<S> reconf = (Reconfiguration<S>) action.get();
+        Reconfiguration<A> reconf = (Reconfiguration<A>) action.get();
         PerceivableEnvironmentalState nextEnvState = environmentalDynamics
             .determineNextGiven(getLastEnvironmentalState(context));
-        ArchitecturalConfiguration<S> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
+        ArchitecturalConfiguration<S, A> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
         LOGGER.info("==== End MAPE-K loop ====");
-        SelfAdaptiveSystemState<S> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
+        SelfAdaptiveSystemState<S, A> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
         LOGGER.info(String.format("Transitioned to next state '%s'", nextState.toString()));
         return nextState;
     }
@@ -36,16 +36,16 @@ public class EnvironmentDrivenStateSpaceNavigator<S, A> extends SelfAdaptiveSyst
         return getSasState(context).getPerceivedEnvironmentalState();
     }
 
-    private ArchitecturalConfiguration<S> getLastArchitecturalConfig(NavigationContext<S, A> context) {
+    private ArchitecturalConfiguration<S, A> getLastArchitecturalConfig(NavigationContext<S, A> context) {
         return getSasState(context).getArchitecturalConfiguration();
     }
 
-    private SelfAdaptiveSystemState<S> getSasState(NavigationContext<S, A> context) {
-        return (SelfAdaptiveSystemState<S>) context.getSource();
+    private SelfAdaptiveSystemState<S, A> getSasState(NavigationContext<S, A> context) {
+        return (SelfAdaptiveSystemState<S, A>) context.getSource();
     }
 
     @Override
-    protected PerceivableEnvironmentalState determineInitial(ArchitecturalConfiguration<S> initialArch) {
+    protected PerceivableEnvironmentalState determineInitial(ArchitecturalConfiguration<S, A> initialArch) {
         return environmentalDynamics.determineInitial();
     }
 

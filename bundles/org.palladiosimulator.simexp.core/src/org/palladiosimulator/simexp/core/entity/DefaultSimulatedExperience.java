@@ -37,18 +37,18 @@ public class DefaultSimulatedExperience<S, A, R> implements SimulatedExperience 
 
     @Override
     public String getConfigurationDifferenceBefore() {
-        ArchitecturalConfiguration<S> current = ((SelfAdaptiveSystemState<S>) sample.getCurrent())
+        ArchitecturalConfiguration<S, A> current = ((SelfAdaptiveSystemState<S, A>) sample.getCurrent())
             .getArchitecturalConfiguration();
-        ArchitecturalConfiguration<S> next = ((SelfAdaptiveSystemState<S>) sample.getNext())
+        ArchitecturalConfiguration<S, A> next = ((SelfAdaptiveSystemState<S, A>) sample.getNext())
             .getArchitecturalConfiguration();
         return current.difference(next);
     }
 
     @Override
     public String getConfigurationDifferenceAfter() {
-        ArchitecturalConfiguration<S> current = ((SelfAdaptiveSystemState<S>) sample.getCurrent())
+        ArchitecturalConfiguration<S, A> current = ((SelfAdaptiveSystemState<S, A>) sample.getCurrent())
             .getArchitecturalConfiguration();
-        ArchitecturalConfiguration<S> next = ((SelfAdaptiveSystemState<S>) sample.getNext())
+        ArchitecturalConfiguration<S, A> next = ((SelfAdaptiveSystemState<S, A>) sample.getNext())
             .getArchitecturalConfiguration();
         return next.difference(current);
     }
@@ -97,12 +97,12 @@ public class DefaultSimulatedExperience<S, A, R> implements SimulatedExperience 
         return deriveIdFrom(sample);
     }
 
-    private SelfAdaptiveSystemState<S> getCurrent() {
-        return ((SelfAdaptiveSystemState<S>) sample.getCurrent());
+    private SelfAdaptiveSystemState<S, A> getCurrent() {
+        return ((SelfAdaptiveSystemState<S, A>) sample.getCurrent());
     }
 
-    private SelfAdaptiveSystemState<S> getNext() {
-        return ((SelfAdaptiveSystemState<S>) sample.getNext());
+    private SelfAdaptiveSystemState<S, A> getNext() {
+        return ((SelfAdaptiveSystemState<S, A>) sample.getNext());
     }
 
     @Override
