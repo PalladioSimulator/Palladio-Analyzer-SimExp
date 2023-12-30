@@ -17,59 +17,62 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.solver.models.PCMInstance;
 
-public class PcmExperienceSimulationRunner extends AbstractExperienceSimulationRunner {
+public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulationRunner<PCMInstance, A> {
 
-	private final DataSource dataSource;
-	private final IExperimentProvider experimentProvider;
+    private final DataSource dataSource;
+    private final IExperimentProvider experimentProvider;
 
-	public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
-		this(new EDP2DataSource(), experimentProvider);
-	}
-	
-	PcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
-	    this.dataSource = dataSource; 
-	    this.experimentProvider = experimentProvider;
-	}
+    public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
+        this(new EDP2DataSource(), experimentProvider);
+    }
 
+    PcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
+        this.dataSource = dataSource;
+        this.experimentProvider = experimentProvider;
+    }
 
-	@Override
-	protected void doSimulate(SelfAdaptiveSystemState<?> sasState) {
-	    runSimulation();
-	    retrieveStateQuantities(asPcmState(sasState));
-	}
+    @Override
+    protected void doSimulate(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+        runSimulation();
+        retrieveStateQuantities(asPcmState(sasState));
+    }
 
-	private PcmSelfAdaptiveSystemState asPcmState(SelfAdaptiveSystemState<?> sasState) {
-		if (sasState instanceof PcmSelfAdaptiveSystemState) {
-			return (PcmSelfAdaptiveSystemState) sasState;
-		}
+    private PcmSelfAdaptiveSystemState<A> asPcmState(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+        if (sasState instanceof PcmSelfAdaptiveSystemState) {
+            return (PcmSelfAdaptiveSystemState<A>) sasState;
+        }
 
-		// TODO exception handling
-		throw new RuntimeException("");
-	}
+        // TODO exception handling
+        throw new RuntimeException("");
+    }
 
-	private void runSimulation() {
-        experimentProvider.getExperimentRunner().runExperiment();
-	}
+    private void runSimulation() {
+        experimentProvider.getExperimentRunner()
+            .runExperiment();
+    }
 
-	private void retrieveStateQuantities(PcmSelfAdaptiveSystemState sasState) {
-		ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
-		List<ExperimentRun> currentExperimentRuns = expRunner.getCurrentExperimentRuns();
+    private void retrieveStateQuantities(PcmSelfAdaptiveSystemState<A> sasState) {
+        ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
+        List<ExperimentRun> currentExperimentRuns = expRunner.getCurrentExperimentRuns();
         MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(currentExperimentRuns);
-		StateQuantity quantifiedState = sasState.getQuantifiedState();
+        StateQuantity quantifiedState = sasState.getQuantifiedState();
         for (PcmMeasurementSpecification each : getMeasurementSpecs(quantifiedState)) {
-			Optional<MeasurementSeries> measurementsSeries = result.getMeasurementsSeries(each);
+            Optional<MeasurementSeries> measurementsSeries = result.getMeasurementsSeries(each);
             measurementsSeries.ifPresent(series -> {
-				double computeQuantity = each.computeQuantity(series);
+                double computeQuantity = each.computeQuantity(series);
                 quantifiedState.setMeasurement(computeQuantity, each);
-			});
-		}
-	}
+            });
+        }
+    }
 
-	private Set<PcmMeasurementSpecification> getMeasurementSpecs(StateQuantity stateQuantity) {
-		return stateQuantity.getMeasurementSpecs().stream().filter(PcmMeasurementSpecification.class::isInstance)
-				.map(PcmMeasurementSpecification.class::cast).collect(Collectors.toSet());
-	}
-
+    private Set<PcmMeasurementSpecification> getMeasurementSpecs(StateQuantity stateQuantity) {
+        return stateQuantity.getMeasurementSpecs()
+            .stream()
+            .filter(PcmMeasurementSpecification.class::isInstance)
+            .map(PcmMeasurementSpecification.class::cast)
+            .collect(Collectors.toSet());
+    }
 
 }

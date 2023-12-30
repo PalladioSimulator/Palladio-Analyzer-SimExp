@@ -17,91 +17,96 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class PcmSelfAdaptiveSystemState extends SelfAdaptiveSystemState<PCMInstance> {
-	
-	public static class PcmSassBuilder {
-		
-		private Set<SimulatedMeasurementSpecification> specs = new HashSet<>();
-		private PcmArchitecturalConfiguration initialArch = null; 
-		private PerceivableEnvironmentalState initialEnv = null;
-		private boolean isInitial = false;
-		
-		public PcmSassBuilder withStructuralState(PcmArchitecturalConfiguration initialArch, PerceivableEnvironmentalState initialEnv) {
-			this.initialArch = initialArch;
-			this.initialEnv = initialEnv;
-			return this;
-		}
-		
-		public PcmSassBuilder andMetricDescriptions(Set<SimulatedMeasurementSpecification> specs) {
-			this.specs.addAll(specs);
-			return this;
-		}
-		
-		public PcmSassBuilder asInitial() {
-			isInitial = true;
-			return this;
-		}
-		
-		public PcmSelfAdaptiveSystemState build() {
-			//TODO Exception handling
-			Objects.requireNonNull(initialArch, "");
-			Objects.requireNonNull(initialEnv, "");
-			if (specs.isEmpty()) {
-				throw new RuntimeException("");
-			}
-			
-			return new PcmSelfAdaptiveSystemState(initialArch, initialEnv, specs, isInitial);
-		}
-		
-	}
-	
-	private PcmSelfAdaptiveSystemState(PcmArchitecturalConfiguration archConf, 
-									   PerceivableEnvironmentalState perceivedState, 
-									   Set<SimulatedMeasurementSpecification> specs,
-									   boolean isInitial) {
-		this.quantifiedState = StateQuantity.of(toMeasuredQuantities(specs));
-		this.archConfiguration = archConf;
-		this.perceivedState = perceivedState;
-		
-		applyChanges(perceivedState);
-		if (isInitial) {
-			determineQuantifiedState();
-		}
-	}
-	
-	public static PcmSassBuilder newBuilder() {
-		return new PcmSassBuilder();
-	}
-	
-	private List<SimulatedMeasurement> toMeasuredQuantities(Set<SimulatedMeasurementSpecification> specs) {
-		return specs.stream().map(each -> SimulatedMeasurement.with(each)).collect(Collectors.toList());
-	}
-	
-	public boolean isSteadyState() {
-		for (SimulatedMeasurement each : quantifiedState.getMeasurements()) {
-			Optional<Threshold> evaluator = ((PcmMeasurementSpecification) each.getSpecification()).getSteadyStateEvaluator();
-			if (evaluator.isPresent()) {
-				if (evaluator.get().isNotSatisfied(each.getValue())) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMInstance, A> {
 
-	@Override
-	public SelfAdaptiveSystemState<?> transitToNext(PerceivableEnvironmentalState perceivedState, ArchitecturalConfiguration<?> archConf) {
-		return newBuilder()
-				.withStructuralState((PcmArchitecturalConfiguration) archConf, perceivedState)
-				.andMetricDescriptions(InitialPcmStateCreator.getMeasurementSpecs())
-				.build();
-	}
-	
-	private void applyChanges(PerceivableEnvironmentalState perceivedState) {
-		if (perceivedState instanceof PcmModelChange) {
-			((PcmModelChange) perceivedState).apply(perceivedState.getValue());
-		}
-		//TODO logging or exception handling
-	}
-	
+    public static class PcmSassBuilder<A> {
+
+        private Set<SimulatedMeasurementSpecification> specs = new HashSet<>();
+        private PcmArchitecturalConfiguration<A> initialArch = null;
+        private PerceivableEnvironmentalState initialEnv = null;
+        private boolean isInitial = false;
+
+        public PcmSassBuilder<A> withStructuralState(PcmArchitecturalConfiguration<A> initialArch,
+                PerceivableEnvironmentalState initialEnv) {
+            this.initialArch = initialArch;
+            this.initialEnv = initialEnv;
+            return this;
+        }
+
+        public PcmSassBuilder<A> andMetricDescriptions(Set<SimulatedMeasurementSpecification> specs) {
+            this.specs.addAll(specs);
+            return this;
+        }
+
+        public PcmSassBuilder<A> asInitial() {
+            isInitial = true;
+            return this;
+        }
+
+        public PcmSelfAdaptiveSystemState<A> build() {
+            // TODO Exception handling
+            Objects.requireNonNull(initialArch, "");
+            Objects.requireNonNull(initialEnv, "");
+            if (specs.isEmpty()) {
+                throw new RuntimeException("");
+            }
+
+            return new PcmSelfAdaptiveSystemState<>(initialArch, initialEnv, specs, isInitial);
+        }
+
+    }
+
+    private PcmSelfAdaptiveSystemState(PcmArchitecturalConfiguration<A> archConf,
+            PerceivableEnvironmentalState perceivedState, Set<SimulatedMeasurementSpecification> specs,
+            boolean isInitial) {
+        this.quantifiedState = StateQuantity.of(toMeasuredQuantities(specs));
+        this.archConfiguration = archConf;
+        this.perceivedState = perceivedState;
+
+        applyChanges(perceivedState);
+        if (isInitial) {
+            determineQuantifiedState();
+        }
+    }
+
+    public static <A> PcmSassBuilder<A> newBuilder() {
+        return new PcmSassBuilder<>();
+    }
+
+    private List<SimulatedMeasurement> toMeasuredQuantities(Set<SimulatedMeasurementSpecification> specs) {
+        return specs.stream()
+            .map(each -> SimulatedMeasurement.with(each))
+            .collect(Collectors.toList());
+    }
+
+    public boolean isSteadyState() {
+        for (SimulatedMeasurement each : quantifiedState.getMeasurements()) {
+            Optional<Threshold> evaluator = ((PcmMeasurementSpecification) each.getSpecification())
+                .getSteadyStateEvaluator();
+            if (evaluator.isPresent()) {
+                if (evaluator.get()
+                    .isNotSatisfied(each.getValue())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public SelfAdaptiveSystemState<PCMInstance, A> transitToNext(PerceivableEnvironmentalState perceivedState,
+            ArchitecturalConfiguration<PCMInstance, A> archConf) {
+        PcmSassBuilder<A> builder = newBuilder();
+        return builder.withStructuralState((PcmArchitecturalConfiguration<A>) archConf, perceivedState)
+            .andMetricDescriptions(InitialPcmStateCreator.getMeasurementSpecs())
+            .build();
+    }
+
+    private void applyChanges(PerceivableEnvironmentalState perceivedState) {
+        if (perceivedState instanceof PcmModelChange) {
+            ((PcmModelChange) perceivedState).apply(perceivedState.getValue());
+        }
+        // TODO logging or exception handling
+    }
+
 }

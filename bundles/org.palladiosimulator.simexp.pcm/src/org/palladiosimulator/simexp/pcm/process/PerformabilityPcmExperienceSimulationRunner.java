@@ -13,11 +13,12 @@ import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
-public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSimulationRunner {
-    
+public class PerformabilityPcmExperienceSimulationRunner<A> extends PcmExperienceSimulationRunner<A> {
+
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
@@ -33,7 +34,6 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
         this.experimentProvider = experimentProvider;
     }
 
-    
     @Override
     protected void doInitialize() {
         // FIXME: check if failurescenario models are available in working partition
@@ -42,27 +42,33 @@ public class PerformabilityPcmExperienceSimulationRunner extends PcmExperienceSi
             // create and inject failure models into blackboard partition
             FailureTypeRepository failureTypeRepo = failureTypeCeator.create();
             FailureScenarioRepository failureScenarioRepo = failureStateCreator.createRepo();
-            experimentProvider.getExperimentRunner().injectFailureScenario(failureScenarioRepo, failureTypeRepo);
+            experimentProvider.getExperimentRunner()
+                .injectFailureScenario(failureScenarioRepo, failureTypeRepo);
             LOGGER.info("Initialized failure scenario models.");
         } catch (IOException e) {
             LOGGER.error("Failed to inject failurescenario models into blackboard partition", e);
         }
-        
-        ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner().getPlainWorkingPartition();
-        
-        FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);;
-        FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition.getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository()).get(0);
-        
+
+        ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner()
+            .getPlainWorkingPartition();
+
+        FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition
+            .getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository())
+            .get(0);
+        ;
+        FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition
+            .getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository())
+            .get(0);
+
         assert failureScenarioRepo != null;
         assert failureTypeRepo != null;
     }
-    
-    
+
     @Override
-        protected void postSimulate(SelfAdaptiveSystemState<?> sasState) {
-            ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
-            expRunner.clearFailureScenarios(experimentProvider);
-            LOGGER.info("Cleared failurescenarios model.");
-        }
-    
+    protected void postSimulate(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+        ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
+        expRunner.clearFailureScenarios(experimentProvider);
+        LOGGER.info("Cleared failurescenarios model.");
+    }
+
 }
