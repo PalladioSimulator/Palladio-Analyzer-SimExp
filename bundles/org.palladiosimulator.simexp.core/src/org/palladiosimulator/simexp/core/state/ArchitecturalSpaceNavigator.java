@@ -12,9 +12,9 @@ public abstract class ArchitecturalSpaceNavigator<S, A> extends InductiveStateSp
     @Override
     public State<S> navigate(NavigationContext<S, A> context) {
         if (isValid(context)) {
-            SelfAdaptiveSystemState<S> state = (SelfAdaptiveSystemState<S>) context.getSource();
+            SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) context.getSource();
             Optional<Action<A>> action = context.getAction();
-            Reconfiguration<S> reconfiguration = (Reconfiguration<S>) action.get();
+            Reconfiguration<A> reconfiguration = (Reconfiguration<A>) action.get();
             return navigate(state.getArchitecturalConfiguration(), reconfiguration);
         }
 
@@ -23,13 +23,18 @@ public abstract class ArchitecturalSpaceNavigator<S, A> extends InductiveStateSp
     }
 
     private boolean isValid(NavigationContext<S, A> context) {
-        return context.getAction()
-            .isPresent()
-                && context.getAction()
-                    .get() instanceof Reconfiguration<?>
-                && context.getSource() instanceof SelfAdaptiveSystemState<?>;
+        Optional<Action<A>> action = context.getAction();
+        if (!action.isPresent()) {
+            return false;
+        }
+        Action<A> actionValue = action.get();
+        if (!(actionValue instanceof Reconfiguration<A>)) {
+            return false;
+        }
+        State<S> source = context.getSource();
+        return source instanceof SelfAdaptiveSystemState<?, ?>;
     }
 
-    public abstract State<S> navigate(ArchitecturalConfiguration<S> archConfig, Reconfiguration<S> reconfiguration);
+    public abstract State<S> navigate(ArchitecturalConfiguration<S, A> archConfig, Reconfiguration<A> reconfiguration);
 
 }

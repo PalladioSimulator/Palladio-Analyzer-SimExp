@@ -35,7 +35,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
     }
 
     private Reward<R> evaluate(Sample<S, A, R> sample) {
-        SelfAdaptiveSystemState<S> state = (SelfAdaptiveSystemState<S>) sample.getNext();
+        SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) sample.getNext();
         Reward<R> evaluatedReward = evaluator.evaluate(state.getQuantifiedState());
 
         LOGGER.debug(String.format(Locale.ENGLISH, "Evaluated reward: %s", evaluatedReward.getValue()

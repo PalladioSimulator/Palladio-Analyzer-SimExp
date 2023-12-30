@@ -17,12 +17,12 @@ import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavi
 
 public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends InductiveStateSpaceNavigator<S, A> {
 
-    public interface InitialSelfAdaptiveSystemStateCreator<S> {
+    public interface InitialSelfAdaptiveSystemStateCreator<S, A> {
 
-        public SelfAdaptiveSystemState<S> create(ArchitecturalConfiguration<S> initialArch,
+        public SelfAdaptiveSystemState<S, A> create(ArchitecturalConfiguration<S, A> initialArch,
                 PerceivableEnvironmentalState initialEnv);
 
-        public ArchitecturalConfiguration<S> getInitialArchitecturalConfiguration();
+        public ArchitecturalConfiguration<S, A> getInitialArchitecturalConfiguration();
     }
 
     protected final EnvironmentProcess environmentalDynamics;
@@ -32,14 +32,14 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
     }
 
     public ProbabilityMassFunction<State<S>> createInitialDistribution(
-            InitialSelfAdaptiveSystemStateCreator<S> sassCreator) {
+            InitialSelfAdaptiveSystemStateCreator<S, A> sassCreator) {
         return new ProbabilityMassFunction<>() {
 
             @Override
             public Sample<State<S>> drawSample() {
-                ArchitecturalConfiguration<S> initialArch = sassCreator.getInitialArchitecturalConfiguration();
+                ArchitecturalConfiguration<S, A> initialArch = sassCreator.getInitialArchitecturalConfiguration();
                 PerceivableEnvironmentalState initialEnv = determineInitial(initialArch);
-                SelfAdaptiveSystemState<S> create = sassCreator.create(initialArch, initialEnv);
+                SelfAdaptiveSystemState<S, A> create = sassCreator.create(initialArch, initialEnv);
                 return Sample.of(create);
             }
 
@@ -59,7 +59,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
             throw new RuntimeException(e);
         }
 
-        SelfAdaptiveSystemState<S> structuralState = determineStructuralState(context);
+        SelfAdaptiveSystemState<S, A> structuralState = determineStructuralState(context);
         return determineQuantifiedState(structuralState);
     }
 
@@ -94,7 +94,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
         }
     }
 
-    private SelfAdaptiveSystemState<S> determineQuantifiedState(SelfAdaptiveSystemState<S> structuralState) {
+    private SelfAdaptiveSystemState<S, A> determineQuantifiedState(SelfAdaptiveSystemState<S, A> structuralState) {
         Optional<SimulatedExperience> result = SimulatedExperienceStore.get()
             .findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
@@ -104,8 +104,8 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
         return structuralState;
     }
 
-    protected abstract SelfAdaptiveSystemState<S> determineStructuralState(NavigationContext<S, A> context);
+    protected abstract SelfAdaptiveSystemState<S, A> determineStructuralState(NavigationContext<S, A> context);
 
-    protected abstract PerceivableEnvironmentalState determineInitial(ArchitecturalConfiguration<S> initialArch);
+    protected abstract PerceivableEnvironmentalState determineInitial(ArchitecturalConfiguration<S, A> initialArch);
 
 }

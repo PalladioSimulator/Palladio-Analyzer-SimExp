@@ -1,38 +1,41 @@
 package org.palladiosimulator.simexp.core.state;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-import com.google.common.collect.Lists;
+public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
 
-public abstract class SelfAdaptiveSystemState<T> extends StateImpl<T> {
-
-    private static List<ExperienceSimulationRunner> simulationRunner = Lists.newArrayList();
+    private static List<ExperienceSimulationRunner<?, ?>> simulationRunner = new ArrayList<>();
 
     protected PerceivableEnvironmentalState perceivedState;
-    protected ArchitecturalConfiguration<T> archConfiguration;
+    protected ArchitecturalConfiguration<S, A> archConfiguration;
     protected StateQuantity quantifiedState;
 
     public StateQuantity getQuantifiedState() {
         return quantifiedState;
     }
 
-    public static void registerSimulationRunner(ExperienceSimulationRunner newSimulationRunner) {
+    public static <S, A> void registerSimulationRunner(ExperienceSimulationRunner<S, A> newSimulationRunner) {
         simulationRunner.add(newSimulationRunner);
     }
 
-    public static List<ExperienceSimulationRunner> getSimulationRunner() {
+    public static <S, A> List<ExperienceSimulationRunner<S, A>> getSimulationRunner() {
         if (simulationRunner.isEmpty()) {
             // TODO exception handling
             throw new RuntimeException("There has to be at one simulation runner.");
         }
-        return simulationRunner;
+        List<ExperienceSimulationRunner<S, A>> runner = new ArrayList<>();
+        for (ExperienceSimulationRunner<?, ?> r : simulationRunner) {
+            runner.add((ExperienceSimulationRunner<S, A>) r);
+        }
+        return runner;
     }
 
-    public ArchitecturalConfiguration<T> getArchitecturalConfiguration() {
+    public ArchitecturalConfiguration<S, A> getArchitecturalConfiguration() {
         return archConfiguration;
     }
 
@@ -46,10 +49,11 @@ public abstract class SelfAdaptiveSystemState<T> extends StateImpl<T> {
     }
 
     public void determineQuantifiedState() {
-        getSimulationRunner().forEach(runner -> runner.simulate(this));
+        SelfAdaptiveSystemState.<S, A> getSimulationRunner()
+            .forEach(runner -> runner.simulate(this));
     }
 
-    public abstract SelfAdaptiveSystemState<T> transitToNext(PerceivableEnvironmentalState perceivedState,
-            ArchitecturalConfiguration<T> archConf);
+    public abstract SelfAdaptiveSystemState<S, A> transitToNext(PerceivableEnvironmentalState perceivedState,
+            ArchitecturalConfiguration<S, A> archConf);
 
 }
