@@ -2,37 +2,37 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.ObservationImpl;
 
-public class EnvironmentalStateObservation extends ObservationImpl<PerceivedValue<?>>
-		implements PerceivableEnvironmentalState {
+public class EnvironmentalStateObservation<S> extends ObservationImpl<PerceivedValue<?>>
+        implements PerceivableEnvironmentalState {
 
-	private final EnvironmentalState hiddenState;
+    private final EnvironmentalState<S> hiddenState;
 
-	private EnvironmentalStateObservation(PerceivedValue<?> value, EnvironmentalState hiddenState) {
-		this.value = value;
-		this.hiddenState = hiddenState;
-	}
+    private EnvironmentalStateObservation(PerceivedValue<?> value, EnvironmentalState<S> hiddenState) {
+        this.value = value;
+        this.hiddenState = hiddenState;
+    }
 
-	public static EnvironmentalStateObservation of(PerceivedValue<?> value, EnvironmentalState hiddenState) {
-		return new EnvironmentalStateObservation(value, hiddenState);
-	}
+    public static <S> EnvironmentalStateObservation<S> of(PerceivedValue<?> value, EnvironmentalState<S> hiddenState) {
+        return new EnvironmentalStateObservation<>(value, hiddenState);
+    }
 
-	@Override
-	public boolean isHidden() {
-		return true;
-	}
+    @Override
+    public boolean isHidden() {
+        return true;
+    }
 
-	@Override
-	public PerceivedValue<?> getValue() {
-		return value;
-	}
+    @Override
+    public PerceivedValue<?> getValue() {
+        return value;
+    }
 
-	public EnvironmentalState getHiddenState() {
-		return hiddenState;
-	}
+    public EnvironmentalState<S> getHiddenState() {
+        return hiddenState;
+    }
 
-	@Override
-	public boolean isInitial() {
-		return hiddenState.isInitial();
-	}
+    @Override
+    public boolean isInitial() {
+        return hiddenState.isInitial();
+    }
 
 }

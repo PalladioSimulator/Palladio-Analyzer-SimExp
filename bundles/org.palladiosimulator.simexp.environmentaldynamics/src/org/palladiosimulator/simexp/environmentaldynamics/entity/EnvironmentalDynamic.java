@@ -2,43 +2,44 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
 import java.util.Objects;
 
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 
 public interface EnvironmentalDynamic {
 
-    public static class EnvironmentalDynamicBuilder<T> {
+    public static class EnvironmentalDynamicBuilder<S, R> {
 
-        private MarkovModel<T> model = null;
-        private DerivableEnvironmentalDynamic dynamic = null;
+        private MarkovModel<S, Double, R> model = null;
+        private DerivableEnvironmentalDynamic<S, Double> dynamic = null;
         private boolean exploration = false;
         private boolean isHiddenProcess = false;
 
-        private EnvironmentalDynamicBuilder(MarkovModel<T> model) {
+        private EnvironmentalDynamicBuilder(MarkovModel<S, Double, R> model) {
             this.model = model;
         }
 
-        private EnvironmentalDynamicBuilder(DerivableEnvironmentalDynamic dynamic) {
+        private EnvironmentalDynamicBuilder(DerivableEnvironmentalDynamic<S, Double> dynamic) {
             this.dynamic = dynamic;
         }
 
-        public EnvironmentalDynamicBuilder<T> asExplorationProcess() {
+        public EnvironmentalDynamicBuilder<S, R> asExplorationProcess() {
             this.exploration = true;
             return this;
         }
 
-        public EnvironmentalDynamicBuilder<T> asExploitationProcess() {
+        public EnvironmentalDynamicBuilder<S, R> asExploitationProcess() {
             this.exploration = false;
             return this;
         }
 
-        public EnvironmentalDynamicBuilder<T> isHiddenProcess() {
+        public EnvironmentalDynamicBuilder<S, R> isHiddenProcess() {
             this.isHiddenProcess = true;
             return this;
         }
 
         public EnvironmentalDynamic build() {
-            StateSpaceNavigator navigator;
+            StateSpaceNavigator<S, Double> navigator;
             if (model != null) {
                 navigator = initDescribable(exploration);
             } else {
@@ -47,7 +48,7 @@ public interface EnvironmentalDynamic {
             return EnvironmentalDynamic.class.cast(navigator);
         }
 
-        private StateSpaceNavigator initDerivable(boolean isExploration) {
+        private StateSpaceNavigator<S, Double> initDerivable(boolean isExploration) {
             Objects.requireNonNull(dynamic, "The environemtal dynamic must not be null.");
 
             dynamic.isHiddenProcess = isHiddenProcess;
@@ -59,19 +60,19 @@ public interface EnvironmentalDynamic {
             return dynamic;
         }
 
-        private StateSpaceNavigator initDescribable(boolean isExploration) {
-            DescribableEnvironmentalDynamic<T> navigator = new DescribableEnvironmentalDynamic<T>(model,
-                    isHiddenProcess, isExploration);
+        private StateSpaceNavigator<S, Double> initDescribable(boolean isExploration) {
+            DescribableEnvironmentalDynamic<S, Action<Double>, R> navigator = new DescribableEnvironmentalDynamic<>(
+                    model, isHiddenProcess, isExploration);
             return navigator;
         }
 
     }
 
-    public static <T> EnvironmentalDynamicBuilder<T> describedBy(MarkovModel<T> model) {
+    public static <S, R> EnvironmentalDynamicBuilder<S, R> describedBy(MarkovModel<S, Double, R> model) {
         return new EnvironmentalDynamicBuilder<>(model);
     }
 
-    public static <T> EnvironmentalDynamicBuilder<T> derivedBy(MarkovModel<T> model) {
+    public static <S, R> EnvironmentalDynamicBuilder<S, R> derivedBy(MarkovModel<S, Double, R> model) {
         return new EnvironmentalDynamicBuilder<>(model);
     }
 
