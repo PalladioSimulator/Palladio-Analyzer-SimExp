@@ -14,14 +14,15 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class PcmExperienceSimulationBulder<S, A, Aa extends Reconfiguration<A>, R>
-        extends ExperienceSimulationBuilder<S, A, Aa, R> {
+public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
+        extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R> {
 
-    private List<ExperienceSimulationRunner<S, A>> simRunner = Lists.newArrayList();
+    private List<ExperienceSimulationRunner<PCMInstance, A>> simRunner = Lists.newArrayList();
     private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
     private Experiment initial = null;
     private final IExperimentProvider experimentProvider;
@@ -39,17 +40,19 @@ public class PcmExperienceSimulationBulder<S, A, Aa extends Reconfiguration<A>, 
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(ExperienceSimulationRunner<S, A> runner) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(
+                ExperienceSimulationRunner<PCMInstance, A> runner) {
             PcmExperienceSimulationBuilder.this.simRunner.add(runner);
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(Set<ExperienceSimulationRunner<S, A>> runners) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(
+                Set<ExperienceSimulationRunner<PCMInstance, A>> runners) {
             PcmExperienceSimulationBuilder.this.simRunner.addAll(runners);
             return this;
         }
 
-        public PcmExperienceSimulationBuilder<S, A, Aa, R> done() {
+        public PcmExperienceSimulationBuilder<A, Aa, R> done() {
             return PcmExperienceSimulationBuilder.this;
         }
 
@@ -62,7 +65,7 @@ public class PcmExperienceSimulationBulder<S, A, Aa extends Reconfiguration<A>, 
     }
 
     @Override
-    public ExperienceSimulator<S, A, R> build() {
+    public ExperienceSimulator<PCMInstance, A, R> build() {
         // TODO Exception handling
         Objects.requireNonNull(initial, "");
         if (Boolean.logicalOr(specs.isEmpty(), simRunner.isEmpty())) {
@@ -71,9 +74,9 @@ public class PcmExperienceSimulationBulder<S, A, Aa extends Reconfiguration<A>, 
         return super.build();
     }
 
-    public static PcmExperienceSimulationBuilder newBuilder(IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new PcmExperienceSimulationBuilder(experimentProvider, qvtoReconfigurationManager);
+    public static <A, Aa extends Reconfiguration<A>, R> PcmExperienceSimulationBuilder<A, Aa, R> newBuilder(
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+        return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager);
     }
 
     public GlobalPcmSettingsBuilder makeGlobalPcmSettings() {
@@ -81,13 +84,13 @@ public class PcmExperienceSimulationBulder<S, A, Aa extends Reconfiguration<A>, 
     }
 
     @Override
-    protected List<ExperienceSimulationRunner<S, A>> getSimulationRunner() {
+    protected List<ExperienceSimulationRunner<PCMInstance, A>> getSimulationRunner() {
         return simRunner;
     }
 
     @Override
-    protected InitialSelfAdaptiveSystemStateCreator<S, A> createInitialSassCreator() {
-        return new InitialPcmStateCreator(specs, experimentProvider, qvtoReconfigurationManager);
+    protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> createInitialSassCreator() {
+        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager);
     }
 
 }
