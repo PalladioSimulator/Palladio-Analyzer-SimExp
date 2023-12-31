@@ -4,63 +4,63 @@ import static java.util.Objects.requireNonNull;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public class EnvironmentalState extends StateImpl implements PerceivableEnvironmentalState {
+public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEnvironmentalState {
 
-	public static class EnvironmentalStateBuilder {	
-		private PerceivedValue<?> value = null;
-		private boolean isInitial = false;
-		private boolean isHidden = false;
-		
-		public EnvironmentalStateBuilder withValue(PerceivedValue<?> value) {
-			this.value = value;
-			return this;
-		}
-		
-		public EnvironmentalStateBuilder isInital() {
-			this.isInitial = true;
-			return this;
-		}
-		
-		public EnvironmentalStateBuilder isHidden() {
-			this.isHidden = true;
-			return this;
-		}
-		
-		public EnvironmentalState build() {
-			requireNonNull(value, "The environmental state value must not be null");
-			
-			return new EnvironmentalState(value, isInitial, isHidden);
-		}
-		
-	}
-	
-	private final PerceivedValue<?> value;
-	private final boolean isInitial;
-	private final boolean isHidden;
-	
-	protected EnvironmentalState(PerceivedValue<?> value, boolean isInitial, boolean isHidden) {
-		this.value = value;
-		this.isInitial = isInitial;
-		this.isHidden = isHidden;
-	}
-	
-	public static EnvironmentalStateBuilder newBuilder() {
-		return new EnvironmentalStateBuilder();
-	}
+    public static class EnvironmentalStateBuilder<S> {
+        private PerceivedValue<?> value = null;
+        private boolean isInitial = false;
+        private boolean isHidden = false;
 
-	@Override
-	public boolean isHidden() {
-		return isHidden;
-	}
+        public EnvironmentalStateBuilder<S> withValue(PerceivedValue<?> value) {
+            this.value = value;
+            return this;
+        }
 
-	@Override
-	public PerceivedValue<?> getValue() {
-		return value;
-	}
+        public EnvironmentalStateBuilder<S> isInital() {
+            this.isInitial = true;
+            return this;
+        }
 
-	@Override
-	public boolean isInitial() {
-		return isInitial;
-	}
-	
+        public EnvironmentalStateBuilder<S> isHidden() {
+            this.isHidden = true;
+            return this;
+        }
+
+        public EnvironmentalState<S> build() {
+            requireNonNull(value, "The environmental state value must not be null");
+
+            return new EnvironmentalState<>(value, isInitial, isHidden);
+        }
+
+    }
+
+    private final PerceivedValue<?> value;
+    private final boolean isInitial;
+    private final boolean isHidden;
+
+    protected EnvironmentalState(PerceivedValue<?> value, boolean isInitial, boolean isHidden) {
+        this.value = value;
+        this.isInitial = isInitial;
+        this.isHidden = isHidden;
+    }
+
+    public static <S> EnvironmentalStateBuilder<S> newBuilder() {
+        return new EnvironmentalStateBuilder<>();
+    }
+
+    @Override
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    @Override
+    public PerceivedValue<?> getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean isInitial() {
+        return isInitial;
+    }
+
 }
