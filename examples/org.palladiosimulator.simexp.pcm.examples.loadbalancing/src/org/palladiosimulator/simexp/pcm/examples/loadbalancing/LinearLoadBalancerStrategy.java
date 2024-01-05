@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class LinearLoadBalancerStrategy<S> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
+public class LinearLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
 
     private final static String LINEAR_ADAPTATION_STRATEGY_NAME = "LinearLoadBalancerAdaptationStrategy";
     private final static String OUT_SOURCE = "LinearOutsourcing";
@@ -51,29 +51,27 @@ public class LinearLoadBalancerStrategy<S> implements Policy<S, QVTOReconfigurat
     @Override
     public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
         // TODO Exception handling
-        if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
+        if ((source instanceof SelfAdaptiveSystemState) == false) {
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<?> sassState = (SelfAdaptiveSystemState<?>) source;
+        SelfAdaptiveSystemState<S, A> sassState = (SelfAdaptiveSystemState<S, A>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));
         Double value = simMeasurement.getValue();
         if (setPointThreshold.isSatisfied(value)) {
             int outSourceFactor = computeOutSourceFactor(value);
-            outSourceFactor = adjustOutSourceFactor(outSourceFactor,
-                    ((SelfAdaptiveSystemState<?>) source).getArchitecturalConfiguration());
+            outSourceFactor = adjustOutSourceFactor(outSourceFactor, sassState.getArchitecturalConfiguration());
             return linearOutSource(outSourceFactor, asReconfigurations(options));
         } else {
             int scaleInFactor = computeScaleInFactor(value);
-            scaleInFactor = adjustScaleInFactor(scaleInFactor,
-                    ((SelfAdaptiveSystemState<?>) source).getArchitecturalConfiguration());
+            scaleInFactor = adjustScaleInFactor(scaleInFactor, sassState.getArchitecturalConfiguration());
             return linearScaleIn(scaleInFactor, asReconfigurations(options));
         }
     }
 
-    private int adjustOutSourceFactor(int outSourceFactor, ArchitecturalConfiguration<?> archConf) {
+    private int adjustOutSourceFactor(int outSourceFactor, ArchitecturalConfiguration<S, A> archConf) {
         PCMInstance pcm = (PCMInstance) archConf.getConfiguration();
         ProbabilisticBranchTransition probServer1 = findBranchProbability(pcm);
         double branchProb = probServer1.getBranchProbability();
@@ -130,7 +128,7 @@ public class LinearLoadBalancerStrategy<S> implements Policy<S, QVTOReconfigurat
         return findReconfiguration(reconf, options);
     }
 
-    private int adjustScaleInFactor(int scaleInFactor, ArchitecturalConfiguration<?> archConf) {
+    private int adjustScaleInFactor(int scaleInFactor, ArchitecturalConfiguration<S, A> archConf) {
         PCMInstance pcm = (PCMInstance) archConf.getConfiguration();
         ProbabilisticBranchTransition probServer1 = findBranchProbability(pcm);
         double branchProb = probServer1.getBranchProbability();

@@ -49,11 +49,11 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
     private final PcmMeasurementSpecification responseTimeSpec;
     private final PerformabilityStrategyConfiguration strategyConfiguration;
 //    private final NodeRecoveryStrategy recoveryStrategy;
-    private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
+    private final ReconfigurationPlanningStrategy<S> reconfigurationPlanningStrategy;
 
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
-            ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
+            ReconfigurationPlanningStrategy<S> reconfigurationPlanningStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
@@ -70,7 +70,7 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
         /**
          * transfer status of server nodes to knowledge base
          */
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
@@ -90,7 +90,7 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
          * threshold violations, presence of failed nodes, ...
          * 
          */
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
@@ -204,7 +204,7 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
         return QVToReconfiguration.empty();
     }
 
-    private Double retrieveResponseTime(SelfAdaptiveSystemState<?> sasState) {
+    private Double retrieveResponseTime(SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
