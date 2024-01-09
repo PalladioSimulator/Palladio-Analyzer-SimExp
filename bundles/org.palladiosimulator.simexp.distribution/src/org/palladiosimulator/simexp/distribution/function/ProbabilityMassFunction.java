@@ -40,5 +40,5 @@ public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunct
         }
     }
 
-    public double probability(ProbabilityMassFunction.Sample<S> sample);
+    public double probability(Sample<S> sample);
 }
