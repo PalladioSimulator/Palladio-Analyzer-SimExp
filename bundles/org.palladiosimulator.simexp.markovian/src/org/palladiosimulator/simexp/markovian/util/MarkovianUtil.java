@@ -29,10 +29,10 @@ public class MarkovianUtil {
         return new TransitionMapper<Transition<T, A>, Action<A>>(transitions).apply(t -> t.getLabel());
     }
 
-    public static <T> Set<ProbabilityMassFunction.Sample<Transition<T, Double>>> toSamples(
-            Set<Transition<T, Double>> transitions) {
-        return new TransitionMapper<Transition<T, Double>, ProbabilityMassFunction.Sample<Transition<T, Double>>>(
-                transitions).apply(t -> ProbabilityMassFunction.Sample.of(t, t.getProbability()));
+    public static <T, A> Set<ProbabilityMassFunction.Sample<Transition<T, A>>> toSamples(
+            Set<Transition<T, A>> transitions) {
+        return new TransitionMapper<Transition<T, A>, ProbabilityMassFunction.Sample<Transition<T, A>>>(transitions)
+            .apply(t -> ProbabilityMassFunction.Sample.of(t, t.getProbability()));
     }
 
     public static <T, A> Transition<T, A> maxTransition(Set<Transition<T, A>> transitions) {

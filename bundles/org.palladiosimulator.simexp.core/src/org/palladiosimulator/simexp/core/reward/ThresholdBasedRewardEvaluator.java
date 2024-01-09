@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 
 import com.google.common.collect.Lists;
 
-public class ThresholdBasedRewardEvaluator implements RewardEvaluator<Integer> {
+public class ThresholdBasedRewardEvaluator implements RewardEvaluator<Double> {
 
     private final List<Pair<SimulatedMeasurementSpecification, Threshold>> thresholds;
 
@@ -27,7 +27,7 @@ public class ThresholdBasedRewardEvaluator implements RewardEvaluator<Integer> {
     }
 
     @Override
-    public Reward<Integer> evaluate(StateQuantity quantity) {
+    public Reward<Double> evaluate(StateQuantity quantity) {
         List<Pair<SimulatedMeasurement, Threshold>> thresholds = filterThresholds(quantity);
         if (thresholds.isEmpty()) {
             // TODO exception handling

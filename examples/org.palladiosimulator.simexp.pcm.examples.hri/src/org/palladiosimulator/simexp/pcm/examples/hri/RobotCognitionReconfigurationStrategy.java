@@ -48,11 +48,11 @@ public class RobotCognitionReconfigurationStrategy<S>
 
     @Override
     public Action<QVTOReconfigurator> select(State<S> source, Set<Action<QVTOReconfigurator>> options) {
-        if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
+        if ((source instanceof SelfAdaptiveSystemState) == false) {
             throw new RuntimeException("");
         }
 
-        var stateQuantity = ((SelfAdaptiveSystemState<?>) source).getQuantifiedState();
+        var stateQuantity = ((SelfAdaptiveSystemState<S, QVTOReconfigurator>) source).getQuantifiedState();
         SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec)
             .orElseThrow();
         SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)

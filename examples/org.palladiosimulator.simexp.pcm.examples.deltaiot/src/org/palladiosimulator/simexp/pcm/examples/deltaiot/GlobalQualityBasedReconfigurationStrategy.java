@@ -5,8 +5,9 @@ import java.util.Set;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
+public class GlobalQualityBasedReconfigurationStrategy<S> extends DeltaIoTReconfigurationStrategy<S> {
 
     private final static String ID = "GlobalQualityBasedReconfigurationStrategy";
 
@@ -14,8 +15,8 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
         super();
     }
 
-    public static DeltaIoTReconfigurationStrategyBuilder newBuilder() {
-        return new DeltaIoTReconfigurationStrategyBuilder(new GlobalQualityBasedReconfigurationStrategy());
+    public static <S> DeltaIoTReconfigurationStrategyBuilder<S> newBuilder() {
+        return new DeltaIoTReconfigurationStrategyBuilder<>(new GlobalQualityBasedReconfigurationStrategy<>());
     }
 
     @Override
@@ -24,8 +25,8 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
     }
 
     @Override
-    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState state, SimulatedMeasurement packetLoss,
-            Set<QVToReconfiguration> options) {
+    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
+            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         boolean canBeStillDistributed = false;
@@ -50,7 +51,7 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
     }
 
     @Override
-    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState state,
+    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 

@@ -7,48 +7,53 @@ import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuil
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class EnvironmentModelBuilder extends BasicMarkovModelBuilder {
+public class EnvironmentModelBuilder<S, A, R> extends BasicMarkovModelBuilder<S, A, R> {
 
-	private static EnvironmentModelBuilder builderInstance = null;
+    // TODO: singleton
+    private static EnvironmentModelBuilder builderInstance = null;
 
-	private boolean isHidden = false;
-	
-	private EnvironmentModelBuilder() {
-		super();
-	}
-	
-	public static EnvironmentModelBuilder get() {
-		if (builderInstance == null) {
-			builderInstance = new EnvironmentModelBuilder();
-		}
-		return builderInstance;
-	}
+    private boolean isHidden = false;
 
-	@Override
-	public MarkovModel build() {
-		MarkovModel build = super.build();
-		checkValidity(build);
-		return build;
-	}
+    private EnvironmentModelBuilder() {
+        super();
+    }
 
-	private void checkValidity(MarkovModel build) {
-		isHidden = isHidden((State) build.getStateSpace().get(0));
-		if (isNotConsistent(build)) {
-			//TODO exception handling
-			throw new RuntimeException("");
-		}
-	}
+    public static <S, A, R> EnvironmentModelBuilder<S, A, R> get() {
+        if (builderInstance == null) {
+            builderInstance = new EnvironmentModelBuilder<>();
+        }
+        return builderInstance;
+    }
 
-	private boolean isNotConsistent(MarkovModel build) {
-		return !build.getStateSpace().stream().allMatch(consistencyCondition());
-	}
+    @Override
+    public MarkovModel<S, A, R> build() {
+        MarkovModel<S, A, R> build = super.build();
+        checkValidity(build);
+        return build;
+    }
 
-	private Predicate<State> consistencyCondition() {
-		return state -> isHidden(state) == isHidden; 
-	}
+    private void checkValidity(MarkovModel<S, A, R> build) {
+        isHidden = isHidden(build.getStateSpace()
+            .get(0));
+        if (isNotConsistent(build)) {
+            // TODO exception handling
+            throw new RuntimeException("");
+        }
+    }
 
-	private boolean isHidden(State state) {
-		return PerceivableEnvironmentalState.class.cast(state).isHidden();
-	}
-	
+    private boolean isNotConsistent(MarkovModel<S, A, R> build) {
+        return !build.getStateSpace()
+            .stream()
+            .allMatch(consistencyCondition());
+    }
+
+    private Predicate<State<S>> consistencyCondition() {
+        return state -> isHidden(state) == isHidden;
+    }
+
+    private boolean isHidden(State<S> state) {
+        return PerceivableEnvironmentalState.class.cast(state)
+            .isHidden();
+    }
+
 }

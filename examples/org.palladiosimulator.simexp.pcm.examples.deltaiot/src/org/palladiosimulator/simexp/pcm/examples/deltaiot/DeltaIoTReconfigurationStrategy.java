@@ -19,40 +19,42 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
-public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVToReconfiguration> {
+public abstract class DeltaIoTReconfigurationStrategy<S> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
 
-    public static class DeltaIoTReconfigurationStrategyBuilder {
+    public static class DeltaIoTReconfigurationStrategyBuilder<S> {
 
-        private final DeltaIoTReconfigurationStrategy strategy;
+        private final DeltaIoTReconfigurationStrategy<S> strategy;
 
-        protected DeltaIoTReconfigurationStrategyBuilder(DeltaIoTReconfigurationStrategy strategy) {
+        protected DeltaIoTReconfigurationStrategyBuilder(DeltaIoTReconfigurationStrategy<S> strategy) {
             this.strategy = strategy;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder withReconfigurationParams(
+        public DeltaIoTReconfigurationStrategyBuilder<S> withReconfigurationParams(
                 DeltaIoTReconfigurationParamRepository params) {
             strategy.reconfParamsRepo = params;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder andPacketLossSpec(PrismSimulatedMeasurementSpec packetLossSpec) {
+        public DeltaIoTReconfigurationStrategyBuilder<S> andPacketLossSpec(
+                PrismSimulatedMeasurementSpec packetLossSpec) {
             strategy.packetLossSpec = packetLossSpec;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder andEnergyConsumptionSpec(
+        public DeltaIoTReconfigurationStrategyBuilder<S> andEnergyConsumptionSpec(
                 PrismSimulatedMeasurementSpec energyConsumptionSpec) {
             strategy.energyConsumptionSpec = energyConsumptionSpec;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategy build() {
+        public DeltaIoTReconfigurationStrategy<S> build() {
             requireNonNull(strategy.reconfParamsRepo, "Reconfiguration params are missing");
             requireNonNull(strategy.packetLossSpec, "Packet loss spec is missing");
             requireNonNull(strategy.energyConsumptionSpec, "Energy consumption spec is missing");
@@ -121,10 +123,10 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVToReco
     }
 
     @Override
-    public QVToReconfiguration select(State<QVToReconfiguration> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
         retrieveDistributionFactorReconfiguration(options).setDistributionFactorValuesToDefaults();
 
-        PcmSelfAdaptiveSystemState state = PcmSelfAdaptiveSystemState.class.cast(source);
+        PcmSelfAdaptiveSystemState<QVTOReconfigurator> state = PcmSelfAdaptiveSystemState.class.cast(source);
 
         SimulatedMeasurement packetLoss = state.getQuantifiedState()
             .findMeasurementWith(packetLossSpec)
@@ -153,10 +155,10 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVToReco
         return LOWER_ENERGY_CONSUMPTION.isNotSatisfied(energyConsumtption.getValue());
     }
 
-    protected abstract QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState state,
+    protected abstract QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options);
 
-    protected abstract QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState state,
+    protected abstract QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options);
 
     protected DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(

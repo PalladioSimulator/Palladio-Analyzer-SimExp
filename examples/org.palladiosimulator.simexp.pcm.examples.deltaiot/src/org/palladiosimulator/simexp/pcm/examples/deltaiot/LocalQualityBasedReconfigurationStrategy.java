@@ -24,10 +24,12 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
+public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy<PCMInstance> {
 
     private static final Logger LOGGER = Logger.getLogger(LocalQualityBasedReconfigurationStrategy.class.getName());
 
@@ -71,8 +73,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     public final static Threshold MEDIUM_PACKET_LOSS = Threshold.lessThan(0.3);
     public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(0.4);
 
-    public static DeltaIoTReconfigurationStrategyBuilder newBuilder() {
-        return new DeltaIoTReconfigurationStrategyBuilder(new LocalQualityBasedReconfigurationStrategy());
+    public static DeltaIoTReconfigurationStrategyBuilder<PCMInstance> newBuilder() {
+        return new DeltaIoTReconfigurationStrategyBuilder<>(new LocalQualityBasedReconfigurationStrategy());
     }
 
     @Override
@@ -81,8 +83,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     @Override
-    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState state, SimulatedMeasurement packetLoss,
-            Set<QVToReconfiguration> options) {
+    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
+            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
         LOGGER.info("Start with actions selection.");
         long start = System.currentTimeMillis();
 
@@ -101,7 +103,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     @Override
-    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState state,
+    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         if (LOWER_ENERGY_CONSUMPTION.isSatisfied(energyConsumtption.getValue())) {
             return decreaseDistribution(state, options);
@@ -110,7 +112,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         }
     }
 
-    private QVToReconfiguration decreaseDistribution(PcmSelfAdaptiveSystemState state,
+    private QVToReconfiguration decreaseDistribution(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
@@ -125,7 +127,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return disFactorReconf;
     }
 
-    private QVToReconfiguration decreaseTransmissionPower(PcmSelfAdaptiveSystemState state,
+    private QVToReconfiguration decreaseTransmissionPower(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
@@ -139,7 +141,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return transPowerReconf;
     }
 
-    private QVToReconfiguration increaseDistribution(PcmSelfAdaptiveSystemState state,
+    private QVToReconfiguration increaseDistribution(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
@@ -154,7 +156,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return disFactorReconf;
     }
 
-    private QVToReconfiguration increaseTransmissionPower(PcmSelfAdaptiveSystemState state,
+    private QVToReconfiguration increaseTransmissionPower(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
             Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
@@ -255,14 +257,14 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Map<AssemblyContext, Map<LinkingResource, Double>> filterMotesWithWirelessLinks(
-            PcmSelfAdaptiveSystemState state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
         return filterLinksWithSNR(state).entrySet()
             .stream()
             .collect(groupingBy(equalSourceMote(state),
                     mapping(Function.identity(), toMap(Map.Entry::getKey, Map.Entry::getValue))));
     }
 
-    private Map<LinkingResource, Double> filterLinksWithSNR(PcmSelfAdaptiveSystemState state) {
+    private Map<LinkingResource, Double> filterLinksWithSNR(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
         return toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
             .getValue()).stream()
@@ -278,9 +280,11 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Function<Map.Entry<LinkingResource, Double>, AssemblyContext> equalSourceMote(
-            PcmSelfAdaptiveSystemState state) {
-        return entry -> DeltaIoTModelAccess.get()
-            .findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
+        return entry -> {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> deltaIoTModelAccess = DeltaIoTModelAccess.get();
+            return deltaIoTModelAccess.findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
+        };
     }
 
 }

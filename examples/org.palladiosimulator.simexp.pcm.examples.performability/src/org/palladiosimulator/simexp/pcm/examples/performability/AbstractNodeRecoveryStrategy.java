@@ -11,7 +11,7 @@ import org.palladiosimulator.pcm.seff.ResourceDemandingSEFF;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 
-public abstract class AbstractNodeRecoveryStrategy<S, A> implements NodeRecoveryStrategy<S, A> {
+public abstract class AbstractNodeRecoveryStrategy<PCMInstance, A> implements NodeRecoveryStrategy<PCMInstance, A> {
 
     protected static final Logger LOGGER = Logger.getLogger(NodeRecoveryStrategy.class.getName());
 
@@ -34,7 +34,7 @@ public abstract class AbstractNodeRecoveryStrategy<S, A> implements NodeRecovery
     }
 
     @Override
-    public abstract void execute(SelfAdaptiveSystemState<S, A> sasState, SharedKnowledge knowledge);
+    public abstract void execute(SelfAdaptiveSystemState<PCMInstance, A> sasState, SharedKnowledge knowledge);
 
     protected ProbabilisticBranchTransition findProbabilisticBranchTransitionToServerNode(Repository repository,
             String loadBalancerBasicComponentId, String loadBalancerSeffOperationSignatureEntityName,
