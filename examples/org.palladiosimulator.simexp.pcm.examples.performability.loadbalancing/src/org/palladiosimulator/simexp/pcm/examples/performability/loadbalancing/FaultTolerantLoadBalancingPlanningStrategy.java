@@ -12,31 +12,31 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class FaultTolerantLoadBalancingPlanningStrategy extends AbstractReconfigurationPlanningStrategy {
-    
-    
+public class FaultTolerantLoadBalancingPlanningStrategy<S, A> extends AbstractReconfigurationPlanningStrategy<S, A> {
+
     private static final String NODE_RECOVERY_QVTO_NAME = "nodeRecovery";
-    
-    public FaultTolerantLoadBalancingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration
-            , NodeRecoveryStrategy recoveryStrategy) {
+
+    public FaultTolerantLoadBalancingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
+            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<S, A> recoveryStrategy) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy);
     }
-    
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+    public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
+            SharedKnowledge knowledge) throws PolicySelectionException {
+        SelfAdaptiveSystemState<S, A> sasState = (SelfAdaptiveSystemState<S, A>) source;
         /**
-         * workarournd to implement node recovery behavior until we are able to realize this as QVTO transformation
+         * workarournd to implement node recovery behavior until we are able to realize this as QVTO
+         * transformation
          * 
-         * */
+         */
         recoveryStrategy.execute(sasState, knowledge);
-        
+
         return nodeRecovery(options);
     }
-    
+
     private QVToReconfiguration nodeRecovery(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
+        return findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
             .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(NODE_RECOVERY_QVTO_NAME)));
     }
 

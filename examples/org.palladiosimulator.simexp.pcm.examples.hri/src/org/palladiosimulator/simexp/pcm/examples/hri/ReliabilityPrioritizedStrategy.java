@@ -39,10 +39,7 @@ public class ReliabilityPrioritizedStrategy<S>
 
     @Override
     protected void monitor(State<S> source, SharedKnowledge knowledge) {
-        if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
-            throw new RuntimeException("");
-        }
-        var sasState = (SelfAdaptiveSystemState<?>) source;
+        var sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
 
         var stateQuantity = sasState.getQuantifiedState();
         SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)

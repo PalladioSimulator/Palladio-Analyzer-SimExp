@@ -16,57 +16,66 @@ import com.google.common.collect.Lists;
 
 public class RobotCognitionRewardEvaluation extends ThresholdBasedRewardEvaluator {
 
-	private static class NeutralRewardSignal extends RewardImpl<Integer> {
+    private static class NeutralRewardSignal extends RewardImpl<Double> {
 
-		private NeutralRewardSignal() {
-			super.setValue(0);
-		}
+        private NeutralRewardSignal() {
+            super.setValue(0.0);
+        }
 
-		public static NeutralRewardSignal create() {
-			return new NeutralRewardSignal();
-		}
+        public static NeutralRewardSignal create() {
+            return new NeutralRewardSignal();
+        }
 
-		@Override
-		public String toString() {
-			return Integer.toString(getValue());
-		}
-	}
+        @Override
+        public String toString() {
+            return Double.toString(getValue());
+        }
+    }
 
-	private final Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold;
-	private final Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold;
+    private final Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold;
+    private final Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold;
 
-	public RobotCognitionRewardEvaluation(Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold,
-			Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold) {
-		super(Lists.newArrayList(responseTimeThreshold, reliabilityThreshold));
+    public RobotCognitionRewardEvaluation(Pair<SimulatedMeasurementSpecification, Threshold> responseTimeThreshold,
+            Pair<SimulatedMeasurementSpecification, Threshold> reliabilityThreshold) {
+        super(Lists.newArrayList(responseTimeThreshold, reliabilityThreshold));
 
-		this.responseTimeThreshold = responseTimeThreshold;
-		this.reliabilityThreshold = reliabilityThreshold;
-	}
+        this.responseTimeThreshold = responseTimeThreshold;
+        this.reliabilityThreshold = reliabilityThreshold;
+    }
 
-	@Override
-	public Reward<Integer> evaluate(StateQuantity quantity) {
-		var thresholds = filterThresholds(quantity);
+    @Override
+    public Reward<Double> evaluate(StateQuantity quantity) {
+        var thresholds = filterThresholds(quantity);
 
-		var rtThreshold = findThreshold(responseTimeThreshold.getFirst(), thresholds);
-		boolean isRTSatisfied = rtThreshold.getSecond().isSatisfied(rtThreshold.getFirst().getValue());
+        var rtThreshold = findThreshold(responseTimeThreshold.getFirst(), thresholds);
+        boolean isRTSatisfied = rtThreshold.getSecond()
+            .isSatisfied(rtThreshold.getFirst()
+                .getValue());
 
-		var relThreshold = findThreshold(reliabilityThreshold.getFirst(), thresholds);
-		boolean isRelSatisfied = relThreshold.getSecond().isSatisfied(relThreshold.getFirst().getValue());
+        var relThreshold = findThreshold(reliabilityThreshold.getFirst(), thresholds);
+        boolean isRelSatisfied = relThreshold.getSecond()
+            .isSatisfied(relThreshold.getFirst()
+                .getValue());
 
-		if (Boolean.logicalAnd(isRTSatisfied, isRelSatisfied)) {
-			return SimpleRewardSignal.createPositivReward();
-		} else if (Boolean.logicalXor(isRTSatisfied, isRelSatisfied)) {
-			return NeutralRewardSignal.create();
-		} else {
-			return SimpleRewardSignal.createNegativReward();
-		}
+        if (Boolean.logicalAnd(isRTSatisfied, isRelSatisfied)) {
+            return SimpleRewardSignal.createPositivReward();
+        } else if (Boolean.logicalXor(isRTSatisfied, isRelSatisfied)) {
+            return NeutralRewardSignal.create();
+        } else {
+            return SimpleRewardSignal.createNegativReward();
+        }
 
-	}
+    }
 
-	private Pair<SimulatedMeasurement, Threshold> findThreshold(SimulatedMeasurementSpecification spec,
-			List<Pair<SimulatedMeasurement, Threshold>> thresholds) {
-		return thresholds.stream().filter(t -> t.getFirst().getSpecification().getId().equals(spec.getId())).findFirst()
-				.get();
-	}
+    private Pair<SimulatedMeasurement, Threshold> findThreshold(SimulatedMeasurementSpecification spec,
+            List<Pair<SimulatedMeasurement, Threshold>> thresholds) {
+        return thresholds.stream()
+            .filter(t -> t.getFirst()
+                .getSpecification()
+                .getId()
+                .equals(spec.getId()))
+            .findFirst()
+            .get();
+    }
 
 }

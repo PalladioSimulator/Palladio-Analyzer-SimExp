@@ -9,35 +9,35 @@ import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStra
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public abstract class AbstractLoadBalancingScalingPlanningStrategy extends AbstractReconfigurationPlanningStrategy {
-    
+public abstract class AbstractLoadBalancingScalingPlanningStrategy<S>
+        extends AbstractReconfigurationPlanningStrategy<S, QVTOReconfigurator> {
+
     private final Threshold lowerResponseTimeThreshold;
     private final Threshold upperResponseTimeThreshold;
-    
 
     public AbstractLoadBalancingScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy recoveryStrategy
-            , Threshold lowerThresholdResponseTime, Threshold upperThresholdResponseTime) {
+            PerformabilityStrategyConfiguration strategyConfiguration,
+            NodeRecoveryStrategy<S, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
+            Threshold upperThresholdResponseTime) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy);
         this.lowerResponseTimeThreshold = lowerThresholdResponseTime;
         this.upperResponseTimeThreshold = upperThresholdResponseTime;
     }
 
-
-    
     protected boolean isSubceeded(Double responseTime) {
         return lowerResponseTimeThreshold.isNotSatisfied(responseTime);
     }
-    
+
     protected boolean isExceeded(Double responseTime) {
         return upperResponseTimeThreshold.isNotSatisfied(responseTime);
     }
 
-
-    protected QVToReconfiguration lookupReconfigure(String qvtoScriptName, Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(qvtoScriptName, options)
-                .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(qvtoScriptName)));
+    protected QVToReconfiguration lookupReconfigure(String qvtoScriptName, Set<QVToReconfiguration> options)
+            throws PolicySelectionException {
+        return findReconfiguration(qvtoScriptName, options)
+            .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(qvtoScriptName)));
     }
 
 }

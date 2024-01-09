@@ -9,53 +9,57 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class EnvironmentalProcessBuilder {
+public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R> {
 
-	private ProbabilityMassFunction initialDist = null;
-	private ObservationProducer obsProducer = null;
-	private Optional<MarkovModel> model = Optional.empty();
-	private boolean isHidden = false;
+    private ProbabilityMassFunction<State<S>> initialDist = null;
+    private ObservationProducer<S> obsProducer = null;
+    private Optional<MarkovModel<S, A, R>> model = Optional.empty();
+    private boolean isHidden = false;
 
-	private EnvironmentalProcessBuilder(MarkovModel model) {
-		this.model = Optional.ofNullable(model);
-	}
+    private EnvironmentalProcessBuilder(MarkovModel<S, A, R> model) {
+        this.model = Optional.ofNullable(model);
+    }
 
-	public static EnvironmentalProcessBuilder describedBy(MarkovModel model) {
-		return new EnvironmentalProcessBuilder(model);
-	}
+    public static <S, A, Aa extends Action<A>, R> EnvironmentalProcessBuilder<S, A, Aa, R> describedBy(
+            MarkovModel<S, A, R> model) {
+        return new EnvironmentalProcessBuilder<>(model);
+    }
 
-	public EnvironmentalProcessBuilder andInitiallyDistributedWith(ProbabilityMassFunction initialDist) {
-		this.initialDist = initialDist;
-		return this;
-	}
+    public EnvironmentalProcessBuilder<S, A, Aa, R> andInitiallyDistributedWith(
+            ProbabilityMassFunction<State<S>> initialDist) {
+        this.initialDist = initialDist;
+        return this;
+    }
 
-	public EnvironmentalProcessBuilder asHiddenProcessWith(ObservationProducer obsProducer) {
-		this.isHidden = true;
-		this.obsProducer = obsProducer;
-		return this;
-	}
+    public EnvironmentalProcessBuilder<S, A, Aa, R> asHiddenProcessWith(ObservationProducer<S> obsProducer) {
+        this.isHidden = true;
+        this.obsProducer = obsProducer;
+        return this;
+    }
 
-	public EnvironmentProcess build() {
-		// TODO exception handling
-		requireNonNull(initialDist, "");
-		if (isHidden) {
-			requireNonNull(obsProducer, "");
-		}
+    public EnvironmentProcess<S, A, R> build() {
+        // TODO exception handling
+        requireNonNull(initialDist, "");
+        if (isHidden) {
+            requireNonNull(obsProducer, "");
+        }
 
-		if (model.isPresent()) {
-			return buildAsDescribableProcess();
-		}
+        if (model.isPresent()) {
+            return buildAsDescribableProcess();
+        }
 
-		throw new RuntimeException("");
-	}
+        throw new RuntimeException("");
+    }
 
-	private EnvironmentProcess buildAsDescribableProcess() {
-		if (isHidden) {
-			return new UnobservableEnvironmentProcess(model.get(), initialDist, obsProducer);
-		}
-		return new ObservableEnvironmentProcess(model.get(), initialDist);
-	}
+    private EnvironmentProcess<S, A, R> buildAsDescribableProcess() {
+        if (isHidden) {
+            return new UnobservableEnvironmentProcess<S, A, Aa, R>(model.get(), initialDist, obsProducer);
+        }
+        return new ObservableEnvironmentProcess<S, A, Aa, R>(model.get(), initialDist);
+    }
 
 }

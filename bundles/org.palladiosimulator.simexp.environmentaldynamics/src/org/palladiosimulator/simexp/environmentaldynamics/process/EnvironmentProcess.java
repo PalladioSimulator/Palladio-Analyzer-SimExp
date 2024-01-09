@@ -14,46 +14,49 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class EnvironmentProcess {
+public abstract class EnvironmentProcess<S, A, R> {
 
-	private final boolean isHiddenProcess;
+    private final boolean isHiddenProcess;
 
-	protected final MarkovSampling sampler;
+    protected final MarkovSampling<S, A, R> sampler;
 
-	public EnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution) {
-		Markovian markovian = buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution);
-		this.sampler = new MarkovSampling(MarkovianConfig.with(markovian));
-		this.isHiddenProcess = isHiddenProcess(model);
-	}
+    public EnvironmentProcess(MarkovModel<S, A, R> model, ProbabilityMassFunction<State<S>> initialDistribution) {
+        Markovian<S, A, R> markovian = buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution);
+        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
+        this.isHiddenProcess = isHiddenProcess(model);
+    }
 
-	public EnvironmentProcess(DerivableEnvironmentalDynamic dynamics, ProbabilityMassFunction initialDistribution) {
-		this.sampler = new MarkovSampling(MarkovianConfig.with(buildMarkovian(dynamics, initialDistribution)));
-		this.isHiddenProcess = dynamics.isHiddenProcess();
-	}
+    public EnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
+            ProbabilityMassFunction<State<S>> initialDistribution) {
+        this.sampler = new MarkovSampling<>(MarkovianConfig.with(buildMarkovian(dynamics, initialDistribution)));
+        this.isHiddenProcess = dynamics.isHiddenProcess();
+    }
 
-	private boolean isHiddenProcess(MarkovModel model) {
-		PerceivableEnvironmentalState any = (PerceivableEnvironmentalState) model.getStateSpace().get(0);
-		return any.isHidden();		
-	}
-	
-	private StateSpaceNavigator buildEnvironmentalDynamics(MarkovModel model) {
-		return (StateSpaceNavigator) describedBy(model).asExploitationProcess().build();
-	}
+    private boolean isHiddenProcess(MarkovModel<S, A, R> model) {
+        PerceivableEnvironmentalState any = (PerceivableEnvironmentalState) model.getStateSpace()
+            .get(0);
+        return any.isHidden();
+    }
 
-	protected Sample determineNextSampleGiven(State last) {
-		Sample lastAsSample = SampleModelAccessor.createSampleBy(last);
-		return sampler.drawSampleGiven(lastAsSample);
-	}
+    private StateSpaceNavigator<S, A> buildEnvironmentalDynamics(MarkovModel<S, A, R> model) {
+        return (StateSpaceNavigator<S, A>) describedBy(model).asExploitationProcess()
+            .build();
+    }
 
-	public boolean isHiddenProcess() {
-		return isHiddenProcess;
-	}
+    protected Sample<S, A, R> determineNextSampleGiven(State<S> last) {
+        Sample<S, A, R> lastAsSample = SampleModelAccessor.createSampleBy(last);
+        return sampler.drawSampleGiven(lastAsSample);
+    }
 
-	protected abstract Markovian buildMarkovian(StateSpaceNavigator environmentalDynamics,
-			ProbabilityMassFunction initialDistribution);
+    public boolean isHiddenProcess() {
+        return isHiddenProcess;
+    }
 
-	public abstract PerceivableEnvironmentalState determineInitial();
+    protected abstract Markovian<S, A, R> buildMarkovian(StateSpaceNavigator<S, A> environmentalDynamics,
+            ProbabilityMassFunction<State<S>> initialDistribution);
 
-	public abstract PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last);
+    public abstract PerceivableEnvironmentalState determineInitial();
+
+    public abstract PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last);
 
 }

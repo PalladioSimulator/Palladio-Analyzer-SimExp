@@ -11,33 +11,34 @@ import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStra
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class LoadBalancingScalingPlanningStrategy extends AbstractLoadBalancingScalingPlanningStrategy {
-    
+public class LoadBalancingScalingPlanningStrategy<S> extends AbstractLoadBalancingScalingPlanningStrategy<S> {
+
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
 
     public LoadBalancingScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy recoveryStrategy
-            , Threshold lowerThresholdResponseTime, Threshold upperThresholdResponseTime) {
-        super(responseTimeSpec, strategyConfiguration, recoveryStrategy
-                , lowerThresholdResponseTime, upperThresholdResponseTime);
+            PerformabilityStrategyConfiguration strategyConfiguration,
+            NodeRecoveryStrategy<S, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
+            Threshold upperThresholdResponseTime) {
+        super(responseTimeSpec, strategyConfiguration, recoveryStrategy, lowerThresholdResponseTime,
+                upperThresholdResponseTime);
     }
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
+    public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
-        
+        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
+
         Double responseTime = retrieveResponseTime(sasState);
         if (isExceeded(responseTime)) {
             return lookupReconfigure(SCALE_OUT_SOURCE_QVTO_NAME, options);
         } else if (isSubceeded(responseTime)) {
             return lookupReconfigure(SCALE_IN_QVTO_NAME, options);
         } else {
-        	return emptyReconfiguration();
+            return emptyReconfiguration();
         }
     }
 
 }
-

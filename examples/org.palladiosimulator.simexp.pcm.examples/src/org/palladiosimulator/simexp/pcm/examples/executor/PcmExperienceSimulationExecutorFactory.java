@@ -61,18 +61,18 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
     }
 
-    public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create();
+    public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create();
 
-    protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> createExperienceSimulator(
+    protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> createExperienceSimulator(
             Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs,
             List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
-            Initializable beforeExecution, EnvironmentProcess envProcess,
+            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> navigator,
             Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy,
-            Set<QVToReconfiguration> reconfigurations, RewardEvaluator<Integer> evaluator, boolean hidden) {
+            Set<QVToReconfiguration> reconfigurations, RewardEvaluator<Double> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, Integer> newBuilder(experimentProvider,
+            .<QVTOReconfigurator, QVToReconfiguration, Double> newBuilder(experimentProvider,
                     qvtoReconfigurationManager)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)

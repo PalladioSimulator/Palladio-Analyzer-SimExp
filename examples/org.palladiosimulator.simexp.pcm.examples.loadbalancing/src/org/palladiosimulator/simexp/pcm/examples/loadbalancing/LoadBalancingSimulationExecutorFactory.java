@@ -52,7 +52,7 @@ public class LoadBalancingSimulationExecutorFactory
     }
 
     @Override
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
+    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
         List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<QVTOReconfigurator>(experimentProvider));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
@@ -62,13 +62,14 @@ public class LoadBalancingSimulationExecutorFactory
 
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
-        RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
+        RewardEvaluator<Double> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
 
-        EnvironmentProcess envProcess = VaryingInterarrivelRateProcess.get(dbn, experimentProvider);
+        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = VaryingInterarrivelRateProcess.get(dbn,
+                experimentProvider);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 specs, simulationRunners, params, beforeExecutionInitializable, envProcess, null, reconfSelectionPolicy,
                 reconfigurations, evaluator, false);
 
