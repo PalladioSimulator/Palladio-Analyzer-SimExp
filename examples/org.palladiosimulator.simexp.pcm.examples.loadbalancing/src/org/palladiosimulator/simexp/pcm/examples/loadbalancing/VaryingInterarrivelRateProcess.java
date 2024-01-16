@@ -69,6 +69,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     // private final static String SERVER_NODE_2_VARIABLE =
     // "ServerNode2Failure_ServerFailureInstantiation";
 
+    // TODO: singleton
     private static PcmAttributeChange attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;

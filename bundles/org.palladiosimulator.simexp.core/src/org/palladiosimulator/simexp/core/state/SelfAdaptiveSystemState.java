@@ -9,6 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.imp
 
 public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
 
+    // TODO: singleton
     private static List<ExperienceSimulationRunner<?, ?>> simulationRunner = new ArrayList<>();
 
     protected PerceivableEnvironmentalState perceivedState;

@@ -16,6 +16,7 @@ public class SimulatedExperienceStore<S, A, R> {
     private final SimulatedExperienceStoreDescription description;
     private final SimulatedExperienceAccessor simExperienceAccessor;
 
+    // TODO: singleton
     private static SimulatedExperienceStore storeInstance = null;
 
     private SimulatedExperienceStore(SimulatedExperienceStoreDescription description) {

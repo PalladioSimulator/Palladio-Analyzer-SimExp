@@ -216,6 +216,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
                                                                                            // name
                                                                                            // *.staticmodel
 
+    // TODO: singleton
     private static PcmAttributeChange attrChange;
     private static PcmModelChange attrChangeServerNode1;
     private static PcmModelChange attrChangeServerNode2;

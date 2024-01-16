@@ -16,6 +16,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 public class InitialPcmStateCreator<A>
         implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> {
 
+    // TODO: singleton
     private static Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs = null;
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
