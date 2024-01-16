@@ -433,7 +433,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
     }
 
     private MarkovModel<S, A, R> createEnvironmentModel(List<EnvironmentalState<S>> stateSpace) {
-        EnvironmentModelBuilder<S, A, R> environmentModelBuilder = EnvironmentModelBuilder.get();
+        EnvironmentModelBuilder<S, A, R> environmentModelBuilder = new EnvironmentModelBuilder<>();
         BasicMarkovModelBuilder<S, A, R> builder = environmentModelBuilder
             .withStateSpace(new HashSet<State<S>>(stateSpace));
         buildTransitions(builder, stateSpace);

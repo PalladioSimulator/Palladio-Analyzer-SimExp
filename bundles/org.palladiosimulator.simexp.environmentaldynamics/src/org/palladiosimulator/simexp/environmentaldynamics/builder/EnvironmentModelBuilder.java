@@ -9,21 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 public class EnvironmentModelBuilder<S, A, R> extends BasicMarkovModelBuilder<S, A, R> {
 
-    // TODO: singleton
-    private static EnvironmentModelBuilder builderInstance = null;
-
     private boolean isHidden = false;
-
-    private EnvironmentModelBuilder() {
-        super();
-    }
-
-    public static <S, A, R> EnvironmentModelBuilder<S, A, R> get() {
-        if (builderInstance == null) {
-            builderInstance = new EnvironmentModelBuilder<>();
-        }
-        return builderInstance;
-    }
 
     @Override
     public MarkovModel<S, A, R> build() {
