@@ -44,7 +44,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class FaultTolerantLoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Double, PcmMeasurementSpecification> {
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 

@@ -28,7 +28,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public abstract class PcmExperienceSimulationExecutorFactory<T extends SimulatedMeasurementSpecification> {
+public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T extends SimulatedMeasurementSpecification> {
     protected final Experiment experiment;
     protected final DynamicBayesianNetwork dbn;
     protected final List<T> specs;
@@ -61,19 +61,18 @@ public abstract class PcmExperienceSimulationExecutorFactory<T extends Simulated
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
     }
 
-    public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create();
+    public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();
 
-    protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> createExperienceSimulator(
-            Experiment experiment, List<? extends SimulatedMeasurementSpecification> specs,
+    protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
+            List<? extends SimulatedMeasurementSpecification> specs,
             List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
-            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess,
+            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> navigator,
             Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy,
-            Set<QVToReconfiguration> reconfigurations, RewardEvaluator<Double> evaluator, boolean hidden) {
+            Set<QVToReconfiguration> reconfigurations, RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, Double> newBuilder(experimentProvider,
-                    qvtoReconfigurationManager)
+            .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))

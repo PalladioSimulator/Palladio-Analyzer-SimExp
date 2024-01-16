@@ -44,7 +44,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class DeltaIoTSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<PrismSimulatedMeasurementSpec> {
+        extends PcmExperienceSimulationExecutorFactory<Integer, PrismSimulatedMeasurementSpec> {
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
@@ -61,7 +61,7 @@ public class DeltaIoTSimulationExecutorFactory
     }
 
     @Override
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
+    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
         URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER)
             .toString(), true);
         File prismLogFile = new File(CommonPlugin.resolve(uri)
@@ -94,7 +94,7 @@ public class DeltaIoTSimulationExecutorFactory
                 GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
         Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(specs.get(1),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
-        RewardEvaluator<Double> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
+        RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
                 lowerEnergyConsumptionThreshold);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>();
@@ -110,7 +110,7 @@ public class DeltaIoTSimulationExecutorFactory
                 }
             });
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 specs, List.of(runner), params, beforeExecutionInitializable, null, navigator, reconfSelectionPolicy,
                 reconfigurations, evaluator, false);
 
