@@ -33,22 +33,12 @@ public class BasicMarkovModelBuilder<S, A, R> {
 
     }
 
-    private static BasicMarkovModelBuilder builderInstance = null;
-
     private final MarkovModelFactory markovModelFactory;
+    private final MarkovModel<S, A, R> markovModel;
 
-    private MarkovModel<S, A, R> markovModel;
-
-    protected BasicMarkovModelBuilder() {
+    public BasicMarkovModelBuilder() {
         this.markovModelFactory = MarkovModelFactory.get();
         this.markovModel = MarkovEntityFactory.eINSTANCE.<S, A, R> createMarkovModel();
-    }
-
-    public static <S, A, R> BasicMarkovModelBuilder<S, A, R> get() {
-        if (builderInstance == null) {
-            builderInstance = new BasicMarkovModelBuilder<>();
-        }
-        return builderInstance;
     }
 
     public BasicMarkovModelBuilder<S, A, R> withStateSpace(Set<State<S>> states) {
