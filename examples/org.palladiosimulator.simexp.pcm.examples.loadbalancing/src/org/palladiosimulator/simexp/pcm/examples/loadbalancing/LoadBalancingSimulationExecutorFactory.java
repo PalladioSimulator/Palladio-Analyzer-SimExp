@@ -37,7 +37,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class LoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Integer, PcmMeasurementSpecification> {
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
@@ -52,7 +52,7 @@ public class LoadBalancingSimulationExecutorFactory
     }
 
     @Override
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
+    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
         List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<QVTOReconfigurator>(experimentProvider));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
@@ -62,14 +62,14 @@ public class LoadBalancingSimulationExecutorFactory
 
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
-        RewardEvaluator<Double> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
+        RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
 
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = VaryingInterarrivelRateProcess.get(dbn,
-                experimentProvider);
+        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer> envProcess = VaryingInterarrivelRateProcess
+            .get(dbn, experimentProvider);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 specs, simulationRunners, params, beforeExecutionInitializable, envProcess, null, reconfSelectionPolicy,
                 reconfigurations, evaluator, false);
 

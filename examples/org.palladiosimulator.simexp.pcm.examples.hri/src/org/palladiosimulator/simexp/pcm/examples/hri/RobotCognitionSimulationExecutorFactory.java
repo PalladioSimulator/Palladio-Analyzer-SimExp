@@ -42,7 +42,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class RobotCognitionSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Double, PcmMeasurementSpecification> {
     public static final double UPPER_THRESHOLD_RT = 0.1;
     public static final double LOWER_THRESHOLD_REL = 0.9;
 

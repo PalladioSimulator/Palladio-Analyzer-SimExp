@@ -30,6 +30,7 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
@@ -77,59 +78,71 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
         try {
-        	ResourceSet rs = new ResourceSetImpl();
-        	
+            ResourceSet rs = new ResourceSetImpl();
+
             URI experimentsFileURI = config.getExperimentsURI();
             ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
             LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
             ExperimentRepository experimentRepository = expLoader.load(rs, experimentsFileURI);
-            
+
             ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
             Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository);
-            
+
             URI staticModelURI = config.getStaticModelURI();
             ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
             LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
-            // env model assumption: a ProbabilisticModelRepository (root) contains a single GroundProbabilisticNetwork
+            // env model assumption: a ProbabilisticModelRepository (root) contains a single
+            // GroundProbabilisticNetwork
             ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
-            GroundProbabilisticNetwork gpn = probModelRepo.getModels().get(0);
-            
+            GroundProbabilisticNetwork gpn = probModelRepo.getModels()
+                .get(0);
+
             URI dynamicModelURI = config.getDynamicModelURI();
             DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
             LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
-            // env model assumption: a DynamicBehaviourRepository (root) contains a single DynamicBehaviourExtension
+            // env model assumption: a DynamicBehaviourRepository (root) contains a single
+            // DynamicBehaviourExtension
             DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
-            DynamicBehaviourExtension dbe = dynBehaveRepo.getExtensions().get(0);
-            
+            DynamicBehaviourExtension dbe = dynBehaveRepo.getExtensions()
+                .get(0);
+
             ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
             IProbabilityDistributionRegistry probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
             IProbabilityDistributionFactory probabilityDistributionFactory = defaultProbabilityDistributionFactory;
-            
-            ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader.loadRepository();
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+
+            ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
+                .loadRepository();
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(
+                    probabilityDistributionRepository);
 
             BayesianNetwork bn = new BayesianNetwork(null, gpn, probabilityDistributionFactory);
             DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
-            
+
             IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
-            IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(getReconfigurationRulesLocation(experiment));
-            
-            SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(), config.getQualityObjective(), 
-            		experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup, 
-            		config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
+            IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
+                    getReconfigurationRulesLocation(experiment));
+
+            SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
+                    config.getQualityObjective(), experiment, dbn, probabilityDistributionRegistry,
+                    probabilityDistributionFactory, parameterParser, probDistRepoLookup,
+                    config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(),
+                    config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
     }
-    
-	private String getReconfigurationRulesLocation(Experiment experiment) {
-		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
-		experiment.getInitialModel().setReconfigurationRules(null);
-		return path;
-	}
+
+    private String getReconfigurationRulesLocation(Experiment experiment) {
+        String path = experiment.getInitialModel()
+            .getReconfigurationRules()
+            .getFolderUri();
+        experiment.getInitialModel()
+            .setReconfigurationRules(null);
+        return path;
+    }
 
     @Override
     protected SimExpWorkflowConfiguration deriveConfiguration(ILaunchConfiguration configuration, String mode)
@@ -137,50 +150,58 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Derive workflow configuration");
         return buildWorkflowConfiguration(configuration, mode);
     }
-    
-    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective, Experiment experiment,
-    		DynamicBayesianNetwork dbn, IProbabilityDistributionRegistry probabilityDistributionRegistry,
-    		IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
-    		IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-    		List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-    	
-    	PcmExperienceSimulationExecutorFactory<?> factory = switch (simulationEngine) {
-    		case SimulationConstants.SIMULATION_ENGINE_PCM ->{
-    			PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
-    			List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
-    		        		.map(provider::getSpecification)
-    		        		.toList();
-    			 
-    			yield switch (qualityObjective) {
-    				case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs, 
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-    				
-    				case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn, pcmSpecs,
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-    				
-    				case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
-    						simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-     			
-     				default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
-    			};
-    		}
-    		
-    		case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
-    			PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
-    			List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream.range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
-    					.mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
-    					.toList();
-    			
-    			yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters, probabilityDistributionFactory,
-    					probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-    		}
-    		
-    		default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
-    	};
-    	
-    	return factory.create();
+
+    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective,
+            Experiment experiment, DynamicBayesianNetwork dbn,
+            IProbabilityDistributionRegistry probabilityDistributionRegistry,
+            IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
+            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+
+        PcmExperienceSimulationExecutorFactory<? extends Number, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
+        case SimulationConstants.SIMULATION_ENGINE_PCM -> {
+            PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
+            List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
+                .map(provider::getSpecification)
+                .toList();
+
+            yield switch (qualityObjective) {
+            case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn,
+                    pcmSpecs, simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry,
+                    parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+
+            case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
+                    pcmSpecs, simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry,
+                    parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+
+            case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
+                    experiment, dbn, pcmSpecs, simulationParameters, probabilityDistributionFactory,
+                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
+                    qvtoReconfigurationManager);
+
+            default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
+            };
+        }
+
+        case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
+            PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
+            List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
+                .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
+                .mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
+                .toList();
+
+            yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters,
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+        }
+
+        default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
+        };
+
+        return factory.create();
     }
-    
+
     @SuppressWarnings("unchecked")
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
         SimExpWorkflowConfiguration workflowConfiguration = null;
@@ -193,21 +214,21 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                             String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
                 }
             }
-            
+
             String simulationEngine = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
-            
+
             SimulationParameters simulationParameters = new SimulationParameters(
-            		(String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
-            		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
-            		(int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
+                    (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
+                    (int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_RUNS),
+                    (int) launchConfigurationParams.get(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN));
 
             ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
-            		Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
-            
+                    Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
+
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
-            		(String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
 
             /** simulation type = PCM */
@@ -215,31 +236,36 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             String monitorRepositoryFile = StringUtils.EMPTY;
             List<String> configuredMonitors = new ArrayList<String>();
             if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PCM, simulationEngine)) {
-	            qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
-	            
-	            monitorRepositoryFile = (String) launchConfigurationParams.get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
-        		configuredMonitors.addAll((List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
+                qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
+
+                monitorRepositoryFile = (String) launchConfigurationParams
+                    .get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
+                configuredMonitors
+                    .addAll((List<String>) launchConfigurationParams.get(ModelFileTypeConstants.MONITORS));
             }
-	            
+
             MonitorConfiguration monitors = new MonitorConfiguration(monitorRepositoryFile, configuredMonitors);
 
             /** simulation type = PRISM */
             List<String> prismProperties = new ArrayList<String>();
             List<String> prismModules = new ArrayList<String>();
             if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PRISM, simulationEngine)) {
-            	List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);
-            	List<String> launchConfigModulesProperties = (List<String>) launchConfigurationParams.get(ModelFileTypeConstants.PRISM_MODULE_FILE);
-            	prismProperties.addAll(launchConfigPrismProperties);
-            	prismModules.addAll(launchConfigModulesProperties);
+                List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams
+                    .get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);
+                List<String> launchConfigModulesProperties = (List<String>) launchConfigurationParams
+                    .get(ModelFileTypeConstants.PRISM_MODULE_FILE);
+                prismProperties.addAll(launchConfigPrismProperties);
+                prismModules.addAll(launchConfigModulesProperties);
             }
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
-            
-            
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective, architecturalModels, monitors, prismConfig, 
-            		environmentalModels, simulationParameters);
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective,
+                    architecturalModels, monitors, prismConfig, environmentalModels, simulationParameters);
         } catch (CoreException e) {
-            LOGGER.error("Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration", e);
+            LOGGER.error(
+                    "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
+                    e);
         }
 
         return workflowConfiguration;

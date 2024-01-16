@@ -18,10 +18,10 @@ public class LoadBalancingRewardEvaluation extends ThresholdBasedRewardEvaluator
 
     private final static Threshold TOTAL_UTIL_THRESHOLD = Threshold.lessThanOrEqualTo(1.0);
 
-    private static class NeutralRewardSignal extends RewardImpl<Double> {
+    private static class NeutralRewardSignal extends RewardImpl<Integer> {
 
         private NeutralRewardSignal() {
-            super.setValue(0.0);
+            super.setValue(0);
         }
 
         public static NeutralRewardSignal create() {
@@ -30,7 +30,7 @@ public class LoadBalancingRewardEvaluation extends ThresholdBasedRewardEvaluator
 
         @Override
         public String toString() {
-            return Double.toString(getValue());
+            return Integer.toString(getValue());
         }
     }
 
@@ -49,7 +49,7 @@ public class LoadBalancingRewardEvaluation extends ThresholdBasedRewardEvaluator
     }
 
     @Override
-    public Reward<Double> evaluate(StateQuantity quantity) {
+    public Reward<Integer> evaluate(StateQuantity quantity) {
         List<Pair<SimulatedMeasurement, Threshold>> thresholds = filterThresholds(quantity);
         Pair<SimulatedMeasurement, Threshold> rtThreshold = findThreshold(upperResponseTimeThreshold.getFirst(),
                 thresholds);

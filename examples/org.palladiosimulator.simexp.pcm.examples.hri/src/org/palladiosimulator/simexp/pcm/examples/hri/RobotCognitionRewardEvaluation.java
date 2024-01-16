@@ -16,10 +16,10 @@ import com.google.common.collect.Lists;
 
 public class RobotCognitionRewardEvaluation extends ThresholdBasedRewardEvaluator {
 
-    private static class NeutralRewardSignal extends RewardImpl<Double> {
+    private static class NeutralRewardSignal extends RewardImpl<Integer> {
 
         private NeutralRewardSignal() {
-            super.setValue(0.0);
+            super.setValue(0);
         }
 
         public static NeutralRewardSignal create() {
@@ -28,7 +28,7 @@ public class RobotCognitionRewardEvaluation extends ThresholdBasedRewardEvaluato
 
         @Override
         public String toString() {
-            return Double.toString(getValue());
+            return Integer.toString(getValue());
         }
     }
 
@@ -44,7 +44,7 @@ public class RobotCognitionRewardEvaluation extends ThresholdBasedRewardEvaluato
     }
 
     @Override
-    public Reward<Double> evaluate(StateQuantity quantity) {
+    public Reward<Integer> evaluate(StateQuantity quantity) {
         var thresholds = filterThresholds(quantity);
 
         var rtThreshold = findThreshold(responseTimeThreshold.getFirst(), thresholds);
