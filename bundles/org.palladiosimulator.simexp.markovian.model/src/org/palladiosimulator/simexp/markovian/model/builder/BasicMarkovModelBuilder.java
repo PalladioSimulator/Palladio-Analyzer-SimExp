@@ -37,7 +37,7 @@ public class BasicMarkovModelBuilder<S, A, R> {
     private final MarkovModel<S, A, R> markovModel;
 
     public BasicMarkovModelBuilder() {
-        this.markovModelFactory = MarkovModelFactory.get();
+        this.markovModelFactory = new MarkovModelFactory();
         this.markovModel = MarkovEntityFactory.eINSTANCE.<S, A, R> createMarkovModel();
     }
 

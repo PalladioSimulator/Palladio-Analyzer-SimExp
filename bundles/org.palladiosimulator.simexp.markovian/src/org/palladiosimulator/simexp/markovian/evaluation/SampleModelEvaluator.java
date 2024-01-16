@@ -78,8 +78,7 @@ public class SampleModelEvaluator<S, A> {
             probability *= getProbability(each);
         }
 
-        Reward<Double> totalReward = MarkovModelFactory.get()
-            .createRewardSignal(total);
+        Reward<Double> totalReward = new MarkovModelFactory().createRewardSignal(total);
         return MarkovianResult.of(trajToEval)
             .withProbability(probability)
             .andReward(totalReward)

@@ -10,12 +10,7 @@ public class MarkovModelFactory {
 
     private final MarkovEntityFactory entityFactory = MarkovEntityFactory.eINSTANCE;
 
-    private MarkovModelFactory() {
-
-    }
-
-    public static MarkovModelFactory get() {
-        return new MarkovModelFactory();
+    public MarkovModelFactory() {
     }
 
     public <T> State<T> createState(String name) {
