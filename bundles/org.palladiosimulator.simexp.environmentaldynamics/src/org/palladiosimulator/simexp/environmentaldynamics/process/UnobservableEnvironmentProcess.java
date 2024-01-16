@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends EnvironmentProcess<S, A, R> {
+public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R> {
 
     private static class ObservationProducerProxy<S, A, R> implements ObservationProducer<S> {
 
@@ -60,7 +60,7 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R> exten
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
         EnvironmentalState<S> hiddenState = EnvironmentalStateObservation.class.cast(last)
             .getHiddenState();
-        return (EnvironmentalStateObservation<S>) determineNextSampleGiven(hiddenState).getObservation();
+        return (EnvironmentalStateObservation<S, V>) determineNextSampleGiven(hiddenState).getObservation();
     }
 
     @Override

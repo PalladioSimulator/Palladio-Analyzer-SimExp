@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R> {
+public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R, V> {
 
     private ProbabilityMassFunction<State<S>> initialDist = null;
     private ObservationProducer<S> obsProducer = null;
@@ -24,18 +24,18 @@ public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R> {
         this.model = Optional.ofNullable(model);
     }
 
-    public static <S, A, Aa extends Action<A>, R> EnvironmentalProcessBuilder<S, A, Aa, R> describedBy(
+    public static <S, A, Aa extends Action<A>, R, V> EnvironmentalProcessBuilder<S, A, Aa, R, V> describedBy(
             MarkovModel<S, A, R> model) {
         return new EnvironmentalProcessBuilder<>(model);
     }
 
-    public EnvironmentalProcessBuilder<S, A, Aa, R> andInitiallyDistributedWith(
+    public EnvironmentalProcessBuilder<S, A, Aa, R, V> andInitiallyDistributedWith(
             ProbabilityMassFunction<State<S>> initialDist) {
         this.initialDist = initialDist;
         return this;
     }
 
-    public EnvironmentalProcessBuilder<S, A, Aa, R> asHiddenProcessWith(ObservationProducer<S> obsProducer) {
+    public EnvironmentalProcessBuilder<S, A, Aa, R, V> asHiddenProcessWith(ObservationProducer<S> obsProducer) {
         this.isHidden = true;
         this.obsProducer = obsProducer;
         return this;
@@ -57,7 +57,7 @@ public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R> {
 
     private EnvironmentProcess<S, A, R> buildAsDescribableProcess() {
         if (isHidden) {
-            return new UnobservableEnvironmentProcess<S, A, Aa, R>(model.get(), initialDist, obsProducer);
+            return new UnobservableEnvironmentProcess<S, A, Aa, R, V>(model.get(), initialDist, obsProducer);
         }
         return new ObservableEnvironmentProcess<S, A, Aa, R>(model.get(), initialDist);
     }
