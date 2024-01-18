@@ -37,6 +37,11 @@ public class PcmExperienceSimulationExecutor<S, A, Aa extends Action<A>, R> impl
     }
 
     @Override
+    public String getPolicyId() {
+        return reconfSelectionPolicy.getId();
+    }
+
+    @Override
     public void execute() {
         experienceSimulator.run();
     }

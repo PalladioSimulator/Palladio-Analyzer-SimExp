@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
+import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -49,6 +50,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private SelfAdaptiveSystemStateSpaceNavigator<S, A> navigator = null;
     private Optional<ProbabilityMassFunction<State<S>>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
+    private DescriptionProvider descriptionProvider;
 
     protected abstract List<ExperienceSimulationRunner<S, A>> getSimulationRunner();
 
@@ -81,7 +83,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler())
             .build();
-        return ExperienceSimulator.createSimulator(config);
+        return ExperienceSimulator.createSimulator(config, descriptionProvider);
     }
 
     private void checkValidity() {
@@ -180,6 +182,11 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
         public SimulationConfigurationBuilder withSimulationID(String simulationID) {
             ExperienceSimulationBuilder.this.simulationID = simulationID;
+            return this;
+        }
+
+        public SimulationConfigurationBuilder withDescriptionProvider(DescriptionProvider descriptionProvider) {
+            ExperienceSimulationBuilder.this.descriptionProvider = descriptionProvider;
             return this;
         }
 
