@@ -69,30 +69,18 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     // private final static String SERVER_NODE_2_VARIABLE =
     // "ServerNode2Failure_ServerFailureInstantiation";
 
-    // TODO: singleton
-    private static PcmAttributeChange attrChange;
+    private final PcmAttributeChange attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;
-    private static VaryingInterarrivelRateProcess processInstance = null;
-
     private final EnvironmentProcess<S, A, R> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
 
     public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
-        initPcmAttributeChange(experimentProvider);
+        // initPcmAttributeChange(experimentProvider);
+        this.attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
+                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         this.initialDist = createInitialDist(dbn);
         this.envProcess = createEnvironmentalProcess(dbn);
-    }
-
-    private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
-        attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
-                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
-        // attribute name values are taken from the names of the instantiated template variable
-        // model, i.e. *.staticmodel
-        // attrChangeServerNode1 =
-        // PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE);
-        // attrChangeServerNode2 =
-        // PcmModelChangeFactory.createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE);
     }
 
     private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
@@ -107,12 +95,8 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         };
     }
 
-    public static <S, A, R> EnvironmentProcess<S, A, R> get(DynamicBayesianNetwork dbn,
-            IExperimentProvider experimentProvider) {
-        if (processInstance == null) {
-            processInstance = new VaryingInterarrivelRateProcess<>(dbn, experimentProvider);
-        }
-        return processInstance.envProcess;
+    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+        return envProcess;
     }
 
     private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
@@ -196,7 +180,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
     private EnvironmentalState<S> asPcmEnvironmentalState(List<InputValue> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
-        ArrayList<PcmModelChange> attrChanges = new ArrayList<PcmModelChange>();
+        ArrayList<PcmModelChange> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
         // attrChanges.add(attrChangeServerNode1);
         // attrChanges.add(attrChangeServerNode2);
