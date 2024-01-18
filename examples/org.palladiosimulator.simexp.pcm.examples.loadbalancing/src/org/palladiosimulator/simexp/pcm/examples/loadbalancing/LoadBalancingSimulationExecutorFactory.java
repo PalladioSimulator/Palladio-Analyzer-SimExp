@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
+import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -43,12 +44,12 @@ public class LoadBalancingSimulationExecutorFactory
 
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            IProbabilityDistributionFactory distributionFactory,
+            DescriptionProvider descriptionProvider, IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-                probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+        super(experiment, dbn, specs, params, descriptionProvider, distributionFactory, probabilityDistributionRegistry,
+                parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
     }
 
     @Override
@@ -70,8 +71,8 @@ public class LoadBalancingSimulationExecutorFactory
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, simulationRunners, params, beforeExecutionInitializable, envProcess, null, reconfSelectionPolicy,
-                reconfigurations, evaluator, false);
+                specs, simulationRunners, params, descriptionProvider, beforeExecutionInitializable, envProcess, null,
+                reconfSelectionPolicy, reconfigurations, evaluator, false);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfSelectionPolicy.getId());

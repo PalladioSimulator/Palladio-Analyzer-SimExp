@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
@@ -23,7 +22,8 @@ public class ExperienceSimulator<S, A, R> {
 
     private int numberOfRuns;
 
-    private ExperienceSimulator(ExperienceSimulationConfiguration<S, A, R> config) {
+    private ExperienceSimulator(ExperienceSimulationConfiguration<S, A, R> config,
+            DescriptionProvider descriptionProvider) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunner = config.getSimulationRunner();
@@ -31,26 +31,13 @@ public class ExperienceSimulator<S, A, R> {
 
         this.simulationRunner.forEach(SelfAdaptiveSystemState::registerSimulationRunner);
 
-        SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
-            .withSimulationId(config.getSimulationID())
-            .andSampleSpaceId(config.getSampleSpaceID())
-            .andSampleHorizon(markovSampler.getHorizon())
-            .build();
-
-        DescriptionProvider descriptionProvider = new DescriptionProvider() {
-
-            @Override
-            public SimulatedExperienceStoreDescription getDescription() {
-                return desc;
-            }
-        };
         SimulatedExperienceStore.create(descriptionProvider);
         simulatedExperienceStore = SimulatedExperienceStore.get();
     }
 
     public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
-            ExperienceSimulationConfiguration<S, A, R> config) {
-        return new ExperienceSimulator<>(config);
+            ExperienceSimulationConfiguration<S, A, R> config, DescriptionProvider descriptionProvider) {
+        return new ExperienceSimulator<>(config, descriptionProvider);
     }
 
     public void run() {

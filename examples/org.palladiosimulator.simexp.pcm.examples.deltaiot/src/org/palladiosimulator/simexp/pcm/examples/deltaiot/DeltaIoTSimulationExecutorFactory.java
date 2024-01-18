@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -52,12 +53,12 @@ public class DeltaIoTSimulationExecutorFactory
 
     public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
-            IProbabilityDistributionFactory distributionFactory,
+            DescriptionProvider descriptionProvider, IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        super(experiment, dbn, specs, params, distributionFactory, probabilityDistributionRegistry, parameterParser,
-                probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+        super(experiment, dbn, specs, params, descriptionProvider, distributionFactory, probabilityDistributionRegistry,
+                parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
     }
 
     @Override
@@ -111,8 +112,8 @@ public class DeltaIoTSimulationExecutorFactory
             });
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, List.of(runner), params, beforeExecutionInitializable, null, navigator, reconfSelectionPolicy,
-                reconfigurations, evaluator, false);
+                specs, List.of(runner), params, descriptionProvider, beforeExecutionInitializable, null, navigator,
+                reconfSelectionPolicy, reconfigurations, evaluator, false);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfSelectionPolicy.getId());

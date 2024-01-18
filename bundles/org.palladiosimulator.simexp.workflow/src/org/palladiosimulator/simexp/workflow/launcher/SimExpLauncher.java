@@ -31,6 +31,7 @@ import org.palladiosimulator.experimentautomation.experiments.ExperimentReposito
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
@@ -123,11 +124,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
                     getReconfigurationRulesLocation(experiment));
 
+            SimulationParameters simulationParameters = config.getSimulationParameters();
+            LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
+
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     config.getQualityObjective(), experiment, dbn, probabilityDistributionRegistry,
-                    probabilityDistributionFactory, parameterParser, probDistRepoLookup,
-                    config.getSimulationParameters(), config.getMonitorNames(), config.getPropertyFiles(),
+                    probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                    launchDescriptionProvider, config.getMonitorNames(), config.getPropertyFiles(),
                     config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
+            String policyId = simulationExecutor.getPolicyId();
+            launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
@@ -156,8 +162,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionRegistry probabilityDistributionRegistry,
             IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+            DescriptionProvider descriptionProvider, List<String> monitorNames, List<URI> propertyFiles,
+            List<URI> moduleFiles, IExperimentProvider experimentProvider,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
 
         PcmExperienceSimulationExecutorFactory<? extends Number, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
@@ -168,17 +175,19 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             yield switch (qualityObjective) {
             case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry,
-                    parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-
-            case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, probabilityDistributionFactory, probabilityDistributionRegistry,
-                    parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
-
-            case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
-                    experiment, dbn, pcmSpecs, simulationParameters, probabilityDistributionFactory,
+                    pcmSpecs, simulationParameters, descriptionProvider, probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                     qvtoReconfigurationManager);
+
+            case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
+                    pcmSpecs, simulationParameters, descriptionProvider, probabilityDistributionFactory,
+                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
+                    qvtoReconfigurationManager);
+
+            case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
+                    experiment, dbn, pcmSpecs, simulationParameters, descriptionProvider,
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
 
             default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
             };
@@ -192,8 +201,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 .toList();
 
             yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters,
-                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+                    descriptionProvider, probabilityDistributionFactory, probabilityDistributionRegistry,
+                    parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
         }
 
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
