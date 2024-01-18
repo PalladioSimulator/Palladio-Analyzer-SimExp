@@ -18,6 +18,7 @@ public class ExperienceSimulator<S, A, R> {
     private final MarkovSampling<S, A, R> markovSampler;
     private final List<ExperienceSimulationRunner<S, A>> simulationRunner;
     private final Optional<Initializable> beforeExecutionInitialization;
+    private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
 
     private int numberOfRuns;
 
@@ -35,6 +36,7 @@ public class ExperienceSimulator<S, A, R> {
             .andSampleHorizon(markovSampler.getHorizon())
             .build();
         SimulatedExperienceStore.create(desc);
+        simulatedExperienceStore = SimulatedExperienceStore.get();
     }
 
     public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
@@ -47,7 +49,6 @@ public class ExperienceSimulator<S, A, R> {
             initExperienceSimulator();
 
             Trajectory<S, A, R> traj = markovSampler.sampleTrajectory();
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore = SimulatedExperienceStore.get();
             for (Sample<S, A, R> each : traj.getSamplePath()) {
                 simulatedExperienceStore.store(each);
             }
