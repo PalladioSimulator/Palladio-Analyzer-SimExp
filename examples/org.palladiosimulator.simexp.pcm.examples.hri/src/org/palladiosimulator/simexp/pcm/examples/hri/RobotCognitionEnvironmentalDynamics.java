@@ -27,20 +27,14 @@ import com.google.common.collect.Lists;
 
 public class RobotCognitionEnvironmentalDynamics {
 
-    // TODO: singleton
-    private static RobotCognitionEnvironmentalDynamics processInstance = null;
-
     private final EnvironmentProcess envProcess;
 
-    private RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
+    public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public static EnvironmentProcess get(DynamicBayesianNetwork dbn) {
-        if (processInstance == null) {
-            processInstance = new RobotCognitionEnvironmentalDynamics(dbn);
-        }
-        return processInstance.envProcess;
+    public EnvironmentProcess getEnvironmentProcess() {
+        return envProcess;
     }
 
     private ProbabilityMassFunction createInitialDist() {
