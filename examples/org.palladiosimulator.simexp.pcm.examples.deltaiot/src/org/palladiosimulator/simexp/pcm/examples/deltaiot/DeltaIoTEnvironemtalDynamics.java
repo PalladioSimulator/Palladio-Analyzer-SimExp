@@ -23,6 +23,7 @@ import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
@@ -56,25 +57,28 @@ public class DeltaIoTEnvironemtalDynamics<R> {
     private static DeltaIoTEnvironemtalDynamics processInstance = null;
 
     private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess;
-    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> partiallyEnvProcess;
+    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> partiallyEnvProcess;
 
-    public DeltaIoTEnvironemtalDynamics(DynamicBayesianNetwork dbn) {
+    public DeltaIoTEnvironemtalDynamics(DynamicBayesianNetwork dbn,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
         this.envProcess = createEnvironmentalProcess(dbn);
-        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess();
+        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore);
     }
 
-    public static <A, R> EnvironmentProcess<PCMInstance, A, R> getEnvironmentalDrivenProcess(
-            DynamicBayesianNetwork dbn) {
+    public static <R> EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> getEnvironmentalDrivenProcess(
+            DynamicBayesianNetwork dbn,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
         if (processInstance == null) {
-            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn);
+            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore);
         }
         return processInstance.envProcess;
     }
 
-    public static SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> getPartiallyEnvironmentalDrivenProcess(
-            DynamicBayesianNetwork dbn) {
+    public static <R> SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> getPartiallyEnvironmentalDrivenProcess(
+            DynamicBayesianNetwork dbn,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
         if (processInstance == null) {
-            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn);
+            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore);
         }
         return processInstance.partiallyEnvProcess;
     }
@@ -182,8 +186,10 @@ public class DeltaIoTEnvironemtalDynamics<R> {
         };
     }
 
-    private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> createPartiallyEnvironmentalDrivenProcess() {
-        return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator>(envProcess) {
+    private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> createPartiallyEnvironmentalDrivenProcess(
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
+        return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R>(envProcess,
+                simulatedExperienceStore) {
 
             class SNRCalculator {
 

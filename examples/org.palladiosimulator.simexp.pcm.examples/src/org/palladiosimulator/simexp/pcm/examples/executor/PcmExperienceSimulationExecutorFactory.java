@@ -12,7 +12,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.DescriptionProvider;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -34,7 +34,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final DynamicBayesianNetwork dbn;
     protected final List<T> specs;
     protected final SimulationParameters params;
-    protected final DescriptionProvider descriptionProvider;
+    protected final SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore;
 
     protected final IProbabilityDistributionFactory distributionFactory;
     protected final IProbabilityDistributionRegistry probabilityDistributionRegistry;
@@ -44,7 +44,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
-            SimulationParameters params, DescriptionProvider descriptionProvider,
+            SimulationParameters params,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -53,7 +54,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
         this.dbn = dbn;
         this.specs = specs;
         this.params = params;
-        this.descriptionProvider = descriptionProvider;
+        this.simulatedExperienceStore = simulatedExperienceStore;
         this.distributionFactory = distributionFactory;
         this.probabilityDistributionRegistry = probabilityDistributionRegistry;
         this.parameterParser = parameterParser;
@@ -70,9 +71,9 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs,
             List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
-            DescriptionProvider descriptionProvider, Initializable beforeExecution,
-            EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
-            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator> navigator,
+            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> navigator,
             Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy,
             Set<QVToReconfiguration> reconfigurations, RewardEvaluator<R> evaluator, boolean hidden) {
 
@@ -85,13 +86,12 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
             .done()
             .createSimulationConfiguration()
             .withSimulationID(params.getSimulationID())
-            .withDescriptionProvider(descriptionProvider)
             .withNumberOfRuns(params.getNumberOfRuns())
             .andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
             .andOptionalExecutionBeforeEachRun(beforeExecution)
             .done()
             .specifySelfAdaptiveSystemState()
-            .asEnvironmentalDrivenProcess(envProcess)
+            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore)
             .asPartiallyEnvironmentalDrivenProcess(navigator)
             .asHiddenProcess(hidden)
             .done()

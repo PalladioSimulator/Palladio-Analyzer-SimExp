@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
-import org.palladiosimulator.simexp.core.store.DescriptionProvider;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -45,12 +45,12 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private RewardEvaluator<R> rewardEvaluator = null;
     private Policy<S, A, Aa> policy = null;
     private EnvironmentProcess<S, A, R> envProcess = null;
+    private SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<S, A, R>> markovModel = Optional.empty();
-    private SelfAdaptiveSystemStateSpaceNavigator<S, A> navigator = null;
+    private SelfAdaptiveSystemStateSpaceNavigator<S, A, R> navigator = null;
     private Optional<ProbabilityMassFunction<State<S>>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
-    private DescriptionProvider descriptionProvider;
 
     protected abstract List<ExperienceSimulationRunner<S, A>> getSimulationRunner();
 
@@ -83,7 +83,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler())
             .build();
-        return ExperienceSimulator.createSimulator(config, descriptionProvider);
+        return ExperienceSimulator.createSimulator(config, simulatedExperienceStore);
     }
 
     private void checkValidity() {
@@ -124,7 +124,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             throw new RuntimeException("");
         }
 
-        return ((SelfAdaptiveSystemStateSpaceNavigator<S, A>) navigator)
+        return ((SelfAdaptiveSystemStateSpaceNavigator<S, A, R>) navigator)
             .createInitialDistribution(createInitialSassCreator());
     }
 
@@ -173,7 +173,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
     private StateSpaceNavigator<S, A> createInductiveStateSpaceNavigator() {
         if (envProcess != null) {
-            return EnvironmentDrivenStateSpaceNavigator.with(envProcess);
+            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, simulatedExperienceStore);
         }
         return navigator;
     }
@@ -182,11 +182,6 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
         public SimulationConfigurationBuilder withSimulationID(String simulationID) {
             ExperienceSimulationBuilder.this.simulationID = simulationID;
-            return this;
-        }
-
-        public SimulationConfigurationBuilder withDescriptionProvider(DescriptionProvider descriptionProvider) {
-            ExperienceSimulationBuilder.this.descriptionProvider = descriptionProvider;
             return this;
         }
 
@@ -213,13 +208,15 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
     public class SelfAdaptiveSystemBuilder {
 
-        public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<S, A, R> envProcess) {
+        public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<S, A, R> envProcess,
+                SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
+            ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;
             return this;
         }
 
         public SelfAdaptiveSystemBuilder asPartiallyEnvironmentalDrivenProcess(
-                SelfAdaptiveSystemStateSpaceNavigator<S, A> navigator) {
+                SelfAdaptiveSystemStateSpaceNavigator<S, A, R> navigator) {
             ExperienceSimulationBuilder.this.navigator = navigator;
             return this;
         }

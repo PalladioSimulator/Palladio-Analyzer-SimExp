@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
-public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends InductiveStateSpaceNavigator<S, A> {
+public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A, R> extends InductiveStateSpaceNavigator<S, A> {
 
     public interface InitialSelfAdaptiveSystemStateCreator<S, A> {
 
@@ -25,10 +25,13 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
         public ArchitecturalConfiguration<S, A> getInitialArchitecturalConfiguration();
     }
 
-    protected final EnvironmentProcess environmentalDynamics;
+    protected final EnvironmentProcess<S, A, R> environmentalDynamics;
+    private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
 
-    protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess environmentalDynamics) {
+    protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<S, A, R> environmentalDynamics,
+            SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
         this.environmentalDynamics = environmentalDynamics;
+        this.simulatedExperienceStore = simulatedExperienceStore;
     }
 
     public ProbabilityMassFunction<State<S>> createInitialDistribution(
@@ -95,7 +98,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A> extends Induct
     }
 
     private SelfAdaptiveSystemState<S, A> determineQuantifiedState(SelfAdaptiveSystemState<S, A> structuralState) {
-        Optional<SimulatedExperience> result = SimulatedExperienceStore.get()
+        Optional<SimulatedExperience> result = simulatedExperienceStore
             .findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
             return RestoredSelfAdaptiveSystemState.restoreFrom(result.get(), structuralState);
