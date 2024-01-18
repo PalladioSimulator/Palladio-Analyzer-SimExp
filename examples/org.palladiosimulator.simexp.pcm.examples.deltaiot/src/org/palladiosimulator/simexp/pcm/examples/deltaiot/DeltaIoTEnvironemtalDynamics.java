@@ -58,27 +58,32 @@ public class DeltaIoTEnvironemtalDynamics<R> {
 
     private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess;
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> partiallyEnvProcess;
+    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTEnvironemtalDynamics(DynamicBayesianNetwork dbn,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
         this.envProcess = createEnvironmentalProcess(dbn);
         this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore);
+        this.modelAccess = modelAccess;
     }
 
     public static <R> EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> getEnvironmentalDrivenProcess(
             DynamicBayesianNetwork dbn,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
         if (processInstance == null) {
-            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore);
+            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore, modelAccess);
         }
         return processInstance.envProcess;
     }
 
     public static <R> SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> getPartiallyEnvironmentalDrivenProcess(
             DynamicBayesianNetwork dbn,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
         if (processInstance == null) {
-            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore);
+            processInstance = new DeltaIoTEnvironemtalDynamics<>(dbn, simulatedExperienceStore, modelAccess);
         }
         return processInstance.partiallyEnvProcess;
     }
@@ -283,8 +288,6 @@ public class DeltaIoTEnvironemtalDynamics<R> {
                     if (isSNRTemplate(each.variable)) {
                         LocalProbabilisticNetwork localNetwork = LocalProbabilisticNetwork.class
                             .cast(each.variable.eContainer());
-
-                        DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = DeltaIoTModelAccess.get();
 
                         GroundRandomVariable wiVariable = findWirelessInterferenceVariable(localNetwork);
                         LinkingResource link = LinkingResource.class.cast(wiVariable.getAppliedObjects()

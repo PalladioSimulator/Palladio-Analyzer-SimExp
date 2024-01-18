@@ -79,15 +79,16 @@ public class DeltaIoTSimulationExecutorFactory
             .load(DISTRIBUTION_FACTORS);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
+        DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
                 prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer> navigator = DeltaIoTEnvironemtalDynamics
-            .getPartiallyEnvironmentalDrivenProcess(dbn, simulatedExperienceStore);
+            .getPartiallyEnvironmentalDrivenProcess(dbn, simulatedExperienceStore, modelAccess);
 
         Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
-            .newBuilder()
+            .newBuilder(modelAccess)
             .withReconfigurationParams(reconfParamsRepo)
             .andPacketLossSpec(specs.get(0))
             .andEnergyConsumptionSpec(specs.get(1))

@@ -73,8 +73,15 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     public final static Threshold MEDIUM_PACKET_LOSS = Threshold.lessThan(0.3);
     public final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold.lessThan(0.4);
 
-    public static DeltaIoTReconfigurationStrategyBuilder<PCMInstance> newBuilder() {
-        return new DeltaIoTReconfigurationStrategyBuilder<>(new LocalQualityBasedReconfigurationStrategy());
+    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
+
+    public LocalQualityBasedReconfigurationStrategy(DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+        this.modelAccess = modelAccess;
+    }
+
+    public static DeltaIoTReconfigurationStrategyBuilder<PCMInstance> newBuilder(
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+        return new DeltaIoTReconfigurationStrategyBuilder<>(new LocalQualityBasedReconfigurationStrategy(modelAccess));
     }
 
     @Override
@@ -174,8 +181,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
             TransmissionPowerReconfiguration transPowerReconf) {
         List<VariableUsage> varUsages = sourceMote.getConfigParameterUsages__AssemblyContext();
         for (VariableUsage each : varUsages) {
-            if (DeltaIoTModelAccess.get()
-                .isTransmissionPowerOfLink(each, link)) {
+            if (modelAccess.isTransmissionPowerOfLink(each, link)) {
                 decreaseTransmissionPower(each.getNamedReference__VariableUsage()
                     .getReferenceName(), transPowerReconf);
             }
@@ -186,8 +192,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
             TransmissionPowerReconfiguration transPowerReconf) {
         List<VariableUsage> varUsages = sourceMote.getConfigParameterUsages__AssemblyContext();
         for (VariableUsage each : varUsages) {
-            if (DeltaIoTModelAccess.get()
-                .isTransmissionPowerOfLink(each, link)) {
+            if (modelAccess.isTransmissionPowerOfLink(each, link)) {
                 increaseTransmissionPower(each.getNamedReference__VariableUsage()
                     .getReferenceName(), transPowerReconf);
             }
@@ -196,8 +201,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
 
     private void increaseDistributionFactorWithHighestSNR(AssemblyContext sourceMote,
             Map<LinkingResource, Double> links, DistributionFactorReconfiguration disFactorReconf) {
-        List<ProbabilisticBranchTransition> branchesToAdapt = DeltaIoTModelAccess.get()
-            .retrieveCommunicatingBranches(sourceMote);
+        List<ProbabilisticBranchTransition> branchesToAdapt = modelAccess.retrieveCommunicatingBranches(sourceMote);
         LinkingResource linkWithHighestSNR = new WirelessLinkFilter(links).linkWithHighestSNR();
 
         ProbabilisticBranchTransition branchToIncrease;
@@ -222,13 +226,10 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         LinkingResource link2 = iterator.next()
             .getKey();
 
-        double transmissionPower1 = DeltaIoTModelAccess.get()
-            .retrieveTransmissionPower(sourceMote, link1);
-        double transmissionPower2 = DeltaIoTModelAccess.get()
-            .retrieveTransmissionPower(sourceMote, link2);
+        double transmissionPower1 = modelAccess.retrieveTransmissionPower(sourceMote, link1);
+        double transmissionPower2 = modelAccess.retrieveTransmissionPower(sourceMote, link2);
 
-        List<ProbabilisticBranchTransition> branchesToAdapt = DeltaIoTModelAccess.get()
-            .retrieveCommunicatingBranches(sourceMote);
+        List<ProbabilisticBranchTransition> branchesToAdapt = modelAccess.retrieveCommunicatingBranches(sourceMote);
 
         ProbabilisticBranchTransition branchToIncrease;
         ProbabilisticBranchTransition branchToDecrease;
@@ -282,8 +283,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     private Function<Map.Entry<LinkingResource, Double>, AssemblyContext> equalSourceMote(
             PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
         return entry -> {
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> deltaIoTModelAccess = DeltaIoTModelAccess.get();
-            return deltaIoTModelAccess.findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
+            return modelAccess.findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
         };
     }
 

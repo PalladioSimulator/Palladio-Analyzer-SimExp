@@ -34,17 +34,6 @@ import com.google.common.collect.Lists;
 
 public class DeltaIoTModelAccess<S, A> {
 
-    // TODO: singleton
-    private final static DeltaIoTModelAccess INSTANCE = new DeltaIoTModelAccess();
-
-    private DeltaIoTModelAccess() {
-
-    }
-
-    public static <S, A> DeltaIoTModelAccess<S, A> get() {
-        return INSTANCE;
-    }
-
     public double retrieveWirelessInterference(GroundRandomVariable maVariable,
             PerceivableEnvironmentalState nextEnvironment) {
         return toInputs(nextEnvironment.getValue()
