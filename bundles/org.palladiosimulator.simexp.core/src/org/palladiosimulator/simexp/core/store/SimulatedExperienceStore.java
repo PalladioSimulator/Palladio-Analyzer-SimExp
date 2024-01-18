@@ -13,14 +13,14 @@ import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class SimulatedExperienceStore<S, A, R> {
 
-    private final SimulatedExperienceStoreDescription description;
+    private final DescriptionProvider descriptionProvider;
     private final SimulatedExperienceAccessor simExperienceAccessor;
 
     // TODO: singleton
     private static SimulatedExperienceStore storeInstance = null;
 
-    private SimulatedExperienceStore(SimulatedExperienceStoreDescription description) {
-        this.description = description;
+    private SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
+        this.descriptionProvider = descriptionProvider;
         // TODO exception handling
         this.simExperienceAccessor = ServiceRegistry.get()
             .findService(SimulatedExperienceAccessor.class)
@@ -30,8 +30,8 @@ public class SimulatedExperienceStore<S, A, R> {
             .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
     }
 
-    public static <S, A, R> void create(SimulatedExperienceStoreDescription description) {
-        storeInstance = new SimulatedExperienceStore<>(description);
+    public static <S, A, R> void create(DescriptionProvider descriptionProvider) {
+        storeInstance = new SimulatedExperienceStore<>(descriptionProvider);
     }
 
     public static <S, A, R> SimulatedExperienceStore<S, A, R> get() {
@@ -40,6 +40,7 @@ public class SimulatedExperienceStore<S, A, R> {
     }
 
     public void store(Trajectory<S, A, R> trajectory) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         simExperienceAccessor.connect(description);
         simExperienceAccessor.store(toSimulatedExperience(trajectory));
         simExperienceAccessor.close();
@@ -58,6 +59,7 @@ public class SimulatedExperienceStore<S, A, R> {
             return;
         }
 
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         simExperienceAccessor.connect(description);
         simExperienceAccessor.store(simExp);
         simExperienceAccessor.close();
@@ -68,6 +70,7 @@ public class SimulatedExperienceStore<S, A, R> {
     }
 
     public Optional<SimulatedExperience> findSimulatedExperience(String id) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         simExperienceAccessor.connect(description);
         Optional<SimulatedExperience> result = simExperienceAccessor.findSimulatedExperience(id);
         simExperienceAccessor.close();
@@ -75,6 +78,7 @@ public class SimulatedExperienceStore<S, A, R> {
     }
 
     public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         simExperienceAccessor.connect(description);
         Optional<SimulatedExperience> result = simExperienceAccessor.findSelfAdaptiveSystemState(id);
         simExperienceAccessor.close();
