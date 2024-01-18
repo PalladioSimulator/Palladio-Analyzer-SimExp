@@ -25,15 +25,15 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 import com.google.common.collect.Lists;
 
-public class RobotCognitionEnvironmentalDynamics {
+public class RobotCognitionEnvironmentalDynamics<S, A, R> {
 
-    private final EnvironmentProcess envProcess;
+    private final EnvironmentProcess<S, A, R> envProcess;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess getEnvironmentProcess() {
+    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
         return envProcess;
     }
 
@@ -57,7 +57,7 @@ public class RobotCognitionEnvironmentalDynamics {
         };
     }
 
-    private EnvironmentProcess createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
         return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }

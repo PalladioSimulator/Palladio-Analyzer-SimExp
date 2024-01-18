@@ -90,7 +90,8 @@ public class RobotCognitionSimulationExecutorFactory
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<PCMInstance>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
-        RobotCognitionEnvironmentalDynamics envDynamics = new RobotCognitionEnvironmentalDynamics(dbn);
+        RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
+                dbn);
         EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = envDynamics.getEnvironmentProcess();
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
