@@ -89,8 +89,9 @@ public class RobotCognitionSimulationExecutorFactory
         ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation<>();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<PCMInstance>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = RobotCognitionEnvironmentalDynamics
-            .get(dbn);
+
+        RobotCognitionEnvironmentalDynamics envDynamics = new RobotCognitionEnvironmentalDynamics(dbn);
+        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = envDynamics.getEnvironmentProcess();
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<QVToReconfiguration>(
