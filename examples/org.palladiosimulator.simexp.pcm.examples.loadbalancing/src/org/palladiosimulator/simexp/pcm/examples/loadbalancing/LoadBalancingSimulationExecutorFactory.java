@@ -42,6 +42,8 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer> envProcess;
+
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Integer> simulatedExperienceStore,
@@ -52,6 +54,9 @@ public class LoadBalancingSimulationExecutorFactory
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager);
+        VaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
+                dbn, experimentProvider);
+        this.envProcess = p.getEnvironmentProcess();
     }
 
     @Override
@@ -66,9 +71,6 @@ public class LoadBalancingSimulationExecutorFactory
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
-
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer> envProcess = VaryingInterarrivelRateProcess
-            .get(dbn, experimentProvider);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
