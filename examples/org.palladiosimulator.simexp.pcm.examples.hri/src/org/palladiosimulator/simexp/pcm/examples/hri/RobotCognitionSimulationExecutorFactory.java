@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
-import org.palladiosimulator.simexp.core.store.DescriptionProvider;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -52,12 +52,14 @@ public class RobotCognitionSimulationExecutorFactory
 
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            DescriptionProvider descriptionProvider, IProbabilityDistributionFactory distributionFactory,
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
+            IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        super(experiment, dbn, specs, params, descriptionProvider, distributionFactory, probabilityDistributionRegistry,
-                parameterParser, probDistRepoLookup, experimentProvider, qvtoReconfigurationManager);
+        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
+                qvtoReconfigurationManager);
     }
 
     @Override
@@ -95,7 +97,7 @@ public class RobotCognitionSimulationExecutorFactory
                 qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                specs, runners, params, descriptionProvider, beforeExecutionInitializable, envProcess, null,
+                specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
                 reconfSelectionPolicy, reconfigurations, evaluator, true);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),

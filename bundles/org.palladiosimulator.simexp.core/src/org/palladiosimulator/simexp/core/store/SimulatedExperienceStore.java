@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.core.store;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,10 +15,7 @@ public class SimulatedExperienceStore<S, A, R> {
     private final DescriptionProvider descriptionProvider;
     private final SimulatedExperienceAccessor simExperienceAccessor;
 
-    // TODO: singleton
-    private static SimulatedExperienceStore storeInstance = null;
-
-    private SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
+    public SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
         this.descriptionProvider = descriptionProvider;
         // TODO exception handling
         this.simExperienceAccessor = ServiceRegistry.get()
@@ -28,15 +24,6 @@ public class SimulatedExperienceStore<S, A, R> {
         ServiceRegistry.get()
             .findService(SimulatedExperienceCache.class)
             .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
-    }
-
-    public static <S, A, R> void create(DescriptionProvider descriptionProvider) {
-        storeInstance = new SimulatedExperienceStore<>(descriptionProvider);
-    }
-
-    public static <S, A, R> SimulatedExperienceStore<S, A, R> get() {
-        // TODO Exception handling
-        return Objects.requireNonNull(storeInstance, "");
     }
 
     public void store(Trajectory<S, A, R> trajectory) {
