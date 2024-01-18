@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
@@ -35,7 +36,15 @@ public class ExperienceSimulator<S, A, R> {
             .andSampleSpaceId(config.getSampleSpaceID())
             .andSampleHorizon(markovSampler.getHorizon())
             .build();
-        SimulatedExperienceStore.create(desc);
+
+        DescriptionProvider descriptionProvider = new DescriptionProvider() {
+
+            @Override
+            public SimulatedExperienceStoreDescription getDescription() {
+                return desc;
+            }
+        };
+        SimulatedExperienceStore.create(descriptionProvider);
         simulatedExperienceStore = SimulatedExperienceStore.get();
     }
 
