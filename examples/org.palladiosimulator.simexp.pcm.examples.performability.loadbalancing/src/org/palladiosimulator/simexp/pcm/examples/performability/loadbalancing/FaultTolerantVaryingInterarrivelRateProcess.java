@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistribution
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 import org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentModelBuilder;
+import org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentalProcessBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
@@ -428,8 +429,12 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
     }
 
     private EnvironmentProcess<S, A, R> createEnvironmentalProcess(List<EnvironmentalState<S>> stateSpace) {
-        return describedBy(createEnvironmentModel(stateSpace)).andInitiallyDistributedWith(initialDist)
-            .build();
+
+        MarkovModel<S, A, R> envModel = createEnvironmentModel(stateSpace);
+        EnvironmentalProcessBuilder<S, A, Action<A>, R, Object> builder = describedBy(envModel)
+            .andInitiallyDistributedWith(initialDist);
+        EnvironmentProcess<S, A, R> envProcess = builder.build();
+        return envProcess;
 
     }
 
