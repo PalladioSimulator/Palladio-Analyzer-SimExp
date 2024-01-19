@@ -52,6 +52,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
@@ -62,6 +64,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager);
+        FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
+                dbn, experimentProvider);
+        this.envProcess = p.getEnvironmentProcess();
     }
 
     @Override
@@ -70,8 +75,6 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = FaultTolerantVaryingInterarrivelRateProcess
-            .get(dbn, experimentProvider);
 
         Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
