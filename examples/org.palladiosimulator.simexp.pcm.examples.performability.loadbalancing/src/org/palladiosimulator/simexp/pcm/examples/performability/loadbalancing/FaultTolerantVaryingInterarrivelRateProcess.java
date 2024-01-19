@@ -3,18 +3,13 @@ package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 import static java.util.stream.Collectors.toList;
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
-import static org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentalProcessBuilder.describedBy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -29,21 +24,13 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Conditi
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.usagemodel.OpenWorkload;
-import org.palladiosimulator.simexp.core.util.Pair;
-import org.palladiosimulator.simexp.distribution.factory.ProbabilityDistributionFactory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
-import org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentModelBuilder;
-import org.palladiosimulator.simexp.environmentaldynamics.builder.EnvironmentalProcessBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.ScalarValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
-import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
@@ -62,124 +49,6 @@ import de.uka.ipd.sdq.stoex.StoexPackage;
 public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
     private static final Logger LOGGER = Logger.getLogger(FaultTolerantVaryingInterarrivelRateProcess.class.getName());
-
-    private class IntervallHelper {
-
-        private double lowerBound = 0;
-        private double upperBound = 0;
-        private double increment = 0;
-
-        public IntervallHelper() {
-            this.increment = computeIncrement();
-            this.upperBound += this.increment;
-        }
-
-        private double computeIncrement() {
-            return INTERARRIVAL_RATE_DISTRIBUTION.inverseF(UPPER_PROB_BOUND) / NUMBER_OF_STATES;
-        }
-
-        public void updateBounds() {
-            lowerBound = upperBound;
-            upperBound += increment;
-        }
-
-        public double computeProbability() {
-            return computeProbability(lowerBound, upperBound);
-        }
-
-        public double computeProbability(double lowerBound, double upperBound) {
-            return INTERARRIVAL_RATE_DISTRIBUTION.cdf(upperBound) - INTERARRIVAL_RATE_DISTRIBUTION.cdf(lowerBound);
-        }
-
-        public double getRepresentative() {
-            return getRepresentative(lowerBound, upperBound);
-        }
-
-        public double getRepresentative(double lowerBound, double upperBound) {
-            return lowerBound + ((upperBound - lowerBound) / 2);
-        }
-
-        public boolean upperBoundIsSmallerThan(double value) {
-            return upperBound < value;
-        }
-
-        public boolean isInbetween(double value) {
-            return lowerBound < value && value < upperBound;
-        }
-
-        public String getIntervalDescription() {
-            return getIntervalDescription(lowerBound, upperBound);
-        }
-
-        public String getIntervalDescription(double lowerBound, double upperBound) {
-            return String.format("%1s < x <= %2s", Double.toString(lowerBound), Double.toString(upperBound));
-        }
-
-        public double getUpperBound() {
-            return upperBound;
-        }
-
-    }
-
-    private class EnvironmentalStateSpace {
-
-        private final List<Pair<EnvironmentalState<S>, Double>> stateSpace;
-
-        public EnvironmentalStateSpace() {
-            this.stateSpace = new ArrayList<>();
-        }
-
-        public void createAndAddState(IntervallHelper intervallHelper) {
-            if (intervallHelper.upperBoundIsSmallerThan(INTERARRIVAL_TIME_UPPER_BOUND)) {
-                intervallHelper.updateBounds();
-                return;
-            } else if (intervallHelper.isInbetween(INTERARRIVAL_TIME_UPPER_BOUND)) {
-                createAndAddState(intervallHelper.getIntervalDescription(0, INTERARRIVAL_TIME_UPPER_BOUND),
-                        INTERARRIVAL_TIME_UPPER_BOUND,
-                        intervallHelper.computeProbability(0, INTERARRIVAL_TIME_UPPER_BOUND));
-                createAndAddState(
-                        intervallHelper.getIntervalDescription(INTERARRIVAL_TIME_UPPER_BOUND,
-                                intervallHelper.getUpperBound()),
-                        intervallHelper.getRepresentative(INTERARRIVAL_TIME_UPPER_BOUND,
-                                intervallHelper.getUpperBound()),
-                        intervallHelper.computeProbability(INTERARRIVAL_TIME_UPPER_BOUND,
-                                intervallHelper.getUpperBound()));
-            } else {
-                createAndAddState(intervallHelper.getIntervalDescription(), intervallHelper.getRepresentative(),
-                        intervallHelper.computeProbability());
-            }
-
-            intervallHelper.updateBounds();
-        }
-
-        private void createAndAddState(String name, double representative, double probability) {
-            stateSpace.add(Pair.of(create(name, representative), probability));
-        }
-
-        private EnvironmentalState<S> create(String name, double value) {
-            ScalarValue scala = new ScalarValue(PCM_SPECIFICATION_ATTRIBUTE, value);
-            PcmEnvironmentalState<S> state = new PcmEnvironmentalState<>(Arrays.asList(attrChange), scala);
-            state.setName(name);
-            return state;
-        }
-
-        public List<EnvironmentalState<S>> asList() {
-            return stateSpace.stream()
-                .map(each -> each.getFirst())
-                .collect(Collectors.toList());
-        }
-
-        public Set<ProbabilityMassFunction.Sample<State<S>>> asSamples() {
-            return stateSpace.stream()
-                .map(toSample())
-                .collect(Collectors.toSet());
-        }
-
-        private Function<Pair<EnvironmentalState<S>, Double>, ProbabilityMassFunction.Sample<State<S>>> toSample() {
-            return pair -> ProbabilityMassFunction.Sample.of(pair.getFirst(), pair.getSecond());
-        }
-
-    }
 
     private final static double RATE = 1.5;
     private final static double UPPER_PROB_BOUND = 0.999;
@@ -406,83 +275,6 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
             return groundRandomVariableName.equals(variableName);
         };
 //		return i -> i.variable.getEntityName().equals(variableName);
-    }
-
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(List<EnvironmentalState<S>> stateSpace) {
-        MarkovModel<S, A, R> envModel = createEnvironmentModel(stateSpace);
-        EnvironmentalProcessBuilder<S, A, Action<A>, R, Object> builder = describedBy(envModel)
-            .andInitiallyDistributedWith(initialDist);
-        EnvironmentProcess<S, A, R> envProcess = builder.build();
-        return envProcess;
-
-    }
-
-    private MarkovModel<S, A, R> createEnvironmentModel(List<EnvironmentalState<S>> stateSpace) {
-        EnvironmentModelBuilder<S, A, R> environmentModelBuilder = new EnvironmentModelBuilder<>();
-        BasicMarkovModelBuilder<S, A, R> builder = environmentModelBuilder
-            .withStateSpace(new HashSet<State<S>>(stateSpace));
-        buildTransitions(builder, stateSpace);
-        return builder.build();
-    }
-
-    private EnvironmentalStateSpace createStateSpace() {
-        IntervallHelper intervallHelper = new IntervallHelper();
-        EnvironmentalStateSpace stateSpace = new EnvironmentalStateSpace();
-        for (int i = 0; i < NUMBER_OF_STATES; i++) {
-            stateSpace.createAndAddState(intervallHelper);
-        }
-        return stateSpace;
-    }
-
-    private void buildTransitions(BasicMarkovModelBuilder<S, A, R> builder, List<EnvironmentalState<S>> stateSpace) {
-        buildTransitionsForFirstStates(builder, stateSpace);
-        for (int i = 1; i <= stateSpace.size() - 2; i++) {
-            buildTransitionsForStatesInbetween(builder, stateSpace, i);
-        }
-        buildTransitionsForLastStates(builder, stateSpace);
-    }
-
-    private void buildTransitionsForFirstStates(BasicMarkovModelBuilder<S, A, R> builder,
-            List<EnvironmentalState<S>> stateSpace) {
-        EnvironmentalState<S> source = stateSpace.get(0);
-        EnvironmentalState<S> target = stateSpace.get(1);
-        buildTransitionBetween(source, target, builder);
-    }
-
-    private void buildTransitionsForLastStates(BasicMarkovModelBuilder<S, A, R> builder,
-            List<EnvironmentalState<S>> stateSpace) {
-        EnvironmentalState<S> source = stateSpace.get(stateSpace.size() - 1);
-        EnvironmentalState<S> target = stateSpace.get(stateSpace.size() - 2);
-        buildTransitionBetween(source, target, builder);
-    }
-
-    private void buildTransitionBetween(EnvironmentalState<S> source, EnvironmentalState<S> target,
-            BasicMarkovModelBuilder<S, A, R> builder) {
-        double probability = initialDist.probability(ProbabilityMassFunction.Sample.of(source));
-        builder = builder.andTransitionBetween(source, source)
-            .andProbability(probability);
-        builder = builder.andTransitionBetween(source, target)
-            .andProbability((1 - probability));
-    }
-
-    private void buildTransitionsForStatesInbetween(BasicMarkovModelBuilder<S, A, R> builder,
-            List<EnvironmentalState<S>> stateSpace, int index) {
-        EnvironmentalState<S> last = stateSpace.get(index - 1);
-        EnvironmentalState<S> source = stateSpace.get(index);
-        EnvironmentalState<S> target = stateSpace.get(index + 1);
-        double probability = initialDist.probability(ProbabilityMassFunction.Sample.of(source));
-        builder = builder.andTransitionBetween(source, source)
-            .andProbability(probability);
-        builder = builder.andTransitionBetween(source, target)
-            .andProbability((1 - probability) / 2);
-        builder = builder.andTransitionBetween(source, last)
-            .andProbability((1 - probability) / 2);
-    }
-
-    private ProbabilityMassFunction<State<S>> createInitialDistributionOver(Set<Sample<State<S>>> samples) {
-        ProbabilityDistributionFactory<State<S>> factory = ProbabilityDistributionFactory.INSTANCE;
-        ProbabilityMassFunction<State<S>> pmfOver = factory.pmfOver(samples);
-        return pmfOver;
     }
 
 }
