@@ -50,6 +50,8 @@ public class RobotCognitionSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
@@ -60,6 +62,10 @@ public class RobotCognitionSimulationExecutorFactory
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager);
+        RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
+                dbn);
+        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> p = envDynamics.getEnvironmentProcess();
+        this.envProcess = p;
     }
 
     @Override
@@ -90,9 +96,6 @@ public class RobotCognitionSimulationExecutorFactory
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<PCMInstance>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
-        RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
-                dbn);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess = envDynamics.getEnvironmentProcess();
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<QVToReconfiguration>(
