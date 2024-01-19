@@ -42,21 +42,11 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
-import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 
 public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
     private static final Logger LOGGER = Logger.getLogger(FaultTolerantVaryingInterarrivelRateProcess.class.getName());
-
-    private final static double RATE = 1.5;
-
-    private final static double UPPER_PROB_BOUND = 0.999;
-    private final static double INTERARRIVAL_TIME_UPPER_BOUND = 0.15;
-    private final static int NUMBER_OF_STATES = 100;
-    private final static IContinousPDF INTERARRIVAL_RATE_DISTRIBUTION = new PDFFactory()
-        .createExponentialDistribution(RATE);
 
     private final static String PCM_SPECIFICATION_ATTRIBUTE = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION
         .getName();
