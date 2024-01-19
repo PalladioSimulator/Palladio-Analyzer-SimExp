@@ -217,11 +217,9 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
                                                                                            // name
                                                                                            // *.staticmodel
 
-    // TODO: singleton
     private static PcmAttributeChange attrChange;
     private static PcmModelChange attrChangeServerNode1;
     private static PcmModelChange attrChangeServerNode2;
-    private static FaultTolerantVaryingInterarrivelRateProcess processInstance = null;
 
     private final EnvironmentProcess<S, A, R> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
@@ -233,11 +231,8 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public FaultTolerantVaryingInterarrivelRateProcess(IExperimentProvider experimentProvider) {
-        initPcmAttributeChange(experimentProvider);
-        EnvironmentalStateSpace stateSpace = createStateSpace();
-        this.initialDist = createInitialDistributionOver(stateSpace.asSamples());
-        this.envProcess = createEnvironmentalProcess(stateSpace.asList());
+    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+        return envProcess;
     }
 
     private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
@@ -261,14 +256,6 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
                 .getWorkload_UsageScenario();
             return workload.getInterArrivalTime_OpenWorkload();
         };
-    }
-
-    public static <S, A, R> EnvironmentProcess<S, A, R> get(DynamicBayesianNetwork dbn,
-            IExperimentProvider experimentProvider) {
-        if (processInstance == null) {
-            processInstance = new FaultTolerantVaryingInterarrivelRateProcess<>(dbn, experimentProvider);
-        }
-        return processInstance.envProcess;
     }
 
     private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
@@ -421,15 +408,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
 //		return i -> i.variable.getEntityName().equals(variableName);
     }
 
-    public static <S, A, R> EnvironmentProcess<S, A, R> get(IExperimentProvider experimentProvider) {
-        if (processInstance == null) {
-            processInstance = new FaultTolerantVaryingInterarrivelRateProcess<>(experimentProvider);
-        }
-        return processInstance.envProcess;
-    }
-
     private EnvironmentProcess<S, A, R> createEnvironmentalProcess(List<EnvironmentalState<S>> stateSpace) {
-
         MarkovModel<S, A, R> envModel = createEnvironmentModel(stateSpace);
         EnvironmentalProcessBuilder<S, A, Action<A>, R, Object> builder = describedBy(envModel)
             .andInitiallyDistributedWith(initialDist);
