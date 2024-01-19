@@ -51,11 +51,13 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
     private static final Logger LOGGER = Logger.getLogger(FaultTolerantVaryingInterarrivelRateProcess.class.getName());
 
     private final static double RATE = 1.5;
+
     private final static double UPPER_PROB_BOUND = 0.999;
     private final static double INTERARRIVAL_TIME_UPPER_BOUND = 0.15;
     private final static int NUMBER_OF_STATES = 100;
     private final static IContinousPDF INTERARRIVAL_RATE_DISTRIBUTION = new PDFFactory()
         .createExponentialDistribution(RATE);
+
     private final static String PCM_SPECIFICATION_ATTRIBUTE = StoexPackage.Literals.RANDOM_VARIABLE__SPECIFICATION
         .getName();
     private final static String WORKLOAD_VARIABLE = "GRV_StaticInstance_VaryingWorkload"; // GRV
@@ -86,26 +88,15 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
                                                                                            // name
                                                                                            // *.staticmodel
 
-    private static PcmAttributeChange attrChange;
-    private static PcmModelChange attrChangeServerNode1;
-    private static PcmModelChange attrChangeServerNode2;
-
+    private final PcmAttributeChange attrChange;
+    private final PcmModelChange attrChangeServerNode1;
+    private final PcmModelChange attrChangeServerNode2;
     private final EnvironmentProcess<S, A, R> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
 
     public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn,
             IExperimentProvider experimentProvider) {
-        initPcmAttributeChange(experimentProvider);
-        this.initialDist = createInitialDist(dbn);
-        this.envProcess = createEnvironmentalProcess(dbn);
-    }
-
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
-        return envProcess;
-    }
-
-    private void initPcmAttributeChange(IExperimentProvider experimentProvider) {
-        attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
+        this.attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
                 PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
@@ -113,6 +104,12 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
             .createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, experimentProvider);
         attrChangeServerNode2 = PcmModelChangeFactory
             .createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, experimentProvider);
+        this.initialDist = createInitialDist(dbn);
+        this.envProcess = createEnvironmentalProcess(dbn);
+    }
+
+    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+        return envProcess;
     }
 
     private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
