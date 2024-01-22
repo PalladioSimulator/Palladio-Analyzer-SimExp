@@ -20,15 +20,15 @@ public abstract class EnvironmentProcess<S, A, R> {
 
     protected final MarkovSampling<S, A, R> sampler;
 
-    public EnvironmentProcess(MarkovModel<S, A, R> model, ProbabilityMassFunction<State<S>> initialDistribution) {
-        Markovian<S, A, R> markovian = buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution);
+    public EnvironmentProcess(Markovian<S, A, R> markovian, MarkovModel<S, A, R> model,
+            ProbabilityMassFunction<State<S>> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = isHiddenProcess(model);
     }
 
-    public EnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
+    public EnvironmentProcess(Markovian<S, A, R> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
             ProbabilityMassFunction<State<S>> initialDistribution) {
-        this.sampler = new MarkovSampling<>(MarkovianConfig.with(buildMarkovian(dynamics, initialDistribution)));
+        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = dynamics.isHiddenProcess();
     }
 
@@ -38,7 +38,7 @@ public abstract class EnvironmentProcess<S, A, R> {
         return any.isHidden();
     }
 
-    private StateSpaceNavigator<S, A> buildEnvironmentalDynamics(MarkovModel<S, A, R> model) {
+    protected static <S, A, R> StateSpaceNavigator<S, A> buildEnvironmentalDynamics(MarkovModel<S, A, R> model) {
         return (StateSpaceNavigator<S, A>) describedBy(model).asExploitationProcess()
             .build();
     }
@@ -51,9 +51,6 @@ public abstract class EnvironmentProcess<S, A, R> {
     public boolean isHiddenProcess() {
         return isHiddenProcess;
     }
-
-    protected abstract Markovian<S, A, R> buildMarkovian(StateSpaceNavigator<S, A> environmentalDynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution);
 
     public abstract PerceivableEnvironmentalState determineInitial();
 

@@ -9,50 +9,30 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R> {
 
-    private static class ObservationProducerProxy<S, A, R> implements ObservationProducer<S> {
-
-        private ObservationProducer<S> representedProducer = null;
-
-        public void represents(ObservationProducer<S> representedProducer) {
-            this.representedProducer = representedProducer;
-        }
-
-        @Override
-        public Observation<S> produceObservationGiven(State<S> emittingState) {
-            return representedProducer.produceObservationGiven(emittingState);
-        }
-
-    }
-
-    // TODO: singleton
-    private final static ObservationProducerProxy PRODUCER_PROXY = new ObservationProducerProxy();
-
     public UnobservableEnvironmentProcess(MarkovModel<S, A, R> model,
             ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
-        super(model, initialDistribution);
-        PRODUCER_PROXY.represents(obsProducer);
+        super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution, obsProducer), model,
+                initialDistribution);
     }
 
     public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
             ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
-        super(dynamics, initialDistribution);
-        PRODUCER_PROXY.represents(obsProducer);
+        super(buildMarkovian(dynamics, initialDistribution, obsProducer), dynamics, initialDistribution);
     }
 
-    @Override
-    protected Markovian<S, A, R> buildMarkovian(StateSpaceNavigator<S, A> environmentalDynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
+            StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution,
+            ObservationProducer<S> obsProducer) {
         MarkovianBuilder<S, A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<S, A, Aa, R> createHiddenMarkovModel();
         builder = builder.createStateSpaceNavigator(environmentalDynamics);
         builder = builder.withInitialStateDistribution(initialDistribution);
-        builder = builder.handleObservationsWith(PRODUCER_PROXY);
+        builder = builder.handleObservationsWith(obsProducer);
         return builder.build();
     }
 
