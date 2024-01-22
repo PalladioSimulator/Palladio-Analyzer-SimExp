@@ -51,6 +51,9 @@ public class DeltaIoTSimulationExecutorFactory
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
+    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
+    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer> envProcess;
+
     public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Integer> simulatedExperienceStore,
@@ -61,6 +64,11 @@ public class DeltaIoTSimulationExecutorFactory
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager);
+
+        this.modelAccess = new DeltaIoTModelAccess<>();
+        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<Integer>(dbn,
+                simulatedExperienceStore, modelAccess);
+        this.envProcess = p.getEnvironmentProcess();
     }
 
     @Override
@@ -79,13 +87,10 @@ public class DeltaIoTSimulationExecutorFactory
             .load(DISTRIBUTION_FACTORS);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
-        DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
                 prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
-        SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer> navigator = DeltaIoTEnvironemtalDynamics
-            .getPartiallyEnvironmentalDrivenProcess(dbn, simulatedExperienceStore, modelAccess);
 
         Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
             .newBuilder(modelAccess)
@@ -115,8 +120,8 @@ public class DeltaIoTSimulationExecutorFactory
             });
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, List.of(runner), params, beforeExecutionInitializable, null, simulatedExperienceStore, navigator,
-                reconfSelectionPolicy, reconfigurations, evaluator, false);
+                specs, List.of(runner), params, beforeExecutionInitializable, null, simulatedExperienceStore,
+                envProcess, reconfSelectionPolicy, reconfigurations, evaluator, false);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfSelectionPolicy.getId());

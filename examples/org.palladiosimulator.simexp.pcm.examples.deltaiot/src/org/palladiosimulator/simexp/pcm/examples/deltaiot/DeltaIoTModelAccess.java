@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTEnvironemtalDynamics.toInputs;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.toInputs;
 
 import java.util.List;
 import java.util.Optional;
