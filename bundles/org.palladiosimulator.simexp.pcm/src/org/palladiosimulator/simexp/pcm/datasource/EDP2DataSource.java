@@ -21,13 +21,20 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Measu
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.NumberMeasurementValue;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.PointInTime;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.StringMeasurementValue;
+import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class EDP2DataSource extends DataSource {
+public class EDP2DataSource<A> extends DataSource {
+
+    private final InitialPcmStateCreator<A> initialStateCreator;
+
+    public EDP2DataSource(InitialPcmStateCreator<A> initialStateCreator) {
+        this.initialStateCreator = initialStateCreator;
+    }
 
     @Override
     public MeasurementSeriesResult getSimulatedMeasurements(List<ExperimentRun> experimentRuns) {
-        StateMeasurementFilter filter = new StateMeasurementFilter();
+        StateMeasurementFilter filter = new StateMeasurementFilter(initialStateCreator);
         Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements = filter
             .filterStateMeasurements(experimentRuns);
         return asDataSeries(filterStateMeasurements);
@@ -44,9 +51,10 @@ public class EDP2DataSource extends DataSource {
         return result;
     }
 
-    private List<Pair<PointInTime, MeasurementValue>> getMeasurementSeries(Measurement measurement, MetricDescription metricDesc) {
+    private List<Pair<PointInTime, MeasurementValue>> getMeasurementSeries(Measurement measurement,
+            MetricDescription metricDesc) {
         List<Pair<PointInTime, MeasurementValue>> measurementSeries = new ArrayList<>();
-        
+
         Iterator<IMeasureProvider> iterator = getIterator(measurement);
         while (iterator.hasNext()) {
             IMeasureProvider provider = iterator.next();
@@ -60,17 +68,21 @@ public class EDP2DataSource extends DataSource {
 
             if (stateQuantityValue instanceof Identifier) {
                 Identifier stateQuantityValueAsIdentifier = (Identifier) stateQuantityValue;
-                String stateQuantityAsStringValue = (String) stateQuantityValueAsIdentifier.getLiteral();
-                StringMeasurementValue measurementValueAsString = new MeasurementSeriesResult.StringMeasurementValue(stateQuantityAsStringValue);
-                Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime, measurementValueAsString);
+                String stateQuantityAsStringValue = stateQuantityValueAsIdentifier.getLiteral();
+                StringMeasurementValue measurementValueAsString = new MeasurementSeriesResult.StringMeasurementValue(
+                        stateQuantityAsStringValue);
+                Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime,
+                        measurementValueAsString);
                 measurementSeries.add(measurementValuePair);
             }
             if (stateQuantityValue instanceof Number) {
                 Number number = (Number) stateQuantityValue;
                 if (number instanceof Double) {
                     Double stateQuantityAsDoubleValue = (Double) stateQuantityValue;
-                    NumberMeasurementValue<Double> measurementValueAsDouble = new MeasurementSeriesResult.NumberMeasurementValue<Double>(stateQuantityAsDoubleValue, Double.class);
-                    Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime, measurementValueAsDouble);
+                    NumberMeasurementValue<Double> measurementValueAsDouble = new MeasurementSeriesResult.NumberMeasurementValue<Double>(
+                            stateQuantityAsDoubleValue, Double.class);
+                    Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime,
+                            measurementValueAsDouble);
                     measurementSeries.add(measurementValuePair);
                 }
             }

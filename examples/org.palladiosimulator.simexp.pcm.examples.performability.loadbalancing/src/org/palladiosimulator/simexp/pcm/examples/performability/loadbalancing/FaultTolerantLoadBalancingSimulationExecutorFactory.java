@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
@@ -53,6 +54,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
     private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -67,12 +69,16 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
+
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
+        this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
+                qvtoReconfigurationManager);
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
         List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners = List
-            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider));
+            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 

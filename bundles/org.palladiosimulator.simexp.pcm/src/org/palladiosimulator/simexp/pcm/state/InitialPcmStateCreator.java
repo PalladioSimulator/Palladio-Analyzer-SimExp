@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.pcm.state;
 
-import java.util.Objects;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -16,14 +15,13 @@ import org.palladiosimulator.solver.models.PCMInstance;
 public class InitialPcmStateCreator<A>
         implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> {
 
-    // TODO: singleton
-    private static Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs = null;
+    private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        pcmMeasurementSpecs = specs;
+        this.pcmMeasurementSpecs = specs;
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
@@ -33,15 +31,14 @@ public class InitialPcmStateCreator<A>
         return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager);
     }
 
-    public static Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
-        // TODO exception handling
-        return Objects.requireNonNull(pcmMeasurementSpecs, "");
+    public Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
+        return pcmMeasurementSpecs;
     }
 
     @Override
     public SelfAdaptiveSystemState<PCMInstance, A> create(ArchitecturalConfiguration<PCMInstance, A> initialArch,
             PerceivableEnvironmentalState initialEnv) {
-        return PcmSelfAdaptiveSystemState.<A> newBuilder()
+        return PcmSelfAdaptiveSystemState.<A> newBuilder(this)
             .withStructuralState((PcmArchitecturalConfiguration<A>) initialArch, initialEnv)
             .andMetricDescriptions(getMeasurementSpecs())
             .asInitial()

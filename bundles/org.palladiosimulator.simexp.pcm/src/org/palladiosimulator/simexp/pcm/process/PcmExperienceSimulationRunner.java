@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.MeasurementSeries;
+import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
@@ -24,8 +25,9 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
     private final DataSource dataSource;
     private final IExperimentProvider experimentProvider;
 
-    public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
-        this(new EDP2DataSource(), experimentProvider);
+    public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
+            InitialPcmStateCreator<A> initialStateCreator) {
+        this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 
     PcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {

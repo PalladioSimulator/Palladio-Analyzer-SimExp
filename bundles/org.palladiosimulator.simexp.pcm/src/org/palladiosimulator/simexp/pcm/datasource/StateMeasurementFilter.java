@@ -16,16 +16,25 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 import com.google.common.collect.Maps;
 
-public class StateMeasurementFilter {
+public class StateMeasurementFilter<A> {
+
+    private final InitialPcmStateCreator<A> initialStateCreator;
+
+    public StateMeasurementFilter(InitialPcmStateCreator<A> initialStateCreator) {
+        this.initialStateCreator = initialStateCreator;
+    }
+
     public Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(List<ExperimentRun> experimentRuns) {
-        Set<SimulatedMeasurementSpecification> initialMeasurementSpecs = InitialPcmStateCreator.getMeasurementSpecs();
+        Set<SimulatedMeasurementSpecification> initialMeasurementSpecs = initialStateCreator.getMeasurementSpecs();
         return filterStateMeasurements(experimentRuns, initialMeasurementSpecs);
     }
-    
-    private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(List<ExperimentRun> experimentRuns, Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
+
+    private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(List<ExperimentRun> experimentRuns,
+            Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
         Map<PcmMeasurementSpecification, Measurement> measurments = Maps.newHashMap();
         for (ExperimentRun each : experimentRuns) {
-            Map<PcmMeasurementSpecification, Measurement> stateMeasurments = filterStateMeasurements(each, initialMeasurementSpecs);
+            Map<PcmMeasurementSpecification, Measurement> stateMeasurments = filterStateMeasurements(each,
+                    initialMeasurementSpecs);
             // TODO exception handling
             if (stateMeasurments.isEmpty()) {
                 throw new RuntimeException("");
@@ -35,7 +44,8 @@ public class StateMeasurementFilter {
         return measurments;
     }
 
-    private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(ExperimentRun experimentRun, Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
+    private Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements(ExperimentRun experimentRun,
+            Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
         Map<PcmMeasurementSpecification, Measurement> specToMeas = new HashMap<>();
         MetricComparer metricComparer = new MetricComparer();
         EList<Measurement> measurements = experimentRun.getMeasurement();
@@ -50,7 +60,8 @@ public class StateMeasurementFilter {
         return specToMeas;
     }
 
-    private List<PcmMeasurementSpecification> findSpecifications(Measurement measurement, Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
+    private List<PcmMeasurementSpecification> findSpecifications(Measurement measurement,
+            Set<SimulatedMeasurementSpecification> initialMeasurementSpecs) {
         MeasuringPoint measuringPoint = measurement.getMeasuringType()
             .getMeasuringPoint();
         Set<PcmMeasurementSpecification> measurementSpecs = getMeasurementSpecs(initialMeasurementSpecs);
