@@ -6,7 +6,6 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -15,8 +14,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
-import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNetwork;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
@@ -39,9 +36,6 @@ import com.google.common.collect.Lists;
 public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     private static final Logger LOGGER = Logger.getLogger(DeltaIoTBaseEnvironemtalDynamics.class.getName());
-
-    private final static String SNR_TEMPLATE = "SignalToNoiseRatio";
-    private final static String MA_TEMPLATE = "MoteActivation";
 
     protected final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess;
     protected final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
@@ -153,31 +147,6 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             }
 
         };
-    }
-
-    public static GroundRandomVariable findWirelessInterferenceVariable(LocalProbabilisticNetwork localNetwork) {
-        return localNetwork.getGroundRandomVariables()
-            .stream()
-            .filter(isWITemplate())
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("There is no wireless interference template."));
-    }
-
-    public static Predicate<GroundRandomVariable> isWITemplate() {
-        return isMATemplate().or(v -> isSNRTemplate(v))
-            .negate();
-    }
-
-    public static Predicate<GroundRandomVariable> isMATemplate() {
-        return v -> v.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(MA_TEMPLATE);
-    }
-
-    public static boolean isSNRTemplate(GroundRandomVariable variable) {
-        return variable.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(SNR_TEMPLATE);
     }
 
     public static <A> PcmSelfAdaptiveSystemState<A> asPcmState(State<PCMInstance> state) {
