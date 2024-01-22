@@ -15,17 +15,16 @@ public class ObservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends
 
     public ObservableEnvironmentProcess(MarkovModel<S, A, R> model,
             ProbabilityMassFunction<State<S>> initialDistribution) {
-        super(model, initialDistribution);
+        super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), model, initialDistribution);
     }
 
     public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
             ProbabilityMassFunction<State<S>> initialDistribution) {
-        super(dynamics, initialDistribution);
+        super(buildMarkovian(dynamics, initialDistribution), dynamics, initialDistribution);
     }
 
-    @Override
-    protected Markovian<S, A, R> buildMarkovian(StateSpaceNavigator<S, A> environmentalDynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
+            StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution) {
         MarkovianBuilder<S, A, Aa, R>.MarkovChainBuilder markovChain = MarkovianBuilder
             .<S, A, Aa, R> createMarkovChain();
         return markovChain.createStateSpaceNavigator(environmentalDynamics)
