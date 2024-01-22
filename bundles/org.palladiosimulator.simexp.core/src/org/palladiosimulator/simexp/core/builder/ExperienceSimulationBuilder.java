@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
@@ -46,6 +47,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private Policy<S, A, Aa> policy = null;
     private EnvironmentProcess<S, A, R> envProcess = null;
     private SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
+    private SimulationRunnerHolder<S, A> simulationRunnerHolder;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<S, A, R>> markovModel = Optional.empty();
     private SelfAdaptiveSystemStateSpaceNavigator<S, A, R> navigator = null;
@@ -83,7 +85,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler())
             .build();
-        return ExperienceSimulator.createSimulator(config, simulatedExperienceStore);
+        return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     private void checkValidity() {
@@ -173,7 +175,8 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
     private StateSpaceNavigator<S, A> createInductiveStateSpaceNavigator() {
         if (envProcess != null) {
-            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, simulatedExperienceStore);
+            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, simulatedExperienceStore,
+                    simulationRunnerHolder);
         }
         return navigator;
     }
@@ -209,9 +212,11 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     public class SelfAdaptiveSystemBuilder {
 
         public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<S, A, R> envProcess,
-                SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
+                SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
+                SimulationRunnerHolder<S, A> simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;
+            ExperienceSimulationBuilder.this.simulationRunnerHolder = simulationRunnerHolder;
             return this;
         }
 

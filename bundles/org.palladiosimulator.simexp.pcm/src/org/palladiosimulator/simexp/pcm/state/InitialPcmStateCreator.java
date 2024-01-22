@@ -5,6 +5,7 @@ import java.util.Set;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -18,17 +19,22 @@ public class InitialPcmStateCreator<A>
     private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
+    private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
 
     public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
         this.pcmMeasurementSpecs = specs;
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
     public static <A> InitialPcmStateCreator<A> with(Set<SimulatedMeasurementSpecification> specs,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager);
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
+                simulationRunnerHolder);
     }
 
     public Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
@@ -38,7 +44,7 @@ public class InitialPcmStateCreator<A>
     @Override
     public SelfAdaptiveSystemState<PCMInstance, A> create(ArchitecturalConfiguration<PCMInstance, A> initialArch,
             PerceivableEnvironmentalState initialEnv) {
-        return PcmSelfAdaptiveSystemState.<A> newBuilder(this)
+        return PcmSelfAdaptiveSystemState.<A> newBuilder(this, simulationRunnerHolder)
             .withStructuralState((PcmArchitecturalConfiguration<A>) initialArch, initialEnv)
             .andMetricDescriptions(getMeasurementSpecs())
             .asInitial()

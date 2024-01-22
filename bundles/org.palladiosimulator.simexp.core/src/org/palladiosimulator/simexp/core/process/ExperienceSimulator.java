@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
@@ -22,19 +22,21 @@ public class ExperienceSimulator<S, A, R> {
     private int numberOfRuns;
 
     private ExperienceSimulator(ExperienceSimulationConfiguration<S, A, R> config,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
+            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunner = config.getSimulationRunner();
         this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
-        this.simulationRunner.forEach(SelfAdaptiveSystemState::registerSimulationRunner);
+        this.simulationRunner.forEach(simulationRunnerHolder::registerSimulationRunner);
         this.simulatedExperienceStore = simulatedExperienceStore;
     }
 
     public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
             ExperienceSimulationConfiguration<S, A, R> config,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
-        return new ExperienceSimulator<>(config, simulatedExperienceStore);
+            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
+            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     public void run() {
