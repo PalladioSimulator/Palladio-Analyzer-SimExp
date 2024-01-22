@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
@@ -21,14 +22,18 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
 
     public static class PcmSassBuilder<A> {
 
+        private final InitialPcmStateCreator<A> initialPcmStateCreator;
+        private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
+
         private Set<SimulatedMeasurementSpecification> specs = new HashSet<>();
         private PcmArchitecturalConfiguration<A> initialArch = null;
         private PerceivableEnvironmentalState initialEnv = null;
         private boolean isInitial = false;
-        private final InitialPcmStateCreator<A> initialPcmStateCreator;
 
-        public PcmSassBuilder(InitialPcmStateCreator<A> initialPcmStateCreator) {
+        public PcmSassBuilder(InitialPcmStateCreator<A> initialPcmStateCreator,
+                SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
             this.initialPcmStateCreator = initialPcmStateCreator;
+            this.simulationRunnerHolder = simulationRunnerHolder;
         }
 
         public PcmSassBuilder<A> withStructuralState(PcmArchitecturalConfiguration<A> initialArch,
@@ -56,16 +61,19 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
                 throw new RuntimeException("");
             }
 
-            return new PcmSelfAdaptiveSystemState<>(initialArch, initialEnv, specs, isInitial, initialPcmStateCreator);
+            return new PcmSelfAdaptiveSystemState<>(simulationRunnerHolder, initialArch, initialEnv, specs, isInitial,
+                    initialPcmStateCreator);
         }
 
     }
 
     private final InitialPcmStateCreator<A> initialPcmStateCreator;
 
-    private PcmSelfAdaptiveSystemState(PcmArchitecturalConfiguration<A> archConf,
-            PerceivableEnvironmentalState perceivedState, Set<SimulatedMeasurementSpecification> specs,
-            boolean isInitial, InitialPcmStateCreator<A> initialPcmStateCreator) {
+    private PcmSelfAdaptiveSystemState(SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder,
+            PcmArchitecturalConfiguration<A> archConf, PerceivableEnvironmentalState perceivedState,
+            Set<SimulatedMeasurementSpecification> specs, boolean isInitial,
+            InitialPcmStateCreator<A> initialPcmStateCreator) {
+        super(simulationRunnerHolder);
         this.quantifiedState = StateQuantity.of(toMeasuredQuantities(specs));
         this.archConfiguration = archConf;
         this.perceivedState = perceivedState;
@@ -77,8 +85,9 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
         }
     }
 
-    public static <A> PcmSassBuilder<A> newBuilder(InitialPcmStateCreator<A> initialPcmStateCreator) {
-        return new PcmSassBuilder<>(initialPcmStateCreator);
+    public static <A> PcmSassBuilder<A> newBuilder(InitialPcmStateCreator<A> initialPcmStateCreator,
+            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+        return new PcmSassBuilder<>(initialPcmStateCreator, simulationRunnerHolder);
     }
 
     private List<SimulatedMeasurement> toMeasuredQuantities(Set<SimulatedMeasurementSpecification> specs) {
@@ -104,7 +113,7 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
     @Override
     public SelfAdaptiveSystemState<PCMInstance, A> transitToNext(PerceivableEnvironmentalState perceivedState,
             ArchitecturalConfiguration<PCMInstance, A> archConf) {
-        PcmSassBuilder<A> builder = newBuilder(initialPcmStateCreator);
+        PcmSassBuilder<A> builder = newBuilder(initialPcmStateCreator, simulationRunnerHolder);
         return builder.withStructuralState((PcmArchitecturalConfiguration<A>) archConf, perceivedState)
             .andMetricDescriptions(initialPcmStateCreator.getMeasurementSpecs())
             .build();

@@ -55,15 +55,17 @@ public class RestoredSelfAdaptiveSystemState<S, A> extends SelfAdaptiveSystemSta
     private final SpecialCaseStateQuantity quantifiedState;
     private final SelfAdaptiveSystemState<S, A> restoredState;
 
-    private RestoredSelfAdaptiveSystemState(SelfAdaptiveSystemState<S, A> restoredState,
-            SimulatedExperience experience) {
+    private RestoredSelfAdaptiveSystemState(SimulationRunnerHolder<S, A> simulationRunnerHolder,
+            SelfAdaptiveSystemState<S, A> restoredState, SimulatedExperience experience) {
+        super(simulationRunnerHolder);
         this.restoredState = restoredState;
         this.quantifiedState = new SpecialCaseStateQuantity(experience.getQuantifiedStateOfCurrent());
     }
 
-    public static <S, A> RestoredSelfAdaptiveSystemState<S, A> restoreFrom(SimulatedExperience experience,
+    public static <S, A> RestoredSelfAdaptiveSystemState<S, A> restoreFrom(
+            SimulationRunnerHolder<S, A> simulationRunnerHolder, SimulatedExperience experience,
             SelfAdaptiveSystemState<S, A> restoredState) {
-        return new RestoredSelfAdaptiveSystemState<>(restoredState, experience);
+        return new RestoredSelfAdaptiveSystemState<>(simulationRunnerHolder, restoredState, experience);
     }
 
     @Override

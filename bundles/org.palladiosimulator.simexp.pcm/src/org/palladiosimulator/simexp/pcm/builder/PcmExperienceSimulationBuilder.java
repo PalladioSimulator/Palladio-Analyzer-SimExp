@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.core.builder.ExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
@@ -22,11 +23,12 @@ import com.google.common.collect.Sets;
 public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
         extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R> {
 
+    private final IExperimentProvider experimentProvider;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
+    private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
     private List<ExperienceSimulationRunner<PCMInstance, A>> simRunner = Lists.newArrayList();
     private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
     private Experiment initial = null;
-    private final IExperimentProvider experimentProvider;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public class GlobalPcmSettingsBuilder {
 
@@ -59,9 +61,11 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
     }
 
     public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
     @Override
@@ -75,8 +79,10 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
     }
 
     public static <A, Aa extends Reconfiguration<A>, R> PcmExperienceSimulationBuilder<A, Aa, R> newBuilder(
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager);
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+        return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager,
+                simulationRunnerHolder);
     }
 
     public GlobalPcmSettingsBuilder makeGlobalPcmSettings() {
@@ -90,7 +96,8 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
 
     @Override
     protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> createInitialSassCreator() {
-        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager);
+        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
+                simulationRunnerHolder);
     }
 
 }

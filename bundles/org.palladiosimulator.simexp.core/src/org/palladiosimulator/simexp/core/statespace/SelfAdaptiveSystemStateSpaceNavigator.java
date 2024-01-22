@@ -7,6 +7,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.RestoredSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
@@ -27,11 +28,14 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A, R> extends Ind
 
     protected final EnvironmentProcess<S, A, R> environmentalDynamics;
     private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
+    private final SimulationRunnerHolder<S, A> simulationRunnerHolder;
 
     protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<S, A, R> environmentalDynamics,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
+            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
         this.environmentalDynamics = environmentalDynamics;
         this.simulatedExperienceStore = simulatedExperienceStore;
+        this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
     public ProbabilityMassFunction<State<S>> createInitialDistribution(
@@ -101,7 +105,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A, R> extends Ind
         Optional<SimulatedExperience> result = simulatedExperienceStore
             .findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
-            return RestoredSelfAdaptiveSystemState.restoreFrom(result.get(), structuralState);
+            return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder, result.get(), structuralState);
         }
         structuralState.determineQuantifiedState();
         return structuralState;

@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
@@ -58,10 +59,11 @@ public class RobotCognitionSimulationExecutorFactory
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager);
+                qvtoReconfigurationManager, simulationRunnerHolder);
         RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
         EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> p = envDynamics.getEnvironmentProcess();

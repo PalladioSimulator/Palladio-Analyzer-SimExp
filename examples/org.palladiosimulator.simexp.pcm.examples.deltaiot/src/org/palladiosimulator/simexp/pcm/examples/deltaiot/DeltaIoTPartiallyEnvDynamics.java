@@ -13,6 +13,7 @@ import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
@@ -35,9 +36,11 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork dbn,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         super(dbn, modelAccess);
-        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore);
+        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore,
+                simulationRunnerHolder);
     }
 
     public SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> getEnvironmentProcess() {
@@ -45,9 +48,10 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     }
 
     private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> createPartiallyEnvironmentalDrivenProcess(
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R>(envProcess,
-                simulatedExperienceStore) {
+                simulatedExperienceStore, simulationRunnerHolder) {
 
             class SNRCalculator {
 

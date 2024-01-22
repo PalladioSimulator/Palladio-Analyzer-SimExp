@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -42,6 +43,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     protected final IExperimentProvider experimentProvider;
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
+    private final SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
             SimulationParameters params,
@@ -49,7 +51,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;
@@ -61,6 +64,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
         this.probDistRepoLookup = probDistRepoLookup;
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.simulationRunnerHolder = simulationRunnerHolder;
 
         probabilityDistributionRegistry
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
@@ -78,7 +82,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
             Set<QVToReconfiguration> reconfigurations, RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager)
+            .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager,
+                    simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))
@@ -91,7 +96,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
             .andOptionalExecutionBeforeEachRun(beforeExecution)
             .done()
             .specifySelfAdaptiveSystemState()
-            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore)
+            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)
             .asPartiallyEnvironmentalDrivenProcess(navigator)
             .asHiddenProcess(hidden)
             .done()
