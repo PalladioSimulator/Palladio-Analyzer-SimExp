@@ -25,6 +25,11 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
         private PcmArchitecturalConfiguration<A> initialArch = null;
         private PerceivableEnvironmentalState initialEnv = null;
         private boolean isInitial = false;
+        private final InitialPcmStateCreator<A> initialPcmStateCreator;
+
+        public PcmSassBuilder(InitialPcmStateCreator<A> initialPcmStateCreator) {
+            this.initialPcmStateCreator = initialPcmStateCreator;
+        }
 
         public PcmSassBuilder<A> withStructuralState(PcmArchitecturalConfiguration<A> initialArch,
                 PerceivableEnvironmentalState initialEnv) {
@@ -51,17 +56,20 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
                 throw new RuntimeException("");
             }
 
-            return new PcmSelfAdaptiveSystemState<>(initialArch, initialEnv, specs, isInitial);
+            return new PcmSelfAdaptiveSystemState<>(initialArch, initialEnv, specs, isInitial, initialPcmStateCreator);
         }
 
     }
 
+    private final InitialPcmStateCreator<A> initialPcmStateCreator;
+
     private PcmSelfAdaptiveSystemState(PcmArchitecturalConfiguration<A> archConf,
             PerceivableEnvironmentalState perceivedState, Set<SimulatedMeasurementSpecification> specs,
-            boolean isInitial) {
+            boolean isInitial, InitialPcmStateCreator<A> initialPcmStateCreator) {
         this.quantifiedState = StateQuantity.of(toMeasuredQuantities(specs));
         this.archConfiguration = archConf;
         this.perceivedState = perceivedState;
+        this.initialPcmStateCreator = initialPcmStateCreator;
 
         applyChanges(perceivedState);
         if (isInitial) {
@@ -69,8 +77,8 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
         }
     }
 
-    public static <A> PcmSassBuilder<A> newBuilder() {
-        return new PcmSassBuilder<>();
+    public static <A> PcmSassBuilder<A> newBuilder(InitialPcmStateCreator<A> initialPcmStateCreator) {
+        return new PcmSassBuilder<>(initialPcmStateCreator);
     }
 
     private List<SimulatedMeasurement> toMeasuredQuantities(Set<SimulatedMeasurementSpecification> specs) {
@@ -96,9 +104,9 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
     @Override
     public SelfAdaptiveSystemState<PCMInstance, A> transitToNext(PerceivableEnvironmentalState perceivedState,
             ArchitecturalConfiguration<PCMInstance, A> archConf) {
-        PcmSassBuilder<A> builder = newBuilder();
+        PcmSassBuilder<A> builder = newBuilder(initialPcmStateCreator);
         return builder.withStructuralState((PcmArchitecturalConfiguration<A>) archConf, perceivedState)
-            .andMetricDescriptions(InitialPcmStateCreator.getMeasurementSpecs())
+            .andMetricDescriptions(initialPcmStateCreator.getMeasurementSpecs())
             .build();
     }
 

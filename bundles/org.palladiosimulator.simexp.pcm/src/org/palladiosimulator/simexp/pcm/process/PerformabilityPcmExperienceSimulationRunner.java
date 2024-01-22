@@ -9,6 +9,7 @@ import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
+import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
@@ -23,8 +24,9 @@ public class PerformabilityPcmExperienceSimulationRunner<A> extends PcmExperienc
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
 
-    public PerformabilityPcmExperienceSimulationRunner(IExperimentProvider experimentProvider) {
-        this(new EDP2DataSource(), experimentProvider);
+    public PerformabilityPcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
+            InitialPcmStateCreator<A> initialStateCreator) {
+        this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 
     public PerformabilityPcmExperienceSimulationRunner(DataSource dataSource, IExperimentProvider experimentProvider) {
