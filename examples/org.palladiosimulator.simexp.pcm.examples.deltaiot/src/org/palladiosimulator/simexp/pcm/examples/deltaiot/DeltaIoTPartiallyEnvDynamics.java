@@ -188,7 +188,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
             .equals(MA_TEMPLATE);
     }
 
-    private static boolean isSNRTemplate(GroundRandomVariable variable) {
+    public static boolean isSNRTemplate(GroundRandomVariable variable) {
         return variable.getInstantiatedTemplate()
             .getEntityName()
             .equals(SNR_TEMPLATE);
