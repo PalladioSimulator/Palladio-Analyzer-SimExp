@@ -58,6 +58,8 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.base.Objects;
 
@@ -168,6 +170,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             List<URI> moduleFiles, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
 
+        SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder = new SimulationRunnerHolder<>();
         PcmExperienceSimulationExecutorFactory<? extends Number, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
@@ -179,18 +182,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn,
                     pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, new SimulationRunnerHolder<>());
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
             case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
                     pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, new SimulationRunnerHolder<>());
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
             case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
                     experiment, dbn, pcmSpecs, simulationParameters,
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, new SimulationRunnerHolder<>());
+                    qvtoReconfigurationManager, simulationRunnerHolder);
 
             default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
             };
@@ -206,7 +209,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters,
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, new SimulationRunnerHolder<>());
+                    qvtoReconfigurationManager, simulationRunnerHolder);
         }
 
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
