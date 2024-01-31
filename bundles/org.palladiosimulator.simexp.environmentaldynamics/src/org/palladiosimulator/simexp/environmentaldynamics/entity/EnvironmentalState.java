@@ -4,29 +4,29 @@ import static java.util.Objects.requireNonNull;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEnvironmentalState {
+public class EnvironmentalState<S, V> extends StateImpl<S> implements PerceivableEnvironmentalState {
 
-    public static class EnvironmentalStateBuilder<S> {
-        private PerceivedValue<?> value = null;
+    public static class EnvironmentalStateBuilder<S, V> {
+        private PerceivedValue<V> value = null;
         private boolean isInitial = false;
         private boolean isHidden = false;
 
-        public EnvironmentalStateBuilder<S> withValue(PerceivedValue<?> value) {
+        public EnvironmentalStateBuilder<S, V> withValue(PerceivedValue<V> value) {
             this.value = value;
             return this;
         }
 
-        public EnvironmentalStateBuilder<S> isInital() {
+        public EnvironmentalStateBuilder<S, V> isInital() {
             this.isInitial = true;
             return this;
         }
 
-        public EnvironmentalStateBuilder<S> isHidden() {
+        public EnvironmentalStateBuilder<S, V> isHidden() {
             this.isHidden = true;
             return this;
         }
 
-        public EnvironmentalState<S> build() {
+        public EnvironmentalState<S, V> build() {
             requireNonNull(value, "The environmental state value must not be null");
 
             return new EnvironmentalState<>(value, isInitial, isHidden);
@@ -34,17 +34,17 @@ public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEn
 
     }
 
-    private final PerceivedValue<?> value;
+    private final PerceivedValue<V> value;
     private final boolean isInitial;
     private final boolean isHidden;
 
-    protected EnvironmentalState(PerceivedValue<?> value, boolean isInitial, boolean isHidden) {
+    protected EnvironmentalState(PerceivedValue<V> value, boolean isInitial, boolean isHidden) {
         this.value = value;
         this.isInitial = isInitial;
         this.isHidden = isHidden;
     }
 
-    public static <S> EnvironmentalStateBuilder<S> newBuilder() {
+    public static <S, V> EnvironmentalStateBuilder<S, V> newBuilder() {
         return new EnvironmentalStateBuilder<>();
     }
 
@@ -54,7 +54,7 @@ public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEn
     }
 
     @Override
-    public PerceivedValue<?> getValue() {
+    public PerceivedValue<V> getValue() {
         return value;
     }
 

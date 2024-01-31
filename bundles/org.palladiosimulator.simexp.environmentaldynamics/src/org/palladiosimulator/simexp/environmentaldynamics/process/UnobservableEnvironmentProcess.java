@@ -38,8 +38,8 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
 
     @Override
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        EnvironmentalState<S> hiddenState = EnvironmentalStateObservation.class.cast(last)
-            .getHiddenState();
+        EnvironmentalStateObservation<S, V> observation = EnvironmentalStateObservation.class.cast(last);
+        EnvironmentalState<S, V> hiddenState = observation.getHiddenState();
         return (EnvironmentalStateObservation<S, V>) determineNextSampleGiven(hiddenState).getObservation();
     }
 

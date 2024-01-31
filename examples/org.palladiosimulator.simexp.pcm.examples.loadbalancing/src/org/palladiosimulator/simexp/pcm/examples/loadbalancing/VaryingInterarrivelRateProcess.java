@@ -141,8 +141,8 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
             }
 
             @Override
-            public EnvironmentalState<S> navigate(NavigationContext<S, A> context) {
-                EnvironmentalState<S> envState = EnvironmentalState.class.cast(context.getSource());
+            public EnvironmentalState<S, List<InputValue>> navigate(NavigationContext<S, A> context) {
+                EnvironmentalState<S, List<InputValue>> envState = EnvironmentalState.class.cast(context.getSource());
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
@@ -151,13 +151,14 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
                 return sample(toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState<S> sample(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<S, List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
                 Trajectory traj = dbn.given(asConditionals(conditionalInputs))
                     .sample();
                 return asPcmEnvironmentalState(traj.valueAtTime(0));
             }
 
-            private EnvironmentalState<S> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<S, List<InputValue>> sampleRandomly(
+                    List<ConditionalInputValue> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
 
@@ -178,7 +179,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         return Lists.newArrayList();
     }
 
-    private EnvironmentalState<S> asPcmEnvironmentalState(List<InputValue> sample) {
+    private EnvironmentalState<S, List<InputValue>> asPcmEnvironmentalState(List<InputValue> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
         ArrayList<PcmModelChange> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
@@ -187,7 +188,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         return new PcmEnvironmentalState<>(attrChanges, asPerceivedValue(sample));
     }
 
-    private PerceivedValue<?> asPerceivedValue(List<InputValue> sample) {
+    private PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample) {
         Map<String, InputValue> newValueStore = Maps.newHashMap();
         newValueStore.put(PCM_SPECIFICATION_ATTRIBUTE, findInputValue(sample, WORKLOAD_VARIABLE));
         // newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, findInputValue(sample,
@@ -195,7 +196,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         // newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, findInputValue(sample,
         // SERVER_NODE_2_VARIABLE));
 
-        return new PerceivedValue<List<InputValue>>() {
+        return new PerceivedValue<>() {
 
             private final Map<String, InputValue> valueStore = newValueStore;
 

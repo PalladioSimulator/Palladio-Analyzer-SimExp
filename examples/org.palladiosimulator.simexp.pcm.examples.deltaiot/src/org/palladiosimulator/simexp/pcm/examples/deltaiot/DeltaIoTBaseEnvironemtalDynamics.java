@@ -69,9 +69,10 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             }
 
             @Override
-            public EnvironmentalState<PCMInstance> navigate(
+            public EnvironmentalState<PCMInstance, List<InputValue>> navigate(
                     NavigationContext<PCMInstance, QVTOReconfigurator> context) {
-                EnvironmentalState<PCMInstance> envState = EnvironmentalState.class.cast(context.getSource());
+                EnvironmentalState<PCMInstance, List<InputValue>> envState = EnvironmentalState.class
+                    .cast(context.getSource());
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
@@ -80,16 +81,18 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
                 return sample(toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState<PCMInstance> sample(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<PCMInstance, List<InputValue>> sample(
+                    List<ConditionalInputValue> conditionalInputs) {
                 var traj = dbn.given(asConditionals(conditionalInputs))
                     .sample();
                 var value = toPerceivedValue(traj.valueAtTime(0));
-                EnvironmentalStateBuilder<PCMInstance> builder = EnvironmentalState.newBuilder();
+                EnvironmentalStateBuilder<PCMInstance, List<InputValue>> builder = EnvironmentalState.newBuilder();
                 return builder.withValue(value)
                     .build();
             }
 
-            private EnvironmentalState<PCMInstance> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<PCMInstance, List<InputValue>> sampleRandomly(
+                    List<ConditionalInputValue> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
         };
@@ -103,7 +106,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             @Override
             public Sample<State<PCMInstance>> drawSample() {
                 var sample = bn.sample();
-                EnvironmentalStateBuilder<PCMInstance> builder = EnvironmentalState.newBuilder();
+                EnvironmentalStateBuilder<PCMInstance, List<InputValue>> builder = EnvironmentalState.newBuilder();
                 State<PCMInstance> newState = builder.withValue(toPerceivedValue(sample))
                     .isInital()
                     .build();
@@ -121,8 +124,8 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         };
     }
 
-    private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
-        return new PerceivedValue<List<InputValue>>() {
+    private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
+        return new PerceivedValue<>() {
 
             @Override
             public List<InputValue> getValue() {

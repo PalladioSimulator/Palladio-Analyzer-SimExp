@@ -34,7 +34,7 @@ public class ObservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends
 
     @Override
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState<S>) last).getNext();
+        return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState) last).getNext();
     }
 
     @Override

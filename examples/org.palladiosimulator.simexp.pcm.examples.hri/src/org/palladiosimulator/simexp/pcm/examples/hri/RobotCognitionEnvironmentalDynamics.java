@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunctio
 import org.palladiosimulator.simexp.environmentaldynamics.entity.CategoricalValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -37,21 +38,24 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         return envProcess;
     }
 
-    private ProbabilityMassFunction createInitialDist() {
-        return new ProbabilityMassFunction() {
+    private ProbabilityMassFunction<State<S>> createInitialDist() {
+        return new ProbabilityMassFunction<>() {
 
             @Override
-            public Sample drawSample() {
-                var initial = EnvironmentalState.newBuilder()
+            public Sample<State<S>> drawSample() {
+                EnvironmentalStateBuilder<S, String> builder = EnvironmentalState.newBuilder();
+                EnvironmentalState<S, String> initial = builder
                     .withValue(new CategoricalValue("MLPrediction", "Unknown"))
                     .isInital()
                     .isHidden()
                     .build();
-                return Sample.of(initial, 1.0);
+                // Sample<EnvironmentalState<S, String>> sample = Sample.of(initial, 1.0);
+                Sample<State<S>> sample = Sample.of((State<S>) initial, 1.0);
+                return sample;
             }
 
             @Override
-            public double probability(Sample sample) {
+            public double probability(Sample<State<S>> sample) {
                 return 1.0;
             }
         };
@@ -91,13 +95,13 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         };
     }
 
-    private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
-        return new ObservationProducer() {
+    private ObservationProducer<S> createObsProducer(DynamicBayesianNetwork dbn) {
+        return new ObservationProducer<>() {
 
             private EnvironmentalStateObservation last = null;
 
             @Override
-            public Observation<?> produceObservationGiven(State emittingState) {
+            public Observation<S> produceObservationGiven(State<S> emittingState) {
                 var hiddenState = EnvironmentalState.class.cast(emittingState);
 
                 List<InputValue> sample;
@@ -132,8 +136,8 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         };
     }
 
-    private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
-        return new PerceivedValue<List<InputValue>>() {
+    private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
+        return new PerceivedValue<>() {
 
             @Override
             public List<InputValue> getValue() {
