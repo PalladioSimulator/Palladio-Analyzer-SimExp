@@ -28,7 +28,7 @@ public class ExperienceSimulator<S, A, R> {
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunner = config.getSimulationRunner();
         this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
-        this.simulationRunner.forEach(simulationRunnerHolder::registerSimulationRunner);
+        simulationRunnerHolder.registerSimulationRunners(simulationRunner);
         this.simulatedExperienceStore = simulatedExperienceStore;
     }
 

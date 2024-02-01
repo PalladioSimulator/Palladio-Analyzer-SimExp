@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.core.state;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
@@ -8,8 +9,8 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 public class SimulationRunnerHolder<S> {
     private final List<ExperienceSimulationRunner<S>> simulationRunner = new ArrayList<>();
 
-    public void registerSimulationRunner(ExperienceSimulationRunner<S> newSimulationRunner) {
-        simulationRunner.add(newSimulationRunner);
+    public void registerSimulationRunners(Collection<ExperienceSimulationRunner<S>> newSimulationRunners) {
+        simulationRunner.addAll(newSimulationRunners);
     }
 
     public <A> void simulate(SelfAdaptiveSystemState<S, A> sasState) {
