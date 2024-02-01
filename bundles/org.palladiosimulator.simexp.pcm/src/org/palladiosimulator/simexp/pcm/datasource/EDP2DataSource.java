@@ -24,17 +24,17 @@ import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult.Strin
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class EDP2DataSource<A> extends DataSource {
+public class EDP2DataSource<A, V> extends DataSource {
 
-    private final InitialPcmStateCreator<A> initialStateCreator;
+    private final InitialPcmStateCreator<A, V> initialStateCreator;
 
-    public EDP2DataSource(InitialPcmStateCreator<A> initialStateCreator) {
+    public EDP2DataSource(InitialPcmStateCreator<A, V> initialStateCreator) {
         this.initialStateCreator = initialStateCreator;
     }
 
     @Override
     public MeasurementSeriesResult getSimulatedMeasurements(List<ExperimentRun> experimentRuns) {
-        StateMeasurementFilter filter = new StateMeasurementFilter(initialStateCreator);
+        StateMeasurementFilter<A, V> filter = new StateMeasurementFilter<>(initialStateCreator);
         Map<PcmMeasurementSpecification, Measurement> filterStateMeasurements = filter
             .filterStateMeasurements(experimentRuns);
         return asDataSeries(filterStateMeasurements);
@@ -79,7 +79,7 @@ public class EDP2DataSource<A> extends DataSource {
                 Number number = (Number) stateQuantityValue;
                 if (number instanceof Double) {
                     Double stateQuantityAsDoubleValue = (Double) stateQuantityValue;
-                    NumberMeasurementValue<Double> measurementValueAsDouble = new MeasurementSeriesResult.NumberMeasurementValue<Double>(
+                    NumberMeasurementValue<Double> measurementValueAsDouble = new MeasurementSeriesResult.NumberMeasurementValue<>(
                             stateQuantityAsDoubleValue, Double.class);
                     Pair<PointInTime, MeasurementValue> measurementValuePair = Pair.of(pointInTime,
                             measurementValueAsDouble);

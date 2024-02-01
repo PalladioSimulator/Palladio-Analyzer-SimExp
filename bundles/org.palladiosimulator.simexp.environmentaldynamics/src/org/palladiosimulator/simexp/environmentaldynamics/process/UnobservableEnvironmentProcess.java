@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R> {
+public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R, V> {
 
     public UnobservableEnvironmentProcess(MarkovModel<S, A, R> model,
             ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
@@ -37,16 +37,16 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
     }
 
     @Override
-    public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
+    public PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last) {
         EnvironmentalStateObservation<S, V> observation = EnvironmentalStateObservation.class.cast(last);
         EnvironmentalState<S, V> hiddenState = observation.getHiddenState();
         return (EnvironmentalStateObservation<S, V>) determineNextSampleGiven(hiddenState).getObservation();
     }
 
     @Override
-    public PerceivableEnvironmentalState determineInitial() {
+    public PerceivableEnvironmentalState<V> determineInitial() {
         // TODO Could be better solved... see HiddenMarkovian
-        return (PerceivableEnvironmentalState) sampler.drawInitialSample()
+        return (PerceivableEnvironmentalState<V>) sampler.drawInitialSample()
             .getCurrent()
             .getProduces()
             .get(0);

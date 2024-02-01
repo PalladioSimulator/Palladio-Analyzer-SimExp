@@ -72,7 +72,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     private final PcmAttributeChange<List<InputValue>> attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;
-    private final EnvironmentProcess<S, A, R> envProcess;
+    private final EnvironmentProcess<S, A, R, List<InputValue>> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
 
     public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
@@ -95,12 +95,13 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         };
     }
 
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<S, A, R, List<InputValue>> getEnvironmentProcess() {
         return envProcess;
     }
 
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<S, A, Aa, R>(createDerivableProcess(dbn), initialDist);
+    private EnvironmentProcess<S, A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+        return new ObservableEnvironmentProcess<S, A, Aa, R, List<InputValue>>(createDerivableProcess(dbn),
+                initialDist);
     }
 
     private ProbabilityMassFunction<State<S>> createInitialDist(DynamicBayesianNetwork dbn) {

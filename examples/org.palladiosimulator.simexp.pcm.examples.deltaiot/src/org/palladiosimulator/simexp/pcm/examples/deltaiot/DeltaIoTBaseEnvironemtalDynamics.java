@@ -37,7 +37,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     private static final Logger LOGGER = Logger.getLogger(DeltaIoTBaseEnvironemtalDynamics.class.getName());
 
-    protected final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess;
+    protected final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R, List<InputValue>> envProcess;
     protected final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork dbn,
@@ -46,9 +46,9 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         this.modelAccess = modelAccess;
     }
 
-    private EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> createEnvironmentalProcess(
+    private EnvironmentProcess<PCMInstance, QVTOReconfigurator, R, List<InputValue>> createEnvironmentalProcess(
             DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R>(
+        return new ObservableEnvironmentProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R, List<InputValue>>(
                 createDerivableProcess(dbn), createInitialDist(dbn));
     }
 
@@ -152,17 +152,18 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         };
     }
 
-    public static <A> PcmSelfAdaptiveSystemState<A> asPcmState(State<PCMInstance> state) {
+    public static <A> PcmSelfAdaptiveSystemState<A, List<InputValue>> asPcmState(State<PCMInstance> state) {
         return PcmSelfAdaptiveSystemState.class.cast(state);
     }
 
-    public static <A> PerceivableEnvironmentalState getCurrentEnvironment(NavigationContext<PCMInstance, A> context) {
+    public static <A> PerceivableEnvironmentalState<List<InputValue>> getCurrentEnvironment(
+            NavigationContext<PCMInstance, A> context) {
         return asPcmState(context.getSource()).getPerceivedEnvironmentalState();
     }
 
     public static <A> PcmArchitecturalConfiguration<A> getCurrentArchitecture(
             NavigationContext<PCMInstance, A> context) {
-        PcmSelfAdaptiveSystemState<A> pcmState = asPcmState(context.getSource());
+        PcmSelfAdaptiveSystemState<A, List<InputValue>> pcmState = asPcmState(context.getSource());
         ArchitecturalConfiguration<PCMInstance, A> pcmConfig = pcmState.getArchitecturalConfiguration();
         return PcmArchitecturalConfiguration.class.cast(pcmConfig);
     }

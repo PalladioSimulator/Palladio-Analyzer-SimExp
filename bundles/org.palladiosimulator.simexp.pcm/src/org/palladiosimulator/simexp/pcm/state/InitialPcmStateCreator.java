@@ -13,8 +13,8 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class InitialPcmStateCreator<A>
-        implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> {
+public class InitialPcmStateCreator<A, V>
+        implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator<PCMInstance, A, V> {
 
     private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
     private final IExperimentProvider experimentProvider;
@@ -30,7 +30,7 @@ public class InitialPcmStateCreator<A>
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
-    public static <A> InitialPcmStateCreator<A> with(Set<SimulatedMeasurementSpecification> specs,
+    public static <A, V> InitialPcmStateCreator<A, V> with(Set<SimulatedMeasurementSpecification> specs,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
@@ -42,9 +42,9 @@ public class InitialPcmStateCreator<A>
     }
 
     @Override
-    public SelfAdaptiveSystemState<PCMInstance, A> create(ArchitecturalConfiguration<PCMInstance, A> initialArch,
-            PerceivableEnvironmentalState initialEnv) {
-        return PcmSelfAdaptiveSystemState.<A> newBuilder(this, simulationRunnerHolder)
+    public SelfAdaptiveSystemState<PCMInstance, A, V> create(ArchitecturalConfiguration<PCMInstance, A> initialArch,
+            PerceivableEnvironmentalState<V> initialEnv) {
+        return PcmSelfAdaptiveSystemState.<A, V> newBuilder(this, simulationRunnerHolder)
             .withStructuralState((PcmArchitecturalConfiguration<A>) initialArch, initialEnv)
             .andMetricDescriptions(getMeasurementSpecs())
             .asInitial()

@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
@@ -44,14 +45,14 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class RobotCognitionSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Double, PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Double, List<InputValue>, PcmMeasurementSpecification> {
     public static final double UPPER_THRESHOLD_RT = 0.1;
     public static final double LOWER_THRESHOLD_REL = 0.9;
 
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double, List<InputValue>> envProcess;
 
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -66,7 +67,8 @@ public class RobotCognitionSimulationExecutorFactory
                 qvtoReconfigurationManager, simulationRunnerHolder);
         RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> p = envDynamics.getEnvironmentProcess();
+        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double, List<InputValue>> p = envDynamics
+            .getEnvironmentProcess();
         this.envProcess = p;
     }
 

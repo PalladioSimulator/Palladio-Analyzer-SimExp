@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -40,12 +41,12 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class LoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Integer, PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Integer, List<InputValue>, PcmMeasurementSpecification> {
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer, List<InputValue>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
 
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,

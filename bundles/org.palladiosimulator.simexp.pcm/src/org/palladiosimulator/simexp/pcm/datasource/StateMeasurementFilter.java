@@ -16,11 +16,11 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 import com.google.common.collect.Maps;
 
-public class StateMeasurementFilter<A> {
+public class StateMeasurementFilter<A, V> {
 
-    private final InitialPcmStateCreator<A> initialStateCreator;
+    private final InitialPcmStateCreator<A, V> initialStateCreator;
 
-    public StateMeasurementFilter(InitialPcmStateCreator<A> initialStateCreator) {
+    public StateMeasurementFilter(InitialPcmStateCreator<A, V> initialStateCreator) {
         this.initialStateCreator = initialStateCreator;
     }
 

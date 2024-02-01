@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
@@ -47,15 +48,15 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class FaultTolerantLoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Double, PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Double, List<InputValue>, PcmMeasurementSpecification> {
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
+    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double, List<InputValue>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,

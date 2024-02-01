@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R> {
+public class SimulatedRewardReceiver<S, A, R, V> implements RewardReceiver<S, A, R> {
 
     private static final Logger LOGGER = Logger.getLogger(SimulatedRewardReceiver.class.getName());
 
@@ -18,7 +18,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
         this.evaluator = evaluator;
     }
 
-    public static <S, A, R> SimulatedRewardReceiver<S, A, R> with(RewardEvaluator<R> evaluator) {
+    public static <S, A, R, V> SimulatedRewardReceiver<S, A, R, V> with(RewardEvaluator<R> evaluator) {
         return new SimulatedRewardReceiver<>(evaluator);
     }
 
@@ -27,7 +27,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
         SelfAdaptiveSystemStateSampleValidator checkSample = this.new SelfAdaptiveSystemStateSampleValidator();
         try {
             checkSample.validate(sample);
-        } catch (SimulatedRewardReceiver<S, A, R>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
+        } catch (SimulatedRewardReceiver<S, A, R, V>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
             throw new RuntimeException(e);
         }
 
@@ -35,7 +35,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
     }
 
     private Reward<R> evaluate(Sample<S, A, R> sample) {
-        SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) sample.getNext();
+        SelfAdaptiveSystemState<S, A, V> state = (SelfAdaptiveSystemState<S, A, V>) sample.getNext();
         Reward<R> evaluatedReward = evaluator.evaluate(state.getQuantifiedState());
 
         LOGGER.debug(String.format(Locale.ENGLISH, "Evaluated reward: %s", evaluatedReward.getValue()

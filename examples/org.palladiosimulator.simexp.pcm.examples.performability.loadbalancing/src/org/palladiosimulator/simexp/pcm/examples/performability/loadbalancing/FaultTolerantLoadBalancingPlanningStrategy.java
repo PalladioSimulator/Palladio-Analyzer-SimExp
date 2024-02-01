@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
+import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -24,7 +26,7 @@ public class FaultTolerantLoadBalancingPlanningStrategy<S, A> extends AbstractRe
     @Override
     public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<S, A> sasState = (SelfAdaptiveSystemState<S, A>) source;
+        SelfAdaptiveSystemState<S, A, List<InputValue>> sasState = (SelfAdaptiveSystemState<S, A, List<InputValue>>) source;
         /**
          * workarournd to implement node recovery behavior until we are able to realize this as QVTO
          * transformation

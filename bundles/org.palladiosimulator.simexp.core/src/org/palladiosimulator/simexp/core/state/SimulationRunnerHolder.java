@@ -13,7 +13,7 @@ public class SimulationRunnerHolder<S> {
         simulationRunner.addAll(newSimulationRunners);
     }
 
-    public <A> void simulate(SelfAdaptiveSystemState<S, A> sasState) {
+    public <A, V> void simulate(SelfAdaptiveSystemState<S, A, V> sasState) {
         if (simulationRunner.isEmpty()) {
             // TODO exception handling
             throw new RuntimeException("There has to be at one simulation runner.");

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -43,7 +44,7 @@ public class NStepLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigur
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<S, A> sassState = (SelfAdaptiveSystemState<S, A>) source;
+        SelfAdaptiveSystemState<S, A, List<InputValue>> sassState = (SelfAdaptiveSystemState<S, A, List<InputValue>>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));

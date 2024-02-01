@@ -28,7 +28,8 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public abstract class DeltaIoTPrismFileUpdater<A> extends PrismFileUpdateGenerator.PrismFileUpdater<A> {
+public abstract class DeltaIoTPrismFileUpdater<A>
+        extends PrismFileUpdateGenerator.PrismFileUpdater<A, List<InputValue>> {
 
     private static class DeltaIoTPrismReplacementSet {
 
@@ -142,12 +143,13 @@ public abstract class DeltaIoTPrismFileUpdater<A> extends PrismFileUpdateGenerat
         super(prismSpec);
     }
 
-    protected void substituteDistributionFactor(PrismContext prismContext, PcmSelfAdaptiveSystemState<A> sasState) {
+    protected void substituteDistributionFactor(PrismContext prismContext,
+            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         substituteDistributionFactor(prismContext, sasState, null);
     }
 
-    protected void substituteDistributionFactor(PrismContext prismContext, PcmSelfAdaptiveSystemState<A> sasState,
-            Function<Double, Integer> factorNormalization) {
+    protected void substituteDistributionFactor(PrismContext prismContext,
+            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState, Function<Double, Integer> factorNormalization) {
         sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getRepositories()
@@ -182,7 +184,8 @@ public abstract class DeltaIoTPrismFileUpdater<A> extends PrismFileUpdateGenerat
         }
     }
 
-    protected void substituteMoteActivations(PrismContext prismContext, PcmSelfAdaptiveSystemState<A> sasState) {
+    protected void substituteMoteActivations(PrismContext prismContext,
+            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         System system = sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getSystem();
@@ -192,7 +195,8 @@ public abstract class DeltaIoTPrismFileUpdater<A> extends PrismFileUpdateGenerat
         }
     }
 
-    private Optional<InputValue> resolveMAInputValue(AssemblyContext context, PerceivableEnvironmentalState state) {
+    private Optional<InputValue> resolveMAInputValue(AssemblyContext context,
+            PerceivableEnvironmentalState<List<InputValue>> state) {
         List<InputValue> values = resolveInputValue(context, state);
 
         if (values.size() != 1) {
@@ -202,7 +206,7 @@ public abstract class DeltaIoTPrismFileUpdater<A> extends PrismFileUpdateGenerat
     }
 
     protected <T extends Entity> List<InputValue> resolveInputValue(T appliedElement,
-            PerceivableEnvironmentalState perceivedEnvironmentalState) {
+            PerceivableEnvironmentalState<List<InputValue>> perceivedEnvironmentalState) {
         List<InputValue> values = Lists.newArrayList();
         for (InputValue eachInput : toInputs(perceivedEnvironmentalState.getValue()
             .getValue())) {

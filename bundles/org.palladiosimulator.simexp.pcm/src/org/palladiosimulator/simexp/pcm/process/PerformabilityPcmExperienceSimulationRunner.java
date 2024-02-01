@@ -18,14 +18,14 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
-public class PerformabilityPcmExperienceSimulationRunner<A> extends PcmExperienceSimulationRunner<A> {
+public class PerformabilityPcmExperienceSimulationRunner<A, V> extends PcmExperienceSimulationRunner<A, V> {
 
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
 
     public PerformabilityPcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
-            InitialPcmStateCreator<A> initialStateCreator) {
+            InitialPcmStateCreator<A, V> initialStateCreator) {
         this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 

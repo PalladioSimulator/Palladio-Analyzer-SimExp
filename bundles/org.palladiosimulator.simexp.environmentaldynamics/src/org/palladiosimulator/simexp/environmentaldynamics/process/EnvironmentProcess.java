@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class EnvironmentProcess<S, A, R> {
+public abstract class EnvironmentProcess<S, A, R, V> {
 
     private final boolean isHiddenProcess;
 
@@ -33,7 +33,7 @@ public abstract class EnvironmentProcess<S, A, R> {
     }
 
     private boolean isHiddenProcess(MarkovModel<S, A, R> model) {
-        PerceivableEnvironmentalState any = (PerceivableEnvironmentalState) model.getStateSpace()
+        PerceivableEnvironmentalState<V> any = (PerceivableEnvironmentalState<V>) model.getStateSpace()
             .get(0);
         return any.isHidden();
     }
@@ -52,8 +52,8 @@ public abstract class EnvironmentProcess<S, A, R> {
         return isHiddenProcess;
     }
 
-    public abstract PerceivableEnvironmentalState determineInitial();
+    public abstract PerceivableEnvironmentalState<V> determineInitial();
 
-    public abstract PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last);
+    public abstract PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last);
 
 }

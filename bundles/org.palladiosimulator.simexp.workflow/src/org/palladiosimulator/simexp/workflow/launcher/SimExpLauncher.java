@@ -170,7 +170,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IQVToReconfigurationManager qvtoReconfigurationManager) {
 
         SimulationRunnerHolder<PCMInstance> simulationRunnerHolder = new SimulationRunnerHolder<>();
-        PcmExperienceSimulationExecutorFactory<? extends Number, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
+        PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
             List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()

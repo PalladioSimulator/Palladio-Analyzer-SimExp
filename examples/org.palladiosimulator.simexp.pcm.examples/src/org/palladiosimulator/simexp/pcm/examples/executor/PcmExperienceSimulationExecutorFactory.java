@@ -30,7 +30,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T extends SimulatedMeasurementSpecification> {
+public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     protected final Experiment experiment;
     protected final DynamicBayesianNetwork dbn;
     protected final List<T> specs;
@@ -75,14 +75,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs,
             List<ExperienceSimulationRunner<PCMInstance>> runners, SimulationParameters params,
-            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
+            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R, V> envProcess,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
-            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> navigator,
+            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy,
             Set<QVToReconfiguration> reconfigurations, RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager,
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, qvtoReconfigurationManager,
                     simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)

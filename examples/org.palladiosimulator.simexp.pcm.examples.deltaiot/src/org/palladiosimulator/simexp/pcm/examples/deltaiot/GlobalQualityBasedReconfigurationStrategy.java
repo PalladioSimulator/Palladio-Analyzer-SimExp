@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
+import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
@@ -25,8 +27,9 @@ public class GlobalQualityBasedReconfigurationStrategy<S> extends DeltaIoTReconf
     }
 
     @Override
-    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
+    protected QVToReconfiguration handlePacketLoss(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
+            Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         boolean canBeStillDistributed = false;
@@ -51,7 +54,8 @@ public class GlobalQualityBasedReconfigurationStrategy<S> extends DeltaIoTReconf
     }
 
     @Override
-    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
+    protected QVToReconfiguration handleEnergyConsumption(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 

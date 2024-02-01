@@ -20,7 +20,7 @@ public class ValueFunction {
             .orElse(0.0);
     }
 
-    public <S, A> Double getExpectedRewardFor(SelfAdaptiveSystemState<S, A> state) {
+    public <S, A, V> Double getExpectedRewardFor(SelfAdaptiveSystemState<S, A, V> state) {
         return Optional.ofNullable(expectedRewards.get(state.toString()))
             .orElse(0.0);
     }

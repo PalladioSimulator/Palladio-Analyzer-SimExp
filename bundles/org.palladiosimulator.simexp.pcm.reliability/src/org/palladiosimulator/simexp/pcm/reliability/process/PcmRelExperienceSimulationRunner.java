@@ -30,7 +30,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S> {
+public class PcmRelExperienceSimulationRunner<S, A, V> implements ExperienceSimulationRunner<S> {
 
     private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
     private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
@@ -64,13 +64,13 @@ public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulat
 
     @Override
     public void simulate(State<S> state) {
-        PcmSelfAdaptiveSystemState<A> pcmState = (PcmSelfAdaptiveSystemState<A>) state;
+        PcmSelfAdaptiveSystemState<A, V> pcmState = (PcmSelfAdaptiveSystemState<A, V>) state;
         var result = makePrediction(pcmState, probabilityDistributionRegistry, probabilityDistributionFactory,
                 parameterParser, probDistRepoLookup);
         retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);
     }
 
-    private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState<A> pcmState,
+    private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState<A, V> pcmState,
             IProbabilityDistributionRegistry probabilityDistributionRegistry,
             IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
@@ -80,13 +80,13 @@ public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulat
                 probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
     }
 
-    private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState<A> pcmState) {
+    private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState<A, V> pcmState) {
         var blackboard = prepareBlackboardForAnalysis(pcmState);
         return UncertaintyBasedReliabilityPredictionConfig.newBuilder()
             .rebuild(globalConfig, blackboard);
     }
 
-    private MDSDBlackboard prepareBlackboardForAnalysis(PcmSelfAdaptiveSystemState<A> pcmState) {
+    private MDSDBlackboard prepareBlackboardForAnalysis(PcmSelfAdaptiveSystemState<A, V> pcmState) {
         var pcm = pcmState.getArchitecturalConfiguration()
             .getConfiguration();
         var builderJob = new PrepareBlackboardForReliabilityAnalysisJob(pcm);
@@ -107,7 +107,7 @@ public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulat
         });
     }
 
-    private List<UncertaintyState> deriveUncertaintyStates(PerceivableEnvironmentalState envState) {
+    private List<UncertaintyState> deriveUncertaintyStates(PerceivableEnvironmentalState<V> envState) {
         List<UncertaintyState> uncertaintyStateTuple = Lists.newArrayList();
         for (InputValue each : toInputs(envState)) {
             uncertaintyStateSpace.findStateInstantiating(each.variable.getInstantiatedTemplate())
@@ -119,7 +119,7 @@ public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulat
         return uncertaintyStateTuple;
     }
 
-    private List<InputValue> toInputs(PerceivableEnvironmentalState envState) {
+    private List<InputValue> toInputs(PerceivableEnvironmentalState<V> envState) {
         Object sample = envState.getValue()
             .getValue();
         if (List.class.isInstance(sample)) {

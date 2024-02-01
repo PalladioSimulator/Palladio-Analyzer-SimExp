@@ -41,7 +41,7 @@ public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R, V> {
         return this;
     }
 
-    public EnvironmentProcess<S, A, R> build() {
+    public EnvironmentProcess<S, A, R, V> build() {
         // TODO exception handling
         requireNonNull(initialDist, "");
         if (isHidden) {
@@ -55,11 +55,11 @@ public class EnvironmentalProcessBuilder<S, A, Aa extends Action<A>, R, V> {
         throw new RuntimeException("");
     }
 
-    private EnvironmentProcess<S, A, R> buildAsDescribableProcess() {
+    private EnvironmentProcess<S, A, R, V> buildAsDescribableProcess() {
         if (isHidden) {
             return new UnobservableEnvironmentProcess<S, A, Aa, R, V>(model.get(), initialDist, obsProducer);
         }
-        return new ObservableEnvironmentProcess<S, A, Aa, R>(model.get(), initialDist);
+        return new ObservableEnvironmentProcess<S, A, Aa, R, V>(model.get(), initialDist);
     }
 
 }

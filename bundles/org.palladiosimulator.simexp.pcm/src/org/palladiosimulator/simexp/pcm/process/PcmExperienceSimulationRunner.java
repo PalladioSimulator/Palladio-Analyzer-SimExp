@@ -20,13 +20,13 @@ import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulationRunner<PCMInstance, A> {
+public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimulationRunner<PCMInstance, A> {
 
     private final DataSource dataSource;
     private final IExperimentProvider experimentProvider;
 
     public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
-            InitialPcmStateCreator<A> initialStateCreator) {
+            InitialPcmStateCreator<A, V> initialStateCreator) {
         this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 
@@ -41,9 +41,9 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
         retrieveStateQuantities(asPcmState(state));
     }
 
-    private PcmSelfAdaptiveSystemState<A> asPcmState(State<PCMInstance> state) {
+    private PcmSelfAdaptiveSystemState<A, V> asPcmState(State<PCMInstance> state) {
         if (state instanceof PcmSelfAdaptiveSystemState) {
-            return (PcmSelfAdaptiveSystemState<A>) state;
+            return (PcmSelfAdaptiveSystemState<A, V>) state;
         }
 
         // TODO exception handling
@@ -55,7 +55,7 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
             .runExperiment();
     }
 
-    private void retrieveStateQuantities(PcmSelfAdaptiveSystemState<A> sasState) {
+    private void retrieveStateQuantities(PcmSelfAdaptiveSystemState<A, V> sasState) {
         ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
         List<ExperimentRun> currentExperimentRuns = expRunner.getCurrentExperimentRuns();
         MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(currentExperimentRuns);

@@ -81,7 +81,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
     private final PcmAttributeChange<List<InputValue>> attrChange;
     private final PcmModelChange<List<InputValue>> attrChangeServerNode1;
     private final PcmModelChange<List<InputValue>> attrChangeServerNode2;
-    private final EnvironmentProcess<S, A, R> envProcess;
+    private final EnvironmentProcess<S, A, R, List<InputValue>> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
 
     public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn,
@@ -98,7 +98,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<S, A, R, List<InputValue>> getEnvironmentProcess() {
         return envProcess;
     }
 
@@ -114,7 +114,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
         };
     }
 
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<S, A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
         return new ObservableEnvironmentProcess<>(createDerivableProcess(dbn), initialDist);
     }
 

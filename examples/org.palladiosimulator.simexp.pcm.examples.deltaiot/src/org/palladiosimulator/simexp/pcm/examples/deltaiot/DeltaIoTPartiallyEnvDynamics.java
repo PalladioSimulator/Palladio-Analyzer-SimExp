@@ -32,7 +32,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     private final static String SNR_TEMPLATE = "SignalToNoiseRatio";
     private final static String MA_TEMPLATE = "MoteActivation";
 
-    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> partiallyEnvProcess;
+    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork dbn,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
@@ -43,15 +43,15 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                 simulationRunnerHolder);
     }
 
-    public SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> getEnvironmentProcess() {
+    public SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>> getEnvironmentProcess() {
         return partiallyEnvProcess;
     }
 
-    private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> createPartiallyEnvironmentalDrivenProcess(
+    private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>> createPartiallyEnvironmentalDrivenProcess(
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
             SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
-        return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R>(envProcess,
-                simulatedExperienceStore, simulationRunnerHolder) {
+        return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>>(
+                envProcess, simulatedExperienceStore, simulationRunnerHolder) {
 
             class SNRCalculator {
 
@@ -113,7 +113,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
             private final SNRCalculator snrCalculator = new SNRCalculator();
 
             @Override
-            protected SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator> determineStructuralState(
+            protected SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator, List<InputValue>> determineStructuralState(
                     NavigationContext<PCMInstance, QVTOReconfigurator> context) {
                 LOGGER.info("Start with state transition.");
                 long start = System.currentTimeMillis();
@@ -121,8 +121,9 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                     .get());
                 ArchitecturalConfiguration<PCMInstance, QVTOReconfigurator> nextConfig = getCurrentArchitecture(context)
                     .apply(reconf);
-                PerceivableEnvironmentalState currentEnvironment = getCurrentEnvironment(context);
-                PerceivableEnvironmentalState nextEnvironment = determineNextEnvState(currentEnvironment, nextConfig);
+                PerceivableEnvironmentalState<List<InputValue>> currentEnvironment = getCurrentEnvironment(context);
+                PerceivableEnvironmentalState<List<InputValue>> nextEnvironment = determineNextEnvState(
+                        currentEnvironment, nextConfig);
                 long end = System.currentTimeMillis();
 
                 LOGGER.info("Stop with state transition, took : " + ((end - start) / 1000));
@@ -130,14 +131,16 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                     .transitToNext(nextEnvironment, nextConfig);
             }
 
-            private PerceivableEnvironmentalState determineNextEnvState(PerceivableEnvironmentalState envState,
+            private PerceivableEnvironmentalState<List<InputValue>> determineNextEnvState(
+                    PerceivableEnvironmentalState<List<InputValue>> envState,
                     ArchitecturalConfiguration<PCMInstance, QVTOReconfigurator> pcmConf) {
-                PerceivableEnvironmentalState nextEnvironment = envProcess.determineNextGiven(envState);
+                PerceivableEnvironmentalState<List<InputValue>> nextEnvironment = envProcess
+                    .determineNextGiven(envState);
                 adjustArchitecturalDependentVariables(nextEnvironment, pcmConf);
                 return nextEnvironment;
             }
 
-            private void adjustArchitecturalDependentVariables(PerceivableEnvironmentalState nextEnv,
+            private void adjustArchitecturalDependentVariables(PerceivableEnvironmentalState<List<InputValue>> nextEnv,
                     ArchitecturalConfiguration<PCMInstance, QVTOReconfigurator> archConfig) {
                 List<InputValue> inputValues = toInputs(nextEnv.getValue()
                     .getValue());
@@ -166,7 +169,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
             }
 
             @Override
-            protected PerceivableEnvironmentalState determineInitial(
+            protected PerceivableEnvironmentalState<List<InputValue>> determineInitial(
                     ArchitecturalConfiguration<PCMInstance, QVTOReconfigurator> initialArch) {
                 return envProcess.determineInitial();
             }

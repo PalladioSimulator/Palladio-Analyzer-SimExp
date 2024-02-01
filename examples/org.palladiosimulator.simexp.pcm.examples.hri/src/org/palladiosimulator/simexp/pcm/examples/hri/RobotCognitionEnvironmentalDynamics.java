@@ -28,13 +28,13 @@ import com.google.common.collect.Lists;
 
 public class RobotCognitionEnvironmentalDynamics<S, A, R> {
 
-    private final EnvironmentProcess<S, A, R> envProcess;
+    private final EnvironmentProcess<S, A, R, List<InputValue>> envProcess;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<S, A, R, List<InputValue>> getEnvironmentProcess() {
         return envProcess;
     }
 
@@ -61,7 +61,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         };
     }
 
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<S, A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
         return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }

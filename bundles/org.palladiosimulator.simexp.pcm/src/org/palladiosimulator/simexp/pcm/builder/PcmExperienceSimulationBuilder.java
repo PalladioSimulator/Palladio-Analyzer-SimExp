@@ -20,8 +20,8 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
-        extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R> {
+public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R, V>
+        extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R, V> {
 
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
@@ -53,7 +53,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
             return this;
         }
 
-        public PcmExperienceSimulationBuilder<A, Aa, R> done() {
+        public PcmExperienceSimulationBuilder<A, Aa, R, V> done() {
             return PcmExperienceSimulationBuilder.this;
         }
 
@@ -77,7 +77,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
         return super.build();
     }
 
-    public static <A, Aa extends Reconfiguration<A>, R> PcmExperienceSimulationBuilder<A, Aa, R> newBuilder(
+    public static <A, Aa extends Reconfiguration<A>, R, V> PcmExperienceSimulationBuilder<A, Aa, R, V> newBuilder(
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager,
@@ -94,7 +94,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
     }
 
     @Override
-    protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> createInitialSassCreator() {
+    protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A, V> createInitialSassCreator() {
         return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
                 simulationRunnerHolder);
     }
