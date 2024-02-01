@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.ObservationImpl;
 
 public class EnvironmentalStateObservation<S, V> extends ObservationImpl<PerceivedValue<V>>
-        implements PerceivableEnvironmentalState {
+        implements PerceivableEnvironmentalState<V> {
 
     private final EnvironmentalState<S, V> hiddenState;
 

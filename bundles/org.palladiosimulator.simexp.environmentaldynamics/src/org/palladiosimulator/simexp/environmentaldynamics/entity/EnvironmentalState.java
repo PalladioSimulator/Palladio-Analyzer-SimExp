@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public class EnvironmentalState<S, V> extends StateImpl<S> implements PerceivableEnvironmentalState {
+public class EnvironmentalState<S, V> extends StateImpl<S> implements PerceivableEnvironmentalState<V> {
 
     public static class EnvironmentalStateBuilder<S, V> {
         private PerceivedValue<V> value = null;

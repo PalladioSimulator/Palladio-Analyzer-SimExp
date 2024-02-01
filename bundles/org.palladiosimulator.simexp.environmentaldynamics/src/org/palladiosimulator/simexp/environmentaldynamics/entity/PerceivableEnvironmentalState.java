@@ -1,15 +1,15 @@
 package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
-public interface PerceivableEnvironmentalState {
+public interface PerceivableEnvironmentalState<V> {
 
-	public boolean isHidden();
-	
-	public boolean isInitial();
-	
-	public PerceivedValue<?> getValue();
-	
-	default public String getStringRepresentation() {
-		return getValue().toString();
-	}
-	
+    public boolean isHidden();
+
+    public boolean isInitial();
+
+    public PerceivedValue<V> getValue();
+
+    default public String getStringRepresentation() {
+        return getValue().toString();
+    }
+
 }
