@@ -15,7 +15,7 @@ public class ExperienceSimulator<S, A, R> {
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
     private final MarkovSampling<S, A, R> markovSampler;
-    private final List<ExperienceSimulationRunner<S>> simulationRunner;
+    private final List<ExperienceSimulationRunner<S>> simulationRunners;
     private final Optional<Initializable> beforeExecutionInitialization;
     private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
 
@@ -26,9 +26,9 @@ public class ExperienceSimulator<S, A, R> {
             SimulationRunnerHolder<S> simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
-        this.simulationRunner = config.getSimulationRunner();
+        this.simulationRunners = config.getSimulationRunners();
         this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
-        simulationRunnerHolder.registerSimulationRunners(simulationRunner);
+        simulationRunnerHolder.registerSimulationRunners(simulationRunners);
         this.simulatedExperienceStore = simulatedExperienceStore;
     }
 
@@ -54,7 +54,7 @@ public class ExperienceSimulator<S, A, R> {
     private void initExperienceSimulator() {
         beforeExecutionInitialization.ifPresent(Initializable::initialize);
 
-        simulationRunner.stream()
+        simulationRunners.stream()
             .filter(Initializable.class::isInstance)
             .map(Initializable.class::cast)
             .forEach(Initializable::initialize);

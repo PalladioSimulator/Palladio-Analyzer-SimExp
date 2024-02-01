@@ -31,13 +31,13 @@ public class ExperienceSimulationConfiguration<S, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<S>> runner) {
-            ExperienceSimulationConfiguration.this.runner.addAll(runner);
+        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<S>> runners) {
+            ExperienceSimulationConfiguration.this.runners.addAll(runners);
             return this;
         }
 
         public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<S> runner) {
-            ExperienceSimulationConfiguration.this.runner.add(runner);
+            ExperienceSimulationConfiguration.this.runners.add(runner);
             return this;
         }
 
@@ -54,7 +54,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
 
         private void checkValidity() {
             // TODO exception handling
-            Objects.requireNonNull(runner, "");
+            Objects.requireNonNull(runners, "");
             Objects.requireNonNull(markovSampler, "");
             if (isNegative(numberOfRuns) || isNegative(horizon)) {
                 throw new RuntimeException("");
@@ -77,7 +77,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
     private int numberOfRuns = 0;
     private String simulationID = "";
     private String sampleSpaceID = "";
-    private List<ExperienceSimulationRunner<S>> runner = Lists.newArrayList();
+    private List<ExperienceSimulationRunner<S>> runners = Lists.newArrayList();
     private MarkovSampling<S, A, R> markovSampler = null;
     private Initializable beforeExecutionInitialization = null;
 
@@ -97,8 +97,8 @@ public class ExperienceSimulationConfiguration<S, A, R> {
         return simulationID;
     }
 
-    public List<ExperienceSimulationRunner<S>> getSimulationRunner() {
-        return runner;
+    public List<ExperienceSimulationRunner<S>> getSimulationRunners() {
+        return runners;
     }
 
     public MarkovSampling<S, A, R> getMarkovSampler() {
