@@ -15,43 +15,47 @@ import com.google.common.collect.Lists;
 
 public class BayesianModelUtil {
 
-	public static PerceivedValue<?> asPerceivedValue(List<InputValue> sample, Map<String, InputValue> newValueStore) {
-		return new PerceivedValue<List<InputValue>>() {
+    public static PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample,
+            Map<String, InputValue> newValueStore) {
+        return new PerceivedValue<>() {
 
-			private final Map<String, InputValue> valueStore = newValueStore;
-			
-			@Override
-			public List<InputValue> getValue() {
-				return valueStore.values().stream()
-						.map(InputValue.class::cast)
-						.collect(toList());
-			}
+            private final Map<String, InputValue> valueStore = newValueStore;
 
-			@Override
-			public Optional<Object> getElement(String key) {
-				return Optional.ofNullable(valueStore.get(key)).map(InputValue::asCategorical);
-			}
+            @Override
+            public List<InputValue> getValue() {
+                return valueStore.values()
+                    .stream()
+                    .map(InputValue.class::cast)
+                    .collect(toList());
+            }
 
-			@Override
-			public String toString() {
-				List<InputValue> orderedSamples = Lists.newArrayList(sample);
-				Collections.sort(orderedSamples, new Comparator<InputValue>() {
-					@Override
-					public int compare(InputValue i1, InputValue i2) {
-						return i1.variable.getEntityName().compareTo(i2.variable.getEntityName());
-					}
-				});
-				
-				StringBuilder builder = new StringBuilder();
-				for (InputValue each : orderedSamples) {
-					builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-							each.value.toString()));
-				}
-				String stringValues = builder.toString();
-				return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
-			}
+            @Override
+            public Optional<Object> getElement(String key) {
+                return Optional.ofNullable(valueStore.get(key))
+                    .map(InputValue::asCategorical);
+            }
 
-		};
-	}
-	
+            @Override
+            public String toString() {
+                List<InputValue> orderedSamples = Lists.newArrayList(sample);
+                Collections.sort(orderedSamples, new Comparator<InputValue>() {
+                    @Override
+                    public int compare(InputValue i1, InputValue i2) {
+                        return i1.variable.getEntityName()
+                            .compareTo(i2.variable.getEntityName());
+                    }
+                });
+
+                StringBuilder builder = new StringBuilder();
+                for (InputValue each : orderedSamples) {
+                    builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
+                            each.value.toString()));
+                }
+                String stringValues = builder.toString();
+                return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
+            }
+
+        };
+    }
+
 }
