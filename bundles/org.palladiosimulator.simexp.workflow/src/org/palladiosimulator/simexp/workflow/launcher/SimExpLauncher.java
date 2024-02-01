@@ -58,7 +58,6 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.base.Objects;
@@ -170,7 +169,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             List<URI> moduleFiles, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
 
-        SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder = new SimulationRunnerHolder<>();
+        SimulationRunnerHolder<PCMInstance> simulationRunnerHolder = new SimulationRunnerHolder<>();
         PcmExperienceSimulationExecutorFactory<? extends Number, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
@@ -250,7 +249,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             /** simulation type = PCM */
             String qualityObjective = StringUtils.EMPTY;
             String monitorRepositoryFile = StringUtils.EMPTY;
-            List<String> configuredMonitors = new ArrayList<String>();
+            List<String> configuredMonitors = new ArrayList<>();
             if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PCM, simulationEngine)) {
                 qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
 
@@ -263,8 +262,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             MonitorConfiguration monitors = new MonitorConfiguration(monitorRepositoryFile, configuredMonitors);
 
             /** simulation type = PRISM */
-            List<String> prismProperties = new ArrayList<String>();
-            List<String> prismModules = new ArrayList<String>();
+            List<String> prismProperties = new ArrayList<>();
+            List<String> prismModules = new ArrayList<>();
             if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PRISM, simulationEngine)) {
                 List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams
                     .get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);

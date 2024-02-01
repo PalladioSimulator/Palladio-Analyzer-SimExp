@@ -43,7 +43,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     protected final IExperimentProvider experimentProvider;
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
-    private final SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder;
+    private final SimulationRunnerHolder<PCMInstance> simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
             SimulationParameters params,
@@ -52,7 +52,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;

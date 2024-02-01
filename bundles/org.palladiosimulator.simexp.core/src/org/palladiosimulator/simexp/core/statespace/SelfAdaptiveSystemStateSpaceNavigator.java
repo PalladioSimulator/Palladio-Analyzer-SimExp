@@ -28,11 +28,11 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<S, A, R> extends Ind
 
     protected final EnvironmentProcess<S, A, R> environmentalDynamics;
     private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
-    private final SimulationRunnerHolder<S, A> simulationRunnerHolder;
+    private final SimulationRunnerHolder<S> simulationRunnerHolder;
 
     protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<S, A, R> environmentalDynamics,
             SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<S> simulationRunnerHolder) {
         this.environmentalDynamics = environmentalDynamics;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.simulationRunnerHolder = simulationRunnerHolder;

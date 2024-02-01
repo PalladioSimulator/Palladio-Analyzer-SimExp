@@ -15,13 +15,13 @@ public class EnvironmentDrivenStateSpaceNavigator<S, A, R> extends SelfAdaptiveS
 
     private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<S, A, R> environmentalDynamics,
             SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<S> simulationRunnerHolder) {
         super(environmentalDynamics, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     public static <S, A, R> EnvironmentDrivenStateSpaceNavigator<S, A, R> with(
             EnvironmentProcess<S, A, R> environmentProcess, SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<S> simulationRunnerHolder) {
         return new EnvironmentDrivenStateSpaceNavigator<>(environmentProcess, simulatedExperienceStore,
                 simulationRunnerHolder);
     }

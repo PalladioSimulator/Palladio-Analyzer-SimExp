@@ -5,13 +5,13 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.imp
 
 public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
 
-    protected final SimulationRunnerHolder<S, A> simulationRunnerHolder;
+    protected final SimulationRunnerHolder<S> simulationRunnerHolder;
 
     protected PerceivableEnvironmentalState perceivedState;
     protected ArchitecturalConfiguration<S, A> archConfiguration;
     protected StateQuantity quantifiedState;
 
-    public SelfAdaptiveSystemState(SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+    public SelfAdaptiveSystemState(SimulationRunnerHolder<S> simulationRunnerHolder) {
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 

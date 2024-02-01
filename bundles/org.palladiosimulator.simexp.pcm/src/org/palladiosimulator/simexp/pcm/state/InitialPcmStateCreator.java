@@ -19,11 +19,11 @@ public class InitialPcmStateCreator<A>
     private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
-    private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
+    private final SimulationRunnerHolder<PCMInstance> simulationRunnerHolder;
 
     public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         this.pcmMeasurementSpecs = specs;
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
@@ -32,7 +32,7 @@ public class InitialPcmStateCreator<A>
 
     public static <A> InitialPcmStateCreator<A> with(Set<SimulatedMeasurementSpecification> specs,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
                 simulationRunnerHolder);
     }

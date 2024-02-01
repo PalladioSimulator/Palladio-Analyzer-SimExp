@@ -23,7 +23,7 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
     public static class PcmSassBuilder<A> {
 
         private final InitialPcmStateCreator<A> initialPcmStateCreator;
-        private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
+        private final SimulationRunnerHolder<PCMInstance> simulationRunnerHolder;
 
         private Set<SimulatedMeasurementSpecification> specs = new HashSet<>();
         private PcmArchitecturalConfiguration<A> initialArch = null;
@@ -31,7 +31,7 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
         private boolean isInitial = false;
 
         public PcmSassBuilder(InitialPcmStateCreator<A> initialPcmStateCreator,
-                SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+                SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
             this.initialPcmStateCreator = initialPcmStateCreator;
             this.simulationRunnerHolder = simulationRunnerHolder;
         }
@@ -69,7 +69,7 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
 
     private final InitialPcmStateCreator<A> initialPcmStateCreator;
 
-    private PcmSelfAdaptiveSystemState(SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder,
+    private PcmSelfAdaptiveSystemState(SimulationRunnerHolder<PCMInstance> simulationRunnerHolder,
             PcmArchitecturalConfiguration<A> archConf, PerceivableEnvironmentalState perceivedState,
             Set<SimulatedMeasurementSpecification> specs, boolean isInitial,
             InitialPcmStateCreator<A> initialPcmStateCreator) {
@@ -86,7 +86,7 @@ public class PcmSelfAdaptiveSystemState<A> extends SelfAdaptiveSystemState<PCMIn
     }
 
     public static <A> PcmSassBuilder<A> newBuilder(InitialPcmStateCreator<A> initialPcmStateCreator,
-            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         return new PcmSassBuilder<>(initialPcmStateCreator, simulationRunnerHolder);
     }
 

@@ -47,7 +47,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private Policy<S, A, Aa> policy = null;
     private EnvironmentProcess<S, A, R> envProcess = null;
     private SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
-    private SimulationRunnerHolder<S, A> simulationRunnerHolder;
+    private SimulationRunnerHolder<S> simulationRunnerHolder;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<S, A, R>> markovModel = Optional.empty();
     private SelfAdaptiveSystemStateSpaceNavigator<S, A, R> navigator = null;
@@ -213,7 +213,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
 
         public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<S, A, R> envProcess,
                 SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-                SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+                SimulationRunnerHolder<S> simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;
             ExperienceSimulationBuilder.this.simulationRunnerHolder = simulationRunnerHolder;

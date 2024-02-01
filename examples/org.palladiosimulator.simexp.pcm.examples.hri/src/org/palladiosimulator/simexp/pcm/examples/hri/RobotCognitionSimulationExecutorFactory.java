@@ -60,7 +60,7 @@ public class RobotCognitionSimulationExecutorFactory
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
@@ -71,7 +71,6 @@ public class RobotCognitionSimulationExecutorFactory
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
         UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
@@ -100,8 +99,7 @@ public class RobotCognitionSimulationExecutorFactory
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>(
-                qvtoReconfigurationManager.loadReconfigurations());
+        Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
