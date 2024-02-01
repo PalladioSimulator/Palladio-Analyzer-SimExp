@@ -1,8 +1,8 @@
 package org.palladiosimulator.simexp.core.process;
 
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public interface ExperienceSimulationRunner<S, A> {
+public interface ExperienceSimulationRunner<S> {
 
-    public void simulate(SelfAdaptiveSystemState<S, A> sasState);
+    public void simulate(State<S> state);
 }

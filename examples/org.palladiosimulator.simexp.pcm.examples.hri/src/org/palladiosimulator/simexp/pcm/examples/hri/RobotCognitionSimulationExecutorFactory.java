@@ -83,7 +83,7 @@ public class RobotCognitionSimulationExecutorFactory
 
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
-        List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners = List
+        List<ExperienceSimulationRunner<PCMInstance>> runners = List
             .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, probabilityDistributionRegistry,
                     distributionFactory, parameterParser, probDistRepoLookup)
             /**
@@ -95,12 +95,12 @@ public class RobotCognitionSimulationExecutorFactory
             );
 
         ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation<>();
-        Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<PCMInstance>(
+        Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
-        Set<QVToReconfiguration> reconfigurations = new HashSet<QVToReconfiguration>(
+        Set<QVToReconfiguration> reconfigurations = new HashSet<>(
                 qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,

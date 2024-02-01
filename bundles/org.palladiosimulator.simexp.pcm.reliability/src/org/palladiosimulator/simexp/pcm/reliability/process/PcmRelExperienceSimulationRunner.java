@@ -13,9 +13,9 @@ import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.DiscreteUncertaintyStateSpace.UncertaintyState;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.job.PrepareBlackboardForReliabilityAnalysisJob;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
@@ -30,7 +30,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S, A> {
+public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S> {
 
     private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
     private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
@@ -63,15 +63,11 @@ public class PcmRelExperienceSimulationRunner<S, A> implements ExperienceSimulat
     }
 
     @Override
-    public void simulate(SelfAdaptiveSystemState<S, A> sasState) {
-        if (PcmSelfAdaptiveSystemState.class.isInstance(sasState) == false) {
-            // TODO Exception handling
-            throw new RuntimeException();
-        }
-
-        var result = makePrediction((PcmSelfAdaptiveSystemState<A>) sasState, probabilityDistributionRegistry,
-                probabilityDistributionFactory, parameterParser, probDistRepoLookup);
-        retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
+    public void simulate(State<S> state) {
+        PcmSelfAdaptiveSystemState<A> pcmState = (PcmSelfAdaptiveSystemState<A>) state;
+        var result = makePrediction(pcmState, probabilityDistributionRegistry, probabilityDistributionFactory,
+                parameterParser, probDistRepoLookup);
+        retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);
     }
 
     private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState<A> pcmState,

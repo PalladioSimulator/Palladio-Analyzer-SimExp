@@ -79,7 +79,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners = List
+        List<ExperienceSimulationRunner<PCMInstance>> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
@@ -93,10 +93,10 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
-        NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<QVTOReconfigurator>(
+        NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<>(
                 config, new RepositoryModelLookup(), new ResourceEnvironmentModelLookup(),
                 new RepositoryModelUpdater());
-        LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator>(
+        LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
                 specs.get(0), config, nodeRecoveryStrategy);
         ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
                 specs.get(0), config, emptyStrategy);

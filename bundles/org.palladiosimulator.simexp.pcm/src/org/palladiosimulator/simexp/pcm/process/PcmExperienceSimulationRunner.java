@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
 import org.palladiosimulator.simexp.core.process.AbstractExperienceSimulationRunner;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult;
@@ -36,14 +36,14 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
     }
 
     @Override
-    protected void doSimulate(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+    protected void doSimulate(State<PCMInstance> state) {
         runSimulation();
-        retrieveStateQuantities(asPcmState(sasState));
+        retrieveStateQuantities(asPcmState(state));
     }
 
-    private PcmSelfAdaptiveSystemState<A> asPcmState(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
-        if (sasState instanceof PcmSelfAdaptiveSystemState) {
-            return (PcmSelfAdaptiveSystemState<A>) sasState;
+    private PcmSelfAdaptiveSystemState<A> asPcmState(State<PCMInstance> state) {
+        if (state instanceof PcmSelfAdaptiveSystemState) {
+            return (PcmSelfAdaptiveSystemState<A>) state;
         }
 
         // TODO exception handling

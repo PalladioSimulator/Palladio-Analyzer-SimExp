@@ -69,8 +69,8 @@ public class LoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> simulationRunners = List
-            .of(new PcmExperienceSimulationRunner<QVTOReconfigurator>(experimentProvider, initialStateCreator));
+        List<ExperienceSimulationRunner<PCMInstance>> simulationRunners = List
+            .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(

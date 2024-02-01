@@ -15,7 +15,7 @@ public class ExperienceSimulator<S, A, R> {
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
     private final MarkovSampling<S, A, R> markovSampler;
-    private final List<ExperienceSimulationRunner<S, A>> simulationRunner;
+    private final List<ExperienceSimulationRunner<S>> simulationRunner;
     private final Optional<Initializable> beforeExecutionInitialization;
     private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
 

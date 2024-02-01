@@ -10,8 +10,8 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.pcm.prism.service.PrismService.PrismResult;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class PcmBasedPrismExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S, A> {
+public class PcmBasedPrismExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S> {
 
     private final static String LOG_FILE_EXT = ".txt";
     private final static String LOG_FILE_NAME = "PrismLog";
@@ -53,10 +53,10 @@ public class PcmBasedPrismExperienceSimulationRunner<S, A> implements Experience
     }
 
     @Override
-    public void simulate(SelfAdaptiveSystemState<S, A> sasState) {
-        PcmSelfAdaptiveSystemState<A> state = PcmSelfAdaptiveSystemState.class.cast(sasState);
-        PrismResult result = modelCheck(state);
-        retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
+    public void simulate(State<S> state) {
+        PcmSelfAdaptiveSystemState<A> pcmState = PcmSelfAdaptiveSystemState.class.cast(state);
+        PrismResult result = modelCheck(pcmState);
+        retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);
     }
 
     private PrismResult modelCheck(PcmSelfAdaptiveSystemState<A> sasState) {

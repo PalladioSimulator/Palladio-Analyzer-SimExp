@@ -54,7 +54,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     private Optional<ProbabilityMassFunction<State<S>>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
 
-    protected abstract List<ExperienceSimulationRunner<S, A>> getSimulationRunner();
+    protected abstract List<ExperienceSimulationRunner<S>> getSimulationRunner();
 
     protected abstract InitialSelfAdaptiveSystemStateCreator<S, A> createInitialSassCreator();
 

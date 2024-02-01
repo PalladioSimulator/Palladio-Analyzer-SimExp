@@ -74,7 +74,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
 
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs,
-            List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
+            List<ExperienceSimulationRunner<PCMInstance>> runners, SimulationParameters params,
             Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
             SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> navigator,

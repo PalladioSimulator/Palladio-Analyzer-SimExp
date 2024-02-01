@@ -31,12 +31,12 @@ public class ExperienceSimulationConfiguration<S, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<S, A>> runner) {
+        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<S>> runner) {
             ExperienceSimulationConfiguration.this.runner.addAll(runner);
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<S, A> runner) {
+        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<S> runner) {
             ExperienceSimulationConfiguration.this.runner.add(runner);
             return this;
         }
@@ -77,7 +77,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
     private int numberOfRuns = 0;
     private String simulationID = "";
     private String sampleSpaceID = "";
-    private List<ExperienceSimulationRunner<S, A>> runner = Lists.newArrayList();
+    private List<ExperienceSimulationRunner<S>> runner = Lists.newArrayList();
     private MarkovSampling<S, A, R> markovSampler = null;
     private Initializable beforeExecutionInitialization = null;
 
@@ -97,7 +97,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
         return simulationID;
     }
 
-    public List<ExperienceSimulationRunner<S, A>> getSimulationRunner() {
+    public List<ExperienceSimulationRunner<S>> getSimulationRunner() {
         return runner;
     }
 

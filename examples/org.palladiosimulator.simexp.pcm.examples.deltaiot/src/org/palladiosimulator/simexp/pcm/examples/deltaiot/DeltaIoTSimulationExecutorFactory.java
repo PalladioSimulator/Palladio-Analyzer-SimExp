@@ -68,7 +68,7 @@ public class DeltaIoTSimulationExecutorFactory
                 qvtoReconfigurationManager, simulationRunnerHolder);
 
         this.modelAccess = new DeltaIoTModelAccess<>();
-        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<Integer>(dbn,
+        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn,
                 simulatedExperienceStore, modelAccess, simulationRunnerHolder);
         this.envProcess = p.getEnvironmentProcess();
     }
@@ -89,7 +89,7 @@ public class DeltaIoTSimulationExecutorFactory
             .load(DISTRIBUTION_FACTORS);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
-        ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
+        ExperienceSimulationRunner<PCMInstance> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
                 prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);

@@ -6,9 +6,9 @@ import java.util.List;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 
 public class SimulationRunnerHolder<S, A> {
-    private final List<ExperienceSimulationRunner<S, A>> simulationRunner = new ArrayList<>();
+    private final List<ExperienceSimulationRunner<S>> simulationRunner = new ArrayList<>();
 
-    public void registerSimulationRunner(ExperienceSimulationRunner<S, A> newSimulationRunner) {
+    public void registerSimulationRunner(ExperienceSimulationRunner<S> newSimulationRunner) {
         simulationRunner.add(newSimulationRunner);
     }
 
