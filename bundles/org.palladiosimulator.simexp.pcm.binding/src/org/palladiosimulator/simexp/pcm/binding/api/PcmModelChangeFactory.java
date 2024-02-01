@@ -6,8 +6,8 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class PcmModelChangeFactory {
 
-    
-    public static PcmModelChange createResourceContainerPcmModelChange(String attributeName, IExperimentProvider experimentProvider) {
-        return new ResourceContainerPcmModelChange(attributeName, experimentProvider);
+    public static <V> PcmModelChange<V> createResourceContainerPcmModelChange(String attributeName,
+            IExperimentProvider experimentProvider) {
+        return new ResourceContainerPcmModelChange<>(attributeName, experimentProvider);
     }
 }

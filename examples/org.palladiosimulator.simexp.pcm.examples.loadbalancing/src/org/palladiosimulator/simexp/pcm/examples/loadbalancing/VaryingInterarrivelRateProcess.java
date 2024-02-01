@@ -69,7 +69,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     // private final static String SERVER_NODE_2_VARIABLE =
     // "ServerNode2Failure_ServerFailureInstantiation";
 
-    private final PcmAttributeChange attrChange;
+    private final PcmAttributeChange<List<InputValue>> attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;
     private final EnvironmentProcess<S, A, R> envProcess;
@@ -77,7 +77,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
     public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
         // initPcmAttributeChange(experimentProvider);
-        this.attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
+        this.attrChange = new PcmAttributeChange<>(retrieveInterArrivalTimeRandomVariableHandler(),
                 PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         this.initialDist = createInitialDist(dbn);
         this.envProcess = createEnvironmentalProcess(dbn);
@@ -181,7 +181,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
     private EnvironmentalState<S, List<InputValue>> asPcmEnvironmentalState(List<InputValue> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
-        ArrayList<PcmModelChange> attrChanges = new ArrayList<>();
+        ArrayList<PcmModelChange<List<InputValue>>> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
         // attrChanges.add(attrChangeServerNode1);
         // attrChanges.add(attrChangeServerNode2);

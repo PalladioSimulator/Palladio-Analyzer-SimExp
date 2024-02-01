@@ -78,15 +78,15 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
                                                                                            // name
                                                                                            // *.staticmodel
 
-    private final PcmAttributeChange attrChange;
-    private final PcmModelChange attrChangeServerNode1;
-    private final PcmModelChange attrChangeServerNode2;
+    private final PcmAttributeChange<List<InputValue>> attrChange;
+    private final PcmModelChange<List<InputValue>> attrChangeServerNode1;
+    private final PcmModelChange<List<InputValue>> attrChangeServerNode2;
     private final EnvironmentProcess<S, A, R> envProcess;
     private final ProbabilityMassFunction<State<S>> initialDist;
 
     public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn,
             IExperimentProvider experimentProvider) {
-        this.attrChange = new PcmAttributeChange(retrieveInterArrivalTimeRandomVariableHandler(),
+        this.attrChange = new PcmAttributeChange<>(retrieveInterArrivalTimeRandomVariableHandler(),
                 PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
@@ -196,7 +196,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
 
     private EnvironmentalState<S, List<InputValue>> asPcmEnvironmentalState(List<InputValue> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
-        ArrayList<PcmModelChange> attrChanges = new ArrayList<>();
+        ArrayList<PcmModelChange<List<InputValue>>> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
         attrChanges.add(attrChangeServerNode1);
         attrChanges.add(attrChangeServerNode2);

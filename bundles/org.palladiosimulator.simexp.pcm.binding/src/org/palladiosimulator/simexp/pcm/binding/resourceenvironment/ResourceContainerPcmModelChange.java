@@ -26,8 +26,8 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * architectural model
  * 
  */
-public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
-    
+public class ResourceContainerPcmModelChange<V> extends AbstractPcmModelChange<V> {
+
     private static final Logger LOGGER = Logger.getLogger(ResourceContainerPcmModelChange.class);
 
     private NodeFailureStateCreator failureStateCreator;
@@ -52,38 +52,48 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
 
         // node unavailable
         if (StringUtils.equals("unavailable", value.get())) {
-            PCMResourceSetPartition pcm = experimentProvider
-                    .getExperimentRunner()
-                    .getWorkingPartition();
-            EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment().getResourceContainer_ResourceEnvironment();
-            List<ResourceContainer> failedResourceContainers = filterFailedResourceContainer(resourceContainers, getPcmAttributeName());
-            LOGGER.info(String.format("Unavailable server node detected: %s", debugMessageFailedServerNodes(failedResourceContainers)));
+            PCMResourceSetPartition pcm = experimentProvider.getExperimentRunner()
+                .getWorkingPartition();
+            EList<ResourceContainer> resourceContainers = pcm.getResourceEnvironment()
+                .getResourceContainer_ResourceEnvironment();
+            List<ResourceContainer> failedResourceContainers = filterFailedResourceContainer(resourceContainers,
+                    getPcmAttributeName());
+            LOGGER.info(String.format("Unavailable server node detected: %s",
+                    debugMessageFailedServerNodes(failedResourceContainers)));
 
             // lookup failure model from blackboard partition
-            ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner().getPlainWorkingPartition();
-            FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition.getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository()).get(0);;
-            FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition.getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository()).get(0);
-            HWCrashFailure hwCrashFailureType = (HWCrashFailure) failureTypeRepo.getFailuretypes().get(0);
-            
+            ResourceSetPartition plainPartition = experimentProvider.getExperimentRunner()
+                .getPlainWorkingPartition();
+            FailureScenarioRepository failureScenarioRepo = (FailureScenarioRepository) plainPartition
+                .getElement(FailurescenarioPackage.eINSTANCE.getFailureScenarioRepository())
+                .get(0);
+            ;
+            FailureTypeRepository failureTypeRepo = (FailureTypeRepository) plainPartition
+                .getElement(FailuretypePackage.eINSTANCE.getFailureTypeRepository())
+                .get(0);
+            HWCrashFailure hwCrashFailureType = (HWCrashFailure) failureTypeRepo.getFailuretypes()
+                .get(0);
+
             // add new failure scenario and update failure model in blackboard partition
             failureStateCreator.addScenario(failureScenarioRepo, failedResourceContainers, hwCrashFailureType);
             try {
-                experimentProvider.getExperimentRunner().updateFailureScenario(failureScenarioRepo);
+                experimentProvider.getExperimentRunner()
+                    .updateFailureScenario(failureScenarioRepo);
             } catch (IOException e) {
                 LOGGER.error("Failed to inject updated failurescenario model into blackboard partition", e);
             }
         }
     }
-    
-    
-    private List<ResourceContainer> filterFailedResourceContainer(EList<ResourceContainer> resourceContainers, String filterFailedResourceContainerName) {
+
+    private List<ResourceContainer> filterFailedResourceContainer(EList<ResourceContainer> resourceContainers,
+            String filterFailedResourceContainerName) {
         List<ResourceContainer> filteredFailedResourceContainters = resourceContainers.stream()
-                .filter(rc -> rc.getEntityName().equals(filterFailedResourceContainerName))
-                .collect(Collectors.toList());
+            .filter(rc -> rc.getEntityName()
+                .equals(filterFailedResourceContainerName))
+            .collect(Collectors.toList());
         return filteredFailedResourceContainters;
     }
-    
-    
+
     private String debugMessageFailedServerNodes(List<ResourceContainer> resourceContainers) {
         StringBuilder sb = new StringBuilder();
         sb.append("Failed resource container(s) [");
@@ -98,5 +108,5 @@ public class ResourceContainerPcmModelChange extends AbstractPcmModelChange {
         sb.append("]");
         return sb.toString();
     }
-    
+
 }
