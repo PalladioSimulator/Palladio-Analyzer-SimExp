@@ -1,8 +1,5 @@
 package org.palladiosimulator.simexp.core.state;
 
-import java.util.List;
-
-import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
@@ -36,8 +33,7 @@ public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
     }
 
     public void determineQuantifiedState() {
-        List<ExperienceSimulationRunner<S, A>> simulationRunners = simulationRunnerHolder.getSimulationRunner();
-        simulationRunners.forEach(runner -> runner.simulate(this));
+        simulationRunnerHolder.simulate(this);
     }
 
     public abstract SelfAdaptiveSystemState<S, A> transitToNext(PerceivableEnvironmentalState perceivedState,

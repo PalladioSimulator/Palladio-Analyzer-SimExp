@@ -12,12 +12,11 @@ public class SimulationRunnerHolder<S, A> {
         simulationRunner.add(newSimulationRunner);
     }
 
-    public List<ExperienceSimulationRunner<S, A>> getSimulationRunner() {
+    public void simulate(SelfAdaptiveSystemState<S, A> sasState) {
         if (simulationRunner.isEmpty()) {
             // TODO exception handling
             throw new RuntimeException("There has to be at one simulation runner.");
         }
-        List<ExperienceSimulationRunner<S, A>> runner = new ArrayList<>(simulationRunner);
-        return runner;
+        simulationRunner.forEach(runner -> runner.simulate(sasState));
     }
 }
