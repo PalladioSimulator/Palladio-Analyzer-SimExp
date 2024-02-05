@@ -12,13 +12,12 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 
 import com.google.common.collect.Lists;
 
-public class ValueStorePerceivedInputValue implements PerceivedElement<List<InputValue>> {
+public class ValueStorePerceivedInputValue extends PerceivedInputValue implements PerceivedElement<List<InputValue>> {
 
-    private final List<InputValue> sample;
     private final Map<String, InputValue> valueStore;
 
     public ValueStorePerceivedInputValue(List<InputValue> sample, Map<String, InputValue> valueStore) {
-        this.sample = sample;
+        super(sample);
         this.valueStore = valueStore;
     }
 
@@ -40,7 +39,7 @@ public class ValueStorePerceivedInputValue implements PerceivedElement<List<Inpu
     }
 
     private List<InputValue> getSamples() {
-        List<InputValue> orderedSamples = Lists.newArrayList(sample);
+        List<InputValue> orderedSamples = Lists.newArrayList(super.getValue());
         Collections.sort(orderedSamples, new Comparator<>() {
             @Override
             public int compare(InputValue i1, InputValue i2) {
