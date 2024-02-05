@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,6 @@ import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
-
-import com.google.common.collect.Lists;
 
 public class ValueStorePerceivedInputValue extends PerceivedInputValue implements PerceivedElement<List<InputValue>> {
 
@@ -67,18 +64,5 @@ public class ValueStorePerceivedInputValue extends PerceivedInputValue implement
             return Optional.empty();
         }
         return Optional.of(Collections.singletonList(value));
-    }
-
-    @Override
-    protected List<InputValue> getSortedSamples() {
-        List<InputValue> orderedSamples = Lists.newArrayList(super.getSortedSamples());
-        Collections.sort(orderedSamples, new Comparator<>() {
-            @Override
-            public int compare(InputValue i1, InputValue i2) {
-                return i1.variable.getEntityName()
-                    .compareTo(i2.variable.getEntityName());
-            }
-        });
-        return orderedSamples;
     }
 }
