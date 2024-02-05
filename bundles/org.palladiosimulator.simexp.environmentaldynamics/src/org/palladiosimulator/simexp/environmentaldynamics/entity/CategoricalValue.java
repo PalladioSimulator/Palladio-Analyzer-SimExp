@@ -18,7 +18,7 @@ public class CategoricalValue implements PerceivedElement<String> {
     }
 
     @Override
-    public Optional<Object> getElement(String key) {
+    public Optional<String> getElement(String key) {
         if (key == name) {
             return Optional.of(value);
         }

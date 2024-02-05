@@ -31,9 +31,12 @@ public class ValueStorePerceivedInputValue implements PerceivedElement<List<Inpu
     }
 
     @Override
-    public Optional<Object> getElement(String key) {
-        return Optional.ofNullable(valueStore.get(key))
-            .map(InputValue::asCategorical);
+    public Optional<List<InputValue>> getElement(String key) {
+        InputValue value = valueStore.get(key);
+        if (value == null) {
+            return Optional.empty();
+        }
+        return Optional.of(Collections.singletonList(value));
     }
 
     private List<InputValue> getSamples() {

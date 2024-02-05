@@ -86,8 +86,10 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
             @Override
             public CategoricalValue convertElement(PerceivedValue<List<InputValue>> change, String key) {
                 PerceivedElement<List<InputValue>> pe = (PerceivedElement<List<InputValue>>) change;
-                Optional<Object> value = pe.getElement(key);
-                CategoricalValue changedValue = (CategoricalValue) value.get();
+                Optional<List<InputValue>> values = pe.getElement(key);
+                List<InputValue> valueList = values.get();
+                InputValue value = valueList.get(0);
+                CategoricalValue changedValue = value.asCategorical();
                 return changedValue;
             }
         };
