@@ -10,17 +10,21 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class PcmAttributeChange<V> implements PcmModelChange<V> {
 
     private final Function<ExperimentRunner, EObject> retrieveTargetHandler;
     private final String attributeName;
     private final IExperimentProvider experimentProvider;
+    private final PerceivedValueConverter<V> perceivedValueConverter;
 
     public PcmAttributeChange(Function<ExperimentRunner, EObject> retrieveTargetHandler, String attributeName,
-            IExperimentProvider experimentProvider) {
+            IExperimentProvider experimentProvider, PerceivedValueConverter<V> perceivedValueConverter) {
         this.retrieveTargetHandler = retrieveTargetHandler;
         this.attributeName = attributeName;
         this.experimentProvider = experimentProvider;
+        this.perceivedValueConverter = perceivedValueConverter;
     }
 
     @Override
@@ -28,7 +32,8 @@ public class PcmAttributeChange<V> implements PcmModelChange<V> {
         PerceivedElement<V> pe = (PerceivedElement<V>) change;
         Optional<?> newValue = pe.getElement(attributeName);
         if (newValue.isPresent()) {
-            applyChange(retrieveTarget(experimentProvider), newValue.get());
+            CategoricalValue changedValue = perceivedValueConverter.convertElement(change, attributeName);
+            applyChange(retrieveTarget(experimentProvider), changedValue);
         } else {
             // TODO logging or exception...
         }

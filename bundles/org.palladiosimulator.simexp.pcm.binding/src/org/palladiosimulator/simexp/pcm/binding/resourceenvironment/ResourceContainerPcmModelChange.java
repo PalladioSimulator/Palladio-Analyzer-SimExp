@@ -14,6 +14,7 @@ import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
 import org.palladiosimulator.failuremodel.failuretype.HWCrashFailure;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
+import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
@@ -33,8 +34,9 @@ public class ResourceContainerPcmModelChange<V> extends AbstractPcmModelChange<V
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
 
-    public ResourceContainerPcmModelChange(String attributeName, IExperimentProvider experimentProvider) {
-        super(attributeName);
+    public ResourceContainerPcmModelChange(String attributeName, PerceivedValueConverter perceivedValueConverter,
+            IExperimentProvider experimentProvider) {
+        super(attributeName, perceivedValueConverter);
         failureStateCreator = new NodeFailureStateCreator();
         this.experimentProvider = experimentProvider;
     }

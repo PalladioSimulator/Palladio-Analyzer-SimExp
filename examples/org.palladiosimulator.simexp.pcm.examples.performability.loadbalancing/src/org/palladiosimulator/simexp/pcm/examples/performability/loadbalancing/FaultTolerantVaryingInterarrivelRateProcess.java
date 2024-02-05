@@ -7,6 +7,7 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -26,6 +27,7 @@ import org.palladiosimulator.pcm.usagemodel.OpenWorkload;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.ValueStorePerceivedInputValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -36,6 +38,7 @@ import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
+import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
@@ -43,6 +46,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.StoexPackage;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
 
@@ -86,14 +90,26 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
 
     public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn,
             IExperimentProvider experimentProvider) {
+        PerceivedValueConverter<List<InputValue>> perceivedValueConverter = new PerceivedValueConverter<>() {
+
+            @Override
+            public CategoricalValue convertElement(PerceivedValue<List<InputValue>> change, String key) {
+                PerceivedElement<List<InputValue>> pe = (PerceivedElement<List<InputValue>>) change;
+                Optional<Object> value = pe.getElement(key);
+                CategoricalValue changedValue = (CategoricalValue) value.get();
+                return changedValue;
+            }
+        };
+
         this.attrChange = new PcmAttributeChange<>(retrieveInterArrivalTimeRandomVariableHandler(),
-                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider);
+                PCM_SPECIFICATION_ATTRIBUTE, experimentProvider, perceivedValueConverter);
         // attribute name values are taken from the names of the instantiated template variable
         // model, i.e. *.staticmodel
-        attrChangeServerNode1 = PcmModelChangeFactory
-            .createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, experimentProvider);
-        attrChangeServerNode2 = PcmModelChangeFactory
-            .createResourceContainerPcmModelChange(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, experimentProvider);
+
+        attrChangeServerNode1 = PcmModelChangeFactory.createResourceContainerPcmModelChange(
+                PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, perceivedValueConverter, experimentProvider);
+        attrChangeServerNode2 = PcmModelChangeFactory.createResourceContainerPcmModelChange(
+                PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, perceivedValueConverter, experimentProvider);
         this.initialDist = createInitialDist(dbn);
         this.envProcess = createEnvironmentalProcess(dbn);
     }

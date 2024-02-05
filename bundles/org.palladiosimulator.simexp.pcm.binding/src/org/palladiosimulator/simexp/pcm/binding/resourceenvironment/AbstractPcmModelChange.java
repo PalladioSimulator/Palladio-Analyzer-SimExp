@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
+import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
@@ -14,9 +15,11 @@ public abstract class AbstractPcmModelChange<V> implements PcmModelChange<V> {
     private static final Logger LOGGER = Logger.getLogger(AbstractPcmModelChange.class);
 
     private final String pcmAttrbuteName;
+    private final PerceivedValueConverter<V> perceivedValueConverter;
 
-    public AbstractPcmModelChange(String pcmAttributeName) {
+    public AbstractPcmModelChange(String pcmAttributeName, PerceivedValueConverter<V> perceivedValueConverter) {
         this.pcmAttrbuteName = pcmAttributeName;
+        this.perceivedValueConverter = perceivedValueConverter;
     }
 
     abstract void applyChange(CategoricalValue value);
@@ -35,7 +38,7 @@ public abstract class AbstractPcmModelChange<V> implements PcmModelChange<V> {
         Optional<?> newValue = pe.getElement(pcmAttrbuteName);
 
         if (newValue.isPresent()) {
-            CategoricalValue changedValue = (CategoricalValue) newValue.get();
+            CategoricalValue changedValue = perceivedValueConverter.convertElement(change, pcmAttrbuteName);
             applyChange(changedValue);
         } else {
             LOGGER.error(String.format(
