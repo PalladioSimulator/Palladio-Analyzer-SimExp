@@ -1,9 +1,11 @@
 package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 
 import com.google.common.collect.Lists;
@@ -35,13 +37,11 @@ public class PerceivedInputValue implements PerceivedValue<List<InputValue>> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        List<String> entries = new ArrayList<>();
         for (InputValue each : getSortedSamples()) {
-            builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                    each.value.toString()));
+            entries.add(
+                    String.format("(Variable: %1s, Value: %2s)", each.variable.getEntityName(), each.value.toString()));
         }
-
-        String stringValues = builder.toString();
-        return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
+        return String.format("Samples: [%s])", StringUtils.join(entries, ","));
     }
 }
