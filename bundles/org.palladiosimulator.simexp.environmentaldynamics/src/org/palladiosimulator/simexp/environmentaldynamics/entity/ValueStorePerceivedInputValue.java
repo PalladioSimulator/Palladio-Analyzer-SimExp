@@ -12,7 +12,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 
 import com.google.common.collect.Lists;
 
-public class ValueStorePerceivedInputValue implements PerceivedValue<List<InputValue>> {
+public class ValueStorePerceivedInputValue implements PerceivedElement<List<InputValue>> {
 
     private final List<InputValue> sample;
     private final Map<String, InputValue> valueStore;
