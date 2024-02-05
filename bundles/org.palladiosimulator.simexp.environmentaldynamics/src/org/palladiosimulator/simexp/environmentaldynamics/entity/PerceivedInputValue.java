@@ -17,10 +17,14 @@ public class PerceivedInputValue implements PerceivedValue<List<InputValue>> {
         return sample;
     }
 
+    protected List<InputValue> getSortedSamples() {
+        return sample;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (InputValue each : sample) {
+        for (InputValue each : getSortedSamples()) {
             builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
                     each.value.toString()));
         }

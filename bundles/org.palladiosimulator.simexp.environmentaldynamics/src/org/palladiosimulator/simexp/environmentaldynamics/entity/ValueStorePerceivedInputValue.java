@@ -69,8 +69,9 @@ public class ValueStorePerceivedInputValue extends PerceivedInputValue implement
         return Optional.of(Collections.singletonList(value));
     }
 
-    private List<InputValue> getSamples() {
-        List<InputValue> orderedSamples = Lists.newArrayList(super.getValue());
+    @Override
+    protected List<InputValue> getSortedSamples() {
+        List<InputValue> orderedSamples = Lists.newArrayList(super.getSortedSamples());
         Collections.sort(orderedSamples, new Comparator<>() {
             @Override
             public int compare(InputValue i1, InputValue i2) {
@@ -79,17 +80,5 @@ public class ValueStorePerceivedInputValue extends PerceivedInputValue implement
             }
         });
         return orderedSamples;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (InputValue each : getSamples()) {
-            builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                    each.value.toString()));
-        }
-
-        String stringValues = builder.toString();
-        return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
     }
 }
