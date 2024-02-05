@@ -5,7 +5,6 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -20,6 +19,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
@@ -125,31 +125,8 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
     }
 
     private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
-        return new PerceivedValue<>() {
-
-            @Override
-            public List<InputValue> getValue() {
-                return sample;
-            }
-
-            @Override
-            public Optional<Object> getElement(String key) {
-                return Optional.of(sample);
-            }
-
-            @Override
-            public String toString() {
-                StringBuilder builder = new StringBuilder();
-                for (InputValue each : sample) {
-                    builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                            each.value.toString()));
-                }
-
-                String stringValues = builder.toString();
-                return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
-            }
-
-        };
+        PerceivedInputValue perceivedValue = new PerceivedInputValue(sample);
+        return perceivedValue;
     }
 
     public static <A> PcmSelfAdaptiveSystemState<A, List<InputValue>> asPcmState(State<PCMInstance> state) {

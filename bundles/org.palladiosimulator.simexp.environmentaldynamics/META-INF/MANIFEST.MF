@@ -8,7 +8,11 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
  org.palladiosimulator.simexp.distribution;bundle-version="1.0.0",
  org.palladiosimulator.simexp.markovian,
- org.apache.log4j;bundle-version="1.2.19"
+ org.apache.log4j;bundle-version="1.2.19",
+ org.palladiosimulator.envdyn.api,
+ tools.mdsd.probdist.api,
+ org.palladiosimulator.envdyn.model,
+ com.google.guava
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.environmentaldynamics
 Bundle-ActivationPolicy: lazy

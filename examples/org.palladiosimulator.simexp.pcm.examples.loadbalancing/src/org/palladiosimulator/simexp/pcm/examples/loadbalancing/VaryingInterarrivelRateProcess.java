@@ -7,7 +7,6 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -28,6 +27,7 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunctio
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.ValueStorePerceivedInputValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
@@ -197,37 +197,8 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         // newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, findInputValue(sample,
         // SERVER_NODE_2_VARIABLE));
 
-        return new PerceivedValue<>() {
-
-            private final Map<String, InputValue> valueStore = newValueStore;
-
-            @Override
-            public List<InputValue> getValue() {
-                return valueStore.values()
-                    .stream()
-                    .map(InputValue.class::cast)
-                    .collect(toList());
-            }
-
-            @Override
-            public Optional<Object> getElement(String key) {
-                return Optional.ofNullable(valueStore.get(key))
-                    .map(InputValue::asCategorical);
-            }
-
-            @Override
-            public String toString() {
-                StringBuilder builder = new StringBuilder();
-                for (InputValue each : sample) {
-                    builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                            each.value.toString()));
-                }
-
-                String stringValues = builder.toString();
-                return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
-            }
-
-        };
+        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, newValueStore);
+        return perceivedValue;
     }
 
     // rewrite; sample + variable name ->
