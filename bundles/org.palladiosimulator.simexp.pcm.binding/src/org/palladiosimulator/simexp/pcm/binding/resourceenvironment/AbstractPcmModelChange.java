@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.binding.resourceenvironment;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 
@@ -26,15 +27,15 @@ public abstract class AbstractPcmModelChange<V> implements PcmModelChange<V> {
 
     @Override
     public void apply(PerceivedValue<V> change) {
+        PerceivedElement<V> pe = (PerceivedElement<V>) change;
         LOGGER
             .debug(String.format("Apply perceived environmental value '%s' to PCM model element '%s'", change.getValue()
                 .toString(), pcmAttrbuteName));
         // fixme: replace ? with a concrete type
-        Optional<?> newValue = change.getElement(pcmAttrbuteName);
+        Optional<?> newValue = pe.getElement(pcmAttrbuteName);
 
         if (newValue.isPresent()) {
-            CategoricalValue changedValue = (CategoricalValue) change.getElement(pcmAttrbuteName)
-                .get();
+            CategoricalValue changedValue = (CategoricalValue) newValue.get();
             applyChange(changedValue);
         } else {
             LOGGER.error(String.format(

@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 
@@ -16,11 +15,6 @@ public class PerceivedInputValue implements PerceivedValue<List<InputValue>> {
     @Override
     public List<InputValue> getValue() {
         return sample;
-    }
-
-    @Override
-    public Optional<Object> getElement(String key) {
-        return Optional.of(sample);
     }
 
     @Override

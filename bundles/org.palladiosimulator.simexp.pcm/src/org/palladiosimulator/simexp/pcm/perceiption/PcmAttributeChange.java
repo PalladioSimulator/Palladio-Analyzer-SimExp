@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
@@ -24,7 +25,8 @@ public class PcmAttributeChange<V> implements PcmModelChange<V> {
 
     @Override
     public void apply(PerceivedValue<V> change) {
-        Optional<?> newValue = change.getElement(attributeName);
+        PerceivedElement<V> pe = (PerceivedElement<V>) change;
+        Optional<?> newValue = pe.getElement(attributeName);
         if (newValue.isPresent()) {
             applyChange(retrieveTarget(experimentProvider), newValue.get());
         } else {
