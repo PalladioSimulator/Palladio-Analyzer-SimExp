@@ -10,8 +10,8 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.ValueStorePerce
 public class BayesianModelUtil {
 
     public static PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample,
-            Map<String, InputValue> newValueStore) {
-        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, newValueStore);
+            Map<String, String> attributeMap) {
+        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, attributeMap);
         return perceivedValue;
     }
 

@@ -4,11 +4,15 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 
 import com.google.common.collect.Lists;
 
@@ -16,9 +20,36 @@ public class ValueStorePerceivedInputValue extends PerceivedInputValue implement
 
     private final Map<String, InputValue> valueStore;
 
-    public ValueStorePerceivedInputValue(List<InputValue> sample, Map<String, InputValue> valueStore) {
+    public ValueStorePerceivedInputValue(List<InputValue> sample, Map<String, String> attributeMap) {
         super(sample);
-        this.valueStore = valueStore;
+        this.valueStore = buildValueStore(sample, attributeMap);
+    }
+
+    private Map<String, InputValue> buildValueStore(List<InputValue> sample, Map<String, String> attributeMap) {
+        Map<String, InputValue> store = new HashMap<>();
+        for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            store.put(entry.getKey(), findInputValue(sample, entry.getValue()));
+        }
+        return store;
+    }
+
+    private InputValue findInputValue(List<InputValue> sample, String variableName) {
+        Predicate<InputValue> inputValue = inputValue(variableName);
+
+        return sample.stream()
+            .filter(inputValue)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException(
+                    String.format("Variable not found in sample | variableName: '%s' | sample: %s ", variableName,
+                            StringUtils.join(sample, ","))));
+    }
+
+    private Predicate<InputValue> inputValue(String variableName) {
+        return inputValue -> {
+            GroundRandomVariable groundRandomVariabe = inputValue.variable;
+            String groundRandomVariableName = groundRandomVariabe.getEntityName();
+            return groundRandomVariableName.equals(variableName);
+        };
     }
 
     @Override

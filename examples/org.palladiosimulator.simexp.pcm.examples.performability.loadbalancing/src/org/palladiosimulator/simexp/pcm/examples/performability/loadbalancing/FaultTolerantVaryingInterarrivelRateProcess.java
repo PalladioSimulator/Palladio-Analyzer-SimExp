@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
@@ -22,7 +20,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
-import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.usagemodel.OpenWorkload;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
@@ -222,36 +219,12 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
     }
 
     private PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample) {
-        Map<String, InputValue> newValueStore = Maps.newHashMap();
-        newValueStore.put(PCM_SPECIFICATION_ATTRIBUTE, findInputValue(sample, WORKLOAD_VARIABLE));
-        newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, findInputValue(sample, SERVER_NODE_1_VARIABLE));
-        newValueStore.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, findInputValue(sample, SERVER_NODE_2_VARIABLE));
+        Map<String, String> attributeMap = Maps.newHashMap();
+        attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
+        attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, SERVER_NODE_1_VARIABLE);
+        attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, SERVER_NODE_2_VARIABLE);
 
-        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, newValueStore);
+        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, attributeMap);
         return perceivedValue;
     }
-
-    // rewrite; sample + variable name ->
-    private InputValue findInputValue(List<InputValue> sample, String variableName) {
-//	private InputValue findWorkloadInputValue(List<InputValue> sample) {
-        Predicate<InputValue> inputValue = inputValue(variableName);
-
-        return sample.stream()
-            .filter(inputValue)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException(
-                    String.format("Variable not found in sample | variableName: '%s' | sample: %s ", variableName,
-                            StringUtils.join(sample, ","))));
-    }
-
-    private Predicate<InputValue> inputValue(String variableName) {
-//		return i -> i.variable.getInstantiatedTemplate().getEntityName().equals(WORKLOAD_TEMPLATE);
-        return inputValue -> {
-            GroundRandomVariable groundRandomVariabe = inputValue.variable;
-            String groundRandomVariableName = groundRandomVariabe.getEntityName();
-            return groundRandomVariableName.equals(variableName);
-        };
-//		return i -> i.variable.getEntityName().equals(variableName);
-    }
-
 }

@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.envdyn.api,
  tools.mdsd.probdist.api,
  org.palladiosimulator.envdyn.model,
- com.google.guava
+ com.google.guava,
+ org.apache.commons.lang3;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.environmentaldynamics
 Bundle-ActivationPolicy: lazy
