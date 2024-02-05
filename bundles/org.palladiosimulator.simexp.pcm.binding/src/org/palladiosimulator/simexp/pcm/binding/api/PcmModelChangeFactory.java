@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 public class PcmModelChangeFactory {
 
     public static <V> PcmModelChange<V> createResourceContainerPcmModelChange(String attributeName,
-            PerceivedValueConverter perceivedValueConverter, IExperimentProvider experimentProvider) {
+            PerceivedValueConverter<V> perceivedValueConverter, IExperimentProvider experimentProvider) {
         return new ResourceContainerPcmModelChange<>(attributeName, perceivedValueConverter, experimentProvider);
     }
 }

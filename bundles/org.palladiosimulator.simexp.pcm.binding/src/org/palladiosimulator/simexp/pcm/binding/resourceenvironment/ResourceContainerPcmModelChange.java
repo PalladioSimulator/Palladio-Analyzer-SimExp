@@ -34,7 +34,7 @@ public class ResourceContainerPcmModelChange<V> extends AbstractPcmModelChange<V
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
 
-    public ResourceContainerPcmModelChange(String attributeName, PerceivedValueConverter perceivedValueConverter,
+    public ResourceContainerPcmModelChange(String attributeName, PerceivedValueConverter<V> perceivedValueConverter,
             IExperimentProvider experimentProvider) {
         super(attributeName, perceivedValueConverter);
         failureStateCreator = new NodeFailureStateCreator();
