@@ -63,6 +63,11 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 		SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
 		List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
 		relSpecs.add(reliabilitySpec);
+		
+		List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
+		joinedSpecs.addAll(specs);				// currently contains the performance related measurement specs derived from monitorrepository model
+		joinedSpecs.add(reliabilitySpec);		// currently contains the reliability related measurement specs derived from usage_scenario model
+		
 			
 		UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
 		List<ExperienceSimulationRunner> runners = List.of(
@@ -82,7 +87,7 @@ public class RobotCognitionSimulationExecutorFactory extends PcmExperienceSimula
 			
 		Set<Reconfiguration<?>> reconfigurations = new HashSet<Reconfiguration<?>>(qvtoReconfigurationManager.loadReconfigurations());
 			
-		ExperienceSimulator simulator = createExperienceSimulator(experiment, specs, runners, params, 
+		ExperienceSimulator simulator = createExperienceSimulator(experiment, joinedSpecs, runners, params, 
 				beforeExecutionInitializable, envProcess, null, (Policy<Action<?>>) reconfSelectionPolicy, reconfigurations, evaluator, true);
 			
 		String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(), reconfSelectionPolicy.getId());
