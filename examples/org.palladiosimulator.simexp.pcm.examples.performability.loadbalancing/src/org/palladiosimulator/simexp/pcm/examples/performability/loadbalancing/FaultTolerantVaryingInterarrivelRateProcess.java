@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.ValueStorePerceivedInputValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedSelectedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
@@ -224,7 +224,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<S, A, Aa extends Action
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, SERVER_NODE_1_VARIABLE);
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, SERVER_NODE_2_VARIABLE);
 
-        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, attributeMap);
+        PerceivedSelectedInputValues perceivedValue = new PerceivedSelectedInputValues(sample, attributeMap);
         return perceivedValue;
     }
 }

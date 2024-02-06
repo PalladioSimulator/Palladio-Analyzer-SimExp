@@ -4,11 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.Vector;
 
-public class VectorValue implements PerceivedValue<Vector<Double>> {
+public class PerceivedVectorValue implements PerceivedValue<Vector<Double>> {
 
     private final LinkedHashMap<String, Double> vectorElements;
 
-    public VectorValue(LinkedHashMap<String, Double> vectorElements) {
+    public PerceivedVectorValue(LinkedHashMap<String, Double> vectorElements) {
         this.vectorElements = vectorElements;
     }
 

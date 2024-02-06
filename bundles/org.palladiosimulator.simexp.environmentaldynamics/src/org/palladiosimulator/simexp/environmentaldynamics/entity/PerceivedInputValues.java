@@ -10,21 +10,21 @@ import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 
 import com.google.common.collect.Lists;
 
-public class PerceivedInputValue implements PerceivedValue<List<InputValue>> {
+public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
 
-    private final List<InputValue> sample;
+    private final List<InputValue> samples;
 
-    public PerceivedInputValue(List<InputValue> sample) {
-        this.sample = sample;
+    public PerceivedInputValues(List<InputValue> samples) {
+        this.samples = samples;
     }
 
     @Override
     public List<InputValue> getValue() {
-        return sample;
+        return samples;
     }
 
     private List<InputValue> getSortedSamples() {
-        List<InputValue> orderedSamples = Lists.newArrayList(sample);
+        List<InputValue> orderedSamples = Lists.newArrayList(samples);
         Collections.sort(orderedSamples, new Comparator<>() {
             @Override
             public int compare(InputValue i1, InputValue i2) {

@@ -1,11 +1,11 @@
 package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
-public class ScalarValue implements PerceivedValue<Double> {
+public class PerceivedScalarValue implements PerceivedValue<Double> {
 
     private final String name;
     private final Double value;
 
-    public ScalarValue(String name, Double value) {
+    public PerceivedScalarValue(String name, Double value) {
         this.name = name;
         this.value = value;
     }

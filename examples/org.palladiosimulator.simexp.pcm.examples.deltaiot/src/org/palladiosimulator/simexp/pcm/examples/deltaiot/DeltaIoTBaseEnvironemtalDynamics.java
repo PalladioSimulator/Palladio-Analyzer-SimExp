@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
@@ -125,7 +125,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
     }
 
     private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
-        PerceivedInputValue perceivedValue = new PerceivedInputValue(sample);
+        PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
         return perceivedValue;
     }
 

@@ -11,12 +11,12 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.CategoricalValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedCategoricalValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
@@ -45,7 +45,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
             public Sample<State<S>> drawSample() {
                 EnvironmentalStateBuilder<S, String> builder = EnvironmentalState.newBuilder();
                 EnvironmentalState<S, String> initial = builder
-                    .withValue(new CategoricalValue("MLPrediction", "Unknown"))
+                    .withValue(new PerceivedCategoricalValue("MLPrediction", "Unknown"))
                     .isInital()
                     .isHidden()
                     .build();
@@ -137,7 +137,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
     }
 
     private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
-        PerceivedInputValue perceivedValue = new PerceivedInputValue(sample);
+        PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
         return perceivedValue;
 
     }

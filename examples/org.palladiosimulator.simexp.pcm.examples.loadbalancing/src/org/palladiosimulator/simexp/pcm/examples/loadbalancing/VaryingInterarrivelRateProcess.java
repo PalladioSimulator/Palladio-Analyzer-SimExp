@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedElement;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.ValueStorePerceivedInputValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedSelectedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
@@ -206,7 +206,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     private PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample) {
         Map<String, String> attributeMap = Maps.newHashMap();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
-        ValueStorePerceivedInputValue perceivedValue = new ValueStorePerceivedInputValue(sample, attributeMap);
+        PerceivedSelectedInputValues perceivedValue = new PerceivedSelectedInputValues(sample, attributeMap);
         return perceivedValue;
     }
 }

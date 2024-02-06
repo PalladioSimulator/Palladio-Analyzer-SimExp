@@ -2,12 +2,12 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
 import java.util.Optional;
 
-public class CategoricalValue implements PerceivedElement<String> {
+public class PerceivedCategoricalValue implements PerceivedElement<String> {
 
     private final String name;
     private final String value;
 
-    public CategoricalValue(String name, String value) {
+    public PerceivedCategoricalValue(String name, String value) {
         this.name = name;
         this.value = value;
     }
