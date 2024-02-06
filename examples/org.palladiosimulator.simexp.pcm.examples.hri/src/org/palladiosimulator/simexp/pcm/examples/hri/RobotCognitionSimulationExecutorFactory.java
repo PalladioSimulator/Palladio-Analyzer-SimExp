@@ -81,6 +81,12 @@ public class RobotCognitionSimulationExecutorFactory
         List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
         relSpecs.add(reliabilitySpec);
 
+        List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
+        joinedSpecs.addAll(specs); // currently contains the performance related measurement specs
+                                   // derived from monitorrepository model
+        joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
+                                          // specs derived from usage_scenario model
+
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
         List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners = List
@@ -104,7 +110,7 @@ public class RobotCognitionSimulationExecutorFactory
                 qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
+                joinedSpecs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
                 reconfSelectionPolicy, reconfigurations, evaluator, true);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
