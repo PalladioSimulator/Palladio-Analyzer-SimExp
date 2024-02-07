@@ -337,12 +337,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         @Override
         public Observation produceObservationGiven(State emittingState) {
-            /*
-             * return new ObservationImpl<O>() {
-             * 
-             * @Override public EList<State<O>> getObserved() { return emittingState; }; // };
-             * return emittingState.getProduces() .get(0);
-             */
             Observation observation = MarkovEntityFactory.eINSTANCE.createObservation();
             observation.setObserved(emittingState);
             return observation;
