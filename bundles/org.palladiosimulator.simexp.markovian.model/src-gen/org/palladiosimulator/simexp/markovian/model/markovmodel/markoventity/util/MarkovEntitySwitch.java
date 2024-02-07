@@ -154,7 +154,7 @@ public class MarkovEntitySwitch<T> extends Switch<T> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S> T caseObservation(Observation<S> object) {
+    public <O> T caseObservation(Observation<O> object) {
         return null;
     }
 

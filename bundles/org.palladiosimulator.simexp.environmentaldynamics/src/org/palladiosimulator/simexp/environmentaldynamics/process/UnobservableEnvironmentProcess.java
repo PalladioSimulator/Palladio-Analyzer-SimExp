@@ -9,6 +9,7 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
@@ -26,7 +27,7 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
         super(buildMarkovian(dynamics, initialDistribution, obsProducer), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
+    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R, State<S>> buildMarkovian(
             StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution,
             ObservationProducer<S> obsProducer) {
         MarkovianBuilder<S, A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<S, A, Aa, R> createHiddenMarkovModel();
@@ -40,7 +41,8 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
         EnvironmentalState<S> hiddenState = EnvironmentalStateObservation.class.cast(last)
             .getHiddenState();
-        return (EnvironmentalStateObservation<S, V>) determineNextSampleGiven(hiddenState).getObservation();
+        Observation<State<S>> observation = determineNextSampleGiven(hiddenState).getObservation();
+        return (PerceivableEnvironmentalState) observation;
     }
 
     @Override

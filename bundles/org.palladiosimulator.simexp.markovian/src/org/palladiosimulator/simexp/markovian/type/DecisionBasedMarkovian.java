@@ -9,17 +9,17 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends MarkovianDecorator<S, A, R> {
+public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, O> extends MarkovianDecorator<S, A, R, O> {
 
     // private final Policy<Action<?>> policy;
     // private final RewardReceiver rewardReceiver;
     // private final Set<Action<?>> actionSpace;
     private final Policy<S, A, Aa> policy;
-    private final RewardReceiver<S, A, R> rewardReceiver;
+    private final RewardReceiver<S, A, R, O> rewardReceiver;
     private final Set<Aa> actionSpace;
 
-    public DecisionBasedMarkovian(Markovian<S, A, R> decoratedMarkovian, Policy<S, A, Aa> policy,
-            RewardReceiver<S, A, R> rewardReceiver, Set<Aa> actionSpace) {
+    public DecisionBasedMarkovian(Markovian<S, A, R, O> decoratedMarkovian, Policy<S, A, Aa> policy,
+            RewardReceiver<S, A, R, O> rewardReceiver, Set<Aa> actionSpace) {
         super(decoratedMarkovian);
         this.policy = policy;
         this.rewardReceiver = rewardReceiver;
@@ -27,13 +27,13 @@ public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends Ma
     }
 
     @Override
-    public void drawSample(Sample<S, A, R> sample) {
+    public void drawSample(Sample<S, A, R, O> sample) {
         addSelectedAction(sample);
         addNextState(sample);
         addObtainedReward(sample);
     }
 
-    private void addSelectedAction(Sample<S, A, R> sample) {
+    private void addSelectedAction(Sample<S, A, R, O> sample) {
         // private void addSelectedAction(Sample sample) {
         // Action<?> choice = policy.select(sample.getCurrent(), actionSpace);
         // sample.setAction(choice);
@@ -42,11 +42,11 @@ public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R, D> extends Ma
         sample.setAction(choice);
     }
 
-    private void addNextState(Sample<S, A, R> sample) {
+    private void addNextState(Sample<S, A, R, O> sample) {
         decoratedMarkovian.drawSample(sample);
     }
 
-    private void addObtainedReward(Sample<S, A, R> sample) {
+    private void addObtainedReward(Sample<S, A, R, O> sample) {
         Reward<R> reward = rewardReceiver.obtain(sample);
         sample.setReward(reward);
     }

@@ -4,6 +4,6 @@ import java.util.function.Predicate;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.SampleModel;
 
-public interface TerminationCriterion<S, A, R> {
-    public Predicate<SampleModel<S, A, R>> isReached();
+public interface TerminationCriterion<S, A, R, O> {
+    public Predicate<SampleModel<S, A, R, O>> isReached();
 }

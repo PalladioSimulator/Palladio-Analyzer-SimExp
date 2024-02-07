@@ -14,10 +14,10 @@ public class DecisionBasedMarkovianBuilder<S, A, Aa extends Action<A>, R>
         implements DecisionBasedMarkovionBuilderTemplate<DecisionBasedMarkovianBuilder<S, A, Aa, R>, S, A, Aa, R>,
         Builder<DecisionBasedMarkovian<S, A, Aa, R, State<S>>> {
 
-    private RewardReceiver<S, A, R> rewardCalc;
+    private RewardReceiver<S, A, R, State<S>> rewardCalc;
     private Set<Aa> actionSpace;
     private Policy<S, A, Aa> policy;
-    private BasicMarkovian<S, A, R> basicMarkovian;
+    private BasicMarkovian<S, A, R, State<S>> basicMarkovian;
 
     private DecisionBasedMarkovianBuilder() {
     }
@@ -27,7 +27,7 @@ public class DecisionBasedMarkovianBuilder<S, A, Aa extends Action<A>, R>
     }
 
     @Override
-    public DecisionBasedMarkovianBuilder<S, A, Aa, R> calculateRewardWith(RewardReceiver<S, A, R> reCalc) {
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> calculateRewardWith(RewardReceiver<S, A, R, State<S>> reCalc) {
         this.rewardCalc = reCalc;
         return this;
     }
@@ -44,7 +44,7 @@ public class DecisionBasedMarkovianBuilder<S, A, Aa extends Action<A>, R>
         return this;
     }
 
-    public DecisionBasedMarkovianBuilder<S, A, Aa, R> decorates(BasicMarkovian<S, A, R> basicMarkovian) {
+    public DecisionBasedMarkovianBuilder<S, A, Aa, R> decorates(BasicMarkovian<S, A, R, State<S>> basicMarkovian) {
         this.basicMarkovian = basicMarkovian;
         return this;
     }

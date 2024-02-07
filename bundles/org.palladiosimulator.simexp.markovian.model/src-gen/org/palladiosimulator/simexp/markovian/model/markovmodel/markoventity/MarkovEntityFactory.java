@@ -47,7 +47,7 @@ public interface MarkovEntityFactory extends EFactory {
      * @return a new object of class '<em>Observation</em>'.
      * @generated
      */
-    <S> Observation<S> createObservation();
+    <O> Observation<O> createObservation();
 
     /**
      * Returns a new object of class '<em>Transition</em>'.

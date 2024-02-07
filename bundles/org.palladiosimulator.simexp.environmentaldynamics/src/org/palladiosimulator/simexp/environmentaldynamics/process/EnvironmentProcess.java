@@ -18,15 +18,15 @@ public abstract class EnvironmentProcess<S, A, R> {
 
     private final boolean isHiddenProcess;
 
-    protected final MarkovSampling<S, A, R> sampler;
+    protected final MarkovSampling<S, A, R, State<S>> sampler;
 
-    public EnvironmentProcess(Markovian<S, A, R> markovian, MarkovModel<S, A, R> model,
+    public EnvironmentProcess(Markovian<S, A, R, State<S>> markovian, MarkovModel<S, A, R> model,
             ProbabilityMassFunction<State<S>> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = isHiddenProcess(model);
     }
 
-    public EnvironmentProcess(Markovian<S, A, R> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
+    public EnvironmentProcess(Markovian<S, A, R, State<S>> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
             ProbabilityMassFunction<State<S>> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = dynamics.isHiddenProcess();
@@ -43,8 +43,8 @@ public abstract class EnvironmentProcess<S, A, R> {
             .build();
     }
 
-    protected Sample<S, A, R> determineNextSampleGiven(State<S> last) {
-        Sample<S, A, R> lastAsSample = SampleModelAccessor.createSampleBy(last);
+    protected Sample<S, A, R, State<S>> determineNextSampleGiven(State<S> last) {
+        Sample<S, A, R, State<S>> lastAsSample = SampleModelAccessor.createSampleBy(last);
         return sampler.drawSampleGiven(lastAsSample);
     }
 

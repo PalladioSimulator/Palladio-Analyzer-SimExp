@@ -36,7 +36,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
  *
  * @generated
  */
-public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements Sample<S, A, R> {
+public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container implements Sample<S, A, R, O> {
     /**
      * The cached value of the '{@link #getReward() <em>Reward</em>}' reference.
      * <!-- begin-user-doc -->
@@ -105,7 +105,7 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
      * @generated
      * @ordered
      */
-    protected Observation<S> observation;
+    protected Observation<O> observation;
 
     /**
      * <!-- begin-user-doc -->
@@ -328,10 +328,10 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Observation<S> getObservation() {
+    public Observation<O> getObservation() {
         if (observation != null && observation.eIsProxy()) {
             InternalEObject oldObservation = (InternalEObject) observation;
-            observation = (Observation<S>) eResolveProxy(oldObservation);
+            observation = (Observation<O>) eResolveProxy(oldObservation);
             if (observation != oldObservation) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, SampleModelPackage.SAMPLE__OBSERVATION,
@@ -346,7 +346,7 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
      * <!-- end-user-doc -->
      * @generated
      */
-    public Observation<S> basicGetObservation() {
+    public Observation<O> basicGetObservation() {
         return observation;
     }
 
@@ -356,8 +356,8 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
      * @generated
      */
     @Override
-    public void setObservation(Observation<S> newObservation) {
-        Observation<S> oldObservation = observation;
+    public void setObservation(Observation<O> newObservation) {
+        Observation<O> oldObservation = observation;
         observation = newObservation;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, SampleModelPackage.SAMPLE__OBSERVATION,
@@ -423,7 +423,7 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
             setNext((State<S>) newValue);
             return;
         case SampleModelPackage.SAMPLE__OBSERVATION:
-            setObservation((Observation<S>) newValue);
+            setObservation((Observation<O>) newValue);
             return;
         }
         super.eSet(featureID, newValue);
@@ -453,7 +453,7 @@ public class SampleImpl<S, A, R> extends MinimalEObjectImpl.Container implements
             setNext((State<S>) null);
             return;
         case SampleModelPackage.SAMPLE__OBSERVATION:
-            setObservation((Observation<S>) null);
+            setObservation((Observation<O>) null);
             return;
         }
         super.eUnset(featureID);

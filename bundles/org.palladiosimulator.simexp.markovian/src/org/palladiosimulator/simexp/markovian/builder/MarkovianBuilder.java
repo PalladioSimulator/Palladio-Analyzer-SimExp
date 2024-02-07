@@ -14,10 +14,10 @@ import org.palladiosimulator.simexp.markovian.type.Markovian;
 public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
 
     public class MarkovChainBuilder
-            implements BasicMarkovianBuilderTemplate<MarkovChainBuilder, S, A>, Builder<Markovian<S, A, R>> {
+            implements BasicMarkovianBuilderTemplate<MarkovChainBuilder, S, A>, Builder<Markovian<S, A, R, State<S>>> {
 
         @Override
-        public Markovian<S, A, R> build() {
+        public Markovian<S, A, R, State<S>> build() {
             return basicBuilder.build();
         }
 
@@ -35,10 +35,10 @@ public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
     }
 
     public class HMMBuilder implements BasicMarkovianBuilderTemplate<HMMBuilder, S, A>,
-            HiddenStateMarkovianBuilderTemplate<HMMBuilder, S>, Builder<Markovian<S, A, R>> {
+            HiddenStateMarkovianBuilderTemplate<HMMBuilder, S>, Builder<Markovian<S, A, R, State<S>>> {
 
         @Override
-        public Markovian<S, A, R> build() {
+        public Markovian<S, A, R, State<S>> build() {
             hiddenBuilder.decorates(basicBuilder.build());
             return hiddenBuilder.build();
         }
@@ -63,16 +63,16 @@ public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
     }
 
     public class MDPBuilder implements BasicMarkovianBuilderTemplate<MDPBuilder, S, A>,
-            DecisionBasedMarkovionBuilderTemplate<MDPBuilder, S, A, Aa, R>, Builder<Markovian<S, A, R>> {
+            DecisionBasedMarkovionBuilderTemplate<MDPBuilder, S, A, Aa, R>, Builder<Markovian<S, A, R, State<S>>> {
 
         @Override
-        public Markovian<S, A, R> build() {
+        public Markovian<S, A, R, State<S>> build() {
             decisionBuilder.decorates(basicBuilder.build());
             return decisionBuilder.build();
         }
 
         @Override
-        public MDPBuilder calculateRewardWith(RewardReceiver<S, A, R> rewardCalc) {
+        public MDPBuilder calculateRewardWith(RewardReceiver<S, A, R, State<S>> rewardCalc) {
             decisionBuilder.calculateRewardWith(rewardCalc);
             return this;
         }
@@ -104,10 +104,10 @@ public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
 
     public class POMDPBuilder implements BasicMarkovianBuilderTemplate<POMDPBuilder, S, A>,
             DecisionBasedMarkovionBuilderTemplate<POMDPBuilder, S, A, Aa, R>,
-            HiddenStateMarkovianBuilderTemplate<POMDPBuilder, S>, Builder<Markovian<S, A, R>> {
+            HiddenStateMarkovianBuilderTemplate<POMDPBuilder, S>, Builder<Markovian<S, A, R, State<S>>> {
 
         @Override
-        public Markovian<S, A, R> build() {
+        public Markovian<S, A, R, State<S>> build() {
             decisionBuilder.decorates(basicBuilder.build());
             hiddenBuilder.decorates(decisionBuilder.build());
             return hiddenBuilder.build();
@@ -120,7 +120,7 @@ public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
         }
 
         @Override
-        public POMDPBuilder calculateRewardWith(RewardReceiver<S, A, R> rewardCalc) {
+        public POMDPBuilder calculateRewardWith(RewardReceiver<S, A, R, State<S>> rewardCalc) {
             decisionBuilder.calculateRewardWith(rewardCalc);
             return this;
         }
@@ -150,7 +150,7 @@ public class MarkovianBuilder<S, A, Aa extends Action<A>, R> {
         }
     }
 
-    private BasicMarkovianBuilder<S, A, R> basicBuilder;
+    private BasicMarkovianBuilder<S, A, R, State<S>> basicBuilder;
     private HiddenStateMarkovianBuilder<S, A, R> hiddenBuilder;
     private DecisionBasedMarkovianBuilder<S, A, Aa, R> decisionBuilder;
 

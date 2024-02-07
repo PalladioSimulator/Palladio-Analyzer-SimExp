@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.core.process;
 import java.util.List;
 import java.util.Objects;
 
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 import com.google.common.collect.Lists;
@@ -41,7 +42,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder sampleWith(MarkovSampling<S, A, R> markovSampler) {
+        public ExperienceSimulationConfigBuilder sampleWith(MarkovSampling<S, A, R, State<S>> markovSampler) {
             ExperienceSimulationConfiguration.this.markovSampler = markovSampler;
             return this;
         }
@@ -78,7 +79,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
     private String simulationID = "";
     private String sampleSpaceID = "";
     private List<ExperienceSimulationRunner<S, A>> runner = Lists.newArrayList();
-    private MarkovSampling<S, A, R> markovSampler = null;
+    private MarkovSampling<S, A, R, State<S>> markovSampler = null;
     private Initializable beforeExecutionInitialization = null;
 
     private ExperienceSimulationConfiguration() {
@@ -101,7 +102,7 @@ public class ExperienceSimulationConfiguration<S, A, R> {
         return runner;
     }
 
-    public MarkovSampling<S, A, R> getMarkovSampler() {
+    public MarkovSampling<S, A, R, State<S>> getMarkovSampler() {
         return markovSampler;
     }
 

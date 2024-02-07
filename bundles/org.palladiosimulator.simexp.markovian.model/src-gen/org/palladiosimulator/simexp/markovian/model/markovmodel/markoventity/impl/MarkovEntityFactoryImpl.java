@@ -101,8 +101,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <S> Observation<S> createObservation() {
-        ObservationImpl<S> observation = new ObservationImpl<S>();
+    public <O> Observation<O> createObservation() {
+        ObservationImpl<O> observation = new ObservationImpl<O>();
         return observation;
     }
 

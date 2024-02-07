@@ -18,9 +18,9 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.MarkovianResult;
 
-public class SampleModelEvaluator<S, A> {
+public class SampleModelEvaluator<S, A, O> {
 
-    private static class TransitionCache<S, A> {
+    private static class TransitionCache<S, A, O> {
 
         private final static int CACHE_SIZE = 100;
 
@@ -30,12 +30,12 @@ public class SampleModelEvaluator<S, A> {
             cache = new HashMap<>();
         }
 
-        public Optional<Transition<S, A>> findTransition(Sample<S, A, Double> sample) {
+        public Optional<Transition<S, A>> findTransition(Sample<S, A, Double, O> sample) {
             Transition<S, A> value = cache.get(sample.hashCode());
             return Optional.ofNullable(value);
         }
 
-        public void put(Sample<S, A, Double> sample, Transition<S, A> transition) {
+        public void put(Sample<S, A, Double, O> sample, Transition<S, A> transition) {
             if (isCacheFull() == false) {
                 cache.put(sample.hashCode(), transition);
             }
@@ -46,7 +46,7 @@ public class SampleModelEvaluator<S, A> {
         }
     }
 
-    private final TransitionCache<S, A> transitionCache;
+    private final TransitionCache<S, A, O> transitionCache;
     private final MarkovModelAccessor<S, A, Double> modelAccessor;
     private final ProbabilityMassFunction<State<S>> initialStateDist;
 
@@ -56,23 +56,23 @@ public class SampleModelEvaluator<S, A> {
         this.initialStateDist = initialStateDist;
     }
 
-    public static <S, A> SampleModelEvaluator<S, A> of(MarkovModel<S, A, Double> model,
+    public static <S, A, O> SampleModelEvaluator<S, A, O> of(MarkovModel<S, A, Double> model,
             ProbabilityMassFunction<State<S>> initialStateDist) {
         return new SampleModelEvaluator<>(model, initialStateDist);
     }
 
-    public List<MarkovianResult<S, A, Double>> evaluate(SampleModel<S, A, Double> sampleModelToEval) {
+    public List<MarkovianResult<S, A, Double, O>> evaluate(SampleModel<S, A, Double, O> sampleModelToEval) {
         return sampleModelToEval.getTrajectories()
             .stream()
             .map(this::evaluate)
             .collect(Collectors.toList());
     }
 
-    public MarkovianResult<S, A, Double> evaluate(Trajectory<S, A, Double> trajToEval) {
+    public MarkovianResult<S, A, Double, O> evaluate(Trajectory<S, A, Double, O> trajToEval) {
         double total = 0;
         double probability = computeInitial(trajToEval);
 
-        for (Sample<S, A, Double> each : trajToEval.getSamplePath()) {
+        for (Sample<S, A, Double, O> each : trajToEval.getSamplePath()) {
             total += each.getReward()
                 .getValue();
             probability *= getProbability(each);
@@ -85,21 +85,21 @@ public class SampleModelEvaluator<S, A> {
             .build();
     }
 
-    private double computeInitial(Trajectory<S, A, Double> trajToEval) {
-        Sample<S, A, Double> sample = trajToEval.getSamplePath()
+    private double computeInitial(Trajectory<S, A, Double, O> trajToEval) {
+        Sample<S, A, Double, O> sample = trajToEval.getSamplePath()
             .get(0);
         State<S> initial = sample.getCurrent();
         ProbabilityMassFunction.Sample<State<S>> of = ProbabilityMassFunction.Sample.of(initial);
         return initialStateDist.probability(of);
     }
 
-    private double getProbability(Sample<S, A, Double> sample) {
+    private double getProbability(Sample<S, A, Double, O> sample) {
         Transition<S, A> result = transitionCache.findTransition(sample)
             .orElse(queryMarkovModelAndCacheResult(sample));
         return result.getProbability();
     }
 
-    private Transition<S, A> queryMarkovModelAndCacheResult(Sample<S, A, Double> sample) {
+    private Transition<S, A> queryMarkovModelAndCacheResult(Sample<S, A, Double, O> sample) {
         // TODO exception handling
         Transition<S, A> result = modelAccessor.findTransition(sample.getCurrent(), sample.getNext())
             .orElseThrow(() -> new RuntimeException(""));

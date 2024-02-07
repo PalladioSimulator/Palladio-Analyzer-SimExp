@@ -23,7 +23,7 @@ public class ObservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends
         super(buildMarkovian(dynamics, initialDistribution), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
+    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R, State<S>> buildMarkovian(
             StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution) {
         MarkovianBuilder<S, A, Aa, R>.MarkovChainBuilder markovChain = MarkovianBuilder
             .<S, A, Aa, R> createMarkovChain();

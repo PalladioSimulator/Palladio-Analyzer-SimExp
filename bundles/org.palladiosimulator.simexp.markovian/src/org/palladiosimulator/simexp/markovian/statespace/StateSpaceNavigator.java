@@ -21,7 +21,7 @@ public abstract class StateSpaceNavigator<S, A> {
             this.action = Optional.ofNullable(action);
         }
 
-        public static <S, A, R> NavigationContext<S, A> of(Sample<S, A, R> sample) {
+        public static <S, A, R, O> NavigationContext<S, A> of(Sample<S, A, R, O> sample) {
             return new NavigationContext<>(sample.getCurrent(), sample.getAction());
         }
 

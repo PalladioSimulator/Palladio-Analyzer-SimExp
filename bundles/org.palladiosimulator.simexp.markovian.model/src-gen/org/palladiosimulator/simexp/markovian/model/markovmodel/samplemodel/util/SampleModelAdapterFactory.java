@@ -68,17 +68,17 @@ public class SampleModelAdapterFactory extends AdapterFactoryImpl {
      */
     protected SampleModelSwitch<Adapter> modelSwitch = new SampleModelSwitch<Adapter>() {
         @Override
-        public <S, A, R> Adapter caseTrajectory(Trajectory<S, A, R> object) {
+        public <S, A, R, O> Adapter caseTrajectory(Trajectory<S, A, R, O> object) {
             return createTrajectoryAdapter();
         }
 
         @Override
-        public <S, A, R> Adapter caseSample(Sample<S, A, R> object) {
+        public <S, A, R, O> Adapter caseSample(Sample<S, A, R, O> object) {
             return createSampleAdapter();
         }
 
         @Override
-        public <S, A, R> Adapter caseSampleModel(SampleModel<S, A, R> object) {
+        public <S, A, R, O> Adapter caseSampleModel(SampleModel<S, A, R, O> object) {
             return createSampleModelAdapter();
         }
 

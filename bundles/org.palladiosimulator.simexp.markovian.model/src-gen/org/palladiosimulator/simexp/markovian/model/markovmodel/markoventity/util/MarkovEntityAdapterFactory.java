@@ -78,7 +78,7 @@ public class MarkovEntityAdapterFactory extends AdapterFactoryImpl {
         }
 
         @Override
-        public <S> Adapter caseObservation(Observation<S> object) {
+        public <O> Adapter caseObservation(Observation<O> object) {
             return createObservationAdapter();
         }
 

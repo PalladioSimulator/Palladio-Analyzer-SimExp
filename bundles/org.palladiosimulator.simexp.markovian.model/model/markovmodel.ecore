@@ -50,9 +50,9 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
-      <eTypeParameters name="S"/>
+      <eTypeParameters name="O"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Observation/S"/>
+        <eGenericType eTypeParameter="#//markoventity/Observation/O"/>
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
@@ -104,12 +104,14 @@
       <eTypeParameters name="S"/>
       <eTypeParameters name="A"/>
       <eTypeParameters name="R"/>
+      <eTypeParameters name="O"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="samplePath" lowerBound="1"
           upperBound="-1" containment="true">
         <eGenericType eClassifier="#//samplemodel/Sample">
           <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/S"/>
           <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/A"/>
           <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/R"/>
+          <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/O"/>
         </eGenericType>
       </eStructuralFeatures>
     </eClassifiers>
@@ -117,6 +119,7 @@
       <eTypeParameters name="S"/>
       <eTypeParameters name="A"/>
       <eTypeParameters name="R"/>
+      <eTypeParameters name="O"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="reward">
         <eGenericType eClassifier="#//markoventity/Reward">
           <eTypeArguments eTypeParameter="#//samplemodel/Sample/R"/>
@@ -141,7 +144,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="observation">
         <eGenericType eClassifier="#//markoventity/Observation">
-          <eTypeArguments eTypeParameter="#//samplemodel/Sample/S"/>
+          <eTypeArguments eTypeParameter="#//samplemodel/Sample/O"/>
         </eGenericType>
       </eStructuralFeatures>
     </eClassifiers>
@@ -149,12 +152,14 @@
       <eTypeParameters name="S"/>
       <eTypeParameters name="A"/>
       <eTypeParameters name="R"/>
+      <eTypeParameters name="O"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="trajectories" lowerBound="1"
           upperBound="-1" containment="true">
         <eGenericType eClassifier="#//samplemodel/Trajectory">
           <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/S"/>
           <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/A"/>
           <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/R"/>
+          <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/O"/>
         </eGenericType>
       </eStructuralFeatures>
     </eClassifiers>

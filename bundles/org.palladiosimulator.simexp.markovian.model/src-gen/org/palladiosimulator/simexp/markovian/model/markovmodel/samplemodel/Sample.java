@@ -30,7 +30,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  * @model
  * @generated
  */
-public interface Sample<S, A, R> extends EObject {
+public interface Sample<S, A, R, O> extends EObject {
     /**
      * Returns the value of the '<em><b>Reward</b></em>' reference.
      * <!-- begin-user-doc -->
@@ -151,7 +151,7 @@ public interface Sample<S, A, R> extends EObject {
      * @model
      * @generated
      */
-    Observation<S> getObservation();
+    Observation<O> getObservation();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getObservation <em>Observation</em>}' reference.
@@ -161,6 +161,6 @@ public interface Sample<S, A, R> extends EObject {
      * @see #getObservation()
      * @generated
      */
-    void setObservation(Observation<S> value);
+    void setObservation(Observation<O> value);
 
 } // Sample

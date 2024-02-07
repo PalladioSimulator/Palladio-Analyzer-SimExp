@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class MarkovSampling<S, A, R> {
+public class MarkovSampling<S, A, R, O> {
 
     private class SampleLoop {
 
@@ -34,18 +34,18 @@ public class MarkovSampling<S, A, R> {
     }
 
     private final int horizon;
-    private final Markovian<S, A, R> markovian;
-    private final SampleModelAccessor<S, A, R> sampleModelAccessor;
+    private final Markovian<S, A, R, O> markovian;
+    private final SampleModelAccessor<S, A, R, O> sampleModelAccessor;
     private final Optional<EpsilonGreedyStrategy<S, A>> eGreedy;
 
-    public MarkovSampling(MarkovianConfig<S, A, R> config) {
+    public MarkovSampling(MarkovianConfig<S, A, R, O> config) {
         this.horizon = config.horizon;
         this.sampleModelAccessor = new SampleModelAccessor<>(Optional.empty());
         this.markovian = config.markovian;
         this.eGreedy = config.eGreedyStrategy;
     }
 
-    public Trajectory<S, A, R> sampleTrajectory() {
+    public Trajectory<S, A, R, O> sampleTrajectory() {
         SampleLoop sampleLoop = new SampleLoop();
         while (sampleLoop.stillSamplesToIterate()) {
             if (sampleLoop.isInitial()) {
@@ -62,18 +62,18 @@ public class MarkovSampling<S, A, R> {
         return sampleModelAccessor.getCurrentTrajectory();
     }
 
-    public Sample<S, A, R> drawSampleGiven(Sample<S, A, R> last) {
-        Sample<S, A, R> newSample = sampleModelAccessor.createTemplateSampleBy(last);
+    public Sample<S, A, R, O> drawSampleGiven(Sample<S, A, R, O> last) {
+        Sample<S, A, R, O> newSample = sampleModelAccessor.createTemplateSampleBy(last);
         markovian.drawSample(newSample);
         return newSample;
     }
 
     private void drawSample() {
-        Sample<S, A, R> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
+        Sample<S, A, R, O> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
         sampleModelAccessor.addSample(result);
     }
 
-    public Sample<S, A, R> drawInitialSample() {
+    public Sample<S, A, R, O> drawInitialSample() {
         return markovian.determineInitialState();
     }
 
