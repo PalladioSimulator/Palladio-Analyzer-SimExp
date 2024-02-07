@@ -179,7 +179,7 @@ public interface MarkovEntityPackage extends EPackage {
     int OBSERVATION = 2;
 
     /**
-     * The feature id for the '<em><b>Observed</b></em>' reference list.
+     * The feature id for the '<em><b>Observed</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -449,10 +449,10 @@ public interface MarkovEntityPackage extends EPackage {
     EClass getObservation();
 
     /**
-     * Returns the meta object for the reference list '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved <em>Observed</em>}'.
+     * Returns the meta object for the reference '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved <em>Observed</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Observed</em>'.
+     * @return the meta object for the reference '<em>Observed</em>'.
      * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved()
      * @see #getObservation()
      * @generated
@@ -667,7 +667,7 @@ public interface MarkovEntityPackage extends EPackage {
         EClass OBSERVATION = eINSTANCE.getObservation();
 
         /**
-         * The meta object literal for the '<em><b>Observed</b></em>' reference list feature.
+         * The meta object literal for the '<em><b>Observed</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated

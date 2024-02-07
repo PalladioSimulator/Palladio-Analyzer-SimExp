@@ -508,7 +508,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         g2 = createEGenericType(observationEClass_O);
         g1.getETypeArguments()
             .add(g2);
-        initEReference(getObservation_Observed(), g1, null, "observed", null, 0, -1, Observation.class, !IS_TRANSIENT,
+        initEReference(getObservation_Observed(), g1, null, "observed", null, 0, 1, Observation.class, !IS_TRANSIENT,
                 !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
 

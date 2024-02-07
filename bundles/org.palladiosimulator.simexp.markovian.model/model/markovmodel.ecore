@@ -46,7 +46,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
       <eTypeParameters name="O"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="observed" upperBound="-1">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observed">
         <eGenericType eClassifier="#//markoventity/State">
           <eTypeArguments eTypeParameter="#//markoventity/Observation/O"/>
         </eGenericType>

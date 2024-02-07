@@ -347,8 +347,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
              * return emittingState.getProduces() .get(0);
              */
             Observation<O> observation = MarkovEntityFactory.eINSTANCE.createObservation();
-            observation.getObserved()
-                .add(emittingState);
+            observation.setObserved(emittingState);
             return observation;
         }
     };

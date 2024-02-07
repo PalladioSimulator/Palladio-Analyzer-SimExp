@@ -41,8 +41,7 @@ public class HiddenStateMarkovian<S, A, R> extends MarkovianDecorator<S, A, R> {
         /*
          * currentState.getProduces().add(result);
          */
-        result.getObserved()
-            .add(currentState);
+        result.setObserved(currentState);
     }
 
 }
