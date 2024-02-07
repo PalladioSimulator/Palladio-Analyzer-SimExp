@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class GlobalQualityBasedReconfigurationStrategy<S> extends DeltaIoTReconfigurationStrategy<S> {
+public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
 
     private final static String ID = "GlobalQualityBasedReconfigurationStrategy";
 
@@ -15,8 +15,8 @@ public class GlobalQualityBasedReconfigurationStrategy<S> extends DeltaIoTReconf
         super();
     }
 
-    public static <S> DeltaIoTReconfigurationStrategyBuilder<S> newBuilder() {
-        return new DeltaIoTReconfigurationStrategyBuilder<>(new GlobalQualityBasedReconfigurationStrategy<>());
+    public static <S> DeltaIoTReconfigurationStrategyBuilder newBuilder() {
+        return new DeltaIoTReconfigurationStrategyBuilder(new GlobalQualityBasedReconfigurationStrategy());
     }
 
     @Override

@@ -11,16 +11,16 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class LoadBalancingEmptyReconfigurationPlanningStrategy<S, A>
-        extends AbstractReconfigurationPlanningStrategy<S, A> {
+public class LoadBalancingEmptyReconfigurationPlanningStrategy<C, A>
+        extends AbstractReconfigurationPlanningStrategy<C, A> {
 
     public LoadBalancingEmptyReconfigurationPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<S, A> recoveryStrategy) {
+            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<C, A> recoveryStrategy) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy);
     }
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
+    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
         return emptyReconfiguration();
     }

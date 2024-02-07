@@ -7,12 +7,12 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
-public abstract class ArchitecturalSpaceNavigator<S, A> extends InductiveStateSpaceNavigator<S, A> {
+public abstract class ArchitecturalSpaceNavigator<C, A> extends InductiveStateSpaceNavigator<A> {
 
     @Override
-    public State<S> navigate(NavigationContext<S, A> context) {
+    public State navigate(NavigationContext<A> context) {
         if (isValid(context)) {
-            SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) context.getSource();
+            SelfAdaptiveSystemState<C, A> state = (SelfAdaptiveSystemState<C, A>) context.getSource();
             Optional<Action<A>> action = context.getAction();
             Reconfiguration<A> reconfiguration = (Reconfiguration<A>) action.get();
             return navigate(state.getArchitecturalConfiguration(), reconfiguration);
@@ -22,7 +22,7 @@ public abstract class ArchitecturalSpaceNavigator<S, A> extends InductiveStateSp
         throw new RuntimeException("");
     }
 
-    private boolean isValid(NavigationContext<S, A> context) {
+    private boolean isValid(NavigationContext<A> context) {
         Optional<Action<A>> action = context.getAction();
         if (!action.isPresent()) {
             return false;
@@ -31,10 +31,10 @@ public abstract class ArchitecturalSpaceNavigator<S, A> extends InductiveStateSp
         if (!(actionValue instanceof Reconfiguration<A>)) {
             return false;
         }
-        State<S> source = context.getSource();
-        return source instanceof SelfAdaptiveSystemState<?, ?>;
+        State source = context.getSource();
+        return source instanceof SelfAdaptiveSystemState;
     }
 
-    public abstract State<S> navigate(ArchitecturalConfiguration<S, A> archConfig, Reconfiguration<A> reconfiguration);
+    public abstract State navigate(ArchitecturalConfiguration<C, A> archConfig, Reconfiguration<A> reconfiguration);
 
 }

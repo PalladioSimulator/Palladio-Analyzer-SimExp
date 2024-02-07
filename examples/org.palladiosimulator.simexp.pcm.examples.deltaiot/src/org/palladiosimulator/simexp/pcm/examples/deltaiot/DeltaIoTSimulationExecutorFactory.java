@@ -57,7 +57,7 @@ public class DeltaIoTSimulationExecutorFactory
 
     public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Integer> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -94,7 +94,7 @@ public class DeltaIoTSimulationExecutorFactory
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
             .newBuilder(modelAccess)
             .withReconfigurationParams(reconfParamsRepo)
             .andPacketLossSpec(specs.get(0))

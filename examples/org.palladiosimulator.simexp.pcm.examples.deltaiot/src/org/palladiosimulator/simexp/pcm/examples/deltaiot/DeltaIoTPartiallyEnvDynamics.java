@@ -35,7 +35,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork dbn,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
             SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         super(dbn, modelAccess);
@@ -48,7 +48,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     }
 
     private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> createPartiallyEnvironmentalDrivenProcess(
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
         return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R>(envProcess,
                 simulatedExperienceStore, simulationRunnerHolder) {
@@ -114,7 +114,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
 
             @Override
             protected SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator> determineStructuralState(
-                    NavigationContext<PCMInstance, QVTOReconfigurator> context) {
+                    NavigationContext<QVTOReconfigurator> context) {
                 LOGGER.info("Start with state transition.");
                 long start = System.currentTimeMillis();
                 QVToReconfiguration reconf = QVToReconfiguration.class.cast(context.getAction()

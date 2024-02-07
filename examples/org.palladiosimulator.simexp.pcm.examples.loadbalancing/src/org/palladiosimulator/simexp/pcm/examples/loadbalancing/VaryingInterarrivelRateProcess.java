@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +70,8 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
     private final PcmAttributeChange attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;
-    private final EnvironmentProcess<S, A, R> envProcess;
-    private final ProbabilityMassFunction<State<S>> initialDist;
+    private final EnvironmentProcess<A, R> envProcess;
+    private final ProbabilityMassFunction<State> initialDist;
 
     public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
         // initPcmAttributeChange(experimentProvider);
@@ -95,27 +93,27 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         };
     }
 
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R> getEnvironmentProcess() {
         return envProcess;
     }
 
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<S, A, Aa, R>(createDerivableProcess(dbn), initialDist);
+    private EnvironmentProcess<A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+        return new ObservableEnvironmentProcess<A, Aa, R>(createDerivableProcess(dbn), initialDist);
     }
 
-    private ProbabilityMassFunction<State<S>> createInitialDist(DynamicBayesianNetwork dbn) {
+    private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork dbn) {
         return new ProbabilityMassFunction<>() {
 
             private final BayesianNetwork bn = dbn.getBayesianNetwork();
 
             @Override
-            public Sample<State<S>> drawSample() {
+            public Sample<State> drawSample() {
                 List<InputValue> sample = bn.sample();
                 return Sample.of(asPcmEnvironmentalState(sample), bn.probability(sample));
             }
 
             @Override
-            public double probability(Sample<State<S>> sample) {
+            public double probability(Sample<State> sample) {
                 List<InputValue> inputs = toInputs(sample);
                 if (inputs.isEmpty()) {
                     return 0;
@@ -125,7 +123,7 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         };
     }
 
-    private DerivableEnvironmentalDynamic<S, A> createDerivableProcess(DynamicBayesianNetwork dbn) {
+    private DerivableEnvironmentalDynamic<A> createDerivableProcess(DynamicBayesianNetwork dbn) {
         return new DerivableEnvironmentalDynamic<>() {
 
             private boolean explorationMode = false;
@@ -141,23 +139,23 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
             }
 
             @Override
-            public EnvironmentalState<S> navigate(NavigationContext<S, A> context) {
-                EnvironmentalState<S> envState = EnvironmentalState.class.cast(context.getSource());
+            public EnvironmentalState navigate(NavigationContext<A> context) {
+                EnvironmentalState envState = EnvironmentalState.class.cast(context.getSource());
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
-                    return sampleRandomly(toConditionalInputs(inputs));
+                    return sampleRandomly(DynamicBayesianNetwork.toConditionalInputs(inputs));
                 }
-                return sample(toConditionalInputs(inputs));
+                return sample(DynamicBayesianNetwork.toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState<S> sample(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(asConditionals(conditionalInputs))
+            private EnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
+                Trajectory traj = dbn.given(DynamicBayesianNetwork.asConditionals(conditionalInputs))
                     .sample();
                 return asPcmEnvironmentalState(traj.valueAtTime(0));
             }
 
-            private EnvironmentalState<S> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
 
@@ -178,13 +176,13 @@ public class VaryingInterarrivelRateProcess<S, A, Aa extends Action<A>, R> {
         return Lists.newArrayList();
     }
 
-    private EnvironmentalState<S> asPcmEnvironmentalState(List<InputValue> sample) {
+    private EnvironmentalState asPcmEnvironmentalState(List<InputValue> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
         ArrayList<PcmModelChange> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
         // attrChanges.add(attrChangeServerNode1);
         // attrChanges.add(attrChangeServerNode2);
-        return new PcmEnvironmentalState<>(attrChanges, asPerceivedValue(sample));
+        return new PcmEnvironmentalState(attrChanges, asPerceivedValue(sample));
     }
 
     private PerceivedValue<?> asPerceivedValue(List<InputValue> sample) {

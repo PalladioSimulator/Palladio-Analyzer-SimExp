@@ -79,8 +79,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <S, A, R> MarkovModel<S, A, R> createMarkovModel() {
-        MarkovModelImpl<S, A, R> markovModel = new MarkovModelImpl<S, A, R>();
+    public <A, R> MarkovModel<A, R> createMarkovModel() {
+        MarkovModelImpl<A, R> markovModel = new MarkovModelImpl<A, R>();
         return markovModel;
     }
 
@@ -90,8 +90,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <S> State<S> createState() {
-        StateImpl<S> state = new StateImpl<S>();
+    public State createState() {
+        StateImpl state = new StateImpl();
         return state;
     }
 
@@ -101,8 +101,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <O> Observation<O> createObservation() {
-        ObservationImpl<O> observation = new ObservationImpl<O>();
+    public Observation createObservation() {
+        ObservationImpl observation = new ObservationImpl();
         return observation;
     }
 
@@ -112,8 +112,8 @@ public class MarkovEntityFactoryImpl extends EFactoryImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public <S, A> Transition<S, A> createTransition() {
-        TransitionImpl<S, A> transition = new TransitionImpl<S, A>();
+    public <A> Transition<A> createTransition() {
+        TransitionImpl<A> transition = new TransitionImpl<A>();
         return transition;
     }
 

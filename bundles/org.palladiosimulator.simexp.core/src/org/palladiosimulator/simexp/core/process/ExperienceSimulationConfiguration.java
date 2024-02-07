@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 import com.google.common.collect.Lists;
 
-public class ExperienceSimulationConfiguration<S, A, R> {
+public class ExperienceSimulationConfiguration<C, A, R> {
 
     public class ExperienceSimulationConfigBuilder {
 
@@ -31,22 +31,22 @@ public class ExperienceSimulationConfiguration<S, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<S, A>> runner) {
+        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<C, A>> runner) {
             ExperienceSimulationConfiguration.this.runner.addAll(runner);
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<S, A> runner) {
+        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<C, A> runner) {
             ExperienceSimulationConfiguration.this.runner.add(runner);
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder sampleWith(MarkovSampling<S, A, R> markovSampler) {
+        public ExperienceSimulationConfigBuilder sampleWith(MarkovSampling<A, R> markovSampler) {
             ExperienceSimulationConfiguration.this.markovSampler = markovSampler;
             return this;
         }
 
-        public ExperienceSimulationConfiguration<S, A, R> build() {
+        public ExperienceSimulationConfiguration<C, A, R> build() {
             checkValidity();
 
             return ExperienceSimulationConfiguration.this;
@@ -77,8 +77,8 @@ public class ExperienceSimulationConfiguration<S, A, R> {
     private int numberOfRuns = 0;
     private String simulationID = "";
     private String sampleSpaceID = "";
-    private List<ExperienceSimulationRunner<S, A>> runner = Lists.newArrayList();
-    private MarkovSampling<S, A, R> markovSampler = null;
+    private List<ExperienceSimulationRunner<C, A>> runner = Lists.newArrayList();
+    private MarkovSampling<A, R> markovSampler = null;
     private Initializable beforeExecutionInitialization = null;
 
     private ExperienceSimulationConfiguration() {
@@ -97,11 +97,11 @@ public class ExperienceSimulationConfiguration<S, A, R> {
         return simulationID;
     }
 
-    public List<ExperienceSimulationRunner<S, A>> getSimulationRunner() {
+    public List<ExperienceSimulationRunner<C, A>> getSimulationRunner() {
         return runner;
     }
 
-    public MarkovSampling<S, A, R> getMarkovSampler() {
+    public MarkovSampling<A, R> getMarkovSampler() {
         return markovSampler;
     }
 

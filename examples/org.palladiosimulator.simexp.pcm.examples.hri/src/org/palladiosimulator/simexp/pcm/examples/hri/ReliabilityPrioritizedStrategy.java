@@ -16,8 +16,8 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class ReliabilityPrioritizedStrategy<S>
-        extends ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> implements Initializable {
+public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration>
+        implements Initializable {
     private static final String IMG_BRIGHTNESS_TEMPLATE = "_U5Fzu8qkEeqObY-eK2jOOA";
     private static final String IMG_NOISE_TEMPLATE = "_0uh4oCpGEeuMpaabmuiN-Q";
 
@@ -38,8 +38,8 @@ public class ReliabilityPrioritizedStrategy<S>
     }
 
     @Override
-    protected void monitor(State<S> source, SharedKnowledge knowledge) {
-        var sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
+    protected void monitor(State source, SharedKnowledge knowledge) {
+        var sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
 
         var stateQuantity = sasState.getQuantifiedState();
         SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)
@@ -62,7 +62,7 @@ public class ReliabilityPrioritizedStrategy<S>
     }
 
     @Override
-    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State source, SharedKnowledge knowledge) {
         var rtSimMeasurement = knowledge.getValue(responseTimeSpec.getId())
             .map(SimulatedMeasurement.class::cast)
             .get();
@@ -93,7 +93,7 @@ public class ReliabilityPrioritizedStrategy<S>
     }
 
     @Override
-    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         var sensorNoise = knowledge.getValue(IMG_NOISE_TEMPLATE)
             .map(CategoricalValue.class::cast)
             .get();

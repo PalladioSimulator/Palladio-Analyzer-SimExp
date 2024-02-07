@@ -7,14 +7,14 @@ import java.util.Set;
 import org.palladiosimulator.simexp.markovian.activity.BasePolicy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class RandomizedStrategy<S, T> implements BasePolicy<S, T> {
+public class RandomizedStrategy<T> implements BasePolicy<T> {
 
     private final static String STRATEGY_ID = "RandomizedSelectionStrategy";
 
     private final Random random = new Random(System.currentTimeMillis());
 
     @Override
-    public T select(State<S> source, Set<T> options) {
+    public T select(State source, Set<T> options) {
         return selectRandomly(options);
     }
 

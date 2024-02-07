@@ -41,7 +41,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Tra
  *
  * @generated
  */
-public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container implements MarkovModel<S, A, R> {
+public class MarkovModelImpl<A, R> extends MinimalEObjectImpl.Container implements MarkovModel<A, R> {
     /**
      * The cached value of the '{@link #getTransitions() <em>Transitions</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -50,7 +50,7 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      * @ordered
      */
-    protected EList<Transition<S, A>> transitions;
+    protected EList<Transition<A>> transitions;
 
     /**
      * The cached value of the '{@link #getStateSpace() <em>State Space</em>}' containment reference list.
@@ -60,7 +60,7 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      * @ordered
      */
-    protected EList<State<S>> stateSpace;
+    protected EList<State> stateSpace;
 
     /**
      * The cached value of the '{@link #getReward() <em>Reward</em>}' containment reference list.
@@ -90,7 +90,7 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      * @ordered
      */
-    protected EList<Observation<S>> observations;
+    protected EList<Observation> observations;
 
     /**
      * <!-- begin-user-doc -->
@@ -117,9 +117,9 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      */
     @Override
-    public EList<Transition<S, A>> getTransitions() {
+    public EList<Transition<A>> getTransitions() {
         if (transitions == null) {
-            transitions = new EObjectContainmentEList<Transition<S, A>>(Transition.class, this,
+            transitions = new EObjectContainmentEList<Transition<A>>(Transition.class, this,
                     MarkovEntityPackage.MARKOV_MODEL__TRANSITIONS);
         }
         return transitions;
@@ -131,9 +131,9 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      */
     @Override
-    public EList<State<S>> getStateSpace() {
+    public EList<State> getStateSpace() {
         if (stateSpace == null) {
-            stateSpace = new EObjectContainmentEList<State<S>>(State.class, this,
+            stateSpace = new EObjectContainmentEList<State>(State.class, this,
                     MarkovEntityPackage.MARKOV_MODEL__STATE_SPACE);
         }
         return stateSpace;
@@ -173,9 +173,9 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
      * @generated
      */
     @Override
-    public EList<Observation<S>> getObservations() {
+    public EList<Observation> getObservations() {
         if (observations == null) {
-            observations = new EObjectContainmentEList<Observation<S>>(Observation.class, this,
+            observations = new EObjectContainmentEList<Observation>(Observation.class, this,
                     MarkovEntityPackage.MARKOV_MODEL__OBSERVATIONS);
         }
         return observations;
@@ -236,11 +236,11 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
         switch (featureID) {
         case MarkovEntityPackage.MARKOV_MODEL__TRANSITIONS:
             getTransitions().clear();
-            getTransitions().addAll((Collection<? extends Transition<S, A>>) newValue);
+            getTransitions().addAll((Collection<? extends Transition<A>>) newValue);
             return;
         case MarkovEntityPackage.MARKOV_MODEL__STATE_SPACE:
             getStateSpace().clear();
-            getStateSpace().addAll((Collection<? extends State<S>>) newValue);
+            getStateSpace().addAll((Collection<? extends State>) newValue);
             return;
         case MarkovEntityPackage.MARKOV_MODEL__REWARD:
             getReward().clear();
@@ -252,7 +252,7 @@ public class MarkovModelImpl<S, A, R> extends MinimalEObjectImpl.Container imple
             return;
         case MarkovEntityPackage.MARKOV_MODEL__OBSERVATIONS:
             getObservations().clear();
-            getObservations().addAll((Collection<? extends Observation<S>>) newValue);
+            getObservations().addAll((Collection<? extends Observation>) newValue);
             return;
         }
         super.eSet(featureID, newValue);

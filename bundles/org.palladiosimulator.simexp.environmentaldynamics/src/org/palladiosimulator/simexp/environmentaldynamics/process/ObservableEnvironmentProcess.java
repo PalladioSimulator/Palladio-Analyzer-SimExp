@@ -11,22 +11,20 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class ObservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends EnvironmentProcess<S, A, R> {
+public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R> extends EnvironmentProcess<A, R> {
 
-    public ObservableEnvironmentProcess(MarkovModel<S, A, R> model,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    public ObservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution) {
         super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), model, initialDistribution);
     }
 
-    public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics,
+            ProbabilityMassFunction<State> initialDistribution) {
         super(buildMarkovian(dynamics, initialDistribution), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
-            StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution) {
-        MarkovianBuilder<S, A, Aa, R>.MarkovChainBuilder markovChain = MarkovianBuilder
-            .<S, A, Aa, R> createMarkovChain();
+    private static <A, Aa extends Action<A>, R> Markovian<A, R> buildMarkovian(
+            StateSpaceNavigator<A> environmentalDynamics, ProbabilityMassFunction<State> initialDistribution) {
+        MarkovianBuilder<A, Aa, R>.MarkovChainBuilder markovChain = MarkovianBuilder.<A, Aa, R> createMarkovChain();
         return markovChain.createStateSpaceNavigator(environmentalDynamics)
             .withInitialStateDistribution(initialDistribution)
             .build();
@@ -34,7 +32,7 @@ public class ObservableEnvironmentProcess<S, A, Aa extends Action<A>, R> extends
 
     @Override
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState<S>) last).getNext();
+        return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState) last).getNext();
     }
 
     @Override

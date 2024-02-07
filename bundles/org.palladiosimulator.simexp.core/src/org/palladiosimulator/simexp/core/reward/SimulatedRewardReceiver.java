@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R> {
+public class SimulatedRewardReceiver<C, A, R> implements RewardReceiver<A, R> {
 
     private static final Logger LOGGER = Logger.getLogger(SimulatedRewardReceiver.class.getName());
 
@@ -18,24 +18,24 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
         this.evaluator = evaluator;
     }
 
-    public static <S, A, R> SimulatedRewardReceiver<S, A, R> with(RewardEvaluator<R> evaluator) {
+    public static <C, A, R> SimulatedRewardReceiver<C, A, R> with(RewardEvaluator<R> evaluator) {
         return new SimulatedRewardReceiver<>(evaluator);
     }
 
     @Override
-    public Reward<R> obtain(Sample<S, A, R, S> sample) {
+    public Reward<R> obtain(Sample<A, R> sample) {
         SelfAdaptiveSystemStateSampleValidator checkSample = this.new SelfAdaptiveSystemStateSampleValidator();
         try {
             checkSample.validate(sample);
-        } catch (SimulatedRewardReceiver<S, A, R>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
+        } catch (SimulatedRewardReceiver<C, A, R>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
             throw new RuntimeException(e);
         }
 
         return evaluate(sample);
     }
 
-    private Reward<R> evaluate(Sample<S, A, R, S> sample) {
-        SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) sample.getNext();
+    private Reward<R> evaluate(Sample<A, R> sample) {
+        SelfAdaptiveSystemState<C, A> state = (SelfAdaptiveSystemState<C, A>) sample.getNext();
         Reward<R> evaluatedReward = evaluator.evaluate(state.getQuantifiedState());
 
         LOGGER.debug(String.format(Locale.ENGLISH, "Evaluated reward: %s", evaluatedReward.getValue()
@@ -46,7 +46,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
 
     private class SelfAdaptiveSystemStateSampleValidator {
 
-        public void validate(Sample<S, A, R, S> sample) throws SelfAdaptiveSystemStateSampleValidationExcpetion {
+        public void validate(Sample<A, R> sample) throws SelfAdaptiveSystemStateSampleValidationExcpetion {
             boolean isValid = true;
             StringBuilder invalidSampleMsg = new StringBuilder(
                     "Self-adaptive system state sample is invalid. Reason: ");

@@ -13,41 +13,41 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 import org.palladiosimulator.simexp.markovian.util.FilterCriterionUtil;
 
-public class MarkovModelAccessor<S, A, R> {
+public class MarkovModelAccessor<A, R> {
 
-    private final MarkovModel<S, A, R> model;
+    private final MarkovModel<A, R> model;
 
-    private MarkovModelAccessor(MarkovModel<S, A, R> model) {
+    private MarkovModelAccessor(MarkovModel<A, R> model) {
         this.model = model;
     }
 
-    public static <T, A, R> MarkovModelAccessor<T, A, R> of(MarkovModel<T, A, R> model) {
+    public static <A, R> MarkovModelAccessor<A, R> of(MarkovModel<A, R> model) {
         return new MarkovModelAccessor<>(model);
     }
 
-    private Stream<Transition<S, A>> getTransitionStream() {
+    private Stream<Transition<A>> getTransitionStream() {
         return model.getTransitions()
             .stream();
     }
 
-    public Set<State<S>> getStates() {
-        return new HashSet<State<S>>(model.getStateSpace());
+    public Set<State> getStates() {
+        return new HashSet<State>(model.getStateSpace());
     }
 
-    public Set<Transition<S, A>> filterTransitions(Predicate<Transition<S, A>> criterion) {
+    public Set<Transition<A>> filterTransitions(Predicate<Transition<A>> criterion) {
         return getTransitionStream().filter(criterion)
             .collect(Collectors.toSet());
     }
 
-    public Optional<Transition<S, A>> findTransition(State<S> source, Action<A> label) {
-        Predicate<Transition<S, A>> filterPredicate = FilterCriterionUtil.<S, A> withSource(source)
+    public Optional<Transition<A>> findTransition(State source, Action<A> label) {
+        Predicate<Transition<A>> filterPredicate = FilterCriterionUtil.<A> withSource(source)
             .and(FilterCriterionUtil.withLabel(label));
         return getTransitionStream().filter(filterPredicate)
             .findFirst();
     }
 
-    public Optional<Transition<S, A>> findTransition(State<S> source, State<S> target) {
-        return getTransitionStream().filter(FilterCriterionUtil.<S, A> withSource(source)
+    public Optional<Transition<A>> findTransition(State source, State target) {
+        return getTransitionStream().filter(FilterCriterionUtil.<A> withSource(source)
             .and(FilterCriterionUtil.withTarget(target)))
             .findFirst();
     }

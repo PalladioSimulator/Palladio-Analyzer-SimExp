@@ -18,14 +18,14 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class FaultTolerantScalingPlanningStrategy<S> extends AbstractLoadBalancingScalingPlanningStrategy<S> {
+public class FaultTolerantScalingPlanningStrategy<C> extends AbstractLoadBalancingScalingPlanningStrategy<C> {
 
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
 
     public FaultTolerantScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
-            NodeRecoveryStrategy<S, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
+            NodeRecoveryStrategy<C, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
             Threshold upperThresholdResponseTime) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy, lowerThresholdResponseTime,
                 upperThresholdResponseTime);
@@ -33,9 +33,9 @@ public class FaultTolerantScalingPlanningStrategy<S> extends AbstractLoadBalanci
     }
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
+    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());

@@ -442,12 +442,8 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         setNsURI(eNS_URI);
 
         // Create type parameters
-        ETypeParameter markovModelEClass_S = addETypeParameter(markovModelEClass, "S");
         ETypeParameter markovModelEClass_A = addETypeParameter(markovModelEClass, "A");
         ETypeParameter markovModelEClass_R = addETypeParameter(markovModelEClass, "R");
-        addETypeParameter(stateEClass, "S");
-        ETypeParameter observationEClass_O = addETypeParameter(observationEClass, "O");
-        ETypeParameter transitionEClass_S = addETypeParameter(transitionEClass, "S");
         ETypeParameter transitionEClass_A = addETypeParameter(transitionEClass, "A");
         ETypeParameter rewardEClass_R = addETypeParameter(rewardEClass, "R");
         ETypeParameter actionEClass_A = addETypeParameter(actionEClass, "A");
@@ -460,20 +456,13 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         initEClass(markovModelEClass, MarkovModel.class, "MarkovModel", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         EGenericType g1 = createEGenericType(this.getTransition());
-        EGenericType g2 = createEGenericType(markovModelEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        g2 = createEGenericType(markovModelEClass_A);
+        EGenericType g2 = createEGenericType(markovModelEClass_A);
         g1.getETypeArguments()
             .add(g2);
         initEReference(getMarkovModel_Transitions(), g1, null, "transitions", null, 1, -1, MarkovModel.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
                 IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(markovModelEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getMarkovModel_StateSpace(), g1, null, "stateSpace", null, 1, -1, MarkovModel.class,
+        initEReference(getMarkovModel_StateSpace(), this.getState(), null, "stateSpace", null, 1, -1, MarkovModel.class,
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
                 IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         g1 = createEGenericType(this.getReward());
@@ -490,13 +479,9 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         initEReference(getMarkovModel_Actions(), g1, null, "actions", null, 0, -1, MarkovModel.class, !IS_TRANSIENT,
                 !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
                 IS_ORDERED);
-        g1 = createEGenericType(this.getObservation());
-        g2 = createEGenericType(markovModelEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getMarkovModel_Observations(), g1, null, "observations", null, 0, -1, MarkovModel.class,
-                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getMarkovModel_Observations(), this.getObservation(), null, "observations", null, 0, -1,
+                MarkovModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+                !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(stateEClass, State.class, "State", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getState_Name(), ecorePackage.getEString(), "name", null, 0, 1, State.class, !IS_TRANSIENT,
@@ -504,30 +489,18 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
 
         initEClass(observationEClass, Observation.class, "Observation", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
-        g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(observationEClass_O);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getObservation_Observed(), g1, null, "observed", null, 0, 1, Observation.class, !IS_TRANSIENT,
-                !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-                IS_ORDERED);
+        initEReference(getObservation_Observed(), this.getState(), null, "observed", null, 0, 1, Observation.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(transitionEClass, Transition.class, "Transition", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
-        g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(transitionEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getTransition_Source(), g1, null, "source", null, 1, 1, Transition.class, !IS_TRANSIENT,
-                !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-                IS_ORDERED);
-        g1 = createEGenericType(this.getState());
-        g2 = createEGenericType(transitionEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getTransition_Target(), g1, null, "target", null, 1, 1, Transition.class, !IS_TRANSIENT,
-                !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-                IS_ORDERED);
+        initEReference(getTransition_Source(), this.getState(), null, "source", null, 1, 1, Transition.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getTransition_Target(), this.getState(), null, "target", null, 1, 1, Transition.class,
+                !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+                IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         g1 = createEGenericType(this.getAction());
         g2 = createEGenericType(transitionEClass_A);
         g1.getETypeArguments()

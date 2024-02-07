@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  *
  * @generated
  */
-public class StateImpl<S> extends MinimalEObjectImpl.Container implements State<S> {
+public class StateImpl extends MinimalEObjectImpl.Container implements State {
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->

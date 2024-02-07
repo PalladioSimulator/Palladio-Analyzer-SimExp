@@ -51,11 +51,11 @@ public class RobotCognitionSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Double> envProcess;
 
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -64,9 +64,9 @@ public class RobotCognitionSimulationExecutorFactory
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
+        RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> p = envDynamics.getEnvironmentProcess();
+        EnvironmentProcess<QVTOReconfigurator, Double> p = envDynamics.getEnvironmentProcess();
         this.envProcess = p;
     }
 
@@ -100,7 +100,7 @@ public class RobotCognitionSimulationExecutorFactory
              */
             );
 
-        ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation<>();
+        ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<PCMInstance>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 

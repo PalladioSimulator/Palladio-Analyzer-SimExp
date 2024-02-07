@@ -36,7 +36,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
  *
  * @generated
  */
-public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container implements Sample<S, A, R, O> {
+public class SampleImpl<A, R> extends MinimalEObjectImpl.Container implements Sample<A, R> {
     /**
      * The cached value of the '{@link #getReward() <em>Reward</em>}' reference.
      * <!-- begin-user-doc -->
@@ -85,7 +85,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      * @ordered
      */
-    protected State<S> current;
+    protected State current;
 
     /**
      * The cached value of the '{@link #getNext() <em>Next</em>}' reference.
@@ -95,7 +95,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      * @ordered
      */
-    protected State<S> next;
+    protected State next;
 
     /**
      * The cached value of the '{@link #getObservation() <em>Observation</em>}' reference.
@@ -105,7 +105,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      * @ordered
      */
-    protected Observation<O> observation;
+    protected Observation observation;
 
     /**
      * <!-- begin-user-doc -->
@@ -243,10 +243,10 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      */
     @SuppressWarnings("unchecked")
     @Override
-    public State<S> getCurrent() {
+    public State getCurrent() {
         if (current != null && current.eIsProxy()) {
             InternalEObject oldCurrent = (InternalEObject) current;
-            current = (State<S>) eResolveProxy(oldCurrent);
+            current = (State) eResolveProxy(oldCurrent);
             if (current != oldCurrent) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, SampleModelPackage.SAMPLE__CURRENT,
@@ -261,7 +261,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * <!-- end-user-doc -->
      * @generated
      */
-    public State<S> basicGetCurrent() {
+    public State basicGetCurrent() {
         return current;
     }
 
@@ -271,8 +271,8 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      */
     @Override
-    public void setCurrent(State<S> newCurrent) {
-        State<S> oldCurrent = current;
+    public void setCurrent(State newCurrent) {
+        State oldCurrent = current;
         current = newCurrent;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, SampleModelPackage.SAMPLE__CURRENT, oldCurrent,
@@ -286,10 +286,10 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      */
     @SuppressWarnings("unchecked")
     @Override
-    public State<S> getNext() {
+    public State getNext() {
         if (next != null && next.eIsProxy()) {
             InternalEObject oldNext = (InternalEObject) next;
-            next = (State<S>) eResolveProxy(oldNext);
+            next = (State) eResolveProxy(oldNext);
             if (next != oldNext) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, SampleModelPackage.SAMPLE__NEXT, oldNext,
@@ -304,7 +304,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * <!-- end-user-doc -->
      * @generated
      */
-    public State<S> basicGetNext() {
+    public State basicGetNext() {
         return next;
     }
 
@@ -314,8 +314,8 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      */
     @Override
-    public void setNext(State<S> newNext) {
-        State<S> oldNext = next;
+    public void setNext(State newNext) {
+        State oldNext = next;
         next = newNext;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, SampleModelPackage.SAMPLE__NEXT, oldNext, next));
@@ -328,10 +328,10 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Observation<O> getObservation() {
+    public Observation getObservation() {
         if (observation != null && observation.eIsProxy()) {
             InternalEObject oldObservation = (InternalEObject) observation;
-            observation = (Observation<O>) eResolveProxy(oldObservation);
+            observation = (Observation) eResolveProxy(oldObservation);
             if (observation != oldObservation) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, SampleModelPackage.SAMPLE__OBSERVATION,
@@ -346,7 +346,7 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * <!-- end-user-doc -->
      * @generated
      */
-    public Observation<O> basicGetObservation() {
+    public Observation basicGetObservation() {
         return observation;
     }
 
@@ -356,8 +356,8 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
      * @generated
      */
     @Override
-    public void setObservation(Observation<O> newObservation) {
-        Observation<O> oldObservation = observation;
+    public void setObservation(Observation newObservation) {
+        Observation oldObservation = observation;
         observation = newObservation;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, SampleModelPackage.SAMPLE__OBSERVATION,
@@ -417,13 +417,13 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
             setPointInTime((Integer) newValue);
             return;
         case SampleModelPackage.SAMPLE__CURRENT:
-            setCurrent((State<S>) newValue);
+            setCurrent((State) newValue);
             return;
         case SampleModelPackage.SAMPLE__NEXT:
-            setNext((State<S>) newValue);
+            setNext((State) newValue);
             return;
         case SampleModelPackage.SAMPLE__OBSERVATION:
-            setObservation((Observation<O>) newValue);
+            setObservation((Observation) newValue);
             return;
         }
         super.eSet(featureID, newValue);
@@ -447,13 +447,13 @@ public class SampleImpl<S, A, R, O> extends MinimalEObjectImpl.Container impleme
             setPointInTime(POINT_IN_TIME_EDEFAULT);
             return;
         case SampleModelPackage.SAMPLE__CURRENT:
-            setCurrent((State<S>) null);
+            setCurrent((State) null);
             return;
         case SampleModelPackage.SAMPLE__NEXT:
-            setNext((State<S>) null);
+            setNext((State) null);
             return;
         case SampleModelPackage.SAMPLE__OBSERVATION:
-            setObservation((Observation<O>) null);
+            setObservation((Observation) null);
             return;
         }
         super.eUnset(featureID);

@@ -26,10 +26,10 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface MarkovModel<S, A, R> extends EObject {
+public interface MarkovModel<A, R> extends EObject {
     /**
      * Returns the value of the '<em><b>Transitions</b></em>' containment reference list.
-     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition}<code>&lt;S, A&gt;</code>.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition}<code>&lt;A&gt;</code>.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @return the value of the '<em>Transitions</em>' containment reference list.
@@ -37,11 +37,11 @@ public interface MarkovModel<S, A, R> extends EObject {
      * @model containment="true" required="true"
      * @generated
      */
-    EList<Transition<S, A>> getTransitions();
+    EList<Transition<A>> getTransitions();
 
     /**
      * Returns the value of the '<em><b>State Space</b></em>' containment reference list.
-     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State}<code>&lt;S&gt;</code>.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State}.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @return the value of the '<em>State Space</em>' containment reference list.
@@ -49,7 +49,7 @@ public interface MarkovModel<S, A, R> extends EObject {
      * @model containment="true" required="true"
      * @generated
      */
-    EList<State<S>> getStateSpace();
+    EList<State> getStateSpace();
 
     /**
      * Returns the value of the '<em><b>Reward</b></em>' containment reference list.
@@ -77,7 +77,7 @@ public interface MarkovModel<S, A, R> extends EObject {
 
     /**
      * Returns the value of the '<em><b>Observations</b></em>' containment reference list.
-     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}<code>&lt;S&gt;</code>.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @return the value of the '<em>Observations</em>' containment reference list.
@@ -85,6 +85,6 @@ public interface MarkovModel<S, A, R> extends EObject {
      * @model containment="true"
      * @generated
      */
-    EList<Observation<S>> getObservations();
+    EList<Observation> getObservations();
 
 } // MarkovModel

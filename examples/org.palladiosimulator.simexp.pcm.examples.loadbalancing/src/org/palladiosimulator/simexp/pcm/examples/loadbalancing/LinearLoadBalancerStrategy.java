@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-public class LinearLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
+public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
     private final static String LINEAR_ADAPTATION_STRATEGY_NAME = "LinearLoadBalancerAdaptationStrategy";
     private final static String OUT_SOURCE = "LinearOutsourcing";
@@ -49,13 +49,13 @@ public class LinearLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigu
     }
 
     @Override
-    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State source, Set<QVToReconfiguration> options) {
         // TODO Exception handling
         if ((source instanceof SelfAdaptiveSystemState) == false) {
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<S, A> sassState = (SelfAdaptiveSystemState<S, A>) source;
+        SelfAdaptiveSystemState<C, A> sassState = (SelfAdaptiveSystemState<C, A>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));
@@ -71,7 +71,7 @@ public class LinearLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigu
         }
     }
 
-    private int adjustOutSourceFactor(int outSourceFactor, ArchitecturalConfiguration<S, A> archConf) {
+    private int adjustOutSourceFactor(int outSourceFactor, ArchitecturalConfiguration<C, A> archConf) {
         PCMInstance pcm = (PCMInstance) archConf.getConfiguration();
         ProbabilisticBranchTransition probServer1 = findBranchProbability(pcm);
         double branchProb = probServer1.getBranchProbability();
@@ -128,7 +128,7 @@ public class LinearLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigu
         return findReconfiguration(reconf, options);
     }
 
-    private int adjustScaleInFactor(int scaleInFactor, ArchitecturalConfiguration<S, A> archConf) {
+    private int adjustScaleInFactor(int scaleInFactor, ArchitecturalConfiguration<C, A> archConf) {
         PCMInstance pcm = (PCMInstance) archConf.getConfiguration();
         ProbabilisticBranchTransition probServer1 = findBranchProbability(pcm);
         double branchProb = probServer1.getBranchProbability();

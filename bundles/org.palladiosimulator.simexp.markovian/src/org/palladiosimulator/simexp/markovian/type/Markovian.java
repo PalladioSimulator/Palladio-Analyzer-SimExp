@@ -4,12 +4,12 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunctio
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public interface Markovian<S, A, R> {
+public interface Markovian<A, R> {
 
-    public void drawSample(Sample<S, A, R, S> sample);
+    public void drawSample(Sample<A, R> sample);
 
-    public Sample<S, A, R, S> determineInitialState();
+    public Sample<A, R> determineInitialState();
 
-    public ProbabilityMassFunction<State<S>> getInitialStateDistribution();
+    public ProbabilityMassFunction<State> getInitialStateDistribution();
 
 }

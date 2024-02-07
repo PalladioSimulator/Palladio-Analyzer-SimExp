@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 // This class is not yet integrated in the simulated experience process. This is rather a reminder for future work. 
 // The idea is to introduce a dedicated concept for reconfiguration strategies following the MAPE-K principles.
-public abstract class ReconfigurationStrategy<S, A, Aa extends Reconfiguration<A>> implements Policy<S, A, Aa> {
+public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> implements Policy<A, Aa> {
 
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationStrategy.class);
 
@@ -20,7 +20,7 @@ public abstract class ReconfigurationStrategy<S, A, Aa extends Reconfiguration<A
     }
 
     @Override
-    public Aa select(State<S> source, Set<Aa> options) {
+    public Aa select(State source, Set<Aa> options) {
         Aa reconfiguration = emptyReconfiguration();
 
         LOGGER.info("==== Start MAPE-K loop ====");
@@ -43,11 +43,11 @@ public abstract class ReconfigurationStrategy<S, A, Aa extends Reconfiguration<A
         return reconfiguration;
     }
 
-    protected abstract void monitor(State<S> source, SharedKnowledge knowledge);
+    protected abstract void monitor(State source, SharedKnowledge knowledge);
 
-    protected abstract boolean analyse(State<S> source, SharedKnowledge knowledge);
+    protected abstract boolean analyse(State source, SharedKnowledge knowledge);
 
-    protected abstract Aa plan(State<S> source, Set<Aa> options, SharedKnowledge knowledge);
+    protected abstract Aa plan(State source, Set<Aa> options, SharedKnowledge knowledge);
 
     protected abstract Aa emptyReconfiguration();
 }

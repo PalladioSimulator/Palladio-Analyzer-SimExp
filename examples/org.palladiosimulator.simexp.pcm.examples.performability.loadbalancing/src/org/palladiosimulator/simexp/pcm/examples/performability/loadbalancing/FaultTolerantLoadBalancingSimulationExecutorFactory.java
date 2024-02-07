@@ -54,12 +54,12 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Double> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -98,9 +98,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
                 new RepositoryModelUpdater());
         LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator>(
                 specs.get(0), config, nodeRecoveryStrategy);
-        ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
+        ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
                 specs.get(0), config, emptyStrategy);
-        Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 

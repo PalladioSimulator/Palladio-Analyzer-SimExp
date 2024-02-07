@@ -22,10 +22,10 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface SampleModel<S, A, R, O> extends EObject {
+public interface SampleModel<A, R> extends EObject {
     /**
      * Returns the value of the '<em><b>Trajectories</b></em>' containment reference list.
-     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory}<code>&lt;S, A, R, O&gt;</code>.
+     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory}<code>&lt;A, R&gt;</code>.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @return the value of the '<em>Trajectories</em>' containment reference list.
@@ -33,6 +33,6 @@ public interface SampleModel<S, A, R, O> extends EObject {
      * @model containment="true" required="true"
      * @generated
      */
-    EList<Trajectory<S, A, R, O>> getTrajectories();
+    EList<Trajectory<A, R>> getTrajectories();
 
 } // SampleModel

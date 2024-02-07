@@ -44,12 +44,12 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Integer> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
 
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Integer> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -73,7 +73,7 @@ public class LoadBalancingSimulationExecutorFactory
             .of(new PcmExperienceSimulationRunner<QVTOReconfigurator>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
-        Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
                 1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),

@@ -4,32 +4,32 @@ import static java.util.Objects.requireNonNull;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEnvironmentalState {
+public class EnvironmentalState extends StateImpl implements PerceivableEnvironmentalState {
 
-    public static class EnvironmentalStateBuilder<S> {
+    public static class EnvironmentalStateBuilder {
         private PerceivedValue<?> value = null;
         private boolean isInitial = false;
         private boolean isHidden = false;
 
-        public EnvironmentalStateBuilder<S> withValue(PerceivedValue<?> value) {
+        public EnvironmentalStateBuilder withValue(PerceivedValue<?> value) {
             this.value = value;
             return this;
         }
 
-        public EnvironmentalStateBuilder<S> isInital() {
+        public EnvironmentalStateBuilder isInital() {
             this.isInitial = true;
             return this;
         }
 
-        public EnvironmentalStateBuilder<S> isHidden() {
+        public EnvironmentalStateBuilder isHidden() {
             this.isHidden = true;
             return this;
         }
 
-        public EnvironmentalState<S> build() {
+        public EnvironmentalState build() {
             requireNonNull(value, "The environmental state value must not be null");
 
-            return new EnvironmentalState<>(value, isInitial, isHidden);
+            return new EnvironmentalState(value, isInitial, isHidden);
         }
 
     }
@@ -44,8 +44,8 @@ public class EnvironmentalState<S> extends StateImpl<S> implements PerceivableEn
         this.isHidden = isHidden;
     }
 
-    public static <S> EnvironmentalStateBuilder<S> newBuilder() {
-        return new EnvironmentalStateBuilder<>();
+    public static EnvironmentalStateBuilder newBuilder() {
+        return new EnvironmentalStateBuilder();
     }
 
     @Override

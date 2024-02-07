@@ -35,7 +35,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * This policy aims to provide a strategy to compensate server node failures
  * 
  */
-public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> {
+public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
@@ -49,11 +49,11 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
     private final PcmMeasurementSpecification responseTimeSpec;
     private final PerformabilityStrategyConfiguration strategyConfiguration;
 //    private final NodeRecoveryStrategy recoveryStrategy;
-    private final ReconfigurationPlanningStrategy<S> reconfigurationPlanningStrategy;
+    private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
-            ReconfigurationPlanningStrategy<S> reconfigurationPlanningStrategy) {
+            ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
@@ -66,11 +66,11 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
     }
 
     @Override
-    protected void monitor(State<S> source, SharedKnowledge knowledge) {
+    protected void monitor(State source, SharedKnowledge knowledge) {
         /**
          * transfer status of server nodes to knowledge base
          */
-        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
@@ -83,14 +83,14 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
     }
 
     @Override
-    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State source, SharedKnowledge knowledge) {
         boolean hasConstraintViolations = false;
         /**
          * check for any constraint violations that require a reconfiguration of the system, e.g.
          * threshold violations, presence of failed nodes, ...
          * 
          */
-        SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
@@ -107,7 +107,7 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
     }
 
     @Override
-    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         /**
          * The role of the planner function is to select the best adaptation option and generate a
          * plan for adapting the managed system from its current configuration to the new
@@ -204,7 +204,7 @@ public class PerformabilityStrategy<S> extends ReconfigurationStrategy<S, QVTORe
         return QVToReconfiguration.empty();
     }
 
-    private Double retrieveResponseTime(SelfAdaptiveSystemState<S, QVTOReconfigurator> sasState) {
+    private Double retrieveResponseTime(SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();

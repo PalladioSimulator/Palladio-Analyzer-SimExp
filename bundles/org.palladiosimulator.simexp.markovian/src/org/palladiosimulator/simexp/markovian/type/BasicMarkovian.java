@@ -8,33 +8,33 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
 
-public class BasicMarkovian<S, A, R> implements Markovian<S, A, R> {
+public class BasicMarkovian<A, R> implements Markovian<A, R> {
 
-    private final ProbabilityMassFunction<State<S>> initialStateDistribution;
-    private final StateSpaceNavigator<S, A> stateSpaceNavigator;
+    private final ProbabilityMassFunction<State> initialStateDistribution;
+    private final StateSpaceNavigator<A> stateSpaceNavigator;
 
-    public BasicMarkovian(ProbabilityMassFunction<State<S>> initialStateDistribution,
-            StateSpaceNavigator<S, A> stateSpaceNavigator) {
+    public BasicMarkovian(ProbabilityMassFunction<State> initialStateDistribution,
+            StateSpaceNavigator<A> stateSpaceNavigator) {
         this.initialStateDistribution = initialStateDistribution;
         this.stateSpaceNavigator = stateSpaceNavigator;
     }
 
     @Override
-    public void drawSample(Sample<S, A, R, S> sample) {
-        NavigationContext<S, A> context = NavigationContext.of(sample);
+    public void drawSample(Sample<A, R> sample) {
+        NavigationContext<A> context = NavigationContext.of(sample);
         sample.setNext(stateSpaceNavigator.navigate(context));
     }
 
     @Override
-    public Sample<S, A, R, S> determineInitialState() {
-        org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample<State<S>> sample = initialStateDistribution
+    public Sample<A, R> determineInitialState() {
+        org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample<State> sample = initialStateDistribution
             .drawSample();
-        State<S> value = sample.getValue();
+        State value = sample.getValue();
         return createInitialSample(value);
     }
 
     @Override
-    public ProbabilityMassFunction<State<S>> getInitialStateDistribution() {
+    public ProbabilityMassFunction<State> getInitialStateDistribution() {
         return initialStateDistribution;
     }
 

@@ -67,21 +67,21 @@ public class SampleModelSwitch<T> extends Switch<T> {
     protected T doSwitch(int classifierID, EObject theEObject) {
         switch (classifierID) {
         case SampleModelPackage.TRAJECTORY: {
-            Trajectory<?, ?, ?, ?> trajectory = (Trajectory<?, ?, ?, ?>) theEObject;
+            Trajectory<?, ?> trajectory = (Trajectory<?, ?>) theEObject;
             T result = caseTrajectory(trajectory);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case SampleModelPackage.SAMPLE: {
-            Sample<?, ?, ?, ?> sample = (Sample<?, ?, ?, ?>) theEObject;
+            Sample<?, ?> sample = (Sample<?, ?>) theEObject;
             T result = caseSample(sample);
             if (result == null)
                 result = defaultCase(theEObject);
             return result;
         }
         case SampleModelPackage.SAMPLE_MODEL: {
-            SampleModel<?, ?, ?, ?> sampleModel = (SampleModel<?, ?, ?, ?>) theEObject;
+            SampleModel<?, ?> sampleModel = (SampleModel<?, ?>) theEObject;
             T result = caseSampleModel(sampleModel);
             if (result == null)
                 result = defaultCase(theEObject);
@@ -103,7 +103,7 @@ public class SampleModelSwitch<T> extends Switch<T> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S, A, R, O> T caseTrajectory(Trajectory<S, A, R, O> object) {
+    public <A, R> T caseTrajectory(Trajectory<A, R> object) {
         return null;
     }
 
@@ -118,7 +118,7 @@ public class SampleModelSwitch<T> extends Switch<T> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S, A, R, O> T caseSample(Sample<S, A, R, O> object) {
+    public <A, R> T caseSample(Sample<A, R> object) {
         return null;
     }
 
@@ -133,7 +133,7 @@ public class SampleModelSwitch<T> extends Switch<T> {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public <S, A, R, O> T caseSampleModel(SampleModel<S, A, R, O> object) {
+    public <A, R> T caseSampleModel(SampleModel<A, R> object) {
         return null;
     }
 

@@ -25,15 +25,15 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 import com.google.common.collect.Lists;
 
-public class RobotCognitionEnvironmentalDynamics<S, A, R> {
+public class RobotCognitionEnvironmentalDynamics<A, R> {
 
-    private final EnvironmentProcess<S, A, R> envProcess;
+    private final EnvironmentProcess<A, R> envProcess;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<S, A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R> getEnvironmentProcess() {
         return envProcess;
     }
 
@@ -57,13 +57,13 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         };
     }
 
-    private EnvironmentProcess<S, A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
         return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }
 
-    private DerivableEnvironmentalDynamic createDerivableProcess() {
-        return new DerivableEnvironmentalDynamic() {
+    private DerivableEnvironmentalDynamic<A> createDerivableProcess() {
+        return new DerivableEnvironmentalDynamic<>() {
 
             @Override
             public void pursueExplorationStrategy() {
@@ -76,7 +76,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
             }
 
             @Override
-            public EnvironmentalState navigate(NavigationContext context) {
+            public EnvironmentalState navigate(NavigationContext<A> context) {
                 // Since the intention is to not predict belief states, it is not necessary to
                 // know/specify the true state.
                 var state = (EnvironmentalState) context.getSource();
@@ -97,7 +97,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
             private EnvironmentalStateObservation last = null;
 
             @Override
-            public Observation<?> produceObservationGiven(State emittingState) {
+            public Observation produceObservationGiven(State emittingState) {
                 var hiddenState = EnvironmentalState.class.cast(emittingState);
 
                 List<InputValue> sample;

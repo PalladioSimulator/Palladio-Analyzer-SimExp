@@ -35,7 +35,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final DynamicBayesianNetwork dbn;
     protected final List<T> specs;
     protected final SimulationParameters params;
-    protected final SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore;
+    protected final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
 
     protected final IProbabilityDistributionFactory distributionFactory;
     protected final IProbabilityDistributionRegistry probabilityDistributionRegistry;
@@ -46,8 +46,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     private final SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
-            SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
@@ -75,11 +74,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs,
             List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
-            Initializable beforeExecution, EnvironmentProcess<PCMInstance, QVTOReconfigurator, R> envProcess,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            Initializable beforeExecution, EnvironmentProcess<QVTOReconfigurator, R> envProcess,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> navigator,
-            Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfStrategy,
-            Set<QVToReconfiguration> reconfigurations, RewardEvaluator<R> evaluator, boolean hidden) {
+            Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
+            RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager,

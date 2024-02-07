@@ -24,7 +24,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  *
  * @generated
  */
-public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements Observation<O> {
+public class ObservationImpl extends MinimalEObjectImpl.Container implements Observation {
     /**
      * The cached value of the '{@link #getObserved() <em>Observed</em>}' reference.
      * <!-- begin-user-doc -->
@@ -33,7 +33,7 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
      * @generated
      * @ordered
      */
-    protected State<O> observed;
+    protected State observed;
 
     /**
      * <!-- begin-user-doc -->
@@ -61,10 +61,10 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
      */
     @SuppressWarnings("unchecked")
     @Override
-    public State<O> getObserved() {
+    public State getObserved() {
         if (observed != null && observed.eIsProxy()) {
             InternalEObject oldObserved = (InternalEObject) observed;
-            observed = (State<O>) eResolveProxy(oldObserved);
+            observed = (State) eResolveProxy(oldObserved);
             if (observed != oldObserved) {
                 if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, MarkovEntityPackage.OBSERVATION__OBSERVED,
@@ -79,7 +79,7 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
      * <!-- end-user-doc -->
      * @generated
      */
-    public State<O> basicGetObserved() {
+    public State basicGetObserved() {
         return observed;
     }
 
@@ -89,8 +89,8 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
      * @generated
      */
     @Override
-    public void setObserved(State<O> newObserved) {
-        State<O> oldObserved = observed;
+    public void setObserved(State newObserved) {
+        State oldObserved = observed;
         observed = newObserved;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, MarkovEntityPackage.OBSERVATION__OBSERVED,
@@ -123,7 +123,7 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
         case MarkovEntityPackage.OBSERVATION__OBSERVED:
-            setObserved((State<O>) newValue);
+            setObserved((State) newValue);
             return;
         }
         super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class ObservationImpl<O> extends MinimalEObjectImpl.Container implements 
     public void eUnset(int featureID) {
         switch (featureID) {
         case MarkovEntityPackage.OBSERVATION__OBSERVED:
-            setObserved((State<O>) null);
+            setObserved((State) null);
             return;
         }
         super.eUnset(featureID);

@@ -6,15 +6,15 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
+public abstract class SelfAdaptiveSystemState<C, A> extends StateImpl {
 
-    protected final SimulationRunnerHolder<S, A> simulationRunnerHolder;
+    protected final SimulationRunnerHolder<C, A> simulationRunnerHolder;
 
     protected PerceivableEnvironmentalState perceivedState;
-    protected ArchitecturalConfiguration<S, A> archConfiguration;
+    protected ArchitecturalConfiguration<C, A> archConfiguration;
     protected StateQuantity quantifiedState;
 
-    public SelfAdaptiveSystemState(SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+    public SelfAdaptiveSystemState(SimulationRunnerHolder<C, A> simulationRunnerHolder) {
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
@@ -22,7 +22,7 @@ public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
         return quantifiedState;
     }
 
-    public ArchitecturalConfiguration<S, A> getArchitecturalConfiguration() {
+    public ArchitecturalConfiguration<C, A> getArchitecturalConfiguration() {
         return archConfiguration;
     }
 
@@ -36,11 +36,11 @@ public abstract class SelfAdaptiveSystemState<S, A> extends StateImpl<S> {
     }
 
     public void determineQuantifiedState() {
-        List<ExperienceSimulationRunner<S, A>> simulationRunners = simulationRunnerHolder.getSimulationRunner();
+        List<ExperienceSimulationRunner<C, A>> simulationRunners = simulationRunnerHolder.getSimulationRunner();
         simulationRunners.forEach(runner -> runner.simulate(this));
     }
 
-    public abstract SelfAdaptiveSystemState<S, A> transitToNext(PerceivableEnvironmentalState perceivedState,
-            ArchitecturalConfiguration<S, A> archConf);
+    public abstract SelfAdaptiveSystemState<C, A> transitToNext(PerceivableEnvironmentalState perceivedState,
+            ArchitecturalConfiguration<C, A> archConf);
 
 }

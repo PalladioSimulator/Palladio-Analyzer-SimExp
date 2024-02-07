@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Observation<O> extends EObject {
+public interface Observation extends EObject {
 
     /**
      * Returns the value of the '<em><b>Observed</b></em>' reference.
@@ -31,7 +31,7 @@ public interface Observation<O> extends EObject {
      * @model
      * @generated
      */
-    State<O> getObserved();
+    State getObserved();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved <em>Observed</em>}' reference.
@@ -41,6 +41,6 @@ public interface Observation<O> extends EObject {
      * @see #getObserved()
      * @generated
      */
-    void setObserved(State<O> value);
+    void setObserved(State value);
 
 } // Observation

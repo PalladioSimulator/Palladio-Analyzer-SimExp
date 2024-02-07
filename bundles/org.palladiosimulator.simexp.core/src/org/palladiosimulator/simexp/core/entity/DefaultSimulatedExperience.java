@@ -9,17 +9,17 @@ public class DefaultSimulatedExperience<S, A, R> implements SimulatedExperience 
 
     private final static String NONE = "-";
 
-    private final Sample<S, A, R, S> sample;
+    private final Sample<A, R> sample;
 
-    private DefaultSimulatedExperience(Sample<S, A, R, S> sample) {
+    private DefaultSimulatedExperience(Sample<A, R> sample) {
         this.sample = sample;
     }
 
-    public static <S, A, R> DefaultSimulatedExperience<S, A, R> of(Sample<S, A, R, S> sample) {
+    public static <S, A, R> DefaultSimulatedExperience<S, A, R> of(Sample<A, R> sample) {
         return new DefaultSimulatedExperience<>(sample);
     }
 
-    public static <S, A, R> String deriveIdFrom(Sample<S, A, R, S> sample) {
+    public static <S, A, R> String deriveIdFrom(Sample<A, R> sample) {
         DefaultSimulatedExperience<S, A, R> helper = DefaultSimulatedExperience.of(sample);
         return String.format("%1s_%2s_%3s", helper.getCurrent()
             .toString(), helper.getReconfiguration(),

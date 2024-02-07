@@ -15,23 +15,23 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R> {
+public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R> {
 
-    public UnobservableEnvironmentProcess(MarkovModel<S, A, R> model,
-            ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
+    public UnobservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution,
+            ObservationProducer obsProducer) {
         super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution, obsProducer), model,
                 initialDistribution);
     }
 
-    public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
+    public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics,
+            ProbabilityMassFunction<State> initialDistribution, ObservationProducer obsProducer) {
         super(buildMarkovian(dynamics, initialDistribution, obsProducer), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
-            StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution,
-            ObservationProducer<S> obsProducer) {
-        MarkovianBuilder<S, A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<S, A, Aa, R> createHiddenMarkovModel();
+    private static <A, Aa extends Action<A>, R> Markovian<A, R> buildMarkovian(
+            StateSpaceNavigator<A> environmentalDynamics, ProbabilityMassFunction<State> initialDistribution,
+            ObservationProducer obsProducer) {
+        MarkovianBuilder<A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<A, Aa, R> createHiddenMarkovModel();
         builder = builder.createStateSpaceNavigator(environmentalDynamics);
         builder = builder.withInitialStateDistribution(initialDistribution);
         builder = builder.handleObservationsWith(obsProducer);
@@ -40,21 +40,21 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
 
     @Override
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        EnvironmentalState<S> hiddenState = EnvironmentalStateObservation.class.cast(last)
+        EnvironmentalState hiddenState = EnvironmentalStateObservation.class.cast(last)
             .getHiddenState();
-        Observation<S> observation = determineNextSampleGiven(hiddenState).getObservation();
+        Observation observation = determineNextSampleGiven(hiddenState).getObservation();
         return (PerceivableEnvironmentalState) observation;
     }
 
     @Override
     public PerceivableEnvironmentalState determineInitial() {
         // TODO Could be better solved... see HiddenMarkovian
-        Sample<S, A, R, S> initialSample = sampler.drawInitialSample();
+        Sample<A, R> initialSample = sampler.drawInitialSample();
         /*
          * State<S> currentState = initialSample.getCurrent(); return
          * (PerceivableEnvironmentalState) currentState.getProduces() .get(0);
          */
-        Observation<S> observation = initialSample.getObservation();
+        Observation observation = initialSample.getObservation();
         return (PerceivableEnvironmentalState) observation;
     }
 

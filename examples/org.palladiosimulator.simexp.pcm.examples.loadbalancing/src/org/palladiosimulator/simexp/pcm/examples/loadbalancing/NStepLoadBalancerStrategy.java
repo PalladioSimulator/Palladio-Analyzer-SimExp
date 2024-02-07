@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class NStepLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
+public class NStepLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
     private final static String SIMPLE_ADAPTATION_STRATEGY_NAME = "StepAdaptationStrategy";
 
@@ -37,13 +37,13 @@ public class NStepLoadBalancerStrategy<S, A> implements Policy<S, QVTOReconfigur
     }
 
     @Override
-    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State source, Set<QVToReconfiguration> options) {
         // TODO Exception handling
         if ((source instanceof SelfAdaptiveSystemState) == false) {
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<S, A> sassState = (SelfAdaptiveSystemState<S, A>) source;
+        SelfAdaptiveSystemState<C, A> sassState = (SelfAdaptiveSystemState<C, A>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));
