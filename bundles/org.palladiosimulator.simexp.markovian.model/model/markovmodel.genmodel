@@ -36,7 +36,6 @@
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Observation">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Observation/O"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/Observation/value"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Transition">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/S"/>

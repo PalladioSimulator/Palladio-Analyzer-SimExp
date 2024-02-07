@@ -51,9 +51,6 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
       <eTypeParameters name="O"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Observation/O"/>
-      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
       <eTypeParameters name="S"/>

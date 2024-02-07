@@ -38,7 +38,7 @@ public class MarkovModelFactory {
 
     public <O> Observation<O> createObservation(O value) {
         Observation<O> obs = entityFactory.createObservation();
-        obs.setValue(value);
+        // obs.setValue(value);
         return obs;
     }
 

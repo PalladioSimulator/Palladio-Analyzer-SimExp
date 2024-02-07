@@ -259,17 +259,6 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public EAttribute getObservation_Value() {
-        return (EAttribute) observationEClass.getEStructuralFeatures()
-            .get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
     public EClass getTransition() {
         return transitionEClass;
     }
@@ -413,7 +402,6 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         createEAttribute(stateEClass, STATE__NAME);
 
         observationEClass = createEClass(OBSERVATION);
-        createEAttribute(observationEClass, OBSERVATION__VALUE);
 
         transitionEClass = createEClass(TRANSITION);
         createEReference(transitionEClass, TRANSITION__SOURCE);
@@ -458,7 +446,7 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         ETypeParameter markovModelEClass_A = addETypeParameter(markovModelEClass, "A");
         ETypeParameter markovModelEClass_R = addETypeParameter(markovModelEClass, "R");
         ETypeParameter stateEClass_S = addETypeParameter(stateEClass, "S");
-        ETypeParameter observationEClass_O = addETypeParameter(observationEClass, "O");
+        addETypeParameter(observationEClass, "O");
         ETypeParameter transitionEClass_S = addETypeParameter(transitionEClass, "S");
         ETypeParameter transitionEClass_A = addETypeParameter(transitionEClass, "A");
         ETypeParameter rewardEClass_R = addETypeParameter(rewardEClass, "R");
@@ -522,9 +510,6 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
 
         initEClass(observationEClass, Observation.class, "Observation", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
-        g1 = createEGenericType(observationEClass_O);
-        initEAttribute(getObservation_Value(), g1, "value", null, 1, 1, Observation.class, !IS_TRANSIENT, !IS_VOLATILE,
-                IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(transitionEClass, Transition.class, "Transition", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);

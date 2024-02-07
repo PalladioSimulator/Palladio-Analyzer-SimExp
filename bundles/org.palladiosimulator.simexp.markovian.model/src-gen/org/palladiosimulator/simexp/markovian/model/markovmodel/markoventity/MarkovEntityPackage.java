@@ -188,22 +188,13 @@ public interface MarkovEntityPackage extends EPackage {
     int OBSERVATION = 2;
 
     /**
-     * The feature id for the '<em><b>Value</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int OBSERVATION__VALUE = 0;
-
-    /**
      * The number of structural features of the '<em>Observation</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OBSERVATION_FEATURE_COUNT = 1;
+    int OBSERVATION_FEATURE_COUNT = 0;
 
     /**
      * The number of operations of the '<em>Observation</em>' class.
@@ -469,17 +460,6 @@ public interface MarkovEntityPackage extends EPackage {
     EClass getObservation();
 
     /**
-     * Returns the meta object for the attribute '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getValue <em>Value</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Value</em>'.
-     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getValue()
-     * @see #getObservation()
-     * @generated
-     */
-    EAttribute getObservation_Value();
-
-    /**
      * Returns the meta object for class '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition <em>Transition</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -693,14 +673,6 @@ public interface MarkovEntityPackage extends EPackage {
          * @generated
          */
         EClass OBSERVATION = eINSTANCE.getObservation();
-
-        /**
-         * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute OBSERVATION__VALUE = eINSTANCE.getObservation_Value();
 
         /**
          * The meta object literal for the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.TransitionImpl <em>Transition</em>}' class.

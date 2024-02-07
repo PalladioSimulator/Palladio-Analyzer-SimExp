@@ -5,6 +5,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.imp
 public class EnvironmentalStateObservation<S, V> extends ObservationImpl<PerceivedValue<V>>
         implements PerceivableEnvironmentalState {
 
+    private final PerceivedValue<V> value;
     private final EnvironmentalState<S> hiddenState;
 
     private EnvironmentalStateObservation(PerceivedValue<V> value, EnvironmentalState<S> hiddenState) {
