@@ -99,11 +99,11 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
         }
     }
 
-    private MarkovSampling<S, A, R, State<S>> buildMarkovSampler() {
+    private MarkovSampling<S, A, R> buildMarkovSampler() {
         return new MarkovSampling<>(buildMarkovianConfig());
     }
 
-    private MarkovianConfig<S, A, R, State<S>> buildMarkovianConfig() {
+    private MarkovianConfig<S, A, R> buildMarkovianConfig() {
         return new MarkovianConfig<>(numberOfSamplesPerRun, buildMarkovian(), null); // TODO bring
                                                                                      // in
                                                                                      // accordance
@@ -111,7 +111,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
                                                                                      // ReconfigurationFilter...
     }
 
-    private Markovian<S, A, R, State<S>> buildMarkovian() {
+    private Markovian<S, A, R> buildMarkovian() {
         StateSpaceNavigator<S, A> navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<State<S>> initial = initialDistribution.orElse(getInitialDistribution(navigator));
         if (isHiddenProcess) {
@@ -130,7 +130,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             .createInitialDistribution(createInitialSassCreator());
     }
 
-    private Markovian<S, A, R, State<S>> buildPOMDP(ProbabilityMassFunction<State<S>> initialDist,
+    private Markovian<S, A, R> buildPOMDP(ProbabilityMassFunction<State<S>> initialDist,
             StateSpaceNavigator<S, A> navigator) {
         if (UnobservableEnvironmentProcess.class.isInstance(envProcess) == false) {
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
@@ -147,7 +147,7 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
             .build();
     }
 
-    private Markovian<S, A, R, State<S>> buildMDP(ProbabilityMassFunction<State<S>> initialDist,
+    private Markovian<S, A, R> buildMDP(ProbabilityMassFunction<State<S>> initialDist,
             StateSpaceNavigator<S, A> navigator) {
         return MarkovianBuilder.<S, A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)

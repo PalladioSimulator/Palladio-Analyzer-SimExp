@@ -27,7 +27,7 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
         super(buildMarkovian(dynamics, initialDistribution, obsProducer), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R, State<S>> buildMarkovian(
+    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
             StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution,
             ObservationProducer<S> obsProducer) {
         MarkovianBuilder<S, A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<S, A, Aa, R> createHiddenMarkovModel();

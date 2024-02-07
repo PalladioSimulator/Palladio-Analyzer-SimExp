@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R, State<S>> {
+public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R> {
 
     private static final Logger LOGGER = Logger.getLogger(SimulatedRewardReceiver.class.getName());
 

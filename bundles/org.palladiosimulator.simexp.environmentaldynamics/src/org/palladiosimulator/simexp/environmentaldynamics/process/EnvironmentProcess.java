@@ -18,15 +18,15 @@ public abstract class EnvironmentProcess<S, A, R> {
 
     private final boolean isHiddenProcess;
 
-    protected final MarkovSampling<S, A, R, State<S>> sampler;
+    protected final MarkovSampling<S, A, R> sampler;
 
-    public EnvironmentProcess(Markovian<S, A, R, State<S>> markovian, MarkovModel<S, A, R> model,
+    public EnvironmentProcess(Markovian<S, A, R> markovian, MarkovModel<S, A, R> model,
             ProbabilityMassFunction<State<S>> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = isHiddenProcess(model);
     }
 
-    public EnvironmentProcess(Markovian<S, A, R, State<S>> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
+    public EnvironmentProcess(Markovian<S, A, R> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
             ProbabilityMassFunction<State<S>> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = dynamics.isHiddenProcess();

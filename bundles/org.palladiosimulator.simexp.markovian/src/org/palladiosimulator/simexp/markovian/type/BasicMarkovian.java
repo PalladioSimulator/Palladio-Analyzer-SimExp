@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
 
-public class BasicMarkovian<S, A, R, O> implements Markovian<S, A, R, O> {
+public class BasicMarkovian<S, A, R> implements Markovian<S, A, R> {
 
     private final ProbabilityMassFunction<State<S>> initialStateDistribution;
     private final StateSpaceNavigator<S, A> stateSpaceNavigator;
@@ -20,13 +20,13 @@ public class BasicMarkovian<S, A, R, O> implements Markovian<S, A, R, O> {
     }
 
     @Override
-    public void drawSample(Sample<S, A, R, O> sample) {
+    public void drawSample(Sample<S, A, R, State<S>> sample) {
         NavigationContext<S, A> context = NavigationContext.of(sample);
         sample.setNext(stateSpaceNavigator.navigate(context));
     }
 
     @Override
-    public Sample<S, A, R, O> determineInitialState() {
+    public Sample<S, A, R, State<S>> determineInitialState() {
         org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample<State<S>> sample = initialStateDistribution
             .drawSample();
         State<S> value = sample.getValue();
