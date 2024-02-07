@@ -20,13 +20,13 @@ public class BasicMarkovian<S, A, R> implements Markovian<S, A, R> {
     }
 
     @Override
-    public void drawSample(Sample<S, A, R, State<S>> sample) {
+    public void drawSample(Sample<S, A, R, S> sample) {
         NavigationContext<S, A> context = NavigationContext.of(sample);
         sample.setNext(stateSpaceNavigator.navigate(context));
     }
 
     @Override
-    public Sample<S, A, R, State<S>> determineInitialState() {
+    public Sample<S, A, R, S> determineInitialState() {
         org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample<State<S>> sample = initialStateDistribution
             .drawSample();
         State<S> value = sample.getValue();

@@ -227,20 +227,9 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
      * @generated
      */
     @Override
-    public EReference getState_Produces() {
-        return (EReference) stateEClass.getEStructuralFeatures()
-            .get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
     public EAttribute getState_Name() {
         return (EAttribute) stateEClass.getEStructuralFeatures()
-            .get(1);
+            .get(0);
     }
 
     /**
@@ -251,6 +240,17 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
     @Override
     public EClass getObservation() {
         return observationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public EReference getObservation_Observed() {
+        return (EReference) observationEClass.getEStructuralFeatures()
+            .get(0);
     }
 
     /**
@@ -398,10 +398,10 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         createEReference(markovModelEClass, MARKOV_MODEL__OBSERVATIONS);
 
         stateEClass = createEClass(STATE);
-        createEReference(stateEClass, STATE__PRODUCES);
         createEAttribute(stateEClass, STATE__NAME);
 
         observationEClass = createEClass(OBSERVATION);
+        createEReference(observationEClass, OBSERVATION__OBSERVED);
 
         transitionEClass = createEClass(TRANSITION);
         createEReference(transitionEClass, TRANSITION__SOURCE);
@@ -445,8 +445,8 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
         ETypeParameter markovModelEClass_S = addETypeParameter(markovModelEClass, "S");
         ETypeParameter markovModelEClass_A = addETypeParameter(markovModelEClass, "A");
         ETypeParameter markovModelEClass_R = addETypeParameter(markovModelEClass, "R");
-        ETypeParameter stateEClass_S = addETypeParameter(stateEClass, "S");
-        addETypeParameter(observationEClass, "O");
+        addETypeParameter(stateEClass, "S");
+        ETypeParameter observationEClass_O = addETypeParameter(observationEClass, "O");
         ETypeParameter transitionEClass_S = addETypeParameter(transitionEClass, "S");
         ETypeParameter transitionEClass_A = addETypeParameter(transitionEClass, "A");
         ETypeParameter rewardEClass_R = addETypeParameter(rewardEClass, "R");
@@ -499,17 +499,18 @@ public class MarkovEntityPackageImpl extends EPackageImpl implements MarkovEntit
                 IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(stateEClass, State.class, "State", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        g1 = createEGenericType(this.getObservation());
-        g2 = createEGenericType(stateEClass_S);
-        g1.getETypeArguments()
-            .add(g2);
-        initEReference(getState_Produces(), g1, null, "produces", null, 0, -1, State.class, !IS_TRANSIENT, !IS_VOLATILE,
-                IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getState_Name(), ecorePackage.getEString(), "name", null, 0, 1, State.class, !IS_TRANSIENT,
                 !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(observationEClass, Observation.class, "Observation", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
+        g1 = createEGenericType(this.getState());
+        g2 = createEGenericType(observationEClass_O);
+        g1.getETypeArguments()
+            .add(g2);
+        initEReference(getObservation_Observed(), g1, null, "observed", null, 0, -1, Observation.class, !IS_TRANSIENT,
+                !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
+                IS_ORDERED);
 
         initEClass(transitionEClass, Transition.class, "Transition", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);

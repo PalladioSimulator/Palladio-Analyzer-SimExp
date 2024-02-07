@@ -6,9 +6,9 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 
 public interface Markovian<S, A, R> {
 
-    public void drawSample(Sample<S, A, R, State<S>> sample);
+    public void drawSample(Sample<S, A, R, S> sample);
 
-    public Sample<S, A, R, State<S>> determineInitialState();
+    public Sample<S, A, R, S> determineInitialState();
 
     public ProbabilityMassFunction<State<S>> getInitialStateDistribution();
 

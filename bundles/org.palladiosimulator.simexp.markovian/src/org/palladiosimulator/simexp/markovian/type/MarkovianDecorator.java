@@ -13,7 +13,7 @@ public abstract class MarkovianDecorator<S, A, R> implements Markovian<S, A, R> 
     }
 
     @Override
-    public Sample<S, A, R, State<S>> determineInitialState() {
+    public Sample<S, A, R, S> determineInitialState() {
         return decoratedMarkovian.determineInitialState();
     }
 

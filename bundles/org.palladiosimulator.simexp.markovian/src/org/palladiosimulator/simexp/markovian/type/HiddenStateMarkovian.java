@@ -15,30 +15,34 @@ public class HiddenStateMarkovian<S, A, R> extends MarkovianDecorator<S, A, R> {
     }
 
     @Override
-    public void drawSample(Sample<S, A, R, State<S>> sample) {
+    public void drawSample(Sample<S, A, R, S> sample) {
         decoratedMarkovian.drawSample(sample);
         produceObservation(sample);
     }
 
-    private void produceObservation(Sample<S, A, R, State<S>> sample) {
+    private void produceObservation(Sample<S, A, R, S> sample) {
         // TODO: replace with Observation<State<S>>
         Observation result = obsDistribution.produceObservationGiven(sample.getNext());
         sample.setObservation(result);
     }
 
     @Override
-    public Sample<S, A, R, State<S>> determineInitialState() {
-        Sample<S, A, R, State<S>> initial = decoratedMarkovian.determineInitialState();
+    public Sample<S, A, R, S> determineInitialState() {
+        Sample<S, A, R, S> initial = decoratedMarkovian.determineInitialState();
         produceObservationForInitial(initial);
         return initial;
     }
 
-    private void produceObservationForInitial(Sample<S, A, R, State<S>> sample) {
+    private void produceObservationForInitial(Sample<S, A, R, S> sample) {
         // TODO this could be better solved...
-        Observation<S> result = obsDistribution.produceObservationGiven(sample.getCurrent());
-        sample.getCurrent()
-            .getProduces()
-            .add(result);
+        State<S> currentState = sample.getCurrent();
+        Observation<S> result = obsDistribution.produceObservationGiven(currentState);
+        sample.setObservation(result);
+        /*
+         * currentState.getProduces().add(result);
+         */
+        result.getObserved()
+            .add(currentState);
     }
 
 }

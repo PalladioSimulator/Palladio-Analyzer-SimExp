@@ -42,15 +42,15 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="State">
       <eTypeParameters name="S"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="produces" upperBound="-1">
-        <eGenericType eClassifier="#//markoventity/Observation">
-          <eTypeArguments eTypeParameter="#//markoventity/State/S"/>
-        </eGenericType>
-      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
       <eTypeParameters name="O"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observed" upperBound="-1">
+        <eGenericType eClassifier="#//markoventity/State">
+          <eTypeArguments eTypeParameter="#//markoventity/Observation/O"/>
+        </eGenericType>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
       <eTypeParameters name="S"/>

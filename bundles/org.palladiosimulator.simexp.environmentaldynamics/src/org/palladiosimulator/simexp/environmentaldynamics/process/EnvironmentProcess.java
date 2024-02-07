@@ -43,8 +43,8 @@ public abstract class EnvironmentProcess<S, A, R> {
             .build();
     }
 
-    protected Sample<S, A, R, State<S>> determineNextSampleGiven(State<S> last) {
-        Sample<S, A, R, State<S>> lastAsSample = SampleModelAccessor.createSampleBy(last);
+    protected Sample<S, A, R, S> determineNextSampleGiven(State<S> last) {
+        Sample<S, A, R, S> lastAsSample = SampleModelAccessor.createSampleBy(last);
         return sampler.drawSampleGiven(lastAsSample);
     }
 

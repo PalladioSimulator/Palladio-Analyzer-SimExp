@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
 public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R> {
@@ -24,7 +23,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
     }
 
     @Override
-    public Reward<R> obtain(Sample<S, A, R, State<S>> sample) {
+    public Reward<R> obtain(Sample<S, A, R, S> sample) {
         SelfAdaptiveSystemStateSampleValidator checkSample = this.new SelfAdaptiveSystemStateSampleValidator();
         try {
             checkSample.validate(sample);
@@ -35,7 +34,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
         return evaluate(sample);
     }
 
-    private Reward<R> evaluate(Sample<S, A, R, State<S>> sample) {
+    private Reward<R> evaluate(Sample<S, A, R, S> sample) {
         SelfAdaptiveSystemState<S, A> state = (SelfAdaptiveSystemState<S, A>) sample.getNext();
         Reward<R> evaluatedReward = evaluator.evaluate(state.getQuantifiedState());
 
@@ -47,7 +46,7 @@ public class SimulatedRewardReceiver<S, A, R> implements RewardReceiver<S, A, R>
 
     private class SelfAdaptiveSystemStateSampleValidator {
 
-        public void validate(Sample<S, A, R, State<S>> sample) throws SelfAdaptiveSystemStateSampleValidationExcpetion {
+        public void validate(Sample<S, A, R, S> sample) throws SelfAdaptiveSystemStateSampleValidationExcpetion {
             boolean isValid = true;
             StringBuilder invalidSampleMsg = new StringBuilder(
                     "Self-adaptive system state sample is invalid. Reason: ");

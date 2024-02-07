@@ -30,6 +30,7 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.builder.StateSpaceNavigatorBuilder;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -335,19 +336,20 @@ public abstract class ExperienceSimulationBuilder<S, A, Aa extends Reconfigurati
     // Note that in POMDPs only the environment is unobservable captured by the handler of the
     // nested HMM.
     // Therefore, only a pass through obs handler is required.
-    private static class OP<T> implements ObservationProducer<T> {
+    private static class OP<O> implements ObservationProducer<O> {
 
         @Override
-        public Observation<T> produceObservationGiven(State<T> emittingState) {
-            // return new ObservationImpl<T>() {
-            //
-            // @Override
-            // public T getValue() {
-            // return emittingState;
-            // };
-            // };
-            return emittingState.getProduces()
-                .get(0);
+        public Observation<O> produceObservationGiven(State<O> emittingState) {
+            /*
+             * return new ObservationImpl<O>() {
+             * 
+             * @Override public EList<State<O>> getObserved() { return emittingState; }; // };
+             * return emittingState.getProduces() .get(0);
+             */
+            Observation<O> observation = MarkovEntityFactory.eINSTANCE.createObservation();
+            observation.getObserved()
+                .add(emittingState);
+            return observation;
         }
     };
 

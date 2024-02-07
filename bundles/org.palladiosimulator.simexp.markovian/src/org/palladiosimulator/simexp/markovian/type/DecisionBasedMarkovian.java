@@ -24,23 +24,23 @@ public class DecisionBasedMarkovian<S, A, Aa extends Action<A>, R> extends Marko
     }
 
     @Override
-    public void drawSample(Sample<S, A, R, State<S>> sample) {
+    public void drawSample(Sample<S, A, R, S> sample) {
         addSelectedAction(sample);
         addNextState(sample);
         addObtainedReward(sample);
     }
 
-    private void addSelectedAction(Sample<S, A, R, State<S>> sample) {
+    private void addSelectedAction(Sample<S, A, R, S> sample) {
         State<S> current = sample.getCurrent();
         Aa choice = policy.select(current, actionSpace);
         sample.setAction(choice);
     }
 
-    private void addNextState(Sample<S, A, R, State<S>> sample) {
+    private void addNextState(Sample<S, A, R, S> sample) {
         decoratedMarkovian.drawSample(sample);
     }
 
-    private void addObtainedReward(Sample<S, A, R, State<S>> sample) {
+    private void addObtainedReward(Sample<S, A, R, S> sample) {
         Reward<R> reward = rewardReceiver.obtain(sample);
         sample.setReward(reward);
     }

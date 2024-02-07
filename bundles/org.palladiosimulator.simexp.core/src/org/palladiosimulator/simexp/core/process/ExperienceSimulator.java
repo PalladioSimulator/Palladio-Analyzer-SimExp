@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
@@ -44,8 +43,8 @@ public class ExperienceSimulator<S, A, R> {
         do {
             initExperienceSimulator();
 
-            Trajectory<S, A, R, State<S>> traj = markovSampler.sampleTrajectory();
-            for (Sample<S, A, R, State<S>> each : traj.getSamplePath()) {
+            Trajectory<S, A, R, S> traj = markovSampler.sampleTrajectory();
+            for (Sample<S, A, R, S> each : traj.getSamplePath()) {
                 simulatedExperienceStore.store(each);
             }
             simulatedExperienceStore.store(traj);

@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
@@ -41,17 +42,20 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
     public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
         EnvironmentalState<S> hiddenState = EnvironmentalStateObservation.class.cast(last)
             .getHiddenState();
-        Observation<State<S>> observation = determineNextSampleGiven(hiddenState).getObservation();
+        Observation<S> observation = determineNextSampleGiven(hiddenState).getObservation();
         return (PerceivableEnvironmentalState) observation;
     }
 
     @Override
     public PerceivableEnvironmentalState determineInitial() {
         // TODO Could be better solved... see HiddenMarkovian
-        return (PerceivableEnvironmentalState) sampler.drawInitialSample()
-            .getCurrent()
-            .getProduces()
-            .get(0);
+        Sample<S, A, R, S> initialSample = sampler.drawInitialSample();
+        /*
+         * State<S> currentState = initialSample.getCurrent(); return
+         * (PerceivableEnvironmentalState) currentState.getProduces() .get(0);
+         */
+        Observation<S> observation = initialSample.getObservation();
+        return (PerceivableEnvironmentalState) observation;
     }
 
 }

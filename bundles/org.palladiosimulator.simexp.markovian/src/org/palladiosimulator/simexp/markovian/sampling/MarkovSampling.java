@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.palladiosimulator.simexp.markovian.access.SampleModelAccessor;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
 import org.palladiosimulator.simexp.markovian.exploration.EpsilonGreedyStrategy;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
@@ -46,7 +45,7 @@ public class MarkovSampling<S, A, R> {
         this.eGreedy = config.eGreedyStrategy;
     }
 
-    public Trajectory<S, A, R, State<S>> sampleTrajectory() {
+    public Trajectory<S, A, R, S> sampleTrajectory() {
         SampleLoop sampleLoop = new SampleLoop();
         while (sampleLoop.stillSamplesToIterate()) {
             if (sampleLoop.isInitial()) {
@@ -63,18 +62,18 @@ public class MarkovSampling<S, A, R> {
         return sampleModelAccessor.getCurrentTrajectory();
     }
 
-    public Sample<S, A, R, State<S>> drawSampleGiven(Sample<S, A, R, State<S>> last) {
-        Sample<S, A, R, State<S>> newSample = sampleModelAccessor.createTemplateSampleBy(last);
+    public Sample<S, A, R, S> drawSampleGiven(Sample<S, A, R, S> last) {
+        Sample<S, A, R, S> newSample = sampleModelAccessor.createTemplateSampleBy(last);
         markovian.drawSample(newSample);
         return newSample;
     }
 
     private void drawSample() {
-        Sample<S, A, R, State<S>> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
+        Sample<S, A, R, S> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
         sampleModelAccessor.addSample(result);
     }
 
-    public Sample<S, A, R, State<S>> drawInitialSample() {
+    public Sample<S, A, R, S> drawInitialSample() {
         return markovian.determineInitialState();
     }
 

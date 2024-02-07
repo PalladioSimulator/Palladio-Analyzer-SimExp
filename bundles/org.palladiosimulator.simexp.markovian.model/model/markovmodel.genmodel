@@ -30,12 +30,12 @@
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/State">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/State/S"/>
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/State/produces"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute markovmodel.ecore#//markoventity/State/name"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Observation">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Observation/O"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference markovmodel.ecore#//markoventity/Observation/observed"/>
       </genClasses>
       <genClasses ecoreClass="markovmodel.ecore#//markoventity/Transition">
         <genTypeParameters ecoreTypeParameter="markovmodel.ecore#//markoventity/Transition/S"/>

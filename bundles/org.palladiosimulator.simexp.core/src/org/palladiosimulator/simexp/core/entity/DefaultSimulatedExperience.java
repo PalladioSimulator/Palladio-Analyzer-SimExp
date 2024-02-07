@@ -3,24 +3,23 @@ package org.palladiosimulator.simexp.core.entity;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
 public class DefaultSimulatedExperience<S, A, R> implements SimulatedExperience {
 
     private final static String NONE = "-";
 
-    private final Sample<S, A, R, State<S>> sample;
+    private final Sample<S, A, R, S> sample;
 
-    private DefaultSimulatedExperience(Sample<S, A, R, State<S>> sample) {
+    private DefaultSimulatedExperience(Sample<S, A, R, S> sample) {
         this.sample = sample;
     }
 
-    public static <S, A, R> DefaultSimulatedExperience<S, A, R> of(Sample<S, A, R, State<S>> sample) {
+    public static <S, A, R> DefaultSimulatedExperience<S, A, R> of(Sample<S, A, R, S> sample) {
         return new DefaultSimulatedExperience<>(sample);
     }
 
-    public static <S, A, R> String deriveIdFrom(Sample<S, A, R, State<S>> sample) {
+    public static <S, A, R> String deriveIdFrom(Sample<S, A, R, S> sample) {
         DefaultSimulatedExperience<S, A, R> helper = DefaultSimulatedExperience.of(sample);
         return String.format("%1s_%2s_%3s", helper.getCurrent()
             .toString(), helper.getReconfiguration(),
