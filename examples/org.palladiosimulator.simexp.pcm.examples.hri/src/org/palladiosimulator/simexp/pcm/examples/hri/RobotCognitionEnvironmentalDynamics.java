@@ -60,7 +60,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
     }
 
     private EnvironmentProcess<A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
+        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }
 
@@ -78,12 +78,12 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             }
 
             @Override
-            public EnvironmentalState navigate(NavigationContext<A> context) {
+            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<A> context) {
                 // Since the intention is to not predict belief states, it is not necessary to
                 // know/specify the true state.
-                var state = (EnvironmentalState) context.getSource();
+                EnvironmentalState<List<InputValue>> state = (EnvironmentalState<List<InputValue>>) context.getSource();
                 if (state.isInitial()) {
-                    return EnvironmentalState.newBuilder()
+                    return EnvironmentalState.<List<InputValue>> newBuilder()
                         .withValue(state.getValue())
                         .isHidden()
                         .build();
@@ -96,11 +96,11 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
     private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
         return new ObservationProducer() {
 
-            private EnvironmentalStateObservation last = null;
+            private EnvironmentalStateObservation<List<InputValue>> last = null;
 
             @Override
             public Observation produceObservationGiven(State emittingState) {
-                var hiddenState = EnvironmentalState.class.cast(emittingState);
+                EnvironmentalState<List<InputValue>> hiddenState = EnvironmentalState.class.cast(emittingState);
 
                 List<InputValue> sample;
                 if (hiddenState.isInitial()) {
@@ -111,7 +111,8 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
                     sample = sampleNext(DynamicBayesianNetwork.toConditionalInputs(inputs));
                 }
 
-                var current = EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
+                EnvironmentalStateObservation<List<InputValue>> current = EnvironmentalStateObservation
+                    .of(toPerceivedValue(sample), hiddenState);
                 setLastEnvironmentalStateObservation(current);
 
                 return current;
@@ -128,7 +129,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
                 return traj.valueAtTime(0);
             }
 
-            private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation current) {
+            private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation<List<InputValue>> current) {
                 this.last = current;
             }
         };

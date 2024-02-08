@@ -14,7 +14,7 @@ public interface ProbabilityDistributionFactory<S> {
             .collect(Collectors.toSet());
     }
 
-    public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator();
+    public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator<>();
 
     public ProbabilityMassFunction<S> pmfOver(ProbabilityMassFunction.Sample<S>... samples);
 
