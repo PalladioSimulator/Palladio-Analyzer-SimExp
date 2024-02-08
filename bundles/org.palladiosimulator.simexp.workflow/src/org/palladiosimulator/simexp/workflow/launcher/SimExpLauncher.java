@@ -58,7 +58,6 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
-import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.base.Objects;
 
@@ -169,7 +168,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             List<URI> moduleFiles, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
 
-        SimulationRunnerHolder<PCMInstance> simulationRunnerHolder = new SimulationRunnerHolder<>();
+        SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);

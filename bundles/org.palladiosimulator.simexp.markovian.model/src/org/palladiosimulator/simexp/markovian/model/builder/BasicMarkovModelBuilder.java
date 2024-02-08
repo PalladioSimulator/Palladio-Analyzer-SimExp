@@ -9,17 +9,17 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 
-public class BasicMarkovModelBuilder<S, A, R> {
+public class BasicMarkovModelBuilder<A, R> {
 
     public class TransitionBuilder {
 
-        private Transition<S, A> transition;
+        private Transition<A> transition;
 
-        public TransitionBuilder(State<S> source, State<S> target) {
-            this.transition = markovModelFactory.<S, A> createTransitionBetween(source, target);
+        public TransitionBuilder(State source, State target) {
+            this.transition = markovModelFactory.<A> createTransitionBetween(source, target);
         }
 
-        public BasicMarkovModelBuilder<S, A, R> andProbability(double value) {
+        public BasicMarkovModelBuilder<A, R> andProbability(double value) {
             transition.setProbability(value);
             markovModel.getTransitions()
                 .add(transition);
@@ -34,24 +34,24 @@ public class BasicMarkovModelBuilder<S, A, R> {
     }
 
     private final MarkovModelFactory markovModelFactory;
-    private final MarkovModel<S, A, R> markovModel;
+    private final MarkovModel<A, R> markovModel;
 
     public BasicMarkovModelBuilder() {
         this.markovModelFactory = new MarkovModelFactory();
-        this.markovModel = MarkovEntityFactory.eINSTANCE.<S, A, R> createMarkovModel();
+        this.markovModel = MarkovEntityFactory.eINSTANCE.<A, R> createMarkovModel();
     }
 
-    public BasicMarkovModelBuilder<S, A, R> withStateSpace(Set<State<S>> states) {
+    public BasicMarkovModelBuilder<A, R> withStateSpace(Set<State> states) {
         markovModel.getStateSpace()
             .addAll(states);
         return this;
     }
 
-    public TransitionBuilder andTransitionBetween(State<S> source, State<S> target) {
+    public TransitionBuilder andTransitionBetween(State source, State target) {
         return new TransitionBuilder(source, target);
     }
 
-    public MarkovModel<S, A, R> build() {
+    public MarkovModel<A, R> build() {
         return markovModel;
     }
 }

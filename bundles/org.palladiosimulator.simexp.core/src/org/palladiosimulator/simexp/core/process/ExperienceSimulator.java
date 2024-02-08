@@ -10,20 +10,19 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
-public class ExperienceSimulator<S, A, R> {
+public class ExperienceSimulator<C, A, R> {
 
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
-    private final MarkovSampling<S, A, R> markovSampler;
-    private final List<ExperienceSimulationRunner<S>> simulationRunners;
+    private final MarkovSampling<A, R> markovSampler;
+    private final List<ExperienceSimulationRunner> simulationRunners;
     private final Optional<Initializable> beforeExecutionInitialization;
-    private final SimulatedExperienceStore<S, A, R> simulatedExperienceStore;
+    private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
 
     private int numberOfRuns;
 
-    private ExperienceSimulator(ExperienceSimulationConfiguration<S, A, R> config,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S> simulationRunnerHolder) {
+    private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
+            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunners = config.getSimulationRunners();
@@ -33,9 +32,8 @@ public class ExperienceSimulator<S, A, R> {
     }
 
     public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
-            ExperienceSimulationConfiguration<S, A, R> config,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S> simulationRunnerHolder) {
+            ExperienceSimulationConfiguration<S, A, R> config, SimulatedExperienceStore<A, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
@@ -43,8 +41,8 @@ public class ExperienceSimulator<S, A, R> {
         do {
             initExperienceSimulator();
 
-            Trajectory<S, A, R> traj = markovSampler.sampleTrajectory();
-            for (Sample<S, A, R> each : traj.getSamplePath()) {
+            Trajectory<A, R> traj = markovSampler.sampleTrajectory();
+            for (Sample<A, R> each : traj.getSamplePath()) {
                 simulatedExperienceStore.store(each);
             }
             simulatedExperienceStore.store(traj);

@@ -15,23 +15,23 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionE
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class LoadBalancingScalingPlanningStrategy<S> extends AbstractLoadBalancingScalingPlanningStrategy<S> {
+public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalancingScalingPlanningStrategy<C> {
 
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
     private static final String SCALE_OUT_SOURCE_QVTO_NAME = "scaleOut";
 
     public LoadBalancingScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
-            NodeRecoveryStrategy<S, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
+            NodeRecoveryStrategy<C, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
             Threshold upperThresholdResponseTime) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy, lowerThresholdResponseTime,
                 upperThresholdResponseTime);
     }
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
+    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<S, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<S, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
 
         Double responseTime = retrieveResponseTime(sasState);
         if (isExceeded(responseTime)) {

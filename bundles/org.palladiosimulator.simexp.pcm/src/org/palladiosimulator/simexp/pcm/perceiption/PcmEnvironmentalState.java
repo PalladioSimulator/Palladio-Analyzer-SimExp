@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalSt
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 
 //TODO refactor to EnvironmentToPcmElementBinder
-public class PcmEnvironmentalState<S, V> extends EnvironmentalState<S, V> implements PcmModelChange<V> {
+public class PcmEnvironmentalState<V> extends EnvironmentalState<V> implements PcmModelChange<V> {
 
     private final List<PcmModelChange<V>> decoratedModelChanges = new ArrayList<>();
 

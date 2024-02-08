@@ -5,21 +5,21 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class DefaultSimulatedExperience<S, A, R, V> implements SimulatedExperience {
+public class DefaultSimulatedExperience<C, A, R, V> implements SimulatedExperience {
 
     private final static String NONE = "-";
 
-    private final Sample<S, A, R> sample;
+    private final Sample<A, R> sample;
 
-    private DefaultSimulatedExperience(Sample<S, A, R> sample) {
+    private DefaultSimulatedExperience(Sample<A, R> sample) {
         this.sample = sample;
     }
 
-    public static <S, A, R, V> DefaultSimulatedExperience<S, A, R, V> of(Sample<S, A, R> sample) {
+    public static <C, A, R, V> DefaultSimulatedExperience<C, A, R, V> of(Sample<A, R> sample) {
         return new DefaultSimulatedExperience<>(sample);
     }
 
-    public static <S, A, R, V> String deriveIdFrom(Sample<S, A, R> sample) {
+    public static <S, A, R, V> String deriveIdFrom(Sample<A, R> sample) {
         DefaultSimulatedExperience<S, A, R, V> helper = DefaultSimulatedExperience.of(sample);
         return String.format("%1s_%2s_%3s", helper.getCurrent()
             .toString(), helper.getReconfiguration(),
@@ -37,18 +37,18 @@ public class DefaultSimulatedExperience<S, A, R, V> implements SimulatedExperien
 
     @Override
     public String getConfigurationDifferenceBefore() {
-        ArchitecturalConfiguration<S, A> current = ((SelfAdaptiveSystemState<S, A, V>) sample.getCurrent())
+        ArchitecturalConfiguration<C, A> current = ((SelfAdaptiveSystemState<C, A, V>) sample.getCurrent())
             .getArchitecturalConfiguration();
-        ArchitecturalConfiguration<S, A> next = ((SelfAdaptiveSystemState<S, A, V>) sample.getNext())
+        ArchitecturalConfiguration<C, A> next = ((SelfAdaptiveSystemState<C, A, V>) sample.getNext())
             .getArchitecturalConfiguration();
         return current.difference(next);
     }
 
     @Override
     public String getConfigurationDifferenceAfter() {
-        ArchitecturalConfiguration<S, A> current = ((SelfAdaptiveSystemState<S, A, V>) sample.getCurrent())
+        ArchitecturalConfiguration<C, A> current = ((SelfAdaptiveSystemState<C, A, V>) sample.getCurrent())
             .getArchitecturalConfiguration();
-        ArchitecturalConfiguration<S, A> next = ((SelfAdaptiveSystemState<S, A, V>) sample.getNext())
+        ArchitecturalConfiguration<C, A> next = ((SelfAdaptiveSystemState<C, A, V>) sample.getNext())
             .getArchitecturalConfiguration();
         return next.difference(current);
     }
@@ -85,7 +85,7 @@ public class DefaultSimulatedExperience<S, A, R, V> implements SimulatedExperien
 
     @Override
     public String getEnvironmentalStateObservation() {
-        PerceivableEnvironmentalState perception = getNext().getPerceivedEnvironmentalState();
+        PerceivableEnvironmentalState<V> perception = getNext().getPerceivedEnvironmentalState();
         if (perception.isHidden()) {
             return perception.getStringRepresentation();
         }
@@ -97,12 +97,12 @@ public class DefaultSimulatedExperience<S, A, R, V> implements SimulatedExperien
         return deriveIdFrom(sample);
     }
 
-    private SelfAdaptiveSystemState<S, A, V> getCurrent() {
-        return ((SelfAdaptiveSystemState<S, A, V>) sample.getCurrent());
+    private SelfAdaptiveSystemState<C, A, V> getCurrent() {
+        return ((SelfAdaptiveSystemState<C, A, V>) sample.getCurrent());
     }
 
-    private SelfAdaptiveSystemState<S, A, V> getNext() {
-        return ((SelfAdaptiveSystemState<S, A, V>) sample.getNext());
+    private SelfAdaptiveSystemState<C, A, V> getNext() {
+        return ((SelfAdaptiveSystemState<C, A, V>) sample.getNext());
     }
 
     @Override

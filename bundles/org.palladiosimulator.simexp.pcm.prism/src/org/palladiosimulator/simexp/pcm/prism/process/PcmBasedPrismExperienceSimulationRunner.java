@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.pcm.prism.service.PrismService.PrismResult;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class PcmBasedPrismExperienceSimulationRunner<S, A, V> implements ExperienceSimulationRunner<S> {
+public class PcmBasedPrismExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
 
     private final static String LOG_FILE_EXT = ".txt";
     private final static String LOG_FILE_NAME = "PrismLog";
@@ -53,7 +53,7 @@ public class PcmBasedPrismExperienceSimulationRunner<S, A, V> implements Experie
     }
 
     @Override
-    public void simulate(State<S> state) {
+    public void simulate(State state) {
         PcmSelfAdaptiveSystemState<A, V> pcmState = PcmSelfAdaptiveSystemState.class.cast(state);
         PrismResult result = modelCheck(pcmState);
         retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);

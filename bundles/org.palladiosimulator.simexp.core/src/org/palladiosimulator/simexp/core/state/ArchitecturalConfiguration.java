@@ -3,25 +3,25 @@ package org.palladiosimulator.simexp.core.state;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.StringRepresentable;
 
-public abstract class ArchitecturalConfiguration<S, A> implements StringRepresentable {
+public abstract class ArchitecturalConfiguration<C, A> implements StringRepresentable {
 
-    private S configuration;
+    private C configuration;
 
-    public ArchitecturalConfiguration(S configuration) {
+    public ArchitecturalConfiguration(C configuration) {
         this.configuration = configuration;
     }
 
-    public S getConfiguration() {
+    public C getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(S configuration) {
+    public void setConfiguration(C configuration) {
         this.configuration = configuration;
     }
 
-    public abstract String difference(ArchitecturalConfiguration<S, A> other);
+    public abstract String difference(ArchitecturalConfiguration<C, A> other);
 
-    public abstract ArchitecturalConfiguration<S, A> apply(Reconfiguration<A> reconf);
+    public abstract ArchitecturalConfiguration<C, A> apply(Reconfiguration<A> reconf);
 
     @Override
     public String toString() {

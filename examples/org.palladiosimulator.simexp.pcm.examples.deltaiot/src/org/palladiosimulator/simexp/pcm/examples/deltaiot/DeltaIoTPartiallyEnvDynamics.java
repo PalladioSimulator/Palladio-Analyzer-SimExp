@@ -35,9 +35,9 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork dbn,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(dbn, modelAccess);
         this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore,
                 simulationRunnerHolder);
@@ -48,8 +48,8 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     }
 
     private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>> createPartiallyEnvironmentalDrivenProcess(
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, R> simulatedExperienceStore,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue>>(
                 envProcess, simulatedExperienceStore, simulationRunnerHolder) {
 
@@ -114,7 +114,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
 
             @Override
             protected SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator, List<InputValue>> determineStructuralState(
-                    NavigationContext<PCMInstance, QVTOReconfigurator> context) {
+                    NavigationContext<QVTOReconfigurator> context) {
                 LOGGER.info("Start with state transition.");
                 long start = System.currentTimeMillis();
                 QVToReconfiguration reconf = QVToReconfiguration.class.cast(context.getAction()

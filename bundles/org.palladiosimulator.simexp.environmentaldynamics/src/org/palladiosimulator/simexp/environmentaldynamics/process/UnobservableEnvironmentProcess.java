@@ -9,27 +9,29 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> extends EnvironmentProcess<S, A, R, V> {
+public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R, V> {
 
-    public UnobservableEnvironmentProcess(MarkovModel<S, A, R> model,
-            ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
+    public UnobservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution,
+            ObservationProducer obsProducer) {
         super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution, obsProducer), model,
                 initialDistribution);
     }
 
-    public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic<S, A> dynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution, ObservationProducer<S> obsProducer) {
+    public UnobservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics,
+            ProbabilityMassFunction<State> initialDistribution, ObservationProducer obsProducer) {
         super(buildMarkovian(dynamics, initialDistribution, obsProducer), dynamics, initialDistribution);
     }
 
-    private static <S, A, Aa extends Action<A>, R> Markovian<S, A, R> buildMarkovian(
-            StateSpaceNavigator<S, A> environmentalDynamics, ProbabilityMassFunction<State<S>> initialDistribution,
-            ObservationProducer<S> obsProducer) {
-        MarkovianBuilder<S, A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<S, A, Aa, R> createHiddenMarkovModel();
+    private static <A, Aa extends Action<A>, R> Markovian<A, R> buildMarkovian(
+            StateSpaceNavigator<A> environmentalDynamics, ProbabilityMassFunction<State> initialDistribution,
+            ObservationProducer obsProducer) {
+        MarkovianBuilder<A, Aa, R>.HMMBuilder builder = MarkovianBuilder.<A, Aa, R> createHiddenMarkovModel();
         builder = builder.createStateSpaceNavigator(environmentalDynamics);
         builder = builder.withInitialStateDistribution(initialDistribution);
         builder = builder.handleObservationsWith(obsProducer);
@@ -38,18 +40,21 @@ public class UnobservableEnvironmentProcess<S, A, Aa extends Action<A>, R, V> ex
 
     @Override
     public PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last) {
-        EnvironmentalStateObservation<S, V> observation = EnvironmentalStateObservation.class.cast(last);
-        EnvironmentalState<S, V> hiddenState = observation.getHiddenState();
-        return (EnvironmentalStateObservation<S, V>) determineNextSampleGiven(hiddenState).getObservation();
+        EnvironmentalStateObservation<V> observation = EnvironmentalStateObservation.class.cast(last);
+        EnvironmentalState<V> hiddenState = observation.getHiddenState();
+        return (EnvironmentalStateObservation<V>) determineNextSampleGiven(hiddenState).getObservation();
     }
 
     @Override
     public PerceivableEnvironmentalState<V> determineInitial() {
         // TODO Could be better solved... see HiddenMarkovian
-        return (PerceivableEnvironmentalState<V>) sampler.drawInitialSample()
-            .getCurrent()
-            .getProduces()
-            .get(0);
+        Sample<A, R> initialSample = sampler.drawInitialSample();
+        /*
+         * State<S> currentState = initialSample.getCurrent(); return
+         * (PerceivableEnvironmentalState) currentState.getProduces() .get(0);
+         */
+        Observation observation = initialSample.getObservation();
+        return (PerceivableEnvironmentalState<V>) observation;
     }
 
 }

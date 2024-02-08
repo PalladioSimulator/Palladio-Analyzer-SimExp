@@ -3,15 +3,15 @@ package org.palladiosimulator.simexp.core.state;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public abstract class SelfAdaptiveSystemState<S, A, V> extends StateImpl<S> {
+public abstract class SelfAdaptiveSystemState<C, A, V> extends StateImpl {
 
-    protected final SimulationRunnerHolder<S> simulationRunnerHolder;
+    protected final SimulationRunnerHolder simulationRunnerHolder;
 
     protected PerceivableEnvironmentalState<V> perceivedState;
-    protected ArchitecturalConfiguration<S, A> archConfiguration;
+    protected ArchitecturalConfiguration<C, A> archConfiguration;
     protected StateQuantity quantifiedState;
 
-    public SelfAdaptiveSystemState(SimulationRunnerHolder<S> simulationRunnerHolder) {
+    public SelfAdaptiveSystemState(SimulationRunnerHolder simulationRunnerHolder) {
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
@@ -19,7 +19,7 @@ public abstract class SelfAdaptiveSystemState<S, A, V> extends StateImpl<S> {
         return quantifiedState;
     }
 
-    public ArchitecturalConfiguration<S, A> getArchitecturalConfiguration() {
+    public ArchitecturalConfiguration<C, A> getArchitecturalConfiguration() {
         return archConfiguration;
     }
 
@@ -36,7 +36,6 @@ public abstract class SelfAdaptiveSystemState<S, A, V> extends StateImpl<S> {
         simulationRunnerHolder.simulate(this);
     }
 
-    public abstract SelfAdaptiveSystemState<S, A, V> transitToNext(PerceivableEnvironmentalState<V> perceivedState,
-            ArchitecturalConfiguration<S, A> archConf);
-
+    public abstract SelfAdaptiveSystemState<C, A, V> transitToNext(PerceivableEnvironmentalState<V> perceivedState,
+            ArchitecturalConfiguration<C, A> archConf);
 }

@@ -2,8 +2,6 @@
  */
 package org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -15,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State#getProduces <em>Produces</em>}</li>
  *   <li>{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State#getName <em>Name</em>}</li>
  * </ul>
  *
@@ -23,19 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface State<S> extends EObject {
-    /**
-     * Returns the value of the '<em><b>Produces</b></em>' reference list.
-     * The list contents are of type {@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation}<code>&lt;S&gt;</code>.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Produces</em>' reference list.
-     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getState_Produces()
-     * @model
-     * @generated
-     */
-    EList<Observation<S>> getProduces();
-
+public interface State extends EObject {
     /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->

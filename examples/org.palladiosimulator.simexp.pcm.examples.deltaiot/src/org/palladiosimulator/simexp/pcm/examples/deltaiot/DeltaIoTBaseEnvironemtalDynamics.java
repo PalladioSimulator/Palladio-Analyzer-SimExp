@@ -37,7 +37,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     private static final Logger LOGGER = Logger.getLogger(DeltaIoTBaseEnvironemtalDynamics.class.getName());
 
-    protected final EnvironmentProcess<PCMInstance, QVTOReconfigurator, R, List<InputValue>> envProcess;
+    protected final EnvironmentProcess<QVTOReconfigurator, R, List<InputValue>> envProcess;
     protected final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork dbn,
@@ -46,14 +46,13 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         this.modelAccess = modelAccess;
     }
 
-    private EnvironmentProcess<PCMInstance, QVTOReconfigurator, R, List<InputValue>> createEnvironmentalProcess(
+    private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue>> createEnvironmentalProcess(
             DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R, List<InputValue>>(
+        return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R, List<InputValue>>(
                 createDerivableProcess(dbn), createInitialDist(dbn));
     }
 
-    private DerivableEnvironmentalDynamic<PCMInstance, QVTOReconfigurator> createDerivableProcess(
-            DynamicBayesianNetwork dbn) {
+    private DerivableEnvironmentalDynamic<QVTOReconfigurator> createDerivableProcess(DynamicBayesianNetwork dbn) {
         return new DerivableEnvironmentalDynamic<>() {
 
             private boolean explorationMode = false;
@@ -69,10 +68,8 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             }
 
             @Override
-            public EnvironmentalState<PCMInstance, List<InputValue>> navigate(
-                    NavigationContext<PCMInstance, QVTOReconfigurator> context) {
-                EnvironmentalState<PCMInstance, List<InputValue>> envState = EnvironmentalState.class
-                    .cast(context.getSource());
+            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<QVTOReconfigurator> context) {
+                EnvironmentalState<List<InputValue>> envState = EnvironmentalState.class.cast(context.getSource());
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
@@ -81,40 +78,38 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
                 return sample(toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState<PCMInstance, List<InputValue>> sample(
-                    List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
                 var traj = dbn.given(asConditionals(conditionalInputs))
                     .sample();
                 var value = toPerceivedValue(traj.valueAtTime(0));
-                EnvironmentalStateBuilder<PCMInstance, List<InputValue>> builder = EnvironmentalState.newBuilder();
+                EnvironmentalStateBuilder<List<InputValue>> builder = EnvironmentalState.newBuilder();
                 return builder.withValue(value)
                     .build();
             }
 
-            private EnvironmentalState<PCMInstance, List<InputValue>> sampleRandomly(
-                    List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<List<InputValue>> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
         };
     }
 
-    private ProbabilityMassFunction<State<PCMInstance>> createInitialDist(DynamicBayesianNetwork dbn) {
+    private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork dbn) {
         return new ProbabilityMassFunction<>() {
 
             private final BayesianNetwork bn = dbn.getBayesianNetwork();
 
             @Override
-            public Sample<State<PCMInstance>> drawSample() {
+            public Sample<State> drawSample() {
                 var sample = bn.sample();
-                EnvironmentalStateBuilder<PCMInstance, List<InputValue>> builder = EnvironmentalState.newBuilder();
-                State<PCMInstance> newState = builder.withValue(toPerceivedValue(sample))
+                EnvironmentalStateBuilder<List<InputValue>> builder = EnvironmentalState.newBuilder();
+                State newState = builder.withValue(toPerceivedValue(sample))
                     .isInital()
                     .build();
                 return Sample.of(newState, bn.probability(sample));
             }
 
             @Override
-            public double probability(Sample<State<PCMInstance>> sample) {
+            public double probability(Sample<State> sample) {
                 List<InputValue> inputs = toInputs(sample);
                 if (inputs.isEmpty()) {
                     return 0;
@@ -129,17 +124,16 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         return perceivedValue;
     }
 
-    public static <A> PcmSelfAdaptiveSystemState<A, List<InputValue>> asPcmState(State<PCMInstance> state) {
+    public static <A> PcmSelfAdaptiveSystemState<A, List<InputValue>> asPcmState(State state) {
         return PcmSelfAdaptiveSystemState.class.cast(state);
     }
 
     public static <A> PerceivableEnvironmentalState<List<InputValue>> getCurrentEnvironment(
-            NavigationContext<PCMInstance, A> context) {
+            NavigationContext<A> context) {
         return asPcmState(context.getSource()).getPerceivedEnvironmentalState();
     }
 
-    public static <A> PcmArchitecturalConfiguration<A> getCurrentArchitecture(
-            NavigationContext<PCMInstance, A> context) {
+    public static <A> PcmArchitecturalConfiguration<A> getCurrentArchitecture(NavigationContext<A> context) {
         PcmSelfAdaptiveSystemState<A, List<InputValue>> pcmState = asPcmState(context.getSource());
         ArchitecturalConfiguration<PCMInstance, A> pcmConfig = pcmState.getArchitecturalConfiguration();
         return PcmArchitecturalConfiguration.class.cast(pcmConfig);

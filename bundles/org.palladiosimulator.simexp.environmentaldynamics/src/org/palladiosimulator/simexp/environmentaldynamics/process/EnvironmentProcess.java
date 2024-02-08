@@ -14,37 +14,37 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class EnvironmentProcess<S, A, R, V> {
+public abstract class EnvironmentProcess<A, R, V> {
 
     private final boolean isHiddenProcess;
 
-    protected final MarkovSampling<S, A, R> sampler;
+    protected final MarkovSampling<A, R> sampler;
 
-    public EnvironmentProcess(Markovian<S, A, R> markovian, MarkovModel<S, A, R> model,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    public EnvironmentProcess(Markovian<A, R> markovian, MarkovModel<A, R> model,
+            ProbabilityMassFunction<State> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = isHiddenProcess(model);
     }
 
-    public EnvironmentProcess(Markovian<S, A, R> markovian, DerivableEnvironmentalDynamic<S, A> dynamics,
-            ProbabilityMassFunction<State<S>> initialDistribution) {
+    public EnvironmentProcess(Markovian<A, R> markovian, DerivableEnvironmentalDynamic<A> dynamics,
+            ProbabilityMassFunction<State> initialDistribution) {
         this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
         this.isHiddenProcess = dynamics.isHiddenProcess();
     }
 
-    private boolean isHiddenProcess(MarkovModel<S, A, R> model) {
+    private boolean isHiddenProcess(MarkovModel<A, R> model) {
         PerceivableEnvironmentalState<V> any = (PerceivableEnvironmentalState<V>) model.getStateSpace()
             .get(0);
         return any.isHidden();
     }
 
-    protected static <S, A, R> StateSpaceNavigator<S, A> buildEnvironmentalDynamics(MarkovModel<S, A, R> model) {
-        return (StateSpaceNavigator<S, A>) describedBy(model).asExploitationProcess()
+    protected static <A, R> StateSpaceNavigator<A> buildEnvironmentalDynamics(MarkovModel<A, R> model) {
+        return (StateSpaceNavigator<A>) describedBy(model).asExploitationProcess()
             .build();
     }
 
-    protected Sample<S, A, R> determineNextSampleGiven(State<S> last) {
-        Sample<S, A, R> lastAsSample = SampleModelAccessor.createSampleBy(last);
+    protected Sample<A, R> determineNextSampleGiven(State last) {
+        Sample<A, R> lastAsSample = SampleModelAccessor.createSampleBy(last);
         return sampler.drawSampleGiven(lastAsSample);
     }
 

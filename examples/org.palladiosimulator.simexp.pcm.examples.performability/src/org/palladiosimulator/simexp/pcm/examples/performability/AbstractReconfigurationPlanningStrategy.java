@@ -26,26 +26,26 @@ import com.google.common.collect.Maps;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public abstract class AbstractReconfigurationPlanningStrategy<S, A> implements ReconfigurationPlanningStrategy<S> {
+public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements ReconfigurationPlanningStrategy {
 
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationPlanningStrategy.class.getName());
 
     private final PcmMeasurementSpecification responseTimeSpec;
     private final PerformabilityStrategyConfiguration strategyConfiguration;
-    protected final NodeRecoveryStrategy<S, A> recoveryStrategy;
+    protected final NodeRecoveryStrategy<C, A> recoveryStrategy;
 
     public AbstractReconfigurationPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<S, A> recoveryStrategy) {
+            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<C, A> recoveryStrategy) {
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
         this.recoveryStrategy = recoveryStrategy;
     }
 
     @Override
-    public abstract QVToReconfiguration planReconfigurationSteps(State<S> source, Set<QVToReconfiguration> options,
+    public abstract QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException;
 
-    protected Double retrieveResponseTime(SelfAdaptiveSystemState<S, A, List<InputValue>> sasState) {
+    protected Double retrieveResponseTime(SelfAdaptiveSystemState<C, A, List<InputValue>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();

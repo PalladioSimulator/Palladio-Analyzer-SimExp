@@ -13,14 +13,14 @@ public class MarkovModelFactory {
     public MarkovModelFactory() {
     }
 
-    public <T> State<T> createState(String name) {
-        State<T> newState = entityFactory.createState();
+    public State createState(String name) {
+        State newState = entityFactory.createState();
         newState.setName(name);
         return newState;
     }
 
-    public <T, A> Transition<T, A> createTransitionBetween(State<T> source, State<T> target) {
-        Transition<T, A> newTransition = entityFactory.createTransition();
+    public <A> Transition<A> createTransitionBetween(State source, State target) {
+        Transition<A> newTransition = entityFactory.createTransition();
         newTransition.setSource(source);
         newTransition.setTarget(target);
         return newTransition;
@@ -36,9 +36,9 @@ public class MarkovModelFactory {
         return reward;
     }
 
-    public <O> Observation<O> createObservation(O value) {
-        Observation<O> obs = entityFactory.createObservation();
-        obs.setValue(value);
+    public Observation createObservation() {
+        Observation obs = entityFactory.createObservation();
+        // obs.setValue(value);
         return obs;
     }
 

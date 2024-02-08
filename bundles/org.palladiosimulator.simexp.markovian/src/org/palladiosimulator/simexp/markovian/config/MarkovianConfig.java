@@ -5,18 +5,18 @@ import java.util.Optional;
 import org.palladiosimulator.simexp.markovian.exploration.EpsilonGreedyStrategy;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class MarkovianConfig<S, A, R> {
+public class MarkovianConfig<A, R> {
     public final int horizon;
-    public final Markovian<S, A, R> markovian;
-    public final Optional<EpsilonGreedyStrategy<S, A>> eGreedyStrategy;
+    public final Markovian<A, R> markovian;
+    public final Optional<EpsilonGreedyStrategy<A>> eGreedyStrategy;
 
-    public MarkovianConfig(int horizon, Markovian<S, A, R> markovian, EpsilonGreedyStrategy<S, A> eGreedyStrategy) {
+    public MarkovianConfig(int horizon, Markovian<A, R> markovian, EpsilonGreedyStrategy<A> eGreedyStrategy) {
         this.horizon = horizon;
         this.markovian = markovian;
         this.eGreedyStrategy = Optional.ofNullable(eGreedyStrategy);
     }
 
-    public static <S, A, R> MarkovianConfig<S, A, R> with(Markovian<S, A, R> markovian) {
+    public static <A, R> MarkovianConfig<A, R> with(Markovian<A, R> markovian) {
         return new MarkovianConfig<>(0, markovian, null);
     }
 }

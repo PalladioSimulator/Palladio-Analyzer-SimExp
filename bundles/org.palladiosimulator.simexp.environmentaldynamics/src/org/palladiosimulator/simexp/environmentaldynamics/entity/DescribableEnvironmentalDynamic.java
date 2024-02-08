@@ -8,8 +8,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition;
 import org.palladiosimulator.simexp.markovian.statespace.PolicyBasedDeductiveNavigator;
 
-public class DescribableEnvironmentalDynamic<S, A, Aa extends Action<A>, R>
-        extends PolicyBasedDeductiveNavigator<S, A, R> implements EnvironmentalDynamic {
+public class DescribableEnvironmentalDynamic<A, Aa extends Action<A>, R> extends PolicyBasedDeductiveNavigator<A, R>
+        implements EnvironmentalDynamic {
 
     /*
      * private static class PolicyController<T> implements Policy<Transition<T>> {
@@ -71,25 +71,25 @@ public class DescribableEnvironmentalDynamic<S, A, Aa extends Action<A>, R>
     private final boolean isHiddenProcess;
     // private final PolicyController<T> policy;
 
-    protected DescribableEnvironmentalDynamic(MarkovModel<S, A, R> markovModel, boolean isHiddenProcess,
+    protected DescribableEnvironmentalDynamic(MarkovModel<A, R> markovModel, boolean isHiddenProcess,
             boolean isExploration) {
         super(markovModel, createPolicy(isExploration));
         // this.policy = (PolicyController<T>) getPolicy();
         this.isHiddenProcess = isHiddenProcess;
     }
 
-    private static <S, A> BasePolicy<S, Transition<S, A>> createPolicy(boolean isExploration) {
+    private static <A> BasePolicy<Transition<A>> createPolicy(boolean isExploration) {
         /*
          * PolicyController<T> policyController = new PolicyController<T>(isExploration); if
          * (isExploration) { policyController.pursueExplorationStrategy(); } else {
          * policyController.pursueExploitationStrategy(); } return policyController;
          */
         if (isExploration) {
-            ProbabilityBasedTransitionPolicy<S, A> probabilityBasedTransitionPolicy = new ProbabilityBasedTransitionPolicy<>();
+            ProbabilityBasedTransitionPolicy<A> probabilityBasedTransitionPolicy = new ProbabilityBasedTransitionPolicy<>();
             return probabilityBasedTransitionPolicy;
         } else {
             // exploitation
-            RandomizedStrategy<S, Transition<S, A>> randomizedStrategy = new RandomizedStrategy<>();
+            RandomizedStrategy<Transition<A>> randomizedStrategy = new RandomizedStrategy<>();
             return randomizedStrategy;
         }
     }

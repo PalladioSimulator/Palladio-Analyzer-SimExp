@@ -13,17 +13,17 @@ import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 
 public class StateSpaceNavigatorBuilder {
 
-    public static class InductiveStateSpaceNavigatorBuilder<S, A> {
+    public static class InductiveStateSpaceNavigatorBuilder<A> {
 
-        private InductiveStateSpaceNavigator<S, A> inductiveNav;
+        private InductiveStateSpaceNavigator<A> inductiveNav;
 
-        public InductiveStateSpaceNavigatorBuilder<S, A> inductiveNavigationThrough(
-                InductiveStateSpaceNavigator<S, A> inductiveNav) {
+        public InductiveStateSpaceNavigatorBuilder<A> inductiveNavigationThrough(
+                InductiveStateSpaceNavigator<A> inductiveNav) {
             this.inductiveNav = inductiveNav;
             return this;
         }
 
-        public StateSpaceNavigator<S, A> build() {
+        public StateSpaceNavigator<A> build() {
             // TODO exception handling
             Objects.requireNonNull(inductiveNav, "");
 
@@ -32,39 +32,38 @@ public class StateSpaceNavigatorBuilder {
 
     }
 
-    public static class DeductiveStateSpaceNavigatorBuilder<S, A, R> {
+    public static class DeductiveStateSpaceNavigatorBuilder<A, R> {
 
-        private MarkovModel<S, A, R> markovModel;
-        private Optional<BasePolicy<S, Transition<S, A>>> policy = Optional.empty();
+        private MarkovModel<A, R> markovModel;
+        private Optional<BasePolicy<Transition<A>>> policy = Optional.empty();
 
-        public DeductiveStateSpaceNavigatorBuilder(MarkovModel<S, A, R> markovModel) {
+        public DeductiveStateSpaceNavigatorBuilder(MarkovModel<A, R> markovModel) {
             this.markovModel = markovModel;
         }
 
-        public DeductiveStateSpaceNavigatorBuilder<S, A, R> withTransitionPolicy(
-                BasePolicy<S, Transition<S, A>> policy) {
+        public DeductiveStateSpaceNavigatorBuilder<A, R> withTransitionPolicy(BasePolicy<Transition<A>> policy) {
             this.policy = Optional.ofNullable(policy);
             return this;
         }
 
-        public StateSpaceNavigator<S, A> build() {
+        public StateSpaceNavigator<A> build() {
             // TODO exception handling
             Objects.requireNonNull(markovModel, "");
 
             if (policy.isPresent()) {
-                return new PolicyBasedDeductiveNavigator<S, A, R>(markovModel, policy.get());
+                return new PolicyBasedDeductiveNavigator<A, R>(markovModel, policy.get());
             }
-            return new ActionBasedDeductiveNavigator<S, A, R>(markovModel);
+            return new ActionBasedDeductiveNavigator<A, R>(markovModel);
         }
 
     }
 
-    public static <S, A> InductiveStateSpaceNavigatorBuilder<S, A> createStateSpaceNavigator() {
+    public static <A> InductiveStateSpaceNavigatorBuilder<A> createStateSpaceNavigator() {
         return new InductiveStateSpaceNavigatorBuilder<>();
     }
 
-    public static <S, A, R> DeductiveStateSpaceNavigatorBuilder<S, A, R> createStateSpaceNavigator(
-            MarkovModel<S, A, R> markovModel) {
+    public static <A, R> DeductiveStateSpaceNavigatorBuilder<A, R> createStateSpaceNavigator(
+            MarkovModel<A, R> markovModel) {
         return new DeductiveStateSpaceNavigatorBuilder<>(markovModel);
     }
 }

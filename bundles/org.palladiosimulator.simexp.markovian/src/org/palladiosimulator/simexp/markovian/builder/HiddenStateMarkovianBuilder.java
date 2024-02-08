@@ -6,34 +6,33 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.type.HiddenStateMarkovian;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class HiddenStateMarkovianBuilder<S, A, R>
-        implements HiddenStateMarkovianBuilderTemplate<HiddenStateMarkovianBuilder<S, A, R>, S>,
-        Builder<HiddenStateMarkovian<S, A, R>> {
+public class HiddenStateMarkovianBuilder<A, R> implements
+        HiddenStateMarkovianBuilderTemplate<HiddenStateMarkovianBuilder<A, R>>, Builder<HiddenStateMarkovian<A, R>> {
 
-    private ObservationProducer<S> obsHandler;
-    private Markovian<S, A, R> decoratedMarkovian;
+    private ObservationProducer obsHandler;
+    private Markovian<A, R> decoratedMarkovian;
 
     private HiddenStateMarkovianBuilder() {
 
     }
 
-    public static <S, A, R> HiddenStateMarkovianBuilder<S, A, R> createHiddenStateMarkovianBuilder() {
+    public static <A, R> HiddenStateMarkovianBuilder<A, R> createHiddenStateMarkovianBuilder() {
         return new HiddenStateMarkovianBuilder<>();
     }
 
-    public HiddenStateMarkovianBuilder<S, A, R> decorates(Markovian<S, A, R> decoratedMarkovian) {
+    public HiddenStateMarkovianBuilder<A, R> decorates(Markovian<A, R> decoratedMarkovian) {
         this.decoratedMarkovian = decoratedMarkovian;
         return this;
     }
 
     @Override
-    public HiddenStateMarkovianBuilder<S, A, R> handleObservationsWith(ObservationProducer<S> obsHandler) {
+    public HiddenStateMarkovianBuilder<A, R> handleObservationsWith(ObservationProducer obsHandler) {
         this.obsHandler = obsHandler;
         return this;
     }
 
     @Override
-    public HiddenStateMarkovian<S, A, R> build() {
+    public HiddenStateMarkovian<A, R> build() {
         // TODO Exception handling
         Objects.requireNonNull(obsHandler, "");
         Objects.requireNonNull(decoratedMarkovian, "");

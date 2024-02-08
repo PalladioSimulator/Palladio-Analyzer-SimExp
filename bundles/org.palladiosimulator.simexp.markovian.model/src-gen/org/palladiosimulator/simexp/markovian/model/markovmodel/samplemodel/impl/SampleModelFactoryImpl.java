@@ -73,8 +73,8 @@ public class SampleModelFactoryImpl extends EFactoryImpl implements SampleModelF
      * @generated
      */
     @Override
-    public <S, A, R> Trajectory<S, A, R> createTrajectory() {
-        TrajectoryImpl<S, A, R> trajectory = new TrajectoryImpl<S, A, R>();
+    public <A, R> Trajectory<A, R> createTrajectory() {
+        TrajectoryImpl<A, R> trajectory = new TrajectoryImpl<A, R>();
         return trajectory;
     }
 
@@ -84,8 +84,8 @@ public class SampleModelFactoryImpl extends EFactoryImpl implements SampleModelF
      * @generated
      */
     @Override
-    public <S, A, R> Sample<S, A, R> createSample() {
-        SampleImpl<S, A, R> sample = new SampleImpl<S, A, R>();
+    public <A, R> Sample<A, R> createSample() {
+        SampleImpl<A, R> sample = new SampleImpl<A, R>();
         return sample;
     }
 
@@ -95,8 +95,8 @@ public class SampleModelFactoryImpl extends EFactoryImpl implements SampleModelF
      * @generated
      */
     @Override
-    public <S, A, R> SampleModel<S, A, R> createSampleModel() {
-        SampleModelImpl<S, A, R> sampleModel = new SampleModelImpl<S, A, R>();
+    public <A, R> SampleModel<A, R> createSampleModel() {
+        SampleModelImpl<A, R> sampleModel = new SampleModelImpl<A, R>();
         return sampleModel;
     }
 

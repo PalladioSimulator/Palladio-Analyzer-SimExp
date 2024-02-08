@@ -30,7 +30,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class PcmRelExperienceSimulationRunner<S, A, V> implements ExperienceSimulationRunner<S> {
+public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
 
     private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
     private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
@@ -63,7 +63,7 @@ public class PcmRelExperienceSimulationRunner<S, A, V> implements ExperienceSimu
     }
 
     @Override
-    public void simulate(State<S> state) {
+    public void simulate(State state) {
         PcmSelfAdaptiveSystemState<A, V> pcmState = (PcmSelfAdaptiveSystemState<A, V>) state;
         var result = makePrediction(pcmState, probabilityDistributionRegistry, probabilityDistributionFactory,
                 parameterParser, probDistRepoLookup);

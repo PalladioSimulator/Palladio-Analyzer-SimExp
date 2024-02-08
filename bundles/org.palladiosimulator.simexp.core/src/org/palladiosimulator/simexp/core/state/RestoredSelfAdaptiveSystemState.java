@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 
-public class RestoredSelfAdaptiveSystemState<S, A, V> extends SelfAdaptiveSystemState<S, A, V> {
+public class RestoredSelfAdaptiveSystemState<C, A, V> extends SelfAdaptiveSystemState<C, A, V> {
 
     // TODO this is not a good solution: The class should be refactored in further iterations.
     private static class SpecialCaseStateQuantity extends StateQuantity {
@@ -53,17 +53,17 @@ public class RestoredSelfAdaptiveSystemState<S, A, V> extends SelfAdaptiveSystem
     }
 
     private final SpecialCaseStateQuantity quantifiedState;
-    private final SelfAdaptiveSystemState<S, A, V> restoredState;
+    private final SelfAdaptiveSystemState<C, A, V> restoredState;
 
-    private RestoredSelfAdaptiveSystemState(SimulationRunnerHolder<S> simulationRunnerHolder,
-            SelfAdaptiveSystemState<S, A, V> restoredState, SimulatedExperience experience) {
+    private RestoredSelfAdaptiveSystemState(SimulationRunnerHolder simulationRunnerHolder,
+            SelfAdaptiveSystemState<C, A, V> restoredState, SimulatedExperience experience) {
         super(simulationRunnerHolder);
         this.restoredState = restoredState;
         this.quantifiedState = new SpecialCaseStateQuantity(experience.getQuantifiedStateOfCurrent());
     }
 
     public static <S, A, V> RestoredSelfAdaptiveSystemState<S, A, V> restoreFrom(
-            SimulationRunnerHolder<S> simulationRunnerHolder, SimulatedExperience experience,
+            SimulationRunnerHolder simulationRunnerHolder, SimulatedExperience experience,
             SelfAdaptiveSystemState<S, A, V> restoredState) {
         return new RestoredSelfAdaptiveSystemState<>(simulationRunnerHolder, restoredState, experience);
     }
@@ -74,7 +74,7 @@ public class RestoredSelfAdaptiveSystemState<S, A, V> extends SelfAdaptiveSystem
     }
 
     @Override
-    public ArchitecturalConfiguration<S, A> getArchitecturalConfiguration() {
+    public ArchitecturalConfiguration<C, A> getArchitecturalConfiguration() {
         return restoredState.getArchitecturalConfiguration();
     }
 
@@ -84,8 +84,8 @@ public class RestoredSelfAdaptiveSystemState<S, A, V> extends SelfAdaptiveSystem
     }
 
     @Override
-    public SelfAdaptiveSystemState<S, A, V> transitToNext(PerceivableEnvironmentalState<V> perceivedState,
-            ArchitecturalConfiguration<S, A> archConf) {
+    public SelfAdaptiveSystemState<C, A, V> transitToNext(PerceivableEnvironmentalState<V> perceivedState,
+            ArchitecturalConfiguration<C, A> archConf) {
         return restoredState.transitToNext(perceivedState, archConf);
     }
 

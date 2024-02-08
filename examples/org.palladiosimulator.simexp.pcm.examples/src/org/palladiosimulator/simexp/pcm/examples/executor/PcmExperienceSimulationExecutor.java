@@ -11,20 +11,20 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
-public class PcmExperienceSimulationExecutor<S, A, Aa extends Action<A>, R> implements SimulationExecutor {
+public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> implements SimulationExecutor {
 
     protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
 
-    protected final ExperienceSimulator<S, A, R> experienceSimulator;
+    protected final ExperienceSimulator<C, A, R> experienceSimulator;
     protected final Experiment experiment;
     protected final SimulationParameters simulationParameters;
     protected final IExperimentProvider experimentProvider;
-    protected final Policy<S, A, Aa> reconfSelectionPolicy;
+    protected final Policy<A, Aa> reconfSelectionPolicy;
     protected final TotalRewardCalculation rewardCalculation;
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public PcmExperienceSimulationExecutor(ExperienceSimulator<S, A, R> experienceSimulator, Experiment experiment,
-            SimulationParameters simulationParameters, Policy<S, A, Aa> reconfSelectionPolicy,
+    public PcmExperienceSimulationExecutor(ExperienceSimulator<C, A, R> experienceSimulator, Experiment experiment,
+            SimulationParameters simulationParameters, Policy<A, Aa> reconfSelectionPolicy,
             TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
         this.experienceSimulator = experienceSimulator;

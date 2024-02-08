@@ -18,9 +18,8 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.solver.models.PCMInstance;
 
-public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimulationRunner<PCMInstance, A> {
+public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimulationRunner<A> {
 
     private final DataSource dataSource;
     private final IExperimentProvider experimentProvider;
@@ -36,12 +35,12 @@ public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimul
     }
 
     @Override
-    protected void doSimulate(State<PCMInstance> state) {
+    protected void doSimulate(State state) {
         runSimulation();
         retrieveStateQuantities(asPcmState(state));
     }
 
-    private PcmSelfAdaptiveSystemState<A, V> asPcmState(State<PCMInstance> state) {
+    private PcmSelfAdaptiveSystemState<A, V> asPcmState(State state) {
         if (state instanceof PcmSelfAdaptiveSystemState) {
             return (PcmSelfAdaptiveSystemState<A, V>) state;
         }

@@ -23,8 +23,8 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
-public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<S, A>
-        extends PcmBasedPrismExperienceSimulationRunner<S, A, List<InputValue>> implements Initializable {
+public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A>
+        extends PcmBasedPrismExperienceSimulationRunner<A, List<InputValue>> implements Initializable {
 
     private final static String REPO_NAME = "DeltaIoTRepository";
     private final static int INITIAL_POWER_VALUE = 0;

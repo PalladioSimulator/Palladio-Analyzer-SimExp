@@ -14,7 +14,6 @@ import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
@@ -67,7 +66,7 @@ public class PerformabilityPcmExperienceSimulationRunner<A, V> extends PcmExperi
     }
 
     @Override
-    protected void postSimulate(State<PCMInstance> state) {
+    protected void postSimulate(State state) {
         ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
         expRunner.clearFailureScenarios(experimentProvider);
         LOGGER.info("Cleared failurescenarios model.");

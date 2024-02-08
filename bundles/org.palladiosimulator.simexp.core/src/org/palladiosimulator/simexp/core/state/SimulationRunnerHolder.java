@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 
-public class SimulationRunnerHolder<S> {
-    private final List<ExperienceSimulationRunner<S>> simulationRunner = new ArrayList<>();
+public class SimulationRunnerHolder {
+    private final List<ExperienceSimulationRunner> simulationRunner = new ArrayList<>();
 
-    public void registerSimulationRunners(Collection<ExperienceSimulationRunner<S>> newSimulationRunners) {
+    public void registerSimulationRunners(Collection<ExperienceSimulationRunner> newSimulationRunners) {
         simulationRunner.addAll(newSimulationRunners);
     }
 
-    public <A, V> void simulate(SelfAdaptiveSystemState<S, A, V> sasState) {
+    public <C, A, V> void simulate(SelfAdaptiveSystemState<C, A, V> sasState) {
         if (simulationRunner.isEmpty()) {
             // TODO exception handling
             throw new RuntimeException("There has to be at one simulation runner.");

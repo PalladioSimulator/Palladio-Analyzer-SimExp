@@ -30,7 +30,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
  * @model
  * @generated
  */
-public interface Sample<S, A, R> extends EObject {
+public interface Sample<A, R> extends EObject {
     /**
      * Returns the value of the '<em><b>Reward</b></em>' reference.
      * <!-- begin-user-doc -->
@@ -107,7 +107,7 @@ public interface Sample<S, A, R> extends EObject {
      * @model required="true"
      * @generated
      */
-    State<S> getCurrent();
+    State getCurrent();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getCurrent <em>Current</em>}' reference.
@@ -117,7 +117,7 @@ public interface Sample<S, A, R> extends EObject {
      * @see #getCurrent()
      * @generated
      */
-    void setCurrent(State<S> value);
+    void setCurrent(State value);
 
     /**
      * Returns the value of the '<em><b>Next</b></em>' reference.
@@ -129,7 +129,7 @@ public interface Sample<S, A, R> extends EObject {
      * @model required="true"
      * @generated
      */
-    State<S> getNext();
+    State getNext();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getNext <em>Next</em>}' reference.
@@ -139,7 +139,7 @@ public interface Sample<S, A, R> extends EObject {
      * @see #getNext()
      * @generated
      */
-    void setNext(State<S> value);
+    void setNext(State value);
 
     /**
      * Returns the value of the '<em><b>Observation</b></em>' reference.
@@ -151,7 +151,7 @@ public interface Sample<S, A, R> extends EObject {
      * @model
      * @generated
      */
-    Observation<S> getObservation();
+    Observation getObservation();
 
     /**
      * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample#getObservation <em>Observation</em>}' reference.
@@ -161,6 +161,6 @@ public interface Sample<S, A, R> extends EObject {
      * @see #getObservation()
      * @generated
      */
-    void setObservation(Observation<S> value);
+    void setObservation(Observation value);
 
 } // Sample

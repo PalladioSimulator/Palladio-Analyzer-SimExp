@@ -52,23 +52,21 @@ public class RobotCognitionSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double, List<InputValue>> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> envProcess;
 
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Double> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        RobotCognitionEnvironmentalDynamics<PCMInstance, QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
+        RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
-        EnvironmentProcess<PCMInstance, QVTOReconfigurator, Double, List<InputValue>> p = envDynamics
-            .getEnvironmentProcess();
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> p = envDynamics.getEnvironmentProcess();
         this.envProcess = p;
     }
 
@@ -82,20 +80,25 @@ public class RobotCognitionSimulationExecutorFactory
         List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
         relSpecs.add(reliabilitySpec);
 
+        List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
+        joinedSpecs.addAll(specs); // currently contains the performance related measurement specs
+                                   // derived from monitorrepository model
+        joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
+                                          // specs derived from usage_scenario model
+
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
-        List<ExperienceSimulationRunner<PCMInstance>> runners = List
-            .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, probabilityDistributionRegistry,
-                    distributionFactory, parameterParser, probDistRepoLookup)
-            /**
-             * disabled PCM performance analysis based on SimuCom for RobotCognition example;
-             * SimuCom is deprecated and simulation currently fails
-             * 
-             * , new PcmExperienceSimulationRunner(experimentProvider)
-             */
-            );
+        List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner<>(predictionConfig,
+                probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup)
+        /**
+         * disabled PCM performance analysis based on SimuCom for RobotCognition example; SimuCom is
+         * deprecated and simulation currently fails
+         * 
+         * , new PcmExperienceSimulationRunner(experimentProvider)
+         */
+        );
 
-        ReconfigurationStrategy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation<>();
+        ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
@@ -104,7 +107,7 @@ public class RobotCognitionSimulationExecutorFactory
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
+                joinedSpecs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
                 reconfSelectionPolicy, reconfigurations, evaluator, true);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),

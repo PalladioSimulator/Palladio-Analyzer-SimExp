@@ -45,21 +45,20 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<PCMInstance, QVTOReconfigurator, Integer, List<InputValue>> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
 
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<PCMInstance, QVTOReconfigurator, Integer> simulatedExperienceStore,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        VaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
+        VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
 
@@ -70,11 +69,11 @@ public class LoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        List<ExperienceSimulationRunner<PCMInstance>> simulationRunners = List
+        List<ExperienceSimulationRunner> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
-        Policy<PCMInstance, QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
                 1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),

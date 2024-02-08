@@ -6,10 +6,10 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public interface ExplorationStrategy<S, A, Aa extends Action<A>> extends Policy<S, A, Aa> {
+public interface ExplorationStrategy<A, Aa extends Action<A>> extends Policy<A, Aa> {
 
     @Override
-    default Aa select(State<S> source, Set<Aa> options) {
+    default Aa select(State source, Set<Aa> options) {
         return select(options);
     }
 

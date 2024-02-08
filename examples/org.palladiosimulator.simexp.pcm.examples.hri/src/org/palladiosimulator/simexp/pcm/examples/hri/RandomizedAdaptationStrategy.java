@@ -11,7 +11,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
 import com.google.common.collect.Lists;
 
-public class RandomizedAdaptationStrategy<S> extends ReliabilityPrioritizedStrategy<S> {
+public class RandomizedAdaptationStrategy<C> extends ReliabilityPrioritizedStrategy<C> {
 
     private final Random random = new Random();
 
@@ -25,12 +25,12 @@ public class RandomizedAdaptationStrategy<S> extends ReliabilityPrioritizedStrat
     }
 
     @Override
-    protected boolean analyse(State<S> source, SharedKnowledge knowledge) {
+    protected boolean analyse(State source, SharedKnowledge knowledge) {
         return true;
     }
 
     @Override
-    protected QVToReconfiguration plan(State<S> source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         List<String> availableOptions = Lists.newArrayList();
         availableOptions.add("EmptyReconf");
 

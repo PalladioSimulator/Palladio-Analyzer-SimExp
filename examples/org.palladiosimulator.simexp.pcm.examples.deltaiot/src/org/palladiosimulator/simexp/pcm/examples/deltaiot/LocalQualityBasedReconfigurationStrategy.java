@@ -29,7 +29,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy<PCMInstance> {
+public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(LocalQualityBasedReconfigurationStrategy.class.getName());
 
@@ -79,9 +79,9 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         this.modelAccess = modelAccess;
     }
 
-    public static DeltaIoTReconfigurationStrategyBuilder<PCMInstance> newBuilder(
+    public static DeltaIoTReconfigurationStrategyBuilder newBuilder(
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
-        return new DeltaIoTReconfigurationStrategyBuilder<>(new LocalQualityBasedReconfigurationStrategy(modelAccess));
+        return new DeltaIoTReconfigurationStrategyBuilder(new LocalQualityBasedReconfigurationStrategy(modelAccess));
     }
 
     @Override

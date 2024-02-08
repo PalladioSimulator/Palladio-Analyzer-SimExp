@@ -142,22 +142,13 @@ public interface MarkovEntityPackage extends EPackage {
     int STATE = 1;
 
     /**
-     * The feature id for the '<em><b>Produces</b></em>' reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int STATE__PRODUCES = 0;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int STATE__NAME = 1;
+    int STATE__NAME = 0;
 
     /**
      * The number of structural features of the '<em>State</em>' class.
@@ -166,7 +157,7 @@ public interface MarkovEntityPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int STATE_FEATURE_COUNT = 2;
+    int STATE_FEATURE_COUNT = 1;
 
     /**
      * The number of operations of the '<em>State</em>' class.
@@ -188,13 +179,13 @@ public interface MarkovEntityPackage extends EPackage {
     int OBSERVATION = 2;
 
     /**
-     * The feature id for the '<em><b>Value</b></em>' attribute.
+     * The feature id for the '<em><b>Observed</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OBSERVATION__VALUE = 0;
+    int OBSERVATION__OBSERVED = 0;
 
     /**
      * The number of structural features of the '<em>Observation</em>' class.
@@ -437,17 +428,6 @@ public interface MarkovEntityPackage extends EPackage {
     EClass getState();
 
     /**
-     * Returns the meta object for the reference list '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State#getProduces <em>Produces</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Produces</em>'.
-     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State#getProduces()
-     * @see #getState()
-     * @generated
-     */
-    EReference getState_Produces();
-
-    /**
      * Returns the meta object for the attribute '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State#getName <em>Name</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -469,15 +449,15 @@ public interface MarkovEntityPackage extends EPackage {
     EClass getObservation();
 
     /**
-     * Returns the meta object for the attribute '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getValue <em>Value</em>}'.
+     * Returns the meta object for the reference '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved <em>Observed</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Value</em>'.
-     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getValue()
+     * @return the meta object for the reference '<em>Observed</em>'.
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation#getObserved()
      * @see #getObservation()
      * @generated
      */
-    EAttribute getObservation_Value();
+    EReference getObservation_Observed();
 
     /**
      * Returns the meta object for class '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition <em>Transition</em>}'.
@@ -669,14 +649,6 @@ public interface MarkovEntityPackage extends EPackage {
         EClass STATE = eINSTANCE.getState();
 
         /**
-         * The meta object literal for the '<em><b>Produces</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference STATE__PRODUCES = eINSTANCE.getState_Produces();
-
-        /**
          * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -695,12 +667,12 @@ public interface MarkovEntityPackage extends EPackage {
         EClass OBSERVATION = eINSTANCE.getObservation();
 
         /**
-         * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+         * The meta object literal for the '<em><b>Observed</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute OBSERVATION__VALUE = eINSTANCE.getObservation_Value();
+        EReference OBSERVATION__OBSERVED = eINSTANCE.getObservation_Observed();
 
         /**
          * The meta object literal for the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.TransitionImpl <em>Transition</em>}' class.

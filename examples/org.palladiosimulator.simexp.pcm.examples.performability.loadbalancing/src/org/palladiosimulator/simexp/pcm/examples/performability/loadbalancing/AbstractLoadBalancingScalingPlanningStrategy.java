@@ -11,15 +11,15 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionE
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public abstract class AbstractLoadBalancingScalingPlanningStrategy<S>
-        extends AbstractReconfigurationPlanningStrategy<S, QVTOReconfigurator> {
+public abstract class AbstractLoadBalancingScalingPlanningStrategy<C>
+        extends AbstractReconfigurationPlanningStrategy<C, QVTOReconfigurator> {
 
     private final Threshold lowerResponseTimeThreshold;
     private final Threshold upperResponseTimeThreshold;
 
     public AbstractLoadBalancingScalingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
-            NodeRecoveryStrategy<S, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
+            NodeRecoveryStrategy<C, QVTOReconfigurator> recoveryStrategy, Threshold lowerThresholdResponseTime,
             Threshold upperThresholdResponseTime) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy);
         this.lowerResponseTimeThreshold = lowerThresholdResponseTime;

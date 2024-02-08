@@ -11,50 +11,48 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 
-public class EnvironmentDrivenStateSpaceNavigator<S, A, R, V>
-        extends SelfAdaptiveSystemStateSpaceNavigator<S, A, R, V> {
+public class EnvironmentDrivenStateSpaceNavigator<C, A, R, V>
+        extends SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> {
 
-    private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<S, A, R, V> environmentalDynamics,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S> simulationRunnerHolder) {
+    private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
+            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         super(environmentalDynamics, simulatedExperienceStore, simulationRunnerHolder);
     }
 
-    public static <S, A, R, V> EnvironmentDrivenStateSpaceNavigator<S, A, R, V> with(
-            EnvironmentProcess<S, A, R, V> environmentProcess,
-            SimulatedExperienceStore<S, A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S> simulationRunnerHolder) {
+    public static <C, A, R, V> EnvironmentDrivenStateSpaceNavigator<C, A, R, V> with(
+            EnvironmentProcess<A, R, V> environmentProcess, SimulatedExperienceStore<A, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new EnvironmentDrivenStateSpaceNavigator<>(environmentProcess, simulatedExperienceStore,
                 simulationRunnerHolder);
     }
 
     @Override
-    public SelfAdaptiveSystemState<S, A, V> determineStructuralState(NavigationContext<S, A> context) {
+    public SelfAdaptiveSystemState<C, A, V> determineStructuralState(NavigationContext<A> context) {
         Optional<Action<A>> action = context.getAction();
         Reconfiguration<A> reconf = (Reconfiguration<A>) action.get();
         PerceivableEnvironmentalState<V> nextEnvState = environmentalDynamics
             .determineNextGiven(getLastEnvironmentalState(context));
-        ArchitecturalConfiguration<S, A> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
+        ArchitecturalConfiguration<C, A> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
         LOGGER.info("==== End MAPE-K loop ====");
-        SelfAdaptiveSystemState<S, A, V> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
+        SelfAdaptiveSystemState<C, A, V> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
         LOGGER.info(String.format("Transitioned to next state '%s'", nextState.toString()));
         return nextState;
     }
 
-    private PerceivableEnvironmentalState<V> getLastEnvironmentalState(NavigationContext<S, A> context) {
+    private PerceivableEnvironmentalState<V> getLastEnvironmentalState(NavigationContext<A> context) {
         return getSasState(context).getPerceivedEnvironmentalState();
     }
 
-    private ArchitecturalConfiguration<S, A> getLastArchitecturalConfig(NavigationContext<S, A> context) {
+    private ArchitecturalConfiguration<C, A> getLastArchitecturalConfig(NavigationContext<A> context) {
         return getSasState(context).getArchitecturalConfiguration();
     }
 
-    private SelfAdaptiveSystemState<S, A, V> getSasState(NavigationContext<S, A> context) {
-        return (SelfAdaptiveSystemState<S, A, V>) context.getSource();
+    private SelfAdaptiveSystemState<C, A, V> getSasState(NavigationContext<A> context) {
+        return (SelfAdaptiveSystemState<C, A, V>) context.getSource();
     }
 
     @Override
-    protected PerceivableEnvironmentalState<V> determineInitial(ArchitecturalConfiguration<S, A> initialArch) {
+    protected PerceivableEnvironmentalState<V> determineInitial(ArchitecturalConfiguration<C, A> initialArch) {
         return environmentalDynamics.determineInitial();
     }
 

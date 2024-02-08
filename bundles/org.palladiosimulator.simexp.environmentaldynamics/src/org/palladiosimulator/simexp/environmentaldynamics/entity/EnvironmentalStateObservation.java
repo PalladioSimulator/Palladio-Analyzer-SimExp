@@ -2,18 +2,17 @@ package org.palladiosimulator.simexp.environmentaldynamics.entity;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.ObservationImpl;
 
-public class EnvironmentalStateObservation<S, V> extends ObservationImpl<PerceivedValue<V>>
-        implements PerceivableEnvironmentalState<V> {
+public class EnvironmentalStateObservation<V> extends ObservationImpl implements PerceivableEnvironmentalState<V> {
 
-    private final EnvironmentalState<S, V> hiddenState;
+    private final PerceivedValue<V> value;
+    private final EnvironmentalState<V> hiddenState;
 
-    private EnvironmentalStateObservation(PerceivedValue<V> value, EnvironmentalState<S, V> hiddenState) {
+    private EnvironmentalStateObservation(PerceivedValue<V> value, EnvironmentalState<V> hiddenState) {
         this.value = value;
         this.hiddenState = hiddenState;
     }
 
-    public static <S, V> EnvironmentalStateObservation<S, V> of(PerceivedValue<V> value,
-            EnvironmentalState<S, V> hiddenState) {
+    public static <V> EnvironmentalStateObservation<V> of(PerceivedValue<V> value, EnvironmentalState<V> hiddenState) {
         return new EnvironmentalStateObservation<>(value, hiddenState);
     }
 
@@ -27,7 +26,7 @@ public class EnvironmentalStateObservation<S, V> extends ObservationImpl<Perceiv
         return value;
     }
 
-    public EnvironmentalState<S, V> getHiddenState() {
+    public EnvironmentalState<V> getHiddenState() {
         return hiddenState;
     }
 

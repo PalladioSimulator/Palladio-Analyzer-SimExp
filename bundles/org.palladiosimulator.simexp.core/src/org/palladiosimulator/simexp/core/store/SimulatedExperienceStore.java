@@ -10,7 +10,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class SimulatedExperienceStore<S, A, R> {
+public class SimulatedExperienceStore<A, R> {
 
     private final DescriptionProvider descriptionProvider;
     private final SimulatedExperienceAccessor simExperienceAccessor;
@@ -26,21 +26,21 @@ public class SimulatedExperienceStore<S, A, R> {
             .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
     }
 
-    public void store(Trajectory<S, A, R> trajectory) {
+    public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         simExperienceAccessor.connect(description);
         simExperienceAccessor.store(toSimulatedExperience(trajectory));
         simExperienceAccessor.close();
     }
 
-    private List<SimulatedExperience> toSimulatedExperience(Trajectory<S, A, R> trajectory) {
+    private List<SimulatedExperience> toSimulatedExperience(Trajectory<A, R> trajectory) {
         return trajectory.getSamplePath()
             .stream()
             .map(each -> DefaultSimulatedExperience.of(each))
             .collect(Collectors.toList());
     }
 
-    public void store(Sample<S, A, R> sample) {
+    public void store(Sample<A, R> sample) {
         SimulatedExperience simExp = DefaultSimulatedExperience.of(sample);
         if (isAlreadyStored(simExp)) {
             return;

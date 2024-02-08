@@ -9,10 +9,10 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public class RobotCognitionBeforeExecutionInitialization<S> extends GlobalPcmBeforeExecutionInitialization {
-    private final ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> reconfigurationStrategy;
+    private final ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfigurationStrategy;
 
     public RobotCognitionBeforeExecutionInitialization(
-            ReconfigurationStrategy<S, QVTOReconfigurator, QVToReconfiguration> reconfigurationStrategy,
+            ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfigurationStrategy,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
         super(experimentProvider, qvtoReconfigurationManager);
         this.reconfigurationStrategy = reconfigurationStrategy;

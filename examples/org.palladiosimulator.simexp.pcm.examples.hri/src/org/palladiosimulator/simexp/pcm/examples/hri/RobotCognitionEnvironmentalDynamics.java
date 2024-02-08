@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.List;
 
@@ -11,11 +9,11 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedCategoricalValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedCategoricalValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -26,48 +24,48 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 import com.google.common.collect.Lists;
 
-public class RobotCognitionEnvironmentalDynamics<S, A, R> {
+public class RobotCognitionEnvironmentalDynamics<A, R> {
 
-    private final EnvironmentProcess<S, A, R, List<InputValue>> envProcess;
+    private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<S, A, R, List<InputValue>> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R, List<InputValue>> getEnvironmentProcess() {
         return envProcess;
     }
 
-    private ProbabilityMassFunction<State<S>> createInitialDist() {
+    private ProbabilityMassFunction<State> createInitialDist() {
         return new ProbabilityMassFunction<>() {
 
             @Override
-            public Sample<State<S>> drawSample() {
-                EnvironmentalStateBuilder<S, String> builder = EnvironmentalState.newBuilder();
-                EnvironmentalState<S, String> initial = builder
+            public Sample<State> drawSample() {
+                EnvironmentalStateBuilder<String> builder = EnvironmentalState.newBuilder();
+                EnvironmentalState<String> initial = builder
                     .withValue(new PerceivedCategoricalValue("MLPrediction", "Unknown"))
                     .isInital()
                     .isHidden()
                     .build();
                 // Sample<EnvironmentalState<S, String>> sample = Sample.of(initial, 1.0);
-                Sample<State<S>> sample = Sample.of((State<S>) initial, 1.0);
+                Sample<State> sample = Sample.of((State) initial, 1.0);
                 return sample;
             }
 
             @Override
-            public double probability(Sample<State<S>> sample) {
+            public double probability(Sample<State> sample) {
                 return 1.0;
             }
         };
     }
 
-    private EnvironmentProcess<S, A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
         return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }
 
-    private DerivableEnvironmentalDynamic createDerivableProcess() {
-        return new DerivableEnvironmentalDynamic() {
+    private DerivableEnvironmentalDynamic<A> createDerivableProcess() {
+        return new DerivableEnvironmentalDynamic<>() {
 
             @Override
             public void pursueExplorationStrategy() {
@@ -80,7 +78,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
             }
 
             @Override
-            public EnvironmentalState navigate(NavigationContext context) {
+            public EnvironmentalState navigate(NavigationContext<A> context) {
                 // Since the intention is to not predict belief states, it is not necessary to
                 // know/specify the true state.
                 var state = (EnvironmentalState) context.getSource();
@@ -95,13 +93,13 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
         };
     }
 
-    private ObservationProducer<S> createObsProducer(DynamicBayesianNetwork dbn) {
-        return new ObservationProducer<>() {
+    private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
+        return new ObservationProducer() {
 
             private EnvironmentalStateObservation last = null;
 
             @Override
-            public Observation<S> produceObservationGiven(State<S> emittingState) {
+            public Observation produceObservationGiven(State emittingState) {
                 var hiddenState = EnvironmentalState.class.cast(emittingState);
 
                 List<InputValue> sample;
@@ -110,7 +108,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
                 } else {
                     var inputs = toInputs(last.getValue()
                         .getValue());
-                    sample = sampleNext(toConditionalInputs(inputs));
+                    sample = sampleNext(DynamicBayesianNetwork.toConditionalInputs(inputs));
                 }
 
                 var current = EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
@@ -125,7 +123,7 @@ public class RobotCognitionEnvironmentalDynamics<S, A, R> {
             }
 
             private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(asConditionals(conditionalInputs))
+                Trajectory traj = dbn.given(DynamicBayesianNetwork.asConditionals(conditionalInputs))
                     .sample();
                 return traj.valueAtTime(0);
             }

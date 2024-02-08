@@ -16,8 +16,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class RobotCognitionReconfigurationStrategy<S>
-        implements Policy<S, QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
+public class RobotCognitionReconfigurationStrategy<C>
+        implements Policy<QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
 
     private final Threshold thresholdRt;
     private final Threshold thresholdRel;;
@@ -48,12 +48,12 @@ public class RobotCognitionReconfigurationStrategy<S>
     }
 
     @Override
-    public Action<QVTOReconfigurator> select(State<S> source, Set<Action<QVTOReconfigurator>> options) {
+    public Action<QVTOReconfigurator> select(State source, Set<Action<QVTOReconfigurator>> options) {
         if ((source instanceof SelfAdaptiveSystemState) == false) {
             throw new RuntimeException("");
         }
 
-        var stateQuantity = ((SelfAdaptiveSystemState<S, QVTOReconfigurator, List<InputValue>>) source)
+        var stateQuantity = ((SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source)
             .getQuantifiedState();
         SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec)
             .orElseThrow();

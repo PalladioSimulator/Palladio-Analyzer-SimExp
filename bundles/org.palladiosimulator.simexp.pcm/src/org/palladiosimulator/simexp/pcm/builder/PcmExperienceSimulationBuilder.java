@@ -25,8 +25,8 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
 
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
-    private final SimulationRunnerHolder<PCMInstance> simulationRunnerHolder;
-    private List<ExperienceSimulationRunner<PCMInstance>> simRunner = Lists.newArrayList();
+    private final SimulationRunnerHolder simulationRunnerHolder;
+    private List<ExperienceSimulationRunner> simRunner = Lists.newArrayList();
     private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
     private Experiment initial = null;
 
@@ -42,13 +42,12 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(ExperienceSimulationRunner<PCMInstance> runner) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(ExperienceSimulationRunner runner) {
             PcmExperienceSimulationBuilder.this.simRunner.add(runner);
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(
-                Set<ExperienceSimulationRunner<PCMInstance>> runners) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(Set<ExperienceSimulationRunner> runners) {
             PcmExperienceSimulationBuilder.this.simRunner.addAll(runners);
             return this;
         }
@@ -60,8 +59,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
     }
 
     public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.simulationRunnerHolder = simulationRunnerHolder;
@@ -79,7 +77,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
 
     public static <A, Aa extends Reconfiguration<A>, R, V> PcmExperienceSimulationBuilder<A, Aa, R, V> newBuilder(
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance> simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager,
                 simulationRunnerHolder);
     }
@@ -89,7 +87,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
     }
 
     @Override
-    protected List<ExperienceSimulationRunner<PCMInstance>> getSimulationRunner() {
+    protected List<ExperienceSimulationRunner> getSimulationRunner() {
         return simRunner;
     }
 

@@ -27,35 +27,34 @@ import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
-public abstract class DeltaIoTReconfigurationStrategy<S> implements Policy<S, QVTOReconfigurator, QVToReconfiguration> {
+public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
-    public static class DeltaIoTReconfigurationStrategyBuilder<S> {
+    public static class DeltaIoTReconfigurationStrategyBuilder {
 
-        private final DeltaIoTReconfigurationStrategy<S> strategy;
+        private final DeltaIoTReconfigurationStrategy strategy;
 
-        protected DeltaIoTReconfigurationStrategyBuilder(DeltaIoTReconfigurationStrategy<S> strategy) {
+        protected DeltaIoTReconfigurationStrategyBuilder(DeltaIoTReconfigurationStrategy strategy) {
             this.strategy = strategy;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder<S> withReconfigurationParams(
+        public DeltaIoTReconfigurationStrategyBuilder withReconfigurationParams(
                 DeltaIoTReconfigurationParamRepository params) {
             strategy.reconfParamsRepo = params;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder<S> andPacketLossSpec(
-                PrismSimulatedMeasurementSpec packetLossSpec) {
+        public DeltaIoTReconfigurationStrategyBuilder andPacketLossSpec(PrismSimulatedMeasurementSpec packetLossSpec) {
             strategy.packetLossSpec = packetLossSpec;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategyBuilder<S> andEnergyConsumptionSpec(
+        public DeltaIoTReconfigurationStrategyBuilder andEnergyConsumptionSpec(
                 PrismSimulatedMeasurementSpec energyConsumptionSpec) {
             strategy.energyConsumptionSpec = energyConsumptionSpec;
             return this;
         }
 
-        public DeltaIoTReconfigurationStrategy<S> build() {
+        public DeltaIoTReconfigurationStrategy build() {
             requireNonNull(strategy.reconfParamsRepo, "Reconfiguration params are missing");
             requireNonNull(strategy.packetLossSpec, "Packet loss spec is missing");
             requireNonNull(strategy.energyConsumptionSpec, "Energy consumption spec is missing");
@@ -124,7 +123,7 @@ public abstract class DeltaIoTReconfigurationStrategy<S> implements Policy<S, QV
     }
 
     @Override
-    public QVToReconfiguration select(State<S> source, Set<QVToReconfiguration> options) {
+    public QVToReconfiguration select(State source, Set<QVToReconfiguration> options) {
         retrieveDistributionFactorReconfiguration(options).setDistributionFactorValuesToDefaults();
 
         PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state = PcmSelfAdaptiveSystemState.class

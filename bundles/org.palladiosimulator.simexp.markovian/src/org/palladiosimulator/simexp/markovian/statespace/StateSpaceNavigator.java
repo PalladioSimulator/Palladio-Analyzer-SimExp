@@ -7,21 +7,21 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public abstract class StateSpaceNavigator<S, A> {
+public abstract class StateSpaceNavigator<A> {
 
     protected static final Logger LOGGER = Logger.getLogger(StateSpaceNavigator.class);
 
-    public static class NavigationContext<S, A> {
+    public static class NavigationContext<A> {
 
-        private final State<S> source;
+        private final State source;
         private final Optional<Action<A>> action;
 
-        private NavigationContext(State<S> source, Action<A> action) {
+        private NavigationContext(State source, Action<A> action) {
             this.source = source;
             this.action = Optional.ofNullable(action);
         }
 
-        public static <S, A, R> NavigationContext<S, A> of(Sample<S, A, R> sample) {
+        public static <A, R> NavigationContext<A> of(Sample<A, R> sample) {
             return new NavigationContext<>(sample.getCurrent(), sample.getAction());
         }
 
@@ -29,12 +29,12 @@ public abstract class StateSpaceNavigator<S, A> {
             return action;
         }
 
-        public State<S> getSource() {
+        public State getSource() {
             return source;
         }
 
     }
 
-    public abstract State<S> navigate(NavigationContext<S, A> context);
+    public abstract State navigate(NavigationContext<A> context);
 
 }
