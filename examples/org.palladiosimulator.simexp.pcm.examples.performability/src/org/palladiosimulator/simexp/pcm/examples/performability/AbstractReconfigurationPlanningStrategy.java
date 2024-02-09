@@ -60,7 +60,7 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
         for (InputValue each : inputs) {
             ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
             if (container != null) {
-                CategoricalValue nodeState = (CategoricalValue) each.value;
+                CategoricalValue nodeState = (CategoricalValue) each.getValue();
                 serverNodeStates.put(container, nodeState);
             }
         }

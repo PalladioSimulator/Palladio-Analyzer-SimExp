@@ -278,7 +278,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Double getSNR(InputValue input) {
-        String value = CategoricalValue.class.cast(input.value)
+        String value = CategoricalValue.class.cast(input.getValue())
             .get();
         return Double.valueOf(value);
     }

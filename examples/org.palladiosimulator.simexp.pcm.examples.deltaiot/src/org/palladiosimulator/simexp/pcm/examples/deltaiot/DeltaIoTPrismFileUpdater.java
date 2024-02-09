@@ -232,7 +232,7 @@ public abstract class DeltaIoTPrismFileUpdater<A>
             .equals("Gateway1Instance")) {
             return;
         }
-        resolveAndSubstitute(prismContext, element.getEntityName(), value.value.toString());
+        resolveAndSubstitute(prismContext, element.getEntityName(), value.getValue().toString());
     }
 
     protected void resolveAndSubstitute(PrismContext prismContext, String unresolvedSymbol, String value) {

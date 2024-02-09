@@ -157,7 +157,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                         double wirelessInterference = modelAccess.retrieveWirelessInterference(wiVariable, nextEnv);
                         int transmissionPower = modelAccess.retrieveTransmissionPower(sourceMote, link);
 
-                        each.value = computeSNR(each.getVariable(), wirelessInterference, transmissionPower);
+                        each.setValue(computeSNR(each.getVariable(), wirelessInterference, transmissionPower));
                     }
                 }
             }

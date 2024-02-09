@@ -54,10 +54,10 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             var template = each.getVariable().getInstantiatedTemplate();
             if (template.getId()
                 .equals(IMG_BRIGHTNESS_TEMPLATE)) {
-                knowledge.store(IMG_BRIGHTNESS_TEMPLATE, each.value);
+                knowledge.store(IMG_BRIGHTNESS_TEMPLATE, each.getValue());
             } else if (template.getId()
                 .equals(IMG_NOISE_TEMPLATE)) {
-                knowledge.store(IMG_NOISE_TEMPLATE, each.value);
+                knowledge.store(IMG_NOISE_TEMPLATE, each.getValue());
             }
         }
     }

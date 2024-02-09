@@ -40,7 +40,7 @@ public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
         List<String> entries = new ArrayList<>();
         for (InputValue each : getSortedSamples()) {
             entries.add(
-                    String.format("(Variable: %1s, Value: %2s)", each.getVariable().getEntityName(), each.value.toString()));
+                    String.format("(Variable: %1s, Value: %2s)", each.getVariable().getEntityName(), each.getValue().toString()));
         }
         return String.format("Samples: [%s])", StringUtils.join(entries, ","));
     }
