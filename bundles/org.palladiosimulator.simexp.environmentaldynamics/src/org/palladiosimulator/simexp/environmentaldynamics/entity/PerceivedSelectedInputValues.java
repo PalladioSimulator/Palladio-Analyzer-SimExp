@@ -43,7 +43,7 @@ public class PerceivedSelectedInputValues extends PerceivedInputValues implement
 
     private Predicate<InputValue> inputValue(String variableName) {
         return inputValue -> {
-            GroundRandomVariable groundRandomVariabe = inputValue.variable;
+            GroundRandomVariable groundRandomVariabe = inputValue.getVariable();
             String groundRandomVariableName = groundRandomVariabe.getEntityName();
             return groundRandomVariableName.equals(variableName);
         };

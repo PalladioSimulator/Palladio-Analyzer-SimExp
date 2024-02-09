@@ -145,9 +145,9 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                 List<InputValue> inputValues = toInputs(nextEnv.getValue()
                     .getValue());
                 for (InputValue each : inputValues) {
-                    if (isSNRTemplate(each.variable)) {
+                    if (isSNRTemplate(each.getVariable())) {
                         LocalProbabilisticNetwork localNetwork = LocalProbabilisticNetwork.class
-                            .cast(each.variable.eContainer());
+                            .cast(each.getVariable().eContainer());
 
                         GroundRandomVariable wiVariable = findWirelessInterferenceVariable(localNetwork);
                         LinkingResource link = LinkingResource.class.cast(wiVariable.getAppliedObjects()
@@ -157,7 +157,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
                         double wirelessInterference = modelAccess.retrieveWirelessInterference(wiVariable, nextEnv);
                         int transmissionPower = modelAccess.retrieveTransmissionPower(sourceMote, link);
 
-                        each.value = computeSNR(each.variable, wirelessInterference, transmissionPower);
+                        each.value = computeSNR(each.getVariable(), wirelessInterference, transmissionPower);
                     }
                 }
             }

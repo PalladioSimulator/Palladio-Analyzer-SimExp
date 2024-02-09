@@ -51,7 +51,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             .getValue()
             .getValue();
         for (InputValue each : RobotCognitionEnvironmentalDynamics.toInputs(envState)) {
-            var template = each.variable.getInstantiatedTemplate();
+            var template = each.getVariable().getInstantiatedTemplate();
             if (template.getId()
                 .equals(IMG_BRIGHTNESS_TEMPLATE)) {
                 knowledge.store(IMG_BRIGHTNESS_TEMPLATE, each.value);

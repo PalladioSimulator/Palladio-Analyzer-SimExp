@@ -28,8 +28,8 @@ public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
         Collections.sort(orderedSamples, new Comparator<>() {
             @Override
             public int compare(InputValue i1, InputValue i2) {
-                return i1.variable.getEntityName()
-                    .compareTo(i2.variable.getEntityName());
+                return i1.getVariable().getEntityName()
+                    .compareTo(i2.getVariable().getEntityName());
             }
         });
         return orderedSamples;
@@ -40,7 +40,7 @@ public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
         List<String> entries = new ArrayList<>();
         for (InputValue each : getSortedSamples()) {
             entries.add(
-                    String.format("(Variable: %1s, Value: %2s)", each.variable.getEntityName(), each.value.toString()));
+                    String.format("(Variable: %1s, Value: %2s)", each.getVariable().getEntityName(), each.value.toString()));
         }
         return String.format("Samples: [%s])", StringUtils.join(entries, ","));
     }

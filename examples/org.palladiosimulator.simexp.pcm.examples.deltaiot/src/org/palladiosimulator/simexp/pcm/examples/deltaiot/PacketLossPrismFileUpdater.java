@@ -47,7 +47,7 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
             return Optional.empty();
         }
         return values.stream()
-            .filter(each -> each.variable.getInstantiatedTemplate()
+            .filter(each -> each.getVariable().getInstantiatedTemplate()
                 .getEntityName()
                 .equals(SNR_VARIABLE))
             .findFirst();

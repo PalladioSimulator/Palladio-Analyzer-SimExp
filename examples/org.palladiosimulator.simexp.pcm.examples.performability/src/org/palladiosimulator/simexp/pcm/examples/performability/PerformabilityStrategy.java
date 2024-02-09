@@ -233,7 +233,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
     }
 
     private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
-        GroundRandomVariable grVariable = inputValue.variable;
+        GroundRandomVariable grVariable = inputValue.getVariable();
         if (isServerNodeVariable(grVariable)) {
             // NOTE: The ground random variable definition in *.staticmodel defines the attributge
             // appliedObjects;

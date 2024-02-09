@@ -210,7 +210,7 @@ public abstract class DeltaIoTPrismFileUpdater<A>
         List<InputValue> values = Lists.newArrayList();
         for (InputValue eachInput : toInputs(perceivedEnvironmentalState.getValue()
             .getValue())) {
-            for (EObject eachApplied : eachInput.variable.getAppliedObjects()) {
+            for (EObject eachApplied : eachInput.getVariable().getAppliedObjects()) {
                 if (appliedElement.getClass()
                     .isInstance(eachApplied)) {
                     if (areEqual(Entity.class.cast(eachApplied), appliedElement)) {

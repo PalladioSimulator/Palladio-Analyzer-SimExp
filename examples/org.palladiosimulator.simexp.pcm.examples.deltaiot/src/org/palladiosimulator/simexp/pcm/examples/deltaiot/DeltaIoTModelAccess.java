@@ -38,7 +38,7 @@ public class DeltaIoTModelAccess<S, A> {
             PerceivableEnvironmentalState nextEnvironment) {
         return toInputs(nextEnvironment.getValue()
             .getValue()).stream()
-                .filter(v -> v.variable.getId()
+                .filter(v -> v.getVariable().getId()
                     .equals(maVariable.getId()))
                 .map(InputValue::asCategorical)
                 .map(v -> Double.valueOf(v.get()))

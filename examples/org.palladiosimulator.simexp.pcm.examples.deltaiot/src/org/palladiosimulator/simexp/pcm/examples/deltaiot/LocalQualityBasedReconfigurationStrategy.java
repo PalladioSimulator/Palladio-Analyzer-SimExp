@@ -272,8 +272,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
             .getValue()).stream()
-                .filter(each -> isSNRTemplate(each.variable))
-                .collect(toMap(k -> (LinkingResource) k.variable.getAppliedObjects()
+                .filter(each -> isSNRTemplate(each.getVariable()))
+                .collect(toMap(k -> (LinkingResource) k.getVariable().getAppliedObjects()
                     .get(0), v -> getSNR(v)));
     }
 
