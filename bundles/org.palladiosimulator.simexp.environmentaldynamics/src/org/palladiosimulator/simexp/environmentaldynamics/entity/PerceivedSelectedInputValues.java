@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 
 public class PerceivedSelectedInputValues extends PerceivedInputValues implements PerceivedElement<List<InputValue>> {

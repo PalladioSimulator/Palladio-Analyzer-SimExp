@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.performability;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.pcm.repository.Repository;

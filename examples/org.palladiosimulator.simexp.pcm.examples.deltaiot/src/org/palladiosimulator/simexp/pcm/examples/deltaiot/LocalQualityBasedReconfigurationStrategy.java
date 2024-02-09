@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;

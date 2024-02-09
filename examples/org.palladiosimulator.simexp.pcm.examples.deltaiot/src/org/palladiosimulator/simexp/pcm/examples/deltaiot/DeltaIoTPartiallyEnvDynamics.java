@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNetwork;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;

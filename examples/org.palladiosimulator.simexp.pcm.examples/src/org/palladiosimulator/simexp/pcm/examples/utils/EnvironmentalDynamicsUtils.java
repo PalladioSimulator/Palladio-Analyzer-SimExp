@@ -3,7 +3,9 @@ package org.palladiosimulator.simexp.pcm.examples.utils;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
+
 import com.google.common.collect.Lists;
 
 public final class EnvironmentalDynamicsUtils {
