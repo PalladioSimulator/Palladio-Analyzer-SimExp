@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 
-public class SimulatedRewardReceiver<C, A, R> implements RewardReceiver<A, R> {
+public class SimulatedRewardReceiver<C, A, R, V> implements RewardReceiver<A, R> {
 
     private static final Logger LOGGER = Logger.getLogger(SimulatedRewardReceiver.class.getName());
 
@@ -18,7 +18,7 @@ public class SimulatedRewardReceiver<C, A, R> implements RewardReceiver<A, R> {
         this.evaluator = evaluator;
     }
 
-    public static <C, A, R> SimulatedRewardReceiver<C, A, R> with(RewardEvaluator<R> evaluator) {
+    public static <C, A, R, V> SimulatedRewardReceiver<C, A, R, V> with(RewardEvaluator<R> evaluator) {
         return new SimulatedRewardReceiver<>(evaluator);
     }
 
@@ -27,7 +27,7 @@ public class SimulatedRewardReceiver<C, A, R> implements RewardReceiver<A, R> {
         SelfAdaptiveSystemStateSampleValidator checkSample = this.new SelfAdaptiveSystemStateSampleValidator();
         try {
             checkSample.validate(sample);
-        } catch (SimulatedRewardReceiver<C, A, R>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
+        } catch (SimulatedRewardReceiver<C, A, R, V>.SelfAdaptiveSystemStateSampleValidator.SelfAdaptiveSystemStateSampleValidationExcpetion e) {
             throw new RuntimeException(e);
         }
 
@@ -35,7 +35,7 @@ public class SimulatedRewardReceiver<C, A, R> implements RewardReceiver<A, R> {
     }
 
     private Reward<R> evaluate(Sample<A, R> sample) {
-        SelfAdaptiveSystemState<C, A> state = (SelfAdaptiveSystemState<C, A>) sample.getNext();
+        SelfAdaptiveSystemState<C, A, V> state = (SelfAdaptiveSystemState<C, A, V>) sample.getNext();
         Reward<R> evaluatedReward = evaluator.evaluate(state.getQuantifiedState());
 
         LOGGER.debug(String.format(Locale.ENGLISH, "Evaluated reward: %s", evaluatedReward.getValue()

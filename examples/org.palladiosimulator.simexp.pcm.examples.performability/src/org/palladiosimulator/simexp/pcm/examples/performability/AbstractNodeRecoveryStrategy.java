@@ -1,6 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.performability;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.pcm.repository.Repository;
@@ -34,7 +37,8 @@ public abstract class AbstractNodeRecoveryStrategy<PCMInstance, A> implements No
     }
 
     @Override
-    public abstract void execute(SelfAdaptiveSystemState<PCMInstance, A> sasState, SharedKnowledge knowledge);
+    public abstract void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue>> sasState,
+            SharedKnowledge knowledge);
 
     protected ProbabilisticBranchTransition findProbabilisticBranchTransitionToServerNode(Repository repository,
             String loadBalancerBasicComponentId, String loadBalancerSeffOperationSignatureEntityName,

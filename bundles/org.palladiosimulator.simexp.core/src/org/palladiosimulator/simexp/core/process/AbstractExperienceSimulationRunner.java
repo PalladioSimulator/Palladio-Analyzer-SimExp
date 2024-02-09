@@ -1,10 +1,9 @@
 package org.palladiosimulator.simexp.core.process;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public abstract class AbstractExperienceSimulationRunner<S, A>
-        implements ExperienceSimulationRunner<S, A>, Initializable {
+public abstract class AbstractExperienceSimulationRunner<A> implements ExperienceSimulationRunner, Initializable {
 
     protected static final Logger LOGGER = Logger.getLogger(ExperienceSimulationRunner.class);
 
@@ -16,27 +15,27 @@ public abstract class AbstractExperienceSimulationRunner<S, A>
     }
 
     @Override
-    public final void simulate(SelfAdaptiveSystemState<S, A> sasState) {
-        LOGGER.info(String.format("Execute pre-simulation hook for state '%s'", sasState.toString()));
-        preSimulate(sasState);
-        LOGGER.info(String.format("Executed pre-simulation hook for state '%s'", sasState.toString()));
+    public final void simulate(State state) {
+        LOGGER.info(String.format("Execute pre-simulation hook for state '%s'", state.toString()));
+        preSimulate(state);
+        LOGGER.info(String.format("Executed pre-simulation hook for state '%s'", state.toString()));
 
-        LOGGER.info(String.format("Do simulation for state '%s'", sasState.toString()));
-        doSimulate(sasState);
-        LOGGER.info(String.format("Done simulation for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Do simulation for state '%s'", state.toString()));
+        doSimulate(state);
+        LOGGER.info(String.format("Done simulation for state '%s'", state.toString()));
 
-        LOGGER.info(String.format("Execute post-simulation hook for state '%s'", sasState.toString()));
-        postSimulate(sasState);
-        LOGGER.info(String.format("Executed post-simulation hook for state '%s'", sasState.toString()));
+        LOGGER.info(String.format("Execute post-simulation hook for state '%s'", state.toString()));
+        postSimulate(state);
+        LOGGER.info(String.format("Executed post-simulation hook for state '%s'", state.toString()));
     }
 
-    protected void preSimulate(SelfAdaptiveSystemState<S, A> sasState) {
+    protected void preSimulate(State state) {
         /** default - nothing to do here */
     }
 
-    protected abstract void doSimulate(SelfAdaptiveSystemState<S, A> sasState);
+    protected abstract void doSimulate(State state);
 
-    protected void postSimulate(SelfAdaptiveSystemState<S, A> sasState) {
+    protected void postSimulate(State state) {
         /** default - nothing to do here */
     }
 

@@ -90,8 +90,9 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     @Override
-    protected QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
+    protected QVToReconfiguration handlePacketLoss(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
+            Set<QVToReconfiguration> options) {
         LOGGER.info("Start with actions selection.");
         long start = System.currentTimeMillis();
 
@@ -110,7 +111,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     @Override
-    protected QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
+    protected QVToReconfiguration handleEnergyConsumption(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         if (LOWER_ENERGY_CONSUMPTION.isSatisfied(energyConsumtption.getValue())) {
             return decreaseDistribution(state, options);
@@ -119,8 +121,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         }
     }
 
-    private QVToReconfiguration decreaseDistribution(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            Set<QVToReconfiguration> options) {
+    private QVToReconfiguration decreaseDistribution(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -134,8 +136,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return disFactorReconf;
     }
 
-    private QVToReconfiguration decreaseTransmissionPower(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            Set<QVToReconfiguration> options) {
+    private QVToReconfiguration decreaseTransmissionPower(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -148,8 +150,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return transPowerReconf;
     }
 
-    private QVToReconfiguration increaseDistribution(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            Set<QVToReconfiguration> options) {
+    private QVToReconfiguration increaseDistribution(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -163,8 +165,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return disFactorReconf;
     }
 
-    private QVToReconfiguration increaseTransmissionPower(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            Set<QVToReconfiguration> options) {
+    private QVToReconfiguration increaseTransmissionPower(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -258,14 +260,15 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Map<AssemblyContext, Map<LinkingResource, Double>> filterMotesWithWirelessLinks(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
         return filterLinksWithSNR(state).entrySet()
             .stream()
             .collect(groupingBy(equalSourceMote(state),
                     mapping(Function.identity(), toMap(Map.Entry::getKey, Map.Entry::getValue))));
     }
 
-    private Map<LinkingResource, Double> filterLinksWithSNR(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
+    private Map<LinkingResource, Double> filterLinksWithSNR(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
         return toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
             .getValue()).stream()
@@ -281,7 +284,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Function<Map.Entry<LinkingResource, Double>, AssemblyContext> equalSourceMote(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator> state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
         return entry -> {
             return modelAccess.findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
         };

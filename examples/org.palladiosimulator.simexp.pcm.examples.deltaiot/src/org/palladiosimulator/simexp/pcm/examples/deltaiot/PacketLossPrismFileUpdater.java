@@ -21,7 +21,7 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
     }
 
     @Override
-    public PrismContext apply(PcmSelfAdaptiveSystemState<A> sasState) {
+    public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         PrismContext prismContext = new PrismContext(stringify(prismSpec.getModuleFile()),
                 stringify(prismSpec.getPropertyFile()));
         substituteMoteActivations(prismContext, sasState);
@@ -30,7 +30,7 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
         return prismContext;
     }
 
-    private void substituteSNR(PrismContext prismContext, PcmSelfAdaptiveSystemState<A> sasState) {
+    private void substituteSNR(PrismContext prismContext, PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         ResourceEnvironment resEnv = sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getResourceEnvironment();
@@ -40,7 +40,8 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
         }
     }
 
-    private Optional<InputValue> resolveSNRInputValue(LinkingResource linkingRes, PerceivableEnvironmentalState state) {
+    private Optional<InputValue> resolveSNRInputValue(LinkingResource linkingRes,
+            PerceivableEnvironmentalState<List<InputValue>> state) {
         List<InputValue> values = resolveInputValue(linkingRes, state);
         if (values.isEmpty()) {
             return Optional.empty();

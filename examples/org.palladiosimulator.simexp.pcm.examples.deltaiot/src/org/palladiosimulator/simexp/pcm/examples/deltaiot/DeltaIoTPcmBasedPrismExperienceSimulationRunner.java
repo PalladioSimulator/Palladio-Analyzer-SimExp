@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.Repository;
@@ -22,8 +23,8 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
-public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<S, A> extends PcmBasedPrismExperienceSimulationRunner<S, A>
-        implements Initializable {
+public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A>
+        extends PcmBasedPrismExperienceSimulationRunner<A, List<InputValue>> implements Initializable {
 
     private final static String REPO_NAME = "DeltaIoTRepository";
     private final static int INITIAL_POWER_VALUE = 0;
@@ -31,8 +32,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<S, A> extends PcmBa
     private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final IExperimentProvider experimentProvider;
 
-    public DeltaIoTPcmBasedPrismExperienceSimulationRunner(PrismGenerator<A> prismGenerator, File prismFolder,
-            DeltaIoTReconfigurationParamRepository reconfParamsRepo, IExperimentProvider experimentProvider) {
+    public DeltaIoTPcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, List<InputValue>> prismGenerator,
+            File prismFolder, DeltaIoTReconfigurationParamRepository reconfParamsRepo,
+            IExperimentProvider experimentProvider) {
         super(prismGenerator, prismFolder);
 
         this.reconfParamsRepo = reconfParamsRepo;

@@ -1,20 +1,17 @@
 package org.palladiosimulator.simexp.core.state;
 
-import java.util.List;
-
-import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.StateImpl;
 
-public abstract class SelfAdaptiveSystemState<C, A> extends StateImpl {
+public abstract class SelfAdaptiveSystemState<C, A, V> extends StateImpl {
 
-    protected final SimulationRunnerHolder<C, A> simulationRunnerHolder;
+    protected final SimulationRunnerHolder simulationRunnerHolder;
 
-    protected PerceivableEnvironmentalState perceivedState;
+    protected PerceivableEnvironmentalState<V> perceivedState;
     protected ArchitecturalConfiguration<C, A> archConfiguration;
     protected StateQuantity quantifiedState;
 
-    public SelfAdaptiveSystemState(SimulationRunnerHolder<C, A> simulationRunnerHolder) {
+    public SelfAdaptiveSystemState(SimulationRunnerHolder simulationRunnerHolder) {
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
@@ -26,7 +23,7 @@ public abstract class SelfAdaptiveSystemState<C, A> extends StateImpl {
         return archConfiguration;
     }
 
-    public PerceivableEnvironmentalState getPerceivedEnvironmentalState() {
+    public PerceivableEnvironmentalState<V> getPerceivedEnvironmentalState() {
         return perceivedState;
     }
 
@@ -36,11 +33,9 @@ public abstract class SelfAdaptiveSystemState<C, A> extends StateImpl {
     }
 
     public void determineQuantifiedState() {
-        List<ExperienceSimulationRunner<C, A>> simulationRunners = simulationRunnerHolder.getSimulationRunner();
-        simulationRunners.forEach(runner -> runner.simulate(this));
+        simulationRunnerHolder.simulate(this);
     }
 
-    public abstract SelfAdaptiveSystemState<C, A> transitToNext(PerceivableEnvironmentalState perceivedState,
+    public abstract SelfAdaptiveSystemState<C, A, V> transitToNext(PerceivableEnvironmentalState<V> perceivedState,
             ArchitecturalConfiguration<C, A> archConf);
-
 }

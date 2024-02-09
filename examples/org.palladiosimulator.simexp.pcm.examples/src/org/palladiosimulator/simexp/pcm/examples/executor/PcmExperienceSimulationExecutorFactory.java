@@ -30,7 +30,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T extends SimulatedMeasurementSpecification> {
+public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     protected final Experiment experiment;
     protected final DynamicBayesianNetwork dbn;
     protected final List<T> specs;
@@ -43,15 +43,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     protected final IExperimentProvider experimentProvider;
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
-    private final SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder;
+    private final SimulationRunnerHolder simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
             SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;
@@ -72,16 +71,16 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, T
     public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();
 
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
-            List<? extends SimulatedMeasurementSpecification> specs,
-            List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners, SimulationParameters params,
-            Initializable beforeExecution, EnvironmentProcess<QVTOReconfigurator, R> envProcess,
+            List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
+            SimulationParameters params, Initializable beforeExecution,
+            EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R> navigator,
+            SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
             RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R> newBuilder(experimentProvider, qvtoReconfigurationManager,
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, qvtoReconfigurationManager,
                     simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)

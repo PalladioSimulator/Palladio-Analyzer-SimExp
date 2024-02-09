@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.palladiosimulator.edp2.models.ExperimentData.ExperimentRun;
 import org.palladiosimulator.simexp.core.process.AbstractExperienceSimulationRunner;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.MeasurementSeriesResult;
@@ -18,15 +18,14 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.solver.models.PCMInstance;
 
-public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulationRunner<PCMInstance, A> {
+public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimulationRunner<A> {
 
     private final DataSource dataSource;
     private final IExperimentProvider experimentProvider;
 
     public PcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
-            InitialPcmStateCreator<A> initialStateCreator) {
+            InitialPcmStateCreator<A, V> initialStateCreator) {
         this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 
@@ -36,14 +35,14 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
     }
 
     @Override
-    protected void doSimulate(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+    protected void doSimulate(State state) {
         runSimulation();
-        retrieveStateQuantities(asPcmState(sasState));
+        retrieveStateQuantities(asPcmState(state));
     }
 
-    private PcmSelfAdaptiveSystemState<A> asPcmState(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
-        if (sasState instanceof PcmSelfAdaptiveSystemState) {
-            return (PcmSelfAdaptiveSystemState<A>) sasState;
+    private PcmSelfAdaptiveSystemState<A, V> asPcmState(State state) {
+        if (state instanceof PcmSelfAdaptiveSystemState) {
+            return (PcmSelfAdaptiveSystemState<A, V>) state;
         }
 
         // TODO exception handling
@@ -55,7 +54,7 @@ public class PcmExperienceSimulationRunner<A> extends AbstractExperienceSimulati
             .runExperiment();
     }
 
-    private void retrieveStateQuantities(PcmSelfAdaptiveSystemState<A> sasState) {
+    private void retrieveStateQuantities(PcmSelfAdaptiveSystemState<A, V> sasState) {
         ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
         List<ExperimentRun> currentExperimentRuns = expRunner.getCurrentExperimentRuns();
         MeasurementSeriesResult result = dataSource.getSimulatedMeasurements(currentExperimentRuns);

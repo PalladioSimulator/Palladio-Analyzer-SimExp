@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
+import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
@@ -39,7 +40,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
 
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
-        var sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
+        var sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
 
         var stateQuantity = sasState.getQuantifiedState();
         SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import java.util.List;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.system.System;
@@ -16,7 +17,7 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
     }
 
     @Override
-    public PrismContext apply(PcmSelfAdaptiveSystemState<A> sasState) {
+    public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         PrismContext prismContext = new PrismContext(stringify(prismSpec.getModuleFile()),
                 stringify(prismSpec.getPropertyFile()));
         substituteMoteActivations(prismContext, sasState);
@@ -26,7 +27,8 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
         return prismContext;
     }
 
-    private void substituteTransmissionPower(PrismContext prismContext, PcmSelfAdaptiveSystemState<A> sasState) {
+    private void substituteTransmissionPower(PrismContext prismContext,
+            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         System system = sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getSystem();
@@ -51,7 +53,8 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
         resolveAndSubstitute(prismContext, unresolvedSymbol, value);
     }
 
-    private boolean isInstantiatedSensorMote(AssemblyContext each, PcmSelfAdaptiveSystemState<A> sasState) {
+    private boolean isInstantiatedSensorMote(AssemblyContext each,
+            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
         return resolveInputValue(each, sasState.getPerceivedEnvironmentalState()).isEmpty() == false;
     }
 

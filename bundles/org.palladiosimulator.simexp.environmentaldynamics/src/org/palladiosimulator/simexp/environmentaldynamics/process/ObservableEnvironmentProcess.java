@@ -11,7 +11,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R> extends EnvironmentProcess<A, R> {
+public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R, V> {
 
     public ObservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution) {
         super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), model, initialDistribution);
@@ -31,13 +31,13 @@ public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R> extends En
     }
 
     @Override
-    public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState) last).getNext();
+    public PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last) {
+        return (PerceivableEnvironmentalState<V>) determineNextSampleGiven((EnvironmentalState<V>) last).getNext();
     }
 
     @Override
-    public PerceivableEnvironmentalState determineInitial() {
-        return (PerceivableEnvironmentalState) sampler.drawInitialSample()
+    public PerceivableEnvironmentalState<V> determineInitial() {
+        return (PerceivableEnvironmentalState<V>) sampler.drawInitialSample()
             .getCurrent();
     }
 

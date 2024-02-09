@@ -15,26 +15,25 @@ public class ExperienceSimulator<C, A, R> {
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
     private final MarkovSampling<A, R> markovSampler;
-    private final List<ExperienceSimulationRunner<C, A>> simulationRunner;
+    private final List<ExperienceSimulationRunner> simulationRunners;
     private final Optional<Initializable> beforeExecutionInitialization;
     private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
 
     private int numberOfRuns;
 
     private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
-            SimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<C, A> simulationRunnerHolder) {
+            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
-        this.simulationRunner = config.getSimulationRunner();
+        this.simulationRunners = config.getSimulationRunners();
         this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
-        this.simulationRunner.forEach(simulationRunnerHolder::registerSimulationRunner);
+        simulationRunnerHolder.registerSimulationRunners(simulationRunners);
         this.simulatedExperienceStore = simulatedExperienceStore;
     }
 
-    public static <C, A, R> ExperienceSimulator<C, A, R> createSimulator(
-            ExperienceSimulationConfiguration<C, A, R> config, SimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<C, A> simulationRunnerHolder) {
+    public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
+            ExperienceSimulationConfiguration<S, A, R> config, SimulatedExperienceStore<A, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
@@ -53,7 +52,7 @@ public class ExperienceSimulator<C, A, R> {
     private void initExperienceSimulator() {
         beforeExecutionInitialization.ifPresent(Initializable::initialize);
 
-        simulationRunner.stream()
+        simulationRunners.stream()
             .filter(Initializable.class::isInstance)
             .map(Initializable.class::cast)
             .forEach(Initializable::initialize);

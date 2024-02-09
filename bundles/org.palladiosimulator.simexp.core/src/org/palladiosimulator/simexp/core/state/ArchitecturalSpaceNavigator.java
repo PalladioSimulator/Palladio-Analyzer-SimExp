@@ -7,12 +7,12 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
-public abstract class ArchitecturalSpaceNavigator<C, A> extends InductiveStateSpaceNavigator<A> {
+public abstract class ArchitecturalSpaceNavigator<C, A, V> extends InductiveStateSpaceNavigator<A> {
 
     @Override
     public State navigate(NavigationContext<A> context) {
         if (isValid(context)) {
-            SelfAdaptiveSystemState<C, A> state = (SelfAdaptiveSystemState<C, A>) context.getSource();
+            SelfAdaptiveSystemState<C, A, V> state = (SelfAdaptiveSystemState<C, A, V>) context.getSource();
             Optional<Action<A>> action = context.getAction();
             Reconfiguration<A> reconfiguration = (Reconfiguration<A>) action.get();
             return navigate(state.getArchitecturalConfiguration(), reconfiguration);

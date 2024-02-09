@@ -6,7 +6,7 @@ import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioReposit
 import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.failuremodel.failuretype.FailuretypePackage;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.datasource.DataSource;
 import org.palladiosimulator.simexp.pcm.datasource.EDP2DataSource;
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
@@ -14,18 +14,17 @@ import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureStateCreator;
 import org.palladiosimulator.simexp.pcm.state.failure.NodeFailureTypeCreator;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 
-public class PerformabilityPcmExperienceSimulationRunner<A> extends PcmExperienceSimulationRunner<A> {
+public class PerformabilityPcmExperienceSimulationRunner<A, V> extends PcmExperienceSimulationRunner<A, V> {
 
     private NodeFailureTypeCreator failureTypeCeator;
     private NodeFailureStateCreator failureStateCreator;
     private final IExperimentProvider experimentProvider;
 
     public PerformabilityPcmExperienceSimulationRunner(IExperimentProvider experimentProvider,
-            InitialPcmStateCreator<A> initialStateCreator) {
+            InitialPcmStateCreator<A, V> initialStateCreator) {
         this(new EDP2DataSource<>(initialStateCreator), experimentProvider);
     }
 
@@ -67,7 +66,7 @@ public class PerformabilityPcmExperienceSimulationRunner<A> extends PcmExperienc
     }
 
     @Override
-    protected void postSimulate(SelfAdaptiveSystemState<PCMInstance, A> sasState) {
+    protected void postSimulate(State state) {
         ExperimentRunner expRunner = experimentProvider.getExperimentRunner();
         expRunner.clearFailureScenarios(experimentProvider);
         LOGGER.info("Cleared failurescenarios model.");

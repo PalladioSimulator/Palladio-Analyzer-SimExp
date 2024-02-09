@@ -11,35 +11,35 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 
-public class EnvironmentDrivenStateSpaceNavigator<C, A, R> extends SelfAdaptiveSystemStateSpaceNavigator<C, A, R> {
+public class EnvironmentDrivenStateSpaceNavigator<C, A, R, V>
+        extends SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> {
 
-    private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<A, R> environmentalDynamics,
-            SimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<C, A> simulationRunnerHolder) {
+    private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
+            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         super(environmentalDynamics, simulatedExperienceStore, simulationRunnerHolder);
     }
 
-    public static <S, A, R> EnvironmentDrivenStateSpaceNavigator<S, A, R> with(
-            EnvironmentProcess<A, R> environmentProcess, SimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder<S, A> simulationRunnerHolder) {
+    public static <C, A, R, V> EnvironmentDrivenStateSpaceNavigator<C, A, R, V> with(
+            EnvironmentProcess<A, R, V> environmentProcess, SimulatedExperienceStore<A, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new EnvironmentDrivenStateSpaceNavigator<>(environmentProcess, simulatedExperienceStore,
                 simulationRunnerHolder);
     }
 
     @Override
-    public SelfAdaptiveSystemState<C, A> determineStructuralState(NavigationContext<A> context) {
+    public SelfAdaptiveSystemState<C, A, V> determineStructuralState(NavigationContext<A> context) {
         Optional<Action<A>> action = context.getAction();
         Reconfiguration<A> reconf = (Reconfiguration<A>) action.get();
-        PerceivableEnvironmentalState nextEnvState = environmentalDynamics
+        PerceivableEnvironmentalState<V> nextEnvState = environmentalDynamics
             .determineNextGiven(getLastEnvironmentalState(context));
         ArchitecturalConfiguration<C, A> nextArchConf = getLastArchitecturalConfig(context).apply(reconf);
         LOGGER.info("==== End MAPE-K loop ====");
-        SelfAdaptiveSystemState<C, A> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
+        SelfAdaptiveSystemState<C, A, V> nextState = getSasState(context).transitToNext(nextEnvState, nextArchConf);
         LOGGER.info(String.format("Transitioned to next state '%s'", nextState.toString()));
         return nextState;
     }
 
-    private PerceivableEnvironmentalState getLastEnvironmentalState(NavigationContext<A> context) {
+    private PerceivableEnvironmentalState<V> getLastEnvironmentalState(NavigationContext<A> context) {
         return getSasState(context).getPerceivedEnvironmentalState();
     }
 
@@ -47,12 +47,12 @@ public class EnvironmentDrivenStateSpaceNavigator<C, A, R> extends SelfAdaptiveS
         return getSasState(context).getArchitecturalConfiguration();
     }
 
-    private SelfAdaptiveSystemState<C, A> getSasState(NavigationContext<A> context) {
-        return (SelfAdaptiveSystemState<C, A>) context.getSource();
+    private SelfAdaptiveSystemState<C, A, V> getSasState(NavigationContext<A> context) {
+        return (SelfAdaptiveSystemState<C, A, V>) context.getSource();
     }
 
     @Override
-    protected PerceivableEnvironmentalState determineInitial(ArchitecturalConfiguration<C, A> initialArch) {
+    protected PerceivableEnvironmentalState<V> determineInitial(ArchitecturalConfiguration<C, A> initialArch) {
         return environmentalDynamics.determineInitial();
     }
 

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
 import java.util.List;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.pcm.repository.Repository;
@@ -34,7 +35,7 @@ public class LoadBalancerNodeFailureRecoveryStrategy<A> extends AbstractNodeReco
     }
 
     @Override
-    public void execute(SelfAdaptiveSystemState<PCMInstance, A> sasState, SharedKnowledge knowledge) {
+    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue>> sasState, SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ",
                 LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
 

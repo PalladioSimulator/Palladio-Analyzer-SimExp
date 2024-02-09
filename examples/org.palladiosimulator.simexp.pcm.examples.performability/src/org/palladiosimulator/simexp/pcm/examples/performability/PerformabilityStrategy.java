@@ -70,7 +70,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
         /**
          * transfer status of server nodes to knowledge base
          */
-        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
@@ -90,7 +90,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
          * threshold violations, presence of failed nodes, ...
          * 
          */
-        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
@@ -204,14 +204,15 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
         return QVToReconfiguration.empty();
     }
 
-    private Double retrieveResponseTime(SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState) {
+    private Double retrieveResponseTime(SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
         return simMeasurement.getValue();
     }
 
-    private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
+    private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(
+            PerceivableEnvironmentalState<List<InputValue>> state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
         List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue());

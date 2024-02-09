@@ -20,13 +20,13 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
-        extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R> {
+public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R, V>
+        extends ExperienceSimulationBuilder<PCMInstance, A, Aa, R, V> {
 
     private final IExperimentProvider experimentProvider;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
-    private final SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder;
-    private List<ExperienceSimulationRunner<PCMInstance, A>> simRunner = Lists.newArrayList();
+    private final SimulationRunnerHolder simulationRunnerHolder;
+    private List<ExperienceSimulationRunner> simRunner = Lists.newArrayList();
     private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
     private Experiment initial = null;
 
@@ -42,27 +42,24 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(
-                ExperienceSimulationRunner<PCMInstance, A> runner) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunner(ExperienceSimulationRunner runner) {
             PcmExperienceSimulationBuilder.this.simRunner.add(runner);
             return this;
         }
 
-        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(
-                Set<ExperienceSimulationRunner<PCMInstance, A>> runners) {
+        public GlobalPcmSettingsBuilder addExperienceSimulationRunners(Set<ExperienceSimulationRunner> runners) {
             PcmExperienceSimulationBuilder.this.simRunner.addAll(runners);
             return this;
         }
 
-        public PcmExperienceSimulationBuilder<A, Aa, R> done() {
+        public PcmExperienceSimulationBuilder<A, Aa, R, V> done() {
             return PcmExperienceSimulationBuilder.this;
         }
 
     }
 
     public PcmExperienceSimulationBuilder(IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         this.experimentProvider = experimentProvider;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.simulationRunnerHolder = simulationRunnerHolder;
@@ -78,9 +75,9 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
         return super.build();
     }
 
-    public static <A, Aa extends Reconfiguration<A>, R> PcmExperienceSimulationBuilder<A, Aa, R> newBuilder(
+    public static <A, Aa extends Reconfiguration<A>, R, V> PcmExperienceSimulationBuilder<A, Aa, R, V> newBuilder(
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, A> simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         return new PcmExperienceSimulationBuilder<>(experimentProvider, qvtoReconfigurationManager,
                 simulationRunnerHolder);
     }
@@ -90,12 +87,12 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R>
     }
 
     @Override
-    protected List<ExperienceSimulationRunner<PCMInstance, A>> getSimulationRunner() {
+    protected List<ExperienceSimulationRunner> getSimulationRunner() {
         return simRunner;
     }
 
     @Override
-    protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A> createInitialSassCreator() {
+    protected InitialSelfAdaptiveSystemStateCreator<PCMInstance, A, V> createInitialSassCreator() {
         return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
                 simulationRunnerHolder);
     }

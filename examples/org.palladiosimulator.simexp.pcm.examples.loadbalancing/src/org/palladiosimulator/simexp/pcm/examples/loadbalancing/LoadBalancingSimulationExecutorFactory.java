@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -40,12 +41,12 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class LoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Integer, PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Integer, List<InputValue>, PcmMeasurementSpecification> {
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<QVTOReconfigurator, Integer> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
+    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
 
     public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -53,12 +54,11 @@ public class LoadBalancingSimulationExecutorFactory
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        VaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
+        VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
 
@@ -69,8 +69,8 @@ public class LoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> simulationRunners = List
-            .of(new PcmExperienceSimulationRunner<QVTOReconfigurator>(experimentProvider, initialStateCreator));
+        List<ExperienceSimulationRunner> simulationRunners = List
+            .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(

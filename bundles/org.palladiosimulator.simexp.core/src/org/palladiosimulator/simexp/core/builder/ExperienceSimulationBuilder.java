@@ -38,7 +38,7 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfiguration<A>, R> {
+public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfiguration<A>, R, V> {
 
     private String simulationID = "";
     private int numberOfRuns = 0;
@@ -46,18 +46,18 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Set<Aa> reconfigurationSpace = null;
     private RewardEvaluator<R> rewardEvaluator = null;
     private Policy<A, Aa> policy = null;
-    private EnvironmentProcess<A, R> envProcess = null;
+    private EnvironmentProcess<A, R, V> envProcess = null;
     private SimulatedExperienceStore<A, R> simulatedExperienceStore;
-    private SimulationRunnerHolder<C, A> simulationRunnerHolder;
+    private SimulationRunnerHolder simulationRunnerHolder;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<A, R>> markovModel = Optional.empty();
-    private SelfAdaptiveSystemStateSpaceNavigator<C, A, R> navigator = null;
+    private SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> navigator = null;
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
 
-    protected abstract List<ExperienceSimulationRunner<C, A>> getSimulationRunner();
+    protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
-    protected abstract InitialSelfAdaptiveSystemStateCreator<C, A> createInitialSassCreator();
+    protected abstract InitialSelfAdaptiveSystemStateCreator<C, A, V> createInitialSassCreator();
 
     public SimulationConfigurationBuilder createSimulationConfiguration() {
         return new SimulationConfigurationBuilder();
@@ -127,7 +127,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             throw new RuntimeException("");
         }
 
-        return ((SelfAdaptiveSystemStateSpaceNavigator<C, A, R>) navigator)
+        return ((SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V>) navigator)
             .createInitialDistribution(createInitialSassCreator());
     }
 
@@ -136,7 +136,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
         }
 
-        SimulatedRewardReceiver<C, A, R> rewardReceiver = SimulatedRewardReceiver.<C, A, R> with(rewardEvaluator);
+        SimulatedRewardReceiver<C, A, R, V> rewardReceiver = SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator);
         return MarkovianBuilder.<A, Aa, R> createPartiallyObservableMDP()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
@@ -150,7 +150,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Markovian<A, R> buildMDP(ProbabilityMassFunction<State> initialDist, StateSpaceNavigator<A> navigator) {
         return MarkovianBuilder.<A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)
-            .calculateRewardWith(SimulatedRewardReceiver.<C, A, R> with(rewardEvaluator))
+            .calculateRewardWith(SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator))
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)
@@ -203,16 +203,16 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
-        public ExperienceSimulationBuilder<C, A, Aa, R> done() {
+        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
             return ExperienceSimulationBuilder.this;
         }
     }
 
     public class SelfAdaptiveSystemBuilder {
 
-        public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<A, R> envProcess,
+        public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<A, R, V> envProcess,
                 SimulatedExperienceStore<A, R> simulatedExperienceStore,
-                SimulationRunnerHolder<C, A> simulationRunnerHolder) {
+                SimulationRunnerHolder simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;
             ExperienceSimulationBuilder.this.simulationRunnerHolder = simulationRunnerHolder;
@@ -220,7 +220,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
 
         public SelfAdaptiveSystemBuilder asPartiallyEnvironmentalDrivenProcess(
-                SelfAdaptiveSystemStateSpaceNavigator<C, A, R> navigator) {
+                SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> navigator) {
             ExperienceSimulationBuilder.this.navigator = navigator;
             return this;
         }
@@ -240,7 +240,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
-        public ExperienceSimulationBuilder<C, A, Aa, R> done() {
+        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
             return ExperienceSimulationBuilder.this;
         }
     }
@@ -299,7 +299,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
-        public ExperienceSimulationBuilder<C, A, Aa, R> done() {
+        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
             return ExperienceSimulationBuilder.this;
         }
     }
@@ -311,7 +311,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
-        public ExperienceSimulationBuilder<C, A, Aa, R> done() {
+        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
             return ExperienceSimulationBuilder.this;
         }
     }

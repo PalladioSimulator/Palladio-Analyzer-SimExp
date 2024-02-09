@@ -10,8 +10,8 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
@@ -19,16 +19,16 @@ import org.palladiosimulator.simexp.pcm.prism.service.PrismService.PrismResult;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class PcmBasedPrismExperienceSimulationRunner<S, A> implements ExperienceSimulationRunner<S, A> {
+public class PcmBasedPrismExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
 
     private final static String LOG_FILE_EXT = ".txt";
     private final static String LOG_FILE_NAME = "PrismLog";
     private final static String LOG_FILE = LOG_FILE_NAME + LOG_FILE_EXT;
 
     private final PrismService prismService;
-    private final PrismGenerator<A> prismGenerator;
+    private final PrismGenerator<A, V> prismGenerator;
 
-    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A> prismGenerator, File prismFolder) {
+    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, File prismFolder) {
         // TODO exception handling
         this.prismService = ServiceRegistry.get()
             .findService(PrismService.class)
@@ -53,13 +53,13 @@ public class PcmBasedPrismExperienceSimulationRunner<S, A> implements Experience
     }
 
     @Override
-    public void simulate(SelfAdaptiveSystemState<S, A> sasState) {
-        PcmSelfAdaptiveSystemState<A> state = PcmSelfAdaptiveSystemState.class.cast(sasState);
-        PrismResult result = modelCheck(state);
-        retrieveAndSetStateQuantities(sasState.getQuantifiedState(), result);
+    public void simulate(State state) {
+        PcmSelfAdaptiveSystemState<A, V> pcmState = PcmSelfAdaptiveSystemState.class.cast(state);
+        PrismResult result = modelCheck(pcmState);
+        retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);
     }
 
-    private PrismResult modelCheck(PcmSelfAdaptiveSystemState<A> sasState) {
+    private PrismResult modelCheck(PcmSelfAdaptiveSystemState<A, V> sasState) {
         PrismResult result = new PrismResult();
         for (PrismSimulatedMeasurementSpec each : filterPrismSpecs(sasState)) {
             PrismResult resultToMerge = prismService.modelCheck(prismGenerator.generate(sasState, each));
@@ -68,7 +68,7 @@ public class PcmBasedPrismExperienceSimulationRunner<S, A> implements Experience
         return result;
     }
 
-    private List<PrismSimulatedMeasurementSpec> filterPrismSpecs(PcmSelfAdaptiveSystemState<A> sasState) {
+    private List<PrismSimulatedMeasurementSpec> filterPrismSpecs(PcmSelfAdaptiveSystemState<A, V> sasState) {
         return sasState.getQuantifiedState()
             .getMeasurementSpecs()
             .stream()

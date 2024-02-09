@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R> {
+public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R, V> {
 
     public UnobservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution,
             ObservationProducer obsProducer) {
@@ -39,15 +39,14 @@ public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> exten
     }
 
     @Override
-    public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-        EnvironmentalState hiddenState = EnvironmentalStateObservation.class.cast(last)
-            .getHiddenState();
-        Observation observation = determineNextSampleGiven(hiddenState).getObservation();
-        return (PerceivableEnvironmentalState) observation;
+    public PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last) {
+        EnvironmentalStateObservation<V> observation = EnvironmentalStateObservation.class.cast(last);
+        EnvironmentalState<V> hiddenState = observation.getHiddenState();
+        return (EnvironmentalStateObservation<V>) determineNextSampleGiven(hiddenState).getObservation();
     }
 
     @Override
-    public PerceivableEnvironmentalState determineInitial() {
+    public PerceivableEnvironmentalState<V> determineInitial() {
         // TODO Could be better solved... see HiddenMarkovian
         Sample<A, R> initialSample = sampler.drawInitialSample();
         /*
@@ -55,7 +54,7 @@ public class UnobservableEnvironmentProcess<A, Aa extends Action<A>, R, V> exten
          * (PerceivableEnvironmentalState) currentState.getProduces() .get(0);
          */
         Observation observation = initialSample.getObservation();
-        return (PerceivableEnvironmentalState) observation;
+        return (PerceivableEnvironmentalState<V>) observation;
     }
 
 }

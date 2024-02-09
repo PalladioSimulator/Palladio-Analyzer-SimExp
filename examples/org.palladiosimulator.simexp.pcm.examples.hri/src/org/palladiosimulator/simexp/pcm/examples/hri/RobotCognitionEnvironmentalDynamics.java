@@ -1,21 +1,20 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
-import org.palladiosimulator.simexp.environmentaldynamics.entity.CategoricalValue;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnvironmentalDynamic;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalStateObservation;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedCategoricalValue;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
@@ -27,38 +26,41 @@ import com.google.common.collect.Lists;
 
 public class RobotCognitionEnvironmentalDynamics<A, R> {
 
-    private final EnvironmentProcess<A, R> envProcess;
+    private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<A, R> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R, List<InputValue>> getEnvironmentProcess() {
         return envProcess;
     }
 
-    private ProbabilityMassFunction createInitialDist() {
-        return new ProbabilityMassFunction() {
+    private ProbabilityMassFunction<State> createInitialDist() {
+        return new ProbabilityMassFunction<>() {
 
             @Override
-            public Sample drawSample() {
-                var initial = EnvironmentalState.newBuilder()
-                    .withValue(new CategoricalValue("MLPrediction", "Unknown"))
+            public Sample<State> drawSample() {
+                EnvironmentalStateBuilder<String> builder = EnvironmentalState.newBuilder();
+                EnvironmentalState<String> initial = builder
+                    .withValue(new PerceivedCategoricalValue("MLPrediction", "Unknown"))
                     .isInital()
                     .isHidden()
                     .build();
-                return Sample.of(initial, 1.0);
+                // Sample<EnvironmentalState<S, String>> sample = Sample.of(initial, 1.0);
+                Sample<State> sample = Sample.of((State) initial, 1.0);
+                return sample;
             }
 
             @Override
-            public double probability(Sample sample) {
+            public double probability(Sample<State> sample) {
                 return 1.0;
             }
         };
     }
 
-    private EnvironmentProcess<A, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new UnobservableEnvironmentProcess(createDerivableProcess(), createInitialDist(),
+    private EnvironmentProcess<A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }
 
@@ -76,12 +78,12 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             }
 
             @Override
-            public EnvironmentalState navigate(NavigationContext<A> context) {
+            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<A> context) {
                 // Since the intention is to not predict belief states, it is not necessary to
                 // know/specify the true state.
-                var state = (EnvironmentalState) context.getSource();
+                EnvironmentalState<List<InputValue>> state = (EnvironmentalState<List<InputValue>>) context.getSource();
                 if (state.isInitial()) {
-                    return EnvironmentalState.newBuilder()
+                    return EnvironmentalState.<List<InputValue>> newBuilder()
                         .withValue(state.getValue())
                         .isHidden()
                         .build();
@@ -94,11 +96,11 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
     private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
         return new ObservationProducer() {
 
-            private EnvironmentalStateObservation last = null;
+            private EnvironmentalStateObservation<List<InputValue>> last = null;
 
             @Override
             public Observation produceObservationGiven(State emittingState) {
-                var hiddenState = EnvironmentalState.class.cast(emittingState);
+                EnvironmentalState<List<InputValue>> hiddenState = EnvironmentalState.class.cast(emittingState);
 
                 List<InputValue> sample;
                 if (hiddenState.isInitial()) {
@@ -106,10 +108,11 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
                 } else {
                     var inputs = toInputs(last.getValue()
                         .getValue());
-                    sample = sampleNext(toConditionalInputs(inputs));
+                    sample = sampleNext(DynamicBayesianNetwork.toConditionalInputs(inputs));
                 }
 
-                var current = EnvironmentalStateObservation.of(toPerceivedValue(sample), hiddenState);
+                EnvironmentalStateObservation<List<InputValue>> current = EnvironmentalStateObservation
+                    .of(toPerceivedValue(sample), hiddenState);
                 setLastEnvironmentalStateObservation(current);
 
                 return current;
@@ -121,43 +124,21 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             }
 
             private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(asConditionals(conditionalInputs))
+                Trajectory traj = dbn.given(DynamicBayesianNetwork.asConditionals(conditionalInputs))
                     .sample();
                 return traj.valueAtTime(0);
             }
 
-            private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation current) {
+            private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation<List<InputValue>> current) {
                 this.last = current;
             }
         };
     }
 
-    private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
-        return new PerceivedValue<List<InputValue>>() {
+    private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
+        PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
+        return perceivedValue;
 
-            @Override
-            public List<InputValue> getValue() {
-                return sample;
-            }
-
-            @Override
-            public Optional<Object> getElement(String key) {
-                return Optional.of(sample);
-            }
-
-            @Override
-            public String toString() {
-                StringBuilder builder = new StringBuilder();
-                for (InputValue each : sample) {
-                    builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                            each.value.toString()));
-                }
-
-                String stringValues = builder.toString();
-                return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
-            }
-
-        };
     }
 
     public static List<InputValue> toInputs(Object sample) {

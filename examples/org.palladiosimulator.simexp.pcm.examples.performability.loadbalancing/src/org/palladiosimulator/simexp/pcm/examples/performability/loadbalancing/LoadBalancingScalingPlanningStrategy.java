@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
+import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -29,7 +31,7 @@ public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalanci
     @Override
     public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<C, QVTOReconfigurator> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
 
         Double responseTime = retrieveResponseTime(sasState);
         if (isExceeded(responseTime)) {

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -46,14 +47,14 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class DeltaIoTSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Integer, PrismSimulatedMeasurementSpec> {
+        extends PcmExperienceSimulationExecutorFactory<Integer, List<InputValue>, PrismSimulatedMeasurementSpec> {
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
-    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer> envProcess;
+    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue>> envProcess;
 
     public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
@@ -61,15 +62,14 @@ public class DeltaIoTSimulationExecutorFactory
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
 
         this.modelAccess = new DeltaIoTModelAccess<>();
-        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<Integer>(dbn,
-                simulatedExperienceStore, modelAccess, simulationRunnerHolder);
+        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
+                modelAccess, simulationRunnerHolder);
         this.envProcess = p.getEnvironmentProcess();
     }
 
@@ -80,17 +80,18 @@ public class DeltaIoTSimulationExecutorFactory
         File prismLogFile = new File(CommonPlugin.resolve(uri)
             .toFileString());
 
-        Set<PrismFileUpdater<QVTOReconfigurator>> prismFileUpdaters = new HashSet<>();
+        Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue>>> prismFileUpdaters = new HashSet<>();
         prismFileUpdaters.add(new PacketLossPrismFileUpdater<>(specs.get(0)));
         prismFileUpdaters.add(new EnergyConsumptionPrismFileUpdater<>(specs.get(1)));
-        PrismGenerator<QVTOReconfigurator> prismGenerator = new PrismFileUpdateGenerator<>(prismFileUpdaters);
+        PrismGenerator<QVTOReconfigurator, List<InputValue>> prismGenerator = new PrismFileUpdateGenerator<>(
+                prismFileUpdaters);
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
-        ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
+        ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
+                prismLogFile, reconfParamsRepo, experimentProvider);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 

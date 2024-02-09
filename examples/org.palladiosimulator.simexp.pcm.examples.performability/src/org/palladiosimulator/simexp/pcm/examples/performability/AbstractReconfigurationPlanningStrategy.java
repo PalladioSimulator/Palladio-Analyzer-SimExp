@@ -45,14 +45,15 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
     public abstract QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException;
 
-    protected Double retrieveResponseTime(SelfAdaptiveSystemState<C, A> sasState) {
+    protected Double retrieveResponseTime(SelfAdaptiveSystemState<C, A, List<InputValue>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
         return simMeasurement.getValue();
     }
 
-    protected Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
+    protected Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(
+            PerceivableEnvironmentalState<List<InputValue>> state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
         List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue());

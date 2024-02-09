@@ -5,7 +5,6 @@ import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.
 import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -20,6 +19,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState.EnvironmentalStateBuilder;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
@@ -37,7 +37,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     private static final Logger LOGGER = Logger.getLogger(DeltaIoTBaseEnvironemtalDynamics.class.getName());
 
-    protected final EnvironmentProcess<QVTOReconfigurator, R> envProcess;
+    protected final EnvironmentProcess<QVTOReconfigurator, R, List<InputValue>> envProcess;
     protected final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork dbn,
@@ -46,9 +46,10 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         this.modelAccess = modelAccess;
     }
 
-    private EnvironmentProcess<QVTOReconfigurator, R> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R>(createDerivableProcess(dbn),
-                createInitialDist(dbn));
+    private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue>> createEnvironmentalProcess(
+            DynamicBayesianNetwork dbn) {
+        return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R, List<InputValue>>(
+                createDerivableProcess(dbn), createInitialDist(dbn));
     }
 
     private DerivableEnvironmentalDynamic<QVTOReconfigurator> createDerivableProcess(DynamicBayesianNetwork dbn) {
@@ -67,8 +68,8 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             }
 
             @Override
-            public EnvironmentalState navigate(NavigationContext<QVTOReconfigurator> context) {
-                EnvironmentalState envState = EnvironmentalState.class.cast(context.getSource());
+            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<QVTOReconfigurator> context) {
+                EnvironmentalState<List<InputValue>> envState = EnvironmentalState.class.cast(context.getSource());
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
@@ -77,16 +78,16 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
                 return sample(toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState sample(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
                 var traj = dbn.given(asConditionals(conditionalInputs))
                     .sample();
                 var value = toPerceivedValue(traj.valueAtTime(0));
-                EnvironmentalStateBuilder builder = EnvironmentalState.newBuilder();
+                EnvironmentalStateBuilder<List<InputValue>> builder = EnvironmentalState.newBuilder();
                 return builder.withValue(value)
                     .build();
             }
 
-            private EnvironmentalState sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<List<InputValue>> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
         };
@@ -100,7 +101,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             @Override
             public Sample<State> drawSample() {
                 var sample = bn.sample();
-                EnvironmentalStateBuilder builder = EnvironmentalState.newBuilder();
+                EnvironmentalStateBuilder<List<InputValue>> builder = EnvironmentalState.newBuilder();
                 State newState = builder.withValue(toPerceivedValue(sample))
                     .isInital()
                     .build();
@@ -118,44 +119,22 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         };
     }
 
-    private PerceivedValue<?> toPerceivedValue(List<InputValue> sample) {
-        return new PerceivedValue<List<InputValue>>() {
-
-            @Override
-            public List<InputValue> getValue() {
-                return sample;
-            }
-
-            @Override
-            public Optional<Object> getElement(String key) {
-                return Optional.of(sample);
-            }
-
-            @Override
-            public String toString() {
-                StringBuilder builder = new StringBuilder();
-                for (InputValue each : sample) {
-                    builder.append(String.format("(Variable: %1s, Value: %2s),", each.variable.getEntityName(),
-                            each.value.toString()));
-                }
-
-                String stringValues = builder.toString();
-                return String.format("Samples: [%s])", stringValues.substring(0, stringValues.length() - 1));
-            }
-
-        };
+    private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
+        PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
+        return perceivedValue;
     }
 
-    public static <A> PcmSelfAdaptiveSystemState<A> asPcmState(State state) {
+    public static <A> PcmSelfAdaptiveSystemState<A, List<InputValue>> asPcmState(State state) {
         return PcmSelfAdaptiveSystemState.class.cast(state);
     }
 
-    public static <A> PerceivableEnvironmentalState getCurrentEnvironment(NavigationContext<A> context) {
+    public static <A> PerceivableEnvironmentalState<List<InputValue>> getCurrentEnvironment(
+            NavigationContext<A> context) {
         return asPcmState(context.getSource()).getPerceivedEnvironmentalState();
     }
 
     public static <A> PcmArchitecturalConfiguration<A> getCurrentArchitecture(NavigationContext<A> context) {
-        PcmSelfAdaptiveSystemState<A> pcmState = asPcmState(context.getSource());
+        PcmSelfAdaptiveSystemState<A, List<InputValue>> pcmState = asPcmState(context.getSource());
         ArchitecturalConfiguration<PCMInstance, A> pcmConfig = pcmState.getArchitecturalConfiguration();
         return PcmArchitecturalConfiguration.class.cast(pcmConfig);
     }

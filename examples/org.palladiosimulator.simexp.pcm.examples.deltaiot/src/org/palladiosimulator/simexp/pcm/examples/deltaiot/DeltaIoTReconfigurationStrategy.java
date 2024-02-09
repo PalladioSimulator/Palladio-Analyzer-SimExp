@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -125,7 +126,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
     public QVToReconfiguration select(State source, Set<QVToReconfiguration> options) {
         retrieveDistributionFactorReconfiguration(options).setDistributionFactorValuesToDefaults();
 
-        PcmSelfAdaptiveSystemState<QVTOReconfigurator> state = PcmSelfAdaptiveSystemState.class.cast(source);
+        PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state = PcmSelfAdaptiveSystemState.class
+            .cast(source);
 
         SimulatedMeasurement packetLoss = state.getQuantifiedState()
             .findMeasurementWith(packetLossSpec)
@@ -154,10 +156,12 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         return LOWER_ENERGY_CONSUMPTION.isNotSatisfied(energyConsumtption.getValue());
     }
 
-    protected abstract QVToReconfiguration handlePacketLoss(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
-            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options);
+    protected abstract QVToReconfiguration handlePacketLoss(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
+            Set<QVToReconfiguration> options);
 
-    protected abstract QVToReconfiguration handleEnergyConsumption(PcmSelfAdaptiveSystemState<QVTOReconfigurator> state,
+    protected abstract QVToReconfiguration handleEnergyConsumption(
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options);
 
     protected DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(

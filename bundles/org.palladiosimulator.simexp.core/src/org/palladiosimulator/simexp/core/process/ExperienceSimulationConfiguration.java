@@ -31,13 +31,13 @@ public class ExperienceSimulationConfiguration<C, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner<C, A>> runner) {
-            ExperienceSimulationConfiguration.this.runner.addAll(runner);
+        public ExperienceSimulationConfigBuilder addSimulationRunner(List<ExperienceSimulationRunner> runners) {
+            ExperienceSimulationConfiguration.this.runners.addAll(runners);
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner<C, A> runner) {
-            ExperienceSimulationConfiguration.this.runner.add(runner);
+        public ExperienceSimulationConfigBuilder addSimulationRunner(ExperienceSimulationRunner runner) {
+            ExperienceSimulationConfiguration.this.runners.add(runner);
             return this;
         }
 
@@ -54,7 +54,7 @@ public class ExperienceSimulationConfiguration<C, A, R> {
 
         private void checkValidity() {
             // TODO exception handling
-            Objects.requireNonNull(runner, "");
+            Objects.requireNonNull(runners, "");
             Objects.requireNonNull(markovSampler, "");
             if (isNegative(numberOfRuns) || isNegative(horizon)) {
                 throw new RuntimeException("");
@@ -77,7 +77,7 @@ public class ExperienceSimulationConfiguration<C, A, R> {
     private int numberOfRuns = 0;
     private String simulationID = "";
     private String sampleSpaceID = "";
-    private List<ExperienceSimulationRunner<C, A>> runner = Lists.newArrayList();
+    private List<ExperienceSimulationRunner> runners = Lists.newArrayList();
     private MarkovSampling<A, R> markovSampler = null;
     private Initializable beforeExecutionInitialization = null;
 
@@ -97,8 +97,8 @@ public class ExperienceSimulationConfiguration<C, A, R> {
         return simulationID;
     }
 
-    public List<ExperienceSimulationRunner<C, A>> getSimulationRunner() {
-        return runner;
+    public List<ExperienceSimulationRunner> getSimulationRunners() {
+        return runners;
     }
 
     public MarkovSampling<A, R> getMarkovSampler() {

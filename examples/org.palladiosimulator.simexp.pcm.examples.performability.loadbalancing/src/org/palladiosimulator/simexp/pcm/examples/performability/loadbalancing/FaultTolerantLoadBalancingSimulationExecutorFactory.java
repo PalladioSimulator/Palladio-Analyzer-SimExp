@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
@@ -47,15 +48,15 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class FaultTolerantLoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Double, PcmMeasurementSpecification> {
+        extends PcmExperienceSimulationExecutorFactory<Double, List<InputValue>, PcmMeasurementSpecification> {
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator> initialStateCreator;
+    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -63,8 +64,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
             IProbabilityDistributionFactory distributionFactory,
             IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder<PCMInstance, QVTOReconfigurator> simulationRunnerHolder) {
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
@@ -79,7 +79,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        List<ExperienceSimulationRunner<PCMInstance, QVTOReconfigurator>> runners = List
+        List<ExperienceSimulationRunner> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
@@ -93,10 +93,10 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
-        NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<QVTOReconfigurator>(
+        NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<>(
                 config, new RepositoryModelLookup(), new ResourceEnvironmentModelLookup(),
                 new RepositoryModelUpdater());
-        LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator>(
+        LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
                 specs.get(0), config, nodeRecoveryStrategy);
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
                 specs.get(0), config, emptyStrategy);
