@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import org.palladiosimulator.envdyn.api.entity.bn.ConditionalInputValueUtil;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
@@ -27,6 +28,7 @@ import com.google.common.collect.Lists;
 public class RobotCognitionEnvironmentalDynamics<A, R> {
 
     private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
+    private final ConditionalInputValueUtil conditionalInputValueUtil = new ConditionalInputValueUtil();
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
@@ -108,7 +110,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
                 } else {
                     var inputs = toInputs(last.getValue()
                         .getValue());
-                    sample = sampleNext(DynamicBayesianNetwork.toConditionalInputs(inputs));
+                    sample = sampleNext(conditionalInputValueUtil.toConditionalInputs(inputs));
                 }
 
                 EnvironmentalStateObservation<List<InputValue>> current = EnvironmentalStateObservation
@@ -124,7 +126,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             }
 
             private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(DynamicBayesianNetwork.asConditionals(conditionalInputs))
+                Trajectory traj = dbn.given(conditionalInputValueUtil.asConditionals(conditionalInputs))
                     .sample();
                 return traj.valueAtTime(0);
             }

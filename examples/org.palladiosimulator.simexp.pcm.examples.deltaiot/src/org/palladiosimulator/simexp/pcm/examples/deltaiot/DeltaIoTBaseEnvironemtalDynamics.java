@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import static java.util.stream.Collectors.toList;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.asConditionals;
-import static org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.toConditionalInputs;
 
 import java.util.List;
 
@@ -10,6 +8,7 @@ import javax.naming.OperationNotSupportedException;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
+import org.palladiosimulator.envdyn.api.entity.bn.ConditionalInputValueUtil;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
@@ -39,6 +38,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     protected final EnvironmentProcess<QVTOReconfigurator, R, List<InputValue>> envProcess;
     protected final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
+    private final ConditionalInputValueUtil conditionalInputValueUtil = new ConditionalInputValueUtil();
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork dbn,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
@@ -73,13 +73,13 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
-                    return sampleRandomly(toConditionalInputs(inputs));
+                    return sampleRandomly(conditionalInputValueUtil.toConditionalInputs(inputs));
                 }
-                return sample(toConditionalInputs(inputs));
+                return sample(conditionalInputValueUtil.toConditionalInputs(inputs));
             }
 
             private EnvironmentalState<List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
-                var traj = dbn.given(asConditionals(conditionalInputs))
+                var traj = dbn.given(conditionalInputValueUtil.asConditionals(conditionalInputs))
                     .sample();
                 var value = toPerceivedValue(traj.valueAtTime(0));
                 EnvironmentalStateBuilder<List<InputValue>> builder = EnvironmentalState.newBuilder();

@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
+import org.palladiosimulator.envdyn.api.entity.bn.ConditionalInputValueUtil;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.ConditionalInputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork.Trajectory;
@@ -73,6 +74,7 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
     // private static PcmModelChange attrChangeServerNode2;
     private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
     private final ProbabilityMassFunction<State> initialDist;
+    private final ConditionalInputValueUtil conditionalInputValueUtil = new ConditionalInputValueUtil();
 
     public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
         // initPcmAttributeChange(experimentProvider);
@@ -158,13 +160,13 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
                 List<InputValue> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
-                    return sampleRandomly(DynamicBayesianNetwork.toConditionalInputs(inputs));
+                    return sampleRandomly(conditionalInputValueUtil.toConditionalInputs(inputs));
                 }
-                return sample(DynamicBayesianNetwork.toConditionalInputs(inputs));
+                return sample(conditionalInputValueUtil.toConditionalInputs(inputs));
             }
 
             private EnvironmentalState<List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(DynamicBayesianNetwork.asConditionals(conditionalInputs))
+                Trajectory traj = dbn.given(conditionalInputValueUtil.asConditionals(conditionalInputs))
                     .sample();
                 return asPcmEnvironmentalState(traj.valueAtTime(0));
             }
