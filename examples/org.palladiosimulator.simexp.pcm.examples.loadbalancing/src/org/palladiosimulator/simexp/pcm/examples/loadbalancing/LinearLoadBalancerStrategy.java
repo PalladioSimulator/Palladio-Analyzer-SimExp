@@ -23,6 +23,8 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
     private final static String LINEAR_ADAPTATION_STRATEGY_NAME = "LinearLoadBalancerAdaptationStrategy";
@@ -56,7 +58,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<C, A, List<InputValue>> sassState = (SelfAdaptiveSystemState<C, A, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>> sassState = (SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));

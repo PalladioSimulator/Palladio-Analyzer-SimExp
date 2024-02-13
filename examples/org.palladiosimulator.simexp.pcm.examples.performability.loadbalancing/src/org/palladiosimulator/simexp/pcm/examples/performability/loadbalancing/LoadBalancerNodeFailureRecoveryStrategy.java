@@ -18,6 +18,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.solver.models.PCMInstance;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class LoadBalancerNodeFailureRecoveryStrategy<A> extends AbstractNodeRecoveryStrategy<PCMInstance, A> {
 
     private final String loadBalancerId = "_xISeMAEpEeS7FKokKTKFow";
@@ -35,7 +37,8 @@ public class LoadBalancerNodeFailureRecoveryStrategy<A> extends AbstractNodeReco
     }
 
     @Override
-    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue>> sasState, SharedKnowledge knowledge) {
+    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue<CategoricalValue>>> sasState,
+            SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ",
                 LoadBalancerNodeFailureRecoveryStrategy.class.getName()));
 

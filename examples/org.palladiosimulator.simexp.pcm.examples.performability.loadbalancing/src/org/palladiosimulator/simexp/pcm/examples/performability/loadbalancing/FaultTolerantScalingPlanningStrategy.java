@@ -37,7 +37,7 @@ public class FaultTolerantScalingPlanningStrategy<C> extends AbstractLoadBalanci
     @Override
     public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());

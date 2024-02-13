@@ -18,6 +18,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.solver.models.PCMInstance;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class FaultTolerantScalingNodeFailureRecoveryStrategy<A> extends AbstractNodeRecoveryStrategy<PCMInstance, A> {
 
     private static final String STRATEGY_NAME = FaultTolerantScalingNodeFailureRecoveryStrategy.class.getName();
@@ -34,7 +36,8 @@ public class FaultTolerantScalingNodeFailureRecoveryStrategy<A> extends Abstract
     }
 
     @Override
-    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue>> sasState, SharedKnowledge knowledge) {
+    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue<CategoricalValue>>> sasState,
+            SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ", STRATEGY_NAME));
 
         String serverNode1State = knowledge.getValue(serverNodeOneId)

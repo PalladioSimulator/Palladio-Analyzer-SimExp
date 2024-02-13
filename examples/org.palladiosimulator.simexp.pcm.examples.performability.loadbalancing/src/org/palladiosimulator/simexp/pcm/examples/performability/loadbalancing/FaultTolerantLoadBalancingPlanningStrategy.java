@@ -14,6 +14,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class FaultTolerantLoadBalancingPlanningStrategy<C, A> extends AbstractReconfigurationPlanningStrategy<C, A> {
 
     private static final String NODE_RECOVERY_QVTO_NAME = "nodeRecovery";
@@ -26,7 +28,7 @@ public class FaultTolerantLoadBalancingPlanningStrategy<C, A> extends AbstractRe
     @Override
     public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<C, A, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, A, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>>) source;
         /**
          * workarournd to implement node recovery behavior until we are able to realize this as QVTO
          * transformation

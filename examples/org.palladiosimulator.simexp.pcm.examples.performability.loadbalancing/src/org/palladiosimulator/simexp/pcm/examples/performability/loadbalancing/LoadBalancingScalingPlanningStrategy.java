@@ -15,6 +15,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionE
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalancingScalingPlanningStrategy<C> {
 
     private static final String SCALE_IN_QVTO_NAME = "scaleIn";
@@ -31,7 +33,7 @@ public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalanci
     @Override
     public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
 
         Double responseTime = retrieveResponseTime(sasState);
         if (isExceeded(responseTime)) {

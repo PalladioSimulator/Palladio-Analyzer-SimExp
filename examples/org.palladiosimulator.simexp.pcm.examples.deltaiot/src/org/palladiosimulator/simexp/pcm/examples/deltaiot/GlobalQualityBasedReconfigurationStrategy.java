@@ -9,6 +9,8 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigurationStrategy {
 
     private final static String ID = "GlobalQualityBasedReconfigurationStrategy";
@@ -28,8 +30,8 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
 
     @Override
     protected QVToReconfiguration handlePacketLoss(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
-            Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         boolean canBeStillDistributed = false;
@@ -55,7 +57,7 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
 
     @Override
     protected QVToReconfiguration handleEnergyConsumption(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 

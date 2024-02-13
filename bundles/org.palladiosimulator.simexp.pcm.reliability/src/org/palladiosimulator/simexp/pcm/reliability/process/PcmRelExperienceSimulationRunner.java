@@ -110,7 +110,7 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
 
     private List<UncertaintyState> deriveUncertaintyStates(PerceivableEnvironmentalState<V> envState) {
         List<UncertaintyState> uncertaintyStateTuple = Lists.newArrayList();
-        for (InputValue each : toInputs(envState)) {
+        for (InputValue<CategoricalValue> each : toInputs(envState)) {
             uncertaintyStateSpace.findStateInstantiating(each.getVariable()
                 .getInstantiatedTemplate())
                 .ifPresent(s -> {
@@ -121,7 +121,7 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
         return uncertaintyStateTuple;
     }
 
-    private List<InputValue> toInputs(PerceivableEnvironmentalState<V> envState) {
+    private List<InputValue<CategoricalValue>> toInputs(PerceivableEnvironmentalState<V> envState) {
         Object sample = envState.getValue()
             .getValue();
         if (List.class.isInstance(sample)) {

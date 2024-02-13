@@ -70,7 +70,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
         /**
          * transfer status of server nodes to knowledge base
          */
-        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
@@ -90,7 +90,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
          * threshold violations, presence of failed nodes, ...
          * 
          */
-        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
@@ -204,7 +204,8 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
         return QVToReconfiguration.empty();
     }
 
-    private Double retrieveResponseTime(SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState) {
+    private Double retrieveResponseTime(
+            SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
@@ -212,14 +213,14 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
     }
 
     private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(
-            PerceivableEnvironmentalState<List<InputValue>> state) {
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
+        List<InputValue<CategoricalValue>> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue());
-        for (InputValue each : inputs) {
+        for (InputValue<CategoricalValue> each : inputs) {
             ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
             if (container != null) {
-                CategoricalValue nodeState = (CategoricalValue) each.getValue();
+                CategoricalValue nodeState = each.getValue();
                 serverNodeStates.put(container, nodeState);
             }
         }
@@ -232,7 +233,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
         return serverNodeStates;
     }
 
-    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
+    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue<CategoricalValue> inputValue) {
         GroundRandomVariable grVariable = inputValue.getVariable();
         if (isServerNodeVariable(grVariable)) {
             // NOTE: The ground random variable definition in *.staticmodel defines the attributge
