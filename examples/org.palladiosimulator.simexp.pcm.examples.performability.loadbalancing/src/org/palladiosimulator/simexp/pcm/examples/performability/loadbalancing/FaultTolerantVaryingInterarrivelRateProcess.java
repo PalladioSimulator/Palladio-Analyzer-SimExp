@@ -95,8 +95,8 @@ public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action
                 PerceivedElement<List<InputValue<CategoricalValue>>> pe = (PerceivedElement<List<InputValue<CategoricalValue>>>) change;
                 Optional<List<InputValue<CategoricalValue>>> values = pe.getElement(key);
                 List<InputValue<CategoricalValue>> valueList = values.get();
-                InputValue<CategoricalValue> value = valueList.get(0);
-                CategoricalValue changedValue = value.asCategorical();
+                InputValue<CategoricalValue> inputValue = valueList.get(0);
+                CategoricalValue changedValue = inputValue.getValue();
                 return changedValue;
             }
         };

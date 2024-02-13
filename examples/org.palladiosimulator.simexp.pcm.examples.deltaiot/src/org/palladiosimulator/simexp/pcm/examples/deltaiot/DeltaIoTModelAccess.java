@@ -43,7 +43,7 @@ public class DeltaIoTModelAccess<S, A> {
                 .filter(v -> v.getVariable()
                     .getId()
                     .equals(maVariable.getId()))
-                .map(InputValue::asCategorical)
+                .map(InputValue::getValue)
                 .map(v -> Double.valueOf(v.get()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("The mote activation template is missing."));

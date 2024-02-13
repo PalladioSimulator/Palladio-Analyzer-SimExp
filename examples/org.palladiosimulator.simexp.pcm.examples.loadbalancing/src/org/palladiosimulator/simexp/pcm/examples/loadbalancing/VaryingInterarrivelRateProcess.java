@@ -88,7 +88,7 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
                 Optional<List<InputValue<CategoricalValue>>> values = pe.getElement(key);
                 List<InputValue<CategoricalValue>> valueList = values.get();
                 InputValue<CategoricalValue> value = valueList.get(0);
-                CategoricalValue changedValue = value.asCategorical();
+                CategoricalValue changedValue = value.getValue();
                 return changedValue;
             }
         };

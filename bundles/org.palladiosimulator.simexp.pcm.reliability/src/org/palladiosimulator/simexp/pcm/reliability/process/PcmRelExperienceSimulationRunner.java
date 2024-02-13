@@ -114,7 +114,7 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
             uncertaintyStateSpace.findStateInstantiating(each.getVariable()
                 .getInstantiatedTemplate())
                 .ifPresent(s -> {
-                    UncertaintyState stateToAdd = s.newValuedStateWith(each.asCategorical());
+                    UncertaintyState stateToAdd = s.newValuedStateWith(each.getValue());
                     uncertaintyStateTuple.add(stateToAdd);
                 });
         }
