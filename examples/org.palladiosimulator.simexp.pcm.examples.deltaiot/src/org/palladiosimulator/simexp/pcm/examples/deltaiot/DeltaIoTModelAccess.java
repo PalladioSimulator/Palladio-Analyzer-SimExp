@@ -32,13 +32,16 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class DeltaIoTModelAccess<S, A> {
 
     public double retrieveWirelessInterference(GroundRandomVariable maVariable,
-            PerceivableEnvironmentalState nextEnvironment) {
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> nextEnvironment) {
         return toInputs(nextEnvironment.getValue()
             .getValue()).stream()
-                .filter(v -> v.getVariable().getId()
+                .filter(v -> v.getVariable()
+                    .getId()
                     .equals(maVariable.getId()))
                 .map(InputValue::asCategorical)
                 .map(v -> Double.valueOf(v.get()))
