@@ -43,28 +43,30 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class FaultTolerantLoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Double, List<InputValue>, PcmMeasurementSpecification> {
+public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
+        PcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
+    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
 
-    public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
-            List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            IProbabilityDistributionFactory distributionFactory,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+    public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);

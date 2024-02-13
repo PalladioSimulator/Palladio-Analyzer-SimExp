@@ -23,8 +23,10 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.process.PcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
-public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A>
-        extends PcmBasedPrismExperienceSimulationRunner<A, List<InputValue>> implements Initializable {
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
+public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A> extends
+        PcmBasedPrismExperienceSimulationRunner<A, List<InputValue<CategoricalValue>>> implements Initializable {
 
     private final static String REPO_NAME = "DeltaIoTRepository";
     private final static int INITIAL_POWER_VALUE = 0;
@@ -32,9 +34,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A>
     private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final IExperimentProvider experimentProvider;
 
-    public DeltaIoTPcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, List<InputValue>> prismGenerator,
-            File prismFolder, DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            IExperimentProvider experimentProvider) {
+    public DeltaIoTPcmBasedPrismExperienceSimulationRunner(
+            PrismGenerator<A, List<InputValue<CategoricalValue>>> prismGenerator, File prismFolder,
+            DeltaIoTReconfigurationParamRepository reconfParamsRepo, IExperimentProvider experimentProvider) {
         super(prismGenerator, prismFolder);
 
         this.reconfParamsRepo = reconfParamsRepo;

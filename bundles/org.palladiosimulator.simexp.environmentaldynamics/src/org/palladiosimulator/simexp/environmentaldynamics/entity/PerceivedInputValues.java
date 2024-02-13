@@ -10,26 +10,30 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 
 import com.google.common.collect.Lists;
 
-public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-    private final List<InputValue> samples;
+public class PerceivedInputValues implements PerceivedValue<List<InputValue<CategoricalValue>>> {
 
-    public PerceivedInputValues(List<InputValue> samples) {
+    private final List<InputValue<CategoricalValue>> samples;
+
+    public PerceivedInputValues(List<InputValue<CategoricalValue>> samples) {
         this.samples = samples;
     }
 
     @Override
-    public List<InputValue> getValue() {
+    public List<InputValue<CategoricalValue>> getValue() {
         return samples;
     }
 
-    private List<InputValue> getSortedSamples() {
-        List<InputValue> orderedSamples = Lists.newArrayList(samples);
+    private List<InputValue<CategoricalValue>> getSortedSamples() {
+        List<InputValue<CategoricalValue>> orderedSamples = Lists.newArrayList(samples);
         Collections.sort(orderedSamples, new Comparator<>() {
             @Override
-            public int compare(InputValue i1, InputValue i2) {
-                return i1.getVariable().getEntityName()
-                    .compareTo(i2.getVariable().getEntityName());
+            public int compare(InputValue<CategoricalValue> i1, InputValue<CategoricalValue> i2) {
+                return i1.getVariable()
+                    .getEntityName()
+                    .compareTo(i2.getVariable()
+                        .getEntityName());
             }
         });
         return orderedSamples;
@@ -38,9 +42,11 @@ public class PerceivedInputValues implements PerceivedValue<List<InputValue>> {
     @Override
     public String toString() {
         List<String> entries = new ArrayList<>();
-        for (InputValue each : getSortedSamples()) {
-            entries.add(
-                    String.format("(Variable: %1s, Value: %2s)", each.getVariable().getEntityName(), each.getValue().toString()));
+        for (InputValue<CategoricalValue> each : getSortedSamples()) {
+            entries.add(String.format("(Variable: %1s, Value: %2s)", each.getVariable()
+                .getEntityName(),
+                    each.getValue()
+                        .toString()));
         }
         return String.format("Samples: [%s])", StringUtils.join(entries, ","));
     }

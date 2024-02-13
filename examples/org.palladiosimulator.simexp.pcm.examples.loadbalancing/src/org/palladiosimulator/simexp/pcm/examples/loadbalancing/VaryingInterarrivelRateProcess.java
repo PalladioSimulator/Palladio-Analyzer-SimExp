@@ -69,23 +69,25 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
     // private final static String SERVER_NODE_2_VARIABLE =
     // "ServerNode2Failure_ServerFailureInstantiation";
 
-    private final PcmAttributeChange<List<InputValue>> attrChange;
+    private final PcmAttributeChange<List<InputValue<CategoricalValue>>> attrChange;
     // private static PcmModelChange attrChangeServerNode1;
     // private static PcmModelChange attrChangeServerNode2;
-    private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
+    private final EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> envProcess;
     private final ProbabilityMassFunction<State> initialDist;
-    private final ConditionalInputValueUtil conditionalInputValueUtil = new ConditionalInputValueUtil();
+    private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
-    public VaryingInterarrivelRateProcess(DynamicBayesianNetwork dbn, IExperimentProvider experimentProvider) {
+    public VaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
+            IExperimentProvider experimentProvider) {
         // initPcmAttributeChange(experimentProvider);
-        PerceivedValueConverter<List<InputValue>> perceivedValueConverter = new PerceivedValueConverter<>() {
+        PerceivedValueConverter<List<InputValue<CategoricalValue>>> perceivedValueConverter = new PerceivedValueConverter<>() {
 
             @Override
-            public CategoricalValue convertElement(PerceivedValue<List<InputValue>> change, String key) {
-                PerceivedElement<List<InputValue>> pe = (PerceivedElement<List<InputValue>>) change;
-                Optional<List<InputValue>> values = pe.getElement(key);
-                List<InputValue> valueList = values.get();
-                InputValue value = valueList.get(0);
+            public CategoricalValue convertElement(PerceivedValue<List<InputValue<CategoricalValue>>> change,
+                    String key) {
+                PerceivedElement<List<InputValue<CategoricalValue>>> pe = (PerceivedElement<List<InputValue<CategoricalValue>>>) change;
+                Optional<List<InputValue<CategoricalValue>>> values = pe.getElement(key);
+                List<InputValue<CategoricalValue>> valueList = values.get();
+                InputValue<CategoricalValue> value = valueList.get(0);
                 CategoricalValue changedValue = value.asCategorical();
                 return changedValue;
             }
@@ -109,28 +111,30 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
         };
     }
 
-    public EnvironmentProcess<A, R, List<InputValue>> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
         return envProcess;
     }
 
-    private EnvironmentProcess<A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
-        return new ObservableEnvironmentProcess<A, Aa, R, List<InputValue>>(createDerivableProcess(dbn), initialDist);
+    private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
+            DynamicBayesianNetwork<CategoricalValue> dbn) {
+        return new ObservableEnvironmentProcess<A, Aa, R, List<InputValue<CategoricalValue>>>(
+                createDerivableProcess(dbn), initialDist);
     }
 
-    private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork dbn) {
+    private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork<CategoricalValue> dbn) {
         return new ProbabilityMassFunction<>() {
 
-            private final BayesianNetwork bn = dbn.getBayesianNetwork();
+            private final BayesianNetwork<CategoricalValue> bn = dbn.getBayesianNetwork();
 
             @Override
             public Sample<State> drawSample() {
-                List<InputValue> sample = bn.sample();
+                List<InputValue<CategoricalValue>> sample = bn.sample();
                 return Sample.of(asPcmEnvironmentalState(sample), bn.probability(sample));
             }
 
             @Override
             public double probability(Sample<State> sample) {
-                List<InputValue> inputs = toInputs(sample);
+                List<InputValue<CategoricalValue>> inputs = toInputs(sample);
                 if (inputs.isEmpty()) {
                     return 0;
                 }
@@ -139,7 +143,7 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
         };
     }
 
-    private DerivableEnvironmentalDynamic<A> createDerivableProcess(DynamicBayesianNetwork dbn) {
+    private DerivableEnvironmentalDynamic<A> createDerivableProcess(DynamicBayesianNetwork<CategoricalValue> dbn) {
         return new DerivableEnvironmentalDynamic<>() {
 
             private boolean explorationMode = false;
@@ -155,9 +159,10 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
             }
 
             @Override
-            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<A> context) {
-                EnvironmentalState<List<InputValue>> envState = EnvironmentalState.class.cast(context.getSource());
-                List<InputValue> inputs = toInputs(envState.getValue()
+            public EnvironmentalState<List<InputValue<CategoricalValue>>> navigate(NavigationContext<A> context) {
+                EnvironmentalState<List<InputValue<CategoricalValue>>> envState = EnvironmentalState.class
+                    .cast(context.getSource());
+                List<InputValue<CategoricalValue>> inputs = toInputs(envState.getValue()
                     .getValue());
                 if (explorationMode) {
                     return sampleRandomly(conditionalInputValueUtil.toConditionalInputs(inputs));
@@ -165,20 +170,23 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
                 return sample(conditionalInputValueUtil.toConditionalInputs(inputs));
             }
 
-            private EnvironmentalState<List<InputValue>> sample(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(conditionalInputValueUtil.asConditionals(conditionalInputs))
+            private EnvironmentalState<List<InputValue<CategoricalValue>>> sample(
+                    List<ConditionalInputValue<CategoricalValue>> conditionalInputs) {
+                Trajectory<CategoricalValue> traj = dbn
+                    .given(conditionalInputValueUtil.asConditionals(conditionalInputs))
                     .sample();
                 return asPcmEnvironmentalState(traj.valueAtTime(0));
             }
 
-            private EnvironmentalState<List<InputValue>> sampleRandomly(List<ConditionalInputValue> conditionalInputs) {
+            private EnvironmentalState<List<InputValue<CategoricalValue>>> sampleRandomly(
+                    List<ConditionalInputValue<CategoricalValue>> conditionalInputs) {
                 throw new RuntimeException(new OperationNotSupportedException("The method is not implemented yet."));
             }
 
         };
     }
 
-    public static List<InputValue> toInputs(Object sample) {
+    public static List<InputValue<CategoricalValue>> toInputs(Object sample) {
         if (List.class.isInstance(sample)) {
             List<?> inputs = List.class.cast(sample);
             if (inputs.isEmpty() == false) {
@@ -192,16 +200,18 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
         return Lists.newArrayList();
     }
 
-    private EnvironmentalState<List<InputValue>> asPcmEnvironmentalState(List<InputValue> sample) {
+    private EnvironmentalState<List<InputValue<CategoricalValue>>> asPcmEnvironmentalState(
+            List<InputValue<CategoricalValue>> sample) {
         // return EnvironmentalState.get(asPerceivedValue(sample));
-        ArrayList<PcmModelChange<List<InputValue>>> attrChanges = new ArrayList<>();
+        ArrayList<PcmModelChange<List<InputValue<CategoricalValue>>>> attrChanges = new ArrayList<>();
         attrChanges.add(attrChange);
         // attrChanges.add(attrChangeServerNode1);
         // attrChanges.add(attrChangeServerNode2);
-        return new PcmEnvironmentalState(attrChanges, asPerceivedValue(sample));
+        return new PcmEnvironmentalState<>(attrChanges, asPerceivedValue(sample));
     }
 
-    private PerceivedValue<List<InputValue>> asPerceivedValue(List<InputValue> sample) {
+    private PerceivedValue<List<InputValue<CategoricalValue>>> asPerceivedValue(
+            List<InputValue<CategoricalValue>> sample) {
         Map<String, String> attributeMap = Maps.newHashMap();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
         PerceivedSelectedInputValues perceivedValue = new PerceivedSelectedInputValues(sample, attributeMap);

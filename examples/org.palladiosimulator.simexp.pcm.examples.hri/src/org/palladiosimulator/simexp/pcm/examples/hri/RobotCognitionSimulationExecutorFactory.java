@@ -40,33 +40,36 @@ import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class RobotCognitionSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Double, List<InputValue>, PcmMeasurementSpecification> {
+public class RobotCognitionSimulationExecutorFactory extends
+        PcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
     public static final double UPPER_THRESHOLD_RT = 0.1;
     public static final double LOWER_THRESHOLD_REL = 0.9;
 
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> envProcess;
+    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
 
-    public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
+    public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            IProbabilityDistributionFactory distributionFactory,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
-        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue>> p = envDynamics.getEnvironmentProcess();
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
+            .getEnvironmentProcess();
         this.envProcess = p;
     }
 

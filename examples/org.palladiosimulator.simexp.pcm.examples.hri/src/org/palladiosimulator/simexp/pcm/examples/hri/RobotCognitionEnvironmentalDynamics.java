@@ -25,16 +25,18 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 import com.google.common.collect.Lists;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class RobotCognitionEnvironmentalDynamics<A, R> {
 
-    private final EnvironmentProcess<A, R, List<InputValue>> envProcess;
-    private final ConditionalInputValueUtil conditionalInputValueUtil = new ConditionalInputValueUtil();
+    private final EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> envProcess;
+    private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
-    public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork dbn) {
+    public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
-    public EnvironmentProcess<A, R, List<InputValue>> getEnvironmentProcess() {
+    public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
         return envProcess;
     }
 
@@ -61,7 +63,8 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
         };
     }
 
-    private EnvironmentProcess<A, R, List<InputValue>> createEnvironmentalProcess(DynamicBayesianNetwork dbn) {
+    private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
+            DynamicBayesianNetwork<CategoricalValue> dbn) {
         return new UnobservableEnvironmentProcess<>(createDerivableProcess(), createInitialDist(),
                 createObsProducer(dbn));
     }
@@ -80,12 +83,13 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             }
 
             @Override
-            public EnvironmentalState<List<InputValue>> navigate(NavigationContext<A> context) {
+            public EnvironmentalState<List<InputValue<CategoricalValue>>> navigate(NavigationContext<A> context) {
                 // Since the intention is to not predict belief states, it is not necessary to
                 // know/specify the true state.
-                EnvironmentalState<List<InputValue>> state = (EnvironmentalState<List<InputValue>>) context.getSource();
+                EnvironmentalState<List<InputValue<CategoricalValue>>> state = (EnvironmentalState<List<InputValue<CategoricalValue>>>) context
+                    .getSource();
                 if (state.isInitial()) {
-                    return EnvironmentalState.<List<InputValue>> newBuilder()
+                    return EnvironmentalState.<List<InputValue<CategoricalValue>>> newBuilder()
                         .withValue(state.getValue())
                         .isHidden()
                         .build();
@@ -95,16 +99,17 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
         };
     }
 
-    private ObservationProducer createObsProducer(DynamicBayesianNetwork dbn) {
+    private ObservationProducer createObsProducer(DynamicBayesianNetwork<CategoricalValue> dbn) {
         return new ObservationProducer() {
 
-            private EnvironmentalStateObservation<List<InputValue>> last = null;
+            private EnvironmentalStateObservation<List<InputValue<CategoricalValue>>> last = null;
 
             @Override
             public Observation produceObservationGiven(State emittingState) {
-                EnvironmentalState<List<InputValue>> hiddenState = EnvironmentalState.class.cast(emittingState);
+                EnvironmentalState<List<InputValue<CategoricalValue>>> hiddenState = EnvironmentalState.class
+                    .cast(emittingState);
 
-                List<InputValue> sample;
+                List<InputValue<CategoricalValue>> sample;
                 if (hiddenState.isInitial()) {
                     sample = sampleInitially();
                 } else {
@@ -113,37 +118,41 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
                     sample = sampleNext(conditionalInputValueUtil.toConditionalInputs(inputs));
                 }
 
-                EnvironmentalStateObservation<List<InputValue>> current = EnvironmentalStateObservation
+                EnvironmentalStateObservation<List<InputValue<CategoricalValue>>> current = EnvironmentalStateObservation
                     .of(toPerceivedValue(sample), hiddenState);
                 setLastEnvironmentalStateObservation(current);
 
                 return current;
             }
 
-            private List<InputValue> sampleInitially() {
+            private List<InputValue<CategoricalValue>> sampleInitially() {
                 return dbn.getBayesianNetwork()
                     .sample();
             }
 
-            private List<InputValue> sampleNext(List<ConditionalInputValue> conditionalInputs) {
-                Trajectory traj = dbn.given(conditionalInputValueUtil.asConditionals(conditionalInputs))
+            private List<InputValue<CategoricalValue>> sampleNext(
+                    List<ConditionalInputValue<CategoricalValue>> conditionalInputs) {
+                Trajectory<CategoricalValue> traj = dbn
+                    .given(conditionalInputValueUtil.asConditionals(conditionalInputs))
                     .sample();
                 return traj.valueAtTime(0);
             }
 
-            private void setLastEnvironmentalStateObservation(EnvironmentalStateObservation<List<InputValue>> current) {
+            private void setLastEnvironmentalStateObservation(
+                    EnvironmentalStateObservation<List<InputValue<CategoricalValue>>> current) {
                 this.last = current;
             }
         };
     }
 
-    private PerceivedValue<List<InputValue>> toPerceivedValue(List<InputValue> sample) {
+    private PerceivedValue<List<InputValue<CategoricalValue>>> toPerceivedValue(
+            List<InputValue<CategoricalValue>> sample) {
         PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
         return perceivedValue;
 
     }
 
-    public static List<InputValue> toInputs(Object sample) {
+    public static List<InputValue<CategoricalValue>> toInputs(Object sample) {
         if (List.class.isInstance(sample)) {
             List<?> inputs = List.class.cast(sample);
             if (inputs.isEmpty() == false) {
