@@ -65,6 +65,7 @@ import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
@@ -111,16 +112,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             ParameterParser parameterParser = new DefaultParameterParser();
             ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
-            IProbabilityDistributionRegistry probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
-            IProbabilityDistributionFactory probabilityDistributionFactory = defaultProbabilityDistributionFactory;
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
+            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory = defaultProbabilityDistributionFactory;
 
             ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
                 .loadRepository();
             IProbabilityDistributionRepositoryLookup probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(
                     probabilityDistributionRepository);
 
-            BayesianNetwork bn = new BayesianNetwork(null, gpn, probabilityDistributionFactory);
-            DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(null, bn, dbe, probabilityDistributionFactory);
+            BayesianNetwork<CategoricalValue> bn = new BayesianNetwork<>(null, gpn, probabilityDistributionFactory);
+            DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe,
+                    probabilityDistributionFactory);
 
             IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
             IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
@@ -160,13 +162,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective,
-            Experiment experiment, DynamicBayesianNetwork dbn,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry,
-            IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-            DescriptionProvider descriptionProvider, List<String> monitorNames, List<URI> propertyFiles,
-            List<URI> moduleFiles, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
+            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
 
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
