@@ -8,12 +8,12 @@ import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSp
 
 public class PrismMeasurementSpecificationProvider {
 	
-	public PrismSimulatedMeasurementSpec getSpecification(URI propertyUri, URI moduleUri) {
+	public PrismSimulatedMeasurementSpec getSpecification(URI moduleUri, URI propertyUri) {
 		String propertyFileAsString = CommonPlugin.resolve(propertyUri).toFileString();
 		File propertyFile = new File(propertyFileAsString);
 		String moduleFileAsString = CommonPlugin.resolve(moduleUri).toFileString();
 		File moduleFile = new File(moduleFileAsString);
 		
-		return new PrismSimulatedMeasurementSpec(propertyFile, moduleFile);
+		return new PrismSimulatedMeasurementSpec(moduleFile, propertyFile);
 	}
 }
