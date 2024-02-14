@@ -203,7 +203,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
             List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
                 .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
-                .mapToObj(i -> provider.getSpecification(propertyFiles.get(i), moduleFiles.get(i)))
+                .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
                 .toList();
 
             yield new DeltaIoTSimulationExecutorFactory(experiment, dbn, prismSpecs, simulationParameters,
