@@ -81,8 +81,15 @@ public class DeltaIoTSimulationExecutorFactory
             .toFileString());
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue>>> prismFileUpdaters = new HashSet<>();
-        prismFileUpdaters.add(new PacketLossPrismFileUpdater<>(specs.get(0)));
-        prismFileUpdaters.add(new EnergyConsumptionPrismFileUpdater<>(specs.get(1)));
+        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
+        PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
+                (PrismSimulatedMeasurementSpec) packetLossSpec);
+        prismFileUpdaters.add(packetLossUpdater);
+        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(specs,
+                "EnergyConsumption.prism");
+        EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
+                (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
+        prismFileUpdaters.add(engergyConsumptionUpdater);
         PrismGenerator<QVTOReconfigurator, List<InputValue>> prismGenerator = new PrismFileUpdateGenerator<>(
                 prismFileUpdaters);
 
@@ -98,8 +105,8 @@ public class DeltaIoTSimulationExecutorFactory
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
             .newBuilder(modelAccess)
             .withReconfigurationParams(reconfParamsRepo)
-            .andPacketLossSpec(specs.get(0))
-            .andEnergyConsumptionSpec(specs.get(1))
+            .andPacketLossSpec((PrismSimulatedMeasurementSpec) packetLossSpec)
+            .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
             .build();
 
         Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(specs.get(0),
@@ -133,5 +140,16 @@ public class DeltaIoTSimulationExecutorFactory
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
                 rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+    }
+
+    private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,
+            String id) {
+        for (SimulatedMeasurementSpecification simulatedMeasurementSpecification : specs) {
+            if (0 == simulatedMeasurementSpecification.getId()
+                .compareTo(id)) {
+                return simulatedMeasurementSpecification;
+            }
+        }
+        return null;
     }
 }

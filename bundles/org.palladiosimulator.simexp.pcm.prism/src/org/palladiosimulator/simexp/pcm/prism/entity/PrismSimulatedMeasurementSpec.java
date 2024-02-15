@@ -9,7 +9,7 @@ public class PrismSimulatedMeasurementSpec extends SimulatedMeasurementSpecifica
 	private final File propertyFile;
 
 	public PrismSimulatedMeasurementSpec(File moduleFile, File propertyFile) {
-		super(propertyFile.getName(), propertyFile.getName());
+		super(moduleFile.getName(), propertyFile.getName());
 		
 		this.moduleFile = moduleFile;
 		this.propertyFile = propertyFile;
