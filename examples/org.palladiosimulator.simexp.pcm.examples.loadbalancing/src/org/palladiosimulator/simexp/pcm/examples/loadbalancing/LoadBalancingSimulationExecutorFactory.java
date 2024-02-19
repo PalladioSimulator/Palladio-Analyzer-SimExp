@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -36,25 +36,27 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class LoadBalancingSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Integer, List<InputValue>, PcmMeasurementSpecification> {
+public class LoadBalancingSimulationExecutorFactory extends
+        PcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue>> initialStateCreator;
+    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
+    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
 
-    public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
+    public LoadBalancingSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
-            IProbabilityDistributionFactory distributionFactory,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);

@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.allocation.Allocation;
 import org.palladiosimulator.pcm.allocation.AllocationContext;
@@ -32,15 +32,18 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public class DeltaIoTModelAccess<S, A> {
 
     public double retrieveWirelessInterference(GroundRandomVariable maVariable,
-            PerceivableEnvironmentalState nextEnvironment) {
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> nextEnvironment) {
         return toInputs(nextEnvironment.getValue()
             .getValue()).stream()
-                .filter(v -> v.variable.getId()
+                .filter(v -> v.getVariable()
+                    .getId()
                     .equals(maVariable.getId()))
-                .map(InputValue::asCategorical)
+                .map(InputValue::getValue)
                 .map(v -> Double.valueOf(v.get()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("The mote activation template is missing."));

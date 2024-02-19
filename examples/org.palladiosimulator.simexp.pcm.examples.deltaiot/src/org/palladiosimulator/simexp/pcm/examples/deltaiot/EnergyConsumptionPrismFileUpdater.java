@@ -2,13 +2,15 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import java.util.List;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.system.System;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
+
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
 
@@ -17,7 +19,7 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
     }
 
     @Override
-    public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
+    public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
         PrismContext prismContext = new PrismContext(stringify(prismSpec.getModuleFile()),
                 stringify(prismSpec.getPropertyFile()));
         substituteMoteActivations(prismContext, sasState);
@@ -28,7 +30,7 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
     }
 
     private void substituteTransmissionPower(PrismContext prismContext,
-            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
+            PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
         System system = sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getSystem();
@@ -54,7 +56,7 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
     }
 
     private boolean isInstantiatedSensorMote(AssemblyContext each,
-            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
+            PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
         return resolveInputValue(each, sasState.getPerceivedEnvironmentalState()).isEmpty() == false;
     }
 

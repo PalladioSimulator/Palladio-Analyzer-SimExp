@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 import java.util.List;
 import java.util.Set;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -14,6 +14,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalancingScalingPlanningStrategy<C> {
 
@@ -31,7 +33,7 @@ public class LoadBalancingScalingPlanningStrategy<C> extends AbstractLoadBalanci
     @Override
     public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
 
         Double responseTime = retrieveResponseTime(sasState);
         if (isExceeded(responseTime)) {

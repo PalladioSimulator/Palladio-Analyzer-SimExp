@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.core.entity.Entity;
 import org.palladiosimulator.pcm.repository.BasicComponent;
@@ -28,8 +28,10 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
 public abstract class DeltaIoTPrismFileUpdater<A>
-        extends PrismFileUpdateGenerator.PrismFileUpdater<A, List<InputValue>> {
+        extends PrismFileUpdateGenerator.PrismFileUpdater<A, List<InputValue<CategoricalValue>>> {
 
     private static class DeltaIoTPrismReplacementSet {
 
@@ -144,12 +146,13 @@ public abstract class DeltaIoTPrismFileUpdater<A>
     }
 
     protected void substituteDistributionFactor(PrismContext prismContext,
-            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
+            PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
         substituteDistributionFactor(prismContext, sasState, null);
     }
 
     protected void substituteDistributionFactor(PrismContext prismContext,
-            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState, Function<Double, Integer> factorNormalization) {
+            PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState,
+            Function<Double, Integer> factorNormalization) {
         sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getRepositories()
@@ -185,7 +188,7 @@ public abstract class DeltaIoTPrismFileUpdater<A>
     }
 
     protected void substituteMoteActivations(PrismContext prismContext,
-            PcmSelfAdaptiveSystemState<A, List<InputValue>> sasState) {
+            PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
         System system = sasState.getArchitecturalConfiguration()
             .getConfiguration()
             .getSystem();
@@ -195,9 +198,9 @@ public abstract class DeltaIoTPrismFileUpdater<A>
         }
     }
 
-    private Optional<InputValue> resolveMAInputValue(AssemblyContext context,
-            PerceivableEnvironmentalState<List<InputValue>> state) {
-        List<InputValue> values = resolveInputValue(context, state);
+    private Optional<InputValue<CategoricalValue>> resolveMAInputValue(AssemblyContext context,
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> state) {
+        List<InputValue<CategoricalValue>> values = resolveInputValue(context, state);
 
         if (values.size() != 1) {
             return Optional.empty();
@@ -205,12 +208,13 @@ public abstract class DeltaIoTPrismFileUpdater<A>
         return Optional.of(values.get(0));
     }
 
-    protected <T extends Entity> List<InputValue> resolveInputValue(T appliedElement,
-            PerceivableEnvironmentalState<List<InputValue>> perceivedEnvironmentalState) {
-        List<InputValue> values = Lists.newArrayList();
-        for (InputValue eachInput : toInputs(perceivedEnvironmentalState.getValue()
+    protected <T extends Entity> List<InputValue<CategoricalValue>> resolveInputValue(T appliedElement,
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> perceivedEnvironmentalState) {
+        List<InputValue<CategoricalValue>> values = Lists.newArrayList();
+        for (InputValue<CategoricalValue> eachInput : toInputs(perceivedEnvironmentalState.getValue()
             .getValue())) {
-            for (EObject eachApplied : eachInput.variable.getAppliedObjects()) {
+            for (EObject eachApplied : eachInput.getVariable()
+                .getAppliedObjects()) {
                 if (appliedElement.getClass()
                     .isInstance(eachApplied)) {
                     if (areEqual(Entity.class.cast(eachApplied), appliedElement)) {
@@ -227,12 +231,14 @@ public abstract class DeltaIoTPrismFileUpdater<A>
             .equals(second.getId());
     }
 
-    protected <T extends Entity> void substitute(PrismContext prismContext, T element, InputValue value) {
+    protected <T extends Entity> void substitute(PrismContext prismContext, T element,
+            InputValue<CategoricalValue> value) {
         if (element.getEntityName()
             .equals("Gateway1Instance")) {
             return;
         }
-        resolveAndSubstitute(prismContext, element.getEntityName(), value.value.toString());
+        resolveAndSubstitute(prismContext, element.getEntityName(), value.getValue()
+            .toString());
     }
 
     protected void resolveAndSubstitute(PrismContext prismContext, String unresolvedSymbol, String value) {

@@ -10,7 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
@@ -45,7 +45,7 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
     public abstract QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
             SharedKnowledge knowledge) throws PolicySelectionException;
 
-    protected Double retrieveResponseTime(SelfAdaptiveSystemState<C, A, List<InputValue>> sasState) {
+    protected Double retrieveResponseTime(SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
@@ -53,14 +53,14 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
     }
 
     protected Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(
-            PerceivableEnvironmentalState<List<InputValue>> state) {
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
+        List<InputValue<CategoricalValue>> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue());
-        for (InputValue each : inputs) {
+        for (InputValue<CategoricalValue> each : inputs) {
             ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
             if (container != null) {
-                CategoricalValue nodeState = (CategoricalValue) each.value;
+                CategoricalValue nodeState = each.getValue();
                 serverNodeStates.put(container, nodeState);
             }
         }
@@ -73,8 +73,8 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
         return serverNodeStates;
     }
 
-    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
-        GroundRandomVariable grVariable = inputValue.variable;
+    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue<CategoricalValue> inputValue) {
+        GroundRandomVariable grVariable = inputValue.getVariable();
         if (isServerNodeVariable(grVariable)) {
             // NOTE: The ground random variable definition in *.staticmodel defines the attributge
             // appliedObjects;

@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
 import java.util.List;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.pcm.repository.Repository;
@@ -17,6 +17,8 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConstants;
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.solver.models.PCMInstance;
+
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class FaultTolerantScalingNodeFailureRecoveryStrategy<A> extends AbstractNodeRecoveryStrategy<PCMInstance, A> {
 
@@ -34,7 +36,8 @@ public class FaultTolerantScalingNodeFailureRecoveryStrategy<A> extends Abstract
     }
 
     @Override
-    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue>> sasState, SharedKnowledge knowledge) {
+    public void execute(SelfAdaptiveSystemState<PCMInstance, A, List<InputValue<CategoricalValue>>> sasState,
+            SharedKnowledge knowledge) {
         LOGGER.info(String.format("'EXECUTE' apply reconfiguration 'nodeRecovery' workaround %s ", STRATEGY_NAME));
 
         String serverNode1State = knowledge.getValue(serverNodeOneId)

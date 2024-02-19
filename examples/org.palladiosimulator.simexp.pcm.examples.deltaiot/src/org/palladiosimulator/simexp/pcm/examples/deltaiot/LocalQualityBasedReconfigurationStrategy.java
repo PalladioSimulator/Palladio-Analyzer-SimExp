@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
@@ -91,8 +91,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
 
     @Override
     protected QVToReconfiguration handlePacketLoss(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
-            Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options) {
         LOGGER.info("Start with actions selection.");
         long start = System.currentTimeMillis();
 
@@ -112,7 +112,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
 
     @Override
     protected QVToReconfiguration handleEnergyConsumption(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options) {
         if (LOWER_ENERGY_CONSUMPTION.isSatisfied(energyConsumtption.getValue())) {
             return decreaseDistribution(state, options);
@@ -122,7 +122,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private QVToReconfiguration decreaseDistribution(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -137,7 +138,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private QVToReconfiguration decreaseTransmissionPower(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -151,7 +153,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private QVToReconfiguration increaseDistribution(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            Set<QVToReconfiguration> options) {
         DistributionFactorReconfiguration disFactorReconf = retrieveDistributionFactorReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -166,7 +169,8 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private QVToReconfiguration increaseTransmissionPower(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, Set<QVToReconfiguration> options) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            Set<QVToReconfiguration> options) {
         TransmissionPowerReconfiguration transPowerReconf = retrieveTransmissionPowerReconfiguration(options);
 
         Map<AssemblyContext, Map<LinkingResource, Double>> sourceMotesToLinks = filterMotesWithWirelessLinks(state);
@@ -260,7 +264,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Map<AssemblyContext, Map<LinkingResource, Double>> filterMotesWithWirelessLinks(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state) {
         return filterLinksWithSNR(state).entrySet()
             .stream()
             .collect(groupingBy(equalSourceMote(state),
@@ -268,23 +272,24 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
     }
 
     private Map<LinkingResource, Double> filterLinksWithSNR(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state) {
         return toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
             .getValue()).stream()
-                .filter(each -> isSNRTemplate(each.variable))
-                .collect(toMap(k -> (LinkingResource) k.variable.getAppliedObjects()
+                .filter(each -> isSNRTemplate(each.getVariable()))
+                .collect(toMap(k -> (LinkingResource) k.getVariable()
+                    .getAppliedObjects()
                     .get(0), v -> getSNR(v)));
     }
 
-    private Double getSNR(InputValue input) {
-        String value = CategoricalValue.class.cast(input.value)
+    private Double getSNR(InputValue<CategoricalValue> input) {
+        String value = input.getValue()
             .get();
         return Double.valueOf(value);
     }
 
     private Function<Map.Entry<LinkingResource, Double>, AssemblyContext> equalSourceMote(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state) {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state) {
         return entry -> {
             return modelAccess.findSourceMote(entry.getKey(), state.getArchitecturalConfiguration());
         };

@@ -26,31 +26,34 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     protected final Experiment experiment;
-    protected final DynamicBayesianNetwork dbn;
+    protected final DynamicBayesianNetwork<CategoricalValue> dbn;
     protected final List<T> specs;
     protected final SimulationParameters params;
     protected final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
 
-    protected final IProbabilityDistributionFactory distributionFactory;
-    protected final IProbabilityDistributionRegistry probabilityDistributionRegistry;
+    protected final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
+    protected final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     protected final ParameterParser parameterParser;
     protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     protected final IExperimentProvider experimentProvider;
     protected final IQVToReconfigurationManager qvtoReconfigurationManager;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
-    public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn, List<T> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            IProbabilityDistributionFactory distributionFactory,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+    public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<T> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;

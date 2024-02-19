@@ -11,7 +11,7 @@ import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.Un
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.markov.ReliabilityPredictionResult;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.DiscreteUncertaintyStateSpace;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.model.DiscreteUncertaintyStateSpace.UncertaintyState;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
@@ -26,6 +26,7 @@ import de.uka.ipd.sdq.workflow.jobs.JobFailedException;
 import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
@@ -34,15 +35,15 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
 
     private final UncertaintyBasedReliabilityPredictionConfig globalConfig;
     private final DiscreteUncertaintyStateSpace uncertaintyStateSpace;
-    private final IProbabilityDistributionRegistry probabilityDistributionRegistry;
-    private final IProbabilityDistributionFactory probabilityDistributionFactory;
+    private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
+    private final IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
     public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry,
-            IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         this.globalConfig = globalConfig;
         this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository(),
                 parameterParser);
@@ -71,9 +72,9 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
     }
 
     private ReliabilityPredictionResult makePrediction(PcmSelfAdaptiveSystemState<A, V> pcmState,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry,
-            IProbabilityDistributionFactory probabilityDistributionFactory, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         var config = deriveConfigFrom(pcmState);
         var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
         return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config,
@@ -109,17 +110,18 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
 
     private List<UncertaintyState> deriveUncertaintyStates(PerceivableEnvironmentalState<V> envState) {
         List<UncertaintyState> uncertaintyStateTuple = Lists.newArrayList();
-        for (InputValue each : toInputs(envState)) {
-            uncertaintyStateSpace.findStateInstantiating(each.variable.getInstantiatedTemplate())
+        for (InputValue<CategoricalValue> each : toInputs(envState)) {
+            uncertaintyStateSpace.findStateInstantiating(each.getVariable()
+                .getInstantiatedTemplate())
                 .ifPresent(s -> {
-                    UncertaintyState stateToAdd = s.newValuedStateWith(each.asCategorical());
+                    UncertaintyState stateToAdd = s.newValuedStateWith(each.getValue());
                     uncertaintyStateTuple.add(stateToAdd);
                 });
         }
         return uncertaintyStateTuple;
     }
 
-    private List<InputValue> toInputs(PerceivableEnvironmentalState<V> envState) {
+    private List<InputValue<CategoricalValue>> toInputs(PerceivableEnvironmentalState<V> envState) {
         Object sample = envState.getValue()
             .getValue();
         if (List.class.isInstance(sample)) {

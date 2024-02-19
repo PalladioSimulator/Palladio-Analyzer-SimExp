@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -15,6 +15,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class RobotCognitionReconfigurationStrategy<C>
         implements Policy<QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
@@ -53,7 +55,7 @@ public class RobotCognitionReconfigurationStrategy<C>
             throw new RuntimeException("");
         }
 
-        var stateQuantity = ((SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source)
+        var stateQuantity = ((SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source)
             .getQuantifiedState();
         SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec)
             .orElseThrow();

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.repository.BasicComponent;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
@@ -22,6 +22,8 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
+
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
@@ -56,7 +58,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
             throw new RuntimeException("");
         }
 
-        SelfAdaptiveSystemState<C, A, List<InputValue>> sassState = (SelfAdaptiveSystemState<C, A, List<InputValue>>) source;
+        SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>> sassState = (SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>>) source;
         SimulatedMeasurement simMeasurement = sassState.getQuantifiedState()
             .findMeasurementWith(pcmSpec)
             .orElseThrow(() -> new RuntimeException(""));

@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReconfigurator, QVToReconfiguration> {
 
@@ -126,7 +127,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
     public QVToReconfiguration select(State source, Set<QVToReconfiguration> options) {
         retrieveDistributionFactorReconfiguration(options).setDistributionFactorValuesToDefaults();
 
-        PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state = PcmSelfAdaptiveSystemState.class
+        PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state = PcmSelfAdaptiveSystemState.class
             .cast(source);
 
         SimulatedMeasurement packetLoss = state.getQuantifiedState()
@@ -157,11 +158,11 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
     }
 
     protected abstract QVToReconfiguration handlePacketLoss(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state, SimulatedMeasurement packetLoss,
-            Set<QVToReconfiguration> options);
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
+            SimulatedMeasurement packetLoss, Set<QVToReconfiguration> options);
 
     protected abstract QVToReconfiguration handleEnergyConsumption(
-            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue>> state,
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state,
             SimulatedMeasurement energyConsumtption, Set<QVToReconfiguration> options);
 
     protected DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(

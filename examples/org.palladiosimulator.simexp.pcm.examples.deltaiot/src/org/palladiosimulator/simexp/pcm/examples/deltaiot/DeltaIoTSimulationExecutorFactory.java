@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -42,27 +42,29 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class DeltaIoTSimulationExecutorFactory
-        extends PcmExperienceSimulationExecutorFactory<Integer, List<InputValue>, PrismSimulatedMeasurementSpec> {
+public class DeltaIoTSimulationExecutorFactory extends
+        PcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>, PrismSimulatedMeasurementSpec> {
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
-    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue>> envProcess;
+    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
 
-    public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork dbn,
+    public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
-            IProbabilityDistributionFactory distributionFactory,
-            IProbabilityDistributionRegistry probabilityDistributionRegistry, ParameterParser parameterParser,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
@@ -80,7 +82,7 @@ public class DeltaIoTSimulationExecutorFactory
         File prismLogFile = new File(CommonPlugin.resolve(uri)
             .toFileString());
 
-        Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue>>> prismFileUpdaters = new HashSet<>();
+        Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) packetLossSpec);
@@ -90,7 +92,7 @@ public class DeltaIoTSimulationExecutorFactory
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
         prismFileUpdaters.add(engergyConsumptionUpdater);
-        PrismGenerator<QVTOReconfigurator, List<InputValue>> prismGenerator = new PrismFileUpdateGenerator<>(
+        PrismGenerator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> prismGenerator = new PrismFileUpdateGenerator<>(
                 prismFileUpdaters);
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()

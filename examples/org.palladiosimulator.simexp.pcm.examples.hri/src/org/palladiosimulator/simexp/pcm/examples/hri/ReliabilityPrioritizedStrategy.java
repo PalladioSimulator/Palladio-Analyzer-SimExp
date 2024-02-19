@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.hri;
 import java.util.List;
 import java.util.Set;
 
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -40,7 +40,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
 
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
-        var sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue>>) source;
+        var sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
 
         var stateQuantity = sasState.getQuantifiedState();
         SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)
@@ -50,14 +50,15 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
         var envState = sasState.getPerceivedEnvironmentalState()
             .getValue()
             .getValue();
-        for (InputValue each : RobotCognitionEnvironmentalDynamics.toInputs(envState)) {
-            var template = each.variable.getInstantiatedTemplate();
+        for (InputValue<CategoricalValue> each : RobotCognitionEnvironmentalDynamics.toInputs(envState)) {
+            var template = each.getVariable()
+                .getInstantiatedTemplate();
             if (template.getId()
                 .equals(IMG_BRIGHTNESS_TEMPLATE)) {
-                knowledge.store(IMG_BRIGHTNESS_TEMPLATE, each.value);
+                knowledge.store(IMG_BRIGHTNESS_TEMPLATE, each.getValue());
             } else if (template.getId()
                 .equals(IMG_NOISE_TEMPLATE)) {
-                knowledge.store(IMG_NOISE_TEMPLATE, each.value);
+                knowledge.store(IMG_NOISE_TEMPLATE, each.getValue());
             }
         }
     }
