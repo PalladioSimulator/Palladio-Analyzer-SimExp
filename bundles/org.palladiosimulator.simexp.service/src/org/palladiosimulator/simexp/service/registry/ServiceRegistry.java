@@ -11,7 +11,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
-public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
+public enum ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
+    INSTANCE;
 
     private static final Logger LOGGER = Logger.getLogger(ServiceRegistry.class.getName());
     private static final String SERVICE_REGISTRY_ID = "org.palladiosimulator.simexp.service.serviceregistry";
@@ -63,28 +64,17 @@ public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     private final List<ServiceEntry<?>> register = new ArrayList<>();
     private boolean registered;
 
-    private static ServiceRegistry serviceRegistry = null;
-
     private ServiceRegistry() {
-    }
-
-    private static ServiceRegistry getServiceRegistry() {
-        if (serviceRegistry == null) {
-            // discoveryInstance = new GuiceServiceDiscovery();
-            serviceRegistry = new ServiceRegistry();
-        }
-        return serviceRegistry;
     }
 
     public static ServiceDiscovery get() {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        ServiceRegistry serviceRegistry = getServiceRegistry();
+        ServiceRegistry serviceRegistry = ServiceRegistry.INSTANCE;
         serviceRegistry.registerProvider(registry);
         return serviceRegistry;
     }
 
-    private void registerProvider(IExtensionRegistry registry) {
-        // TODO: remove
+    private synchronized void registerProvider(IExtensionRegistry registry) {
         if (registered) {
             return;
         }
