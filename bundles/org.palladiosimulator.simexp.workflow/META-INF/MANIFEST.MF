@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Workflow
-Bundle-SymbolicName: org.palladiosimulator.simexp.workflow
+Bundle-SymbolicName: org.palladiosimulator.simexp.workflow;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.workflow
 Bundle-RequiredExecutionEnvironment: JavaSE-17
