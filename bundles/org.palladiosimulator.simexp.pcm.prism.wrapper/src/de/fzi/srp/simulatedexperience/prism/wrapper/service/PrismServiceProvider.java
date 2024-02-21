@@ -21,7 +21,7 @@ public class PrismServiceProvider implements ServiceProvider {
             // See https://github.com/prismmodelchecker/prism/wiki/Setting-up-Eclipse
             logger.error("environment variable 'PRISM' not found -> unable to register PrismService");
         } else {
-            serviceRegistration.registerAService(ServiceEntry.service(PrismService.class)
+            serviceRegistration.registerService(ServiceEntry.service(PrismService.class)
                 .isProvidedBy(PrismInvocationService.class));
         }
     }
