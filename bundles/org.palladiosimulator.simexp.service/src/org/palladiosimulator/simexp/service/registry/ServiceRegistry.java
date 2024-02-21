@@ -107,9 +107,4 @@ public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     public void registerAService(ServiceEntry<?> serviceToRegister) {
         register.add(serviceToRegister);
     }
-
-    public static void registerService(ServiceEntry<?> serviceToRegister) {
-        ServiceRegistration serviceRegistration = getServiceRegistry();
-        serviceRegistration.registerAService(serviceToRegister);
-    }
 }
