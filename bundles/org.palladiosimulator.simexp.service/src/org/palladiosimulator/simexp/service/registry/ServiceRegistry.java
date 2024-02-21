@@ -104,7 +104,7 @@ public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     }
 
     @Override
-    public void registerAService(ServiceEntry<?> serviceToRegister) {
+    public void registerService(ServiceEntry<?> serviceToRegister) {
         register.add(serviceToRegister);
     }
 }

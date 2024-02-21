@@ -9,7 +9,7 @@ public class GuavaServiceProvider implements ServiceProvider {
 
     @Override
     public void register(ServiceRegistration serviceRegistration) {
-        serviceRegistration.registerAService(ServiceEntry.service(SimulatedExperienceCache.class)
+        serviceRegistration.registerService(ServiceEntry.service(SimulatedExperienceCache.class)
             .isProvidedBy(GuavaSimulatedExperienceCache.class));
     }
 }

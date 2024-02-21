@@ -9,7 +9,7 @@ public class CSVServiceProvider implements ServiceProvider {
 
     @Override
     public void register(ServiceRegistration serviceRegistration) {
-        serviceRegistration.registerAService(ServiceEntry.service(SimulatedExperienceAccessor.class)
+        serviceRegistration.registerService(ServiceEntry.service(SimulatedExperienceAccessor.class)
             .isProvidedBy(CsvAccessor.class));
     }
 }

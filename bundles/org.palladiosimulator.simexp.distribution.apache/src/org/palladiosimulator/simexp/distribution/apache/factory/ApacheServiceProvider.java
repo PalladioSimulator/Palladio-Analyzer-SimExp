@@ -9,7 +9,7 @@ public class ApacheServiceProvider implements ServiceProvider {
 
     @Override
     public void register(ServiceRegistration serviceRegistration) {
-        serviceRegistration.registerAService(ServiceEntry.service(ProbabilityDistributionFactory.class)
+        serviceRegistration.registerService(ServiceEntry.service(ProbabilityDistributionFactory.class)
             .isProvidedBy(ProbabilityDistributionFactoryAdapter.class));
     }
 }

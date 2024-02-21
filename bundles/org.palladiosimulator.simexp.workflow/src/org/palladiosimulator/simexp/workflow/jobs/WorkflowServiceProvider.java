@@ -19,15 +19,15 @@ public class WorkflowServiceProvider implements ServiceProvider {
     @Override
     public void register(ServiceRegistration serviceRegistration) {
 //      serviceRegistration.registerAService(service(PcmExperienceSimulationExecutor.class).isProvidedBy(LoadBalancingSimulationExecutor.class));
-        serviceRegistration.registerAService(
+        serviceRegistration.registerService(
                 service(PcmExperienceSimulationExecutor.class).isProvidedBy(PcmExperienceSimulationExecutor.class)); // FIXME
 
-        serviceRegistration.registerAService(service(ProbabilityDistributionFactory.class)
+        serviceRegistration.registerService(service(ProbabilityDistributionFactory.class)
             .isProvidedBy(ProbabilityDistributionFactoryAdapter.class));
-        serviceRegistration.registerAService(
+        serviceRegistration.registerService(
                 service(SimulatedExperienceCache.class).isProvidedBy(GuavaSimulatedExperienceCache.class));
         serviceRegistration
-            .registerAService(service(SimulatedExperienceAccessor.class).isProvidedBy(CsvAccessor.class));
+            .registerService(service(SimulatedExperienceAccessor.class).isProvidedBy(CsvAccessor.class));
 
         LOGGER.info("Finishing registration of workflow services.");
     }
