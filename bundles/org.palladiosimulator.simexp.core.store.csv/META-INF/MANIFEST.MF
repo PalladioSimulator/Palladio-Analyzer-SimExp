@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Csv
 Bundle-SymbolicName: org.palladiosimulator.simexp.core.store.csv;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.palladiosimulator.simexp.core.store.csv.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.service,
  org.palladiosimulator.simexp.core
