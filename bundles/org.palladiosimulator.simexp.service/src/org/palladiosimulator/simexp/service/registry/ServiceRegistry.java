@@ -62,23 +62,17 @@ public enum ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     }
 
     private final List<ServiceEntry<?>> register = new ArrayList<>();
-    private boolean registered;
 
     private ServiceRegistry() {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        registerProvider(registry);
     }
 
     public static ServiceDiscovery get() {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        ServiceRegistry serviceRegistry = ServiceRegistry.INSTANCE;
-        serviceRegistry.registerProvider(registry);
-        return serviceRegistry;
+        return ServiceRegistry.INSTANCE;
     }
 
-    private synchronized void registerProvider(IExtensionRegistry registry) {
-        if (registered) {
-            return;
-        }
-        registered = true;
+    private void registerProvider(IExtensionRegistry registry) {
         IConfigurationElement[] config = registry.getConfigurationElementsFor(SERVICE_REGISTRY_ID);
         try {
             for (IConfigurationElement e : config) {
