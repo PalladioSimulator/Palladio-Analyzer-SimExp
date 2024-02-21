@@ -6,10 +6,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 
 public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
 
     private static final Logger LOGGER = Logger.getLogger(ServiceRegistry.class.getName());
+    private static final String SERVICE_REGISTRY_ID = "org.palladiosimulator.simexp.service.serviceregistry";
 
     @Override
     public void setUp(List<ServiceEntry<?>> services) {
@@ -56,6 +61,7 @@ public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     }
 
     private final List<ServiceEntry<?>> register = new ArrayList<>();
+    private boolean registered;
 
     private static ServiceRegistry serviceRegistry = null;
 
@@ -71,7 +77,30 @@ public class ServiceRegistry implements ServiceDiscovery, ServiceRegistration {
     }
 
     public static ServiceDiscovery get() {
-        return getServiceRegistry();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        ServiceRegistry serviceRegistry = getServiceRegistry();
+        serviceRegistry.registerProvider(registry);
+        return serviceRegistry;
+    }
+
+    private void registerProvider(IExtensionRegistry registry) {
+        // TODO: remove
+        if (registered) {
+            return;
+        }
+        registered = true;
+        IConfigurationElement[] config = registry.getConfigurationElementsFor(SERVICE_REGISTRY_ID);
+        try {
+            for (IConfigurationElement e : config) {
+                Object providerClass = e.createExecutableExtension("class");
+                if (providerClass instanceof ServiceProvider) {
+                    ServiceProvider serviceProvider = (ServiceProvider) providerClass;
+                    serviceProvider.register(this);
+                }
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException("registration failure", e);
+        }
     }
 
     @Override
