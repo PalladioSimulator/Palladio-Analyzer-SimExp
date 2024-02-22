@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
 
@@ -23,7 +23,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<URI> propertyFiles;
     private final List<URI> moduleFiles;
     private final List<String> monitorNames;
-    private final SimulationParameterConfiguration simulationParameters;
+    private final SimulationParameters simulationParameters;
 
     // FIXME: pass kmodel as constructor parameter
     public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective, 
@@ -31,7 +31,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     		MonitorConfiguration monitors,
     		PrismConfiguration prismConfiguration,
     		EnvironmentalModelsWorkflowConfiguration environmentalModels,
-    		SimulationParameterConfiguration simulationParameters) {
+    		SimulationParameters simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -115,7 +115,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     	return List.copyOf(moduleFiles);
     }
     
-    public SimulationParameterConfiguration getSimulationParameters() {
+    public SimulationParameters getSimulationParameters() {
 		return simulationParameters;
 	}
 }

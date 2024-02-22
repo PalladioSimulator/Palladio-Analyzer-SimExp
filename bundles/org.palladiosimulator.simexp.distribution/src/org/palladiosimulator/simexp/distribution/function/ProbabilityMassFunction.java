@@ -2,42 +2,44 @@ package org.palladiosimulator.simexp.distribution.function;
 
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
-public interface ProbabilityMassFunction extends ProbabilityDistributionFunction<Sample> {
+public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunction<Sample<S>> {
 
-	public static class Sample {
-		
-		private Object value;
-		private double probability;
-		
-		private Sample(Object value, double probability) {
-			this.value = value;
-			this.probability = probability;
-		}
-		
-		public static Sample of(Object value) {
-			return new Sample(value, 0);
-		}
-		
-		public static Sample of(Object value, double probability) {
-			return new Sample(value, probability);
-		}
+    public static class Sample<S> {
 
-		public Object getValue() {
-			return value;
-		}
+        // TODO: final
+        private S value;
+        private double probability;
 
-		public double getProbability() {
-			return probability;
-		}
-		
-		@Override
-		public boolean equals(Object other) {
-			if (other instanceof Sample) {
-				return ((Sample) other).getValue().equals(value);
-			}
-			return false;
-		}
-	}
-	
-	public double probability(ProbabilityMassFunction.Sample sample);
+        private Sample(S value, double probability) {
+            this.value = value;
+            this.probability = probability;
+        }
+
+        public static <T> Sample<T> of(T value) {
+            return new Sample<>(value, 0);
+        }
+
+        public static <T> Sample<T> of(T value, double probability) {
+            return new Sample<>(value, probability);
+        }
+
+        public S getValue() {
+            return value;
+        }
+
+        public double getProbability() {
+            return probability;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other instanceof Sample) {
+                return ((Sample<?>) other).getValue()
+                    .equals(value);
+            }
+            return false;
+        }
+    }
+
+    public double probability(Sample<S> sample);
 }

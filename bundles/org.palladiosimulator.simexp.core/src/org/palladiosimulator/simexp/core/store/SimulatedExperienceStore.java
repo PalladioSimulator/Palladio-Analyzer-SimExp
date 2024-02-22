@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.core.store;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,69 +10,66 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
-public class SimulatedExperienceStore {
+public class SimulatedExperienceStore<A, R> {
 
-	private final SimulatedExperienceStoreDescription description;
-	private final SimulatedExperienceAccessor simExperienceAccessor;
-	
-	private static SimulatedExperienceStore storeInstance = null;
-	
-	private SimulatedExperienceStore(SimulatedExperienceStoreDescription description) {
-		this.description = description;
-		//TODO exception handling
-		this.simExperienceAccessor = ServiceRegistry.get().findService(SimulatedExperienceAccessor.class)
-														  .orElseThrow(() -> new RuntimeException(""));
-		ServiceRegistry.get().findService(SimulatedExperienceCache.class)
-							 .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
-	}
-	
-	public static void create(SimulatedExperienceStoreDescription description) {
-		storeInstance = new SimulatedExperienceStore(description);
-	}
-	
-	public static SimulatedExperienceStore get() {
-		//TODO Exception handling
-		return Objects.requireNonNull(storeInstance, "");
-	}
+    private final DescriptionProvider descriptionProvider;
+    private final SimulatedExperienceAccessor simExperienceAccessor;
 
-	public void store(Trajectory trajectory) {
-		simExperienceAccessor.connect(description);
-		simExperienceAccessor.store(toSimulatedExperience(trajectory));
-		simExperienceAccessor.close();
-	}
-	
-	private List<SimulatedExperience> toSimulatedExperience(Trajectory trajectory) {
-		return trajectory.getSamplePath().stream().map(each -> DefaultSimulatedExperience.of(each))
-												  .collect(Collectors.toList());
-	}
+    public SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
+        this.descriptionProvider = descriptionProvider;
+        // TODO exception handling
+        this.simExperienceAccessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        ServiceRegistry.get()
+            .findService(SimulatedExperienceCache.class)
+            .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
+    }
 
-	public void store(Sample sample) {
-		SimulatedExperience simExp = DefaultSimulatedExperience.of(sample);
-		if(isAlreadyStored(simExp)) {
-			return;
-		}
-		
-		simExperienceAccessor.connect(description);
-		simExperienceAccessor.store(simExp);
-		simExperienceAccessor.close();
-	}
-	
-	private boolean isAlreadyStored(SimulatedExperience simExp) {
-		return findSimulatedExperience(simExp.getId()).isPresent();
-	}
-	
-	public Optional<SimulatedExperience> findSimulatedExperience(String id) {
-		simExperienceAccessor.connect(description);
-		Optional<SimulatedExperience> result = simExperienceAccessor.findSimulatedExperience(id);
-		simExperienceAccessor.close();
-		return result;
-	}
+    public void store(Trajectory<A, R> trajectory) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
+        simExperienceAccessor.connect(description);
+        simExperienceAccessor.store(toSimulatedExperience(trajectory));
+        simExperienceAccessor.close();
+    }
 
-	public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
-		simExperienceAccessor.connect(description);
-		Optional<SimulatedExperience> result = simExperienceAccessor.findSelfAdaptiveSystemState(id);
-		simExperienceAccessor.close();
-		return result;
-	}
-	
+    private List<SimulatedExperience> toSimulatedExperience(Trajectory<A, R> trajectory) {
+        return trajectory.getSamplePath()
+            .stream()
+            .map(each -> DefaultSimulatedExperience.of(each))
+            .collect(Collectors.toList());
+    }
+
+    public void store(Sample<A, R> sample) {
+        SimulatedExperience simExp = DefaultSimulatedExperience.of(sample);
+        if (isAlreadyStored(simExp)) {
+            return;
+        }
+
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
+        simExperienceAccessor.connect(description);
+        simExperienceAccessor.store(simExp);
+        simExperienceAccessor.close();
+    }
+
+    private boolean isAlreadyStored(SimulatedExperience simExp) {
+        return findSimulatedExperience(simExp.getId()).isPresent();
+    }
+
+    public Optional<SimulatedExperience> findSimulatedExperience(String id) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
+        simExperienceAccessor.connect(description);
+        Optional<SimulatedExperience> result = simExperienceAccessor.findSimulatedExperience(id);
+        simExperienceAccessor.close();
+        return result;
+    }
+
+    public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
+        SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
+        simExperienceAccessor.connect(description);
+        Optional<SimulatedExperience> result = simExperienceAccessor.findSelfAdaptiveSystemState(id);
+        simExperienceAccessor.close();
+        return result;
+    }
+
 }

@@ -7,48 +7,39 @@ import org.palladiosimulator.simexp.markovian.model.builder.BasicMarkovModelBuil
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class EnvironmentModelBuilder extends BasicMarkovModelBuilder {
+public class EnvironmentModelBuilder<A, R> extends BasicMarkovModelBuilder<A, R> {
 
-	private static EnvironmentModelBuilder builderInstance = null;
+    private boolean isHidden = false;
 
-	private boolean isHidden = false;
-	
-	private EnvironmentModelBuilder() {
-		super();
-	}
-	
-	public static EnvironmentModelBuilder get() {
-		if (builderInstance == null) {
-			builderInstance = new EnvironmentModelBuilder();
-		}
-		return builderInstance;
-	}
+    @Override
+    public MarkovModel<A, R> build() {
+        MarkovModel<A, R> build = super.build();
+        checkValidity(build);
+        return build;
+    }
 
-	@Override
-	public MarkovModel build() {
-		MarkovModel build = super.build();
-		checkValidity(build);
-		return build;
-	}
+    private void checkValidity(MarkovModel<A, R> build) {
+        isHidden = isHidden(build.getStateSpace()
+            .get(0));
+        if (isNotConsistent(build)) {
+            // TODO exception handling
+            throw new RuntimeException("");
+        }
+    }
 
-	private void checkValidity(MarkovModel build) {
-		isHidden = isHidden(build.getStateSpace().get(0));
-		if (isNotConsistent(build)) {
-			//TODO exception handling
-			throw new RuntimeException("");
-		}
-	}
+    private boolean isNotConsistent(MarkovModel<A, R> build) {
+        return !build.getStateSpace()
+            .stream()
+            .allMatch(consistencyCondition());
+    }
 
-	private boolean isNotConsistent(MarkovModel build) {
-		return !build.getStateSpace().stream().allMatch(consistencyCondition());
-	}
+    private Predicate<State> consistencyCondition() {
+        return state -> isHidden(state) == isHidden;
+    }
 
-	private Predicate<State> consistencyCondition() {
-		return state -> isHidden(state) == isHidden; 
-	}
+    private boolean isHidden(State state) {
+        return PerceivableEnvironmentalState.class.cast(state)
+            .isHidden();
+    }
 
-	private boolean isHidden(State state) {
-		return PerceivableEnvironmentalState.class.cast(state).isHidden();
-	}
-	
 }

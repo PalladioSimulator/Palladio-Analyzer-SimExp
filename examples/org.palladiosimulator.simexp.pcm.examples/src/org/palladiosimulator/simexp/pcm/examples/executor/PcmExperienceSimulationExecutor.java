@@ -3,47 +3,54 @@ package org.palladiosimulator.simexp.pcm.examples.executor;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameterConfiguration;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
-public abstract class PcmExperienceSimulationExecutor implements SimulationExecutor {
-    
+public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> implements SimulationExecutor {
+
     protected static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutor.class.getName());
-	
-	protected final Experiment experiment;
-	protected final SimulationParameterConfiguration simulationParameters;
-	
-//	private static PcmExperienceSimulationExecutor instance = Guice.createInjector(new ExecutorBindingModule()).getInstance(PcmExperienceSimulationExecutor.class);
-	private static PcmExperienceSimulationExecutor instance;
-	
-	public PcmExperienceSimulationExecutor(Experiment experiment, SimulationParameterConfiguration simulationParameters) {
-		this.experiment = experiment;
-		ExperimentProvider.create(this.experiment);
-		QVToReconfigurationManager.create(getReconfigurationRulesLocation());
-		this.simulationParameters = simulationParameters;
-	}
 
-	public static PcmExperienceSimulationExecutor get() {
-	    if (instance == null) {
-	        instance = ServiceRegistry.get().findService(PcmExperienceSimulationExecutor.class).orElseThrow(() -> new RuntimeException("Failed to inject PcmExperienceSimulationExecutor"));
-	    }
-		return instance;
-	}
-	
-	@Override
-	public void execute() {
-		createSimulator().run();
-	}
+    protected final ExperienceSimulator<C, A, R> experienceSimulator;
+    protected final Experiment experiment;
+    protected final SimulationParameters simulationParameters;
+    protected final IExperimentProvider experimentProvider;
+    protected final Policy<A, Aa> reconfSelectionPolicy;
+    protected final TotalRewardCalculation rewardCalculation;
+    protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-	protected abstract ExperienceSimulator createSimulator();
-	
-	private String getReconfigurationRulesLocation() {
-		String path = experiment.getInitialModel().getReconfigurationRules().getFolderUri();
-		experiment.getInitialModel().setReconfigurationRules(null);
-		return path;
-	}
+    public PcmExperienceSimulationExecutor(ExperienceSimulator<C, A, R> experienceSimulator, Experiment experiment,
+            SimulationParameters simulationParameters, Policy<A, Aa> reconfSelectionPolicy,
+            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
+        this.experienceSimulator = experienceSimulator;
+        this.experiment = experiment;
+        this.simulationParameters = simulationParameters;
+        this.reconfSelectionPolicy = reconfSelectionPolicy;
+        this.rewardCalculation = rewardCalculation;
+        this.experimentProvider = experimentProvider;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+    }
 
+    @Override
+    public String getPolicyId() {
+        return reconfSelectionPolicy.getId();
+    }
+
+    @Override
+    public void execute() {
+        experienceSimulator.run();
+    }
+
+    @Override
+    public void evaluate() {
+        double totalReward = rewardCalculation.computeTotalReward();
+        LOGGER.info("***********************************************************************");
+        LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
+        LOGGER.info("***********************************************************************");
+    }
 }

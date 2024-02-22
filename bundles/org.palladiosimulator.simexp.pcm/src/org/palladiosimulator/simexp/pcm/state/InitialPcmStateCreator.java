@@ -1,45 +1,60 @@
 package org.palladiosimulator.simexp.pcm.state;
 
-import java.util.Objects;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.solver.models.PCMInstance;
 
-public class InitialPcmStateCreator implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator {
+public class InitialPcmStateCreator<A, V>
+        implements SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator<PCMInstance, A, V> {
 
-	private static Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs = null;
-	
-	public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs) { 
-		pcmMeasurementSpecs = specs;
-	}
-	
-	public static InitialPcmStateCreator with(Set<SimulatedMeasurementSpecification> specs) {
-		return new InitialPcmStateCreator(specs);
-	}
+    private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
+    private final IExperimentProvider experimentProvider;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
+    private final SimulationRunnerHolder simulationRunnerHolder;
 
-	public static Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
-		//TODO exception handling
-		return Objects.requireNonNull(pcmMeasurementSpecs, "");
-	}
+    public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider,
+            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+        this.pcmMeasurementSpecs = specs;
+        this.experimentProvider = experimentProvider;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.simulationRunnerHolder = simulationRunnerHolder;
+    }
 
-	@Override
-	public SelfAdaptiveSystemState<?> create(ArchitecturalConfiguration<?> initialArch,
-											 PerceivableEnvironmentalState initialEnv) {
-		return PcmSelfAdaptiveSystemState.newBuilder()
-				.withStructuralState((PcmArchitecturalConfiguration) initialArch, initialEnv)
-				.andMetricDescriptions(getMeasurementSpecs())
-				.asInitial()
-				.build();
-	}
+    public static <A, V> InitialPcmStateCreator<A, V> with(Set<SimulatedMeasurementSpecification> specs,
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            SimulationRunnerHolder simulationRunnerHolder) {
+        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
+                simulationRunnerHolder);
+    }
 
-	@Override
-	public ArchitecturalConfiguration<?> getInitialArchitecturalConfiguration() {
-		return PcmArchitecturalConfiguration.of(ExperimentProvider.get().getExperimentRunner().makeSnapshotOfPCM());
-	}
-	
+    public Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
+        return pcmMeasurementSpecs;
+    }
+
+    @Override
+    public SelfAdaptiveSystemState<PCMInstance, A, V> create(ArchitecturalConfiguration<PCMInstance, A> initialArch,
+            PerceivableEnvironmentalState<V> initialEnv) {
+        return PcmSelfAdaptiveSystemState.<A, V> newBuilder(this, simulationRunnerHolder)
+            .withStructuralState((PcmArchitecturalConfiguration<A>) initialArch, initialEnv)
+            .andMetricDescriptions(getMeasurementSpecs())
+            .asInitial()
+            .build();
+    }
+
+    @Override
+    public ArchitecturalConfiguration<PCMInstance, A> getInitialArchitecturalConfiguration() {
+        ExperimentRunner experimentRunner = experimentProvider.getExperimentRunner();
+        PCMInstance snapshotOfPCM = experimentRunner.makeSnapshotOfPCM();
+        return PcmArchitecturalConfiguration.<A> of(snapshotOfPCM, experimentProvider, qvtoReconfigurationManager);
+    }
+
 }

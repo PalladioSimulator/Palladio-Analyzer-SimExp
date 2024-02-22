@@ -4,64 +4,62 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
-public class ExperienceSimulator {
-    
+public class ExperienceSimulator<C, A, R> {
+
     private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
 
-	private final MarkovSampling markovSampler;
-	private final List<ExperienceSimulationRunner> simulationRunner;
-	private final Optional<Initializable> beforeExecutionInitialization;
+    private final MarkovSampling<A, R> markovSampler;
+    private final List<ExperienceSimulationRunner> simulationRunners;
+    private final Optional<Initializable> beforeExecutionInitialization;
+    private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
 
-	private int numberOfRuns;
+    private int numberOfRuns;
 
-	private ExperienceSimulator(ExperienceSimulationConfiguration config) {
-		this.numberOfRuns = config.getNumberOfRuns();
-		this.markovSampler = config.getMarkovSampler();
-		this.simulationRunner = config.getSimulationRunner();
-		this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
+    private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
+            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
+        this.numberOfRuns = config.getNumberOfRuns();
+        this.markovSampler = config.getMarkovSampler();
+        this.simulationRunners = config.getSimulationRunners();
+        this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
+        simulationRunnerHolder.registerSimulationRunners(simulationRunners);
+        this.simulatedExperienceStore = simulatedExperienceStore;
+    }
 
-		this.simulationRunner.forEach(SelfAdaptiveSystemState::registerSimulationRunner);
+    public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
+            ExperienceSimulationConfiguration<S, A, R> config, SimulatedExperienceStore<A, R> simulatedExperienceStore,
+            SimulationRunnerHolder simulationRunnerHolder) {
+        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
+    }
 
-		SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
-				.withSimulationId(config.getSimulationID())
-				.andSampleSpaceId(config.getSampleSpaceID())
-				.andSampleHorizon(markovSampler.getHorizon())
-				.build();
-		SimulatedExperienceStore.create(desc);
-	}
+    public void run() {
+        do {
+            initExperienceSimulator();
 
-	public static ExperienceSimulator createSimulator(ExperienceSimulationConfiguration config) {
-		return new ExperienceSimulator(config);
-	}
+            Trajectory<A, R> traj = markovSampler.sampleTrajectory();
+            for (Sample<A, R> each : traj.getSamplePath()) {
+                simulatedExperienceStore.store(each);
+            }
+            simulatedExperienceStore.store(traj);
+        } while (stillRunsToExecute());
+    }
 
-	public void run() {
-		do {
-			initExperienceSimulator();
+    private void initExperienceSimulator() {
+        beforeExecutionInitialization.ifPresent(Initializable::initialize);
 
-			Trajectory traj = markovSampler.sampleTrajectory();
-			for (Sample each : traj.getSamplePath()) {
-				SimulatedExperienceStore.get().store(each);
-			}
-			SimulatedExperienceStore.get().store(traj);
-		} while (stillRunsToExecute());
-	}
+        simulationRunners.stream()
+            .filter(Initializable.class::isInstance)
+            .map(Initializable.class::cast)
+            .forEach(Initializable::initialize);
+    }
 
-	private void initExperienceSimulator() {
-		beforeExecutionInitialization.ifPresent(Initializable::initialize);
-		
-		simulationRunner.stream().filter(Initializable.class::isInstance).map(Initializable.class::cast)
-				.forEach(Initializable::initialize);
-	}
-
-	private boolean stillRunsToExecute() {
-		return 0 != (--numberOfRuns);
-	}
+    private boolean stillRunsToExecute() {
+        return 0 != (--numberOfRuns);
+    }
 
 }

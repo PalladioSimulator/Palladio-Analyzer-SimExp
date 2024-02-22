@@ -5,36 +5,40 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.DerivableEnviro
 import org.palladiosimulator.simexp.environmentaldynamics.entity.EnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class ObservableEnvironmentProcess extends EnvironmentProcess {
+public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R, V> {
 
-	public ObservableEnvironmentProcess(MarkovModel model, ProbabilityMassFunction initialDistribution) {
-		super(model, initialDistribution);
-	}
-	
-	public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic dynamics, ProbabilityMassFunction initialDistribution) {
-		super(dynamics, initialDistribution);
-	}
+    public ObservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution) {
+        super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), model, initialDistribution);
+    }
 
-	@Override
-	protected Markovian buildMarkovian(StateSpaceNavigator environmentalDynamics, ProbabilityMassFunction initialDistribution) {
-		return MarkovianBuilder.createMarkovChain()
-							   .createStateSpaceNavigator(environmentalDynamics)
-							   .withInitialStateDistribution(initialDistribution)
-							   .build();
-	}
+    public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics,
+            ProbabilityMassFunction<State> initialDistribution) {
+        super(buildMarkovian(dynamics, initialDistribution), dynamics, initialDistribution);
+    }
 
-	@Override
-	public PerceivableEnvironmentalState determineNextGiven(PerceivableEnvironmentalState last) {
-		return (PerceivableEnvironmentalState) determineNextSampleGiven((EnvironmentalState) last).getNext();
-	}
+    private static <A, Aa extends Action<A>, R> Markovian<A, R> buildMarkovian(
+            StateSpaceNavigator<A> environmentalDynamics, ProbabilityMassFunction<State> initialDistribution) {
+        MarkovianBuilder<A, Aa, R>.MarkovChainBuilder markovChain = MarkovianBuilder.<A, Aa, R> createMarkovChain();
+        return markovChain.createStateSpaceNavigator(environmentalDynamics)
+            .withInitialStateDistribution(initialDistribution)
+            .build();
+    }
 
-	@Override
-	public PerceivableEnvironmentalState determineInitial() {
-		return (PerceivableEnvironmentalState) sampler.drawInitialSample().getCurrent();
-	}
+    @Override
+    public PerceivableEnvironmentalState<V> determineNextGiven(PerceivableEnvironmentalState<V> last) {
+        return (PerceivableEnvironmentalState<V>) determineNextSampleGiven((EnvironmentalState<V>) last).getNext();
+    }
+
+    @Override
+    public PerceivableEnvironmentalState<V> determineInitial() {
+        return (PerceivableEnvironmentalState<V>) sampler.drawInitialSample()
+            .getCurrent();
+    }
 
 }

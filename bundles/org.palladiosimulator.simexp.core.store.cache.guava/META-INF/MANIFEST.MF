@@ -1,9 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guava
-Bundle-SymbolicName: org.palladiosimulator.simexp.core.store.cache.guava
+Bundle-SymbolicName: org.palladiosimulator.simexp.core.store.cache.guava;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.palladiosimulator.simexp.core.store.cache.guava.Activator
 Require-Bundle: org.eclipse.core.runtime,
  com.google.guava;bundle-version="21.0.0",
  org.palladiosimulator.simexp.core,

@@ -11,26 +11,20 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork.InputValue;
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceContainer;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
-import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
-import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
-import org.palladiosimulator.simexp.core.strategy.mape.Executer;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
-import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
-import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Maps;
 
@@ -41,7 +35,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
  * This policy aims to provide a strategy to compensate server node failures
  * 
  */
-public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfiguration> {
+public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityStrategy.class.getName());
 
@@ -58,10 +52,12 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
-            PerformabilityStrategyConfiguration strategyConfiguration
-            , ReconfigurationPlanningStrategy reconfigurationPlanningStrategy
-            , Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
-        super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
+    // FIXME: integration-ba
+//            , Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
+            PerformabilityStrategyConfiguration strategyConfiguration,
+            ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
+        // FIXME: integration-ba
+//        super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
@@ -78,7 +74,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         /**
          * transfer status of server nodes to knowledge base
          */
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
 
@@ -90,6 +86,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         }
     }
 
+    @Override
     protected boolean analyse(State source, SharedKnowledge knowledge) {
         boolean hasConstraintViolations = false;
         /**
@@ -97,7 +94,7 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
          * threshold violations, presence of failed nodes, ...
          * 
          */
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+        SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
         Double responseTime = retrieveResponseTime(sasState);
         Map<ResourceContainer, CategoricalValue> serverNodeStates = retrieveServerNodeStates(
                 sasState.getPerceivedEnvironmentalState());
@@ -211,21 +208,23 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         return QVToReconfiguration.empty();
     }
 
-    private Double retrieveResponseTime(SelfAdaptiveSystemState<?> sasState) {
+    private Double retrieveResponseTime(
+            SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState) {
         SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
             .findMeasurementWith(responseTimeSpec)
             .orElseThrow();
         return simMeasurement.getValue();
     }
 
-    private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(PerceivableEnvironmentalState state) {
+    private Map<ResourceContainer, CategoricalValue> retrieveServerNodeStates(
+            PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> state) {
         Map<ResourceContainer, CategoricalValue> serverNodeStates = Maps.newHashMap();
-        List<InputValue> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
+        List<InputValue<CategoricalValue>> inputs = EnvironmentalDynamicsUtils.toInputs(state.getValue()
             .getValue());
-        for (InputValue each : inputs) {
+        for (InputValue<CategoricalValue> each : inputs) {
             ResourceContainer container = findAppliedObjectsReferencedResourceContainer(each);
             if (container != null) {
-                CategoricalValue nodeState = (CategoricalValue) each.value;
+                CategoricalValue nodeState = each.getValue();
                 serverNodeStates.put(container, nodeState);
             }
         }
@@ -238,8 +237,8 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
         return serverNodeStates;
     }
 
-    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue inputValue) {
-        GroundRandomVariable grVariable = inputValue.variable;
+    private ResourceContainer findAppliedObjectsReferencedResourceContainer(InputValue<CategoricalValue> inputValue) {
+        GroundRandomVariable grVariable = inputValue.getVariable();
         if (isServerNodeVariable(grVariable)) {
             // NOTE: The ground random variable definition in *.staticmodel defines the attributge
             // appliedObjects;
@@ -277,12 +276,12 @@ public class PerformabilityStrategy extends ReconfigurationStrategy<QVToReconfig
     }
 
     private QVToReconfiguration outSource(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options).orElseThrow(
+        return findReconfiguration(SCALE_OUT_SOURCE_QVTO_NAME, options).orElseThrow(
                 () -> new PolicySelectionException(missingQvtoTransformationMessage(SCALE_OUT_SOURCE_QVTO_NAME)));
     }
 
     private QVToReconfiguration nodeRecovery(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
+        return findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
             .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(NODE_RECOVERY_QVTO_NAME)));
     }
 

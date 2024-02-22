@@ -8,31 +8,34 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
 
-public class BasicMarkovian implements Markovian {
+public class BasicMarkovian<A, R> implements Markovian<A, R> {
 
-	private final ProbabilityMassFunction initialStateDistribution;
-	private final StateSpaceNavigator stateSpaceNavigator;
-	
-	public BasicMarkovian(ProbabilityMassFunction initialStateDistribution, 
-						  StateSpaceNavigator stateSpaceNavigator) {
-		this.initialStateDistribution = initialStateDistribution;
-		this.stateSpaceNavigator = stateSpaceNavigator;
-	}
+    private final ProbabilityMassFunction<State> initialStateDistribution;
+    private final StateSpaceNavigator<A> stateSpaceNavigator;
 
-	@Override
-	public void drawSample(Sample sample) {
-		NavigationContext context = NavigationContext.of(sample);
-		sample.setNext(stateSpaceNavigator.navigate(context));
-	}
+    public BasicMarkovian(ProbabilityMassFunction<State> initialStateDistribution,
+            StateSpaceNavigator<A> stateSpaceNavigator) {
+        this.initialStateDistribution = initialStateDistribution;
+        this.stateSpaceNavigator = stateSpaceNavigator;
+    }
 
-	@Override
-	public Sample determineInitialState() {
-		return createInitialSample((State) initialStateDistribution.drawSample().getValue());
-	}
+    @Override
+    public void drawSample(Sample<A, R> sample) {
+        NavigationContext<A> context = NavigationContext.of(sample);
+        sample.setNext(stateSpaceNavigator.navigate(context));
+    }
 
-	@Override
-	public ProbabilityMassFunction getInitialStateDistribution() {
-		return initialStateDistribution;
-	}
+    @Override
+    public Sample<A, R> determineInitialState() {
+        org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample<State> sample = initialStateDistribution
+            .drawSample();
+        State value = sample.getValue();
+        return createInitialSample(value);
+    }
+
+    @Override
+    public ProbabilityMassFunction<State> getInitialStateDistribution() {
+        return initialStateDistribution;
+    }
 
 }

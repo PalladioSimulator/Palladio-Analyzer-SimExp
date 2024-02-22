@@ -1,126 +1,102 @@
 package org.palladiosimulator.simexp.core.strategy;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
-import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
-import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
-import org.palladiosimulator.simexp.core.strategy.mape.Executer;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
-import org.palladiosimulator.simexp.core.strategy.mape.Planner;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProviderMeasurementInjector;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
 // This class is not yet integrated in the simulated experience process. This is rather a reminder for future work. 
 // The idea is to introduce a dedicated concept for reconfiguration strategies following the MAPE-K principles.
-public abstract class ReconfigurationStrategy<T extends Reconfiguration<?>> implements Policy<T> {
-    
+public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> implements Policy<A, Aa> {
+
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationStrategy.class);
-    
-    private final Monitor monitor;
+
     private final SharedKnowledge knowledge;
-    private final Analyzer analyzer;
-    private final Planner planner;
-    private final Executer executer;
-    private final SimulatedMeasurementSpecification measurementSpec;
-    private final ProbeValueProviderMeasurementInjector pvpInjector;
 
-    
-    public ReconfigurationStrategy(Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
-        this.monitor = monitor;
-        this.analyzer = analyzer;
-        this.planner = planner;
-        this.executer = executer;
+    // FIXME: integration-ba
+//    private final Monitor monitor;
+//    private final Analyzer analyzer;
+//    private final Planner planner;
+//    private final Executer executer;
+//    private final SimulatedMeasurementSpecification measurementSpec;
+//    private final ProbeValueProviderMeasurementInjector pvpInjector;
+
+    public ReconfigurationStrategy() {
+        // FIXME: integration-ba
+//    public ReconfigurationStrategy(Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
         this.knowledge = new SharedKnowledge();
-        this.measurementSpec = measurementSpec;
-        this.pvpInjector = pvpInjector;
+
+        // FIXME: integration-ba
+//        this.monitor = monitor;
+//        this.analyzer = analyzer;
+//        this.planner = planner;
+//        this.executer = executer;
+//        this.measurementSpec = measurementSpec;
+//        this.pvpInjector = pvpInjector;
     }
-    
 
-	@Override
-	public T select(State source, Set<T> options) {
-	    LOGGER.info("==== Start MAPE-K loop ====");
-	    T reconfiguration = emptyReconfiguration();
-	    
-	    // TODO: retrieve current measurement values
-	    LOGGER.info("'MONITOR' step start");
-//	    monitor.monitor();
-		LOGGER.info("'MONITOR' step done");
-		LOGGER.info("'ANALYZE' step start");
-		
-		 /**
-	     * FIXME: workaround to provide current measurements
-	     * 
-	     * */
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
-        SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
-                .findMeasurementWith(measurementSpec)
-                .orElseThrow();
-        double currentMeasurement = simMeasurement.getValue();
-        pvpInjector.injectMeasurement(currentMeasurement);
-		
-	    boolean isAnalyzable = analyzer.analyze();
-		LOGGER.info("'ANALYZE' step done");
-	    
-	    if(isAnalyzable) {
-	        LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
-		    LOGGER.info("'PLANNING' step start");
-	        List<ResolvedAction> actions = planner.plan();
-	        reconfiguration = findReconfiguration(options, actions);
+    @Override
+    public Aa select(State source, Set<Aa> options) {
+        Aa reconfiguration = emptyReconfiguration();
+
+        LOGGER.info("==== Start MAPE-K loop ====");
+        LOGGER.info("'MONITOR' step start");
+        monitor(source, knowledge);
+        LOGGER.debug(String.format("'MONITOR' knowledge snapshot: %s", knowledge.toString()));
+        LOGGER.info("'MONITOR' step done");
+
+        LOGGER.info("'ANALYZE' step start");
+
+        // FIXME: integration-ba
+//        /**
+//        * FIXME: workaround to provide current measurements
+//        * 
+//        * */
+//       SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+//       SimulatedMeasurement simMeasurement = sasState.getQuantifiedState()
+//               .findMeasurementWith(measurementSpec)
+//               .orElseThrow();
+//       double currentMeasurement = simMeasurement.getValue();
+//       pvpInjector.injectMeasurement(currentMeasurement);
+
+        boolean isAnalyzable = analyse(source, knowledge);
+        LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
+        LOGGER.info("'ANALYZE' step done");
+        if (isAnalyzable) {
+            LOGGER.info("'PLANNING' step start");
+            reconfiguration = plan(source, options, knowledge);
+            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
             LOGGER.info("'PLANNING' step done");
-	    }
-	    
-//	    LOGGER.info("'MONITOR' step start");
-//		monitor(source, knowledge);
-//        LOGGER.debug(String.format("'MONITOR' knowledge snapshot: %s", knowledge.toString()));
-//		LOGGER.info("'MONITOR' step done");
-//		
-//		LOGGER.info("'ANALYZE' step start");
-//		boolean isAnalyzable = analyse(source, knowledge);
-//		LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
-//		LOGGER.info("'ANALYZE' step done");
-//		if (isAnalyzable) {
-//		    LOGGER.info("'PLANNING' step start");
-//			reconfiguration = plan(source, options, knowledge);
-//            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
-//            LOGGER.info("'PLANNING' step done");
-//		}
+        }
+        LOGGER.info("'EXECUTE' step start");
+        return reconfiguration;
+    }
 
-	    LOGGER.info("'EXECUTE' step start");
-		return reconfiguration;
-	}
-	
+    protected abstract void monitor(State source, SharedKnowledge knowledge);
 
-	/**
-	 * 
-	 * implements lookup between QVToReconfiguration and actions retrieved from planning phase
-	 * 
-	 * */
-	private T findReconfiguration(Set<T> options, List<ResolvedAction> actions) {
-	    Map<String, T> reconfigurationMap = new HashMap<>();
-	    for(T option: options) {
-	        reconfigurationMap.put(option.getStringRepresentation(), option);
-	    }
-	    String resolvedActionName = actions.get(0).getAction().getName();
-	    T reconfiguration = reconfigurationMap.get(resolvedActionName);
-        LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
-	    return reconfiguration;
-	    
-	}
+    protected abstract boolean analyse(State source, SharedKnowledge knowledge);
 
-	protected abstract void monitor(State source, SharedKnowledge knowledge);
+    protected abstract Aa plan(State source, Set<Aa> options, SharedKnowledge knowledge);
 
-	protected abstract boolean analyse(State source, SharedKnowledge knowledge);
+    protected abstract Aa emptyReconfiguration();
 
-	protected abstract T plan(State source, Set<T> options, SharedKnowledge knowledge);
-	
-	protected abstract T emptyReconfiguration();
+    // FIXME: integration-ba
+//    /**
+//     * 
+//     * implements lookup between QVToReconfiguration and actions retrieved from planning phase
+//     * 
+//     * */
+//    private T findReconfiguration(Set<T> options, List<ResolvedAction> actions) {
+//        Map<String, T> reconfigurationMap = new HashMap<>();
+//        for(T option: options) {
+//            reconfigurationMap.put(option.getStringRepresentation(), option);
+//        }
+//        String resolvedActionName = actions.get(0).getAction().getName();
+//        T reconfiguration = reconfigurationMap.get(resolvedActionName);
+//        LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
+//        return reconfiguration;
+//        
+//    }
 }

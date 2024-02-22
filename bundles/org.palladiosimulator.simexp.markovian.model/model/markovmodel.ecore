@@ -5,80 +5,117 @@
   <eSubpackages name="markoventity" nsURI="http://palladiosimulator.org/markovmodel/markoventity/1.0"
       nsPrefix="markoventity">
     <eClassifiers xsi:type="ecore:EClass" name="MarkovModel">
+      <eTypeParameters name="A"/>
+      <eTypeParameters name="R"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="transitions" lowerBound="1"
-          upperBound="-1" eType="#//markoventity/Transition" containment="true"/>
+          upperBound="-1" containment="true">
+        <eGenericType eClassifier="#//markoventity/Transition">
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/A"/>
+        </eGenericType>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="stateSpace" lowerBound="1"
           upperBound="-1" eType="#//markoventity/State" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="reward" upperBound="-1"
-          eType="#//markoventity/Reward" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
-          eType="#//markoventity/Action" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="observations" upperBound="-1"
           containment="true">
-        <eGenericType eClassifier="#//markoventity/Observation">
-          <eTypeArguments/>
+        <eGenericType eClassifier="#//markoventity/Reward">
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/R"/>
         </eGenericType>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
+          containment="true">
+        <eGenericType eClassifier="#//markoventity/Action">
+          <eTypeArguments eTypeParameter="#//markoventity/MarkovModel/A"/>
+        </eGenericType>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observations" upperBound="-1"
+          eType="#//markoventity/Observation" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="State">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="produces" upperBound="-1"
-          eType="#//markoventity/Observation"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Observation">
-      <eTypeParameters name="O"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Observation/O"/>
-      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observed" eType="#//markoventity/State"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Transition">
+      <eTypeParameters name="A"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
           eType="#//markoventity/State"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
           eType="#//markoventity/State"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="label" eType="#//markoventity/Action"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="label">
+        <eGenericType eClassifier="#//markoventity/Action">
+          <eTypeArguments eTypeParameter="#//markoventity/Transition/A"/>
+        </eGenericType>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="probability" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Reward">
-      <eTypeParameters name="U"/>
-      <eOperations name="addWith" lowerBound="1" eType="#//markoventity/Reward">
-        <eParameters name="other" eType="#//markoventity/Reward"/>
+      <eTypeParameters name="R"/>
+      <eOperations name="addWith" lowerBound="1">
+        <eGenericType eClassifier="#//markoventity/Reward">
+          <eTypeArguments eTypeParameter="#//markoventity/Reward/R"/>
+        </eGenericType>
+        <eParameters name="other">
+          <eGenericType eClassifier="#//markoventity/Reward">
+            <eTypeArguments eTypeParameter="#//markoventity/Reward/R"/>
+          </eGenericType>
+        </eParameters>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Reward/U"/>
+        <eGenericType eTypeParameter="#//markoventity/Reward/R"/>
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Action">
-      <eTypeParameters name="T"/>
+      <eTypeParameters name="A"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1">
-        <eGenericType eTypeParameter="#//markoventity/Action/T"/>
+        <eGenericType eTypeParameter="#//markoventity/Action/A"/>
       </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="samplemodel" nsURI="http://palladiosimulator.org/markovmodel/samplemodel/1.0"
       nsPrefix="samplemodel">
     <eClassifiers xsi:type="ecore:EClass" name="Trajectory">
+      <eTypeParameters name="A"/>
+      <eTypeParameters name="R"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="samplePath" lowerBound="1"
-          upperBound="-1" eType="#//samplemodel/Sample" containment="true"/>
+          upperBound="-1" containment="true">
+        <eGenericType eClassifier="#//samplemodel/Sample">
+          <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/A"/>
+          <eTypeArguments eTypeParameter="#//samplemodel/Trajectory/R"/>
+        </eGenericType>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Sample">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="reward" eType="#//markoventity/Reward"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//markoventity/Action"/>
+      <eTypeParameters name="A"/>
+      <eTypeParameters name="R"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="reward">
+        <eGenericType eClassifier="#//markoventity/Reward">
+          <eTypeArguments eTypeParameter="#//samplemodel/Sample/R"/>
+        </eGenericType>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="action">
+        <eGenericType eClassifier="#//markoventity/Action">
+          <eTypeArguments eTypeParameter="#//samplemodel/Sample/A"/>
+        </eGenericType>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="pointInTime" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="current" lowerBound="1"
           eType="#//markoventity/State"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="next" lowerBound="1"
           eType="#//markoventity/State"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="observation">
-        <eGenericType eClassifier="#//markoventity/Observation">
-          <eTypeArguments/>
-        </eGenericType>
-      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="observation" eType="#//markoventity/Observation"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="SampleModel">
+      <eTypeParameters name="A"/>
+      <eTypeParameters name="R"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="trajectories" lowerBound="1"
-          upperBound="-1" eType="#//samplemodel/Trajectory" containment="true"/>
+          upperBound="-1" containment="true">
+        <eGenericType eClassifier="#//samplemodel/Trajectory">
+          <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/A"/>
+          <eTypeArguments eTypeParameter="#//samplemodel/SampleModel/R"/>
+        </eGenericType>
+      </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

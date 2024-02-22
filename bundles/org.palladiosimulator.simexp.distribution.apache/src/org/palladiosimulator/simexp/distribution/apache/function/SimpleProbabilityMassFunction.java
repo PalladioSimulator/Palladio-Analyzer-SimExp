@@ -9,33 +9,38 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 
-public class SimpleProbabilityMassFunction implements ProbabilityMassFunction {
+public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction<S> {
 
-	private final static double DEFAULT_VALUE = 0;
-	
-	EnumeratedDistribution<ProbabilityMassFunction.Sample> enumDistribution;
-	
-	public SimpleProbabilityMassFunction(Set<ProbabilityMassFunction.Sample> samples) {
-		this.enumDistribution = new EnumeratedDistribution<ProbabilityMassFunction.Sample>(asPairs(samples));
-	}
-	
-	private List<Pair<ProbabilityMassFunction.Sample,Double>> asPairs(Set<Sample> samples) {
-		return samples.stream().map(each -> Pair.create(each, each.getProbability())).collect(Collectors.toList());
-	}
+    private final static double DEFAULT_VALUE = 0;
 
-	@Override
-	public ProbabilityMassFunction.Sample drawSample() {
-		return enumDistribution.sample();
-	}
+    EnumeratedDistribution<ProbabilityMassFunction.Sample<S>> enumDistribution;
 
-	@Override
-	public double probability(ProbabilityMassFunction.Sample sample) {
-		return findSample(sample).orElse(DEFAULT_VALUE);
-	}
-	
-	private Optional<Double> findSample(Sample sample) {
-		return enumDistribution.getPmf().stream().filter(p -> p.getKey().equals(sample))
-												 .map(p -> p.getValue())	
-												 .findFirst();
-	}
+    public SimpleProbabilityMassFunction(Set<ProbabilityMassFunction.Sample<S>> samples) {
+        this.enumDistribution = new EnumeratedDistribution<>(asPairs(samples));
+    }
+
+    private List<Pair<ProbabilityMassFunction.Sample<S>, Double>> asPairs(Set<Sample<S>> samples) {
+        return samples.stream()
+            .map(each -> Pair.create(each, each.getProbability()))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProbabilityMassFunction.Sample<S> drawSample() {
+        return enumDistribution.sample();
+    }
+
+    @Override
+    public double probability(ProbabilityMassFunction.Sample<S> sample) {
+        return findSample(sample).orElse(DEFAULT_VALUE);
+    }
+
+    private Optional<Double> findSample(Sample<S> sample) {
+        return enumDistribution.getPmf()
+            .stream()
+            .filter(p -> p.getKey()
+                .equals(sample))
+            .map(p -> p.getValue())
+            .findFirst();
+    }
 }

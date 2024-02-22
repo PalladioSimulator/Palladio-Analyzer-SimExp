@@ -31,9 +31,7 @@
 		
 		<module>org.palladiosimulator.simexp.ui.workflow</module>
 		<!-- has reference to org.palladiosimulator.simexp.pcm.examples -->
-<!--
-		<module>org.palladiosimulator.simexp.pcm.ui</module>	
--->		
+	
 		<module>org.palladiosimulator.simexp.workflow</module>
 		
 		<module>org.palladiosimulator.simexp.pcm.prism</module>

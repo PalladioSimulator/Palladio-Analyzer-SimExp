@@ -1,12 +1,10 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
-import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.LOWER_THRESHOLD_REL;
-import static org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutor.UPPER_THRESHOLD_RT;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -16,114 +14,125 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class RobotCognitionReconfigurationStrategy implements Policy<Action<?>>, Initializable {
+import tools.mdsd.probdist.api.entity.CategoricalValue;
 
-	private static final Threshold THRESHOLD_RT = Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT);
-	private static final Threshold THRESHOLD_REL = Threshold.greaterThanOrEqualTo(LOWER_THRESHOLD_REL);
+public class RobotCognitionReconfigurationStrategy<C>
+        implements Policy<QVTOReconfigurator, Action<QVTOReconfigurator>>, Initializable {
 
-	private final SimulatedMeasurementSpecification reliabilitySpec;
-	private final SimulatedMeasurementSpecification responseTimeSpec;
+    private final Threshold thresholdRt;
+    private final Threshold thresholdRel;;
 
-	private boolean isDefaultMLModelActivated = true;
-	private boolean isFilteringActivated = false;
+    private final SimulatedMeasurementSpecification reliabilitySpec;
+    private final SimulatedMeasurementSpecification responseTimeSpec;
 
-	public RobotCognitionReconfigurationStrategy(SimulatedMeasurementSpecification reliabilitySpec,
-			SimulatedMeasurementSpecification responseTimeSpec) {
-		this.reliabilitySpec = reliabilitySpec;
-		this.responseTimeSpec = responseTimeSpec;
-	}
+    private boolean isDefaultMLModelActivated = true;
+    private boolean isFilteringActivated = false;
 
-	@Override
-	public void initialize() {
-		isDefaultMLModelActivated = true;
-		isFilteringActivated = false;
-	}
+    public RobotCognitionReconfigurationStrategy(SimulatedMeasurementSpecification reliabilitySpec,
+            SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt, double thresholdRel) {
+        this.reliabilitySpec = reliabilitySpec;
+        this.responseTimeSpec = responseTimeSpec;
+        this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
+        this.thresholdRel = Threshold.greaterThanOrEqualTo(thresholdRel);
+    }
 
-	@Override
-	public String getId() {
-		return "SimpleStrategy";
-	}
+    @Override
+    public void initialize() {
+        isDefaultMLModelActivated = true;
+        isFilteringActivated = false;
+    }
 
-	@Override
-	public Action<?> select(State source, Set<Action<?>> options) {
-		if ((source instanceof SelfAdaptiveSystemState<?>) == false) {
-			throw new RuntimeException("");
-		}
+    @Override
+    public String getId() {
+        return "SimpleStrategy";
+    }
 
-		var stateQuantity = ((SelfAdaptiveSystemState<?>) source).getQuantifiedState();
-		SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec).orElseThrow();
-		SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec).orElseThrow();
+    @Override
+    public Action<QVTOReconfigurator> select(State source, Set<Action<QVTOReconfigurator>> options) {
+        if ((source instanceof SelfAdaptiveSystemState) == false) {
+            throw new RuntimeException("");
+        }
 
-		var isReliabilityNotSatisfied = THRESHOLD_REL.isNotSatisfied(relSimMeasurement.getValue());
-		var isResponseTimeNotSatisfied = THRESHOLD_RT.isNotSatisfied(rtSimMeasurement.getValue());
+        var stateQuantity = ((SelfAdaptiveSystemState<C, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source)
+            .getQuantifiedState();
+        SimulatedMeasurement relSimMeasurement = stateQuantity.findMeasurementWith(reliabilitySpec)
+            .orElseThrow();
+        SimulatedMeasurement rtSimMeasurement = stateQuantity.findMeasurementWith(responseTimeSpec)
+            .orElseThrow();
 
-		if (isReliabilityNotSatisfied) {
-			return manageReliability(asReconfigurations(options));
-		} else if (isResponseTimeNotSatisfied) {
-			return managePerformance(asReconfigurations(options));
-		} else {
-			return QVToReconfiguration.empty();
-		}
-	}
+        var isReliabilityNotSatisfied = thresholdRel.isNotSatisfied(relSimMeasurement.getValue());
+        var isResponseTimeNotSatisfied = thresholdRt.isNotSatisfied(rtSimMeasurement.getValue());
 
-	private Action<?> manageReliability(List<QVToReconfiguration> options) {
-		if (isFilteringActivated == false) {
-			return activateFilteringReconfiguration(options);
-		} else if (isDefaultMLModelActivated) {
-			return switchToRobustMLModel(options);
-		} else {
-			return QVToReconfiguration.empty();
-		}
-	}
+        if (isReliabilityNotSatisfied) {
+            return manageReliability(asReconfigurations(options));
+        } else if (isResponseTimeNotSatisfied) {
+            return managePerformance(asReconfigurations(options));
+        } else {
+            return QVToReconfiguration.empty();
+        }
+    }
 
-	private Action<?> managePerformance(List<QVToReconfiguration> options) {
-		if (isDefaultMLModelActivated == false) {
-			return switchToDefaultMLModel(options);
-		} else if (isFilteringActivated) {
-			return deactivateFilteringReconfiguration(options);
-		} else {
-			return QVToReconfiguration.empty();
-		}
-	}
+    private Action<QVTOReconfigurator> manageReliability(List<QVToReconfiguration> options) {
+        if (isFilteringActivated == false) {
+            return activateFilteringReconfiguration(options);
+        } else if (isDefaultMLModelActivated) {
+            return switchToRobustMLModel(options);
+        } else {
+            return QVToReconfiguration.empty();
+        }
+    }
 
-	private Action<?> activateFilteringReconfiguration(List<QVToReconfiguration> options) {
-		isFilteringActivated = true;
+    private Action<QVTOReconfigurator> managePerformance(List<QVToReconfiguration> options) {
+        if (isDefaultMLModelActivated == false) {
+            return switchToDefaultMLModel(options);
+        } else if (isFilteringActivated) {
+            return deactivateFilteringReconfiguration(options);
+        } else {
+            return QVToReconfiguration.empty();
+        }
+    }
 
-		return selectOptionWith("ActivateFilterComponent", options);
-	}
+    private Action<QVTOReconfigurator> activateFilteringReconfiguration(List<QVToReconfiguration> options) {
+        isFilteringActivated = true;
 
-	private Action<?> deactivateFilteringReconfiguration(List<QVToReconfiguration> options) {
-		isFilteringActivated = false;
+        return selectOptionWith("ActivateFilterComponent", options);
+    }
 
-		return selectOptionWith("DeactivateFilterComponent", options);
-	}
+    private Action<QVTOReconfigurator> deactivateFilteringReconfiguration(List<QVToReconfiguration> options) {
+        isFilteringActivated = false;
 
-	private Action<?> switchToRobustMLModel(List<QVToReconfiguration> options) {
-		isDefaultMLModelActivated = false;
+        return selectOptionWith("DeactivateFilterComponent", options);
+    }
 
-		return selectOptionWith("SwitchToRobustMLModel", options);
-	}
+    private Action<QVTOReconfigurator> switchToRobustMLModel(List<QVToReconfiguration> options) {
+        isDefaultMLModelActivated = false;
 
-	private Action<?> switchToDefaultMLModel(List<QVToReconfiguration> options) {
-		isDefaultMLModelActivated = true;
+        return selectOptionWith("SwitchToRobustMLModel", options);
+    }
 
-		return selectOptionWith("SwitchToDefaultMLModel", options);
-	}
+    private Action<QVTOReconfigurator> switchToDefaultMLModel(List<QVToReconfiguration> options) {
+        isDefaultMLModelActivated = true;
 
-	private Action<?> selectOptionWith(String queriedName, List<QVToReconfiguration> options) {
-		for (QVToReconfiguration each : options) {
-			String reconfName = each.getStringRepresentation();
-			if (reconfName.equals(queriedName)) {
-				return each;
-			}
-		}
+        return selectOptionWith("SwitchToDefaultMLModel", options);
+    }
 
-		throw new RuntimeException("");
-	}
+    private Action<QVTOReconfigurator> selectOptionWith(String queriedName, List<QVToReconfiguration> options) {
+        for (QVToReconfiguration each : options) {
+            String reconfName = each.getStringRepresentation();
+            if (reconfName.equals(queriedName)) {
+                return each;
+            }
+        }
 
-	private List<QVToReconfiguration> asReconfigurations(Set<Action<?>> options) {
-		return options.stream().map(each -> (QVToReconfiguration) each).collect(Collectors.toList());
-	}
+        throw new RuntimeException("");
+    }
+
+    private List<QVToReconfiguration> asReconfigurations(Set<Action<QVTOReconfigurator>> options) {
+        return options.stream()
+            .map(each -> (QVToReconfiguration) each)
+            .collect(Collectors.toList());
+    }
 
 }

@@ -5,5 +5,5 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 
 public interface ObservationProducer {
 
-	public Observation<?> produceObservationGiven(State emittingState);
+    Observation produceObservationGiven(State emittingState);
 }

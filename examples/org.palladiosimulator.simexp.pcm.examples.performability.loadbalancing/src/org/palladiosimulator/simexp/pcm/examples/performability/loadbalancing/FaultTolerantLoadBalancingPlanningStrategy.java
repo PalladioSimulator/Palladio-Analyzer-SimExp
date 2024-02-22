@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
+import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -12,31 +14,33 @@ import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilitySt
 import org.palladiosimulator.simexp.pcm.examples.performability.PolicySelectionException;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class FaultTolerantLoadBalancingPlanningStrategy extends AbstractReconfigurationPlanningStrategy {
-    
-    
+import tools.mdsd.probdist.api.entity.CategoricalValue;
+
+public class FaultTolerantLoadBalancingPlanningStrategy<C, A> extends AbstractReconfigurationPlanningStrategy<C, A> {
+
     private static final String NODE_RECOVERY_QVTO_NAME = "nodeRecovery";
-    
-    public FaultTolerantLoadBalancingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec, PerformabilityStrategyConfiguration strategyConfiguration
-            , NodeRecoveryStrategy recoveryStrategy) {
+
+    public FaultTolerantLoadBalancingPlanningStrategy(PcmMeasurementSpecification responseTimeSpec,
+            PerformabilityStrategyConfiguration strategyConfiguration, NodeRecoveryStrategy<C, A> recoveryStrategy) {
         super(responseTimeSpec, strategyConfiguration, recoveryStrategy);
     }
-    
 
     @Override
-    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) throws PolicySelectionException {
-        SelfAdaptiveSystemState<?> sasState = (SelfAdaptiveSystemState<?>) source;
+    public QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
+            SharedKnowledge knowledge) throws PolicySelectionException {
+        SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<C, A, List<InputValue<CategoricalValue>>>) source;
         /**
-         * workarournd to implement node recovery behavior until we are able to realize this as QVTO transformation
+         * workarournd to implement node recovery behavior until we are able to realize this as QVTO
+         * transformation
          * 
-         * */
+         */
         recoveryStrategy.execute(sasState, knowledge);
-        
+
         return nodeRecovery(options);
     }
-    
+
     private QVToReconfiguration nodeRecovery(Set<QVToReconfiguration> options) throws PolicySelectionException {
-        return (QVToReconfiguration) findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
+        return findReconfiguration(NODE_RECOVERY_QVTO_NAME, options)
             .orElseThrow(() -> new PolicySelectionException(missingQvtoTransformationMessage(NODE_RECOVERY_QVTO_NAME)));
     }
 

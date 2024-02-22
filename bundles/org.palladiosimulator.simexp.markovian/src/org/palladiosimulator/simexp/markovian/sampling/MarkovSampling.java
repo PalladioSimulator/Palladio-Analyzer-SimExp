@@ -9,76 +9,75 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Samp
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
-public class MarkovSampling {
-	
-	private class SampleLoop {
-		
-		private int sampleIndex = 0;
-						
-		public boolean stillSamplesToIterate() {
-			return sampleIndex != horizon;
-		}
-		
-		public void incrementSampleIndex() {
-			sampleIndex++;
-		}
-		
-		public boolean isInitial() {
-			return sampleIndex == 0;
-		}
-		
-		public int getIterationIndex() {
-			return sampleIndex;
-		}
-		
-	}
-	
-	private final int horizon;
-	private final Markovian markovian; 
-	private final SampleModelAccessor sampleModelAccessor;
-	private final Optional<EpsilonGreedyStrategy> eGreedy;
-	
-	public MarkovSampling(MarkovianConfig config) {
-		this.horizon = config.horizon;
-		this.sampleModelAccessor = new SampleModelAccessor(Optional.empty());
-		this.markovian = config.markovian;
-		this.eGreedy = config.eGreedyStrategy;
-	}
-	
-	public Trajectory sampleTrajectory() {
-		SampleLoop sampleLoop = new SampleLoop();
-		while (sampleLoop.stillSamplesToIterate()) {
-			if (sampleLoop.isInitial()) {
-				sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
-			} else {
-				drawSample();
-			}
-			
-			sampleLoop.incrementSampleIndex();
-			
-			eGreedy.ifPresent(e -> e.adjust(sampleLoop.getIterationIndex()));
-		}
-		
-		return sampleModelAccessor.getCurrentTrajectory();
-	}
+public class MarkovSampling<A, R> {
 
-	public Sample drawSampleGiven(Sample last) {
-		Sample newSample = sampleModelAccessor.createTemplateSampleBy(last);
-		markovian.drawSample(newSample);
-		return newSample;
-	}
-	
-	private void drawSample() {
-		Sample result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
-		sampleModelAccessor.addSample(result);
-	}
-	
-	public Sample drawInitialSample() {
-		return markovian.determineInitialState();
-	}
-	
-	public int getHorizon() {
-		return horizon;
-	}
-	
+    private class SampleLoop {
+
+        private int sampleIndex = 0;
+
+        public boolean stillSamplesToIterate() {
+            return sampleIndex != horizon;
+        }
+
+        public void incrementSampleIndex() {
+            sampleIndex++;
+        }
+
+        public boolean isInitial() {
+            return sampleIndex == 0;
+        }
+
+        public int getIterationIndex() {
+            return sampleIndex;
+        }
+
+    }
+
+    private final int horizon;
+    private final Markovian<A, R> markovian;
+    private final SampleModelAccessor<A, R> sampleModelAccessor;
+    private final Optional<EpsilonGreedyStrategy<A>> eGreedy;
+
+    public MarkovSampling(MarkovianConfig<A, R> config) {
+        this.horizon = config.horizon;
+        this.sampleModelAccessor = new SampleModelAccessor<>(Optional.empty());
+        this.markovian = config.markovian;
+        this.eGreedy = config.eGreedyStrategy;
+    }
+
+    public Trajectory<A, R> sampleTrajectory() {
+        SampleLoop sampleLoop = new SampleLoop();
+        while (sampleLoop.stillSamplesToIterate()) {
+            if (sampleLoop.isInitial()) {
+                sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
+            } else {
+                drawSample();
+            }
+
+            sampleLoop.incrementSampleIndex();
+
+            eGreedy.ifPresent(e -> e.adjust(sampleLoop.getIterationIndex()));
+        }
+
+        return sampleModelAccessor.getCurrentTrajectory();
+    }
+
+    public Sample<A, R> drawSampleGiven(Sample<A, R> last) {
+        Sample<A, R> newSample = sampleModelAccessor.createTemplateSampleBy(last);
+        markovian.drawSample(newSample);
+        return newSample;
+    }
+
+    private void drawSample() {
+        Sample<A, R> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
+        sampleModelAccessor.addSample(result);
+    }
+
+    public Sample<A, R> drawInitialSample() {
+        return markovian.determineInitialState();
+    }
+
+    public int getHorizon() {
+        return horizon;
+    }
 }

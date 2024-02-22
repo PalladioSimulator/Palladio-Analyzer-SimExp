@@ -23,93 +23,93 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Transition extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Source</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Source</em>' reference.
-	 * @see #setSource(State)
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Source()
-	 * @model required="true"
-	 * @generated
-	 */
-	State getSource();
+public interface Transition<A> extends EObject {
+    /**
+     * Returns the value of the '<em><b>Source</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Source</em>' reference.
+     * @see #setSource(State)
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Source()
+     * @model required="true"
+     * @generated
+     */
+    State getSource();
 
-	/**
-	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getSource <em>Source</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Source</em>' reference.
-	 * @see #getSource()
-	 * @generated
-	 */
-	void setSource(State value);
+    /**
+     * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getSource <em>Source</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Source</em>' reference.
+     * @see #getSource()
+     * @generated
+     */
+    void setSource(State value);
 
-	/**
-	 * Returns the value of the '<em><b>Target</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Target</em>' reference.
-	 * @see #setTarget(State)
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Target()
-	 * @model required="true"
-	 * @generated
-	 */
-	State getTarget();
+    /**
+     * Returns the value of the '<em><b>Target</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Target</em>' reference.
+     * @see #setTarget(State)
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Target()
+     * @model required="true"
+     * @generated
+     */
+    State getTarget();
 
-	/**
-	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getTarget <em>Target</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Target</em>' reference.
-	 * @see #getTarget()
-	 * @generated
-	 */
-	void setTarget(State value);
+    /**
+     * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getTarget <em>Target</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Target</em>' reference.
+     * @see #getTarget()
+     * @generated
+     */
+    void setTarget(State value);
 
-	/**
-	 * Returns the value of the '<em><b>Label</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Label</em>' reference.
-	 * @see #setLabel(Action)
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Label()
-	 * @model
-	 * @generated
-	 */
-	Action getLabel();
+    /**
+     * Returns the value of the '<em><b>Label</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Label</em>' reference.
+     * @see #setLabel(Action)
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Label()
+     * @model
+     * @generated
+     */
+    Action<A> getLabel();
 
-	/**
-	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getLabel <em>Label</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Label</em>' reference.
-	 * @see #getLabel()
-	 * @generated
-	 */
-	void setLabel(Action value);
+    /**
+     * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getLabel <em>Label</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Label</em>' reference.
+     * @see #getLabel()
+     * @generated
+     */
+    void setLabel(Action<A> value);
 
-	/**
-	 * Returns the value of the '<em><b>Probability</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Probability</em>' attribute.
-	 * @see #setProbability(double)
-	 * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Probability()
-	 * @model
-	 * @generated
-	 */
-	double getProbability();
+    /**
+     * Returns the value of the '<em><b>Probability</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Probability</em>' attribute.
+     * @see #setProbability(double)
+     * @see org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityPackage#getTransition_Probability()
+     * @model
+     * @generated
+     */
+    double getProbability();
 
-	/**
-	 * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getProbability <em>Probability</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Probability</em>' attribute.
-	 * @see #getProbability()
-	 * @generated
-	 */
-	void setProbability(double value);
+    /**
+     * Sets the value of the '{@link org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Transition#getProbability <em>Probability</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Probability</em>' attribute.
+     * @see #getProbability()
+     * @generated
+     */
+    void setProbability(double value);
 
 } // Transition

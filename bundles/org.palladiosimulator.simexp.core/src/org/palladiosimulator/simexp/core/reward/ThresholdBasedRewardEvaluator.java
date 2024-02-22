@@ -13,45 +13,45 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Rew
 
 import com.google.common.collect.Lists;
 
-public class ThresholdBasedRewardEvaluator implements RewardEvaluator {
-	
-	private final List<Pair<SimulatedMeasurementSpecification, Threshold>> thresholds;
-	
-	protected ThresholdBasedRewardEvaluator(List<Pair<SimulatedMeasurementSpecification, Threshold>> thresholds) {
-		this.thresholds = thresholds;
-	}
-	
-	@SafeVarargs
-	public static ThresholdBasedRewardEvaluator with(Pair<SimulatedMeasurementSpecification, Threshold>...thresholds) {
-		return new ThresholdBasedRewardEvaluator(Arrays.asList(thresholds));
-	}
+public class ThresholdBasedRewardEvaluator implements RewardEvaluator<Integer> {
 
-	@Override
-	public Reward<Integer> evaluate(StateQuantity quantity) {
-		List<Pair<SimulatedMeasurement, Threshold>> thresholds = filterThresholds(quantity);
-		if (thresholds.isEmpty()) {
-			//TODO exception handling
-			throw new RuntimeException("");
-		}
-		
-		for (Pair<SimulatedMeasurement, Threshold> each : thresholds) {
-			SimulatedMeasurement measurement = each.getFirst();
-			Threshold threshold = each.getSecond();
-			if (threshold.isNotSatisfied(measurement.getValue())) {
-				return SimpleRewardSignal.createNegativReward();
-			}
-		}
-		return SimpleRewardSignal.createPositivReward();
-	}
-	
-	protected List<Pair<SimulatedMeasurement, Threshold>> filterThresholds(StateQuantity quantity) {
-		List<Pair<SimulatedMeasurement, Threshold>> matches = Lists.newArrayList();
-		for (Pair<SimulatedMeasurementSpecification, Threshold> each : thresholds) {
-			Optional<SimulatedMeasurement> match = quantity.findMeasurementWith(each.getFirst());
-			if (match.isPresent()) {
-				matches.add(Pair.of(match.get(), each.getSecond()));
-			}
-		}
-		return matches;
-	}
+    private final List<Pair<SimulatedMeasurementSpecification, Threshold>> thresholds;
+
+    protected ThresholdBasedRewardEvaluator(List<Pair<SimulatedMeasurementSpecification, Threshold>> thresholds) {
+        this.thresholds = thresholds;
+    }
+
+    @SafeVarargs
+    public static ThresholdBasedRewardEvaluator with(Pair<SimulatedMeasurementSpecification, Threshold>... thresholds) {
+        return new ThresholdBasedRewardEvaluator(Arrays.asList(thresholds));
+    }
+
+    @Override
+    public Reward<Integer> evaluate(StateQuantity quantity) {
+        List<Pair<SimulatedMeasurement, Threshold>> thresholds = filterThresholds(quantity);
+        if (thresholds.isEmpty()) {
+            // TODO exception handling
+            throw new RuntimeException("");
+        }
+
+        for (Pair<SimulatedMeasurement, Threshold> each : thresholds) {
+            SimulatedMeasurement measurement = each.getFirst();
+            Threshold threshold = each.getSecond();
+            if (threshold.isNotSatisfied(measurement.getValue())) {
+                return SimpleRewardSignal.createNegativReward();
+            }
+        }
+        return SimpleRewardSignal.createPositivReward();
+    }
+
+    protected List<Pair<SimulatedMeasurement, Threshold>> filterThresholds(StateQuantity quantity) {
+        List<Pair<SimulatedMeasurement, Threshold>> matches = Lists.newArrayList();
+        for (Pair<SimulatedMeasurementSpecification, Threshold> each : thresholds) {
+            Optional<SimulatedMeasurement> match = quantity.findMeasurementWith(each.getFirst());
+            if (match.isPresent()) {
+                matches.add(Pair.of(match.get(), each.getSecond()));
+            }
+        }
+        return matches;
+    }
 }

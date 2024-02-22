@@ -7,12 +7,16 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
 public interface ReconfigurationPlanningStrategy {
-    
-    
-    /**  workaround until all steps are supported as QVTO transformation will return an empty qvto transformation 
-     * @param responseTimeSpec TODO
-     * @throws PolicySelectionException */
-    QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) throws PolicySelectionException;
 
-    
+    /**
+     * workaround until all steps are supported as QVTO transformation will return an empty qvto
+     * transformation
+     * 
+     * @param responseTimeSpec
+     *            TODO
+     * @throws PolicySelectionException
+     */
+    QVToReconfiguration planReconfigurationSteps(State source, Set<QVToReconfiguration> options,
+            SharedKnowledge knowledge) throws PolicySelectionException;
+
 }
