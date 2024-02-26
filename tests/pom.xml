@@ -18,6 +18,7 @@
 		<module>org.palladiosimulator.simexp.dsl.kmodel.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.ui.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests</module>
+		<module>org.palladiosimulator.simexp.model.strategy.tests</module>
 	</modules>
 	
 </project>

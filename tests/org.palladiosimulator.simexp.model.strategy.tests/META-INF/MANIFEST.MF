@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.model.strategy.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.model.strategy.tests
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.palladiosimulator.simexp.model.strategy;bundle-version="1.0.0"
+Require-Bundle: org.junit;bundle-version="4.13.0",
+ org.mockito.mockito-merged;bundle-version="3.3.3",
+ net.bytebuddy.byte-buddy;bundle-version="1.10.9",
+ net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
+ org.objenesis;bundle-version="2.6.0"
+Automatic-Module-Name: org.palladiosimulator.simexp.model.strategy.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
