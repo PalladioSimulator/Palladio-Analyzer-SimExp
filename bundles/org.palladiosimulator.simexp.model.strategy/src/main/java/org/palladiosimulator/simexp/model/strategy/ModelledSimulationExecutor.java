@@ -11,12 +11,13 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.solver.models.PCMInstance;
 
-public abstract class ModelledSimulationExecutor<C, R>
-        extends PcmExperienceSimulationExecutor<C, QVTOReconfigurator, QVToReconfiguration, R> {
+public abstract class ModelledSimulationExecutor<R>
+        extends PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> {
     private final Kmodel kmodel;
 
-    protected ModelledSimulationExecutor(ExperienceSimulator<C, QVTOReconfigurator, R> experienceSimulator,
+    protected ModelledSimulationExecutor(ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator,
             Experiment experiment, SimulationParameters simulationParameters,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy,
             TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,
