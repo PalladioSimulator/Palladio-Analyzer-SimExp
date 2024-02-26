@@ -4,14 +4,16 @@ import java.util.Set;
 
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
+    // private final Kmodel kmodel;
 
-    public ModelledReconfigurationStrategy() {
-        // TODO Auto-generated constructor stub
+    public ModelledReconfigurationStrategy(Kmodel kmodel) {
+        // this.kmodel = kmodel;
     }
 
     @Override
