@@ -143,7 +143,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     config.getQualityObjective(), experiment, dbn, probabilityDistributionRegistry,
                     probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                     launchDescriptionProvider, config.getMonitorNames(), config.getPropertyFiles(),
-                    config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
+                    config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager, kmodel);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -176,7 +176,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            Kmodel kmodel) {
 
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
@@ -207,7 +208,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             case SimulationConstants.MODELLED -> new ModelledPcmExperienceSimulationExecutorFactory<>(experiment, dbn,
                     pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, kmodel);
 
             default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
             };
