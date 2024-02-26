@@ -40,6 +40,7 @@ import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.KModelLoader;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
+import org.palladiosimulator.simexp.model.strategy.ModelledPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -202,6 +203,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                     qvtoReconfigurationManager, simulationRunnerHolder);
+
+            case SimulationConstants.MODELLED -> new ModelledPcmExperienceSimulationExecutorFactory<>(experiment, dbn,
+                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
             default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
             };
