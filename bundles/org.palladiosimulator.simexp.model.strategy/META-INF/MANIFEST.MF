@@ -3,9 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Model Strategy
 Bundle-SymbolicName: org.palladiosimulator.simexp.model.strategy
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
+Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
+ org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
  org.palladiosimulator.simexp.core;bundle-version="1.0.0",
- org.apache.log4j;bundle-version="1.2.19"
+ org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
+ org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="5.2.0"
 Automatic-Module-Name: org.palladiosimulator.simexp.model.strategy
 Bundle-RequiredExecutionEnvironment: JavaSE-17

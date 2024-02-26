@@ -2,12 +2,13 @@ package org.palladiosimulator.simexp.model.strategy;
 
 import java.util.Set;
 
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public class ModelledReconfigurationStrategy extends ReconfigurationStrategy {
+public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
     public ModelledReconfigurationStrategy() {
         // TODO Auto-generated constructor stub
@@ -20,7 +21,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy {
     }
 
     @Override
-    protected Reconfiguration emptyReconfiguration() {
+    protected QVToReconfiguration emptyReconfiguration() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -38,7 +39,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy {
     }
 
     @Override
-    protected Reconfiguration plan(State source, Set options, SharedKnowledge knowledge) {
+    protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         // TODO Auto-generated method stub
         return null;
     }
