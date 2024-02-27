@@ -1,15 +1,24 @@
 package org.palladiosimulator.simexp.model.strategy;
 
 import java.util.List;
+import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
+import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
+import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
@@ -43,26 +52,28 @@ public class ModelledPcmExperienceSimulationExecutorFactory<R extends Number> ex
 
     @Override
     public ModelledSimulationExecutor<R> create() {
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator =
-        createExperienceSimulator(experiment, specs, 
-                List<ExperienceSimulationRunner> runners,
-         params, 
-        Initializable beforeExecution,
-        EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
-        simulatedExperienceStore,
-        SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, 
-        Set<QVToReconfiguration> reconfigurations, 
-        RewardEvaluator<R> evaluator
-        , boolean hidden);
-        
-        /*return new ModelledSimulationExecutor<>(experienceSimulator, experiment, params,
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy,
-        TotalRewardCalculation rewardCalculation, 
-        experimentProvider, qvtoReconfigurationManager,
-        kmodel);*/
-        
-        return null;
+        // TODO: remove
+        kmodel.getClass();
+
+        List<ExperienceSimulationRunner> runners = null;
+        Initializable beforeExecution = null;
+        EnvironmentProcess<QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> envProcess = null;
+        SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> navigator = null;
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = null;
+        Set<QVToReconfiguration> reconfigurations = null;
+        RewardEvaluator<R> evaluator = null;
+        boolean hidden = false;
+
+        TotalRewardCalculation rewardCalculation = null;
+
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator = createExperienceSimulator(
+                experiment, specs, runners, params, beforeExecution, envProcess, simulatedExperienceStore, navigator,
+                reconfStrategy, reconfigurations, evaluator, hidden);
+
+        ModelledSimulationExecutor<R> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
+                params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return executor;
+
     }
 
 }
