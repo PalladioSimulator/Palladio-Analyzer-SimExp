@@ -21,8 +21,4 @@ public class SimulationConstants {
     public static final String SIMULATION_ENGINE_PRISM = "Prism";
 
     public static final String QUALITY_OBJECTIVE = "Quality Objective";
-    public static final String PERFORMANCE = "Performance";
-    public static final String RELIABILITY = "Reliability";
-    public static final String PERFORMABILITY = "Performability";
-    public static final String MODELLED = "Modelled";
 }

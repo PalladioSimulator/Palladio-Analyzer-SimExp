@@ -30,6 +30,7 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
@@ -139,11 +140,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
+            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
+
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
-                    config.getQualityObjective(), experiment, dbn, probabilityDistributionRegistry,
-                    probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                    launchDescriptionProvider, config.getMonitorNames(), config.getPropertyFiles(),
-                    config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager, kmodel);
+                    simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
+                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
+                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
+                    qvtoReconfigurationManager, kmodel);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -169,7 +172,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective,
+    private SimulationExecutor createSimulationExecutor(String simulationEngine, SimulationKind simulationKind,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -188,29 +191,28 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 .toList();
 
             // FIMEX: kmodel integration into factories
-            yield switch (qualityObjective) {
-            case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            yield switch (simulationKind) {
+            case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
-                    experiment, dbn, pcmSpecs, simulationParameters,
-                    new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, simulationRunnerHolder);
+            case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case SimulationConstants.MODELLED -> new ModelledPcmExperienceSimulationExecutorFactory<>(experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            case MODELLED -> new ModelledPcmExperienceSimulationExecutorFactory<>(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, kmodel);
 
-            default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
+            default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };
         }
 
