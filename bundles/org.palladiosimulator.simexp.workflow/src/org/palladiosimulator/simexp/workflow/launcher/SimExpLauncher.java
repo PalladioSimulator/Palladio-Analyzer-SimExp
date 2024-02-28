@@ -30,6 +30,7 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
@@ -62,8 +63,6 @@ import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
-
-import com.google.common.base.Objects;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
@@ -140,13 +139,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
-            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
+            SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
+            SimulationEngine simulationEngine = config.getSimulationEngine();
 
-            SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
-                    simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
-                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
-                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
-                    qvtoReconfigurationManager, kmodel);
+            SimulationExecutor simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind,
+                    experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+                    probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
+                    config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager,
+                    kmodel);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -172,8 +172,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createSimulationExecutor(String simulationEngine, SimulationKind simulationKind,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createSimulationExecutor(SimulationEngine simulationEngine,
+            SimulationKind simulationKind, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -184,7 +184,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
-        case SimulationConstants.SIMULATION_ENGINE_PCM -> {
+        case PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
             List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
                 .map(provider::getSpecification)
@@ -216,7 +216,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             };
         }
 
-        case SimulationConstants.SIMULATION_ENGINE_PRISM -> {
+        case PRISM -> {
             PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
             List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
                 .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
@@ -248,7 +248,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 }
             }
 
-            String simulationEngine = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
+            String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
+            SimulationEngine simulationEngine = SimulationEngine.fromName(simulationEngineStr);
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -268,7 +269,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             String qualityObjective = StringUtils.EMPTY;
             String monitorRepositoryFile = StringUtils.EMPTY;
             List<String> configuredMonitors = new ArrayList<>();
-            if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PCM, simulationEngine)) {
+            if (simulationEngine == SimulationEngine.PCM) {
                 qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
 
                 monitorRepositoryFile = (String) launchConfigurationParams
@@ -282,7 +283,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             /** simulation type = PRISM */
             List<String> prismProperties = new ArrayList<>();
             List<String> prismModules = new ArrayList<>();
-            if (Objects.equal(SimulationConstants.SIMULATION_ENGINE_PRISM, simulationEngine)) {
+            if (simulationEngine == SimulationEngine.PRISM) {
                 List<String> launchConfigPrismProperties = (List<String>) launchConfigurationParams
                     .get(ModelFileTypeConstants.PRISM_PROPERTY_FILE);
                 List<String> launchConfigModulesProperties = (List<String>) launchConfigurationParams

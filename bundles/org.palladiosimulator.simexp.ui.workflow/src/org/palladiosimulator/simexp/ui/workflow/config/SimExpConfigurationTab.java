@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
@@ -109,7 +110,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
     private void createPrismTab() {
         TabItem prismTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-        prismTab.setText(SimulationConstants.SIMULATION_ENGINE_PRISM);
+        prismTab.setText(SimulationEngine.PRISM.getName());
+        prismTab.setData(SimulationEngine.PRISM);
 
         final Composite prismContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
         prismContainer.setLayout(new GridLayout());
@@ -128,7 +130,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
     private void createPcmTab() {
         TabItem pcmTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-        pcmTab.setText(SimulationConstants.SIMULATION_ENGINE_PCM);
+        pcmTab.setText(SimulationEngine.PCM.getName());
+        pcmTab.setData(SimulationEngine.PCM);
 
         final Composite pcmContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
         pcmContainer.setLayout(new GridLayout());
@@ -278,8 +281,10 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
         configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
 
-        configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE,
-                simulationEngineTabFolder.getSelection()[0].getText());
+        TabItem engineItem = simulationEngineTabFolder.getSelection()[0];
+        SimulationEngine simulationEngine = (SimulationEngine) engineItem.getData();
+        configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE, simulationEngine.getName());
+
         for (SimulationKind kind : SimulationKind.values()) {
             Button button = simulationKindMap.get(kind);
             if (button.getSelection()) {
@@ -344,16 +349,16 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             return false;
         }
 
-        if (simulationEngineTabFolder.getSelection()[0].getText()
-            .equals(SimulationConstants.SIMULATION_ENGINE_PCM)) {
+        TabItem engineItem = simulationEngineTabFolder.getSelection()[0];
+        SimulationEngine simulationEngine = (SimulationEngine) engineItem.getData();
+        if (simulationEngine == SimulationEngine.PCM) {
             if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(),
                     ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
                 setErrorMessage("Monitor Repository is missing.");
                 return false;
             }
 
-        } else if (simulationEngineTabFolder.getSelection()[0].getText()
-            .equals(SimulationConstants.SIMULATION_ENGINE_PRISM)) {
+        } else if (simulationEngine == SimulationEngine.PRISM) {
             if (!textModuleFiles.getText()
                 .isBlank()) {
                 String[] moduleFiles = textModuleFiles.getText()

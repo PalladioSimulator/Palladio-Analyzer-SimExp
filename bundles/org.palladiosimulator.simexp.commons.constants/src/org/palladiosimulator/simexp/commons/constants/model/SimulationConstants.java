@@ -17,8 +17,5 @@ public class SimulationConstants {
     public static final String NUMBER_OF_SIMULATIONS_PER_RUN = "NumberOfSimulationsPerRun";
 
     public static final String SIMULATION_ENGINE = "Simulation Engine";
-    public static final String SIMULATION_ENGINE_PCM = "PCM";
-    public static final String SIMULATION_ENGINE_PRISM = "Prism";
-
     public static final String QUALITY_OBJECTIVE = "Quality Objective";
 }
