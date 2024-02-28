@@ -222,7 +222,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         try {
             String selectedEngine = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
-                    SimulationConstants.DEFAULT_SIMULATION_ENGINE);
+                    SimulationConstants.DEFAULT_SIMULATION_ENGINE.getName());
             Arrays.stream(simulationEngineTabFolder.getItems())
                 .filter(item -> item.getText()
                     .equals(selectedEngine))
@@ -234,7 +234,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         try {
             String selectedQualityObjective = configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE,
-                    SimulationConstants.DEFAULT_QUALITY_OBJECTIVE);
+                    SimulationConstants.DEFAULT_QUALITY_OBJECTIVE.getName());
             SimulationKind configured = SimulationKind.fromName(selectedQualityObjective);
             Button button = simulationKindMap.get(configured);
             button.setSelection(true);
