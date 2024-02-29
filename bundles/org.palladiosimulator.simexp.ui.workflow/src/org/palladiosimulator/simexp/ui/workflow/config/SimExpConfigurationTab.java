@@ -14,7 +14,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -90,7 +89,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
 
         Composite simulationParent = new Composite(container, SWT.BORDER);
-        simulationParent.setBackground(new Color(128, 0, 128));
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationParent.setLayout(new GridLayout(2, false));
 
@@ -129,17 +127,14 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             simulationEngineMap.put(engine, button);
         }
 
-        simulationDetails.setBackground(new Color(128, 0, 0));
         simulationDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationDetails.setLayout(new GridLayout());
 
         Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
         createPcmTab(pcmDetails);
-        pcmDetails.setBackground(new Color(0, 128, 128));
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
         createPrismTab(prismDetails);
-        prismDetails.setBackground(new Color(0, 128, 0));
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
     }
 
