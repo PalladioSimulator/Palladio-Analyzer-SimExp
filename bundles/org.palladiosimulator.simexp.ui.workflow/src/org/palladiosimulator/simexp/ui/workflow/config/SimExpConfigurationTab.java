@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
@@ -43,10 +41,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textSimulationID;
     private Text textNumberOfRuns;
     private Text textNumerOfSimulationsPerRun;
-    private TabFolder simulationEngineTabFolder;
 
     private Map<SimulationEngine, Button> simulationEngineMap;
+    private Map<SimulationEngine, Composite> engineDetailsMap;
     private Map<SimulationKind, Button> simulationKindMap;
+    private Composite simulationDetails;
 
     private Text textMonitorRepository;
     private List monitors;
@@ -97,14 +96,13 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationParent.setLayout(new GridLayout(2, false));
 
-        final Map<SimulationEngine, Composite> engineDetailsMap = new HashMap<>();
-
         Group simulationEngineGroup = new Group(simulationParent, SWT.NONE);
         simulationEngineGroup.setText(SimulationConstants.SIMULATION_ENGINE);
         simulationEngineGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
         simulationEngineMap = new HashMap<>();
-        Composite simulationDetails = new Composite(simulationParent, SWT.NONE);
+        engineDetailsMap = new HashMap<>();
+        simulationDetails = new Composite(simulationParent, SWT.NONE);
         for (SimulationEngine engine : SimulationEngine.values()) {
             Button button = new Button(simulationEngineGroup, SWT.RADIO);
             button.setText(engine.getName());
@@ -145,15 +143,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         createPrismTab(prismDetails);
         prismDetails.setBackground(new Color(0, 128, 0));
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
-
-        // TODO move to setDefaults
-        Button engineButton = simulationEngineMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
-        engineButton.setSelection(true);
-        Composite detailsComposite = engineDetailsMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
-        GridData layoutData = (GridData) detailsComposite.getLayoutData();
-        layoutData.exclude = false;
-        detailsComposite.setVisible(true);
-        simulationDetails.layout();
     }
 
     private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
@@ -265,13 +254,21 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         }
 
         try {
-            String selectedEngine = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
+            String selectedEngineName = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
                     SimulationConstants.DEFAULT_SIMULATION_ENGINE.getName());
-            Arrays.stream(simulationEngineTabFolder.getItems())
-                .filter(item -> item.getText()
-                    .equals(selectedEngine))
-                .findAny()
-                .ifPresent(simulationEngineTabFolder::setSelection);
+            /*
+             * Arrays.stream(simulationEngineTabFolder.getItems()) .filter(item -> item.getText()
+             * .equals(selectedEngine)) .findAny()
+             * .ifPresent(simulationEngineTabFolder::setSelection);
+             */
+            SimulationEngine selectedEngine = SimulationEngine.fromName(selectedEngineName);
+            Button engineButton = simulationEngineMap.get(selectedEngine);
+            engineButton.setSelection(true);
+            Composite detailsComposite = engineDetailsMap.get(selectedEngine);
+            GridData layoutData = (GridData) detailsComposite.getLayoutData();
+            layoutData.exclude = false;
+            detailsComposite.setVisible(true);
+            simulationDetails.layout();
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
         }
@@ -325,8 +322,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
         configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
 
-        TabItem engineItem = simulationEngineTabFolder.getSelection()[0];
-        SimulationEngine simulationEngine = (SimulationEngine) engineItem.getData();
+        SimulationEngine simulationEngine = getSelectedSimulationEngine();
         configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE, simulationEngine.getName());
 
         for (SimulationKind kind : SimulationKind.values()) {
@@ -345,6 +341,17 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             .split(";")));
         configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, Arrays.asList(textModuleFiles.getText()
             .split(";")));
+    }
+
+    private SimulationEngine getSelectedSimulationEngine() {
+        for (Map.Entry<SimulationEngine, Button> entry : simulationEngineMap.entrySet()) {
+            Button button = entry.getValue();
+            if (button.getSelection()) {
+                SimulationEngine simulationEngine = (SimulationEngine) button.getData();
+                return simulationEngine;
+            }
+        }
+        throw new RuntimeException("no radio button selected");
     }
 
     @Override
@@ -393,8 +400,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             return false;
         }
 
-        TabItem engineItem = simulationEngineTabFolder.getSelection()[0];
-        SimulationEngine simulationEngine = (SimulationEngine) engineItem.getData();
+        SimulationEngine simulationEngine = getSelectedSimulationEngine();
         if (simulationEngine == SimulationEngine.PCM) {
             if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(),
                     ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
