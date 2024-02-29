@@ -2,7 +2,8 @@
 bin/
 target/
 src-gen/
-xtend-gen/
+xtend-gen/*
+!xtend-gen/.gitkeep
 edp2/
 .ipynb_checkpoints/
 **__pycache__**
