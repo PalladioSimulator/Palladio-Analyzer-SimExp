@@ -256,11 +256,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         try {
             String selectedEngineName = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
                     SimulationConstants.DEFAULT_SIMULATION_ENGINE.getName());
-            /*
-             * Arrays.stream(simulationEngineTabFolder.getItems()) .filter(item -> item.getText()
-             * .equals(selectedEngine)) .findAny()
-             * .ifPresent(simulationEngineTabFolder::setSelection);
-             */
             SimulationEngine selectedEngine = SimulationEngine.fromName(selectedEngineName);
             Button engineButton = simulationEngineMap.get(selectedEngine);
             engineButton.setSelection(true);
