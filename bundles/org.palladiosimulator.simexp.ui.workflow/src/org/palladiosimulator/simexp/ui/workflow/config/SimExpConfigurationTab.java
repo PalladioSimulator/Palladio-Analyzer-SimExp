@@ -45,7 +45,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Map<SimulationEngine, Button> simulationEngineMap;
     private Map<SimulationEngine, Composite> engineDetailsMap;
     private Map<SimulationKind, Button> simulationKindMap;
-    private Composite simulationDetails;
 
     private Text textMonitorRepository;
     private List monitors;
@@ -54,7 +53,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textModuleFiles;
     private Text textPropertyFiles;
 
-    private Composite container;
     private ModifyListener modifyListener;
 
     @Override
@@ -66,7 +64,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
             }
         };
-        container = new Composite(parent, SWT.NONE);
+        Composite container = new Composite(parent, SWT.NONE);
         setControl(container);
         container.setLayout(new GridLayout());
 
@@ -102,7 +100,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
         simulationEngineMap = new HashMap<>();
         engineDetailsMap = new HashMap<>();
-        simulationDetails = new Composite(simulationParent, SWT.NONE);
+        Composite simulationDetails = new Composite(simulationParent, SWT.NONE);
         for (SimulationEngine engine : SimulationEngine.values()) {
             Button button = new Button(simulationEngineGroup, SWT.RADIO);
             button.setText(engine.getName());
@@ -263,7 +261,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             GridData layoutData = (GridData) detailsComposite.getLayoutData();
             layoutData.exclude = false;
             detailsComposite.setVisible(true);
-            simulationDetails.layout();
+            Composite detailsParent = detailsComposite.getParent();
+            detailsParent.layout();
         } catch (CoreException e) {
             LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
         }
