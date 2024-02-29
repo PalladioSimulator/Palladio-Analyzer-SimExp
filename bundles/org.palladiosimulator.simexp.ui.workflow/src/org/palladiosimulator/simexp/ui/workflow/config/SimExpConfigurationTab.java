@@ -92,9 +92,12 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationParent.setLayout(new GridLayout(2, false));
 
-        Group simulationEngineGroup = new Group(simulationParent, SWT.NONE);
+        Composite simulationEngineContainer = new Composite(simulationParent, SWT.NONE);
+        simulationEngineContainer.setLayoutData(new GridData(SWT.None, SWT.TOP, false, true));
+        simulationEngineContainer.setLayout(new GridLayout());
+
+        Group simulationEngineGroup = new Group(simulationEngineContainer, SWT.NONE);
         simulationEngineGroup.setText(SimulationConstants.SIMULATION_ENGINE);
-        simulationEngineGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
         simulationEngineMap = new HashMap<>();
         engineDetailsMap = new HashMap<>();
@@ -142,8 +145,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         Group content = new Group(parent, SWT.NONE);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.exclude = true;
-        content.setVisible(false);
         content.setLayoutData(layoutData);
+        content.setVisible(false);
         content.setLayout(new GridLayout());
         content.setText(engine.getName());
         return content;
