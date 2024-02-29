@@ -14,6 +14,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,6 +45,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textNumerOfSimulationsPerRun;
     private TabFolder simulationEngineTabFolder;
 
+    private Map<SimulationEngine, Button> simulationEngineMap;
     private Map<SimulationKind, Button> simulationKindMap;
 
     private Text textMonitorRepository;
@@ -90,54 +92,97 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         textNumerOfSimulationsPerRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
 
-        final Label simulationEngineLabel = new Label(container, SWT.NONE);
-        simulationEngineLabel.setText("Simulation Engine");
+        Composite simulationParent = new Composite(container, SWT.BORDER);
+        simulationParent.setBackground(new Color(128, 0, 128));
+        simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        simulationParent.setLayout(new GridLayout(2, false));
 
-        simulationEngineTabFolder = new TabFolder(container, SWT.BORDER);
-        simulationEngineTabFolder.setLayout(new GridLayout());
-        simulationEngineTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        simulationEngineTabFolder.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                setDirty(true);
-                updateLaunchConfigurationDialog();
-            }
-        });
+        final Map<SimulationEngine, Composite> engineDetailsMap = new HashMap<>();
 
-        createPcmTab();
-        createPrismTab();
+        Group simulationEngineGroup = new Group(simulationParent, SWT.NONE);
+        simulationEngineGroup.setText(SimulationConstants.SIMULATION_ENGINE);
+        simulationEngineGroup.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+        simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
+        simulationEngineMap = new HashMap<>();
+        Composite simulationDetails = new Composite(simulationParent, SWT.NONE);
+        for (SimulationEngine engine : SimulationEngine.values()) {
+            Button button = new Button(simulationEngineGroup, SWT.RADIO);
+            button.setText(engine.getName());
+            button.setData(engine);
+            button.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    Button selectedButton = (Button) e.widget;
+                    SimulationEngine selectedEngine = (SimulationEngine) selectedButton.getData();
+                    for (Map.Entry<SimulationEngine, Composite> entry : engineDetailsMap.entrySet()) {
+                        Composite detailsComposite = entry.getValue();
+                        GridData layoutData = (GridData) detailsComposite.getLayoutData();
+                        if (selectedEngine == entry.getKey()) {
+                            layoutData.exclude = false;
+                            detailsComposite.setVisible(true);
+                        } else {
+                            layoutData.exclude = true;
+                            detailsComposite.setVisible(false);
+                        }
+                    }
+                    simulationDetails.layout();
+                }
+            });
+
+            simulationEngineMap.put(engine, button);
+        }
+
+        simulationDetails.setBackground(new Color(128, 0, 0));
+        simulationDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        simulationDetails.setLayout(new GridLayout());
+
+        Composite pcmDetails = createPcmTab(simulationDetails);
+        engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
+        // pcmDetails.setVisible(false);
+        Composite prismDetails = createPrismTab(simulationDetails);
+        engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
+        // prismDetails.setVisible(false);
+
+        // Composite detailsComposite =
+        // engineDetailsMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
+        // detailsComposite.setVisible(true);
+        Button engineButton = simulationEngineMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
+        engineButton.setSelection(true);
     }
 
-    private void createPrismTab() {
-        TabItem prismTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-        prismTab.setText(SimulationEngine.PRISM.getName());
-        prismTab.setData(SimulationEngine.PRISM);
+    private Composite createPrismTab(Composite parent) {
+        Group content = new Group(parent, SWT.NONE);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        layoutData.exclude = true;
+        content.setLayoutData(layoutData);
+        content.setLayout(new GridLayout());
+        content.setBackground(new Color(0, 128, 0));
+        content.setText(SimulationEngine.PRISM.getName());
 
-        final Composite prismContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
-        prismContainer.setLayout(new GridLayout());
-        prismTab.setControl(prismContainer);
-
-        textModuleFiles = new Text(prismContainer, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(prismContainer, modifyListener, "Module Files",
+        textModuleFiles = new Text(content, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(content, modifyListener, "Module Files",
                 ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, "Select Module Files", getShell(),
                 true, true, ModelFileTypeConstants.EMPTY_STRING, true);
 
-        textPropertyFiles = new Text(prismContainer, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(prismContainer, modifyListener, "Property Files",
+        textPropertyFiles = new Text(content, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(content, modifyListener, "Property Files",
                 ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles, "Select Property Files",
                 getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
+
+        return content;
     }
 
-    private void createPcmTab() {
-        TabItem pcmTab = new TabItem(simulationEngineTabFolder, SWT.NULL);
-        pcmTab.setText(SimulationEngine.PCM.getName());
-        pcmTab.setData(SimulationEngine.PCM);
+    private Composite createPcmTab(Composite parent) {
+        Group content = new Group(parent, SWT.NONE);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        layoutData.exclude = true;
+        content.setLayoutData(layoutData);
+        content.setBackground(new Color(0, 0, 128));
+        content.setLayout(new GridLayout());
+        content.setText(SimulationEngine.PCM.getName());
 
-        final Composite pcmContainer = new Composite(simulationEngineTabFolder, SWT.NONE);
-        pcmContainer.setLayout(new GridLayout());
-        pcmTab.setControl(pcmContainer);
-
-        final Group qualityObjectivesGroup = new Group(pcmContainer, SWT.NONE);
+        final Group qualityObjectivesGroup = new Group(content, SWT.NONE);
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 
@@ -153,6 +198,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             Button button = new Button(qualityObjectivesGroup, SWT.RADIO);
             button.setText(kind.getName());
             button.addSelectionListener(new SelectionAdapter() {
+
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     if (button.getSelection()) {
@@ -166,20 +212,20 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             simulationKindMap.put(kind, button);
         }
 
-        textMonitorRepository = new Text(pcmContainer, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(pcmContainer, modifyListener, "Monitor Repository File",
+        textMonitorRepository = new Text(content, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(content, modifyListener, "Monitor Repository File",
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository,
                 "Select Monitor Repository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
 
-        final Group monitorsGroup = new Group(pcmContainer, SWT.NONE);
+        final Group monitorsGroup = new Group(content, SWT.NONE);
         monitorsGroup.setText("Monitors");
         monitorsGroup.setLayout(new GridLayout(1, false));
         monitorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        monitors = new List(monitorsGroup, SWT.MULTI | SWT.BORDER);
+        monitors = new List(content, SWT.MULTI | SWT.BORDER);
         monitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final Composite failureComposite = new Composite(pcmContainer, SWT.NONE);
+        final Composite failureComposite = new Composite(content, SWT.NONE);
         failureComposite.setLayout(new GridLayout());
         failureComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false));
 
@@ -187,6 +233,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
                 ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel,
                 "Select Failure Scenario File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+
+        return content;
     }
 
     @Override
