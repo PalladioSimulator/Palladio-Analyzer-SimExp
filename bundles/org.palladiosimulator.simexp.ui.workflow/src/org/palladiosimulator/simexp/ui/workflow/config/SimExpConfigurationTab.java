@@ -214,7 +214,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         monitorsGroup.setLayout(new GridLayout(1, false));
         monitorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        monitors = new List(content, SWT.MULTI | SWT.BORDER);
+        monitors = new List(monitorsGroup, SWT.MULTI | SWT.BORDER);
         monitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         final Composite failureComposite = new Composite(content, SWT.NONE);
