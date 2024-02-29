@@ -52,11 +52,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textModuleFiles;
     private Text textPropertyFiles;
 
-    private ModifyListener modifyListener;
-
     @Override
     public void createControl(Composite parent) {
-        modifyListener = new ModifyListener() {
+        ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
                 setDirty(true);
@@ -134,10 +132,10 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationDetails.setLayout(new GridLayout());
 
         Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
-        createPcmTab(pcmDetails);
+        createPcmTab(pcmDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
-        createPrismTab(prismDetails);
+        createPrismTab(prismDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
     }
 
@@ -152,7 +150,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         return content;
     }
 
-    private void createPrismTab(Composite parent) {
+    private void createPrismTab(Composite parent, ModifyListener modifyListener) {
         textModuleFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(parent, modifyListener, "Module Files",
                 ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, "Select Module Files", getShell(),
@@ -164,7 +162,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
     }
 
-    private void createPcmTab(Composite content) {
+    private void createPcmTab(Composite content, ModifyListener modifyListener) {
         final Group qualityObjectivesGroup = new Group(content, SWT.NONE);
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
