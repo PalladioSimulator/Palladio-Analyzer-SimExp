@@ -137,51 +137,43 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationDetails.setLayout(new GridLayout());
 
-        Composite pcmDetails = createPcmTab(simulationDetails);
+        Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
+        createPcmTab(pcmDetails);
+        pcmDetails.setBackground(new Color(0, 128, 128));
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
-        // pcmDetails.setVisible(false);
-        Composite prismDetails = createPrismTab(simulationDetails);
+        Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
+        createPrismTab(prismDetails);
+        prismDetails.setBackground(new Color(0, 128, 0));
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
-        // prismDetails.setVisible(false);
 
-        // Composite detailsComposite =
-        // engineDetailsMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
-        // detailsComposite.setVisible(true);
+        // TODO move to setDefaults
         Button engineButton = simulationEngineMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
         engineButton.setSelection(true);
     }
 
-    private Composite createPrismTab(Composite parent) {
+    private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
         Group content = new Group(parent, SWT.NONE);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.exclude = true;
         content.setLayoutData(layoutData);
         content.setLayout(new GridLayout());
-        content.setBackground(new Color(0, 128, 0));
-        content.setText(SimulationEngine.PRISM.getName());
-
-        textModuleFiles = new Text(content, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(content, modifyListener, "Module Files",
-                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, "Select Module Files", getShell(),
-                true, true, ModelFileTypeConstants.EMPTY_STRING, true);
-
-        textPropertyFiles = new Text(content, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(content, modifyListener, "Property Files",
-                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles, "Select Property Files",
-                getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
-
+        content.setText(engine.getName());
         return content;
     }
 
-    private Composite createPcmTab(Composite parent) {
-        Group content = new Group(parent, SWT.NONE);
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        layoutData.exclude = true;
-        content.setLayoutData(layoutData);
-        content.setBackground(new Color(0, 0, 128));
-        content.setLayout(new GridLayout());
-        content.setText(SimulationEngine.PCM.getName());
+    private void createPrismTab(Composite parent) {
+        textModuleFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(parent, modifyListener, "Module Files",
+                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, "Select Module Files", getShell(),
+                true, true, ModelFileTypeConstants.EMPTY_STRING, true);
 
+        textPropertyFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(parent, modifyListener, "Property Files",
+                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles, "Select Property Files",
+                getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
+    }
+
+    private void createPcmTab(Composite content) {
         final Group qualityObjectivesGroup = new Group(content, SWT.NONE);
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -233,8 +225,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
                 ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel,
                 "Select Failure Scenario File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
-
-        return content;
     }
 
     @Override
