@@ -149,12 +149,18 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         // TODO move to setDefaults
         Button engineButton = simulationEngineMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
         engineButton.setSelection(true);
+        Composite detailsComposite = engineDetailsMap.get(SimulationConstants.DEFAULT_SIMULATION_ENGINE);
+        GridData layoutData = (GridData) detailsComposite.getLayoutData();
+        layoutData.exclude = false;
+        detailsComposite.setVisible(true);
+        simulationDetails.layout();
     }
 
     private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
         Group content = new Group(parent, SWT.NONE);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.exclude = true;
+        content.setVisible(false);
         content.setLayoutData(layoutData);
         content.setLayout(new GridLayout());
         content.setText(engine.getName());
