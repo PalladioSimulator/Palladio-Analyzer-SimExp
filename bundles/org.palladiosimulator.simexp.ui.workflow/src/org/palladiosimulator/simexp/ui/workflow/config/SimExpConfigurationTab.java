@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.ui.workflow.config;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -20,11 +21,12 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,7 +35,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
@@ -64,10 +65,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     // private Map<SimulationEngine, Button> simulationEngineMap;
     private SelectObservableValue<SimulationEngine> simulationEngineTarget;
     // private Map<SimulationEngine, Composite> engineDetailsMap;
-    private Map<SimulationKind, Button> simulationKindMap;
+    // private Map<SimulationKind, Button> simulationKindMap;
+    private SelectObservableValue<SimulationKind> simulationKindTarget;
 
     private Text textMonitorRepository;
-    private List monitors;
+    private ListViewer monitors;
     private Text textFailureScenarioModel;
 
     private Text textModuleFiles;
@@ -165,13 +167,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationDetails.setLayout(new GridLayout());
 
         Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
-
         createPcmTab(pcmDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
-        createPrismTab(prismDetails, modifyListener);
+        // createPrismTab(prismDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
-
     }
 
     private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
@@ -209,42 +209,53 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 Arrays.asList("System Response Time", "System ExecutionResultType"));
         simulationKindMonitorItems.put(SimulationKind.MODELLED, Collections.emptyList());
 
-        simulationKindMap = new HashMap<>();
+        // simulationKindMap = new HashMap<>();
+        simulationKindTarget = new SelectObservableValue<>();
         for (SimulationKind kind : SimulationKind.values()) {
             Button button = new Button(qualityObjectivesGroup, SWT.RADIO);
             button.setText(kind.getName());
-            button.addSelectionListener(new SelectionAdapter() {
+            // simulationKindMap.put(kind, button);
 
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    if (button.getSelection()) {
-                        java.util.List<String> items = simulationKindMonitorItems.get(kind);
-                        monitors.setItems(items.toArray(new String[0]));
-                    }
-                    setDirty(true);
-                    updateLaunchConfigurationDialog();
-                }
-            });
-            simulationKindMap.put(kind, button);
+            ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
+                .observe(button);
+            simulationKindTarget.addOption(kind, observeable);
         }
+
+        ISideEffect.create(() -> {
+            return simulationKindTarget.getValue();
+        }, new Consumer<SimulationKind>() {
+
+            @Override
+            public void accept(SimulationKind selectedKind) {
+                if (selectedKind == null) {
+                    return;
+                }
+                List<String> items = simulationKindMonitorItems.get(selectedKind);
+                monitors.setInput(items);
+            }
+        });
 
         textMonitorRepository = new Text(content, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(content, modifyListener, "Monitor Repository File",
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository,
-                "Select Monitor Repository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                "Select Monitor Repository File",
+
+                getShell(), ModelFileTypeConstants.EMPTY_STRING);
 
         final Group monitorsGroup = new Group(content, SWT.NONE);
         monitorsGroup.setText("Monitors");
         monitorsGroup.setLayout(new GridLayout(1, false));
         monitorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        monitors = new ListViewer(monitorsGroup, SWT.MULTI | SWT.BORDER);
+        monitors.getControl()
+            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        IContentProvider contentProvider = ArrayContentProvider.getInstance();
+        monitors.setContentProvider(contentProvider);
 
-        monitors = new List(monitorsGroup, SWT.MULTI | SWT.BORDER);
-        monitors.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+        // TODO: remove
         final Composite failureComposite = new Composite(content, SWT.NONE);
         failureComposite.setLayout(new GridLayout());
         failureComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false));
-
         textFailureScenarioModel = new Text(failureComposite, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
                 ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel,
@@ -337,11 +348,29 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          * simulationKindMap.get(configured); button.setSelection(true);
          * button.notifyListeners(SWT.Selection, null); } catch (CoreException e) {
          * LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage()); }
-         * 
+         */
+        IObservableValue<SimulationKind> simulationKindModel = new ConfigurationObservableEnumValue<>(configuration,
+                SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class);
+        UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        ctx.bindValue(simulationKindTarget, simulationKindModel, simulationKindUpdateStrategy, null);
+
+        /*
          * try { textMonitorRepository.setText(configuration.getAttribute(ModelFileTypeConstants.
          * MONITOR_REPOSITORY_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e)
          * { LaunchConfigPlugin.errorLogger(getName(), "Monitor Repository File", e.getMessage()); }
-         * 
+         */
+        IObservableValue<String> monitorRepositoryTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textMonitorRepository);
+        IObservableValue<String> monitorRepositoryModel = new ConfigurationObservableValue(configuration,
+                ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
+        UpdateValueStrategy<String, String> monitorRepositoryUpdateStrategy = createUpdateStrategy(
+                "Monitor Repository File", ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION[0]);
+        Binding monitorRepositoryBindValue = ctx.bindValue(monitorRepositoryTarget, monitorRepositoryModel,
+                monitorRepositoryUpdateStrategy, null);
+        ControlDecorationSupport.create(monitorRepositoryBindValue, SWT.TOP | SWT.RIGHT);
+
+        /*
          * try { textFailureScenarioModel.setText(configuration
          * .getAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
          * ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
