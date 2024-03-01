@@ -5,10 +5,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.ValidationStatusProvider;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.SelectObservableValue;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
+import org.eclipse.jface.databinding.swt.ISWTObservableValue;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -28,20 +37,30 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ExtensionValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.FileURIValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.MinIntegerValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.NotEmptyValidator;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
-import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
 public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 
+    private final DataBindingContext ctx;
+
     private Text textSimulationID;
     private Text textNumberOfRuns;
     private Text textNumerOfSimulationsPerRun;
 
-    private Map<SimulationEngine, Button> simulationEngineMap;
+    // private Map<SimulationEngine, Button> simulationEngineMap;
+    private SelectObservableValue<SimulationEngine> simulationEngineTarget;
     private Map<SimulationEngine, Composite> engineDetailsMap;
     private Map<SimulationKind, Button> simulationKindMap;
 
@@ -52,11 +71,18 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textModuleFiles;
     private Text textPropertyFiles;
 
+    public SimExpConfigurationTab() {
+        this.ctx = new DataBindingContext();
+    }
+
     @Override
     public void createControl(Composite parent) {
         ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
+                for (Binding binding : ctx.getBindings()) {
+                    binding.validateTargetToModel();
+                }
                 setDirty(true);
                 updateLaunchConfigurationDialog();
             }
@@ -97,35 +123,30 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         Group simulationEngineGroup = new Group(simulationEngineContainer, SWT.NONE);
         simulationEngineGroup.setText(SimulationConstants.SIMULATION_ENGINE);
         simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
-        simulationEngineMap = new HashMap<>();
+        // simulationEngineMap = new HashMap<>();
+        simulationEngineTarget = new SelectObservableValue<>();
         engineDetailsMap = new HashMap<>();
         Composite simulationDetails = new Composite(simulationParent, SWT.NONE);
         for (SimulationEngine engine : SimulationEngine.values()) {
             Button button = new Button(simulationEngineGroup, SWT.RADIO);
             button.setText(engine.getName());
-            button.setData(engine);
-            button.addSelectionListener(new SelectionAdapter() {
-
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    Button selectedButton = (Button) e.widget;
-                    SimulationEngine selectedEngine = (SimulationEngine) selectedButton.getData();
-                    for (Map.Entry<SimulationEngine, Composite> entry : engineDetailsMap.entrySet()) {
-                        Composite detailsComposite = entry.getValue();
-                        GridData layoutData = (GridData) detailsComposite.getLayoutData();
-                        if (selectedEngine == entry.getKey()) {
-                            layoutData.exclude = false;
-                            detailsComposite.setVisible(true);
-                        } else {
-                            layoutData.exclude = true;
-                            detailsComposite.setVisible(false);
-                        }
-                    }
-                    simulationDetails.layout();
-                }
-            });
-
-            simulationEngineMap.put(engine, button);
+            // button.setData(engine);
+            /*
+             * button.addSelectionListener(new SelectionAdapter() {
+             * 
+             * @Override public void widgetSelected(SelectionEvent e) { Button selectedButton =
+             * (Button) e.widget; SimulationEngine selectedEngine = (SimulationEngine)
+             * selectedButton.getData(); for (Map.Entry<SimulationEngine, Composite> entry :
+             * engineDetailsMap.entrySet()) { Composite detailsComposite = entry.getValue();
+             * GridData layoutData = (GridData) detailsComposite.getLayoutData(); if (selectedEngine
+             * == entry.getKey()) { layoutData.exclude = false; detailsComposite.setVisible(true); }
+             * else { layoutData.exclude = true; detailsComposite.setVisible(false); } }
+             * simulationDetails.layout(); } });
+             */
+            // simulationEngineMap.put(engine, button);
+            ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
+                .observe(button);
+            simulationEngineTarget.addOption(engine, observeable);
         }
 
         simulationDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -137,6 +158,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
         createPrismTab(prismDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
+
     }
 
     private Composite createEngineDetailsComposite(Composite parent, SimulationEngine engine) {
@@ -218,213 +240,220 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-
     }
 
     @Override
     public void initializeFrom(ILaunchConfiguration configuration) {
-        try {
-            textSimulationID.setText(
-                    configuration.getAttribute(SimulationConstants.SIMULATION_ID, SimulationConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Simulation ID", e.getMessage());
-        }
+        /*
+         * try { textSimulationID.setText(
+         * configuration.getAttribute(SimulationConstants.SIMULATION_ID,
+         * SimulationConstants.EMPTY_STRING)); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Simulation ID", e.getMessage()); }
+         */
+        IObservableValue<String> simulationIdTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textSimulationID);
+        IObservableValue<String> simulationIdModel = new ConfigurationObservableValue(configuration,
+                SimulationConstants.SIMULATION_ID);
+        UpdateValueStrategy<String, String> simulationIdUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        simulationIdUpdateStrategy.setBeforeSetValidator(new NotEmptyValidator("Simulation ID"));
+        Binding simulationIdBindValue = ctx.bindValue(simulationIdTarget, simulationIdModel, simulationIdUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(simulationIdBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            int numberOfRuns = configuration.getAttribute(SimulationConstants.NUMBER_OF_RUNS,
-                    SimulationConstants.DEFAULT_NUMBER_OF_RUNS);
-            textNumberOfRuns.setText(String.valueOf(numberOfRuns));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Number of runs", e.getMessage());
-        }
+        /*
+         * try { int numberOfRuns = configuration.getAttribute(SimulationConstants.NUMBER_OF_RUNS,
+         * SimulationConstants.DEFAULT_NUMBER_OF_RUNS);
+         * textNumberOfRuns.setText(String.valueOf(numberOfRuns)); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Number of runs", e.getMessage()); }
+         */
+        IObservableValue<String> numberOfRunsTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textNumberOfRuns);
+        IObservableValue<Integer> numberOfRunsModel = new ConfigurationObservableIntegerValue(configuration,
+                SimulationConstants.NUMBER_OF_RUNS);
+        UpdateValueStrategy<String, Integer> numberOfRunsUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        numberOfRunsUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Number of runs", 1));
+        Binding numberOfRunsBindValue = ctx.bindValue(numberOfRunsTarget, numberOfRunsModel, numberOfRunsUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(numberOfRunsBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            int numberOfSimulationsPerRun = configuration.getAttribute(
-                    SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
-                    SimulationConstants.DEFAULT_NUMBER_OF_SIMULATIONS_PER_RUN);
-            textNumerOfSimulationsPerRun.setText(String.valueOf(numberOfSimulationsPerRun));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Number of simulations per run", e.getMessage());
-        }
+        /*
+         * try { int numberOfSimulationsPerRun = configuration.getAttribute(
+         * SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
+         * SimulationConstants.DEFAULT_NUMBER_OF_SIMULATIONS_PER_RUN);
+         * textNumerOfSimulationsPerRun.setText(String.valueOf(numberOfSimulationsPerRun)); } catch
+         * (CoreException e) { LaunchConfigPlugin.errorLogger(getName(),
+         * "Number of simulations per run", e.getMessage()); }
+         */
+        IObservableValue<String> numberOfSimulationsPerRunTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textNumerOfSimulationsPerRun);
+        IObservableValue<Integer> numberOfSimulationsPerRunModel = new ConfigurationObservableIntegerValue(
+                configuration, SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN);
+        UpdateValueStrategy<String, Integer> numberOfSimulationsPerRunUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        numberOfSimulationsPerRunUpdateStrategy
+            .setBeforeSetValidator(new MinIntegerValidator("Number of simulations per run", 1));
+        Binding numberOfSimulationsPerRunBindValue = ctx.bindValue(numberOfSimulationsPerRunTarget,
+                numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
+        ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            String selectedEngineName = configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
-                    SimulationConstants.DEFAULT_SIMULATION_ENGINE.getName());
-            SimulationEngine selectedEngine = SimulationEngine.fromName(selectedEngineName);
-            Button engineButton = simulationEngineMap.get(selectedEngine);
-            engineButton.setSelection(true);
-            Composite detailsComposite = engineDetailsMap.get(selectedEngine);
-            GridData layoutData = (GridData) detailsComposite.getLayoutData();
-            layoutData.exclude = false;
-            detailsComposite.setVisible(true);
-            Composite detailsParent = detailsComposite.getParent();
-            detailsParent.layout();
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
-        }
+        /*
+         * try { String selectedEngineName =
+         * configuration.getAttribute(SimulationConstants.SIMULATION_ENGINE,
+         * SimulationConstants.DEFAULT_SIMULATION_ENGINE.getName()); SimulationEngine selectedEngine
+         * = SimulationEngine.fromName(selectedEngineName); Button engineButton =
+         * simulationEngineMap.get(selectedEngine); engineButton.setSelection(true); Composite
+         * detailsComposite = engineDetailsMap.get(selectedEngine); GridData layoutData = (GridData)
+         * detailsComposite.getLayoutData(); layoutData.exclude = false;
+         * detailsComposite.setVisible(true); Composite detailsParent =
+         * detailsComposite.getParent(); detailsParent.layout(); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage()); }
+         */
+        IObservableValue<SimulationEngine> simulationEngineModel = new ConfigurationObservableEnumValue<>(configuration,
+                SimulationConstants.SIMULATION_ENGINE, SimulationEngine.class);
+        UpdateValueStrategy<SimulationEngine, SimulationEngine> simulationEngineUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        ctx.bindValue(simulationEngineTarget, simulationEngineModel, simulationEngineUpdateStrategy, null);
 
-        try {
-            String selectedQualityObjective = configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE,
-                    SimulationConstants.DEFAULT_QUALITY_OBJECTIVE.getName());
-            SimulationKind configured = SimulationKind.fromName(selectedQualityObjective);
-            Button button = simulationKindMap.get(configured);
-            button.setSelection(true);
-            button.notifyListeners(SWT.Selection, null);
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage());
-        }
+        /*
+         * try { String selectedQualityObjective =
+         * configuration.getAttribute(SimulationConstants.QUALITY_OBJECTIVE,
+         * SimulationConstants.DEFAULT_QUALITY_OBJECTIVE.getName()); SimulationKind configured =
+         * SimulationKind.fromName(selectedQualityObjective); Button button =
+         * simulationKindMap.get(configured); button.setSelection(true);
+         * button.notifyListeners(SWT.Selection, null); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Simulation Engine", e.getMessage()); }
+         * 
+         * try { textMonitorRepository.setText(configuration.getAttribute(ModelFileTypeConstants.
+         * MONITOR_REPOSITORY_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e)
+         * { LaunchConfigPlugin.errorLogger(getName(), "Monitor Repository File", e.getMessage()); }
+         * 
+         * try { textFailureScenarioModel.setText(configuration
+         * .getAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
+         * ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage()); }
+         * 
+         * try { textModuleFiles.setText(configuration.getAttribute(ModelFileTypeConstants.
+         * PRISM_MODULE_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Prism Module File", e.getMessage()); }
+         * 
+         * try { textPropertyFiles.setText(configuration.getAttribute(ModelFileTypeConstants.
+         * PRISM_PROPERTY_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
+         * LaunchConfigPlugin.errorLogger(getName(), "Prism Property FIle", e.getMessage()); }
+         */
 
-        try {
-            textMonitorRepository.setText(configuration.getAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Monitor Repository File", e.getMessage());
-        }
+        ctx.updateTargets();
+    }
 
-        try {
-            textFailureScenarioModel.setText(configuration
-                .getAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE, ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage());
-        }
-
-        try {
-            textModuleFiles.setText(configuration.getAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Prism Module File", e.getMessage());
-        }
-
-        try {
-            textPropertyFiles.setText(configuration.getAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Prism Property FIle", e.getMessage());
-        }
+    private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {
+        UpdateValueStrategy<String, String> updateValueStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        updateValueStrategy.setBeforeSetValidator(new CompoundStringValidator(
+                Arrays.asList(new FileURIValidator(field), new ExtensionValidator(field, extension))));
+        return updateValueStrategy;
     }
 
     @Override
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        configuration.setAttribute(SimulationConstants.SIMULATION_ID, textSimulationID.getText());
-
-        int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
-        configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, numberOfRuns);
-        int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
-        configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN, numberOfSimulationsPerRun);
-
-        SimulationEngine simulationEngine = getSelectedSimulationEngine();
-        configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE, simulationEngine.getName());
-
-        for (SimulationKind kind : SimulationKind.values()) {
-            Button button = simulationKindMap.get(kind);
-            if (button.getSelection()) {
-                configuration.setAttribute(SimulationConstants.QUALITY_OBJECTIVE, kind.getName());
-                break;
-            }
-        }
-
-        configuration.setAttribute(ModelFileTypeConstants.MONITORS, Arrays.asList(monitors.getItems()));
-        configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE, textMonitorRepository.getText());
-        configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
-                textFailureScenarioModel.getText());
-        configuration.setAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE, Arrays.asList(textPropertyFiles.getText()
-            .split(";")));
-        configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE, Arrays.asList(textModuleFiles.getText()
-            .split(";")));
+        /*
+         * configuration.setAttribute(SimulationConstants.SIMULATION_ID,
+         * textSimulationID.getText());
+         * 
+         * int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
+         * configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, numberOfRuns); int
+         * numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
+         * configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
+         * numberOfSimulationsPerRun);
+         * 
+         * SimulationEngine simulationEngine = getSelectedSimulationEngine();
+         * configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE,
+         * simulationEngine.getName());
+         * 
+         * for (SimulationKind kind : SimulationKind.values()) { Button button =
+         * simulationKindMap.get(kind); if (button.getSelection()) {
+         * configuration.setAttribute(SimulationConstants.QUALITY_OBJECTIVE, kind.getName()); break;
+         * } }
+         * 
+         * configuration.setAttribute(ModelFileTypeConstants.MONITORS,
+         * Arrays.asList(monitors.getItems()));
+         * configuration.setAttribute(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE,
+         * textMonitorRepository.getText());
+         * configuration.setAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
+         * textFailureScenarioModel.getText());
+         * configuration.setAttribute(ModelFileTypeConstants.PRISM_PROPERTY_FILE,
+         * Arrays.asList(textPropertyFiles.getText() .split(";")));
+         * configuration.setAttribute(ModelFileTypeConstants.PRISM_MODULE_FILE,
+         * Arrays.asList(textModuleFiles.getText() .split(";")));
+         */
+        ctx.updateModels();
     }
 
     private SimulationEngine getSelectedSimulationEngine() {
-        for (Map.Entry<SimulationEngine, Button> entry : simulationEngineMap.entrySet()) {
-            Button button = entry.getValue();
-            if (button.getSelection()) {
-                SimulationEngine simulationEngine = (SimulationEngine) button.getData();
-                return simulationEngine;
-            }
-        }
+        /*
+         * for (Map.Entry<SimulationEngine, Button> entry : simulationEngineMap.entrySet()) { Button
+         * button = entry.getValue(); if (button.getSelection()) { SimulationEngine simulationEngine
+         * = (SimulationEngine) button.getData(); return simulationEngine; } }
+         */
         throw new RuntimeException("no radio button selected");
     }
 
     @Override
     public boolean isValid(ILaunchConfiguration launchConfig) {
+        for (ValidationStatusProvider statusProvider : ctx.getValidationStatusProviders()) {
+            IStatus validationStatus = statusProvider.getValidationStatus()
+                .getValue();
+            if (!validationStatus.isOK()) {
+                setErrorMessage(validationStatus.getMessage());
+                return false;
+            }
+        }
         setErrorMessage(null);
 
-        if (textSimulationID.getText()
-            .isBlank()) {
-            setErrorMessage("Simulation ID is missing");
-            return false;
-        }
-
-        if (textNumberOfRuns.getText()
-            .isBlank()) {
-            setErrorMessage("Number of runs is missing");
-            return false;
-        }
-
-        try {
-            int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
-
-            if (numberOfRuns < 0) {
-                setErrorMessage("Number of runs must not be negative");
-                return false;
-            }
-        } catch (Exception e) {
-            setErrorMessage("Number of runs must be an integer");
-            return false;
-        }
-
-        if (textNumerOfSimulationsPerRun.getText()
-            .isBlank()) {
-            setErrorMessage("Number of simulations per run is missing");
-            return false;
-        }
-
-        try {
-            int numberOfSimulationsPerRun = Integer.parseInt(textNumerOfSimulationsPerRun.getText());
-
-            if (numberOfSimulationsPerRun < 0) {
-                setErrorMessage("Number of simulations per run must not be negative");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            setErrorMessage("Number of simulations per run must be an integer");
-            return false;
-        }
-
-        SimulationEngine simulationEngine = getSelectedSimulationEngine();
-        if (simulationEngine == SimulationEngine.PCM) {
-            if (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(),
-                    ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
-                setErrorMessage("Monitor Repository is missing.");
-                return false;
-            }
-
-        } else if (simulationEngine == SimulationEngine.PRISM) {
-            if (!textModuleFiles.getText()
-                .isBlank()) {
-                String[] moduleFiles = textModuleFiles.getText()
-                    .split(";");
-                for (String moduleFile : moduleFiles) {
-                    if (!TabHelper.validateFilenameExtension(moduleFile,
-                            ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION)) {
-                        setErrorMessage("Invalid prism module file");
-                        return false;
-                    }
-                }
-            }
-
-            if (!textPropertyFiles.getText()
-                .isBlank()) {
-                String[] propertyFiles = textPropertyFiles.getText()
-                    .split(";");
-                for (String propertyFile : propertyFiles) {
-                    if (!TabHelper.validateFilenameExtension(propertyFile,
-                            ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION)) {
-                        setErrorMessage("Invalid prism property file");
-                        return false;
-                    }
-                }
-            }
-        }
+        /*
+         * setErrorMessage(null);
+         * 
+         * if (textSimulationID.getText() .isBlank()) { setErrorMessage("Simulation ID is missing");
+         * return false; }
+         * 
+         * if (textNumberOfRuns.getText() .isBlank()) {
+         * setErrorMessage("Number of runs is missing"); return false; }
+         * 
+         * try { int numberOfRuns = Integer.parseInt(textNumberOfRuns.getText());
+         * 
+         * if (numberOfRuns < 0) { setErrorMessage("Number of runs must not be negative"); return
+         * false; } } catch (Exception e) { setErrorMessage("Number of runs must be an integer");
+         * return false; }
+         * 
+         * if (textNumerOfSimulationsPerRun.getText() .isBlank()) {
+         * setErrorMessage("Number of simulations per run is missing"); return false; }
+         * 
+         * try { int numberOfSimulationsPerRun =
+         * Integer.parseInt(textNumerOfSimulationsPerRun.getText());
+         * 
+         * if (numberOfSimulationsPerRun < 0) {
+         * setErrorMessage("Number of simulations per run must not be negative"); return false; } }
+         * catch (NumberFormatException e) {
+         * setErrorMessage("Number of simulations per run must be an integer"); return false; }
+         * 
+         * SimulationEngine simulationEngine = getSelectedSimulationEngine(); if (simulationEngine
+         * == SimulationEngine.PCM) { if
+         * (!TabHelper.validateFilenameExtension(textMonitorRepository.getText(),
+         * ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION)) {
+         * setErrorMessage("Monitor Repository is missing."); return false; }
+         * 
+         * } else if (simulationEngine == SimulationEngine.PRISM) { if (!textModuleFiles.getText()
+         * .isBlank()) { String[] moduleFiles = textModuleFiles.getText() .split(";"); for (String
+         * moduleFile : moduleFiles) { if (!TabHelper.validateFilenameExtension(moduleFile,
+         * ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION)) {
+         * setErrorMessage("Invalid prism module file"); return false; } } }
+         * 
+         * if (!textPropertyFiles.getText() .isBlank()) { String[] propertyFiles =
+         * textPropertyFiles.getText() .split(";"); for (String propertyFile : propertyFiles) { if
+         * (!TabHelper.validateFilenameExtension(propertyFile,
+         * ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION)) {
+         * setErrorMessage("Invalid prism property file"); return false; } } } }
+         */
 
         return true;
     }
