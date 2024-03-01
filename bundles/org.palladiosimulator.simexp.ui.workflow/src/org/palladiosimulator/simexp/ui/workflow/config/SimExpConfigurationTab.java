@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
+import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
 import org.eclipse.core.runtime.IStatus;
@@ -61,7 +63,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
     // private Map<SimulationEngine, Button> simulationEngineMap;
     private SelectObservableValue<SimulationEngine> simulationEngineTarget;
-    private Map<SimulationEngine, Composite> engineDetailsMap;
+    // private Map<SimulationEngine, Composite> engineDetailsMap;
     private Map<SimulationKind, Button> simulationKindMap;
 
     private Text textMonitorRepository;
@@ -125,34 +127,45 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         simulationEngineGroup.setLayout(new RowLayout(SWT.VERTICAL));
         // simulationEngineMap = new HashMap<>();
         simulationEngineTarget = new SelectObservableValue<>();
-        engineDetailsMap = new HashMap<>();
+        Map<SimulationEngine, Composite> engineDetailsMap = new HashMap<>();
         Composite simulationDetails = new Composite(simulationParent, SWT.NONE);
         for (SimulationEngine engine : SimulationEngine.values()) {
             Button button = new Button(simulationEngineGroup, SWT.RADIO);
             button.setText(engine.getName());
             // button.setData(engine);
-            /*
-             * button.addSelectionListener(new SelectionAdapter() {
-             * 
-             * @Override public void widgetSelected(SelectionEvent e) { Button selectedButton =
-             * (Button) e.widget; SimulationEngine selectedEngine = (SimulationEngine)
-             * selectedButton.getData(); for (Map.Entry<SimulationEngine, Composite> entry :
-             * engineDetailsMap.entrySet()) { Composite detailsComposite = entry.getValue();
-             * GridData layoutData = (GridData) detailsComposite.getLayoutData(); if (selectedEngine
-             * == entry.getKey()) { layoutData.exclude = false; detailsComposite.setVisible(true); }
-             * else { layoutData.exclude = true; detailsComposite.setVisible(false); } }
-             * simulationDetails.layout(); } });
-             */
             // simulationEngineMap.put(engine, button);
             ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
                 .observe(button);
             simulationEngineTarget.addOption(engine, observeable);
         }
 
+        ISideEffect.create(() -> {
+            return simulationEngineTarget.getValue();
+        }, new Consumer<SimulationEngine>() {
+
+            @Override
+            public void accept(SimulationEngine selectedEngine) {
+                for (Map.Entry<SimulationEngine, Composite> entry : engineDetailsMap.entrySet()) {
+                    Composite detailsComposite = entry.getValue();
+                    GridData layoutData = (GridData) detailsComposite.getLayoutData();
+                    if (selectedEngine == entry.getKey()) {
+                        layoutData.exclude = false;
+                        detailsComposite.setVisible(true);
+                    } else {
+                        layoutData.exclude = true;
+                        detailsComposite.setVisible(false);
+                    }
+                }
+                simulationDetails.layout();
+                modifyListener.modifyText(null);
+            }
+        });
+
         simulationDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationDetails.setLayout(new GridLayout());
 
         Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
+
         createPcmTab(pcmDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
