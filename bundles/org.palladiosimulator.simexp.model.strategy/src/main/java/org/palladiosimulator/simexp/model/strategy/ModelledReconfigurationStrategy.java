@@ -69,7 +69,6 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
         return plannedAction;
     }
 
-    // FIXME: integration-ba
     /**
      * 
      * implements lookup between QVToReconfiguration and actions retrieved from planning phase

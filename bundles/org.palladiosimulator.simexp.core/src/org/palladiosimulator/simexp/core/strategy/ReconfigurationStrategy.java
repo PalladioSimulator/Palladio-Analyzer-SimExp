@@ -82,21 +82,4 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
 
     protected abstract Aa emptyReconfiguration();
 
-    // FIXME: integration-ba
-//    /**
-//     * 
-//     * implements lookup between QVToReconfiguration and actions retrieved from planning phase
-//     * 
-//     * */
-//    private T findReconfiguration(Set<T> options, List<ResolvedAction> actions) {
-//        Map<String, T> reconfigurationMap = new HashMap<>();
-//        for(T option: options) {
-//            reconfigurationMap.put(option.getStringRepresentation(), option);
-//        }
-//        String resolvedActionName = actions.get(0).getAction().getName();
-//        T reconfiguration = reconfigurationMap.get(resolvedActionName);
-//        LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
-//        return reconfiguration;
-//        
-//    }
 }
