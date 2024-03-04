@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.list.IObservableList;
@@ -47,6 +48,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.FileURIValidator;
@@ -234,8 +236,15 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 if (selectedKind == null) {
                     return;
                 }
-                List<String> items = simulationKindMonitorItems.get(selectedKind);
-                // monitors.setInput(items);
+                modifyListener.modifyText(null);
+                /*
+                 * List<String> items = simulationKindMonitorItems.get(selectedKind);
+                 * monitors.setInput(items);
+                 */
+                /*
+                 * IObservableList<String> listModel = Properties.<String> selfList(String.class)
+                 * .observe(items); monitors.setInput(listModel);
+                 */
             }
         });
 
@@ -255,7 +264,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ObservableListContentProvider<String> observableInput = new ObservableListContentProvider<>();
         monitors.setContentProvider(observableInput);
-        ISWTObservableList<String> monitorTarget = WidgetProperties.items()
+
+        ISWTObservableList<String> monitorsTarget = WidgetProperties.items()
             .observe(monitors.getList());
         IObservableFactory<SimulationKind, IObservableList<String>> detailFactory = new IObservableFactory<>() {
 
@@ -266,9 +276,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 return listModel;
             }
         };
-        IObservableList<String> monitorModel = MasterDetailObservables.detailList(simulationKindTarget, detailFactory,
+        IObservableList<String> monitorsModel = MasterDetailObservables.detailList(simulationKindTarget, detailFactory,
                 String.class);
-        ctx.bindList(monitorTarget, monitorModel);
+        ctx.bindList(monitorsTarget, monitorsModel, new UpdateListStrategy<>(UpdateValueStrategy.POLICY_NEVER), null);
 
         // TODO: remove
         final Composite failureComposite = new Composite(content, SWT.NONE);
@@ -387,6 +397,16 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         Binding monitorRepositoryBindValue = ctx.bindValue(monitorRepositoryTarget, monitorRepositoryModel,
                 monitorRepositoryUpdateStrategy, null);
         ControlDecorationSupport.create(monitorRepositoryBindValue, SWT.TOP | SWT.RIGHT);
+
+        ISWTObservableList<String> monitorTarget = WidgetProperties.items()
+            .observe(monitors.getList());
+        IObservableList<String> monitorModel = new ConfigurationObservableListValue(configuration,
+                ModelFileTypeConstants.MONITORS);
+        UpdateListStrategy<String, String> monitorsTargetToModel = new UpdateListStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        UpdateListStrategy<String, String> monitorsModelToTarget = new UpdateListStrategy<>(
+                UpdateValueStrategy.POLICY_NEVER);
+        ctx.bindList(monitorTarget, monitorModel, monitorsTargetToModel, monitorsModelToTarget);
 
         /*
          * try { textFailureScenarioModel.setText(configuration
