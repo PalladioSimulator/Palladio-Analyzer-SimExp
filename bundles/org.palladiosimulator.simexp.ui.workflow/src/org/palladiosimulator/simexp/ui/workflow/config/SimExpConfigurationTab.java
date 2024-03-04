@@ -11,6 +11,10 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
+import org.eclipse.core.databinding.observable.list.IObservableList;
+import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
+import org.eclipse.core.databinding.observable.masterdetail.MasterDetailObservables;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
@@ -19,10 +23,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
+import org.eclipse.jface.databinding.swt.ISWTObservableList;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -202,7 +206,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-        Map<SimulationKind, java.util.List<String>> simulationKindMonitorItems = new HashMap<>();
+        Map<SimulationKind, List<String>> simulationKindMonitorItems = new HashMap<>();
         simulationKindMonitorItems.put(SimulationKind.PERFORMANCE, Arrays.asList("System Response Time"));
         simulationKindMonitorItems.put(SimulationKind.RELIABILITY, Arrays.asList("System Response Time"));
         simulationKindMonitorItems.put(SimulationKind.PERFORMABILITY,
@@ -231,7 +235,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                     return;
                 }
                 List<String> items = simulationKindMonitorItems.get(selectedKind);
-                monitors.setInput(items);
+                // monitors.setInput(items);
             }
         });
 
@@ -249,8 +253,22 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         monitors = new ListViewer(monitorsGroup, SWT.MULTI | SWT.BORDER);
         monitors.getControl()
             .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        IContentProvider contentProvider = ArrayContentProvider.getInstance();
-        monitors.setContentProvider(contentProvider);
+        ObservableListContentProvider<String> observableInput = new ObservableListContentProvider<>();
+        monitors.setContentProvider(observableInput);
+        ISWTObservableList<String> monitorTarget = WidgetProperties.items()
+            .observe(monitors.getList());
+        IObservableFactory<SimulationKind, IObservableList<String>> detailFactory = new IObservableFactory<>() {
+
+            @Override
+            public IObservableList<String> createObservable(SimulationKind master) {
+                IObservableList<String> listModel = new WritableList<>(simulationKindMonitorItems.get(master),
+                        String.class);
+                return listModel;
+            }
+        };
+        IObservableList<String> monitorModel = MasterDetailObservables.detailList(simulationKindTarget, detailFactory,
+                String.class);
+        ctx.bindList(monitorTarget, monitorModel);
 
         // TODO: remove
         final Composite failureComposite = new Composite(content, SWT.NONE);
