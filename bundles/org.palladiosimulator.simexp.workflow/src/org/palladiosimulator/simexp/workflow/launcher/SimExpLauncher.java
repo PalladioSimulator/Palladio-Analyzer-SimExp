@@ -41,7 +41,6 @@ import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.KModelLoader;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
-import org.palladiosimulator.simexp.model.strategy.ModelledPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -49,6 +48,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
@@ -140,13 +140,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
-            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
+//            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
+            // TODO: Remove workaround
+            SimulationKind simulationKind = SimulationKind.MODELLED;
+            List monitorNames = Arrays.asList(("System Response Time"));
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
-                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
-                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
-                    qvtoReconfigurationManager, kmodel);
+                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider, monitorNames,
+                    config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager,
+                    kmodel);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -207,7 +210,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case MODELLED -> new ModelledPcmExperienceSimulationExecutorFactory<>(experiment, dbn, pcmSpecs,
+            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, kmodel);
