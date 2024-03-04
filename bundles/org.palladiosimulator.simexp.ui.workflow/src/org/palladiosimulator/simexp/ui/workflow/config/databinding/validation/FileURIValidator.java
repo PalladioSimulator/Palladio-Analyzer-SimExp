@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.ui.workflow.config.databinding;
+package org.palladiosimulator.simexp.ui.workflow.config.databinding.validation;
 
 import java.net.URL;
 

@@ -45,15 +45,15 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ExtensionValidator;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.FileURIValidator;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.MinIntegerValidator;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.NotEmptyValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotEmptyValidator;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;

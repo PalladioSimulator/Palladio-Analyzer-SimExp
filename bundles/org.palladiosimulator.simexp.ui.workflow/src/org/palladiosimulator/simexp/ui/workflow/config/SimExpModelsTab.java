@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ExtensionValidator;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.FileURIValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
