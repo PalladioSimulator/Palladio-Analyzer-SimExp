@@ -48,7 +48,6 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
@@ -331,8 +330,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
 
-        IObservableValue<SimulationEngine> simulationEngineModel = new ConfigurationObservableEnumValue<>(configuration,
-                SimulationConstants.SIMULATION_ENGINE, SimulationEngine.class);
+        IObservableValue<SimulationEngine> simulationEngineModel = ConfigurationProperties
+            .enummeration(SimulationConstants.SIMULATION_ENGINE, SimulationEngine.class)
+            .observe(configuration);
         UpdateValueStrategy<SimulationEngine, SimulationEngine> simulationEngineUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(simulationEngineTarget, simulationEngineModel, simulationEngineUpdateStrategy, null);
@@ -358,8 +358,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     }
 
     private void initializeFromPCM(ILaunchConfiguration configuration, UpdateStrategyController pcmUpdateController) {
-        IObservableValue<SimulationKind> simulationKindModel = new ConfigurationObservableEnumValue<>(configuration,
-                SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class);
+        IObservableValue<SimulationKind> simulationKindModel = ConfigurationProperties
+            .enummeration(SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class)
+            .observe(configuration);
         UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
         ctx.bindValue(simulationKindTarget, simulationKindModel, simulationKindUpdateStrategy,

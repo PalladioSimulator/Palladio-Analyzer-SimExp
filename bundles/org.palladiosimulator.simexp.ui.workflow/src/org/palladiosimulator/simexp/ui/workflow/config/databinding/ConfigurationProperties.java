@@ -11,4 +11,9 @@ public class ConfigurationProperties {
     public static IValueProperty<ILaunchConfiguration, Integer> integer(String key) {
         return new ConfigurationIntegerProperty(key);
     }
+
+    public static <E extends Enum<E>> IValueProperty<ILaunchConfiguration, E> enummeration(String key,
+            Class<E> enumType) {
+        return new ConfigurationEnumProperty<>(key, enumType);
+    }
 }
