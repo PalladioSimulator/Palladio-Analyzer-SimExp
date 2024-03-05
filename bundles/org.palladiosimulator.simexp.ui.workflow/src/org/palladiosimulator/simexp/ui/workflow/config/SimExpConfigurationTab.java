@@ -49,7 +49,6 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUp
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
@@ -310,8 +309,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> numberOfRunsTarget = WidgetProperties.text(SWT.Modify)
             .observe(textNumberOfRuns);
-        IObservableValue<Integer> numberOfRunsModel = new ConfigurationObservableIntegerValue(configuration,
-                SimulationConstants.NUMBER_OF_RUNS);
+        IObservableValue<Integer> numberOfRunsModel = ConfigurationProperties
+            .integer(SimulationConstants.NUMBER_OF_RUNS)
+            .observe(configuration);
         UpdateValueStrategy<String, Integer> numberOfRunsUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         numberOfRunsUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Number of runs", 1));
@@ -321,8 +321,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> numberOfSimulationsPerRunTarget = WidgetProperties.text(SWT.Modify)
             .observe(textNumerOfSimulationsPerRun);
-        IObservableValue<Integer> numberOfSimulationsPerRunModel = new ConfigurationObservableIntegerValue(
-                configuration, SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN);
+        IObservableValue<Integer> numberOfSimulationsPerRunModel = ConfigurationProperties
+            .integer(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN)
+            .observe(configuration);
         UpdateValueStrategy<String, Integer> numberOfSimulationsPerRunUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         numberOfSimulationsPerRunUpdateStrategy

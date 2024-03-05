@@ -7,4 +7,8 @@ public class ConfigurationProperties {
     public static IValueProperty<ILaunchConfiguration, String> string(String key) {
         return new ConfigurationStringProperty(key);
     }
+
+    public static IValueProperty<ILaunchConfiguration, Integer> integer(String key) {
+        return new ConfigurationIntegerProperty(key);
+    }
 }
