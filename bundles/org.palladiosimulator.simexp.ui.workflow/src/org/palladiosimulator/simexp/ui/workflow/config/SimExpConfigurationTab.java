@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.masterdetail.IObservableFactory;
@@ -18,7 +17,6 @@ import org.eclipse.core.databinding.observable.masterdetail.MasterDetailObservab
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
@@ -409,25 +407,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
         Binding propertyFilesBindValue = ctx.bindValue(propertyFilesTarget, propertyFilesModel,
                 propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
-    }
-
-    @Override
-    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        ctx.updateModels();
-    }
-
-    @Override
-    public boolean isValid(ILaunchConfiguration launchConfig) {
-        for (ValidationStatusProvider statusProvider : ctx.getValidationStatusProviders()) {
-            IStatus validationStatus = statusProvider.getValidationStatus()
-                .getValue();
-            if (!validationStatus.isOK()) {
-                setErrorMessage(validationStatus.getMessage());
-                return false;
-            }
-        }
-        setErrorMessage(null);
-        return true;
     }
 
     @Override

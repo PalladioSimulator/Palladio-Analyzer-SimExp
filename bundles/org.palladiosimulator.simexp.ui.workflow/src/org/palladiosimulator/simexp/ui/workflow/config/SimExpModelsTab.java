@@ -4,9 +4,7 @@ import java.util.Arrays;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
@@ -155,25 +153,6 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
         updateValueStrategy.setBeforeSetValidator(new CompoundStringValidator(
                 Arrays.asList(new FileURIValidator(field), new ExtensionValidator(field, extension))));
         return updateValueStrategy;
-    }
-
-    @Override
-    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        ctx.updateModels();
-    }
-
-    @Override
-    public boolean isValid(ILaunchConfiguration launchConfig) {
-        for (ValidationStatusProvider statusProvider : ctx.getValidationStatusProviders()) {
-            IStatus validationStatus = statusProvider.getValidationStatus()
-                .getValue();
-            if (!validationStatus.isOK()) {
-                setErrorMessage(validationStatus.getMessage());
-                return false;
-            }
-        }
-        setErrorMessage(null);
-        return true;
     }
 
     @Override
