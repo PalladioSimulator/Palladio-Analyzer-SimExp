@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class ConfigurationObservableArrayValue extends AbstractObservableValue<String[]> {
+class ConfigurationObservableArrayValue extends AbstractObservableValue<String[]> {
 
     private final ILaunchConfiguration configuration;
     private final String key;

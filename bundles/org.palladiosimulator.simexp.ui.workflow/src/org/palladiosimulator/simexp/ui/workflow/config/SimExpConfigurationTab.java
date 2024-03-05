@@ -47,7 +47,6 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
@@ -401,8 +400,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             UpdateStrategyController prismUpdateController) {
         IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
             .observe(textModuleFiles);
-        IObservableValue<String[]> moduleFilesModel = new ConfigurationObservableArrayValue(configuration,
-                ModelFileTypeConstants.PRISM_MODULE_FILE);
+        IObservableValue<String[]> moduleFilesModel = ConfigurationProperties
+            .strings(ModelFileTypeConstants.PRISM_MODULE_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String[]> moduleFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
         moduleFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
@@ -414,8 +414,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
             .observe(textPropertyFiles);
-        IObservableValue<String[]> propertyFilesModel = new ConfigurationObservableArrayValue(configuration,
-                ModelFileTypeConstants.PRISM_PROPERTY_FILE);
+        IObservableValue<String[]> propertyFilesModel = ConfigurationProperties
+            .strings(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String[]> propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
         propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());

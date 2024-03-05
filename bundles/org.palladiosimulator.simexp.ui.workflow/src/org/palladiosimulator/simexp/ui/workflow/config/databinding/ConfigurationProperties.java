@@ -9,6 +9,10 @@ public class ConfigurationProperties {
         return new ConfigurationStringProperty(key);
     }
 
+    public static IValueProperty<ILaunchConfiguration, String[]> strings(String key) {
+        return new ConfigurationStringsProperty(key);
+    }
+
     public static IValueProperty<ILaunchConfiguration, Integer> integer(String key) {
         return new ConfigurationIntegerProperty(key);
     }
