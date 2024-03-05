@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.Binding;
-import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
@@ -22,7 +21,6 @@ import org.eclipse.core.databinding.observable.value.SelectObservableValue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.ISWTObservableList;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
@@ -30,7 +28,6 @@ import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -60,11 +57,9 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.No
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
+public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
-
-    private final DataBindingContext ctx;
 
     private Text textSimulationID;
     private Text textNumberOfRuns;
@@ -80,22 +75,10 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     private Text textModuleFiles;
     private Text textPropertyFiles;
 
-    public SimExpConfigurationTab() {
-        this.ctx = new DataBindingContext();
-    }
-
     @Override
     public void createControl(Composite parent) {
-        ModifyListener modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                for (Binding binding : ctx.getBindings()) {
-                    binding.validateTargetToModel();
-                }
-                setDirty(true);
-                updateLaunchConfigurationDialog();
-            }
-        };
+        ModifyListener modifyListener = new SimExpModifyListener();
+
         Composite container = new Composite(parent, SWT.NONE);
         setControl(container);
         container.setLayout(new GridLayout());

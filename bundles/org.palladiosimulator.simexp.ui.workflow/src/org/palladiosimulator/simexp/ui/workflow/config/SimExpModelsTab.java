@@ -3,18 +3,15 @@ package org.palladiosimulator.simexp.ui.workflow.config;
 import java.util.Arrays;
 
 import org.eclipse.core.databinding.Binding;
-import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -31,14 +28,12 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
+public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
 
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     /** The path to the image file for the tab icon. */
     private static final String FILENAME_TAB_IMAGE_PATH = "icons/filenames_tab.gif";
-
-    private final DataBindingContext ctx;
 
     private Text textAllocation;
     private Text textUsage;
@@ -47,23 +42,9 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
     private Text textDynamicModel;
     private Text textKModel;
 
-    public SimExpModelsTab() {
-        this.ctx = new DataBindingContext();
-    }
-
     @Override
     public void createControl(Composite parent) {
-        ModifyListener modifyListener = new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                for (Binding binding : ctx.getBindings()) {
-                    binding.validateTargetToModel();
-                }
-                setDirty(true);
-                updateLaunchConfigurationDialog();
-            }
-        };
+        ModifyListener modifyListener = new SimExpModifyListener();
 
         Composite container = new Composite(parent, SWT.NONE);
         setControl(container);
