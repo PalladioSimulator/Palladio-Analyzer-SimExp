@@ -7,5 +7,8 @@ Fragment-Host: org.palladiosimulator.simexp.dsl.kmodel.interpreter;bundle-versio
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.13.0",
- com.google.inject;bundle-version="3.0.0"
+ com.google.inject;bundle-version="3.0.0",
+ org.palladiosimulator.simexp.pcm,
+ org.palladiosimulator.monitorrepository,
+ org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0"
 Import-Package: org.eclipse.xtext.testing.util
