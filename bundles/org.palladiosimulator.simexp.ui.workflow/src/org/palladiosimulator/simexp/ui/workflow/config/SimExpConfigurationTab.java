@@ -45,11 +45,14 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.StringToArrayConverter;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
@@ -328,37 +331,55 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(simulationEngineTarget, simulationEngineModel, simulationEngineUpdateStrategy, null);
 
-        initializeFromPCM(configuration);
-        initializeFromPRISM(configuration);
+        UpdateStrategyController pcmUpdateController = new UpdateStrategyController() {
+
+            @Override
+            public boolean isEnabled() {
+                return simulationEngineTarget.getValue() == SimulationEngine.PCM;
+            }
+        };
+        UpdateStrategyController prismUpdateController = new UpdateStrategyController() {
+
+            @Override
+            public boolean isEnabled() {
+                return simulationEngineTarget.getValue() == SimulationEngine.PRISM;
+            }
+        };
+        initializeFromPCM(configuration, pcmUpdateController);
+        initializeFromPRISM(configuration, prismUpdateController);
 
         ctx.updateTargets();
     }
 
-    private void initializeFromPCM(ILaunchConfiguration configuration) {
+    private void initializeFromPCM(ILaunchConfiguration configuration, UpdateStrategyController pcmUpdateController) {
         IObservableValue<SimulationKind> simulationKindModel = new ConfigurationObservableEnumValue<>(configuration,
                 SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class);
-        UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
-        ctx.bindValue(simulationKindTarget, simulationKindModel, simulationKindUpdateStrategy, null);
+        UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
+        ctx.bindValue(simulationKindTarget, simulationKindModel, simulationKindUpdateStrategy,
+                new ConditionalUpdateValueStrategy<>(pcmUpdateController));
 
         IObservableValue<String> monitorRepositoryTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMonitorRepository);
         IObservableValue<String> monitorRepositoryModel = new ConfigurationObservableValue(configuration,
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
-        UpdateValueStrategy<String, String> monitorRepositoryUpdateStrategy = createUpdateStrategy(
-                "Monitor Repository File", ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION[0]);
+        UpdateValueStrategy<String, String> monitorRepositoryUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
+        monitorRepositoryUpdateStrategy.setBeforeSetValidator(new CompoundStringValidator(
+                Arrays.asList(new FileURIValidator("Monitor Repository File"), new ExtensionValidator(
+                        "Monitor Repository File", ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION[0]))));
         Binding monitorRepositoryBindValue = ctx.bindValue(monitorRepositoryTarget, monitorRepositoryModel,
-                monitorRepositoryUpdateStrategy, null);
+                monitorRepositoryUpdateStrategy, new ConditionalUpdateValueStrategy<>(pcmUpdateController));
         ControlDecorationSupport.create(monitorRepositoryBindValue, SWT.TOP | SWT.RIGHT);
 
         ISWTObservableList<String> monitorTarget = WidgetProperties.items()
             .observe(monitors.getList());
         IObservableList<String> monitorModel = new ConfigurationObservableListValue(configuration,
                 ModelFileTypeConstants.MONITORS);
-        UpdateListStrategy<String, String> monitorsTargetToModel = new UpdateListStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
-        UpdateListStrategy<String, String> monitorsModelToTarget = new UpdateListStrategy<>(
-                UpdateValueStrategy.POLICY_NEVER);
+        UpdateListStrategy<String, String> monitorsTargetToModel = new ConditionalUpdateListStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
+        UpdateListStrategy<String, String> monitorsModelToTarget = new ConditionalUpdateListStrategy<>(
+                UpdateValueStrategy.POLICY_NEVER, pcmUpdateController);
         ctx.bindList(monitorTarget, monitorModel, monitorsTargetToModel, monitorsModelToTarget);
 
         /*
@@ -369,16 +390,17 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          */
     }
 
-    private void initializeFromPRISM(ILaunchConfiguration configuration) {
+    private void initializeFromPRISM(ILaunchConfiguration configuration,
+            UpdateStrategyController prismUpdateController) {
         IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
             .observe(textModuleFiles);
         IObservableValue<String[]> moduleFilesModel = new ConfigurationObservableArrayValue(configuration,
                 ModelFileTypeConstants.PRISM_MODULE_FILE);
-        UpdateValueStrategy<String, String[]> moduleFilesUpdateStrategyTargetToModel = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
+        UpdateValueStrategy<String, String[]> moduleFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
         moduleFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
-        UpdateValueStrategy<String[], String> moduleFilesUpdateStrategyModelToTarget = UpdateValueStrategy
-            .create(new ArrayToStringConverter());
+        UpdateValueStrategy<String[], String> moduleFilesUpdateStrategyModelToTarget = ConditionalUpdateValueStrategy
+            .create(new ArrayToStringConverter(), prismUpdateController);
         Binding moduleFilesBindValue = ctx.bindValue(moduleFilesTarget, moduleFilesModel,
                 moduleFilesUpdateStrategyTargetToModel, moduleFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(moduleFilesBindValue, SWT.TOP | SWT.RIGHT);
@@ -387,22 +409,14 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
             .observe(textPropertyFiles);
         IObservableValue<String[]> propertyFilesModel = new ConfigurationObservableArrayValue(configuration,
                 ModelFileTypeConstants.PRISM_PROPERTY_FILE);
-        UpdateValueStrategy<String, String[]> propertyFilesUpdateStrategyTargetToModel = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
+        UpdateValueStrategy<String, String[]> propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
         propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
-        UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget = UpdateValueStrategy
-            .create(new ArrayToStringConverter());
+        UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget = ConditionalUpdateValueStrategy
+            .create(new ArrayToStringConverter(), prismUpdateController);
         Binding propertyFilesBindValue = ctx.bindValue(propertyFilesTarget, propertyFilesModel,
                 propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
-    }
-
-    private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {
-        UpdateValueStrategy<String, String> updateValueStrategy = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
-        updateValueStrategy.setBeforeSetValidator(new CompoundStringValidator(
-                Arrays.asList(new FileURIValidator(field), new ExtensionValidator(field, extension))));
-        return updateValueStrategy;
     }
 
     @Override
