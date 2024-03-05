@@ -202,6 +202,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
                 .observe(button);
             simulationKindTarget.addOption(kind, observeable);
         }
+        simulationKindTarget.setValue(SimulationKind.PERFORMANCE);
 
         ISideEffect.create(() -> {
             return simulationKindTarget.getValue();
