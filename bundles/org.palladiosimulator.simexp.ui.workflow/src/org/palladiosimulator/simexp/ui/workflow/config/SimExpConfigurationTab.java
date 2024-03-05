@@ -287,6 +287,11 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
+        configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, SimulationConstants.DEFAULT_NUMBER_OF_RUNS);
+        configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
+                SimulationConstants.DEFAULT_NUMBER_OF_SIMULATIONS_PER_RUN);
+        configuration.setAttribute(SimulationConstants.SIMULATION_ENGINE,
+                SimulationConstants.DEFAULT_SIMULATION_ENGINE.name());
     }
 
     @Override
