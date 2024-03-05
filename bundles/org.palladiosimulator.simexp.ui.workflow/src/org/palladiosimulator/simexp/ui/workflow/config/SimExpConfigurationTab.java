@@ -52,6 +52,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.Configuration
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.StringToArrayConverter;
@@ -298,8 +299,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
     public void initializeFrom(ILaunchConfiguration configuration) {
         IObservableValue<String> simulationIdTarget = WidgetProperties.text(SWT.Modify)
             .observe(textSimulationID);
-        IObservableValue<String> simulationIdModel = new ConfigurationObservableValue(configuration,
-                SimulationConstants.SIMULATION_ID);
+        IObservableValue<String> simulationIdModel = ConfigurationProperties.string(SimulationConstants.SIMULATION_ID)
+            .observe(configuration);
         UpdateValueStrategy<String, String> simulationIdUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         simulationIdUpdateStrategy.setBeforeSetValidator(new NotEmptyValidator("Simulation ID"));

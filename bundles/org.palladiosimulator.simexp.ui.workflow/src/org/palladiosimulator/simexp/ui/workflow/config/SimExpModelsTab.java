@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
@@ -118,8 +118,9 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
     public void initializeFrom(ILaunchConfiguration configuration) {
         IObservableValue<String> allocationTarget = WidgetProperties.text(SWT.Modify)
             .observe(textAllocation);
-        IObservableValue<String> allocationModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.ALLOCATION_FILE);
+        IObservableValue<String> allocationModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.ALLOCATION_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> allocationUpdateStrategy = createUpdateStrategy("Allocation file",
                 ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION[0]);
         Binding allocationBindValue = ctx.bindValue(allocationTarget, allocationModel, allocationUpdateStrategy, null);
@@ -127,8 +128,8 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> usageTarget = WidgetProperties.text(SWT.Modify)
             .observe(textUsage);
-        IObservableValue<String> usageModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.USAGE_FILE);
+        IObservableValue<String> usageModel = ConfigurationProperties.string(ModelFileTypeConstants.USAGE_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> usageUpdateStrategy = createUpdateStrategy("Usage file",
                 ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION[0]);
         Binding usageBindValue = ctx.bindValue(usageTarget, usageModel, usageUpdateStrategy, null);
@@ -136,8 +137,9 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> experimentsTarget = WidgetProperties.text(SWT.Modify)
             .observe(textExperiments);
-        IObservableValue<String> experimentsModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.EXPERIMENTS_FILE);
+        IObservableValue<String> experimentsModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.EXPERIMENTS_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> experimentsUpdateStrategy = createUpdateStrategy("Experiments file",
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION[0]);
         Binding experimentsBindValue = ctx.bindValue(experimentsTarget, experimentsModel, experimentsUpdateStrategy,
@@ -146,8 +148,8 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> staticTarget = WidgetProperties.text(SWT.Modify)
             .observe(textStaticModel);
-        IObservableValue<String> staticModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.STATIC_MODEL_FILE);
+        IObservableValue<String> staticModel = ConfigurationProperties.string(ModelFileTypeConstants.STATIC_MODEL_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> staticUpdateStrategy = createUpdateStrategy("Static environment file",
                 ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION[0]);
         Binding staticBindValue = ctx.bindValue(staticTarget, staticModel, staticUpdateStrategy, null);
@@ -155,8 +157,9 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> dynamicTarget = WidgetProperties.text(SWT.Modify)
             .observe(textDynamicModel);
-        IObservableValue<String> dynamicModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.DYNAMIC_MODEL_FILE);
+        IObservableValue<String> dynamicModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.DYNAMIC_MODEL_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> dynamicUpdateStrategy = createUpdateStrategy("Dynamic environment file",
                 ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION[0]);
         Binding dynamicBindValue = ctx.bindValue(dynamicTarget, dynamicModel, dynamicUpdateStrategy, null);
