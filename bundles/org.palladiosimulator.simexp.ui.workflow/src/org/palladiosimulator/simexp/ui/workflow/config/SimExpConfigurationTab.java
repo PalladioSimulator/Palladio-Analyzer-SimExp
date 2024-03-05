@@ -48,7 +48,6 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
@@ -382,8 +381,8 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         ISWTObservableList<String> monitorTarget = WidgetProperties.items()
             .observe(monitors.getList());
-        IObservableList<String> monitorModel = new ConfigurationObservableListValue(configuration,
-                ModelFileTypeConstants.MONITORS);
+        IObservableList<String> monitorModel = ConfigurationProperties.list(ModelFileTypeConstants.MONITORS)
+            .observe(configuration);
         UpdateListStrategy<String, String> monitorsTargetToModel = new ConditionalUpdateListStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
         UpdateListStrategy<String, String> monitorsModelToTarget = new ConditionalUpdateListStrategy<>(

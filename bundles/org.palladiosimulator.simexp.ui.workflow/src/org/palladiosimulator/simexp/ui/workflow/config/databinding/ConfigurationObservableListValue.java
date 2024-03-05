@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class ConfigurationObservableListValue extends AbstractObservableList<String> {
+class ConfigurationObservableListValue extends AbstractObservableList<String> {
 
     private final ILaunchConfiguration configuration;
     private final String key;

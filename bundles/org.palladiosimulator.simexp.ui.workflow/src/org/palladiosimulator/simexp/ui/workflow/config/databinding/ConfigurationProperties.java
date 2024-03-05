@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.ui.workflow.config.databinding;
 
+import org.eclipse.core.databinding.property.list.IListProperty;
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
@@ -15,5 +16,9 @@ public class ConfigurationProperties {
     public static <E extends Enum<E>> IValueProperty<ILaunchConfiguration, E> enummeration(String key,
             Class<E> enumType) {
         return new ConfigurationEnumProperty<>(key, enumType);
+    }
+
+    public static IListProperty<ILaunchConfiguration, String> list(String key) {
+        return new ConfigurationListProperty(key);
     }
 }
