@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class ConfigurationObservableIntegerValue extends AbstractObservableValue<Integer> {
+class ConfigurationObservableIntegerValue extends AbstractObservableValue<Integer> {
 
     private final ILaunchConfiguration configuration;
     private final String key;

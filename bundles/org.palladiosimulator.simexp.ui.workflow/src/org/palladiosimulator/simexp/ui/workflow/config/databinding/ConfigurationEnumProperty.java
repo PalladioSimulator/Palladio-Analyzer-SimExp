@@ -5,7 +5,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.property.value.ValueProperty;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
-public class ConfigurationEnumProperty<E extends Enum<E>> extends ValueProperty<ILaunchConfiguration, E> {
+class ConfigurationEnumProperty<E extends Enum<E>> extends ValueProperty<ILaunchConfiguration, E> {
     private final String key;
     private final Class<E> enumType;
 

@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class ConfigurationObservableEnumValue<E extends Enum<E>> extends AbstractObservableValue<E> {
+class ConfigurationObservableEnumValue<E extends Enum<E>> extends AbstractObservableValue<E> {
 
     private final ILaunchConfiguration configuration;
     private final String key;
