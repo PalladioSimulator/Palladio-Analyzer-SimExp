@@ -45,10 +45,13 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableIntegerValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.StringToArrayConverter;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
@@ -176,7 +179,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         createPcmTab(pcmDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
-        // createPrismTab(prismDetails, modifyListener);
+        createPrismTab(prismDetails, modifyListener);
         engineDetailsMap.put(SimulationEngine.PRISM, prismDetails);
     }
 
@@ -251,9 +254,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         textMonitorRepository = new Text(content, SWT.SINGLE | SWT.BORDER);
         TabHelper.createFileInputSection(content, modifyListener, "Monitor Repository File",
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository,
-                "Select Monitor Repository File",
-
-                getShell(), ModelFileTypeConstants.EMPTY_STRING);
+                "Select Monitor Repository File", getShell(), ModelFileTypeConstants.EMPTY_STRING);
 
         final Group monitorsGroup = new Group(content, SWT.NONE);
         monitorsGroup.setText("Monitors");
@@ -388,6 +389,7 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          * MONITOR_REPOSITORY_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e)
          * { LaunchConfigPlugin.errorLogger(getName(), "Monitor Repository File", e.getMessage()); }
          */
+
         IObservableValue<String> monitorRepositoryTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMonitorRepository);
         IObservableValue<String> monitorRepositoryModel = new ConfigurationObservableValue(configuration,
@@ -413,7 +415,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          * .getAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
          * ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
          * LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage()); }
-         * 
+         */
+
+        /*
          * try { textModuleFiles.setText(configuration.getAttribute(ModelFileTypeConstants.
          * PRISM_MODULE_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
          * LaunchConfigPlugin.errorLogger(getName(), "Prism Module File", e.getMessage()); }
@@ -422,6 +426,31 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          * PRISM_PROPERTY_FILE, ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
          * LaunchConfigPlugin.errorLogger(getName(), "Prism Property FIle", e.getMessage()); }
          */
+        IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textModuleFiles);
+        IObservableValue<String[]> moduleFilesModel = new ConfigurationObservableArrayValue(configuration,
+                ModelFileTypeConstants.PRISM_MODULE_FILE);
+        UpdateValueStrategy<String, String[]> moduleFilesUpdateStrategyTargetToModel = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        moduleFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
+        UpdateValueStrategy<String[], String> moduleFilesUpdateStrategyModelToTarget = UpdateValueStrategy
+            .create(new ArrayToStringConverter());
+        Binding moduleFilesBindValue = ctx.bindValue(moduleFilesTarget, moduleFilesModel,
+                moduleFilesUpdateStrategyTargetToModel, moduleFilesUpdateStrategyModelToTarget);
+        ControlDecorationSupport.create(moduleFilesBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textPropertyFiles);
+        IObservableValue<String[]> propertyFilesModel = new ConfigurationObservableArrayValue(configuration,
+                ModelFileTypeConstants.PRISM_PROPERTY_FILE);
+        UpdateValueStrategy<String, String[]> propertyFilesUpdateStrategyTargetToModel = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
+        UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget = UpdateValueStrategy
+            .create(new ArrayToStringConverter());
+        Binding propertyFilesBindValue = ctx.bindValue(propertyFilesTarget, propertyFilesModel,
+                propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
+        ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
 
         ctx.updateTargets();
     }
@@ -469,14 +498,14 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         ctx.updateModels();
     }
 
-    private SimulationEngine getSelectedSimulationEngine() {
-        /*
-         * for (Map.Entry<SimulationEngine, Button> entry : simulationEngineMap.entrySet()) { Button
-         * button = entry.getValue(); if (button.getSelection()) { SimulationEngine simulationEngine
-         * = (SimulationEngine) button.getData(); return simulationEngine; } }
-         */
-        throw new RuntimeException("no radio button selected");
-    }
+    /*
+     * private SimulationEngine getSelectedSimulationEngine() { for (Map.Entry<SimulationEngine,
+     * Button> entry : simulationEngineMap.entrySet()) { Button button = entry.getValue(); if
+     * (button.getSelection()) { SimulationEngine simulationEngine = (SimulationEngine)
+     * button.getData(); return simulationEngine; } }
+     * 
+     * throw new RuntimeException("no radio button selected"); }
+     */
 
     @Override
     public boolean isValid(ILaunchConfiguration launchConfig) {
