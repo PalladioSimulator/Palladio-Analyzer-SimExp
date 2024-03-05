@@ -328,6 +328,13 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(simulationEngineTarget, simulationEngineModel, simulationEngineUpdateStrategy, null);
 
+        initializeFromPCM(configuration);
+        initializeFromPRISM(configuration);
+
+        ctx.updateTargets();
+    }
+
+    private void initializeFromPCM(ILaunchConfiguration configuration) {
         IObservableValue<SimulationKind> simulationKindModel = new ConfigurationObservableEnumValue<>(configuration,
                 SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class);
         UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new UpdateValueStrategy<>(
@@ -360,7 +367,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
          * ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
          * LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage()); }
          */
+    }
 
+    private void initializeFromPRISM(ILaunchConfiguration configuration) {
         IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
             .observe(textModuleFiles);
         IObservableValue<String[]> moduleFilesModel = new ConfigurationObservableArrayValue(configuration,
@@ -386,8 +395,6 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
         Binding propertyFilesBindValue = ctx.bindValue(propertyFilesTarget, propertyFilesModel,
                 propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
-
-        ctx.updateTargets();
     }
 
     private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {
