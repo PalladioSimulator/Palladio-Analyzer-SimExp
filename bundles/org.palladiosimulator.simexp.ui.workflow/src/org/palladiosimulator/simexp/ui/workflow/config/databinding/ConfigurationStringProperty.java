@@ -19,6 +19,6 @@ public class ConfigurationStringProperty extends ValueProperty<ILaunchConfigurat
 
     @Override
     public IObservableValue<String> observe(Realm realm, ILaunchConfiguration source) {
-        return new ConfigurationObservableValue(source, key);
+        return new ConfigurationObservableStringValue(source, key);
     }
 }

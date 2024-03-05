@@ -50,7 +50,6 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUp
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableArrayValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableEnumValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableListValue;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationObservableValue;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
@@ -368,8 +367,9 @@ public class SimExpConfigurationTab extends AbstractLaunchConfigurationTab {
 
         IObservableValue<String> monitorRepositoryTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMonitorRepository);
-        IObservableValue<String> monitorRepositoryModel = new ConfigurationObservableValue(configuration,
-                ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
+        IObservableValue<String> monitorRepositoryModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE)
+            .observe(configuration);
         UpdateValueStrategy<String, String> monitorRepositoryUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
         monitorRepositoryUpdateStrategy.setBeforeSetValidator(new CompoundStringValidator(

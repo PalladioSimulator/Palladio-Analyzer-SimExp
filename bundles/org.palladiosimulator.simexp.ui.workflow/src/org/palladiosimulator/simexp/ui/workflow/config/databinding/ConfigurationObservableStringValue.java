@@ -5,12 +5,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-public class ConfigurationObservableValue extends AbstractObservableValue<String> {
+public class ConfigurationObservableStringValue extends AbstractObservableValue<String> {
 
     private final ILaunchConfiguration configuration;
     private final String key;
 
-    public ConfigurationObservableValue(ILaunchConfiguration configuration, String key) {
+    public ConfigurationObservableStringValue(ILaunchConfiguration configuration, String key) {
         this.configuration = configuration;
         this.key = key;
     }
