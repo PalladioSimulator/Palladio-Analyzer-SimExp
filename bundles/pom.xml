@@ -46,6 +46,7 @@
 		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter</module>
 		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
+		<module>org.palladiosimulator.simexp.pcm.performability</module>
 
 	</modules>
 	
