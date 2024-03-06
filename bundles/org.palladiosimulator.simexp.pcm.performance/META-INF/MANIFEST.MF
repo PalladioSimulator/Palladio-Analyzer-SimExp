@@ -23,7 +23,8 @@ Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
  org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.markovian.model,
  org.palladiosimulator.envdyn.model;bundle-version="5.2.0",
- org.palladiosimulator.simexp.dsl.kmodel.interpreter
+ org.palladiosimulator.simexp.dsl.kmodel.interpreter,
+ org.palladiosimulator.simexp.pcm.performance
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.performance
 Bundle-ActivationPolicy: lazy
