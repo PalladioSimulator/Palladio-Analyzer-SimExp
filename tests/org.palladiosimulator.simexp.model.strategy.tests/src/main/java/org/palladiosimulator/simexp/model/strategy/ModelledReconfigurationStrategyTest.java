@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.model.strategy;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 
 public class ModelledReconfigurationStrategyTest {
 
@@ -11,7 +11,7 @@ public class ModelledReconfigurationStrategyTest {
     public void setUp() throws Exception {
     }
 
-    @Test
+    @Ignore
     public void test() {
         fail("Not yet implemented");
     }
