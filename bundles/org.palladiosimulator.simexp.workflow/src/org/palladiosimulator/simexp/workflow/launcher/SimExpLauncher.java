@@ -48,7 +48,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
@@ -143,7 +143,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 //            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
             // TODO: Remove workaround
             SimulationKind simulationKind = SimulationKind.MODELLED;
-            List monitorNames = Arrays.asList(("System Response Time"));
+            List monitorNames = Arrays.asList("System Response Time", "System ExecutionResultType");
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
@@ -210,7 +210,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+            case MODELLED -> new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, kmodel);
