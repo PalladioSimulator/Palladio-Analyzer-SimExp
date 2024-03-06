@@ -24,9 +24,13 @@ import org.eclipse.jface.databinding.swt.ISWTObservableList;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.databinding.viewers.ObservableListContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,8 +48,6 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUp
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.ArrayToStringConverter;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.conversion.StringToArrayConverter;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
@@ -70,7 +72,8 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     private ListViewer monitors;
     private Text textFailureScenarioModel;
 
-    private Text textModuleFiles;
+    // private Text textModuleFiles;
+    private WritableList<String> moduleFilesInput;
     private Text textPropertyFiles;
 
     @Override
@@ -169,15 +172,99 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     }
 
     private void createPrismTab(Composite parent, ModifyListener modifyListener) {
-        textModuleFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(parent, modifyListener, "Module Files",
-                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles, "Select Module Files", getShell(),
-                true, true, ModelFileTypeConstants.EMPTY_STRING, true);
+        /*
+         * textModuleFiles = new Text(modulesParent, SWT.SINGLE | SWT.BORDER);
+         * TabHelper.createFileInputSection(modulesParent, modifyListener, "Module Files",
+         * ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles,
+         * "Select Module Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING,
+         * true);
+         */
+        Group modulesParent = new Group(parent, SWT.NONE);
+        modulesParent.setLayout(new GridLayout(2, false));
+        modulesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        modulesParent.setText("Module Files");
 
-        textPropertyFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(parent, modifyListener, "Property Files",
-                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles, "Select Property Files",
-                getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING, true);
+        ListViewer listModuleFiles = new ListViewer(modulesParent, SWT.SINGLE | SWT.BORDER);
+        listModuleFiles.getControl()
+            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ObservableListContentProvider<String> modulesObservableInput = new ObservableListContentProvider<>();
+        listModuleFiles.setContentProvider(modulesObservableInput);
+        moduleFilesInput = new WritableList<>();
+        listModuleFiles.setInput(moduleFilesInput);
+
+        Composite modulesButtonParent = new Composite(modulesParent, SWT.NONE);
+        modulesButtonParent.setLayout(new GridLayout());
+        modulesButtonParent.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true));
+        Button addButton = new Button(modulesButtonParent, SWT.PUSH);
+        addButton.setText("Add...");
+        addButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                String type = "Module File";
+                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Add " + type, type,
+                        ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION);
+                if (dialog.open() == Window.OK) {
+                    String uri = dialog.getRepositoryModelUri();
+                    moduleFilesInput.add(uri);
+                    modifyListener.modifyText(null);
+                }
+            }
+        });
+        Button editButton = new Button(modulesButtonParent, SWT.PUSH);
+        editButton.setText("Edit...");
+        editButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (listModuleFiles.getSelection()
+                    .isEmpty()) {
+                    return;
+                }
+                IStructuredSelection selection = listModuleFiles.getStructuredSelection();
+                String selectedUri = (String) selection.getFirstElement();
+                String type = "Module File";
+                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Edit " + type, type,
+                        ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, selectedUri);
+                if (dialog.open() == Window.OK) {
+                    String uri = dialog.getRepositoryModelUri();
+                    int index = moduleFilesInput.indexOf(selectedUri);
+                    moduleFilesInput.remove(index);
+                    moduleFilesInput.add(index, uri);
+                    modifyListener.modifyText(null);
+                }
+            }
+        });
+        Button removeButton = new Button(modulesButtonParent, SWT.PUSH);
+        removeButton.setText("Remove");
+        removeButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (listModuleFiles.getSelection()
+                    .isEmpty()) {
+                    return;
+                }
+                IStructuredSelection selection = listModuleFiles.getStructuredSelection();
+                String selectedUri = (String) selection.getFirstElement();
+                moduleFilesInput.remove(selectedUri);
+                modifyListener.modifyText(null);
+            }
+        });
+        /*
+         * textPropertyFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
+         * TabHelper.createFileInputSection(parent, modifyListener, "Property Files",
+         * ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles,
+         * "Select Property Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING,
+         * true);
+         */
+        Group propertiesParent = new Group(parent, SWT.NONE);
+        propertiesParent.setLayout(new GridLayout());
+        propertiesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        propertiesParent.setText("Property Files");
+
+        ListViewer listPropertyFiles = new ListViewer(propertiesParent, SWT.SINGLE | SWT.BORDER);
+        listPropertyFiles.getControl()
+            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ObservableListContentProvider<String> propertiesObservableInput = new ObservableListContentProvider<>();
+        listPropertyFiles.setContentProvider(propertiesObservableInput);
     }
 
     private void createPcmTab(Composite content, ModifyListener modifyListener) {
@@ -380,33 +467,36 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
 
     private void initializeFromPRISM(ILaunchConfiguration configuration,
             UpdateStrategyController prismUpdateController) {
-        IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
-            .observe(textModuleFiles);
-        IObservableValue<String[]> moduleFilesModel = ConfigurationProperties
-            .strings(ModelFileTypeConstants.PRISM_MODULE_FILE)
+        /*
+         * IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
+         * .observe(textModuleFiles);
+         */
+        IObservableList<String> moduleFilesModel = ConfigurationProperties
+            .list(ModelFileTypeConstants.PRISM_MODULE_FILE)
             .observe(configuration);
-        UpdateValueStrategy<String, String[]> moduleFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
+        UpdateListStrategy<String, String> moduleFilesUpdateStrategyTargetToModel = new ConditionalUpdateListStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
-        moduleFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
-        UpdateValueStrategy<String[], String> moduleFilesUpdateStrategyModelToTarget = ConditionalUpdateValueStrategy
-            .create(new ArrayToStringConverter(), prismUpdateController);
-        Binding moduleFilesBindValue = ctx.bindValue(moduleFilesTarget, moduleFilesModel,
+        UpdateListStrategy<String, String> moduleFilesUpdateStrategyModelToTarget = new ConditionalUpdateListStrategy<>(
+                prismUpdateController);
+        Binding moduleFilesBindValue = ctx.bindList(moduleFilesInput, moduleFilesModel,
                 moduleFilesUpdateStrategyTargetToModel, moduleFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(moduleFilesBindValue, SWT.TOP | SWT.RIGHT);
 
-        IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
-            .observe(textPropertyFiles);
-        IObservableValue<String[]> propertyFilesModel = ConfigurationProperties
-            .strings(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
-            .observe(configuration);
-        UpdateValueStrategy<String, String[]> propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
-        propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
-        UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget = ConditionalUpdateValueStrategy
-            .create(new ArrayToStringConverter(), prismUpdateController);
-        Binding propertyFilesBindValue = ctx.bindValue(propertyFilesTarget, propertyFilesModel,
-                propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
-        ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
+        /*
+         * IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
+         * .observe(textPropertyFiles); IObservableValue<String[]> propertyFilesModel =
+         * ConfigurationProperties .strings(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
+         * .observe(configuration); UpdateValueStrategy<String, String[]>
+         * propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
+         * UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
+         * propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
+         * UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget =
+         * ConditionalUpdateValueStrategy .create(new ArrayToStringConverter(),
+         * prismUpdateController); Binding propertyFilesBindValue =
+         * ctx.bindValue(propertyFilesTarget, propertyFilesModel,
+         * propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
+         * ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
+         */
     }
 
     @Override

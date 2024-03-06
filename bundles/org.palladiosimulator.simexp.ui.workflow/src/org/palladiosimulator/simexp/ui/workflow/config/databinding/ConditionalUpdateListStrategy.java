@@ -5,6 +5,10 @@ import org.eclipse.core.databinding.UpdateListStrategy;
 public class ConditionalUpdateListStrategy<S, D> extends UpdateListStrategy<S, D> {
     private final UpdateStrategyController updateStrategyController;
 
+    public ConditionalUpdateListStrategy(UpdateStrategyController updateStrategyController) {
+        this(POLICY_UPDATE, updateStrategyController);
+    }
+
     public ConditionalUpdateListStrategy(int updatePolicy, UpdateStrategyController updateStrategyController) {
         super(updatePolicy);
         this.updateStrategyController = updateStrategyController;
