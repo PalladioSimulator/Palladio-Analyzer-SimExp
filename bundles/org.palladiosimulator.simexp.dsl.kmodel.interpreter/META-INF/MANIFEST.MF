@@ -10,6 +10,11 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.kmodel;bundle-version="0.1.0",
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.edp2,
- org.apache.log4j
+ org.apache.log4j,
+ org.palladiosimulator.simexp.markovian.model,
+ org.palladiosimulator.solver,
+ org.palladiosimulator.simulizar.reconfiguration.qvto,
+ org.palladiosimulator.envdyn.api,
+ tools.mdsd.probdist.api
 Export-Package: org.palladiosimulator.simexp.core.strategy.mape,
  org.palladiosimulator.simexp.dsl.kmodel.interpreter
