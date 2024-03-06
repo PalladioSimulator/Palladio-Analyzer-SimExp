@@ -19,12 +19,14 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
@@ -93,10 +95,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        // Monitor ?
+        // Monitor PcmMonitor
         // Analyzer KmodelInterpreter
         // Planner KmodelInterpreter
-        // Executor ?
+        // Executor not required
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         DummyVariableValueProvider vvp = new DummyVariableValueProvider();
@@ -105,9 +107,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
         RuntimeValueProvider rvp = new KnowledgeLookup(null);
 
+        Monitor monitor = new PcmMonitor(simSpecs, pvp);
         KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
-                kmodelInterpreter, kmodelInterpreter, simSpecs, pvp);
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
+                kmodelInterpreter, kmodelInterpreter);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
