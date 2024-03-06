@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.performability;
+package org.palladiosimulator.simexp.pcm.performability;
 
 import org.apache.log4j.Logger;
 

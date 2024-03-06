@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.performability;
+package org.palladiosimulator.simexp.pcm.performability;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
+import org.palladiosimulator.simexp.pcm.examples.performability.ResponseTimeLinearInterpolator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 public class PerformabilityRewardEvaluation implements RewardEvaluator<Double> {
