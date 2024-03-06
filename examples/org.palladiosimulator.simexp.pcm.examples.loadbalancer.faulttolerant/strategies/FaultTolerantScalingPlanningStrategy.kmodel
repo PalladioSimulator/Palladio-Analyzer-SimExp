@@ -4,7 +4,7 @@ const float upperThreshold = 2.0;
 probe bool node1Available : "id_node1";
 probe bool node2Available : "id_node2";
 probe bool node3Available : "id_node3";
-probe int responseTime : "Usage Scenario: EnvironmentPerception_Response Time";
+probe float responseTime : "Usage Scenario: overloadUsageScenario";
 
 action scaleOut();
 action scaleIn();
