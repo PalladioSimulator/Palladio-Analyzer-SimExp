@@ -15,8 +15,8 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class PcmMonitor implements Monitor {
 
-    private List<SimulatedMeasurementSpecification> measurementSpecs;
-    private ProbeValueProviderMeasurementInjector pvpInjector;
+    private final List<SimulatedMeasurementSpecification> measurementSpecs;
+    private final ProbeValueProviderMeasurementInjector pvpInjector;
 
     public PcmMonitor(List<SimulatedMeasurementSpecification> measurementSpecs,
             ProbeValueProviderMeasurementInjector pvpInjector) {
