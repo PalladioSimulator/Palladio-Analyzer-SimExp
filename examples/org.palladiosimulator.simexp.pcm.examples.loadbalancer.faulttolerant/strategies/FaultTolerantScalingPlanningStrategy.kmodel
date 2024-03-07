@@ -22,7 +22,6 @@ if (isAvailableNode1 && isAvailableNode2) {
 		scaleIn();	
 	}
 } else {
-	nodeRecovery();
 	if (!isAvailableNode1 && !isAvailableNode2) {
 		// if both nodes are down, then always recover node 1
 		nodeRecovery_1_0()
