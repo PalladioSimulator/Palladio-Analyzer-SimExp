@@ -1,16 +1,21 @@
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
 
-probe bool node1Available : "id_node1";
-probe bool node2Available : "id_node2";
-probe bool node3Available : "id_node3";
+envvariable bool isAvailableNode1 : staticid"_yaTfsAEpEeS7FKokKTKFow", dynamicid"_fhjfsdahfsh"; // ServerNode1
+envvariable bool isAvailableNode2 : staticid"_yabTfsAEpEeS7FKokKTKFow", dynamicid"_ghjfsdahfsh"; // ServerNode2
+
 probe float responseTime : "Usage Scenario: overloadUsageScenario";
+//probe float responseTime2 : monitorid"_LQcqIMltEeSsG6YHnSxiuA"; // Usage Scenario: overloadUsageScenario
 
 action scaleOut();
 action scaleIn();
 action nodeRecovery();
+action setState_up_up();
+action setState_up_down();
+action setState_down_up();
+action setState_down_down();
 
-if (node1Available && node2Available && node3Available) {
+if (isAvailableNode1 && isAvailableNode2) {
 	if (responseTime >= upperThreshold) {
 		scaleOut();
 	}
@@ -20,4 +25,24 @@ if (node1Available && node2Available && node3Available) {
 	}
 } else {
 	nodeRecovery();
+	if (isAvailableNode1 && isAvailableNode2) {
+		//setBranchProbabilityNode1();
+		// setBranchProbability(node2, 0.0)
+		setState_up_up();
+	}
+	if (isAvailableNode1 && !isAvailableNode2) {
+		// setBranchProbability(node1, 1.0)
+		// setBranchProbability(node2, 0.0)
+		setState_up_down();
+	}
+	if (!isAvailableNode1 && isAvailableNode2) {
+		// setBranchProbability(node1, 0.0)
+		// setBranchProbability(node2, 1.0)
+		setState_down_up();
+	}
+	if (!isAvailableNode1 && !isAvailableNode2) {
+		// setBranchProbability(node1, 0.0)
+		// setBranchProbability(node2, 0.0)
+		setState_down_down();
+	}
 }
