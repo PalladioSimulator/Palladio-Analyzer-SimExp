@@ -140,16 +140,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
-//            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
-            // TODO: Remove workaround
-            SimulationKind simulationKind = SimulationKind.MODELLED;
-            List monitorNames = Arrays.asList(("System Response Time"));
+            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
-                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider, monitorNames,
-                    config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager,
-                    kmodel);
+                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
+                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
+                    qvtoReconfigurationManager, kmodel);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
