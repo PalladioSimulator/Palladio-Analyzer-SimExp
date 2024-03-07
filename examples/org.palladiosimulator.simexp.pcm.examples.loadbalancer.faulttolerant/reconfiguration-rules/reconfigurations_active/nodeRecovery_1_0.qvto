@@ -30,7 +30,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation setState_down_down( inout pcmAllocation : PCM_ALLOC ) {
+transformation nodeRecovery_1_0( inout pcmAllocation : PCM_ALLOC ) {
 							
 
 	/**
@@ -39,9 +39,9 @@ transformation setState_down_down( inout pcmAllocation : PCM_ALLOC ) {
 	 */
 	main() {
 	
-		log('SimuLizar setState_down_down Rule Transformation started');
+		log('SimuLizar nodeRecovery_1_0 Rule Transformation started');
 		
-		log('**** 'SimuLizar setState_down_down Rule Transformation started' ******');
+		log('**** 'SimuLizar nodeRecovery_1_0 Rule Transformation started' ******');
 		pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					setBranchProbabilities(allocation.allocationContexts_Allocation)
@@ -66,7 +66,7 @@ transformation setState_down_down( inout pcmAllocation : PCM_ALLOC ) {
 //						log('Branch1: ' + branch1.toString());
 						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(entityName="delegateToServer2");
 						
-						branch1.branchProbability := 0.0;
+						branch1.branchProbability := 1.0;
 						branch2.branchProbability := 0.0;
 					}
 				}
@@ -77,7 +77,7 @@ transformation setState_down_down( inout pcmAllocation : PCM_ALLOC ) {
 		
 		log('Result: Branch1: ' + branch1.toString() + ',Branch2: ' + branch2.toString()');
 		
-		log('**** 'SimuLizar setState_down_down Rule Transformation DONE' ******');
+		log('**** 'SimuLizarnodeRecovery_1_0 Rule Transformation DONE' ******');
 		return false;
 	}
 	
