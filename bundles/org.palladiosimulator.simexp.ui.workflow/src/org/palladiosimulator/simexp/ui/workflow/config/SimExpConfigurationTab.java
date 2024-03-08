@@ -168,13 +168,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     }
 
     private void createPrismTab(Composite parent, ModifyListener modifyListener) {
-        /*
-         * textModuleFiles = new Text(modulesParent, SWT.SINGLE | SWT.BORDER);
-         * TabHelper.createFileInputSection(modulesParent, modifyListener, "Module Files",
-         * ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION, textModuleFiles,
-         * "Select Module Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING,
-         * true);
-         */
         Group modulesParent = new Group(parent, SWT.NONE);
         modulesParent.setLayout(new GridLayout(2, false));
         modulesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -189,13 +182,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
                 ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION);
         listModuleFiles.setInput(moduleFilesInput);
 
-        /*
-         * textPropertyFiles = new Text(parent, SWT.SINGLE | SWT.BORDER);
-         * TabHelper.createFileInputSection(parent, modifyListener, "Property Files",
-         * ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION, textPropertyFiles,
-         * "Select Property Files", getShell(), true, true, ModelFileTypeConstants.EMPTY_STRING,
-         * true);
-         */
         Group propertiesParent = new Group(parent, SWT.NONE);
         propertiesParent.setLayout(new GridLayout(2, false));
         propertiesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -471,10 +457,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
 
     private void initializeFromPRISM(ILaunchConfiguration configuration,
             UpdateStrategyController prismUpdateController) {
-        /*
-         * IObservableValue<String> moduleFilesTarget = WidgetProperties.text(SWT.Modify)
-         * .observe(textModuleFiles);
-         */
         IObservableList<String> moduleFilesModel = ConfigurationProperties
             .list(ModelFileTypeConstants.PRISM_MODULE_FILE)
             .observe(configuration);
@@ -486,10 +468,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
                 moduleFilesUpdateStrategyTargetToModel, moduleFilesUpdateStrategyModelToTarget);
         ControlDecorationSupport.create(moduleFilesBindValue, SWT.TOP | SWT.RIGHT);
 
-        /*
-         * IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
-         * .observe(textPropertyFiles);
-         */
         IObservableList<String> propertyFilesModel = ConfigurationProperties
             .list(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
             .observe(configuration);
