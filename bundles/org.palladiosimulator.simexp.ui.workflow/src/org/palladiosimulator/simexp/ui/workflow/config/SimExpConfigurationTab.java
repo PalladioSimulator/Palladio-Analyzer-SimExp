@@ -72,9 +72,8 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     private ListViewer monitors;
     private Text textFailureScenarioModel;
 
-    // private Text textModuleFiles;
     private WritableList<String> moduleFilesInput;
-    private Text textPropertyFiles;
+    private WritableList<String> propertyFilesInput;
 
     @Override
     public void createControl(Composite parent) {
@@ -186,7 +185,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
             .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ObservableListContentProvider<String> modulesObservableInput = new ObservableListContentProvider<>();
         listModuleFiles.setContentProvider(modulesObservableInput);
-        moduleFilesInput = createPrismList(modulesParent, listModuleFiles, modifyListener, "Module File",
+        moduleFilesInput = createPrismList(modulesParent, modifyListener, listModuleFiles, "Module File",
                 ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION);
         listModuleFiles.setInput(moduleFilesInput);
 
@@ -198,7 +197,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
          * true);
          */
         Group propertiesParent = new Group(parent, SWT.NONE);
-        propertiesParent.setLayout(new GridLayout());
+        propertiesParent.setLayout(new GridLayout(2, false));
         propertiesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         propertiesParent.setText("Property Files");
 
@@ -207,9 +206,12 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
             .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ObservableListContentProvider<String> propertiesObservableInput = new ObservableListContentProvider<>();
         listPropertyFiles.setContentProvider(propertiesObservableInput);
+        propertyFilesInput = createPrismList(propertiesParent, modifyListener, listPropertyFiles, "Property File",
+                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION);
+        listPropertyFiles.setInput(propertyFilesInput);
     }
 
-    private WritableList<String> createPrismList(Composite parent, ListViewer listViewer, ModifyListener modifyListener,
+    private WritableList<String> createPrismList(Composite parent, ModifyListener modifyListener, ListViewer listViewer,
             String type, String[] extension) {
         WritableList<String> filesInput = new WritableList<>();
 
@@ -486,19 +488,18 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
 
         /*
          * IObservableValue<String> propertyFilesTarget = WidgetProperties.text(SWT.Modify)
-         * .observe(textPropertyFiles); IObservableValue<String[]> propertyFilesModel =
-         * ConfigurationProperties .strings(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
-         * .observe(configuration); UpdateValueStrategy<String, String[]>
-         * propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateValueStrategy<>(
-         * UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
-         * propertyFilesUpdateStrategyTargetToModel.setConverter(new StringToArrayConverter());
-         * UpdateValueStrategy<String[], String> propertyFilesUpdateStrategyModelToTarget =
-         * ConditionalUpdateValueStrategy .create(new ArrayToStringConverter(),
-         * prismUpdateController); Binding propertyFilesBindValue =
-         * ctx.bindValue(propertyFilesTarget, propertyFilesModel,
-         * propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
-         * ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
+         * .observe(textPropertyFiles);
          */
+        IObservableList<String> propertyFilesModel = ConfigurationProperties
+            .list(ModelFileTypeConstants.PRISM_PROPERTY_FILE)
+            .observe(configuration);
+        UpdateListStrategy<String, String> propertyFilesUpdateStrategyTargetToModel = new ConditionalUpdateListStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT, prismUpdateController);
+        UpdateListStrategy<String, String> propertyFilesUpdateStrategyModelToTarget = new ConditionalUpdateListStrategy<>(
+                prismUpdateController);
+        Binding propertyFilesBindValue = ctx.bindList(propertyFilesInput, propertyFilesModel,
+                propertyFilesUpdateStrategyTargetToModel, propertyFilesUpdateStrategyModelToTarget);
+        ControlDecorationSupport.create(propertyFilesBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     @Override
