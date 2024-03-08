@@ -236,11 +236,10 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
         editButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (listViewer.getSelection()
-                    .isEmpty()) {
+                IStructuredSelection selection = listViewer.getStructuredSelection();
+                if (selection.isEmpty()) {
                     return;
                 }
-                IStructuredSelection selection = listViewer.getStructuredSelection();
                 String selectedUri = (String) selection.getFirstElement();
                 EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Edit " + type, type,
                         extension, selectedUri);
@@ -258,11 +257,10 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
         removeButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (listViewer.getSelection()
-                    .isEmpty()) {
+                IStructuredSelection selection = listViewer.getStructuredSelection();
+                if (selection.isEmpty()) {
                     return;
                 }
-                IStructuredSelection selection = listViewer.getStructuredSelection();
                 String selectedUri = (String) selection.getFirstElement();
                 filesInput.remove(selectedUri);
                 modifyListener.modifyText(null);
