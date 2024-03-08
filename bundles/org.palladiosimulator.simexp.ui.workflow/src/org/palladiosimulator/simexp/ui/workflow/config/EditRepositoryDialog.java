@@ -59,6 +59,12 @@ public class EditRepositoryDialog extends InputDialog {
         this.initialValue = initialValue;
     }
 
+    @Override
+    public boolean close() {
+        ctx.dispose();
+        return super.close();
+    }
+
     public String getRepositoryModelUri() {
         return model.getValue();
     }

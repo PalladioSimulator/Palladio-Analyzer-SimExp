@@ -19,6 +19,11 @@ public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigu
         this.ctx = new DataBindingContext();
     }
 
+    @Override
+    public void dispose() {
+        ctx.dispose();
+    }
+
     protected class SimExpModifyListener implements ModifyListener {
         @Override
         public void modifyText(ModifyEvent e) {
