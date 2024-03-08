@@ -86,21 +86,18 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
 
         final Label simulationIDLabel = new Label(container, SWT.NONE);
         simulationIDLabel.setText("Simulation-ID:");
-
         textSimulationID = new Text(container, SWT.BORDER);
         textSimulationID.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textSimulationID.addModifyListener(modifyListener);
 
         final Label numberOfRunsLabel = new Label(container, SWT.NONE);
         numberOfRunsLabel.setText("Number of runs:");
-
         textNumberOfRuns = new Text(container, SWT.BORDER);
         textNumberOfRuns.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumberOfRuns.addModifyListener(modifyListener);
 
         final Label numberOfSimulationsPerRunLabel = new Label(container, SWT.NONE);
         numberOfSimulationsPerRunLabel.setText("Number of simulations per run:");
-
         textNumerOfSimulationsPerRun = new Text(container, SWT.BORDER);
         textNumerOfSimulationsPerRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
