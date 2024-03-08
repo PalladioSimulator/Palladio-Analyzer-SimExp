@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.ui.workflow.config.databinding;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +24,7 @@ class ConfigurationObservableListValue extends AbstractObservableList<String> {
         return String.class;
     }
 
-    private List<String> getList() {
+    private List<String> getConfigList() {
         try {
             List<String> list = configuration.getAttribute(key, Collections.emptyList());
             return list;
@@ -32,15 +33,23 @@ class ConfigurationObservableListValue extends AbstractObservableList<String> {
         }
     }
 
+    private List<String> getReadOnlyList() {
+        return Collections.unmodifiableList(getConfigList());
+    }
+
+    private List<String> getModifyableList() {
+        return new ArrayList<>(getConfigList());
+    }
+
     @Override
     public String get(int index) {
-        List<String> list = getList();
+        List<String> list = getReadOnlyList();
         return list.get(index);
     }
 
     @Override
     protected int doGetSize() {
-        List<String> list = getList();
+        List<String> list = getReadOnlyList();
         return list.size();
     }
 
@@ -48,7 +57,7 @@ class ConfigurationObservableListValue extends AbstractObservableList<String> {
     public String set(int index, String element) {
         if (configuration instanceof ILaunchConfigurationWorkingCopy) {
             ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
-            List<String> list = getList();
+            List<String> list = getModifyableList();
             String previous = list.set(index, element);
             launchConfigurationWorkingCopy.setAttribute(key, list);
             return previous;
@@ -61,7 +70,7 @@ class ConfigurationObservableListValue extends AbstractObservableList<String> {
     public void add(int index, String element) {
         if (configuration instanceof ILaunchConfigurationWorkingCopy) {
             ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
-            List<String> list = getList();
+            List<String> list = getModifyableList();
             list.add(index, element);
             launchConfigurationWorkingCopy.setAttribute(key, list);
         } else {
@@ -73,7 +82,7 @@ class ConfigurationObservableListValue extends AbstractObservableList<String> {
     public String remove(int index) {
         if (configuration instanceof ILaunchConfigurationWorkingCopy) {
             ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
-            List<String> list = getList();
+            List<String> list = getModifyableList();
             String previous = list.remove(index);
             launchConfigurationWorkingCopy.setAttribute(key, list);
             return previous;
