@@ -24,7 +24,11 @@ Variable returns Field:
 	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID;
 
 Probe returns Field:
-	{Probe} 'probe' dataType=PrimitiveType name=ID ':' id=STRING;
+	{Probe} 'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressing identifier=STRING
+;
+
+enum ProbeAdressing:
+    MONITORID='monitorId' | ID='id';
 
 Runtime returns Field:
 	{Runtime} 'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression;

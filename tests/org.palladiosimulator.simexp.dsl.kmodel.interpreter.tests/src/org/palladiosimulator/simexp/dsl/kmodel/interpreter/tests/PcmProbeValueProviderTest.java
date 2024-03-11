@@ -44,7 +44,7 @@ public class PcmProbeValueProviderTest {
         List<PcmMeasurementSpecification> specs = Arrays.asList(responseTimeSpec);
 
         Probe probe = KmodelFactory.eINSTANCE.createProbe();
-        probe.setId(MEASURING_POINT_ID);
+        probe.setIdentifier(MEASURING_POINT_ID);
         List<Probe> probes = Arrays.asList(probe);
 
         pvp = new PcmProbeValueProvider(probes, specs);

@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
@@ -159,12 +160,21 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
         for (int i = 0; i < probes.size(); i++) {
             Probe otherProbe = probes.get(i);
-            if (probe.getId()
-                .equals(otherProbe.getId())) {
+            if (sameProbeAddress(probe, otherProbe)) {
                 warning("Probes '" + probe.getName() + "' and '" + otherProbe.getName() + "' are probably redundant.",
-                        KmodelPackage.Literals.PROBE__ID);
+                        KmodelPackage.Literals.PROBE__IDENTIFIER);
             }
         }
+    }
+
+    private boolean sameProbeAddress(Probe probe1, Probe probe2) {
+        if (probe1.getKind() != probe2.getKind()) {
+            return false;
+        }
+        if (!Strings.equal(probe1.getIdentifier(), probe2.getIdentifier())) {
+            return false;
+        }
+        return true;
     }
 
     @Check

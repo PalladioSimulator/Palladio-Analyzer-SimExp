@@ -30,7 +30,7 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
         String sb = String.join("\n", "var bool{true, false} condition;", "const int one = 1;",
-                "probe float aliasName : \"someId\";");
+                "probe float aliasName : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -77,7 +77,7 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
-        String sb = String.join("\n", "var string{\"word\"} word;", "probe string word : \"someId\";");
+        String sb = String.join("\n", "var string{\"word\"} word;", "probe string word : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 

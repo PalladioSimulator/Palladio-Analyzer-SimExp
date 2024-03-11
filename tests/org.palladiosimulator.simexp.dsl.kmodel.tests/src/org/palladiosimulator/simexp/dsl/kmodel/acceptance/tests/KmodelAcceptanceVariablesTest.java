@@ -226,7 +226,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolProbe() throws Exception {
-        String sb = String.join("\n", "probe bool pName:\"ab11\";");
+        String sb = String.join("\n", "probe bool pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -239,12 +239,12 @@ public class KmodelAcceptanceVariablesTest {
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
-        assertEquals("ab11", probe.getId());
+        assertEquals("ab11", probe.getIdentifier());
     }
 
     @Test
     public void parseIntProbe() throws Exception {
-        String sb = String.join("\n", "probe int pName:\"ab11\";");
+        String sb = String.join("\n", "probe int pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -257,12 +257,12 @@ public class KmodelAcceptanceVariablesTest {
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.INT, probe.getDataType());
-        assertEquals("ab11", probe.getId());
+        assertEquals("ab11", probe.getIdentifier());
     }
 
     @Test
     public void parseFloatProbe() throws Exception {
-        String sb = String.join("\n", "probe float pName:\"ab11\";");
+        String sb = String.join("\n", "probe float pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -275,12 +275,12 @@ public class KmodelAcceptanceVariablesTest {
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.FLOAT, probe.getDataType());
-        assertEquals("ab11", probe.getId());
+        assertEquals("ab11", probe.getIdentifier());
     }
 
     @Test
     public void parseStringProbe() throws Exception {
-        String sb = String.join("\n", "probe string pName:\"ab11\";");
+        String sb = String.join("\n", "probe string pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -293,12 +293,12 @@ public class KmodelAcceptanceVariablesTest {
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.STRING, probe.getDataType());
-        assertEquals("ab11", probe.getId());
+        assertEquals("ab11", probe.getIdentifier());
     }
 
     @Test
     public void parseBoolProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe bool pName:\"ab11\" = true;");
+        String sb = String.join("\n", "probe bool pName: id \"ab11\" = true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -307,7 +307,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe int pName:\"ab11\" = 1;");
+        String sb = String.join("\n", "probe int pName: id \"ab11\" = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -316,7 +316,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe float pName:\"ab11\" = 1.0;");
+        String sb = String.join("\n", "probe float pName: id \"ab11\" = 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -325,7 +325,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe string pName:\"ab11\" = \"s\";");
+        String sb = String.join("\n", "probe string pName: id \"ab11\" = \"s\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -462,7 +462,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseMultipleVariableTypes() throws Exception {
-        String sb = String.join("\n", "const bool cBool = true;", "probe bool pBool:\"ab11\";",
+        String sb = String.join("\n", "const bool cBool = true;", "probe bool pBool: id \"ab11\";",
                 "var bool{true,false} vBool;");
 
         Kmodel model = parserHelper.parse(sb);
@@ -481,7 +481,7 @@ public class KmodelAcceptanceVariablesTest {
         Probe probe = (Probe) field2;
         assertEquals("pBool", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
-        assertEquals("ab11", probe.getId());
+        assertEquals("ab11", probe.getIdentifier());
         Field field3 = fields.get(2);
         assertTrue(field3 instanceof Variable);
         Variable variable = (Variable) field3;
@@ -502,7 +502,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateProbeNames() throws Exception {
-        String sb = String.join("\n", "probe bool name:\"ax10\";", "probe int name:\"ax11\";");
+        String sb = String.join("\n", "probe bool name: id \"ax10\";", "probe int name: id \"ax11\";");
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -29,7 +29,7 @@ public class PcmProbeValueProvider implements ProbeValueProvider, ProbeValueProv
                 MeasuringPoint measuringPoint = spec.getMeasuringPoint();
                 String measuringPointAsStr = measuringPoint.getStringRepresentation();
 //                String metricDescriptionRemoved = measuringPointAsStr.split("\\_")[0];
-                if (probe.getId()
+                if (probe.getIdentifier()
                     .equals(measuringPointAsStr)) {
                     probeToMeasurementSpec.put(probe, spec);
                 }
@@ -42,8 +42,8 @@ public class PcmProbeValueProvider implements ProbeValueProvider, ProbeValueProv
     public Object getValue(Probe probe) {
         PcmMeasurementSpecification currentSpec = probeToMeasurementSpec.get(probe);
         if (currentSpec == null) {
-            LOGGER
-                .info(String.format("No corresponding PcmMeasurementSpecification found for probe %s", probe.getId()));
+            LOGGER.info(String.format("No corresponding PcmMeasurementSpecification found for probe %s",
+                    probe.getIdentifier()));
             return null;
         }
         Double currValue = currentMeasurements.get(currentSpec);

@@ -199,7 +199,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithProbeValue() throws Exception {
-        String sb = String.join("\n", "probe int someProbe : \"someId\";", "const int constant = someProbe;");
+        String sb = String.join("\n", "probe int someProbe : id \"someId\";", "const int constant = someProbe;");
 
         Kmodel model = parserHelper.parse(sb);
 
