@@ -32,6 +32,7 @@
 		<unit id="com.google.auto.factory-annotations.feature.feature.group" version="1.0.0"/>
 		<unit id="org.mockito.core-with-junit-extension.feature.feature.group" version="3.3.3"/>
 		<unit id="net.bytebuddy.byte-buddy.feature.feature.group" version="1.10.9"/>
+		<unit id="org.hamcrest" version="2.2"/>
 
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
