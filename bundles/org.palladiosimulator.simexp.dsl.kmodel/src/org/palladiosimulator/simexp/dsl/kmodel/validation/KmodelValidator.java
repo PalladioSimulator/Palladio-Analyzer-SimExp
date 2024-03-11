@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ModelName;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
@@ -45,6 +46,16 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
     @Check
     public void checkKmodel(Kmodel model) {
+        ModelName modelName = model.getModelName();
+        if (modelName == null) {
+            warning("No modelName given.", model, KmodelPackage.Literals.KMODEL__MODEL_NAME);
+        } else {
+            if (modelName.getName()
+                .isEmpty()) {
+                warning("Empty modelName.", modelName, KmodelPackage.Literals.MODEL_NAME__NAME);
+            }
+        }
+
         List<Field> fields = model.getFields();
         for (int i = 0; i < fields.size(); i++) {
             Field field = fields.get(i);
@@ -67,7 +78,6 @@ public class KmodelValidator extends AbstractKmodelValidator {
                         i);
             }
         }
-
     }
 
     @Check
