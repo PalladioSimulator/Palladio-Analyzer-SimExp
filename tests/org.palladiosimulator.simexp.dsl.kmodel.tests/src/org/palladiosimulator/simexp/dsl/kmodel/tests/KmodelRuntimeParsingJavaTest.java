@@ -35,17 +35,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime bool rbool: simple: a;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rbool = fields.get(0);
         Assert.assertTrue(rbool instanceof Runtime);
         Assert.assertEquals("rbool", rbool.getName());
         Assert.assertEquals(DataType.BOOL, rbool.getDataType());
-
         EcoreExpression a = ((Runtime) rbool).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNull(a.getExp());
@@ -56,17 +54,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNull(a.getExp());
@@ -77,12 +73,11 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime float rfloat: simple: a;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rfloat = fields.get(0);
         Assert.assertTrue(rfloat instanceof Runtime);
         Assert.assertEquals("rfloat", rfloat.getName());
@@ -98,17 +93,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime string rstring: simple: a;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rstring = fields.get(0);
         Assert.assertTrue(rstring instanceof Runtime);
         Assert.assertEquals("rstring", rstring.getName());
         Assert.assertEquals(DataType.STRING, rstring.getDataType());
-
         EcoreExpression a = ((Runtime) rstring).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNull(a.getExp());
@@ -119,26 +112,22 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a;", "runtime string rstring: simple: b;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(2, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNull(a.getExp());
-
         Field rstring = fields.get(1);
         Assert.assertTrue(rstring instanceof Runtime);
         Assert.assertEquals("rstring", rstring.getName());
         Assert.assertEquals(DataType.STRING, rstring.getDataType());
-
         EcoreExpression b = ((Runtime) rstring).getExp();
         Assert.assertEquals("b", b.getName());
         Assert.assertNull(b.getExp());
@@ -149,21 +138,18 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a.b;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNotNull(a.getExp());
-
         EcoreExpression b = a.getExp();
         Assert.assertEquals("b", b.getName());
         Assert.assertNull(b.getExp());
@@ -174,17 +160,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a[1];");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertEquals(1, a.getIndex());
@@ -196,17 +180,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a{something=true};");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertEquals("something", a.getParam());
@@ -219,17 +201,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a{something=1};");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertEquals("something", a.getParam());
@@ -242,17 +222,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a{something=0.5};");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertEquals("something", a.getParam());
@@ -265,17 +243,15 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a{something=\"something\"};");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertEquals("something", a.getParam());
@@ -288,33 +264,28 @@ public class KmodelRuntimeParsingJavaTest {
         String sb = String.join("\n", "runtime int rint: simple: a.b[3].c{selected=true}.d;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field rint = fields.get(0);
         Assert.assertTrue(rint instanceof Runtime);
         Assert.assertEquals("rint", rint.getName());
         Assert.assertEquals(DataType.INT, rint.getDataType());
-
         EcoreExpression a = ((Runtime) rint).getExp();
         Assert.assertEquals("a", a.getName());
         Assert.assertNotNull(a.getExp());
-
         EcoreExpression b = a.getExp();
         Assert.assertEquals("b", b.getName());
         Assert.assertEquals(3, b.getIndex());
         Assert.assertNotNull(b.getExp());
-
         EcoreExpression c = b.getExp();
         Assert.assertEquals("c", c.getName());
         Assert.assertEquals("selected", c.getParam());
         Assert.assertTrue(c.getValue() instanceof BoolLiteral);
         Assert.assertTrue(((BoolLiteral) c.getValue()).isTrue());
         Assert.assertNotNull(c.getExp());
-
         EcoreExpression d = c.getExp();
         Assert.assertEquals("d", d.getName());
         Assert.assertNull(d.getExp());

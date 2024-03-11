@@ -35,19 +35,16 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const bool condition = true;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field field = fields.get(0);
         Assert.assertTrue(field instanceof Constant);
-
         Constant constant = (Constant) field;
         Assert.assertEquals("condition", constant.getName());
         Assert.assertEquals(DataType.BOOL, constant.getDataType());
-
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof BoolLiteral);
@@ -59,19 +56,16 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const int one = 1;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field field = fields.get(0);
         Assert.assertTrue(field instanceof Constant);
-
         Constant constant = (Constant) field;
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.INT, constant.getDataType());
-
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof IntLiteral);
@@ -88,14 +82,11 @@ public class KmodelConstantParsingJavaTest {
 
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field field = fields.get(0);
         Assert.assertTrue(field instanceof Constant);
-
         Constant constant = (Constant) field;
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.FLOAT, constant.getDataType());
-
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof FloatLiteral);
@@ -107,19 +98,16 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(1, fields.size());
-
         Field field = fields.get(0);
         Assert.assertTrue(field instanceof Constant);
-
         Constant constant = (Constant) field;
         Assert.assertEquals("word", constant.getName());
         Assert.assertEquals(DataType.STRING, constant.getDataType());
-
         Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof StringLiteral);
@@ -131,31 +119,25 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const int count = 1;", "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(2, fields.size());
-
         Field firstField = fields.get(0);
         Assert.assertTrue(firstField instanceof Constant);
-
         Constant firstConstant = (Constant) firstField;
         Assert.assertEquals("count", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
-
         Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
-
         Field secondField = fields.get(1);
         Assert.assertTrue(secondField instanceof Constant);
-
         Constant secondConstant = (Constant) secondField;
         Assert.assertEquals("word", secondConstant.getName());
         Assert.assertEquals(DataType.STRING, secondConstant.getDataType());
-
         Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getLiteral();
         Assert.assertTrue(secondValue instanceof StringLiteral);
@@ -167,31 +149,25 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const int const1 = 1;", "const int const2 = const1;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
         Assert.assertEquals(2, fields.size());
-
         Field firstField = fields.get(0);
         Assert.assertTrue(firstField instanceof Constant);
-
         Constant firstConstant = (Constant) firstField;
         Assert.assertEquals("const1", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
-
         Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
-
         Field secondField = fields.get(1);
         Assert.assertTrue(secondField instanceof Constant);
-
         Constant secondConstant = (Constant) secondField;
         Assert.assertEquals("const2", secondConstant.getName());
         Assert.assertEquals(DataType.INT, secondConstant.getDataType());
-
         Field fieldReference = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getFieldRef();
         Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(((Constant) fieldReference).getValue())
@@ -214,8 +190,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "var int{0} variable;", "const int constant = variable;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
@@ -225,8 +201,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "probe int someProbe : \"someId\";", "const int constant = someProbe;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
@@ -236,8 +212,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "runtime int rint : simple: a;", "const int constant = rint;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
@@ -247,8 +223,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "var bool{true} variable;", "const bool constant = variable && true;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
@@ -258,8 +234,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const bool constant = false || constant;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Couldn't resolve reference to Field 'constant'.");
     }
@@ -269,8 +245,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const int const1 = const2;", "const int const2 = const1;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Couldn't resolve reference to Field 'const2'.");
     }
@@ -280,8 +256,8 @@ public class KmodelConstantParsingJavaTest {
         String sb = String.join("\n", "const int number = true;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int', got 'bool' instead.");
     }

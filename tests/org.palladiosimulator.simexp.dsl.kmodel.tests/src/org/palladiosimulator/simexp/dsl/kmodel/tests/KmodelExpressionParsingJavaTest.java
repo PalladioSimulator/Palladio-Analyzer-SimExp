@@ -37,15 +37,13 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = 1;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
-
         Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
@@ -56,23 +54,19 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int a = 1;", "const int b = a;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant firstConstant = (Constant) fields.get(0);
         Expression firstExpression = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(firstExpression));
-
         Literal firstValue = firstExpression.getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
-
         Constant secondConstant = (Constant) fields.get(1);
         Expression secondExpression = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(secondExpression));
-
         Field secondValue = secondExpression.getFieldRef();
         Assert.assertEquals(firstConstant, secondValue);
     }
@@ -82,15 +76,13 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = (1);");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
-
         Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
@@ -101,21 +93,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = true || false;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.OR, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
@@ -127,21 +116,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = true && false;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.AND, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
@@ -153,21 +139,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = \"some\" == \"thing\";");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.EQUAL, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof StringLiteral);
         Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof StringLiteral);
@@ -179,21 +162,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = \"some\" != \"thing\";");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.UNEQUAL, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof StringLiteral);
         Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof StringLiteral);
@@ -205,16 +185,14 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = !true;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.NOT, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
@@ -226,21 +204,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = 1 < 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.SMALLER, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -252,21 +227,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = 1 <= 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -278,21 +250,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = 1 >= 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.GREATER_OR_EQUAL, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -304,21 +273,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = 1 > 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.GREATER, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -330,21 +296,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = 1 + 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.PLUS, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -356,21 +319,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = 1 - 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -382,16 +342,14 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = -1;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
@@ -403,21 +361,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const float constant = 1.0 * 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) leftLiteral).getValue(), 0.0f);
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -429,21 +384,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const float constant = 1 / 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.DIVIDE, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -455,21 +407,18 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = 1 % 2;");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-
         EList<Field> fields = model.getFields();
-
         Constant constant = (Constant) fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MODULO, expression.getOp());
-
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue(), 0.0f);
-
         Expression right = KmodelTestUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -482,6 +431,7 @@ public class KmodelExpressionParsingJavaTest {
                 "const bool constant = -a > 1 == !(true || false && (a * (1 + a)) != 2.0);");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
@@ -491,8 +441,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = true || 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'bool', got 'float' instead.");
     }
@@ -502,8 +452,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = \"true\" && false;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'bool', got 'string' instead.");
     }
@@ -513,8 +463,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = \"1.0\" == 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int' or 'float', got 'string' instead.");
     }
@@ -524,8 +474,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = !1;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'bool', got 'int' instead.");
     }
@@ -535,8 +485,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const bool constant = 1 >= false;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
@@ -546,8 +496,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = true + 1;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
@@ -557,8 +507,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const int constant = -false;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int' or 'float', got 'bool' instead.");
     }
@@ -568,8 +518,8 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const float constant = 1.5 * \"2\";");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int' or 'float', got 'string' instead.");
     }
@@ -579,6 +529,7 @@ public class KmodelExpressionParsingJavaTest {
         String sb = String.join("\n", "const string word = ((\"word\");");
 
         Kmodel model = parserHelper.parse(sb);
+
         KmodelTestUtil.assertErrorMessages(model, 1, "missing ')' at ';'");
     }
 }

@@ -32,17 +32,14 @@ public class KmodelFieldParsingJavaTest {
                 "probe float aliasName : \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         EList<Field> fields = model.getFields();
         Assert.assertEquals(3, fields.size());
-
         Field firstField = fields.get(0);
         Assert.assertTrue(firstField instanceof Variable);
-
         Field secondField = fields.get(1);
         Assert.assertTrue(secondField instanceof Constant);
-
         Field thirdField = fields.get(2);
         Assert.assertTrue(thirdField instanceof Probe);
     }
@@ -71,8 +68,8 @@ public class KmodelFieldParsingJavaTest {
         String sb = String.join("\n", "const int number = 1;", "const int number = 1;");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'number'",
                 "Duplicate Field 'number'");
     }
@@ -82,8 +79,8 @@ public class KmodelFieldParsingJavaTest {
         String sb = String.join("\n", "var string{\"word\"} word;", "probe string word : \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
-        KmodelTestUtil.assertModelWithoutErrors(model);
 
+        KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'word'",
                 "Duplicate Field 'word'");
     }
