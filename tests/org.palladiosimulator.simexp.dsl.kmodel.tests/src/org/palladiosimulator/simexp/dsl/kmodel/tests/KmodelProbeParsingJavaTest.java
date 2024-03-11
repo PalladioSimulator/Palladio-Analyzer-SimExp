@@ -1,18 +1,20 @@
 package org.palladiosimulator.simexp.dsl.kmodel.tests;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.samePropertyValuesAs;
+
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 
@@ -33,14 +35,11 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Assert.assertTrue(field instanceof Probe);
-        Probe probe = (Probe) field;
-        Assert.assertEquals("condition", probe.getName());
-        Assert.assertEquals(DataType.BOOL, probe.getDataType());
-        Assert.assertEquals("someId", probe.getId());
+        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe.setName("condition");
+        exptectedProbe.setDataType(DataType.BOOL);
+        exptectedProbe.setId("someId");
+        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -51,14 +50,11 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Assert.assertTrue(field instanceof Probe);
-        Probe probe = (Probe) field;
-        Assert.assertEquals("count", probe.getName());
-        Assert.assertEquals(DataType.INT, probe.getDataType());
-        Assert.assertEquals("someId", probe.getId());
+        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe.setName("count");
+        exptectedProbe.setDataType(DataType.INT);
+        exptectedProbe.setId("someId");
+        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -69,14 +65,11 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Assert.assertTrue(field instanceof Probe);
-        Probe probe = (Probe) field;
-        Assert.assertEquals("number", probe.getName());
-        Assert.assertEquals(DataType.FLOAT, probe.getDataType());
-        Assert.assertEquals("someId", probe.getId());
+        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe.setName("number");
+        exptectedProbe.setDataType(DataType.FLOAT);
+        exptectedProbe.setId("someId");
+        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -87,14 +80,11 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Assert.assertTrue(field instanceof Probe);
-        Probe probe = (Probe) field;
-        Assert.assertEquals("word", probe.getName());
-        Assert.assertEquals(DataType.STRING, probe.getDataType());
-        Assert.assertEquals("someId", probe.getId());
+        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe.setName("word");
+        exptectedProbe.setDataType(DataType.STRING);
+        exptectedProbe.setId("someId");
+        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -105,20 +95,16 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(2, fields.size());
-        Field firstField = fields.get(0);
-        Assert.assertTrue(firstField instanceof Probe);
-        Probe firstProbe = (Probe) firstField;
-        Assert.assertEquals("count", firstProbe.getName());
-        Assert.assertEquals(DataType.INT, firstProbe.getDataType());
-        Assert.assertEquals("someId", firstProbe.getId());
-        Field secondField = fields.get(1);
-        Assert.assertTrue(secondField instanceof Probe);
-        Probe secondProbe = (Probe) secondField;
-        Assert.assertEquals("word", secondProbe.getName());
-        Assert.assertEquals(DataType.STRING, secondProbe.getDataType());
-        Assert.assertEquals("someOtherId", secondProbe.getId());
+        Probe exptectedProbe1 = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe1.setName("count");
+        exptectedProbe1.setDataType(DataType.INT);
+        exptectedProbe1.setId("someId");
+        Probe exptectedProbe2 = KmodelFactory.eINSTANCE.createProbe();
+        exptectedProbe2.setName("word");
+        exptectedProbe2.setDataType(DataType.STRING);
+        exptectedProbe2.setId("someOtherId");
+        assertThat(model.getFields(),
+                contains(samePropertyValuesAs(exptectedProbe1), samePropertyValuesAs(exptectedProbe2)));
     }
 
     @Test
