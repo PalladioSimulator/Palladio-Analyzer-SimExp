@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.kmodel.tests.util;
 
 import java.util.List;
 import java.util.stream.Collectors;

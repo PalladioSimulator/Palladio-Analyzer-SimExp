@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
