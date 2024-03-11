@@ -3,13 +3,12 @@
  */
 package org.palladiosimulator.simexp.dsl.kmodel;
 
-
 /**
  * Initialization support for running Xtext languages without Equinox extension registry.
  */
 public class KmodelStandaloneSetup extends KmodelStandaloneSetupGenerated {
 
-	public static void doSetup() {
-		new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+    public static void doSetup() {
+        new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+    }
 }
