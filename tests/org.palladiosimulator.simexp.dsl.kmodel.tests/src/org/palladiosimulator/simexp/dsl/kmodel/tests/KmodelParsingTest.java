@@ -45,7 +45,6 @@ public class KmodelParsingTest {
         Kmodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        validationTestHelper.assertWarning(model.getModelName(), model.getModelName()
-            .eClass(), null, "Empty modelName.");
+        validationTestHelper.assertWarning(model, model.eClass(), null, "Empty modelName.");
     }
 }
