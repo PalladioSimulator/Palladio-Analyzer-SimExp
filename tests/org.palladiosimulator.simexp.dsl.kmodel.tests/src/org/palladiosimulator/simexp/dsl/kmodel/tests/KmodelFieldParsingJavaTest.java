@@ -28,8 +28,8 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
-        String sb = String.join("\n", "var bool{true, false} condition;", "const int one = 1;",
-                "probe float aliasName : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var bool{true, false} condition;",
+                "const int one = 1;", "probe float aliasName : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -44,7 +44,7 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseFieldWithInvalidName() throws Exception {
-        String sb = String.join("\n", "const int 123 = 123;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int 123 = 123;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -53,7 +53,7 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseFieldWithTokenAsName() throws Exception {
-        String sb = String.join("\n", "const int const = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int const = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -65,7 +65,7 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseSameFieldsWithSameName() throws Exception {
-        String sb = String.join("\n", "const int number = 1;", "const int number = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int number = 1;", "const int number = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -76,7 +76,8 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
-        String sb = String.join("\n", "var string{\"word\"} word;", "probe string word : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var string{\"word\"} word;",
+                "probe string word : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -87,7 +88,7 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseLocalField() throws Exception {
-        String sb = String.join("\n", "if(true){", "var int variable = {1};", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if(true){", "var int variable = {1};", "}");
 
         Kmodel model = parserHelper.parse(sb);
 

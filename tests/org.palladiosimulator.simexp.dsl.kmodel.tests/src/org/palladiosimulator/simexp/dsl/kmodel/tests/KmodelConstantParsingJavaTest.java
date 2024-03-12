@@ -32,7 +32,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleBoolConstant() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool condition = true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -51,7 +51,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleIntConstant() throws Exception {
-        String sb = String.join("\n", "const int one = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int one = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -70,7 +70,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleFloatConstant() throws Exception {
-        String sb = String.join("\n", "const float one = 1.0;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float one = 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -89,7 +89,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleStringConstant() throws Exception {
-        String sb = String.join("\n", "const string word = \"word\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -108,7 +108,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseTwoConstants() throws Exception {
-        String sb = String.join("\n", "const int count = 1;", "const string word = \"word\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int count = 1;",
+                "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -134,7 +135,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithConstantValue() throws Exception {
-        String sb = String.join("\n", "const int const1 = 1;", "const int const2 = const1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int const1 = 1;",
+                "const int const2 = const1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -162,7 +164,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const int noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -171,7 +173,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithVariableValue() throws Exception {
-        String sb = String.join("\n", "var int{0} variable;", "const int constant = variable;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var int{0} variable;",
+                "const int constant = variable;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -182,7 +185,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithProbeValue() throws Exception {
-        String sb = String.join("\n", "probe int someProbe : id \"someId\";", "const int constant = someProbe;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe int someProbe : id \"someId\";",
+                "const int constant = someProbe;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -193,7 +197,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithRuntimeValue() throws Exception {
-        String sb = String.join("\n", "runtime int rint : simple: a;", "const int constant = rint;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint : simple: a;",
+                "const int constant = rint;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -204,7 +209,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithExpressionContainingVariable() throws Exception {
-        String sb = String.join("\n", "var bool{true} variable;", "const bool constant = variable && true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var bool{true} variable;",
+                "const bool constant = variable && true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -215,7 +221,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithSelfReference() throws Exception {
-        String sb = String.join("\n", "const bool constant = false || constant;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = false || constant;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -228,7 +234,8 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantsWithCyclicReference() throws Exception {
-        String sb = String.join("\n", "const int const1 = const2;", "const int const2 = const1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int const1 = const2;",
+                "const int const2 = const1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -241,7 +248,7 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithWrongValueType() throws Exception {
-        String sb = String.join("\n", "const int number = true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int number = true;");
 
         Kmodel model = parserHelper.parse(sb);
 

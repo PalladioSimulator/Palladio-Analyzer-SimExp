@@ -41,7 +41,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithoutParameter() throws Exception {
-        String sb = String.join("\n", "action setTextualMode();");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action setTextualMode();");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -58,7 +58,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithBoolParameter() throws Exception {
-        String sb = String.join("\n", "action decreaseQuality(param bool decrease);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action decreaseQuality(param bool decrease);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -79,7 +79,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithIntParameter() throws Exception {
-        String sb = String.join("\n", "action setNumCPUs(param int numCPUs);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action setNumCPUs(param int numCPUs);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -100,7 +100,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithFloatParameter() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action scaleOut(param float balancingFactor);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -121,7 +121,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithStringParameter() throws Exception {
-        String sb = String.join("\n", "action setConfiguration(param string name);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action setConfiguration(param string name);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -142,7 +142,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithTwoParameters() throws Exception {
-        String sb = String.join("\n", "action scale(param float factor, param bool in);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action scale(param float factor, param bool in);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -167,7 +168,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithVariable() throws Exception {
-        String sb = String.join("\n", "action scaleOut(var float{1.25, 2.5} balancingFactor);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action scaleOut(var float{1.25, 2.5} balancingFactor);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -198,7 +200,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithParameterAndVariable() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param int factor1, var float{1.25, 2.5} factor2);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action scaleOut(param int factor1, var float{1.25, 2.5} factor2);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -233,7 +236,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActions() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float scaleOutFactor);",
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action scaleOut(param float scaleOutFactor);",
                 "action scaleIn(param float scaleInFactor);");
 
         Kmodel model = parserHelper.parse(sb);
@@ -264,7 +267,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActionsWithSameParameterName() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);",
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action scaleOut(param float balancingFactor);",
                 "action scaleIn(param float balancingFactor);");
 
         Kmodel model = parserHelper.parse(sb);
@@ -295,8 +298,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithLiteral() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);", "if(true){",
-                "scaleOut(balancingFactor=1.0);", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action scaleOut(param float balancingFactor);",
+                "if(true){", "scaleOut(balancingFactor=1.0);", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -328,8 +331,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithField() throws Exception {
-        String sb = String.join("\n", "var float{0} argument;", "action scaleOut(param float balancingFactor);",
-                "if(true){", "scaleOut(balancingFactor=argument);", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var float{0} argument;",
+                "action scaleOut(param float balancingFactor);", "if(true){", "scaleOut(balancingFactor=argument);",
+                "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -362,8 +366,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
-        String sb = String.join("\n", "action scaleOut(var float{1.25, 2.5} balancingFactor);", "if (true) {",
-                "scaleOut();", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action scaleOut(var float{1.25, 2.5} balancingFactor);", "if (true) {", "scaleOut();", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -393,7 +397,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseComplexActionCall() throws Exception {
-        String sb = String.join("\n", "const int constant = 1;", "var float[1, 2, 1] variable;",
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = 1;",
+                "var float[1, 2, 1] variable;",
                 "action adapt(param float param1, param int param2, param bool param3, var int{1, 2, 3, 4} variable);",
                 "if(true) {", "adapt(param1=variable, param2=(constant + 1), param3=(true && false));", "}");
 
@@ -405,7 +410,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActionsWithSameName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter);", "action adapt(param bool parameter2);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action adapt(param int parameter);",
+                "action adapt(param bool parameter2);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -416,7 +422,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseLocalActionDeclaration() throws Exception {
-        String sb = String.join("\n", "if(true){", "action adapt(param int parameter);", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if(true){", "action adapt(param int parameter);",
+                "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -425,7 +432,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameParameterName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter, param float parameter);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(param int parameter, param float parameter);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -436,7 +444,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameParameterVariableName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter, var int{1,2,3} parameter);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(param int parameter, var int{1,2,3} parameter);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -447,7 +456,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameVariableName() throws Exception {
-        String sb = String.join("\n", "action adapt(var int{1,2,3} parameter, var int{1,2,3} parameter);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(var int{1,2,3} parameter, var int{1,2,3} parameter);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -458,7 +468,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
-        String sb = String.join("\n", "action adapt(var int{1} variable, param float parameter);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(var int{1} variable, param float parameter);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -467,7 +478,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithWrongParameterTypes() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter1, param bool parameter2);", "if(true) {",
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(param float parameter1, param bool parameter2);", "if(true) {",
                 "adapt(parameter1=true, parameter2=2);", "}");
 
         Kmodel model = parserHelper.parse(sb);
@@ -480,8 +492,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithWrongArgumentOrder() throws Exception {
-        String sb = String.join("\n", "action adapt(param int a, param int b);", "if (true) {", "adapt(b=1, a=1);",
-                "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action adapt(param int a, param int b);",
+                "if (true) {", "adapt(b=1, a=1);", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -492,7 +504,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithTooFewArguments() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter);", "if (true) {", "adapt();", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action adapt(param float parameter);",
+                "if (true) {", "adapt();", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -502,7 +515,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter, var float{0} variable);", "if (true) {",
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action adapt(param float parameter, var float{0} variable);", "if (true) {",
                 "adapt(parameter=1.0, variable=1.0);", "}");
 
         Kmodel model = parserHelper.parse(sb);
@@ -514,7 +528,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithParameterSelfReference() throws Exception {
-        String sb = String.join("\n", "action adapt(param float factor);", "if(true) {", "adapt(factor=factor);", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action adapt(param float factor);", "if(true) {",
+                "adapt(factor=factor);", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -525,7 +540,8 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallOutsideIf() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter);", "adapt(parameter=1);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action adapt(param int parameter);",
+                "adapt(parameter=1);");
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -30,7 +30,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleProbeMonitorId() throws Exception {
-        String sb = String.join("\n", "probe bool probeName : monitorId \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool probeName : monitorId \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -46,7 +46,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleProbeId() throws Exception {
-        String sb = String.join("\n", "probe bool probeName : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool probeName : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -62,7 +62,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleBoolProbe() throws Exception {
-        String sb = String.join("\n", "probe bool condition : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool condition : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -78,7 +78,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleIntProbe() throws Exception {
-        String sb = String.join("\n", "probe int count : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe int count : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -94,7 +94,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleFloatVariable() throws Exception {
-        String sb = String.join("\n", "probe float number : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe float number : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -110,7 +110,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleStringVariable() throws Exception {
-        String sb = String.join("\n", "probe string word : id \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe string word : id \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -126,7 +126,8 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseTwoProbes() throws Exception {
-        String sb = String.join("\n", "probe int count : id \"someId\";", "probe string word : id \"someOtherId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe int count : id \"someId\";",
+                "probe string word : id \"someOtherId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -148,7 +149,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseProbeWithoutKind() throws Exception {
-        String sb = String.join("\n", "probe bool condition \"someId\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool condition \"someId\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -157,7 +158,7 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseProbeWithoutIdentified() throws Exception {
-        String sb = String.join("\n", "probe bool condition;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool condition;");
 
         Kmodel model = parserHelper.parse(sb);
 

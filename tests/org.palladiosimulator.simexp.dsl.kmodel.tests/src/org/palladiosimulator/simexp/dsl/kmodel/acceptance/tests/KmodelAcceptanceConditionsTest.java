@@ -27,7 +27,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneLiteral() throws Exception {
-        String sb = String.join("\n", "if(true) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if(true) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -41,7 +41,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConst() throws Exception {
-        String sb = String.join("\n", "const bool cb = true;", "if(cb) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool cb = true;", "if(cb) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -55,7 +55,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionOr() throws Exception {
-        String sb = String.join("\n", "const bool cb = true;", "if(cb || false) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool cb = true;", "if(cb || false) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -69,7 +69,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionAnd() throws Exception {
-        String sb = String.join("\n", "const bool cb = true;", "if(cb && false) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool cb = true;", "if(cb && false) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -83,7 +83,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionNotEqual() throws Exception {
-        String sb = String.join("\n", "const int ci = 1;", "if(ci != 0) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int ci = 1;", "if(ci != 0) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -97,7 +97,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneAction() throws Exception {
-        String sb = String.join("\n", "action aName();", "if(true) {", "aName();", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName();", "if(true) {", "aName();", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -111,8 +111,8 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseMultipleActions() throws Exception {
-        String sb = String.join("\n", "action aName1();", "action aName2();", "if(true) {", "aName1();", "aName2();",
-                "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName1();", "action aName2();",
+                "if(true) {", "aName1();", "aName2();", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -126,7 +126,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseInvalidAction() throws Exception {
-        String sb = String.join("\n", "if(true) {", "aName();", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if(true) {", "aName();", "}");
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -34,7 +34,7 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfStatementWithLiteralCondition() throws Exception {
-        String sb = String.join("\n", "if (true) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if (true) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -53,7 +53,8 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfStatementWithFieldCondition() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;", "if (condition) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool condition = true;",
+                "if (condition) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -80,7 +81,7 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseConsecutiveIfStatements() throws Exception {
-        String sb = String.join("\n", "if (true) {}", "if (true) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if (true) {}", "if (true) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -106,7 +107,8 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseNestedIfStatements() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;", "if (condition) {", "if (condition) {}", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool condition = true;",
+                "if (condition) {", "if (condition) {}", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -137,7 +139,7 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfElseStatement() throws Exception {
-        String sb = String.join("\n", "if (true) {} else {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if (true) {} else {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -158,8 +160,8 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseNestedIfElseStatement() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;", "if (condition) {} else {", "if (condition) {",
-                "}", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool condition = true;",
+                "if (condition) {} else {", "if (condition) {", "}", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -192,8 +194,8 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfStatementWithActionCall() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);", "if (false) {",
-                "scaleOut(balancingFactor=1.0);", "}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action scaleOut(param float balancingFactor);",
+                "if (false) {", "scaleOut(balancingFactor=1.0);", "}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -212,7 +214,7 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfStatementWithWrongLiteralType() throws Exception {
-        String sb = String.join("\n", "if (\"condition\") {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "if (\"condition\") {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -223,7 +225,8 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseIfStatementWithWrongFieldType() throws Exception {
-        String sb = String.join("\n", "const string condition = \"true\";", "if (condition) {}");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const string condition = \"true\";",
+                "if (condition) {}");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -234,8 +237,9 @@ public class KmodelIfParsingJavaTest {
 
     @Test
     public void parseComplexStatement() throws Exception {
-        String sb = String.join("\n", "//Variable declarations", "var float{1.0, 2.0} i;", "// action declaration",
-                "action a(param float factor);", "action anotherA(param float factor, var float[1,2,1] anotherFactor);"
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "//Variable declarations",
+                "var float{1.0, 2.0} i;", "// action declaration", "action a(param float factor);",
+                "action anotherA(param float factor, var float[1,2,1] anotherFactor);"
 
                 , "// rule block", "if (true) {", "    a(factor=i);       // execute action",
                 "anotherA(factor=i); // execute another action", "}");

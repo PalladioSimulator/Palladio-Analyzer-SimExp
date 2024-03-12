@@ -18,6 +18,8 @@ import org.palladiosimulator.simexp.dsl.kmodel.validation.KmodelValidator;
 public class KmodelTestUtil {
     private static final KmodelValidator validator = new KmodelValidator();
 
+    public static final String MODEL_NAME_LINE = "modelName = \"name\";";
+
     public static void assertModelWithoutErrors(Kmodel model) {
         Assert.assertNotNull(model);
         EList<Diagnostic> errors = model.eResource()

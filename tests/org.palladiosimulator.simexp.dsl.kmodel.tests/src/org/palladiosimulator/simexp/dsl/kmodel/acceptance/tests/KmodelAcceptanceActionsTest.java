@@ -40,7 +40,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionNoParam() throws Exception {
-        String sb = String.join("\n", "action aName();");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName();");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -57,7 +57,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseMultipleActionNoParam() throws Exception {
-        String sb = String.join("\n", "action aName1();", "action aName2();");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName1();", "action aName2();");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -79,7 +79,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolParam() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param bool pb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -102,7 +102,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionStringParam() throws Exception {
-        String sb = String.join("\n", "action aName(param string ps);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param string ps);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -125,7 +125,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionIntParam() throws Exception {
-        String sb = String.join("\n", "action aName(param int pi);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param int pi);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -148,7 +148,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMultipleBoolParam() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb1, param bool pb2);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param bool pb1, param bool pb2);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -174,7 +174,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterNames1() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb, param bool pb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param bool pb, param bool pb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -185,7 +185,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterNames2() throws Exception {
-        String sb = String.join("\n", "action aName(param bool p, param int p);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(param bool p, param int p);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -196,7 +196,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolVariable() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(var bool{true,false} vb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -228,7 +228,7 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolVariableNoBounds() throws Exception {
-        String sb = String.join("\n", "action aName(var bool vb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "action aName(var bool vb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -237,7 +237,8 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMultipleVariable() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb, var int{1,2} vi);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action aName(var bool{true,false} vb, var int{1,2} vi);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -281,7 +282,8 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParameters() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb, var bool{true,false} vb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action aName(param bool pb, var bool{true,false} vb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -316,7 +318,8 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParametersInvalidOrder() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb, param bool pb);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action aName(var bool{true,false} vb, param bool pb);");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -325,7 +328,8 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterVarNames() throws Exception {
-        String sb = String.join("\n", "action aName(param bool p, var bool{true,false} p);");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "action aName(param bool p, var bool{true,false} p);");
 
         Kmodel model = parserHelper.parse(sb);
 

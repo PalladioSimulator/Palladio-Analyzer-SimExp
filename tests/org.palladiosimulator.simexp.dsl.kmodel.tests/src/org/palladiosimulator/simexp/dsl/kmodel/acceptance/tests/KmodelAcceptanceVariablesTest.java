@@ -45,7 +45,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleBoolConstant() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool condition = true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -65,7 +65,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleIntConstant() throws Exception {
-        String sb = String.join("\n", "const int one = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int one = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -84,7 +84,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleFloatConstant() throws Exception {
-        String sb = String.join("\n", "const float one = 1.0;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float one = 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -104,7 +104,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleStringConstant() throws Exception {
-        String sb = String.join("\n", "const string word = \"word\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -124,7 +124,8 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseTwoConstants() throws Exception {
-        String sb = String.join("\n", "const int count = 1;", "const string word = \"word\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int count = 1;",
+                "const string word = \"word\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -152,7 +153,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const bool noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -161,7 +162,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const int noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -170,7 +171,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const float noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -179,7 +180,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const string noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const string noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -188,7 +189,8 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseConstantWithVariableValue() throws Exception {
-        String sb = String.join("\n", "var int variable;", "const int constant = variable;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var int variable;",
+                "const int constant = variable;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -197,7 +199,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolConstantWithIntValue() throws Exception {
-        String sb = String.join("\n", "const bool number = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool number = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -208,7 +210,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntConstantWithBoolValue() throws Exception {
-        String sb = String.join("\n", "const int number = true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int number = true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -219,7 +221,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolProbe() throws Exception {
-        String sb = String.join("\n", "probe bool pName: id \"ab11\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -236,7 +238,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntProbe() throws Exception {
-        String sb = String.join("\n", "probe int pName: id \"ab11\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe int pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -253,7 +255,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatProbe() throws Exception {
-        String sb = String.join("\n", "probe float pName: id \"ab11\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe float pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -270,7 +272,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringProbe() throws Exception {
-        String sb = String.join("\n", "probe string pName: id \"ab11\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe string pName: id \"ab11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -287,7 +289,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe bool pName: id \"ab11\" = true;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool pName: id \"ab11\" = true;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -296,7 +298,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe int pName: id \"ab11\" = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe int pName: id \"ab11\" = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -305,7 +307,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe float pName: id \"ab11\" = 1.0;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe float pName: id \"ab11\" = 1.0;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -314,7 +316,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe string pName: id \"ab11\" = \"s\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe string pName: id \"ab11\" = \"s\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -323,7 +325,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolVarArray() throws Exception {
-        String sb = String.join("\n", "var bool{true,false} vName;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var bool{true,false} vName;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -348,7 +350,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntVarArray() throws Exception {
-        String sb = String.join("\n", "var int{1,3} vName;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var int{1,3} vName;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -373,7 +375,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatVarArray() throws Exception {
-        String sb = String.join("\n", "var float{1.0,3.0} vName;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var float{1.0,3.0} vName;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -399,7 +401,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringVarArray() throws Exception {
-        String sb = String.join("\n", "var string{\"s1\",\"s2\"} vName;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var string{\"s1\",\"s2\"} vName;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -424,7 +426,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntVarRange() throws Exception {
-        String sb = String.join("\n", "var int[1,2,1] vName;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var int[1,2,1] vName;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -446,8 +448,8 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseMultipleVariableTypes() throws Exception {
-        String sb = String.join("\n", "const bool cBool = true;", "probe bool pBool: id \"ab11\";",
-                "var bool{true,false} vBool;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool cBool = true;",
+                "probe bool pBool: id \"ab11\";", "var bool{true,false} vBool;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -471,7 +473,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateConstantNames() throws Exception {
-        String sb = String.join("\n", "const bool name = true;", "const int name = 1;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool name = true;", "const int name = 1;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -482,7 +484,8 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateProbeNames() throws Exception {
-        String sb = String.join("\n", "probe bool name: id \"ax10\";", "probe int name: id \"ax11\";");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool name: id \"ax10\";",
+                "probe int name: id \"ax11\";");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -493,7 +496,8 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateVariableNames() throws Exception {
-        String sb = String.join("\n", "var bool{true,false} name;", "var int{1,2] name;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "var bool{true,false} name;",
+                "var int{1,2] name;");
 
         Kmodel model = parserHelper.parse(sb);
 
