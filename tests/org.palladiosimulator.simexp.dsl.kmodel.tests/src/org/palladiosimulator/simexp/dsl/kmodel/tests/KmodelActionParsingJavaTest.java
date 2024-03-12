@@ -51,7 +51,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setTextualMode", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
     }
@@ -68,11 +68,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("decreaseQuality", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.BOOL, parameter.getDataType());
         Assert.assertEquals("decrease", parameter.getName());
     }
@@ -89,11 +88,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setNumCPUs", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("numCPUs", parameter.getName());
     }
@@ -110,11 +108,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
     }
@@ -131,11 +128,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setConfiguration", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.STRING, parameter.getDataType());
         Assert.assertEquals("name", parameter.getName());
     }
@@ -153,15 +149,13 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scale", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(2, parameters.size());
-        Field firstParameter = parameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("factor", firstParameter.getName());
-        Field secondParameter = parameters.get(1);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = parameters.get(1);
         Assert.assertEquals(DataType.BOOL, secondParameter.getDataType());
         Assert.assertEquals("in", secondParameter.getName());
     }
@@ -179,7 +173,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
         List<Variable> variables = action.getParameterList()
@@ -211,11 +205,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
         List<Variable> variables = action.getParameterList()
@@ -247,20 +240,18 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Field> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
-        Field firstParameter = firstParameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = firstParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("scaleOutFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Field> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
-        Field secondParameter = secondParameters.get(0);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = secondParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
         Assert.assertEquals("scaleInFactor", secondParameter.getName());
     }
@@ -278,20 +269,18 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Field> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
-        Field firstParameter = firstParameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = firstParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("balancingFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Field> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
-        Field secondParameter = secondParameters.get(0);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = secondParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
         Assert.assertEquals("balancingFactor", secondParameter.getName());
     }
@@ -309,11 +298,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<Statement> statements = model.getStatements();
@@ -343,11 +331,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<Statement> statements = model.getStatements();
@@ -377,7 +364,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
         List<Variable> variables = action.getParameterList()

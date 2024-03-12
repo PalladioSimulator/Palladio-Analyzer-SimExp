@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 
 import com.google.inject.Injector;
@@ -426,7 +427,7 @@ public class KModelInterpreterTest {
         // Check, if the expected & actual action of the resolved action match.
         Assert.assertEquals(action, resolvedAction.getAction());
 
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         List<Variable> variables = action.getParameterList()
             .getVariables();

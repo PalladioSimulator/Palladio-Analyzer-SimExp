@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -249,7 +250,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
         if (action != null) {
             List<ArgumentKeyValue> arguments = actionCall.getArguments();
-            List<Field> parameters = action.getParameterList()
+            List<Parameter> parameters = action.getParameterList()
                 .getParameters();
 
             if (arguments.size() != parameters.size()) {

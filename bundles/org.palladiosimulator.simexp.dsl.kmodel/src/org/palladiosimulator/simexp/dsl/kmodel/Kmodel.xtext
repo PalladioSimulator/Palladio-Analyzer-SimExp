@@ -15,7 +15,7 @@ Kmodel:
 	;
 	
 Field:
-	(Constant | Variable | Probe | Runtime)
+	(Constant | Variable | Probe | Runtime | Parameter)
 	;
 
 Constant:
@@ -36,7 +36,7 @@ enum ProbeAdressingKind:
 Runtime:
 	{Runtime} 'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';';
 
-Parameter returns Field:
+Parameter:
 	{Parameter} 'param' dataType=PrimitiveType name=ID;
 
 Bounds:

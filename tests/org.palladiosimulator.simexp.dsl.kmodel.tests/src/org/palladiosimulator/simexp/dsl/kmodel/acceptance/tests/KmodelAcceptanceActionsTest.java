@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
@@ -89,13 +90,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
         EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
     }
@@ -112,13 +113,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
         EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("ps", param.getName());
         assertEquals(DataType.STRING, param.getDataType());
     }
@@ -135,13 +136,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
         EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pi", param.getName());
         assertEquals(DataType.INT, param.getDataType());
     }
@@ -158,13 +159,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(2, parameters.size());
         EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pb1", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
         param = parameters.get(1);
@@ -206,7 +207,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
         EList<Variable> variables = action.getParameterList()
@@ -248,7 +249,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
         EList<Variable> variables = action.getParameterList()
@@ -293,7 +294,7 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
         EList<Variable> variables = action.getParameterList()
