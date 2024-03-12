@@ -3,10 +3,15 @@
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.util.Strings;
@@ -57,16 +62,10 @@ public class KmodelValidator extends AbstractKmodelValidator {
             }
         }
 
-        List<Field> fields = model.getFields();
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            Collection<EStructuralFeature.Setting> fieldReferences = EcoreUtil.UsageCrossReferencer.find(field,
-                    field.eResource());
-
-            if (fieldReferences.isEmpty()) {
-                warning("The field '" + field.getName() + "' is never used.", KmodelPackage.Literals.KMODEL__FIELDS, i);
-            }
-        }
+        checkFields(model.getConstants());
+        checkFields(model.getVariables());
+        checkFields(model.getProbes());
+        checkFields(model.getRuntimes());
 
         List<Action> actions = model.getActions();
         for (int i = 0; i < actions.size(); i++) {
@@ -81,28 +80,87 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
+    private void checkFields(List<? extends Field> fields) {
+        ListIterator<? extends Field> iter = fields.listIterator();
+        while (iter.hasNext()) {
+            int index = iter.nextIndex();
+            Field field = iter.next();
+            Resource resource = field.eResource();
+            Collection<EStructuralFeature.Setting> fieldReferences = EcoreUtil.UsageCrossReferencer.find(field,
+                    resource);
+
+            if (fieldReferences.isEmpty()) {
+                EStructuralFeature feature = field.eContainmentFeature();
+                warning("The field '" + field.getName() + "' is never used.", feature, index);
+            }
+        }
+    }
+
     @Check
     public void checkConstant(Constant constant) {
-        Expression value = constant.getValue();
+        Set<Field> allFieldReferences = getAllFieldReferences(constant);
 
-        if (value != null) {
-            if (containsNonConstantFieldReference(value)) {
-                error("Cannot assign an expression containing a non-constant value to a constant.",
-                        KmodelPackage.Literals.CONSTANT__VALUE);
-                return;
-            }
+        if (containsNonConstantFieldReference(allFieldReferences)) {
+            error("Cannot assign an expression containing a non-constant value to a constant.",
+                    KmodelPackage.Literals.CONSTANT__VALUE);
+            return;
+        }
+        if (containsCyclicReferences(constant, allFieldReferences)) {
+            error("Cyclic reference detected.", constant, KmodelPackage.Literals.CONSTANT__VALUE);
+        }
 
+        Expression expression = constant.getValue();
+        if (expression != null) {
             DataType constantDataType = getDataType(constant);
-            DataType valueDataType = getDataType(value);
+            DataType valueDataType = getDataType(expression);
             if (!checkTypes(constantDataType, valueDataType, KmodelPackage.Literals.CONSTANT__VALUE)) {
                 return;
             }
 
-            if (containsOnlySingleConstant(value)) {
+            if (containsOnlySingleConstant(expression)) {
                 warning("Constant '" + constant.getName() + "' is probably redundant.",
                         KmodelPackage.Literals.CONSTANT__VALUE);
             }
         }
+    }
+
+    private boolean containsCyclicReferences(Constant constant, Set<Field> allFieldReferences) {
+        for (Field field : allFieldReferences) {
+            Constant referredConstant = (Constant) field;
+            Set<Field> others = getAllFieldReferences(referredConstant);
+            if (others.contains(constant)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<Field> getAllFieldReferences(Constant constant) {
+        Expression expression = constant.getValue();
+        return getAllFieldReferences(expression);
+    }
+
+    private Set<Field> getAllFieldReferences(Expression expression) {
+        if (expression == null) {
+            return Collections.emptySet();
+        }
+
+        Set<Field> fieldReferences = new HashSet<>();
+        Field field = expression.getFieldRef();
+        if (field != null) {
+            fieldReferences.add(field);
+        }
+
+        Expression left = expression.getLeft();
+        Expression right = expression.getRight();
+
+        Set<Field> leftFieldReferences = getAllFieldReferences(left);
+        Set<Field> rightFieldReferences = getAllFieldReferences(right);
+
+        fieldReferences.addAll(leftFieldReferences);
+        fieldReferences.addAll(rightFieldReferences);
+
+        return fieldReferences;
     }
 
     @Check
@@ -335,24 +393,13 @@ public class KmodelValidator extends AbstractKmodelValidator {
         return supertype == DataType.FLOAT && subtype == DataType.INT;
     }
 
-    private boolean containsNonConstantFieldReference(Expression expression) {
-        if (expression == null) {
-            return false;
-        }
-
-        Expression left = expression.getLeft();
-        Expression right = expression.getRight();
-
-        if (left != null) {
-            if (right != null) {
-                return containsNonConstantFieldReference(left) || containsNonConstantFieldReference(right);
+    private boolean containsNonConstantFieldReference(Set<Field> fields) {
+        for (Field field : fields) {
+            if (!(field instanceof Constant)) {
+                return true;
             }
-
-            return containsNonConstantFieldReference(left);
         }
-
-        Field field = expression.getFieldRef();
-        return field != null && field.getDataType() != DataType.UNDEFINED && !(field instanceof Constant);
+        return false;
     }
 
     private boolean containsOnlySingleConstant(Expression expression) {

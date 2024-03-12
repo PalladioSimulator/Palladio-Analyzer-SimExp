@@ -41,7 +41,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressing.MONITORID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressing.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressing.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.INT);
         exptectedProbe.setKind(ProbeAdressing.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.FLOAT);
         exptectedProbe.setKind(ProbeAdressing.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe.setDataType(DataType.STRING);
         exptectedProbe.setKind(ProbeAdressing.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getFields(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class KmodelProbeParsingJavaTest {
         exptectedProbe2.setDataType(DataType.STRING);
         exptectedProbe2.setKind(ProbeAdressing.ID);
         exptectedProbe2.setIdentifier("someOtherId");
-        assertThat(model.getFields(),
+        assertThat(model.getProbes(),
                 contains(samePropertyValuesAs(exptectedProbe1), samePropertyValuesAs(exptectedProbe2)));
     }
 

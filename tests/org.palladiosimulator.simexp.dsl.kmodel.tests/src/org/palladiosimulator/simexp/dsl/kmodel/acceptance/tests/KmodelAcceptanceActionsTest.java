@@ -92,7 +92,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Field param = parameters.get(0);
@@ -115,7 +115,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Field param = parameters.get(0);
@@ -138,7 +138,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Field param = parameters.get(0);
@@ -161,7 +161,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(2, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Field param = parameters.get(0);
@@ -209,10 +209,10 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
-        Variable variable = (Variable) variables.get(0);
+        Variable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -250,10 +250,10 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(2, variables.size());
-        Variable variable1 = (Variable) variables.get(0);
+        Variable variable1 = variables.get(0);
         assertEquals("vb", variable1.getName());
         assertEquals(DataType.BOOL, variable1.getDataType());
         Bounds bounds = variable1.getValues();
@@ -265,7 +265,7 @@ public class KmodelAcceptanceActionsTest {
             .get(1);
         List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-        Variable variable2 = (Variable) variables.get(1);
+        Variable variable2 = variables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
@@ -294,13 +294,13 @@ public class KmodelAcceptanceActionsTest {
         EList<Field> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
         Field param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        Variable variable = (Variable) variables.get(0);
+        Variable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();

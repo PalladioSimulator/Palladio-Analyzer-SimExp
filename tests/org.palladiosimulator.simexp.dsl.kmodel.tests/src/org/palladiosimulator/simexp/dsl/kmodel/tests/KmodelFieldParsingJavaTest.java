@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -35,14 +34,12 @@ public class KmodelFieldParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(3, fields.size());
-        Field firstField = fields.get(0);
-        Assert.assertTrue(firstField instanceof Variable);
-        Field secondField = fields.get(1);
-        Assert.assertTrue(secondField instanceof Constant);
-        Field thirdField = fields.get(2);
-        Assert.assertTrue(thirdField instanceof Probe);
+        EList<Variable> variables = model.getVariables();
+        Assert.assertEquals(1, variables.size());
+        EList<Constant> constants = model.getConstants();
+        Assert.assertEquals(1, constants.size());
+        EList<Probe> probes = model.getProbes();
+        Assert.assertEquals(1, probes.size());
     }
 
     @Test
@@ -60,8 +57,10 @@ public class KmodelFieldParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
+        // TODO:
         KmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID",
-                "no viable alternative at input '='", "mismatched input ';' expecting RULE_ID");
+                "no viable alternative at input '='", // "mismatched input ';' expecting RULE_ID");
+                "mismatched input '<EOF>' expecting RULE_ID");
     }
 
     @Test

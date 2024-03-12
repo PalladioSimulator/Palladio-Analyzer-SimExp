@@ -180,11 +180,10 @@ public class KmodelActionParsingJavaTest {
         List<Field> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Variable) variable).getValues();
@@ -216,11 +215,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertTrue(parameter instanceof Parameter);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Variable) variable).getValues();
@@ -378,11 +376,10 @@ public class KmodelActionParsingJavaTest {
         List<Field> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         List<Statement> statements = model.getStatements();

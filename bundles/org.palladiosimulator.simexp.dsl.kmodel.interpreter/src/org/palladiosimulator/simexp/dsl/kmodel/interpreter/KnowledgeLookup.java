@@ -20,7 +20,8 @@ public class KnowledgeLookup implements RuntimeValueProvider {
 	
 	@Override
 	public Object getValue(Runtime runtime) {
-		return getValue(runtime.getExp(), root);
+		EcoreExpression expression = runtime.getExp();
+        return getValue(expression, root);
 	}
 	
 	private Object getValue(EcoreExpression exp, EObject obj) {

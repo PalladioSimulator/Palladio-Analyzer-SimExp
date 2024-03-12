@@ -42,10 +42,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("condition", variable.getName());
         Assert.assertEquals(DataType.BOOL, variable.getDataType());
     }
@@ -58,10 +57,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("count", variable.getName());
         Assert.assertEquals(DataType.INT, variable.getDataType());
     }
@@ -74,10 +72,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("number", variable.getName());
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
     }
@@ -90,10 +87,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("word", variable.getName());
         Assert.assertEquals(DataType.STRING, variable.getDataType());
     }
@@ -106,14 +102,12 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(2, variables.size());
         Field firstVariable = variables.get(0);
-        Assert.assertTrue(firstVariable instanceof Variable);
         Assert.assertEquals("count", firstVariable.getName());
         Assert.assertEquals(DataType.INT, firstVariable.getDataType());
         Field secondVariable = variables.get(1);
-        Assert.assertTrue(secondVariable instanceof Variable);
         Assert.assertEquals("word", secondVariable.getName());
         Assert.assertEquals(DataType.STRING, secondVariable.getDataType());
     }
@@ -126,10 +120,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Assert.assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Array);
@@ -152,10 +145,9 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Assert.assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Range);

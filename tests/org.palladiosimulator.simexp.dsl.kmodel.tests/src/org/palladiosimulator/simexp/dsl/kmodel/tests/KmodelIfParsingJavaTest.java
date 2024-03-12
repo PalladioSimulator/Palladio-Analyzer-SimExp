@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
@@ -58,9 +59,9 @@ public class KmodelIfParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
-        assertEquals(1, variables.size());
-        Field boolConditionVar = variables.get(0);
+        EList<Constant> constants = model.getConstants();
+        assertEquals(1, constants.size());
+        Constant boolConditionVar = constants.get(0);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
         EList<Statement> statements = model.getStatements();
@@ -111,9 +112,9 @@ public class KmodelIfParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        assertEquals(1, fields.size());
-        Field boolConditionField = fields.get(0);
+        EList<Constant> constants = model.getConstants();
+        assertEquals(1, constants.size());
+        Constant boolConditionField = constants.get(0);
         Assert.assertEquals("condition", boolConditionField.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
         EList<Statement> statements = model.getStatements();
@@ -164,9 +165,9 @@ public class KmodelIfParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        assertEquals(1, fields.size());
-        Field boolConditionField = fields.get(0);
+        EList<Constant> constants = model.getConstants();
+        assertEquals(1, constants.size());
+        Constant boolConditionField = constants.get(0);
         Assert.assertEquals("condition", boolConditionField.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
         EList<Statement> statements = model.getStatements();

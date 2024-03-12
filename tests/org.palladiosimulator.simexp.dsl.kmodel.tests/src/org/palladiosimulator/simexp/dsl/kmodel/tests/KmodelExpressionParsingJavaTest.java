@@ -41,8 +41,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Literal literal = expression.getLiteral();
@@ -58,14 +58,14 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant firstConstant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant firstConstant = fields.get(0);
         Expression firstExpression = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(firstExpression));
         Literal firstValue = firstExpression.getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
-        Constant secondConstant = (Constant) fields.get(1);
+        Constant secondConstant = fields.get(1);
         Expression secondExpression = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(secondExpression));
         Field secondValue = secondExpression.getFieldRef();
@@ -80,8 +80,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Literal literal = expression.getLiteral();
@@ -97,8 +97,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.OR, expression.getOp());
@@ -120,8 +120,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.AND, expression.getOp());
@@ -143,8 +143,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.EQUAL, expression.getOp());
@@ -166,8 +166,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.UNEQUAL, expression.getOp());
@@ -189,8 +189,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.NOT, expression.getOp());
@@ -208,8 +208,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.SMALLER, expression.getOp());
@@ -231,8 +231,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
@@ -254,8 +254,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.GREATER_OR_EQUAL, expression.getOp());
@@ -277,8 +277,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.GREATER, expression.getOp());
@@ -300,8 +300,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.PLUS, expression.getOp());
@@ -323,8 +323,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
@@ -346,8 +346,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
@@ -365,8 +365,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
@@ -388,8 +388,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.DIVIDE, expression.getOp());
@@ -411,8 +411,8 @@ public class KmodelExpressionParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        Constant constant = (Constant) fields.get(0);
+        EList<Constant> fields = model.getConstants();
+        Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
         Assert.assertEquals(Operation.MODULO, expression.getOp());
