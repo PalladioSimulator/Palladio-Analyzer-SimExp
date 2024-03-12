@@ -31,10 +31,10 @@ Variable:
 	;
 
 Probe:
-	{Probe} 'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressing identifier=STRING ';'
+	{Probe} 'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'
 	;
 
-enum ProbeAdressing:
+enum ProbeAdressingKind:
     MONITORID='monitorId' | ID='id';
 
 Runtime:

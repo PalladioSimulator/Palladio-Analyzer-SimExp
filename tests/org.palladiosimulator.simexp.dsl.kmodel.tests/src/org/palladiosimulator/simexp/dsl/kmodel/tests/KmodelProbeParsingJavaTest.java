@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
@@ -39,7 +39,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressing.MONITORID);
+        exptectedProbe.setKind(ProbeAdressingKind.MONITORID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -55,7 +55,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressing.ID);
+        exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -71,7 +71,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("condition");
         exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressing.ID);
+        exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -87,7 +87,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("count");
         exptectedProbe.setDataType(DataType.INT);
-        exptectedProbe.setKind(ProbeAdressing.ID);
+        exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -103,7 +103,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("number");
         exptectedProbe.setDataType(DataType.FLOAT);
-        exptectedProbe.setKind(ProbeAdressing.ID);
+        exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -119,7 +119,7 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("word");
         exptectedProbe.setDataType(DataType.STRING);
-        exptectedProbe.setKind(ProbeAdressing.ID);
+        exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
     }
@@ -135,12 +135,12 @@ public class KmodelProbeParsingJavaTest {
         Probe exptectedProbe1 = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe1.setName("count");
         exptectedProbe1.setDataType(DataType.INT);
-        exptectedProbe1.setKind(ProbeAdressing.ID);
+        exptectedProbe1.setKind(ProbeAdressingKind.ID);
         exptectedProbe1.setIdentifier("someId");
         Probe exptectedProbe2 = KmodelFactory.eINSTANCE.createProbe();
         exptectedProbe2.setName("word");
         exptectedProbe2.setDataType(DataType.STRING);
-        exptectedProbe2.setKind(ProbeAdressing.ID);
+        exptectedProbe2.setKind(ProbeAdressingKind.ID);
         exptectedProbe2.setIdentifier("someOtherId");
         assertThat(model.getProbes(),
                 contains(samePropertyValuesAs(exptectedProbe1), samePropertyValuesAs(exptectedProbe2)));
