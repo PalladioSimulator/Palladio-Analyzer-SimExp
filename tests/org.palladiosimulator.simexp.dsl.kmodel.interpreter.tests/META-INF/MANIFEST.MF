@@ -10,5 +10,8 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  com.google.inject;bundle-version="3.0.0",
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.monitorrepository,
- org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0"
+ org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0",
+ org.palladiosimulator.simexp.dsl.kmodel.interpreter,
+ org.palladiosimulator.experimentautomation,
+ org.palladiosimulator.edp2
 Import-Package: org.eclipse.xtext.testing.util
