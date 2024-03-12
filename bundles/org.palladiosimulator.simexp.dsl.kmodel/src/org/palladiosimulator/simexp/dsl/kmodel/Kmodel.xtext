@@ -10,8 +10,8 @@ Kmodel:
 	variables+=Variable  ';' |
 	probes+=Probe |
 	runtimes+=Runtime)*
-	(actions+=Action)*
-	(statements+=IfStatement)*
+	actions+=Action*
+	statements+=IfStatement*
 	;
 	
 Field:
