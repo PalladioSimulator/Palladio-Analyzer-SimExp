@@ -8,7 +8,7 @@ Kmodel:
 	'modelName' '=' modelName=STRING ';'
 	(constants+=Constant |
 	variables+=Variable  ';' |
-	envVariables+=EnvVariable  ';' |
+	envVariables+=EnvVariable |
 	probes+=Probe |
 	runtimes+=Runtime)*
 	actions+=Action*
@@ -28,7 +28,7 @@ Variable:
 	;
 
 EnvVariable:	
-	{EnvVariable} 'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING
+	{EnvVariable} 'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING  ';'
 ;
 
 Probe:
