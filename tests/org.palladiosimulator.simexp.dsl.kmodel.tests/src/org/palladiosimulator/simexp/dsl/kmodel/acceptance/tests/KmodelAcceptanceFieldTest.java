@@ -516,6 +516,16 @@ public class KmodelAcceptanceFieldTest {
     }
 
     @Test
+    public void parseDuplicateProbeAddressing() throws Exception {
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "probe bool name1: id \"ax10\";",
+                "probe bool name2: id \"ax10\";", "if (name1 && name2) {}");
+
+        Kmodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, model.eClass(), null, "probe 'name2' duplicate addressing.");
+    }
+
+    @Test
     public void parseDuplicateEnvVariableAddressing() throws Exception {
         String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
                 "envvar bool name1 : staticId \"statId\" dynamicId \"dynId\";",

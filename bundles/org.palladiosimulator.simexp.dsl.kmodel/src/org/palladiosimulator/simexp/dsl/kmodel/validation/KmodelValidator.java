@@ -16,8 +16,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
@@ -65,7 +63,10 @@ public class KmodelValidator extends AbstractKmodelValidator {
             }
         }
 
-        checkDuplicateIdsEnvVariable(model.getEnvVariables());
+        checkDuplicateIds("probe", model.getProbes(), Comparator.comparing(Probe::getKind)
+            .thenComparing(Probe::getIdentifier));
+        checkDuplicateIds("envvar", model.getEnvVariables(), Comparator.comparing(EnvVariable::getStaticId)
+            .thenComparing(EnvVariable::getDynamicId));
 
         checkUnusedFields(model.getConstants());
         checkUnusedFields(model.getVariables());
@@ -102,13 +103,11 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
-    private void checkDuplicateIdsEnvVariable(List<EnvVariable> envVariables) {
-        Comparator<EnvVariable> comparator = Comparator.comparing(EnvVariable::getStaticId)
-            .thenComparing(EnvVariable::getDynamicId);
-        Set<EnvVariable> duplicates = findDuplicates(envVariables, comparator);
-        for (EnvVariable duplicate : duplicates) {
+    private <T extends Field> void checkDuplicateIds(String type, List<T> fields, Comparator<T> comparator) {
+        Set<T> duplicates = findDuplicates(fields, comparator);
+        for (T duplicate : duplicates) {
             EStructuralFeature feature = duplicate.eContainmentFeature();
-            error(String.format("envvar '%s' duplicate addressing.", duplicate.getName()), feature);
+            error(String.format("%s '%s' duplicate addressing.", type, duplicate.getName()), feature);
         }
     }
 
@@ -231,31 +230,6 @@ public class KmodelValidator extends AbstractKmodelValidator {
             DataType stepSizeType = getDataType(stepSize);
             checkTypes(dataType, stepSizeType, KmodelPackage.Literals.RANGE__STEP_SIZE);
         }
-    }
-
-    @Check
-    public void checkProbe(Probe probe) {
-        EObject root = EcoreUtil2.getRootContainer(probe);
-        List<Probe> probes = EcoreUtil2.getAllContentsOfType(root, Probe.class);
-        probes.remove(probe);
-
-        for (int i = 0; i < probes.size(); i++) {
-            Probe otherProbe = probes.get(i);
-            if (sameProbeAddress(probe, otherProbe)) {
-                warning("Probes '" + probe.getName() + "' and '" + otherProbe.getName() + "' are probably redundant.",
-                        KmodelPackage.Literals.PROBE__IDENTIFIER);
-            }
-        }
-    }
-
-    private boolean sameProbeAddress(Probe probe1, Probe probe2) {
-        if (probe1.getKind() != probe2.getKind()) {
-            return false;
-        }
-        if (!Strings.equal(probe1.getIdentifier(), probe2.getIdentifier())) {
-            return false;
-        }
-        return true;
     }
 
     @Check
