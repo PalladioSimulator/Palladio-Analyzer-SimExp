@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.validation.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -41,6 +42,8 @@ public class KmodelAcceptanceFieldTest {
     private ParseHelper<Kmodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+
+    private ExpressionUtil expressionUtil = new ExpressionUtil();
 
     @Test
     public void parseSingleBoolConstant() throws Exception {
@@ -56,7 +59,7 @@ public class KmodelAcceptanceFieldTest {
         Constant constant = field;
         assertEquals("condition", constant.getName());
         assertEquals(DataType.BOOL, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof BoolLiteral);
         assertEquals(true, ((BoolLiteral) value).isTrue());
@@ -75,7 +78,7 @@ public class KmodelAcceptanceFieldTest {
         Constant constant = fields.get(0);
         assertEquals("one", constant.getName());
         assertEquals(DataType.INT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof IntLiteral);
         assertEquals(1, ((IntLiteral) value).getValue());
@@ -95,7 +98,7 @@ public class KmodelAcceptanceFieldTest {
         Constant constant = (Constant) field;
         assertEquals("one", constant.getName());
         assertEquals(DataType.FLOAT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof FloatLiteral);
         assertEquals(1, ((FloatLiteral) value).getValue(), 0.0f);
@@ -115,7 +118,7 @@ public class KmodelAcceptanceFieldTest {
         Constant constant = (Constant) field;
         assertEquals("word", constant.getName());
         assertEquals(DataType.STRING, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof StringLiteral);
         assertEquals("word", ((StringLiteral) value).getValue());
@@ -136,7 +139,7 @@ public class KmodelAcceptanceFieldTest {
         Constant firstConstant = (Constant) firstField;
         assertEquals("count", firstConstant.getName());
         assertEquals(DataType.INT, firstConstant.getDataType());
-        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
+        Literal firstValue = expressionUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         assertTrue(firstValue instanceof IntLiteral);
         assertEquals(1, ((IntLiteral) firstValue).getValue());
@@ -144,7 +147,7 @@ public class KmodelAcceptanceFieldTest {
         Constant secondConstant = (Constant) secondField;
         assertEquals("word", secondConstant.getName());
         assertEquals(DataType.STRING, secondConstant.getDataType());
-        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
+        Literal secondValue = expressionUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getLiteral();
         assertTrue(secondValue instanceof StringLiteral);
         assertEquals("word", ((StringLiteral) secondValue).getValue());

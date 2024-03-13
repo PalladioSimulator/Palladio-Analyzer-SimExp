@@ -9,13 +9,9 @@ import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.validation.KmodelValidator;
 
 public class KmodelTestUtil {
-    private static final KmodelValidator validator = new KmodelValidator();
-
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
     public static void assertModelWithoutErrors(Kmodel model) {
@@ -74,11 +70,5 @@ public class KmodelTestUtil {
                     + "\" instead.";
             Assert.assertEquals(errorMessage, messages[i], issue.getMessage());
         }
-    }
-
-    // Returns the next expression in the tree that contains either a operation, a field reference
-    // or a literal.
-    public static Expression getNextExpressionWithContent(Expression expression) {
-        return validator.getNextExpressionWithContent(expression);
     }
 }

@@ -333,16 +333,6 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
-    // Returns the next expression in the tree that contains either an operation, a field reference
-    // or a literal.
-    public Expression getNextExpressionWithContent(Expression expression) {
-        if (expression.getOp() != Operation.UNDEFINED || expression.getFieldRef() != null
-                || expression.getLiteral() != null) {
-            return expression;
-        }
-        return getNextExpressionWithContent(expression.getLeft());
-    }
-
     private DataType getDataType(EObject object) {
         return typeSwitch.doSwitch(object);
     }
@@ -402,7 +392,8 @@ public class KmodelValidator extends AbstractKmodelValidator {
             return false;
         }
 
-        Expression next = getNextExpressionWithContent(expression);
+        ExpressionUtil expressionUtil = new ExpressionUtil();
+        Expression next = expressionUtil.getNextExpressionWithContent(expression);
         Field fieldRef = next.getFieldRef();
 
         return fieldRef != null;

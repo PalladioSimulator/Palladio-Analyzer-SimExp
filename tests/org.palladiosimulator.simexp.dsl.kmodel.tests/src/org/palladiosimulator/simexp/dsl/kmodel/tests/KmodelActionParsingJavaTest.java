@@ -29,15 +29,17 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.validation.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelActionParsingJavaTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
+
+    private ExpressionUtil expressionUtil = new ExpressionUtil();
 
     @Test
     public void parseActionWithoutParameter() throws Exception {
@@ -311,7 +313,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getActionRef(), action);
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
-        Expression argument = KmodelTestUtil.getNextExpressionWithContent(arguments.get(0)
+        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
         Assert.assertTrue(argument.getLiteral() instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) argument.getLiteral()).getValue(), 0.0f);
@@ -344,7 +346,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getActionRef(), action);
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
-        Expression argument = KmodelTestUtil.getNextExpressionWithContent(arguments.get(0)
+        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
         Field argumentField = argument.getFieldRef();
         Assert.assertEquals("argument", argumentField.getName());

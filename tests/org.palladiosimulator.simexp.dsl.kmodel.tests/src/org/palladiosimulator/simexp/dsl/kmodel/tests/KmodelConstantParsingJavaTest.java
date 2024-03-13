@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.validation.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -29,6 +30,8 @@ public class KmodelConstantParsingJavaTest {
     private ParseHelper<Kmodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+
+    private ExpressionUtil expressionUtil = new ExpressionUtil();
 
     @Test
     public void parseSingleBoolConstant() throws Exception {
@@ -43,7 +46,7 @@ public class KmodelConstantParsingJavaTest {
         Constant constant = fields.get(0);
         Assert.assertEquals("condition", constant.getName());
         Assert.assertEquals(DataType.BOOL, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) value).isTrue());
@@ -62,7 +65,7 @@ public class KmodelConstantParsingJavaTest {
         Constant constant = fields.get(0);
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.INT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) value).getValue());
@@ -81,7 +84,7 @@ public class KmodelConstantParsingJavaTest {
         Constant constant = fields.get(0);
         Assert.assertEquals("one", constant.getName());
         Assert.assertEquals(DataType.FLOAT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) value).getValue(), 0.0f);
@@ -100,7 +103,7 @@ public class KmodelConstantParsingJavaTest {
         Constant constant = fields.get(0);
         Assert.assertEquals("word", constant.getName());
         Assert.assertEquals(DataType.STRING, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         Assert.assertTrue(value instanceof StringLiteral);
         Assert.assertEquals("word", ((StringLiteral) value).getValue());
@@ -120,14 +123,14 @@ public class KmodelConstantParsingJavaTest {
         Constant firstConstant = fields.get(0);
         Assert.assertEquals("count", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
-        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
+        Literal firstValue = expressionUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         Constant secondConstant = fields.get(1);
         Assert.assertEquals("word", secondConstant.getName());
         Assert.assertEquals(DataType.STRING, secondConstant.getDataType());
-        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
+        Literal secondValue = expressionUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getLiteral();
         Assert.assertTrue(secondValue instanceof StringLiteral);
         Assert.assertEquals("word", ((StringLiteral) secondValue).getValue());
@@ -147,16 +150,16 @@ public class KmodelConstantParsingJavaTest {
         Constant firstConstant = fields.get(0);
         Assert.assertEquals("const1", firstConstant.getName());
         Assert.assertEquals(DataType.INT, firstConstant.getDataType());
-        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
+        Literal firstValue = expressionUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         Constant secondConstant = fields.get(1);
         Assert.assertEquals("const2", secondConstant.getName());
         Assert.assertEquals(DataType.INT, secondConstant.getDataType());
-        Field fieldReference = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
+        Field fieldReference = expressionUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getFieldRef();
-        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(((Constant) fieldReference).getValue())
+        Literal secondValue = expressionUtil.getNextExpressionWithContent(((Constant) fieldReference).getValue())
             .getLiteral();
         Assert.assertEquals(firstConstant, fieldReference);
         Assert.assertEquals(((IntLiteral) firstValue).getValue(), ((IntLiteral) secondValue).getValue());
