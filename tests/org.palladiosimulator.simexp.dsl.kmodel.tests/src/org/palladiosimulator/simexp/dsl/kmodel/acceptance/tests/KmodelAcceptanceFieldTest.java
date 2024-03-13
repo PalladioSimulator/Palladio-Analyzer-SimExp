@@ -36,7 +36,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
-public class KmodelAcceptanceVariablesTest {
+public class KmodelAcceptanceFieldTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
     @Inject
