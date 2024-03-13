@@ -37,7 +37,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
-import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
 import org.palladiosimulator.simexp.dsl.kmodel.util.KmodelDataTypeSwitch;
 
 /**
@@ -133,17 +132,17 @@ public class KmodelValidator extends AbstractKmodelValidator {
             error("Cyclic reference detected.", constant, KmodelPackage.Literals.CONSTANT__VALUE);
         }
 
+        if (allFieldReferences.size() == 1) {
+            warning("Constant '" + constant.getName() + "' is probably redundant.",
+                    KmodelPackage.Literals.CONSTANT__VALUE);
+        }
+
         Expression expression = constant.getValue();
         if (expression != null) {
             DataType constantDataType = getDataType(constant);
             DataType valueDataType = getDataType(expression);
             if (!checkTypes(constantDataType, valueDataType, KmodelPackage.Literals.CONSTANT__VALUE)) {
                 return;
-            }
-
-            if (containsOnlySingleConstant(expression)) {
-                warning("Constant '" + constant.getName() + "' is probably redundant.",
-                        KmodelPackage.Literals.CONSTANT__VALUE);
             }
         }
     }
@@ -387,17 +386,5 @@ public class KmodelValidator extends AbstractKmodelValidator {
             }
         }
         return false;
-    }
-
-    private boolean containsOnlySingleConstant(Expression expression) {
-        if (expression == null) {
-            return false;
-        }
-
-        ExpressionUtil expressionUtil = new ExpressionUtil();
-        Expression next = expressionUtil.getNextExpressionWithContent(expression);
-        Field fieldRef = next.getFieldRef();
-
-        return fieldRef != null;
     }
 }
