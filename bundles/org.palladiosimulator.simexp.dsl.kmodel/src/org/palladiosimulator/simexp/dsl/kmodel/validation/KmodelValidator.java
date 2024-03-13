@@ -339,13 +339,11 @@ public class KmodelValidator extends AbstractKmodelValidator {
         if (expression.getOp() != Operation.UNDEFINED || expression.getFieldRef() != null
                 || expression.getLiteral() != null) {
             return expression;
-
-        } else {
-            return getNextExpressionWithContent(expression.getLeft());
         }
+        return getNextExpressionWithContent(expression.getLeft());
     }
 
-    public DataType getDataType(EObject object) {
+    private DataType getDataType(EObject object) {
         return typeSwitch.doSwitch(object);
     }
 

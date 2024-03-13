@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.kmodel.tests;
 import javax.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
@@ -23,15 +24,17 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.validation.KmodelDataTypeSwitch;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelExpressionParsingJavaTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
+
+    private KmodelDataTypeSwitch typeSwitch = new KmodelDataTypeSwitch();
 
     @Test
     public void parseSimpleLiteralExpression() throws Exception {
@@ -44,7 +47,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
@@ -61,13 +64,13 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant firstConstant = fields.get(0);
         Expression firstExpression = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(firstExpression));
+        Assert.assertEquals(DataType.INT, getDataType(firstExpression));
         Literal firstValue = firstExpression.getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         Constant secondConstant = fields.get(1);
         Expression secondExpression = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(secondExpression));
+        Assert.assertEquals(DataType.INT, getDataType(secondExpression));
         Field secondValue = secondExpression.getFieldRef();
         Assert.assertEquals(firstConstant, secondValue);
     }
@@ -83,7 +86,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Literal literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
@@ -100,7 +103,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.OR, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -123,7 +126,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.AND, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -146,7 +149,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.EQUAL, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -169,7 +172,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.UNEQUAL, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -192,7 +195,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.NOT, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -211,7 +214,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.SMALLER, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -234,7 +237,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -257,7 +260,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.GREATER_OR_EQUAL, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -280,7 +283,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.GREATER, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -303,7 +306,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.PLUS, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -326,7 +329,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -349,7 +352,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -368,7 +371,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.FLOAT, getDataType(expression));
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -391,7 +394,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.FLOAT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.FLOAT, getDataType(expression));
         Assert.assertEquals(Operation.DIVIDE, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -414,7 +417,7 @@ public class KmodelExpressionParsingJavaTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = KmodelTestUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, KmodelTestUtil.getDataType(expression));
+        Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MODULO, expression.getOp());
         Expression left = KmodelTestUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -532,5 +535,9 @@ public class KmodelExpressionParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertErrorMessages(model, 1, "missing ')' at ';'");
+    }
+
+    private DataType getDataType(EObject object) {
+        return typeSwitch.doSwitch(object);
     }
 }

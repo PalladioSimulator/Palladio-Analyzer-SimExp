@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.validation.KmodelValidator;
@@ -82,9 +80,5 @@ public class KmodelTestUtil {
     // or a literal.
     public static Expression getNextExpressionWithContent(Expression expression) {
         return validator.getNextExpressionWithContent(expression);
-    }
-
-    public static DataType getDataType(EObject object) {
-        return validator.getDataType(object);
     }
 }
