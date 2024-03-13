@@ -4,10 +4,13 @@ package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -24,6 +27,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
@@ -61,10 +65,13 @@ public class KmodelValidator extends AbstractKmodelValidator {
             }
         }
 
-        checkFields(model.getConstants());
-        checkFields(model.getVariables());
-        checkFields(model.getProbes());
-        checkFields(model.getRuntimes());
+        checkDuplicateIdsEnvVariable(model.getEnvVariables());
+
+        checkUnusedFields(model.getConstants());
+        checkUnusedFields(model.getVariables());
+        checkUnusedFields(model.getEnvVariables());
+        checkUnusedFields(model.getProbes());
+        checkUnusedFields(model.getRuntimes());
 
         List<Action> actions = model.getActions();
         for (int i = 0; i < actions.size(); i++) {
@@ -79,7 +86,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
-    private void checkFields(List<? extends Field> fields) {
+    private void checkUnusedFields(List<? extends Field> fields) {
         ListIterator<? extends Field> iter = fields.listIterator();
         while (iter.hasNext()) {
             int index = iter.nextIndex();
@@ -90,9 +97,26 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
             if (fieldReferences.isEmpty()) {
                 EStructuralFeature feature = field.eContainmentFeature();
-                warning("The field '" + field.getName() + "' is never used.", feature, index);
+                warning(String.format("The field '%s' is never used.", field.getName()), feature, index);
             }
         }
+    }
+
+    private void checkDuplicateIdsEnvVariable(List<EnvVariable> envVariables) {
+        Comparator<EnvVariable> comparator = Comparator.comparing(EnvVariable::getStaticId)
+            .thenComparing(EnvVariable::getDynamicId);
+        Set<EnvVariable> duplicates = findDuplicates(envVariables, comparator);
+        for (EnvVariable duplicate : duplicates) {
+            EStructuralFeature feature = duplicate.eContainmentFeature();
+            error(String.format("envvar '%s' duplicate addressing.", duplicate.getName()), feature);
+        }
+    }
+
+    private <T> Set<T> findDuplicates(List<T> fields, Comparator<T> comparator) {
+        Set<T> items = new TreeSet<>(comparator);
+        return fields.stream()
+            .filter(n -> !items.add(n))
+            .collect(Collectors.toSet());
     }
 
     @Check

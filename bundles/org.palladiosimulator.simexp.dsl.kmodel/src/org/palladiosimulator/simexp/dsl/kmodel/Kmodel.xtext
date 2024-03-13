@@ -8,6 +8,7 @@ Kmodel:
 	'modelName' '=' modelName=STRING ';'
 	(constants+=Constant |
 	variables+=Variable  ';' |
+	envVariables+=EnvVariable  ';' |
 	probes+=Probe |
 	runtimes+=Runtime)*
 	actions+=Action*
@@ -15,7 +16,7 @@ Kmodel:
 	;
 	
 Field:
-	(Constant | Variable | Probe | Runtime | Parameter)
+	(Constant | Variable | EnvVariable | Probe | Runtime | Parameter)
 	;
 
 Constant:
@@ -25,6 +26,10 @@ Constant:
 Variable:
 	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID
 	;
+
+EnvVariable:	
+	{EnvVariable} 'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING
+;
 
 Probe:
 	{Probe} 'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'

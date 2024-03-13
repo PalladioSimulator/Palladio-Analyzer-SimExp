@@ -39,7 +39,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 public class KmodelAcceptanceVariablesTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -502,5 +501,28 @@ public class KmodelAcceptanceVariablesTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ']' expecting '}'");
+    }
+
+    @Test
+    public void parseDuplicateConstantEnvVariableName() throws Exception {
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool name = true;",
+                "envvar bool name : staticId \"statId\" dynamicId \"dynId\";");
+
+        Kmodel model = parserHelper.parse(sb);
+
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'name'",
+                "Duplicate Field 'name'");
+    }
+
+    @Test
+    public void parseDuplicateEnvVariableAddressing() throws Exception {
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
+                "envvar bool name1 : staticId \"statId\" dynamicId \"dynId\";",
+                "envvar bool name2 : staticId \"statId\" dynamicId \"dynId\";", "if (name1 && name2) {}");
+
+        Kmodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, model.eClass(), null, "envvar 'name2' duplicate addressing.");
     }
 }
