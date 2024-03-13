@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
-import org.palladiosimulator.simexp.dsl.kmodel.validation.ExpressionUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)

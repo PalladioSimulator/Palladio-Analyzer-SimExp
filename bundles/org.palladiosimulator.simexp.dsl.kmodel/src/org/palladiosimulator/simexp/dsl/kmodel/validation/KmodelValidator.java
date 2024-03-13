@@ -37,6 +37,8 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.util.KmodelDataTypeSwitch;
 
 /**
  * This class contains custom validation rules.

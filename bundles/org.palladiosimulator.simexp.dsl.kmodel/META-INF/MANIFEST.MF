@@ -15,15 +15,16 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: org.palladiosimulator.simexp.dsl.kmodel.kmodel.util,
- org.palladiosimulator.simexp.dsl.kmodel.validation,
- org.palladiosimulator.simexp.dsl.kmodel.kmodel,
- org.palladiosimulator.simexp.dsl.kmodel.scoping,
+Export-Package: org.palladiosimulator.simexp.dsl.kmodel,
  org.palladiosimulator.simexp.dsl.kmodel.generator,
- org.palladiosimulator.simexp.dsl.kmodel,
+ org.palladiosimulator.simexp.dsl.kmodel.kmodel,
+ org.palladiosimulator.simexp.dsl.kmodel.kmodel.impl,
+ org.palladiosimulator.simexp.dsl.kmodel.kmodel.util,
+ org.palladiosimulator.simexp.dsl.kmodel.parser.antlr,
+ org.palladiosimulator.simexp.dsl.kmodel.parser.antlr.internal,
+ org.palladiosimulator.simexp.dsl.kmodel.scoping,
  org.palladiosimulator.simexp.dsl.kmodel.serializer,
  org.palladiosimulator.simexp.dsl.kmodel.services,
- org.palladiosimulator.simexp.dsl.kmodel.parser.antlr,
- org.palladiosimulator.simexp.dsl.kmodel.kmodel.impl,
- org.palladiosimulator.simexp.dsl.kmodel.parser.antlr.internal
+ org.palladiosimulator.simexp.dsl.kmodel.util,
+ org.palladiosimulator.simexp.dsl.kmodel.validation
 Import-Package: org.apache.log4j

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.validation;
+package org.palladiosimulator.simexp.dsl.kmodel.util;
 
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
