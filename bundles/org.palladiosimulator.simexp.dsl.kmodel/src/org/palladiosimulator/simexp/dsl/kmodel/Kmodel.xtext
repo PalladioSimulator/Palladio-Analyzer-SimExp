@@ -20,29 +20,29 @@ Field:
 	;
 
 Constant:
-	{Constant} 'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
+	'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
 	;
 
 Variable:
-	{Variable} 'var' dataType=PrimitiveType values=Bounds name=ID
+	'var' dataType=PrimitiveType values=Bounds name=ID
 	;
 
 EnvVariable:	
-	{EnvVariable} 'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING  ';'
+	'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING  ';'
 ;
 
 Probe:
-	{Probe} 'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'
+	'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'
 	;
 
 enum ProbeAdressingKind:
     MONITORID='monitorId' | ID='id';
 
 Runtime:
-	{Runtime} 'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';';
+	'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';';
 
 Parameter:
-	{Parameter} 'param' dataType=PrimitiveType name=ID;
+	'param' dataType=PrimitiveType name=ID;
 
 Bounds:
 	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |
