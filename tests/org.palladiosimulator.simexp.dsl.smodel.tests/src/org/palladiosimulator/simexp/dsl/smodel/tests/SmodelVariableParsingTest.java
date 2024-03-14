@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import java.util.List;
 
@@ -12,8 +12,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -24,10 +22,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelVariableParsingJavaTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelVariableParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
 
@@ -36,14 +36,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseSingleBoolVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true} condition;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
@@ -53,14 +53,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseSingleIntVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1} count;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
@@ -70,14 +70,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseSingleFloatVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable float{1.0} number;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
@@ -87,14 +87,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseSingleStringVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"word"} word;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
@@ -104,15 +104,15 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseTwoVariables() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1} count;
                 optimizable string{"word"} word;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(2, variables.size());
         Field firstVariable = variables.get(0);
@@ -125,14 +125,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseVariableWithValueArray() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1, 2, 3} count;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
@@ -152,14 +152,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseVariableWithValueRange() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable float[1.0, 2.0, 0.1] values;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
@@ -177,14 +177,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseVariableWithWrongValueTypes() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{true, 1, 2.5} list;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3,
                 "Expected a value of type 'string', got 'bool' instead.",
                 "Expected a value of type 'string', got 'int' instead.",
                 "Expected a value of type 'string', got 'float' instead.");
@@ -192,14 +192,14 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseNonNumberVariableWithRange() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool[true, false, true] range;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign a range to a variable of the type 'bool'.");
     }
 }

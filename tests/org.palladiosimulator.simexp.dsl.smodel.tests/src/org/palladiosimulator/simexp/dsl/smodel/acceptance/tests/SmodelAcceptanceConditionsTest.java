@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
+package org.palladiosimulator.simexp.dsl.smodel.acceptance.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,14 +11,14 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelAcceptanceConditionsTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelAcceptanceConditionsTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
 
@@ -27,14 +27,14 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneLiteral() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 if(true) {}
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
@@ -43,15 +43,15 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConst() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool cb = true;
                 if(cb) {}
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
@@ -60,15 +60,15 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionOr() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool cb = true;
                 if(cb || false) {}
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
@@ -77,15 +77,15 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionAnd() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool cb = true;
                 if(cb && false) {}
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
@@ -94,15 +94,15 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneConstExpressionNotEqual() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int ci = 1;
                 if(ci != 0) {}
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
@@ -111,7 +111,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseOneAction() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName();
                 if(true) {
                     aName();
@@ -120,8 +120,8 @@ public class KmodelAcceptanceConditionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         Statement condition = conditions.get(0);
@@ -130,7 +130,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseMultipleActions() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName1();
                 action aName2();
                 if(true) {
@@ -141,8 +141,8 @@ public class KmodelAcceptanceConditionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Statement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         Statement condition = conditions.get(0);
@@ -151,7 +151,7 @@ public class KmodelAcceptanceConditionsTest {
 
     @Test
     public void parseInvalidAction() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 if(true) {
                     aName();
                 }
@@ -159,8 +159,8 @@ public class KmodelAcceptanceConditionsTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Couldn't resolve reference to Action 'aName'.");
     }
 }

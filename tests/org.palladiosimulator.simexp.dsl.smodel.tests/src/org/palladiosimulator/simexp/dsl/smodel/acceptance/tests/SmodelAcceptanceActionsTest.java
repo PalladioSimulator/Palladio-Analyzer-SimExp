@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.acceptance.tests;
+package org.palladiosimulator.simexp.dsl.smodel.acceptance.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,8 +17,6 @@ import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
@@ -29,10 +27,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelAcceptanceActionsTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelAcceptanceActionsTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
 
@@ -41,14 +41,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionNoParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName();
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -60,15 +60,15 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseMultipleActionNoParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName1();
                 action aName2();
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(2, actions.size());
         Action action = actions.get(0);
@@ -85,14 +85,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool pb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -110,14 +110,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionStringParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param string ps);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -135,14 +135,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionIntParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param int pi);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -160,14 +160,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMultipleBoolParam() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool pb1, param bool pb2);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -188,40 +188,40 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterNames1() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool pb, param bool pb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'pb'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'pb'",
                 "Duplicate Field 'pb'");
     }
 
     @Test
     public void parseDuplicateParameterNames2() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool p, param int p);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
                 "Duplicate Field 'p'");
     }
 
     @Test
     public void parseOneActionBoolVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(optimizable bool{true,false} vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -248,25 +248,25 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolVariableNoBounds() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(optimizable bool vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
 
     @Test
     public void parseOneActionMultipleVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(optimizable bool{true,false} vb, optimizable int{1,2} vi);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -305,14 +305,14 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParameters() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool pb, optimizable bool{true,false} vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -342,25 +342,25 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParametersInvalidOrder() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(optimizable bool{true,false} vb, param bool pb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
 
     @Test
     public void parseDuplicateParameterVarNames() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(param bool p, optimizable bool{true,false} p);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
                 "Duplicate Field 'p'");
     }
 }

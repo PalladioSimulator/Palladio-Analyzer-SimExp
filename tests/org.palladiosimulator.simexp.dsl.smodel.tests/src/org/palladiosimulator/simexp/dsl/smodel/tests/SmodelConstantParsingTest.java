@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import javax.inject.Inject;
 
@@ -10,8 +10,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -21,11 +19,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelConstantParsingJavaTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelConstantParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
     @Inject
@@ -35,14 +35,14 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleBoolConstant() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool condition = true;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(1, fields.size());
         Constant constant = fields.get(0);
@@ -56,14 +56,14 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleIntConstant() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int one = 1;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(1, fields.size());
         Constant constant = fields.get(0);
@@ -77,14 +77,14 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleFloatConstant() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const float one = 1.0;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(1, fields.size());
         Constant constant = fields.get(0);
@@ -98,14 +98,14 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseSingleStringConstant() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const string word = "word";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(1, fields.size());
         Constant constant = fields.get(0);
@@ -119,15 +119,15 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseTwoConstants() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int count = 1;
                 const string word = "word";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(2, fields.size());
         Constant firstConstant = fields.get(0);
@@ -148,15 +148,15 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithConstantValue() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int const1 = 1;
                 const int const2 = const1;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(2, fields.size());
         Constant firstConstant = fields.get(0);
@@ -179,107 +179,107 @@ public class KmodelConstantParsingJavaTest {
 
     @Test
     public void parseConstantWithoutValue() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int noValue;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
 
     @Test
     public void parseConstantWithVariableValue() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{0} variable;
                 const int constant = variable;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
 
     @Test
     public void parseConstantWithProbeValue() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe int someProbe : id "someId";
                 const int constant = someProbe;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
 
     @Test
     public void parseConstantWithRuntimeValue() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint : simple: a;
                 const int constant = rint;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
 
     @Test
     public void parseConstantWithExpressionContainingVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true} variable;
                 const bool constant = variable && true;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Cannot assign an expression containing a non-constant value to a constant.");
     }
 
     @Test
     public void parseConstantWithSelfReference() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool constant = false || constant;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Cyclic reference detected.");
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Cyclic reference detected.");
     }
 
     @Test
     public void parseConstantsWithCyclicReference() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int const1 = const2;
                 const int const2 = const1;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Cyclic reference detected.",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Cyclic reference detected.",
                 "Cyclic reference detected.");
     }
 
     @Test
     public void parseConstantWithWrongValueType() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int number = true;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Expected a value of type 'int', got 'bool' instead.");
     }
 }

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import java.util.List;
 
@@ -12,8 +12,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
@@ -29,11 +27,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelActionParsingJavaTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelActionParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
     @Inject
@@ -43,14 +43,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithoutParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action setTextualMode();
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -62,14 +62,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithBoolParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action decreaseQuality(param bool decrease);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -84,14 +84,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithIntParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action setNumCPUs(param int numCPUs);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -106,14 +106,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithFloatParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(param float balancingFactor);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -128,14 +128,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithStringParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action setConfiguration(param string name);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -150,14 +150,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithTwoParameters() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scale(param float factor, param bool in);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -175,14 +175,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -208,14 +208,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithParameterAndVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(param int factor1, optimizable float{1.25, 2.5} factor2);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -244,15 +244,15 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActions() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(param float scaleOutFactor);
                 action scaleIn(param float scaleInFactor);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
@@ -275,15 +275,15 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActionsWithSameParameterName() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(param float balancingFactor);
                 action scaleIn(param float balancingFactor);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
@@ -306,7 +306,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithLiteral() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(param float balancingFactor);
                 if(true) {
                     scaleOut(balancingFactor=1.0);
@@ -315,8 +315,8 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -342,7 +342,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithField() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable float{0} argument;
                 action scaleOut(param float balancingFactor);
                 if(true){
@@ -352,8 +352,8 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -380,7 +380,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
                 if (true) {
                     scaleOut();
@@ -389,8 +389,8 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Action> actions = model.getActions();
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
@@ -415,7 +415,7 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseComplexActionCall() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE
+        String sb = SmodelTestUtil.MODEL_NAME_LINE
                 + """
                         const int constant = 1;
                         optimizable float[1, 2, 1] variable;
@@ -427,27 +427,27 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
 
     @Test
     public void parseTwoActionsWithSameName() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param int parameter);
                 action adapt(param bool parameter2);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Action 'adapt'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Action 'adapt'",
                 "Duplicate Action 'adapt'");
     }
 
     @Test
     public void parseLocalActionDeclaration() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 if(true){
                     action adapt(param int parameter);
                 }
@@ -455,62 +455,62 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'action' expecting '}'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'action' expecting '}'");
     }
 
     @Test
     public void parseActionWithSameParameterName() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param int parameter, param float parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
                 "Duplicate Field 'parameter'");
     }
 
     @Test
     public void parseActionWithSameParameterVariableName() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param int parameter, optimizable int{1,2,3} parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
                 "Duplicate Field 'parameter'");
     }
 
     @Test
     public void parseActionWithSameVariableName() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(optimizable int{1,2,3} parameter, optimizable int{1,2,3} parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
                 "Duplicate Field 'parameter'");
     }
 
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(optimizable int{1} variable, param float parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
 
     @Test
     public void parseActionCallWithWrongParameterTypes() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param float parameter1, param bool parameter2);
                 if(true) {
                     adapt(parameter1=true, parameter2=2);
@@ -519,15 +519,15 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
                 "Expected a value of type 'int' or 'float', got 'bool' instead.",
                 "Expected a value of type 'bool', got 'int' instead.");
     }
 
     @Test
     public void parseActionCallWithWrongArgumentOrder() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param int a, param int b);
                 if (true) {
                     adapt(b=1, a=1);
@@ -536,14 +536,14 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Arguments must be provided in the order as declared.");
     }
 
     @Test
     public void parseActionCallWithTooFewArguments() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param float parameter);
                 if (true) {
                     adapt();
@@ -552,13 +552,13 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Expected 1 arguments, got 0 instead.");
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Expected 1 arguments, got 0 instead.");
     }
 
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param float parameter, optimizable float{0} variable);
                 if (true) {
                     adapt(parameter=1.0, variable=1.0);
@@ -567,14 +567,14 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
                 "Couldn't resolve reference to Parameter 'variable'.", "Expected 1 arguments, got 2 instead.");
     }
 
     @Test
     public void parseActionCallWithParameterSelfReference() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param float factor);
                 if(true) {
                     adapt(factor=factor);
@@ -583,20 +583,20 @@ public class KmodelActionParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
                 "Couldn't resolve reference to Field 'factor'.");
     }
 
     @Test
     public void parseActionCallOutsideIf() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action adapt(param int parameter);
                 adapt(parameter=1);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
     }
 }

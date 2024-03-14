@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests.util;
+package org.palladiosimulator.simexp.dsl.smodel.tests.util;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +11,7 @@ import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 
-public class KmodelTestUtil {
+public class SmodelTestUtil {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
     public static void assertModelWithoutErrors(Kmodel model) {

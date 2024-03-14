@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -12,17 +12,17 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelProbeParsingJavaTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelProbeParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
     @Inject
@@ -30,14 +30,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleProbeMonitorId() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe bool probeName : monitorId "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
@@ -48,14 +48,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleProbeId() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe bool probeName : id "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
@@ -66,14 +66,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleBoolProbe() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe bool condition : id "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("condition");
         exptectedProbe.setDataType(DataType.BOOL);
@@ -84,14 +84,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleIntProbe() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe int count : id "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("count");
         exptectedProbe.setDataType(DataType.INT);
@@ -102,14 +102,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleFloatVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe float number : id "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("number");
         exptectedProbe.setDataType(DataType.FLOAT);
@@ -120,14 +120,14 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseSingleStringVariable() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe string word : id "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("word");
         exptectedProbe.setDataType(DataType.STRING);
@@ -138,15 +138,15 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseTwoProbes() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe int count : id "someId";
                 probe string word : id "someOtherId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe1 = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe1.setName("count");
         exptectedProbe1.setDataType(DataType.INT);
@@ -163,23 +163,23 @@ public class KmodelProbeParsingJavaTest {
 
     @Test
     public void parseProbeWithoutKind() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe bool condition "someId";
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '\"someId\"' expecting ':'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '\"someId\"' expecting ':'");
     }
 
     @Test
     public void parseProbeWithoutIdentified() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe bool condition;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting ':'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting ':'");
     }
 }

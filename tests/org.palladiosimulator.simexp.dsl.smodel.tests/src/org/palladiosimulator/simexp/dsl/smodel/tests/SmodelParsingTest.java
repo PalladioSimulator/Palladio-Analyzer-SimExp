@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,12 +16,12 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelParsingTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
     @Inject

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.tests;
+package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import javax.inject.Inject;
 
@@ -10,8 +10,6 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EcoreExpression;
@@ -21,10 +19,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
-@InjectWith(KmodelInjectorProvider.class)
-public class KmodelRuntimeParsingJavaTest {
+@InjectWith(SmodelInjectorProvider.class)
+public class SmodelRuntimeParsingTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
 
@@ -33,14 +33,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleBoolRuntime() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime bool rbool: simple: a;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rbool = fields.get(0);
@@ -53,14 +53,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleIntRuntime() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -73,14 +73,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleFloatRuntime() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime float rfloat: simple: a;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rfloat = fields.get(0);
@@ -94,14 +94,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleStringRuntime() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime string rstring: simple: a;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rstring = fields.get(0);
@@ -114,15 +114,15 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseTwoRuntimes() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a;
                 runtime string rstring: simple: b;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(2, fields.size());
         Field rint = fields.get(0);
@@ -142,14 +142,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithTwoReferences() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a.b;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -165,14 +165,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithIndex() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a[1];
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -186,14 +186,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithBoolPredicate() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a{something=true};
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -208,14 +208,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithIntPredicate() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a{something=1};
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -230,14 +230,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithFloatPredicate() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a{something=0.5};
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -252,14 +252,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithStringPredicate() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a{something="something"};
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Field rint = fields.get(0);
@@ -274,14 +274,14 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithComplexExpression() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 runtime int rint: simple: a.b[3].c{selected=true}.d;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EList<Runtime> fields = model.getRuntimes();
         Assert.assertEquals(1, fields.size());
         Runtime rint = fields.get(0);
