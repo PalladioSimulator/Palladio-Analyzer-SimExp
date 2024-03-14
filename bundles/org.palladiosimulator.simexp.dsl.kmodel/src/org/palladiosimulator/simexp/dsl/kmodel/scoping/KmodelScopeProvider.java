@@ -14,7 +14,6 @@ import org.eclipse.xtext.scoping.impl.FilteringScope;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 
@@ -29,12 +28,6 @@ public class KmodelScopeProvider extends AbstractKmodelScopeProvider {
     @Override
     public IScope getScope(EObject context, EReference reference) {
         IScope scope = super.getScope(context, reference);
-
-        if (context instanceof Expression) {
-            if (reference == KmodelPackage.Literals.EXPRESSION__FIELD_REF) {
-                return new FilteringScope(scope, field -> isBefore(field.getEObjectOrProxy(), context));
-            }
-        }
 
         if (context instanceof ActionCall) {
             if (reference == KmodelPackage.Literals.ACTION_CALL__ACTION_REF) {
@@ -66,10 +59,12 @@ public class KmodelScopeProvider extends AbstractKmodelScopeProvider {
         List<EObject> contents = EcoreUtil2.eAllContentsAsList(root);
 
         // No need to check containment of objectA, as root is derived from it.
-        if (!contents.contains(objectB)) {
-            return true;
+        if (contents.contains(objectB)) {
+            int indexA = contents.indexOf(objectA);
+            int indexB = contents.indexOf(objectB);
+            return indexA < indexB;
         }
 
-        return contents.indexOf(objectA) < contents.indexOf(objectB);
+        return true;
     }
 }

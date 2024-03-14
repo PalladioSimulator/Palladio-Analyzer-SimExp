@@ -29,19 +29,23 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
 public class KmodelActionParsingJavaTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
 
+    private ExpressionUtil expressionUtil = new ExpressionUtil();
+
     @Test
     public void parseActionWithoutParameter() throws Exception {
-        String sb = String.join("\n", "action setTextualMode();");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action setTextualMode();
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -51,14 +55,16 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setTextualMode", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
     }
 
     @Test
     public void parseActionWithBoolParameter() throws Exception {
-        String sb = String.join("\n", "action decreaseQuality(param bool decrease);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action decreaseQuality(param bool decrease);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -68,18 +74,19 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("decreaseQuality", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.BOOL, parameter.getDataType());
         Assert.assertEquals("decrease", parameter.getName());
     }
 
     @Test
     public void parseActionWithIntParameter() throws Exception {
-        String sb = String.join("\n", "action setNumCPUs(param int numCPUs);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action setNumCPUs(param int numCPUs);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -89,18 +96,19 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setNumCPUs", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("numCPUs", parameter.getName());
     }
 
     @Test
     public void parseActionWithFloatParameter() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(param float balancingFactor);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -110,18 +118,19 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
     }
 
     @Test
     public void parseActionWithStringParameter() throws Exception {
-        String sb = String.join("\n", "action setConfiguration(param string name);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action setConfiguration(param string name);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -131,18 +140,19 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setConfiguration", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.STRING, parameter.getDataType());
         Assert.assertEquals("name", parameter.getName());
     }
 
     @Test
     public void parseActionWithTwoParameters() throws Exception {
-        String sb = String.join("\n", "action scale(param float factor, param bool in);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scale(param float factor, param bool in);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -152,22 +162,22 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scale", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(2, parameters.size());
-        Field firstParameter = parameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("factor", firstParameter.getName());
-        Field secondParameter = parameters.get(1);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = parameters.get(1);
         Assert.assertEquals(DataType.BOOL, secondParameter.getDataType());
         Assert.assertEquals("in", secondParameter.getName());
     }
 
     @Test
     public void parseActionWithVariable() throws Exception {
-        String sb = String.join("\n", "action scaleOut(var float{1.25, 2.5} balancingFactor);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(var float{1.25, 2.5} balancingFactor);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -177,14 +187,13 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Variable) variable).getValues();
@@ -199,7 +208,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithParameterAndVariable() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param int factor1, var float{1.25, 2.5} factor2);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(param int factor1, var float{1.25, 2.5} factor2);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -209,18 +220,16 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Variable) variable).getValues();
@@ -235,8 +244,10 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActions() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float scaleOutFactor);",
-                "action scaleIn(param float scaleInFactor);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(param float scaleOutFactor);
+                action scaleIn(param float scaleInFactor);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -246,28 +257,28 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Field> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
-        Field firstParameter = firstParameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = firstParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("scaleOutFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Field> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
-        Field secondParameter = secondParameters.get(0);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = secondParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
         Assert.assertEquals("scaleInFactor", secondParameter.getName());
     }
 
     @Test
     public void parseTwoActionsWithSameParameterName() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);",
-                "action scaleIn(param float balancingFactor);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(param float balancingFactor);
+                action scaleIn(param float balancingFactor);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -277,28 +288,30 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Field> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
-        Field firstParameter = firstParameters.get(0);
-        Assert.assertTrue(firstParameter instanceof Parameter);
+        Parameter firstParameter = firstParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
         Assert.assertEquals("balancingFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Field> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getParameterList()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
-        Field secondParameter = secondParameters.get(0);
-        Assert.assertTrue(secondParameter instanceof Parameter);
+        Parameter secondParameter = secondParameters.get(0);
         Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
         Assert.assertEquals("balancingFactor", secondParameter.getName());
     }
 
     @Test
     public void parseActionCallWithLiteral() throws Exception {
-        String sb = String.join("\n", "action scaleOut(param float balancingFactor);", "if(true){",
-                "scaleOut(balancingFactor=1.0);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(param float balancingFactor);
+                if(true) {
+                    scaleOut(balancingFactor=1.0);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -308,11 +321,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<Statement> statements = model.getStatements();
@@ -322,7 +334,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getActionRef(), action);
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
-        Expression argument = KmodelTestUtil.getNextExpressionWithContent(arguments.get(0)
+        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
         Assert.assertTrue(argument.getLiteral() instanceof FloatLiteral);
         Assert.assertEquals(1, ((FloatLiteral) argument.getLiteral()).getValue(), 0.0f);
@@ -330,8 +342,13 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithField() throws Exception {
-        String sb = String.join("\n", "var float{0} argument;", "action scaleOut(param float balancingFactor);",
-                "if(true){", "scaleOut(balancingFactor=argument);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var float{0} argument;
+                action scaleOut(param float balancingFactor);
+                if(true){
+                    scaleOut(balancingFactor=argument);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -341,11 +358,10 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
-        Field parameter = parameters.get(0);
-        Assert.assertTrue(parameter instanceof Parameter);
+        Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<Statement> statements = model.getStatements();
@@ -355,7 +371,7 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(actionCall.getActionRef(), action);
         List<ArgumentKeyValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
-        Expression argument = KmodelTestUtil.getNextExpressionWithContent(arguments.get(0)
+        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
         Field argumentField = argument.getFieldRef();
         Assert.assertEquals("argument", argumentField.getName());
@@ -364,8 +380,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
-        String sb = String.join("\n", "action scaleOut(var float{1.25, 2.5} balancingFactor);", "if (true) {",
-                "scaleOut();", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(var float{1.25, 2.5} balancingFactor);
+                if (true) {
+                    scaleOut();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -375,14 +395,13 @@ public class KmodelActionParsingJavaTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Field> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Field> variables = action.getParameterList()
+        List<Variable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         List<Statement> statements = model.getStatements();
@@ -396,9 +415,14 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseComplexActionCall() throws Exception {
-        String sb = String.join("\n", "const int constant = 1;", "var float[1, 2, 1] variable;",
-                "action adapt(param float param1, param int param2, param bool param3, var int{1, 2, 3, 4} variable);",
-                "if(true) {", "adapt(param1=variable, param2=(constant + 1), param3=(true && false));", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1;
+                var float[1, 2, 1] variable;
+                action adapt(param float param1, param int param2, param bool param3, var int{1, 2, 3, 4} variable);
+                if(true) {
+                    adapt(param1=variable, param2=(constant + 1), param3=(true && false));
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -408,7 +432,10 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseTwoActionsWithSameName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter);", "action adapt(param bool parameter2);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                action adapt(param bool parameter2);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -419,7 +446,11 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseLocalActionDeclaration() throws Exception {
-        String sb = String.join("\n", "if(true){", "action adapt(param int parameter);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                if(true){
+                    action adapt(param int parameter);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -428,7 +459,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameParameterName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter, param float parameter);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param int parameter, param float parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -439,7 +472,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameParameterVariableName() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter, var int{1,2,3} parameter);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param int parameter, var int{1,2,3} parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -450,7 +485,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithSameVariableName() throws Exception {
-        String sb = String.join("\n", "action adapt(var int{1,2,3} parameter, var int{1,2,3} parameter);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(var int{1,2,3} parameter, var int{1,2,3} parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -461,7 +498,9 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
-        String sb = String.join("\n", "action adapt(var int{1} variable, param float parameter);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(var int{1} variable, param float parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -470,8 +509,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithWrongParameterTypes() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter1, param bool parameter2);", "if(true) {",
-                "adapt(parameter1=true, parameter2=2);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param float parameter1, param bool parameter2);
+                if(true) {
+                    adapt(parameter1=true, parameter2=2);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -483,8 +526,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithWrongArgumentOrder() throws Exception {
-        String sb = String.join("\n", "action adapt(param int a, param int b);", "if (true) {", "adapt(b=1, a=1);",
-                "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param int a, param int b);
+                if (true) {
+                    adapt(b=1, a=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -495,7 +542,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithTooFewArguments() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter);", "if (true) {", "adapt();", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param float parameter);
+                if (true) {
+                    adapt();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -505,8 +557,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
-        String sb = String.join("\n", "action adapt(param float parameter, var float{0} variable);", "if (true) {",
-                "adapt(parameter=1.0, variable=1.0);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param float parameter, var float{0} variable);
+                if (true) {
+                    adapt(parameter=1.0, variable=1.0);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -517,7 +573,12 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallWithParameterSelfReference() throws Exception {
-        String sb = String.join("\n", "action adapt(param float factor);", "if(true) {", "adapt(factor=factor);", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param float factor);
+                if(true) {
+                    adapt(factor=factor);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -528,7 +589,10 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseActionCallOutsideIf() throws Exception {
-        String sb = String.join("\n", "action adapt(param int parameter);", "adapt(parameter=1);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                adapt(parameter=1);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

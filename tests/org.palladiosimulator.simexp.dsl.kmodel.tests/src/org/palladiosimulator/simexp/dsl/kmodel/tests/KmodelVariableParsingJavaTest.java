@@ -36,100 +36,106 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseSingleBoolVariable() throws Exception {
-        String sb = String.join("\n", "var bool{true} condition;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var bool{true} condition;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("condition", variable.getName());
         Assert.assertEquals(DataType.BOOL, variable.getDataType());
     }
 
     @Test
     public void parseSingleIntVariable() throws Exception {
-        String sb = String.join("\n", "var int{1} count;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int{1} count;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("count", variable.getName());
         Assert.assertEquals(DataType.INT, variable.getDataType());
     }
 
     @Test
     public void parseSingleFloatVariable() throws Exception {
-        String sb = String.join("\n", "var float{1.0} number;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var float{1.0} number;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("number", variable.getName());
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
     }
 
     @Test
     public void parseSingleStringVariable() throws Exception {
-        String sb = String.join("\n", "var string{\"word\"} word;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var string{"word"} word;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
-        Assert.assertTrue(variable instanceof Variable);
         Assert.assertEquals("word", variable.getName());
         Assert.assertEquals(DataType.STRING, variable.getDataType());
     }
 
     @Test
     public void parseTwoVariables() throws Exception {
-        String sb = String.join("\n", "var int{1} count;", "var string{\"word\"} word;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int{1} count;
+                var string{"word"} word;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(2, variables.size());
         Field firstVariable = variables.get(0);
-        Assert.assertTrue(firstVariable instanceof Variable);
         Assert.assertEquals("count", firstVariable.getName());
         Assert.assertEquals(DataType.INT, firstVariable.getDataType());
         Field secondVariable = variables.get(1);
-        Assert.assertTrue(secondVariable instanceof Variable);
         Assert.assertEquals("word", secondVariable.getName());
         Assert.assertEquals(DataType.STRING, secondVariable.getDataType());
     }
 
     @Test
     public void parseVariableWithValueArray() throws Exception {
-        String sb = String.join("\n", "var int{1, 2, 3} count;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int{1, 2, 3} count;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Assert.assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Array);
@@ -146,16 +152,17 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseVariableWithValueRange() throws Exception {
-        String sb = String.join("\n", "var float[1.0, 2.0, 0.1] values;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var float[1.0, 2.0, 0.1] values;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> variables = model.getFields();
+        EList<Variable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Assert.assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Range);
@@ -170,7 +177,9 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseVariableWithWrongValueTypes() throws Exception {
-        String sb = String.join("\n", "var string{true, 1, 2.5} list;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var string{true, 1, 2.5} list;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -183,7 +192,9 @@ public class KmodelVariableParsingJavaTest {
 
     @Test
     public void parseNonNumberVariableWithRange() throws Exception {
-        String sb = String.join("\n", "var bool[true, false, true] range;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var bool[true, false, true] range;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -31,7 +30,6 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -140,16 +138,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     }
 
     private List<Probe> findProbes(Kmodel kmodel) {
-        List<Probe> probes = new ArrayList<>();
-        EList<Field> fields = kmodel.getFields();
-
-        for (Field f : kmodel.getFields()) {
-            if (f instanceof Probe) {
-                Probe probe = (Probe) f;
-                probes.add(probe);
-            }
-        }
-        return probes;
+        return kmodel.getProbes();
     }
 
 }

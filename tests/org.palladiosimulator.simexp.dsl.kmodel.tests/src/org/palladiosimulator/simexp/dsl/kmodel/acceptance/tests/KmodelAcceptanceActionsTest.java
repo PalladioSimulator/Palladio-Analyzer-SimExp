@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
@@ -40,7 +41,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionNoParam() throws Exception {
-        String sb = String.join("\n", "action aName();");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName();
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -57,7 +60,10 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseMultipleActionNoParam() throws Exception {
-        String sb = String.join("\n", "action aName1();", "action aName2();");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName1();
+                action aName2();
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -79,7 +85,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolParam() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool pb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -89,20 +97,22 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
     }
 
     @Test
     public void parseOneActionStringParam() throws Exception {
-        String sb = String.join("\n", "action aName(param string ps);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param string ps);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -112,20 +122,22 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("ps", param.getName());
         assertEquals(DataType.STRING, param.getDataType());
     }
 
     @Test
     public void parseOneActionIntParam() throws Exception {
-        String sb = String.join("\n", "action aName(param int pi);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param int pi);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -135,20 +147,22 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pi", param.getName());
         assertEquals(DataType.INT, param.getDataType());
     }
 
     @Test
     public void parseOneActionMultipleBoolParam() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb1, param bool pb2);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool pb1, param bool pb2);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -158,13 +172,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(2, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
-        Field param = parameters.get(0);
+        Parameter param = parameters.get(0);
         assertEquals("pb1", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
         param = parameters.get(1);
@@ -174,7 +188,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterNames1() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb, param bool pb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool pb, param bool pb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -185,7 +201,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterNames2() throws Exception {
-        String sb = String.join("\n", "action aName(param bool p, param int p);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool p, param int p);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -196,7 +214,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolVariable() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(var bool{true,false} vb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -206,13 +226,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
-        Variable variable = (Variable) variables.get(0);
+        Variable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -228,7 +248,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionBoolVariableNoBounds() throws Exception {
-        String sb = String.join("\n", "action aName(var bool vb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(var bool vb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -237,7 +259,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMultipleVariable() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb, var int{1,2} vi);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(var bool{true,false} vb, var int{1,2} vi);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -247,13 +271,13 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(2, variables.size());
-        Variable variable1 = (Variable) variables.get(0);
+        Variable variable1 = variables.get(0);
         assertEquals("vb", variable1.getName());
         assertEquals(DataType.BOOL, variable1.getDataType());
         Bounds bounds = variable1.getValues();
@@ -265,7 +289,7 @@ public class KmodelAcceptanceActionsTest {
             .get(1);
         List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-        Variable variable2 = (Variable) variables.get(1);
+        Variable variable2 = variables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
@@ -281,7 +305,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParameters() throws Exception {
-        String sb = String.join("\n", "action aName(param bool pb, var bool{true,false} vb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool pb, var bool{true,false} vb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -291,16 +317,16 @@ public class KmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Field> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Field> variables = action.getParameterList()
+        EList<Variable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
         Field param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        Variable variable = (Variable) variables.get(0);
+        Variable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -316,7 +342,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseOneActionMixedParametersInvalidOrder() throws Exception {
-        String sb = String.join("\n", "action aName(var bool{true,false} vb, param bool pb);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(var bool{true,false} vb, param bool pb);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -325,7 +353,9 @@ public class KmodelAcceptanceActionsTest {
 
     @Test
     public void parseDuplicateParameterVarNames() throws Exception {
-        String sb = String.join("\n", "action aName(param bool p, var bool{true,false} p);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param bool p, var bool{true,false} p);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

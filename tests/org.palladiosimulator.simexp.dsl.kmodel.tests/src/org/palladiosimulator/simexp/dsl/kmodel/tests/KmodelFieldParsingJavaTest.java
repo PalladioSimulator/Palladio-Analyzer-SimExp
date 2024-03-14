@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
@@ -29,25 +28,28 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
-        String sb = String.join("\n", "var bool{true, false} condition;", "const int one = 1;",
-                "probe float aliasName : id \"someId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var bool{true, false} condition;
+                const int one = 1;
+                probe float aliasName : id "someId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        EList<Field> fields = model.getFields();
-        Assert.assertEquals(3, fields.size());
-        Field firstField = fields.get(0);
-        Assert.assertTrue(firstField instanceof Variable);
-        Field secondField = fields.get(1);
-        Assert.assertTrue(secondField instanceof Constant);
-        Field thirdField = fields.get(2);
-        Assert.assertTrue(thirdField instanceof Probe);
+        EList<Variable> variables = model.getVariables();
+        Assert.assertEquals(1, variables.size());
+        EList<Constant> constants = model.getConstants();
+        Assert.assertEquals(1, constants.size());
+        EList<Probe> probes = model.getProbes();
+        Assert.assertEquals(1, probes.size());
     }
 
     @Test
     public void parseFieldWithInvalidName() throws Exception {
-        String sb = String.join("\n", "const int 123 = 123;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int 123 = 123;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -56,17 +58,25 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseFieldWithTokenAsName() throws Exception {
-        String sb = String.join("\n", "const int const = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int const = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
+        // TODO:
         KmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID",
-                "no viable alternative at input '='", "mismatched input ';' expecting RULE_ID");
+                "no viable alternative at input '='", // "mismatched input ';' expecting RULE_ID");
+                "mismatched input '<EOF>' expecting RULE_ID");
     }
 
     @Test
     public void parseSameFieldsWithSameName() throws Exception {
-        String sb = String.join("\n", "const int number = 1;", "const int number = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int number = 1;
+                // TODO
+                const int number = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -77,7 +87,10 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
-        String sb = String.join("\n", "var string{\"word\"} word;", "probe string word : id \"someId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var string{"word"} word;
+                probe string word : id "someId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -88,7 +101,11 @@ public class KmodelFieldParsingJavaTest {
 
     @Test
     public void parseLocalField() throws Exception {
-        String sb = String.join("\n", "if(true){", "var int variable = {1};", "}");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                if(true){
+                    var int variable = {1};
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -3,13 +3,19 @@
 package org.palladiosimulator.simexp.dsl.kmodel.validation;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
@@ -19,17 +25,19 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ModelName;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.util.KmodelDataTypeSwitch;
 
 /**
  * This class contains custom validation rules.
@@ -47,26 +55,25 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
     @Check
     public void checkKmodel(Kmodel model) {
-        ModelName modelName = model.getModelName();
+        String modelName = model.getModelName();
         if (modelName == null) {
             warning("No modelName given.", model, KmodelPackage.Literals.KMODEL__MODEL_NAME);
         } else {
-            if (modelName.getName()
-                .isEmpty()) {
-                warning("Empty modelName.", modelName, KmodelPackage.Literals.MODEL_NAME__NAME);
+            if (modelName.isEmpty()) {
+                warning("Empty modelName.", model, KmodelPackage.Literals.KMODEL__MODEL_NAME);
             }
         }
 
-        List<Field> fields = model.getFields();
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            Collection<EStructuralFeature.Setting> fieldReferences = EcoreUtil.UsageCrossReferencer.find(field,
-                    field.eResource());
+        checkDuplicateIds("probe", model.getProbes(), Comparator.comparing(Probe::getKind)
+            .thenComparing(Probe::getIdentifier));
+        checkDuplicateIds("envvar", model.getEnvVariables(), Comparator.comparing(EnvVariable::getStaticId)
+            .thenComparing(EnvVariable::getDynamicId));
 
-            if (fieldReferences.isEmpty()) {
-                warning("The field '" + field.getName() + "' is never used.", KmodelPackage.Literals.KMODEL__FIELDS, i);
-            }
-        }
+        checkUnusedFields(model.getConstants());
+        checkUnusedFields(model.getVariables());
+        checkUnusedFields(model.getEnvVariables());
+        checkUnusedFields(model.getProbes());
+        checkUnusedFields(model.getRuntimes());
 
         List<Action> actions = model.getActions();
         for (int i = 0; i < actions.size(); i++) {
@@ -81,28 +88,102 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
+    private void checkUnusedFields(List<? extends Field> fields) {
+        ListIterator<? extends Field> iter = fields.listIterator();
+        while (iter.hasNext()) {
+            int index = iter.nextIndex();
+            Field field = iter.next();
+            Resource resource = field.eResource();
+            Collection<EStructuralFeature.Setting> fieldReferences = EcoreUtil.UsageCrossReferencer.find(field,
+                    resource);
+
+            if (fieldReferences.isEmpty()) {
+                EStructuralFeature feature = field.eContainmentFeature();
+                warning(String.format("The field '%s' is never used.", field.getName()), feature, index);
+            }
+        }
+    }
+
+    private <T extends Field> void checkDuplicateIds(String type, List<T> fields, Comparator<T> comparator) {
+        Set<T> duplicates = findDuplicates(fields, comparator);
+        for (T duplicate : duplicates) {
+            EStructuralFeature feature = duplicate.eContainmentFeature();
+            error(String.format("%s '%s' duplicate addressing.", type, duplicate.getName()), feature);
+        }
+    }
+
+    private <T> Set<T> findDuplicates(List<T> fields, Comparator<T> comparator) {
+        Set<T> items = new TreeSet<>(comparator);
+        return fields.stream()
+            .filter(n -> !items.add(n))
+            .collect(Collectors.toSet());
+    }
+
     @Check
     public void checkConstant(Constant constant) {
-        Expression value = constant.getValue();
+        Set<Field> allFieldReferences = getAllFieldReferences(constant);
 
-        if (value != null) {
-            if (containsNonConstantFieldReference(value)) {
-                error("Cannot assign an expression containing a non-constant value to a constant.",
-                        KmodelPackage.Literals.CONSTANT__VALUE);
-                return;
-            }
+        if (containsNonConstantFieldReference(allFieldReferences)) {
+            error("Cannot assign an expression containing a non-constant value to a constant.",
+                    KmodelPackage.Literals.CONSTANT__VALUE);
+            return;
+        }
+        if (containsCyclicReferences(constant, allFieldReferences)) {
+            error("Cyclic reference detected.", constant, KmodelPackage.Literals.CONSTANT__VALUE);
+        }
 
+        if (allFieldReferences.size() == 1) {
+            warning("Constant '" + constant.getName() + "' is probably redundant.",
+                    KmodelPackage.Literals.CONSTANT__VALUE);
+        }
+
+        Expression expression = constant.getValue();
+        if (expression != null) {
             DataType constantDataType = getDataType(constant);
-            DataType valueDataType = getDataType(value);
+            DataType valueDataType = getDataType(expression);
             if (!checkTypes(constantDataType, valueDataType, KmodelPackage.Literals.CONSTANT__VALUE)) {
                 return;
             }
+        }
+    }
 
-            if (containsOnlySingleConstant(value)) {
-                warning("Constant '" + constant.getName() + "' is probably redundant.",
-                        KmodelPackage.Literals.CONSTANT__VALUE);
+    private boolean containsCyclicReferences(Constant constant, Set<Field> allFieldReferences) {
+        for (Field field : allFieldReferences) {
+            Constant referredConstant = (Constant) field;
+            Set<Field> others = getAllFieldReferences(referredConstant);
+            if (others.contains(constant)) {
+                return true;
             }
         }
+        return false;
+    }
+
+    private Set<Field> getAllFieldReferences(Constant constant) {
+        Expression expression = constant.getValue();
+        return getAllFieldReferences(expression);
+    }
+
+    private Set<Field> getAllFieldReferences(Expression expression) {
+        if (expression == null) {
+            return Collections.emptySet();
+        }
+
+        Set<Field> fieldReferences = new HashSet<>();
+        Field field = expression.getFieldRef();
+        if (field != null) {
+            fieldReferences.add(field);
+        }
+
+        Expression left = expression.getLeft();
+        Expression right = expression.getRight();
+
+        Set<Field> leftFieldReferences = getAllFieldReferences(left);
+        Set<Field> rightFieldReferences = getAllFieldReferences(right);
+
+        fieldReferences.addAll(leftFieldReferences);
+        fieldReferences.addAll(rightFieldReferences);
+
+        return fieldReferences;
     }
 
     @Check
@@ -153,31 +234,6 @@ public class KmodelValidator extends AbstractKmodelValidator {
     }
 
     @Check
-    public void checkProbe(Probe probe) {
-        EObject root = EcoreUtil2.getRootContainer(probe);
-        List<Probe> probes = EcoreUtil2.getAllContentsOfType(root, Probe.class);
-        probes.remove(probe);
-
-        for (int i = 0; i < probes.size(); i++) {
-            Probe otherProbe = probes.get(i);
-            if (sameProbeAddress(probe, otherProbe)) {
-                warning("Probes '" + probe.getName() + "' and '" + otherProbe.getName() + "' are probably redundant.",
-                        KmodelPackage.Literals.PROBE__IDENTIFIER);
-            }
-        }
-    }
-
-    private boolean sameProbeAddress(Probe probe1, Probe probe2) {
-        if (probe1.getKind() != probe2.getKind()) {
-            return false;
-        }
-        if (!Strings.equal(probe1.getIdentifier(), probe2.getIdentifier())) {
-            return false;
-        }
-        return true;
-    }
-
-    @Check
     public void checkIfStatement(IfStatement ifStatement) {
         Expression condition = ifStatement.getCondition();
 
@@ -193,7 +249,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
 
         if (action != null) {
             List<ArgumentKeyValue> arguments = actionCall.getArguments();
-            List<Field> parameters = action.getParameterList()
+            List<Parameter> parameters = action.getParameterList()
                 .getParameters();
 
             if (arguments.size() != parameters.size()) {
@@ -278,19 +334,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
         }
     }
 
-    // Returns the next expression in the tree that contains either an operation, a field reference
-    // or a literal.
-    public Expression getNextExpressionWithContent(Expression expression) {
-        if (expression.getOp() != Operation.UNDEFINED || expression.getFieldRef() != null
-                || expression.getLiteral() != null) {
-            return expression;
-
-        } else {
-            return getNextExpressionWithContent(expression.getLeft());
-        }
-    }
-
-    public DataType getDataType(EObject object) {
+    private DataType getDataType(EObject object) {
         return typeSwitch.doSwitch(object);
     }
 
@@ -335,34 +379,12 @@ public class KmodelValidator extends AbstractKmodelValidator {
         return supertype == DataType.FLOAT && subtype == DataType.INT;
     }
 
-    private boolean containsNonConstantFieldReference(Expression expression) {
-        if (expression == null) {
-            return false;
-        }
-
-        Expression left = expression.getLeft();
-        Expression right = expression.getRight();
-
-        if (left != null) {
-            if (right != null) {
-                return containsNonConstantFieldReference(left) || containsNonConstantFieldReference(right);
+    private boolean containsNonConstantFieldReference(Set<Field> fields) {
+        for (Field field : fields) {
+            if (!(field instanceof Constant)) {
+                return true;
             }
-
-            return containsNonConstantFieldReference(left);
         }
-
-        Field field = expression.getFieldRef();
-        return field != null && field.getDataType() != DataType.UNDEFINED && !(field instanceof Constant);
-    }
-
-    private boolean containsOnlySingleConstant(Expression expression) {
-        if (expression == null) {
-            return false;
-        }
-
-        Expression next = getNextExpressionWithContent(expression);
-        Field fieldRef = next.getFieldRef();
-
-        return fieldRef != null;
+        return false;
     }
 }

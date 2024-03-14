@@ -33,32 +33,35 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
-public class KmodelAcceptanceVariablesTest {
+public class KmodelAcceptanceFieldTest {
     @Inject
     private ParseHelper<Kmodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
 
+    private ExpressionUtil expressionUtil = new ExpressionUtil();
+
     @Test
     public void parseSingleBoolConstant() throws Exception {
-        String sb = String.join("\n", "const bool condition = true;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool condition = true;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        assertTrue(field instanceof Constant);
-        Constant constant = (Constant) field;
+        EList<Constant> constants = model.getConstants();
+        assertEquals(1, constants.size());
+        Constant field = constants.get(0);
+        Constant constant = field;
         assertEquals("condition", constant.getName());
         assertEquals(DataType.BOOL, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof BoolLiteral);
         assertEquals(true, ((BoolLiteral) value).isTrue());
@@ -66,20 +69,20 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleIntConstant() throws Exception {
-        String sb = String.join("\n", "const int one = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int one = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Constant> fields = model.getConstants();
         assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        assertTrue(field instanceof Constant);
-        Constant constant = (Constant) field;
+        Constant constant = fields.get(0);
         assertEquals("one", constant.getName());
         assertEquals(DataType.INT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof IntLiteral);
         assertEquals(1, ((IntLiteral) value).getValue());
@@ -87,20 +90,21 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleFloatConstant() throws Exception {
-        String sb = String.join("\n", "const float one = 1.0;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const float one = 1.0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Constant> fields = model.getConstants();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Constant);
         Constant constant = (Constant) field;
         assertEquals("one", constant.getName());
         assertEquals(DataType.FLOAT, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof FloatLiteral);
         assertEquals(1, ((FloatLiteral) value).getValue(), 0.0f);
@@ -108,20 +112,21 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseSingleStringConstant() throws Exception {
-        String sb = String.join("\n", "const string word = \"word\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const string word = "word";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Constant> fields = model.getConstants();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Constant);
         Constant constant = (Constant) field;
         assertEquals("word", constant.getName());
         assertEquals(DataType.STRING, constant.getDataType());
-        Literal value = KmodelTestUtil.getNextExpressionWithContent(constant.getValue())
+        Literal value = expressionUtil.getNextExpressionWithContent(constant.getValue())
             .getLiteral();
         assertTrue(value instanceof StringLiteral);
         assertEquals("word", ((StringLiteral) value).getValue());
@@ -129,29 +134,30 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseTwoConstants() throws Exception {
-        String sb = String.join("\n", "const int count = 1;", "const string word = \"word\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int count = 1;
+                const string word = "word";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Constant> fields = model.getConstants();
         assertEquals(2, fields.size());
         Field firstField = fields.get(0);
-        assertTrue(firstField instanceof Constant);
         Constant firstConstant = (Constant) firstField;
         assertEquals("count", firstConstant.getName());
         assertEquals(DataType.INT, firstConstant.getDataType());
-        Literal firstValue = KmodelTestUtil.getNextExpressionWithContent(firstConstant.getValue())
+        Literal firstValue = expressionUtil.getNextExpressionWithContent(firstConstant.getValue())
             .getLiteral();
         assertTrue(firstValue instanceof IntLiteral);
         assertEquals(1, ((IntLiteral) firstValue).getValue());
         Field secondField = fields.get(1);
-        assertTrue(secondField instanceof Constant);
         Constant secondConstant = (Constant) secondField;
         assertEquals("word", secondConstant.getName());
         assertEquals(DataType.STRING, secondConstant.getDataType());
-        Literal secondValue = KmodelTestUtil.getNextExpressionWithContent(secondConstant.getValue())
+        Literal secondValue = expressionUtil.getNextExpressionWithContent(secondConstant.getValue())
             .getLiteral();
         assertTrue(secondValue instanceof StringLiteral);
         assertEquals("word", ((StringLiteral) secondValue).getValue());
@@ -159,7 +165,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const bool noValue;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool noValue;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -168,7 +176,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const int noValue;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int noValue;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -177,7 +187,7 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const float noValue;");
+        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float noValue;");
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -186,7 +196,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringConstantWithoutValue() throws Exception {
-        String sb = String.join("\n", "const string noValue;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const string noValue;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -195,7 +207,10 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseConstantWithVariableValue() throws Exception {
-        String sb = String.join("\n", "var int variable;", "const int constant = variable;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int variable;
+                const int constant = variable;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -204,7 +219,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolConstantWithIntValue() throws Exception {
-        String sb = String.join("\n", "const bool number = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool number = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -215,7 +232,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntConstantWithBoolValue() throws Exception {
-        String sb = String.join("\n", "const int number = true;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int number = true;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -226,16 +245,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolProbe() throws Exception {
-        String sb = String.join("\n", "probe bool pName: id \"ab11\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe bool pName: id "ab11";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Probe> fields = model.getProbes();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Probe);
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
@@ -244,16 +264,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntProbe() throws Exception {
-        String sb = String.join("\n", "probe int pName: id \"ab11\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe int pName: id "ab11";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Probe> fields = model.getProbes();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Probe);
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.INT, probe.getDataType());
@@ -262,16 +283,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatProbe() throws Exception {
-        String sb = String.join("\n", "probe float pName: id \"ab11\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe float pName: id "ab11";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Probe> fields = model.getProbes();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Probe);
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.FLOAT, probe.getDataType());
@@ -280,16 +302,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringProbe() throws Exception {
-        String sb = String.join("\n", "probe string pName: id \"ab11\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe string pName: id "ab11";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Probe> fields = model.getProbes();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Probe);
         Probe probe = (Probe) field;
         assertEquals("pName", probe.getName());
         assertEquals(DataType.STRING, probe.getDataType());
@@ -298,7 +321,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe bool pName: id \"ab11\" = true;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe bool pName: id "ab11" = true;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -307,7 +332,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe int pName: id \"ab11\" = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe int pName: id "ab11" = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -316,7 +343,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe float pName: id \"ab11\" = 1.0;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe float pName: id "ab11" = 1.0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -325,7 +354,9 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringProbeAssignment() throws Exception {
-        String sb = String.join("\n", "probe string pName: id \"ab11\" = \"s\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe string pName: id "ab11" = "s";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -334,16 +365,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseBoolVarArray() throws Exception {
-        String sb = String.join("\n", "var bool{true,false} vName;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var bool{true,false} vName;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Variable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
@@ -360,16 +392,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntVarArray() throws Exception {
-        String sb = String.join("\n", "var int{1,3} vName;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int{1,3} vName;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Variable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
@@ -386,16 +419,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseFloatVarArray() throws Exception {
-        String sb = String.join("\n", "var float{1.0,3.0} vName;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var float{1.0,3.0} vName;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Variable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.FLOAT, variable.getDataType());
@@ -413,16 +447,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseStringVarArray() throws Exception {
-        String sb = String.join("\n", "var string{\"s1\",\"s2\"} vName;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var string{"s1","s2"} vName;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Variable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.STRING, variable.getDataType());
@@ -439,16 +474,17 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseIntVarRange() throws Exception {
-        String sb = String.join("\n", "var int[1,2,1] vName;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var int[1,2,1] vName;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
+        EList<Variable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        assertTrue(field instanceof Variable);
         Variable variable = (Variable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
@@ -462,36 +498,38 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseMultipleVariableTypes() throws Exception {
-        String sb = String.join("\n", "const bool cBool = true;", "probe bool pBool: id \"ab11\";",
-                "var bool{true,false} vBool;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool cBool = true;
+                probe bool pBool: id "ab11";
+                var bool{true,false} vBool;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Field> fields = model.getFields();
-        assertEquals(3, fields.size());
-        Field field1 = fields.get(0);
-        assertTrue(field1 instanceof Constant);
-        Constant constant = (Constant) field1;
+        EList<Constant> constants = model.getConstants();
+        assertEquals(1, constants.size());
+        Field constant = constants.get(0);
         assertEquals("cBool", constant.getName());
         assertEquals(DataType.BOOL, constant.getDataType());
-        Field field2 = fields.get(1);
-        assertTrue(field2 instanceof Probe);
-        Probe probe = (Probe) field2;
+        EList<Probe> probes = model.getProbes();
+        Probe probe = probes.get(0);
         assertEquals("pBool", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
         assertEquals("ab11", probe.getIdentifier());
-        Field field3 = fields.get(2);
-        assertTrue(field3 instanceof Variable);
-        Variable variable = (Variable) field3;
+        EList<Variable> variables = model.getVariables();
+        Variable variable = variables.get(0);
         assertEquals("vBool", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
     }
 
     @Test
     public void parseDuplicateConstantNames() throws Exception {
-        String sb = String.join("\n", "const bool name = true;", "const int name = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool name = true;
+                const int name = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -502,7 +540,10 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateProbeNames() throws Exception {
-        String sb = String.join("\n", "probe bool name: id \"ax10\";", "probe int name: id \"ax11\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe bool name: id "ax10";
+                probe int name: id "ax11";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -513,10 +554,53 @@ public class KmodelAcceptanceVariablesTest {
 
     @Test
     public void parseDuplicateVariableNames() throws Exception {
-        String sb = String.join("\n", "var bool{true,false} name;", "var int{1,2] name;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                var bool{true,false} name;
+                var int{1,2] name;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ']' expecting '}'");
+    }
+
+    @Test
+    public void parseDuplicateConstantEnvVariableName() throws Exception {
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool name = true;
+                envvar bool name : staticId "statId" dynamicId "dynId";
+                """;
+
+        Kmodel model = parserHelper.parse(sb);
+
+        KmodelTestUtil.assertModelWithoutErrors(model);
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'name'",
+                "Duplicate Field 'name'");
+    }
+
+    @Test
+    public void parseDuplicateProbeAddressing() throws Exception {
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                probe bool name1: id "ax10";
+                probe bool name2: id "ax10";
+                if (name1 && name2) {}
+                """;
+
+        Kmodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, model.eClass(), null, "probe 'name2' duplicate addressing.");
+    }
+
+    @Test
+    public void parseDuplicateEnvVariableAddressing() throws Exception {
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool name1 : staticId "statId" dynamicId "dynId";
+                envvar bool name2 : staticId "statId" dynamicId "dynId";
+                if (name1 && name2) {}
+                """;
+
+        Kmodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, model.eClass(), null, "envvar 'name2' duplicate addressing.");
     }
 }
