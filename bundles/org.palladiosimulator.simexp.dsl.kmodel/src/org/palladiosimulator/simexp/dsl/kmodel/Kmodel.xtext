@@ -29,80 +29,106 @@ Variable:
 
 EnvVariable:	
 	'envvar' dataType=PrimitiveType name=ID ':' 'staticId' staticId=STRING 'dynamicId' dynamicId=STRING  ';'
-;
+	;
 
 Probe:
 	'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'
 	;
 
 enum ProbeAdressingKind:
-    MONITORID='monitorId' | ID='id';
+    MONITORID='monitorId' | ID='id'
+    ;
 
 Runtime:
-	'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';';
+	'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';'
+	;
 
 Parameter:
-	'param' dataType=PrimitiveType name=ID;
+	'param' dataType=PrimitiveType name=ID
+	;
 
 Bounds:
 	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |
-	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']';
+	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
+	;
 
-EcoreExpression: name=ID ((withIndex?='[' index=INT ']') | 
-	(withPredicate?='{' param=ID '=' value=Literal '}'))? ('.' exp=EcoreExpression)?;
+EcoreExpression: 
+	name=ID ((withIndex?='[' index=INT ']') | 
+	(withPredicate?='{' param=ID '=' value=Literal '}'))? ('.' exp=EcoreExpression)?
+	;
 	
-Action: 'action' name=ID '(' parameterList=ParameterList ')' ';';
+Action: 
+	'action' name=ID '(' parameterList=ParameterList ')' ';'
+	;
 
-ParameterList: {ParameterList}
+ParameterList: 
+	{ParameterList}
 	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*)) |
-	(variables+=Variable (',' variables+=Variable)*))?;
+	(variables+=Variable (',' variables+=Variable)*))?
+	;
 
 Statement:
-	ActionCall | IfStatement;
+	ActionCall | IfStatement
+	;
 
 ActionCall returns Statement:
-	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';';
+	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';'
+	;
 
 ArgumentKeyValue:
-	paramRef=[Parameter] '=' argument=DisjunctiveExpr;
+	paramRef=[Parameter] '=' argument=DisjunctiveExpr
+	;
 
-IfStatement returns Statement: {IfStatement}
+IfStatement returns Statement: 
+	{IfStatement}
 	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
-	(withElse?='else' '{' (elseStatements+=Statement)* '}')?;
+	(withElse?='else' '{' (elseStatements+=Statement)* '}')?
+	;
 
 DisjunctiveExpr returns Expression:
-    ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*;
+    ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*
+    ;
 
 ConjunctiveExpr returns Expression:
-	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*;
+	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*
+	;
 
 EquativeExpr returns Expression:
-	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*;
+	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*
+	;
 
 RelationalExpr returns Expression:
-	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?;
+	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?
+	;
 
 AdditiveExpr returns Expression:
-	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*;
+	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*
+	;
 
 MultiplicativeExpr returns Expression:
-	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*;
+	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*
+	;
 
 UnaryExpr returns Expression:
-	{Expression} op=UnaryOp? left=Term;
+	{Expression} op=UnaryOp? left=Term
+	;
 
 Term returns Expression:
-	{Expression} (fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')');
+	{Expression} (fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')')
+	;
 
 Literal:
 	{BoolLiteral} true=BOOL |
 	{IntLiteral} value=INT |
 	{FloatLiteral} value=FLOAT |
-	{StringLiteral} value=STRING;
+	{StringLiteral} value=STRING
+	;
 
 // Rule 'DataType' is not used, but is necessary to provide a default value for data types.
 enum DataType: UNDEFINED;
-enum PrimitiveType returns DataType: BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string';
+enum PrimitiveType returns DataType: 
+	BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string'
+	;
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.
 enum Operation: UNDEFINED;
@@ -115,4 +141,6 @@ enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO 
 enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
-terminal FLOAT returns ecore::EFloat: ((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT);
+terminal FLOAT returns ecore::EFloat: 
+	((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT)
+	;
