@@ -39,7 +39,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.KModelLoader;
+import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -89,7 +89,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ResourceSet rs = new ResourceSetImpl();
 
             URI kmodelURI = config.getKmodelURI();
-            KModelLoader kmodelLoader = new KModelLoader();
+            SModelLoader kmodelLoader = new SModelLoader();
             Smodel kmodel = kmodelLoader.load(rs, kmodelURI);
             LOGGER.debug(String.format("Loaded kmodel from '%s'", kmodelURI.path()));
 

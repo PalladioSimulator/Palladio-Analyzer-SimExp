@@ -8,12 +8,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
-public class KModelLoader implements ModelLoader<Smodel> {
+public class SModelLoader implements ModelLoader<Smodel> {
 
     @Override
     public Smodel load(ResourceSet rs, URI uri) {
         SmodelStandaloneSetup.doSetup();
         Resource resource = rs.getResource(uri, true);
+        // TODO: check for errors
         EList<EObject> contents = resource.getContents();
         if (contents.isEmpty()) {
             return null;
