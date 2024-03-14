@@ -44,7 +44,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testBoolExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = true;", "const bool value2 = false;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true;
+                const bool value2 = false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -62,7 +65,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testIntExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 1;", "const int value2 = -1;");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1;
+                const int value2 = -1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -80,7 +86,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testFloatExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const float value = 1.5;", "const float value2 = .5e-1;");
+        String sb = MODEL_NAME_LINE + """
+                const float value = 1.5;
+                const float value2 = .5e-1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -98,7 +107,9 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testStringExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const string value = \"word\";");
+        String sb = MODEL_NAME_LINE + """
+                const string value = "word";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -112,8 +123,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testConstantExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 1;", "const int value2 = value;",
-                "const int value3 = value2;");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1;
+                const int value2 = value;
+                const int value3 = value2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -135,7 +149,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testVariableExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "var int{2, 1} value;", "var int[0, 1, 1] value2;");
+        String sb = MODEL_NAME_LINE + """
+                var int{2, 1} value;
+                var int[0, 1, 1] value2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -153,7 +170,9 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testProbeExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "probe bool value: \"someId\";");
+        String sb = MODEL_NAME_LINE + """
+                probe bool value: "someId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -167,7 +186,9 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testRuntimeExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "runtime int value: simple: a[0].b;");
+        String sb = MODEL_NAME_LINE + """
+                runtime int value: simple: a[0].b;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -181,9 +202,12 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testOrExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = true || true;",
-                "const bool value2 = true || false;", "const bool value3 = false || true;",
-                "const bool value4 = false || false;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true || true;
+                const bool value2 = true || false;
+                const bool value3 = false || true;
+                const bool value4 = false || false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -209,9 +233,12 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testAndExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = true && true;",
-                "const bool value2 = true && false;", "const bool value3 = false && true;",
-                "const bool value4 = false && false;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true && true;
+                const bool value2 = true && false;
+                const bool value3 = false && true;
+                const bool value4 = false && false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -237,7 +264,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testNotExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = !false;", "const bool value2 = !true;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = !false;
+                const bool value2 = !true;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -255,8 +285,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testEqualExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = \"word\" == \"word\";",
-                "const bool value2 = \"word\" == \"anotherWord\";");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = "word" == "word";
+                const bool value2 = "word" == "anotherWord";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -274,8 +306,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testUnequalExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = 1.5 != 2.0;",
-                "const bool value2 = 1.0 != 1.0;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1.5 != 2.0;
+                const bool value2 = 1.0 != 1.0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -293,8 +327,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testSmallerExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = 1 < 2;", "const bool value2 = 1 < 1;",
-                "const bool value3 = 2 < 1;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 < 2;
+                const bool value2 = 1 < 1;
+                const bool value3 = 2 < 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -316,8 +353,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testSmallerOrEqualExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = 1 <= 2;", "const bool value2 = 1 <= 1;",
-                "const bool value3 = 2 <= 1;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 <= 2;
+                const bool value2 = 1 <= 1;
+                const bool value3 = 2 <= 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -339,8 +379,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testGreaterOrEqualExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = 2 >= 1;", "const bool value2 = 1 >= 1;",
-                "const bool value3 = 1 >= 2;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 2 >= 1;
+                const bool value2 = 1 >= 1;
+                const bool value3 = 1 >= 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -362,8 +405,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testGreaterExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = 2 > 1;", "const bool value2 = 1 > 1;",
-                "const bool value3 = 1 > 2;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 2 > 1;
+                const bool value2 = 1 > 1;
+                const bool value3 = 1 > 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -385,8 +431,12 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testAdditionExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 1 + 0;", "const int value2 = 0 + 1;",
-                "const int value3 = (1 + 2) + 3;", "const int value4 = 1 + (2 + 3);");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1 + 0;
+                const int value2 = 0 + 1;
+                const int value3 = (1 + 2) + 3;
+                const int value4 = 1 + (2 + 3);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -412,8 +462,12 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testSubtractionExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 1 - 0;", "const int value2 = 0 - 1;",
-                "const int value3 = (1 - 2) - 3;", "const int value4 = 1 - (2 - 3);");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1 - 0;
+                const int value2 = 0 - 1;
+                const int value3 = (1 - 2) - 3;
+                const int value4 = 1 - (2 - 3);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -439,7 +493,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testInversionExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = -1;", "const int value2 = -(-1);");
+        String sb = MODEL_NAME_LINE + """
+                const int value = -1;
+                const int value2 = -(-1);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -457,9 +514,15 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testMultiplicationExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 0 * 1", "const int value2 = 2 * 1;",
-                "const int value3 = 1 * 2;", "const int value4 = -1 * 1;", "const int value5 = 1 * -1;",
-                "const int value6 = (1 * 2) * 3;", "const int value7 = 1 * (2 * 3);");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 0 * 1;
+                const int value2 = 2 * 1;
+                const int value3 = 1 * 2;
+                const int value4 = -1 * 1;
+                const int value5 = 1 * -1;
+                const int value6 = (1 * 2) * 3;
+                const int value7 = 1 * (2 * 3);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -497,10 +560,18 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testDivisionExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const float value = 2 / 2;", "const float value2 = 1 / 2;",
-                "const float value3 = 2 / 1;", "const float value4 = -1 / 1", "const float value5 = 1 / -1",
-                "const float value6 = (1 / 2) / 4;", "const float value7 = 1 / (2 / 4);", "const float value8 = 0 / 0;",
-                "const float value9 = 1 / 0;", "const float value10 = -1 / 0;");
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2 / 2;
+                const float value2 = 1 / 2;
+                const float value3 = 2 / 1;
+                const float value4 = -1 / 1;
+                const float value5 = 1 / -1
+                const float value6 = (1 / 2) / 4;
+                const float value7 = 1 / (2 / 4);
+                const float value8 = 0 / 0;
+                const float value9 = 1 / 0;
+                const float value10 = -1 / 0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -550,8 +621,13 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testModuloExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value =  1 % 1;", "const int value2 = 4 % 2;",
-                "const int value3 = 2 % 4;", "const int value4 = -1 % 2;", "const int value5 = 1 % -2");
+        String sb = MODEL_NAME_LINE + """
+                const int value =  1 % 1;
+                const int value2 = 4 % 2;
+                const int value3 = 2 % 4;
+                const int value4 = -1 % 2;
+                const int value5 = 1 % -2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -581,8 +657,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testDistributivity() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 2 * (3 + 4)",
-                "const int value = 2 * 3 + 2 * 4;");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 2 * (3 + 4);
+                const int value = 2 * 3 + 2 * 4;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -600,8 +678,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testLogicPrecedence() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const bool value = true || true && false;",
-                "const bool value2 = (true || true) && false;");
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true || true && false;
+                const bool value2 = (true || true) && false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -619,8 +699,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testArithmeticPrecedence() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int value = 1 + 1 * 2;",
-                "const int value2 = (1 + 1) * 2;");
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1 + 1 * 2;
+                const int value2 = (1 + 1) * 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -638,8 +720,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testArithmeticPrecedence2() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const float value = 2 - 1 / 2;",
-                "const float value2 = (2 - 1) / 2;");
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2 - 1 / 2;
+                const float value2 = (2 - 1) / 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -657,8 +741,11 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testFloatValuePrecision() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const float value = 1.4e-45;",
-                "const float value2 = 3.4028235e38;", "const float value3 = 1.17549435e-38");
+        String sb = MODEL_NAME_LINE + """
+                const float value = 1.4e-45;
+                const float value2 = 3.4028235e38;
+                const float value3 = 1.17549435e-38
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -680,8 +767,10 @@ public class KmodelInterpreterExpressionTest {
 
     @Test
     public void testComplexExpressionValue() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const float value = -(2 + 3 * 10 / 2) - 3;",
-                "const bool value2 = !((value < 0 || value >= 10) && value == -20);");
+        String sb = MODEL_NAME_LINE + """
+                const float value = -(2 + 3 * 10 / 2) - 3;
+                const bool value2 = !((value < 0 || value >= 10) && value == -20);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);

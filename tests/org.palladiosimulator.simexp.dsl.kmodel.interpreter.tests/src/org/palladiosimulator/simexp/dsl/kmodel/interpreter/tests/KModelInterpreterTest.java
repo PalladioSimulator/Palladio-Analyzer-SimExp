@@ -84,19 +84,30 @@ public class KModelInterpreterTest {
 
     @Test
     public void testAnalyzeWithTrueCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (true) {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
 
+        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
         Assert.assertTrue(interpreter.analyze());
     }
 
     @Test
     public void testAnalyzeWithSecondTrueCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (false) {",
-                "adapt(parameter=1);", "}", "if (true) {", "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (false) {
+                    adapt(parameter=1);
+                }
+                if (true) {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -106,8 +117,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testAnalyzeWithIfElseStatement() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (false) {} else {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (false) {} else {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -117,8 +132,14 @@ public class KModelInterpreterTest {
 
     @Test
     public void testAnalyzeWithInnerTrueCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (false) {",
-                "if (true) {", "adapt(parameter=1);", "}", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (false) {
+                    if (true) {
+                        adapt(parameter=1);
+                    }
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -128,8 +149,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testAnalyzeWithNoTrueCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (false) {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (false) {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -139,7 +164,9 @@ public class KModelInterpreterTest {
 
     @Test
     public void testAnalyzeWithoutCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -149,8 +176,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithOneActionCall() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (true) {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -166,9 +197,14 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithTwoActionCalls() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);",
-                "action adapt2(param int parameter);", "if (true) {", "adapt(parameter=1);", "adapt2(parameter=2);",
-                "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                action adapt2(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                    adapt2(parameter=2);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -189,29 +225,39 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithTwoActionCallsOfSameAction() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (true) {",
-                "adapt(parameter=1);", "adapt(parameter=2);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                    adapt(parameter=2);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(2, resolvedActions.size());
-
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
         assertResolvedAction(adapt, resolvedAdapt, 1);
-
         ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
         assertResolvedAction(adapt, resolvedAdapt2, 2);
     }
 
     @Test
     public void testPlanWithNestedActionCalls() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);",
-                "action adapt2(param int parameter);", "if (true) {", "adapt(parameter=2);", "if (true) {",
-                "adapt2(parameter=1);", "}", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                action adapt2(param int parameter);
+                if (true) {
+                    adapt(parameter=2);
+                    if (true) {
+                        adapt2(parameter=1);
+                    }
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -232,8 +278,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithIfElseStatement() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (false) {} else {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (false) {} else {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -249,9 +299,16 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithFalseOuterCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);",
-                "action adapt2(param int parameter);", "if (false) {", "adapt(parameter=1);", "if (true) {",
-                "adapt2(parameter=1);", "}", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                action adapt2(param int parameter);
+                if (false) {
+                    adapt(parameter=1);
+                    if (true) {
+                        adapt2(parameter=1);
+                    }
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -262,9 +319,16 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithFalseInnerCondition() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);",
-                "action adapt2(param int parameter);", "if (true) {", "adapt(parameter=1);", "if (false) {",
-                "adapt2(parameter=1);", "}", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                action adapt2(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                    if (false) {
+                        adapt2(parameter=1);
+                    }
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -280,7 +344,9 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithoutActionCalls() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -291,7 +357,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithoutParameters() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt();", "if (true) {", "adapt();", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt();
+                if (true) {
+                    adapt();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -307,8 +378,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithSingleParameter() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(param int parameter);", "if (true) {",
-                "adapt(parameter=1);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter);
+                if (true) {
+                    adapt(parameter=1);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -324,9 +399,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithMultipleParameters() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE,
-                "action adapt(param int parameter, param int parameter2, param int parameter3);", "if (true) {",
-                "adapt(parameter=1, parameter2=2, parameter3=3);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter, param int parameter2, param int parameter3);
+                if (true) {
+                    adapt(parameter=1, parameter2=2, parameter3=3);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -342,8 +420,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithSingleVariable() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "action adapt(var int{5, 4, 3, 2, 1} variable);", "if (true) {",
-                "adapt();", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(var int{5, 4, 3, 2, 1} variable);
+                if (true) {
+                    adapt();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -359,9 +441,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithMultipleVariables() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE,
-                "action adapt(var int{5, 4, 3, 2, 1} variable, var float{0.1, 0.2, 0.3} variable2);", "if (true) {",
-                "adapt();", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(var int{5, 4, 3, 2, 1} variable, var float{0.1, 0.2, 0.3} variable2);
+                if (true) {
+                    adapt();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -377,9 +462,12 @@ public class KModelInterpreterTest {
 
     @Test
     public void testPlanWithActionWithParameterAndVariable() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE,
-                "action adapt(param int parameter, var float{0.1, 0.2, 0.3} variable);", "if (true) {",
-                "adapt(parameter=3);", "}");
+        String sb = MODEL_NAME_LINE + """
+                action adapt(param int parameter, var float{0.1, 0.2, 0.3} variable);
+                if (true) {
+                    adapt(parameter=3);
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
@@ -395,16 +483,27 @@ public class KModelInterpreterTest {
 
     @Test
     public void testComplexAnalyzeAndPlan() throws Exception {
-        String sb = String.join("\n", MODEL_NAME_LINE, "const int constant = 1;",
-                "const int anotherConstant = constant * 2;", "var float{1.5, 2.5, 3.5} adaptationFactor;",
-                "probe float someProbe : abc123;", "runtime string someRuntime: simple: a[0].b;",
+        String sb = MODEL_NAME_LINE + """
+                const int constant = 1;
+                const int anotherConstant = constant * 2;
+                var float{1.5, 2.5, 3.5} adaptationFactor;
+                probe float someProbe : abc123;
+                runtime string someRuntime: simple: a[0].b;
 
-                "action adapt(param int parameter, param float factor);",
-                "action adapt2(param float parameter, var float[1,5,1] someRange);", "action adapt3();",
+                action adapt(param int parameter, param float factor);
+                action adapt2(param float parameter, var float[1,5,1] someRange);
+                action adapt3();
 
-                "if (someProbe > 0 || someProbe <= -10 && someRuntime == \"string\") {",
-                "adapt(parameter=anotherConstant, factor=0.5);", "if (someProbe > 0 && someProbe < 10) {",
-                "adapt2(parameter=adaptationFactor);", "}", "}", "if (someProbe == 100) {", "adapt3();", "}");
+                if (someProbe > 0 || someProbe <= -10 && someRuntime == \"string\") {
+                    adapt(parameter=anotherConstant, factor=0.5);
+                    if (someProbe > 0 && someProbe < 10) {
+                        adapt2(parameter=adaptationFactor);
+                    }
+                }
+                if (someProbe == 100) {
+                    adapt3();
+                }
+                """;
 
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);

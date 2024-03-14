@@ -30,13 +30,18 @@ public class KnowledgeLookupTest {
 
     @Test
     public void testLookupFieldWithIndex() throws Exception {
-        String sbTest = String.join("\n", MODEL_NAME_LINE, "const int a = 2;", "const int b = 1;");
+        String sbTest = MODEL_NAME_LINE + """
+                const int a = 2;
+                const int b = 1;
+                """;
         Kmodel testModel = parserHelper.parse(sbTest);
         assertEquals(2, testModel.getConstants()
             .size());
         Constant b = testModel.getConstants()
             .get(1);
-        String sb = String.join("\n", MODEL_NAME_LINE, "runtime int rint: simple: constants[1];");
+        String sb = MODEL_NAME_LINE + """
+                runtime int rint: simple: constants[1];
+                """;
         Kmodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
@@ -49,13 +54,18 @@ public class KnowledgeLookupTest {
 
     @Test
     public void testLookupFieldWithPredicate() throws Exception {
-        String sbTest = String.join("\n", MODEL_NAME_LINE, "const int a = 2;", "const int b = 1;");
+        String sbTest = MODEL_NAME_LINE + """
+                const int a = 2;
+                const int b = 1;
+                """;
         Kmodel testModel = parserHelper.parse(sbTest);
         assertEquals(2, testModel.getConstants()
             .size());
         Constant b = testModel.getConstants()
             .get(1);
-        String sb = String.join("\n", MODEL_NAME_LINE, "runtime int rint: simple: constants{name=\"b\"};");
+        String sb = MODEL_NAME_LINE + """
+                runtime int rint: simple: constants{name="b"};
+                """;
         Kmodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
@@ -68,11 +78,15 @@ public class KnowledgeLookupTest {
 
     @Test
     public void testLookupFieldName() throws Exception {
-        String sbTest = String.join("\n", MODEL_NAME_LINE, "const int a = 1;");
+        String sbTest = MODEL_NAME_LINE + """
+                const int a = 1;
+                """;
         Kmodel testModel = parserHelper.parse(sbTest);
         assertEquals(1, testModel.getConstants()
             .size());
-        String sb = String.join("\n", MODEL_NAME_LINE, "runtime int rint: simple: constants[0].name;");
+        String sb = MODEL_NAME_LINE + """
+                runtime int rint: simple: constants[0].name;
+                """;
         Kmodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
