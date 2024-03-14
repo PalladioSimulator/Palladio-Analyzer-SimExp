@@ -4,24 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ArgumentKeyValue;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.util.KmodelSwitch;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
-public class KmodelValueSwitch extends KmodelSwitch<Object> {
+public class KmodelValueSwitch extends SmodelSwitch<Object> {
 
     private final VariableValueProvider vvp;
     private final ProbeValueProvider pvp;

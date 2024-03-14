@@ -8,16 +8,16 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
 import org.palladiosimulator.simexp.core.strategy.mape.Planner;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.util.KmodelSwitch;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
-public class KmodelInterpreter extends KmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
+public class KmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
 
     private final Kmodel model;
     private final KmodelValueSwitch valueSwitch;

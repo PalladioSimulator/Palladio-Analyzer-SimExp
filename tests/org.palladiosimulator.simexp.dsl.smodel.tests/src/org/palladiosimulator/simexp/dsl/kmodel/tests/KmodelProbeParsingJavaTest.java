@@ -12,13 +12,13 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -38,7 +38,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.MONITORID);
@@ -56,7 +56,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("probeName");
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
@@ -74,7 +74,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("condition");
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
@@ -92,7 +92,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("count");
         exptectedProbe.setDataType(DataType.INT);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
@@ -110,7 +110,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("number");
         exptectedProbe.setDataType(DataType.FLOAT);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
@@ -128,7 +128,7 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("word");
         exptectedProbe.setDataType(DataType.STRING);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
@@ -147,12 +147,12 @@ public class KmodelProbeParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe1 = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe1 = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe1.setName("count");
         exptectedProbe1.setDataType(DataType.INT);
         exptectedProbe1.setKind(ProbeAdressingKind.ID);
         exptectedProbe1.setIdentifier("someId");
-        Probe exptectedProbe2 = KmodelFactory.eINSTANCE.createProbe();
+        Probe exptectedProbe2 = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe2.setName("word");
         exptectedProbe2.setDataType(DataType.STRING);
         exptectedProbe2.setKind(ProbeAdressingKind.ID);

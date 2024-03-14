@@ -6,11 +6,11 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
+import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -23,7 +23,7 @@ public class KnowledgeLookupTest {
 
     @Before
     public void setUp() {
-        Injector injector = new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+        Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
         }));
     }

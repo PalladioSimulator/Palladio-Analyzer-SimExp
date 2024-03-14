@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
 public class DummyProbeValueProvider implements ProbeValueProvider, ProbeValueProviderMeasurementInjector {
 

@@ -1,7 +1,7 @@
-package org.palladiosimulator.simexp.dsl.kmodel.util;
+package org.palladiosimulator.simexp.dsl.smodel.util;
 
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 
 public class ExpressionUtil {
 

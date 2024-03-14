@@ -16,8 +16,8 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)

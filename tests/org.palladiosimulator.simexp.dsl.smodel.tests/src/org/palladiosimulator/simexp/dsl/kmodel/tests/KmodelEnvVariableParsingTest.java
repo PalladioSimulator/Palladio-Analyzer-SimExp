@@ -12,12 +12,12 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.EnvVariable;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 
 @RunWith(XtextRunner.class)
 @InjectWith(KmodelInjectorProvider.class)
@@ -37,7 +37,7 @@ public class KmodelEnvVariableParsingTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.BOOL);
         exptectedVariable.setStaticId("statId");
@@ -55,7 +55,7 @@ public class KmodelEnvVariableParsingTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.INT);
         exptectedVariable.setStaticId("statId");
@@ -73,7 +73,7 @@ public class KmodelEnvVariableParsingTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.FLOAT);
         exptectedVariable.setStaticId("statId");
@@ -91,7 +91,7 @@ public class KmodelEnvVariableParsingTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.STRING);
         exptectedVariable.setStaticId("statId");
@@ -110,12 +110,12 @@ public class KmodelEnvVariableParsingTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable1 = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable1 = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable1.setName("varName1");
         exptectedVariable1.setDataType(DataType.BOOL);
         exptectedVariable1.setStaticId("statId1");
         exptectedVariable1.setDynamicId("dynId1");
-        EnvVariable exptectedVariable2 = KmodelFactory.eINSTANCE.createEnvVariable();
+        EnvVariable exptectedVariable2 = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable2.setName("varName2");
         exptectedVariable2.setDataType(DataType.INT);
         exptectedVariable2.setStaticId("statId2");

@@ -18,8 +18,8 @@ import org.palladiosimulator.pcmmeasuringpoint.PcmmeasuringpointFactory;
 import org.palladiosimulator.pcmmeasuringpoint.UsageScenarioMeasuringPoint;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 public class PcmProbeValueProviderTest {
@@ -43,7 +43,7 @@ public class PcmProbeValueProviderTest {
         PcmMeasurementSpecification responseTimeSpec = createResponseTimeSpec();
         List<PcmMeasurementSpecification> specs = Arrays.asList(responseTimeSpec);
 
-        Probe probe = KmodelFactory.eINSTANCE.createProbe();
+        Probe probe = SmodelFactory.eINSTANCE.createProbe();
         probe.setIdentifier(MEASURING_POINT_ID);
         List<Probe> probes = Arrays.asList(probe);
 

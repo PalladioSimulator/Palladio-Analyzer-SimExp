@@ -9,7 +9,7 @@ import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 
 public class KmodelTestUtil {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";

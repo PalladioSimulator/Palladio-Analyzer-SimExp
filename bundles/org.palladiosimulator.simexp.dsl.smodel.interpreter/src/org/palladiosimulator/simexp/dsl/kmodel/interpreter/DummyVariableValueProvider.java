@@ -1,14 +1,14 @@
 package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
 
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Array;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Bounds;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.FloatLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
 public class DummyVariableValueProvider implements VariableValueProvider {
 
@@ -18,7 +18,8 @@ public class DummyVariableValueProvider implements VariableValueProvider {
         if (bounds instanceof Array) {
             Array array = (Array) bounds;
             // default - return first entry of list
-            return getValue(array.getValues().get(0));
+            return getValue(array.getValues()
+                .get(0));
         }
         if (bounds instanceof Range) {
             Range range = (Range) bounds;
@@ -32,19 +33,19 @@ public class DummyVariableValueProvider implements VariableValueProvider {
         if (literal instanceof BoolLiteral) {
             return ((BoolLiteral) literal).isTrue();
         }
-        
+
         if (literal instanceof IntLiteral) {
             return ((IntLiteral) literal).getValue();
         }
-        
+
         if (literal instanceof FloatLiteral) {
             return ((FloatLiteral) literal).getValue();
         }
-        
+
         if (literal instanceof StringLiteral) {
             return ((StringLiteral) literal).getValue();
         }
-        
+
         return null;
     }
 

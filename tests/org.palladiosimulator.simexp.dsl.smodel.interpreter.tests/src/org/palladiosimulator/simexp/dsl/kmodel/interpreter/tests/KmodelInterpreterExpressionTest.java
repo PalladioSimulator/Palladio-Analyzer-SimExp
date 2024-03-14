@@ -4,7 +4,6 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
@@ -12,11 +11,12 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -33,7 +33,7 @@ public class KmodelInterpreterExpressionTest {
 
     @Before
     public void setUp() {
-        Injector injector = new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+        Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
         }));
 

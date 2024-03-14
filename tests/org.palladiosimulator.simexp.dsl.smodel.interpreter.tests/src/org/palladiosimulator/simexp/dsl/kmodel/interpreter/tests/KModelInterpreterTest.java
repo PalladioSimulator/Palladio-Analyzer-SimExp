@@ -9,7 +9,6 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.KmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
@@ -18,17 +17,18 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Action;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.DataType;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Expression;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -45,7 +45,7 @@ public class KModelInterpreterTest {
 
     @Before
     public void setUp() {
-        Injector injector = new KmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+        Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
         }));
 
@@ -63,7 +63,7 @@ public class KModelInterpreterTest {
          * }
          */
 
-        KmodelFactory kmodelFactory = KmodelFactory.eINSTANCE;
+        SmodelFactory kmodelFactory = SmodelFactory.eINSTANCE;
         Kmodel kmodel = kmodelFactory.createKmodel();
         Constant constant = kmodelFactory.createConstant();
         constant.setName("simpleCondition");
