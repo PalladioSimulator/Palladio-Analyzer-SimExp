@@ -30,7 +30,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
@@ -373,10 +373,10 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -400,10 +400,10 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -427,10 +427,10 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.FLOAT, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -455,10 +455,10 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.STRING, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -482,10 +482,10 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getVariables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -518,8 +518,8 @@ public class KmodelAcceptanceFieldTest {
         assertEquals("pBool", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
         assertEquals("ab11", probe.getIdentifier());
-        EList<Variable> variables = model.getVariables();
-        Variable variable = variables.get(0);
+        EList<Optimizable> variables = model.getVariables();
+        Optimizable variable = variables.get(0);
         assertEquals("vBool", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
     }

@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.util.KmodelSwitch;
 
 public class KmodelInterpreter extends KmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
@@ -110,7 +110,7 @@ public class KmodelInterpreter extends KmodelSwitch<List<ResolvedAction>> implem
             .collect(Collectors.toMap(arg -> arg.getParamRef()
                 .getName(), this::getValue));
 
-        List<Variable> variables = actionCall.getActionRef()
+        List<Optimizable> variables = actionCall.getActionRef()
             .getParameterList()
             .getVariables();
         resolvedArguments.putAll(variables.stream()

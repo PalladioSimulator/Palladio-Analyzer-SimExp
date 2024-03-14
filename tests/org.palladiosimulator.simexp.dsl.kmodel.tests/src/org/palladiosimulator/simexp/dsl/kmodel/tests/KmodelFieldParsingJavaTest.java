@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
@@ -37,7 +37,7 @@ public class KmodelFieldParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         EList<Constant> constants = model.getConstants();
         Assert.assertEquals(1, constants.size());

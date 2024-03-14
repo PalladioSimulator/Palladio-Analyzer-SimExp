@@ -33,10 +33,10 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelPackage;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Operation;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
 import org.palladiosimulator.simexp.dsl.kmodel.util.KmodelDataTypeSwitch;
 
 /**
@@ -187,14 +187,14 @@ public class KmodelValidator extends AbstractKmodelValidator {
     }
 
     @Check
-    public void checkVariable(Variable variable) {
+    public void checkVariable(Optimizable variable) {
         DataType dataType = getDataType(variable);
         Bounds bounds = variable.getValues();
 
         if (bounds != null) {
             if (!compatibleTypes(DataType.FLOAT, dataType) && bounds instanceof Range) {
                 error("Cannot assign a range to a variable of the type '" + dataType + "'.",
-                        KmodelPackage.Literals.VARIABLE__VALUES);
+                        KmodelPackage.Literals.OPTIMIZABLE__VALUES);
             }
         }
     }

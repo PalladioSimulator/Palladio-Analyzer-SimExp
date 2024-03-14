@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -528,7 +528,7 @@ public class KModelInterpreterTest {
 
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
-        List<Variable> variables = action.getParameterList()
+        List<Optimizable> variables = action.getParameterList()
             .getVariables();
         Map<String, Object> resolvedArguments = resolvedAction.getArguments();
 

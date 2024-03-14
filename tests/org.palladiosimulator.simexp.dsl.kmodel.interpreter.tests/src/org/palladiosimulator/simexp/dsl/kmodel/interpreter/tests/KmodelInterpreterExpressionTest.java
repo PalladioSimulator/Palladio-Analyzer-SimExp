@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Runtime;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -157,10 +157,10 @@ public class KmodelInterpreterExpressionTest {
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
 
-        Variable variable = model.getVariables()
+        Optimizable variable = model.getVariables()
             .get(0);
         int value = ((Number) interpreter.getValue(variable)).intValue();
-        Variable variable2 = model.getVariables()
+        Optimizable variable2 = model.getVariables()
             .get(1);
         int value2 = ((Number) interpreter.getValue(variable2)).intValue();
 

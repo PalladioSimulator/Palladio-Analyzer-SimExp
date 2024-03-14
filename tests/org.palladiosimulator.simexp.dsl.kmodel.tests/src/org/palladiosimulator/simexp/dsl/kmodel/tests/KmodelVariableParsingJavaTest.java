@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
@@ -44,7 +44,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("condition", variable.getName());
@@ -61,7 +61,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("count", variable.getName());
@@ -78,7 +78,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("number", variable.getName());
@@ -95,7 +95,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("word", variable.getName());
@@ -113,7 +113,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(2, variables.size());
         Field firstVariable = variables.get(0);
         Assert.assertEquals("count", firstVariable.getName());
@@ -133,10 +133,10 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Array);
         Array valueArray = (Array) bounds;
@@ -160,10 +160,10 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Variable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getVariables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
-        Variable variable = (Variable) field;
+        Optimizable variable = (Optimizable) field;
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof Range);
         Range valueRange = (Range) bounds;

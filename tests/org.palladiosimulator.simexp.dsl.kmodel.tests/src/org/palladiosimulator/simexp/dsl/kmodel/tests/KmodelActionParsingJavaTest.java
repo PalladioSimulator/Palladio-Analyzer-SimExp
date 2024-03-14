@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Statement;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.kmodel.util.ExpressionUtil;
@@ -190,13 +190,13 @@ public class KmodelActionParsingJavaTest {
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Variable> variables = action.getParameterList()
+        List<Optimizable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
-        Bounds bounds = ((Variable) variable).getValues();
+        Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof Array);
         List<Literal> values = ((Array) bounds).getValues();
         Assert.assertEquals(2, values.size());
@@ -226,13 +226,13 @@ public class KmodelActionParsingJavaTest {
         Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
-        List<Variable> variables = action.getParameterList()
+        List<Optimizable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
-        Bounds bounds = ((Variable) variable).getValues();
+        Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof Array);
         List<Literal> values = ((Array) bounds).getValues();
         Assert.assertEquals(2, values.size());
@@ -398,7 +398,7 @@ public class KmodelActionParsingJavaTest {
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Variable> variables = action.getParameterList()
+        List<Optimizable> variables = action.getParameterList()
             .getVariables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);

@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Parameter;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
@@ -100,7 +100,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
@@ -125,7 +125,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
@@ -150,7 +150,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
@@ -175,7 +175,7 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(2, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(0, variables.size());
         Parameter param = parameters.get(0);
@@ -229,10 +229,10 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
-        Variable variable = variables.get(0);
+        Optimizable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
@@ -274,10 +274,10 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(2, variables.size());
-        Variable variable1 = variables.get(0);
+        Optimizable variable1 = variables.get(0);
         assertEquals("vb", variable1.getName());
         assertEquals(DataType.BOOL, variable1.getDataType());
         Bounds bounds = variable1.getValues();
@@ -289,7 +289,7 @@ public class KmodelAcceptanceActionsTest {
             .get(1);
         List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-        Variable variable2 = variables.get(1);
+        Optimizable variable2 = variables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
@@ -320,13 +320,13 @@ public class KmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(1, parameters.size());
-        EList<Variable> variables = action.getParameterList()
+        EList<Optimizable> variables = action.getParameterList()
             .getVariables();
         assertEquals(1, variables.size());
         Field param = parameters.get(0);
         assertEquals("pb", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-        Variable variable = variables.get(0);
+        Optimizable variable = variables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();

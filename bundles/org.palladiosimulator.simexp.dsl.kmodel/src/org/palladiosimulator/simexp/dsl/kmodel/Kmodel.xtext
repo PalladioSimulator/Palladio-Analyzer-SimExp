@@ -7,7 +7,7 @@ generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 Kmodel:
 	'modelName' '=' modelName=STRING ';'
 	(constants+=Constant |
-	variables+=Variable  ';' |
+	variables+=Optimizable  ';' |
 	envVariables+=EnvVariable |
 	probes+=Probe |
 	runtimes+=Runtime)*
@@ -16,14 +16,14 @@ Kmodel:
 	;
 	
 Field:
-	Constant | Variable | EnvVariable | Probe | Runtime | Parameter
+	Constant | Optimizable | EnvVariable | Probe | Runtime | Parameter
 	;
 
 Constant:
 	'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
 	;
 
-Variable:
+Optimizable:
 	'optimizable' dataType=PrimitiveType values=Bounds name=ID
 	;
 
@@ -63,8 +63,8 @@ Action:
 
 ParameterList: 
 	{ParameterList}
-	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Variable)*)) |
-	(variables+=Variable (',' variables+=Variable)*))?
+	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Optimizable)*)) |
+	(variables+=Optimizable (',' variables+=Optimizable)*))?
 	;
 
 Statement:

@@ -9,11 +9,11 @@ import org.palladiosimulator.simexp.dsl.kmodel.kmodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Literal;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Range;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.StringLiteral;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Variable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
 
 public class TestVariableValueProvider implements VariableValueProvider {
     @Override
-    public Object getValue(Variable variable) {
+    public Object getValue(Optimizable variable) {
         Bounds bounds = variable.getValues();
         if (bounds instanceof Array) {
             Array array = (Array) bounds;
