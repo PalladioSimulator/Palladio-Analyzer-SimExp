@@ -253,10 +253,7 @@ public class KmodelConstantParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                // TODO:
-                // "Couldn't resolve reference to Field 'constant'.");
-                "Cyclic reference detected.");
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Cyclic reference detected.");
     }
 
     @Test
@@ -269,10 +266,8 @@ public class KmodelConstantParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
-                // TODO:
-                // "Couldn't resolve reference to Field 'const2'.");
-                "Cyclic reference detected.", "Cyclic reference detected.");
+        KmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Cyclic reference detected.",
+                "Cyclic reference detected.");
     }
 
     @Test

@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Constant;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.tests.util.KmodelTestUtil;
 
@@ -64,18 +64,15 @@ public class KmodelFieldParsingJavaTest {
 
         Kmodel model = parserHelper.parse(sb);
 
-        // TODO:
         KmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID",
-                "no viable alternative at input '='", // "mismatched input ';' expecting RULE_ID");
-                "mismatched input '<EOF>' expecting RULE_ID");
+                "no viable alternative at input '='", "mismatched input '<EOF>' expecting RULE_ID");
     }
 
     @Test
     public void parseSameFieldsWithSameName() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
                 const int number = 1;
-                // TODO
-                const int number = 1;
+                const int number = 2;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
