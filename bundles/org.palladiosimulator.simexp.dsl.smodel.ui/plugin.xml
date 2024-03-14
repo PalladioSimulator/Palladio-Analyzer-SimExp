@@ -4,48 +4,48 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
-			extensions="kmodel"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			name="Kmodel Editor">
+			extensions="smodel"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			name="Smodel Editor">
 		</editor>
 	</extension>
 	<extension
 		point="org.eclipse.ui.handlers">
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
 			commandId="org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclaration">
 			<activeWhen>
 				<reference
-					definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
-			commandId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.validate">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
+			commandId="org.palladiosimulator.simexp.dsl.smodel.Smodel.validate">
 			<activeWhen>
 				<reference
-					definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
 		<!-- copy qualified name -->
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName">
 			<activeWhen>
-				<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened" />
+				<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened" />
 			</activeWhen>
 		</handler>
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedNameHandler"
 			commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName">
 			<activeWhen>
 				<and>
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.XtextEditor.opened" />
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.XtextEditor.opened" />
 					<iterate>
 						<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 					</iterate>
@@ -54,22 +54,22 @@
 		</handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.definitions">
-		<definition id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+		<definition id="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 			<and>
 				<reference definitionId="isActiveEditorAnInstanceOfXtextEditor"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
+						value="org.palladiosimulator.simexp.dsl.smodel.Smodel"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
 		</definition>
-		<definition id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.XtextEditor.opened">
+		<definition id="org.palladiosimulator.simexp.dsl.smodel.Smodel.XtextEditor.opened">
 			<and>
 				<reference definitionId="isXtextEditorActive"/>
 				<with variable="activeEditor">
 					<test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
-						value="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
+						value="org.palladiosimulator.simexp.dsl.smodel.Smodel"
 						forcePluginActivation="true"/>
 				</with>
 			</and>
@@ -78,33 +78,33 @@
 	<extension
 			point="org.eclipse.ui.preferencePages">
 		<page
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			name="Kmodel">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			name="Smodel">
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.coloring"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.coloring"
 			name="Syntax Coloring">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.templates"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.templates"
 			name="Templates">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 	</extension>
 	<extension
 			point="org.eclipse.ui.propertyPages">
 		<page
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			name="Kmodel">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			name="Smodel">
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -114,14 +114,14 @@
 	<extension
 		point="org.eclipse.ui.keywords">
 		<keyword
-			id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"
-			label="Kmodel"/>
+			id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"
+			label="Smodel"/>
 	</extension>
 	<extension
 		point="org.eclipse.ui.commands">
 		<command
 			description="Trigger expensive validation"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.validate"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.validate"
 			name="Validate">
 		</command>
 		<!-- copy qualified name -->
@@ -142,12 +142,12 @@
 		<menuContribution
 			locationURI="popup:#TextEditorContext?after=group.edit">
 			<command
-				commandId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.validate"
+				commandId="org.palladiosimulator.simexp.dsl.smodel.Smodel.validate"
 				style="push"
 				tooltip="Trigger expensive validation">
 				<visibleWhen checkEnabled="false">
 					<reference
-						definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+						definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -157,7 +157,7 @@
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened" />
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -165,7 +165,7 @@
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened" />
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
@@ -174,7 +174,7 @@
 				style="push" tooltip="Copy Qualified Name">
 				<visibleWhen checkEnabled="false">
 					<and>
-						<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.XtextEditor.opened" />
+						<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.XtextEditor.opened" />
 						<iterate>
 							<adapt type="org.eclipse.xtext.ui.editor.outline.IOutlineNode" />
 						</iterate>
@@ -187,7 +187,7 @@
 		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
 			<command commandId="org.eclipse.xtext.ui.editor.FindReferences">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -195,11 +195,11 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
 			commandId="org.eclipse.xtext.ui.editor.FindReferences">
 			<activeWhen>
 				<reference
-					definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -207,9 +207,9 @@
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
 			base-type="org.eclipse.core.runtime.text"
-			file-extensions="kmodel"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.contenttype"
-			name="Kmodel File"
+			file-extensions="smodel"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.contenttype"
+			name="Smodel File"
 			priority="normal">
 		</content-type>
 	</extension>
@@ -217,68 +217,68 @@
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
-			type="kmodel">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="smodel">
 		</parser>
 	</extension>
 	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
 		<resourceServiceProvider
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-			uriExtension="kmodel">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+			uriExtension="smodel">
 		</resourceServiceProvider>
 	</extension>
-	<!-- marker definitions for org.palladiosimulator.simexp.dsl.kmodel.Kmodel -->
+	<!-- marker definitions for org.palladiosimulator.simexp.dsl.smodel.Smodel -->
 	<extension
-			id="kmodel.check.fast"
-			name="Kmodel Problem"
+			id="smodel.check.fast"
+			name="Smodel Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.fast"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
-			id="kmodel.check.normal"
-			name="Kmodel Problem"
+			id="smodel.check.normal"
+			name="Smodel Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.normal"/>
 		<persistent value="true"/>
 	</extension>
 	<extension
-			id="kmodel.check.expensive"
-			name="Kmodel Problem"
+			id="smodel.check.expensive"
+			name="Smodel Problem"
 			point="org.eclipse.core.resources.markers">
 		<super type="org.eclipse.xtext.ui.check.expensive"/>
 		<persistent value="true"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.validator.preferencePage"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.validation.ValidatorPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.validator.preferencePage"
 			name="Errors/Warnings">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.xtext.builder.participant">
 		<participant
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-			fileExtensions="kmodel"/>
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
+			fileExtensions="smodel"/>
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compiler.preferencePage"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.compiler.preferencePage"
 			name="Compiler">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compiler.propertyPage"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.compiler.propertyPage"
 			name="Compiler">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 			<enabledWhen>
 				<adapt type="org.eclipse.core.resources.IProject"/>
 			</enabledWhen>
@@ -289,20 +289,20 @@
 		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
 			<command
 				commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand"
-				id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.OpenGeneratedCode"
+				id="org.palladiosimulator.simexp.dsl.smodel.Smodel.OpenGeneratedCode"
 				style="push">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened" />
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened" />
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.generator.trace.OpenGeneratedFileHandler"
 			commandId="org.eclipse.xtext.ui.OpenGeneratedFileCommand">
 			<activeWhen>
-				<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened" />
+				<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened" />
 			</activeWhen>
 		</handler>
 	</extension>
@@ -310,11 +310,11 @@
 	<extension
 		point="org.eclipse.ui.handlers">
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.outline.quickoutline.ShowQuickOutlineActionHandler"
 			commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline">
 			<activeWhen>
 				<reference
-					definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -334,33 +334,33 @@
 				style="push"
 				tooltip="Open Quick Outline">
 				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened"/>
+					<reference definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened"/>
 				</visibleWhen>
 			</command>
 		</menuContribution>
 	</extension>
-	<!-- quickfix marker resolution generator for org.palladiosimulator.simexp.dsl.kmodel.Kmodel -->
+	<!-- quickfix marker resolution generator for org.palladiosimulator.simexp.dsl.smodel.Smodel -->
 	<extension
 			point="org.eclipse.ui.ide.markerResolution">
 		<markerResolutionGenerator
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="org.palladiosimulator.simexp.dsl.kmodel.ui.kmodel.check.fast">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.palladiosimulator.simexp.dsl.smodel.ui.smodel.check.fast">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="org.palladiosimulator.simexp.dsl.kmodel.ui.kmodel.check.normal">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.palladiosimulator.simexp.dsl.smodel.ui.smodel.check.normal">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
 			</attribute>
 		</markerResolutionGenerator>
 		<markerResolutionGenerator
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
-			markerType="org.palladiosimulator.simexp.dsl.kmodel.ui.kmodel.check.expensive">
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+			markerType="org.palladiosimulator.simexp.dsl.smodel.ui.smodel.check.expensive">
 			<attribute
 				name="FIXABLE_KEY"
 				value="true">
@@ -370,11 +370,11 @@
 	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.DefaultRenameElementHandler"
 			commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
 			<activeWhen>
 				<reference
-					definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+					definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 				</reference>
 			</activeWhen>
 		</handler>
@@ -386,7 +386,7 @@
 				style="push">
 				<visibleWhen checkEnabled="false">
 					<reference
-						definitionId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.Editor.opened">
+						definitionId="org.palladiosimulator.simexp.dsl.smodel.Smodel.Editor.opened">
 					</reference>
 				</visibleWhen>
 			</command>
@@ -394,40 +394,40 @@
 	</extension>
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			category="org.palladiosimulator.simexp.dsl.kmodel.Kmodel"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.refactoring"
+			category="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
+			id="org.palladiosimulator.simexp.dsl.smodel.Smodel.refactoring"
 			name="Refactoring">
-			<keywordReference id="org.palladiosimulator.simexp.dsl.kmodel.ui.keyword_Kmodel"/>
+			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 	</extension>
 	<extension point="org.eclipse.compare.contentViewers">
-		<viewer id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compare.contentViewers"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="kmodel">
+		<viewer id="org.palladiosimulator.simexp.dsl.smodel.Smodel.compare.contentViewers"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="smodel">
 		</viewer>
 		<contentTypeBinding
-			contentTypeId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.contenttype"
-			contentViewerId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compare.contentViewers" />
+			contentTypeId="org.palladiosimulator.simexp.dsl.smodel.Smodel.contenttype"
+			contentViewerId="org.palladiosimulator.simexp.dsl.smodel.Smodel.compare.contentViewers" />
 	</extension>
 	<extension point="org.eclipse.compare.contentMergeViewers">
-		<viewer id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compare.contentMergeViewers"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-			extensions="kmodel" label="Kmodel Compare">
+		<viewer id="org.palladiosimulator.simexp.dsl.smodel.Smodel.compare.contentMergeViewers"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
+			extensions="smodel" label="Smodel Compare">
 		</viewer>
 		<contentTypeBinding
-			contentTypeId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.contenttype"
-			contentMergeViewerId="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.compare.contentMergeViewers" />
+			contentTypeId="org.palladiosimulator.simexp.dsl.smodel.Smodel.contenttype"
+			contentMergeViewerId="org.palladiosimulator.simexp.dsl.smodel.Smodel.compare.contentMergeViewers" />
 	</extension>
 	<extension point="org.eclipse.ui.editors.documentProviders">
-		<provider id="org.palladiosimulator.simexp.dsl.kmodel.Kmodel.editors.documentProviders"
-			class="org.palladiosimulator.simexp.dsl.kmodel.ui.KmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-			extensions="kmodel">
+		<provider id="org.palladiosimulator.simexp.dsl.smodel.Smodel.editors.documentProviders"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+			extensions="smodel">
 		</provider>
 	</extension>
 	<extension point="org.eclipse.team.core.fileTypes">
 		<fileTypes
-			extension="kmodel"
+			extension="smodel"
 			type="text">
 		</fileTypes>
 	</extension>

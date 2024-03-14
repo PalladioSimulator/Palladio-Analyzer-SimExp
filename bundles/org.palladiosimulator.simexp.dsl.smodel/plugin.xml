@@ -3,8 +3,8 @@
 <plugin>
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package
-			uri = "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
-			class = "org.palladiosimulator.simexp.dsl.smodel.kmodel.KmodelPackage"
-			genModel = "model/generated/Kmodel.genmodel" />
+			uri = "http://www.palladiosimulator.org/simexp/dsl/smodel/smodel"
+			class = "org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage"
+			genModel = "model/generated/Smodel.genmodel" />
 	</extension>
 </plugin>
