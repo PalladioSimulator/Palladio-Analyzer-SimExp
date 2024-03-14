@@ -16,7 +16,7 @@ Kmodel:
 	;
 	
 Field:
-	(Constant | Variable | EnvVariable | Probe | Runtime | Parameter)
+	Constant | Variable | EnvVariable | Probe | Runtime | Parameter
 	;
 
 Constant:
