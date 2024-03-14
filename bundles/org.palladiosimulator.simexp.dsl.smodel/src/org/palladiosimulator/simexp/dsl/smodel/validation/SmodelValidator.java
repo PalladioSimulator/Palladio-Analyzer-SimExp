@@ -29,13 +29,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
@@ -54,13 +54,13 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     @Check
-    public void checkKmodel(Kmodel model) {
+    public void checkKmodel(Smodel model) {
         String modelName = model.getModelName();
         if (modelName == null) {
-            warning("No modelName given.", model, SmodelPackage.Literals.KMODEL__MODEL_NAME);
+            warning("No modelName given.", model, SmodelPackage.Literals.SMODEL__MODEL_NAME);
         } else {
             if (modelName.isEmpty()) {
-                warning("Empty modelName.", model, SmodelPackage.Literals.KMODEL__MODEL_NAME);
+                warning("Empty modelName.", model, SmodelPackage.Literals.SMODEL__MODEL_NAME);
             }
         }
 
@@ -82,7 +82,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
                     action.eResource());
 
             if (actionReferences.isEmpty()) {
-                warning("The action '" + action.getName() + "' is never used.", SmodelPackage.Literals.KMODEL__ACTIONS,
+                warning("The action '" + action.getName() + "' is never used.", SmodelPackage.Literals.SMODEL__ACTIONS,
                         i);
             }
         }

@@ -9,12 +9,12 @@ import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Assert;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class SmodelTestUtil {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
-    public static void assertModelWithoutErrors(Kmodel model) {
+    public static void assertModelWithoutErrors(Smodel model) {
         Assert.assertNotNull(model);
         EList<Diagnostic> errors = model.eResource()
             .getErrors();
@@ -25,7 +25,7 @@ public class SmodelTestUtil {
         Assert.assertTrue(String.format("Unexpected errors: %s", joinedErrors), errors.isEmpty());
     }
 
-    public static void assertErrorMessages(Kmodel model, int numErrors, String... messages) {
+    public static void assertErrorMessages(Smodel model, int numErrors, String... messages) {
         Assert.assertNotNull(model);
         EList<Diagnostic> errors = model.eResource()
             .getErrors();
@@ -40,7 +40,7 @@ public class SmodelTestUtil {
         }
     }
 
-    public static void assertNoValidationIssues(ValidationTestHelper helper, Kmodel model) {
+    public static void assertNoValidationIssues(ValidationTestHelper helper, Smodel model) {
         Assert.assertNotNull(model);
         List<Issue> issues = helper.validate(model);
         List<Issue> errors = issues.stream()
@@ -54,7 +54,7 @@ public class SmodelTestUtil {
         Assert.assertTrue(String.format("Unexpected issues: %s", joinedIssues), errors.isEmpty());
     }
 
-    public static void assertValidationIssues(ValidationTestHelper helper, Kmodel model, int numIssues,
+    public static void assertValidationIssues(ValidationTestHelper helper, Smodel model, int numIssues,
             String... messages) {
         Assert.assertNotNull(model);
         List<Issue> issues = helper.validate(model);

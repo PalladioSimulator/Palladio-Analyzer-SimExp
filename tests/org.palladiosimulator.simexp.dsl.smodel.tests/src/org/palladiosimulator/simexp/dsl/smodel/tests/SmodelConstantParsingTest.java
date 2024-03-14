@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
@@ -27,7 +27,7 @@ import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelConstantParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -39,7 +39,7 @@ public class SmodelConstantParsingTest {
                 const bool condition = true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -60,7 +60,7 @@ public class SmodelConstantParsingTest {
                 const int one = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -81,7 +81,7 @@ public class SmodelConstantParsingTest {
                 const float one = 1.0;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -102,7 +102,7 @@ public class SmodelConstantParsingTest {
                 const string word = "word";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -124,7 +124,7 @@ public class SmodelConstantParsingTest {
                 const string word = "word";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -153,7 +153,7 @@ public class SmodelConstantParsingTest {
                 const int const2 = const1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -183,7 +183,7 @@ public class SmodelConstantParsingTest {
                 const int noValue;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -195,7 +195,7 @@ public class SmodelConstantParsingTest {
                 const int constant = variable;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -209,7 +209,7 @@ public class SmodelConstantParsingTest {
                 const int constant = someProbe;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -223,7 +223,7 @@ public class SmodelConstantParsingTest {
                 const int constant = rint;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -237,7 +237,7 @@ public class SmodelConstantParsingTest {
                 const bool constant = variable && true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -250,7 +250,7 @@ public class SmodelConstantParsingTest {
                 const bool constant = false || constant;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Cyclic reference detected.");
@@ -263,7 +263,7 @@ public class SmodelConstantParsingTest {
                 const int const2 = const1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Cyclic reference detected.",
@@ -276,7 +276,7 @@ public class SmodelConstantParsingTest {
                 const int number = true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,

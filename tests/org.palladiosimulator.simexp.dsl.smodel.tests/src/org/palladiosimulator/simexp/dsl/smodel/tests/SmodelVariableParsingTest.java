@@ -18,7 +18,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
@@ -29,7 +29,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelVariableParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
 
     @Inject
     private ValidationTestHelper validationTestHelper;
@@ -40,7 +40,7 @@ public class SmodelVariableParsingTest {
                 optimizable bool{true} condition;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -57,7 +57,7 @@ public class SmodelVariableParsingTest {
                 optimizable int{1} count;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -74,7 +74,7 @@ public class SmodelVariableParsingTest {
                 optimizable float{1.0} number;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -91,7 +91,7 @@ public class SmodelVariableParsingTest {
                 optimizable string{"word"} word;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -109,7 +109,7 @@ public class SmodelVariableParsingTest {
                 optimizable string{"word"} word;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -129,7 +129,7 @@ public class SmodelVariableParsingTest {
                 optimizable int{1, 2, 3} count;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -156,7 +156,7 @@ public class SmodelVariableParsingTest {
                 optimizable float[1.0, 2.0, 0.1] values;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -181,7 +181,7 @@ public class SmodelVariableParsingTest {
                 optimizable string{true, 1, 2.5} list;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3,
@@ -196,7 +196,7 @@ public class SmodelVariableParsingTest {
                 optimizable bool[true, false, true] range;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,

@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
@@ -35,7 +35,7 @@ import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelActionParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -47,7 +47,7 @@ public class SmodelActionParsingTest {
                 action setTextualMode();
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -66,7 +66,7 @@ public class SmodelActionParsingTest {
                 action decreaseQuality(param bool decrease);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -88,7 +88,7 @@ public class SmodelActionParsingTest {
                 action setNumCPUs(param int numCPUs);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -110,7 +110,7 @@ public class SmodelActionParsingTest {
                 action scaleOut(param float balancingFactor);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -132,7 +132,7 @@ public class SmodelActionParsingTest {
                 action setConfiguration(param string name);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -154,7 +154,7 @@ public class SmodelActionParsingTest {
                 action scale(param float factor, param bool in);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -179,7 +179,7 @@ public class SmodelActionParsingTest {
                 action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -212,7 +212,7 @@ public class SmodelActionParsingTest {
                 action scaleOut(param int factor1, optimizable float{1.25, 2.5} factor2);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -249,7 +249,7 @@ public class SmodelActionParsingTest {
                 action scaleIn(param float scaleInFactor);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -280,7 +280,7 @@ public class SmodelActionParsingTest {
                 action scaleIn(param float balancingFactor);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -313,7 +313,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -350,7 +350,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -387,7 +387,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -425,7 +425,7 @@ public class SmodelActionParsingTest {
                         }
                         """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -438,7 +438,7 @@ public class SmodelActionParsingTest {
                 action adapt(param bool parameter2);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Action 'adapt'",
@@ -453,7 +453,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'action' expecting '}'");
     }
@@ -464,7 +464,7 @@ public class SmodelActionParsingTest {
                 action adapt(param int parameter, param float parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
@@ -477,7 +477,7 @@ public class SmodelActionParsingTest {
                 action adapt(param int parameter, optimizable int{1,2,3} parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
@@ -490,7 +490,7 @@ public class SmodelActionParsingTest {
                 action adapt(optimizable int{1,2,3} parameter, optimizable int{1,2,3} parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
@@ -503,7 +503,7 @@ public class SmodelActionParsingTest {
                 action adapt(optimizable int{1} variable, param float parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
@@ -517,7 +517,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
@@ -534,7 +534,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -550,7 +550,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Expected 1 arguments, got 0 instead.");
@@ -565,7 +565,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
@@ -581,7 +581,7 @@ public class SmodelActionParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -595,7 +595,7 @@ public class SmodelActionParsingTest {
                 adapt(parameter=1);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
     }

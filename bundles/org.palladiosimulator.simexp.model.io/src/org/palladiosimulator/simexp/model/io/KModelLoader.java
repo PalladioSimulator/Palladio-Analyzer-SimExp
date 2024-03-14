@@ -6,19 +6,19 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
-public class KModelLoader implements ModelLoader<Kmodel> {
+public class KModelLoader implements ModelLoader<Smodel> {
 
     @Override
-    public Kmodel load(ResourceSet rs, URI uri) {
+    public Smodel load(ResourceSet rs, URI uri) {
         SmodelStandaloneSetup.doSetup();
         Resource resource = rs.getResource(uri, true);
         EList<EObject> contents = resource.getContents();
         if (contents.isEmpty()) {
             return null;
         }
-        Kmodel model = (Kmodel) contents.get(0);
+        Smodel model = (Smodel) contents.get(0);
         return model;
     }
 

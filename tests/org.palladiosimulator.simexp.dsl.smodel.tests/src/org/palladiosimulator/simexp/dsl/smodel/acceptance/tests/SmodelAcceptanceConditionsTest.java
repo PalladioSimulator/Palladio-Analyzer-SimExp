@@ -11,7 +11,7 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -20,7 +20,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelAcceptanceConditionsTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
 
     @Inject
     private ValidationTestHelper validationTestHelper;
@@ -31,7 +31,7 @@ public class SmodelAcceptanceConditionsTest {
                 if(true) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -48,7 +48,7 @@ public class SmodelAcceptanceConditionsTest {
                 if(cb) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -65,7 +65,7 @@ public class SmodelAcceptanceConditionsTest {
                 if(cb || false) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -82,7 +82,7 @@ public class SmodelAcceptanceConditionsTest {
                 if(cb && false) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -99,7 +99,7 @@ public class SmodelAcceptanceConditionsTest {
                 if(ci != 0) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -118,7 +118,7 @@ public class SmodelAcceptanceConditionsTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -139,7 +139,7 @@ public class SmodelAcceptanceConditionsTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -157,7 +157,7 @@ public class SmodelAcceptanceConditionsTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,

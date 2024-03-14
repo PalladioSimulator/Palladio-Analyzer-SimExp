@@ -12,17 +12,17 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
 
-    private final Kmodel model;
+    private final Smodel model;
     private final SmodelValueSwitch valueSwitch;
 
-    public SmodelInterpreter(Kmodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
+    public SmodelInterpreter(Smodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
             RuntimeValueProvider rvp) {
         this.model = model;
         this.valueSwitch = new SmodelValueSwitch(vvp, pvp, rvp);
@@ -60,7 +60,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     }
 
     @Override
-    public List<ResolvedAction> caseKmodel(Kmodel model) {
+    public List<ResolvedAction> caseSmodel(Smodel model) {
         List<ResolvedAction> resolvedActions = new ArrayList<>();
 
         for (Statement statement : model.getStatements()) {

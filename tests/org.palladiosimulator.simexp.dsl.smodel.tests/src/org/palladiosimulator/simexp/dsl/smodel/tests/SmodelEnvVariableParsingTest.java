@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelEnvVariableParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -33,7 +33,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar bool varName : staticId "statId" dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -51,7 +51,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar int varName : staticId "statId" dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -69,7 +69,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar float varName : staticId "statId" dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -87,7 +87,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar string varName : staticId "statId" dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -106,7 +106,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar int varName2 : staticId "statId2" dynamicId "dynId2";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -130,7 +130,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar bool varName : dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'dynamicId' expecting 'staticId'");
     }
@@ -141,7 +141,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar bool varName : staticId "statId" ;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting 'dynamicId'");
     }
@@ -152,7 +152,7 @@ public class SmodelEnvVariableParsingTest {
                 envvar bool varName : ;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting 'staticId'");
     }

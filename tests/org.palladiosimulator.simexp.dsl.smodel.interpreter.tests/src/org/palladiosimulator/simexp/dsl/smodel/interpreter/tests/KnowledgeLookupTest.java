@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 
 import com.google.inject.Injector;
@@ -19,12 +19,12 @@ import com.google.inject.TypeLiteral;
 public class KnowledgeLookupTest {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
 
     @Before
     public void setUp() {
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
-        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
+        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
         }));
     }
 
@@ -34,7 +34,7 @@ public class KnowledgeLookupTest {
                 const int a = 2;
                 const int b = 1;
                 """;
-        Kmodel testModel = parserHelper.parse(sbTest);
+        Smodel testModel = parserHelper.parse(sbTest);
         assertEquals(2, testModel.getConstants()
             .size());
         Constant b = testModel.getConstants()
@@ -42,7 +42,7 @@ public class KnowledgeLookupTest {
         String sb = MODEL_NAME_LINE + """
                 runtime int rint: simple: constants[1];
                 """;
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
         KnowledgeLookup rvp = new KnowledgeLookup(testModel);
@@ -58,7 +58,7 @@ public class KnowledgeLookupTest {
                 const int a = 2;
                 const int b = 1;
                 """;
-        Kmodel testModel = parserHelper.parse(sbTest);
+        Smodel testModel = parserHelper.parse(sbTest);
         assertEquals(2, testModel.getConstants()
             .size());
         Constant b = testModel.getConstants()
@@ -66,7 +66,7 @@ public class KnowledgeLookupTest {
         String sb = MODEL_NAME_LINE + """
                 runtime int rint: simple: constants{name="b"};
                 """;
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
         KnowledgeLookup rvp = new KnowledgeLookup(testModel);
@@ -81,13 +81,13 @@ public class KnowledgeLookupTest {
         String sbTest = MODEL_NAME_LINE + """
                 const int a = 1;
                 """;
-        Kmodel testModel = parserHelper.parse(sbTest);
+        Smodel testModel = parserHelper.parse(sbTest);
         assertEquals(1, testModel.getConstants()
             .size());
         String sb = MODEL_NAME_LINE + """
                 runtime int rint: simple: constants[0].name;
                 """;
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         Runtime runtime = model.getRuntimes()
             .get(0);
         KnowledgeLookup rvp = new KnowledgeLookup(testModel);

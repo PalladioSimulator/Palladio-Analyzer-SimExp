@@ -25,7 +25,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
@@ -39,7 +39,7 @@ import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelAcceptanceFieldTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -51,7 +51,7 @@ public class SmodelAcceptanceFieldTest {
                 const bool condition = true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -73,7 +73,7 @@ public class SmodelAcceptanceFieldTest {
                 const int one = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -94,7 +94,7 @@ public class SmodelAcceptanceFieldTest {
                 const float one = 1.0;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -116,7 +116,7 @@ public class SmodelAcceptanceFieldTest {
                 const string word = "word";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -139,7 +139,7 @@ public class SmodelAcceptanceFieldTest {
                 const string word = "word";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -169,7 +169,7 @@ public class SmodelAcceptanceFieldTest {
                 const bool noValue;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -180,7 +180,7 @@ public class SmodelAcceptanceFieldTest {
                 const int noValue;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -189,7 +189,7 @@ public class SmodelAcceptanceFieldTest {
     public void parseFloatConstantWithoutValue() throws Exception {
         String sb = String.join("\n", SmodelTestUtil.MODEL_NAME_LINE, "const float noValue;");
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -200,7 +200,7 @@ public class SmodelAcceptanceFieldTest {
                 const string noValue;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
     }
@@ -212,7 +212,7 @@ public class SmodelAcceptanceFieldTest {
                 const int constant = variable;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'variable'");
     }
@@ -223,7 +223,7 @@ public class SmodelAcceptanceFieldTest {
                 const bool number = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -236,7 +236,7 @@ public class SmodelAcceptanceFieldTest {
                 const int number = true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
@@ -249,7 +249,7 @@ public class SmodelAcceptanceFieldTest {
                 probe bool pName: id "ab11";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -268,7 +268,7 @@ public class SmodelAcceptanceFieldTest {
                 probe int pName: id "ab11";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -287,7 +287,7 @@ public class SmodelAcceptanceFieldTest {
                 probe float pName: id "ab11";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -306,7 +306,7 @@ public class SmodelAcceptanceFieldTest {
                 probe string pName: id "ab11";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -325,7 +325,7 @@ public class SmodelAcceptanceFieldTest {
                 probe bool pName: id "ab11" = true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
@@ -336,7 +336,7 @@ public class SmodelAcceptanceFieldTest {
                 probe int pName: id "ab11" = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
@@ -347,7 +347,7 @@ public class SmodelAcceptanceFieldTest {
                 probe float pName: id "ab11" = 1.0;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
@@ -358,7 +358,7 @@ public class SmodelAcceptanceFieldTest {
                 probe string pName: id "ab11" = "s";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
@@ -369,7 +369,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable bool{true,false} vName;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -396,7 +396,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable int{1,3} vName;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -423,7 +423,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable float{1.0,3.0} vName;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -451,7 +451,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable string{"s1","s2"} vName;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -478,7 +478,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable int[1,2,1] vName;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -504,7 +504,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable bool{true,false} vBool;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -531,7 +531,7 @@ public class SmodelAcceptanceFieldTest {
                 const int name = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'name'",
@@ -545,7 +545,7 @@ public class SmodelAcceptanceFieldTest {
                 probe int name: id "ax11";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'name'",
@@ -559,7 +559,7 @@ public class SmodelAcceptanceFieldTest {
                 optimizable int{1,2] name;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ']' expecting '}'");
     }
@@ -571,7 +571,7 @@ public class SmodelAcceptanceFieldTest {
                 envvar bool name : staticId "statId" dynamicId "dynId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'name'",
@@ -586,7 +586,7 @@ public class SmodelAcceptanceFieldTest {
                 if (name1 && name2) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertError(model, model.eClass(), null, "probe 'name2' duplicate addressing.");
     }
@@ -599,7 +599,7 @@ public class SmodelAcceptanceFieldTest {
                 if (name1 && name2) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertError(model, model.eClass(), null, "envvar 'name2' duplicate addressing.");
     }

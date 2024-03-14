@@ -16,14 +16,14 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 
 @RunWith(XtextRunner.class)
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
 
@@ -34,7 +34,7 @@ public class SmodelParsingTest {
                 if (true) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
     }
@@ -63,7 +63,7 @@ public class SmodelParsingTest {
                 if (true) {}
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
         validationTestHelper.assertWarning(model, model.eClass(), null, "Empty modelName.");

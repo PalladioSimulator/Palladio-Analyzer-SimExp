@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -58,7 +58,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final Kmodel kmodel;
+    private final Smodel kmodel;
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
@@ -70,7 +70,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel kmodel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
@@ -134,7 +134,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         return executor;
     }
 
-    private List<Probe> findProbes(Kmodel kmodel) {
+    private List<Probe> findProbes(Smodel kmodel) {
         return kmodel.getProbes();
     }
 

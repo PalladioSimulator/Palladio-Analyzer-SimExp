@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestProbeValueP
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
@@ -25,7 +25,7 @@ import com.google.inject.TypeLiteral;
 public class SmodelInterpreterExpressionTest {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     private SmodelInterpreter interpreter;
     private VariableValueProvider vvp;
     private ProbeValueProvider pvp;
@@ -34,7 +34,7 @@ public class SmodelInterpreterExpressionTest {
     @Before
     public void setUp() {
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
-        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
+        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
         }));
 
         vvp = new TestVariableValueProvider();
@@ -49,7 +49,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = false;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -70,7 +70,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value2 = -1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -91,7 +91,7 @@ public class SmodelInterpreterExpressionTest {
                 const float value2 = .5e-1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -111,7 +111,7 @@ public class SmodelInterpreterExpressionTest {
                 const string value = "word";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -129,7 +129,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value3 = value2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -154,7 +154,7 @@ public class SmodelInterpreterExpressionTest {
                 optimizable int[0, 1, 1] value2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Optimizable variable = model.getOptimizables()
@@ -174,7 +174,7 @@ public class SmodelInterpreterExpressionTest {
                 probe bool value: "someId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Probe probe = model.getProbes()
@@ -190,7 +190,7 @@ public class SmodelInterpreterExpressionTest {
                 runtime int value: simple: a[0].b;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Runtime runtime = model.getRuntimes()
@@ -209,7 +209,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value4 = false || false;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -240,7 +240,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value4 = false && false;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -269,7 +269,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = !true;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -290,7 +290,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = "word" == "anotherWord";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -311,7 +311,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = 1.0 != 1.0;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -333,7 +333,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value3 = 2 < 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -359,7 +359,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value3 = 2 <= 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -385,7 +385,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value3 = 1 >= 2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -411,7 +411,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value3 = 1 > 2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -438,7 +438,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value4 = 1 + (2 + 3);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -469,7 +469,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value4 = 1 - (2 - 3);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -498,7 +498,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value2 = -(-1);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -524,7 +524,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value7 = 1 * (2 * 3);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -573,7 +573,7 @@ public class SmodelInterpreterExpressionTest {
                 const float value10 = -1 / 0;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -629,7 +629,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value5 = 1 % -2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -662,7 +662,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value = 2 * 3 + 2 * 4;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -683,7 +683,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = (true || true) && false;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -704,7 +704,7 @@ public class SmodelInterpreterExpressionTest {
                 const int value2 = (1 + 1) * 2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -725,7 +725,7 @@ public class SmodelInterpreterExpressionTest {
                 const float value2 = (2 - 1) / 2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -747,7 +747,7 @@ public class SmodelInterpreterExpressionTest {
                 const float value3 = 1.17549435e-38
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
@@ -772,7 +772,7 @@ public class SmodelInterpreterExpressionTest {
                 const bool value2 = !((value < 0 || value >= 10) && value == -20);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()

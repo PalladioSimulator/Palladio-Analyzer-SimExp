@@ -25,9 +25,9 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 
 import com.google.inject.Injector;
@@ -37,7 +37,7 @@ import com.google.inject.TypeLiteral;
 public class SModelInterpreterTest {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
     private SmodelInterpreter interpreter;
     private VariableValueProvider vvp;
     private ProbeValueProvider pvp;
@@ -46,7 +46,7 @@ public class SModelInterpreterTest {
     @Before
     public void setUp() {
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
-        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Kmodel>>() {
+        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
         }));
 
         pvp = new TestProbeValueProvider();
@@ -64,7 +64,7 @@ public class SModelInterpreterTest {
          */
 
         SmodelFactory kmodelFactory = SmodelFactory.eINSTANCE;
-        Kmodel kmodel = kmodelFactory.createKmodel();
+        Smodel kmodel = kmodelFactory.createSmodel();
         Constant constant = kmodelFactory.createConstant();
         constant.setName("simpleCondition");
         constant.setDataType(DataType.BOOL);
@@ -91,7 +91,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
         Assert.assertTrue(interpreter.analyze());
@@ -109,7 +109,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Assert.assertTrue(interpreter.analyze());
@@ -124,7 +124,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Assert.assertTrue(interpreter.analyze());
@@ -141,7 +141,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -156,7 +156,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -168,7 +168,7 @@ public class SModelInterpreterTest {
                 action adapt(param int parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -183,7 +183,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -206,7 +206,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -233,7 +233,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -259,7 +259,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -285,7 +285,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -310,7 +310,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -330,7 +330,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -348,7 +348,7 @@ public class SModelInterpreterTest {
                 action adapt(param int parameter);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -364,7 +364,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -385,7 +385,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -406,7 +406,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -427,7 +427,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -448,7 +448,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -469,7 +469,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -505,7 +505,7 @@ public class SModelInterpreterTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
         interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();

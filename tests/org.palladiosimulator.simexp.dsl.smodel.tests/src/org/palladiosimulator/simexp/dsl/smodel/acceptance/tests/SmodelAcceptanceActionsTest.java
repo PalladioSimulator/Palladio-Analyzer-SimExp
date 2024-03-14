@@ -24,7 +24,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
@@ -34,7 +34,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelAcceptanceActionsTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
 
     @Inject
     private ValidationTestHelper validationTestHelper;
@@ -45,7 +45,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName();
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -65,7 +65,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName2();
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -89,7 +89,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool pb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -114,7 +114,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param string ps);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -139,7 +139,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param int pi);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -164,7 +164,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool pb1, param bool pb2);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -192,7 +192,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool pb, param bool pb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'pb'",
@@ -205,7 +205,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool p, param int p);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
@@ -218,7 +218,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(optimizable bool{true,false} vb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -252,7 +252,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(optimizable bool vb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
@@ -263,7 +263,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(optimizable bool{true,false} vb, optimizable int{1,2} vi);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -309,7 +309,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool pb, optimizable bool{true,false} vb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
@@ -346,7 +346,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(optimizable bool{true,false} vb, param bool pb);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
@@ -357,7 +357,7 @@ public class SmodelAcceptanceActionsTest {
                 action aName(param bool p, optimizable bool{true,false} p);
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",

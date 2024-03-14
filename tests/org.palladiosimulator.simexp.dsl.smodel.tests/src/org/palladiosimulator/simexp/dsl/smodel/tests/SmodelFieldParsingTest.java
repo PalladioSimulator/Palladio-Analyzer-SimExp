@@ -11,7 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 @InjectWith(SmodelInjectorProvider.class)
 public class SmodelFieldParsingTest {
     @Inject
-    private ParseHelper<Kmodel> parserHelper;
+    private ParseHelper<Smodel> parserHelper;
 
     @Inject
     private ValidationTestHelper validationTestHelper;
@@ -34,7 +34,7 @@ public class SmodelFieldParsingTest {
                 probe float aliasName : id "someId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         EList<Optimizable> variables = model.getOptimizables();
@@ -51,7 +51,7 @@ public class SmodelFieldParsingTest {
                 const int 123 = 123;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '123' expecting RULE_ID");
     }
@@ -62,7 +62,7 @@ public class SmodelFieldParsingTest {
                 const int const = 1;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID",
                 "no viable alternative at input '='", "mismatched input '<EOF>' expecting RULE_ID");
@@ -75,7 +75,7 @@ public class SmodelFieldParsingTest {
                 const int number = 2;
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'number'",
@@ -89,7 +89,7 @@ public class SmodelFieldParsingTest {
                 probe string word : id "someId";
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'word'",
@@ -104,7 +104,7 @@ public class SmodelFieldParsingTest {
                 }
                 """;
 
-        Kmodel model = parserHelper.parse(sb);
+        Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'optimizable' expecting '}'");
     }
