@@ -8,15 +8,19 @@ public class DummyProbeValueProvider implements ProbeValueProvider, ProbeValuePr
     private double currentMeasurementValue;
 
     @Override
-    public Object getValue(Probe probe) {
-        // TODO: lookup current measured responseTime from probe instead of using
-        // ProbeValueProviderMeasurementInjector
+    public double getDoubleValue(Probe probe) {
         return currentMeasurementValue;
     }
 
     @Override
     public void injectMeasurement(SimulatedMeasurementSpecification spec, double measurementValue) {
         this.currentMeasurementValue = measurementValue;
+    }
+
+    @Override
+    public boolean getBooleanValue(Probe probe) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

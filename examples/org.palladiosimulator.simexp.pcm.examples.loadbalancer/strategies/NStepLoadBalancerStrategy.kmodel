@@ -1,7 +1,7 @@
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
 
-probe float responseTime : "Usage Scenario: overloadUsageScenario";
+probe float responseTime : "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 
 action Step1Outsource();
 action Step1ScaleIn();

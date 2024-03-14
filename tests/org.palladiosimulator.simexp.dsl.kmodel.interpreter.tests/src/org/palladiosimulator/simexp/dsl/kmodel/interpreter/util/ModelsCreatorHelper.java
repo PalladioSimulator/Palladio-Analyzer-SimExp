@@ -1,10 +1,5 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
+package org.palladiosimulator.simexp.dsl.kmodel.interpreter.util;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsFactory;
 import org.palladiosimulator.experimentautomation.experiments.InitialModel;
@@ -18,68 +13,63 @@ import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.pcm.usagemodel.UsagemodelFactory;
 import org.palladiosimulator.pcmmeasuringpoint.PcmmeasuringpointFactory;
 import org.palladiosimulator.pcmmeasuringpoint.UsageScenarioMeasuringPoint;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.MonitorIdMeasuringPointLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
 
-public class MonitorIdMeasuringPointLookupTest {
+public class ModelsCreatorHelper {
+    public static final String RESPONSE_TIME_MONITOR_NAME = "System Response Time";
+    public static final String USAGE_SCENARIO_NAME = "testUsageScenario";
+    public static final String RESPONSE_TIME_METRIC_DESCRIPTION_NAME = "Response Time";
 
-    private static final String MONITOR_NAME = "System Response Time";
-    private static final String USAGE_SCENARIO_NAME = "testUsageScenario";
-    private static final String METRIC_DESCRIPTION_NAME = "Response Time";
+    private static final ExperimentsFactory experimentsFactory = ExperimentsFactory.eINSTANCE;
+    private static final MonitorRepositoryFactory monitorRepoFactory = MonitorRepositoryFactory.eINSTANCE;
+    private static final KmodelFactory kmodelFactory = KmodelFactory.eINSTANCE;
 
-    @Before
-    public void setUp() throws Exception {
+    public Experiment createBasicExperiment() {
+        Experiment experiment = experimentsFactory.createExperiment();
+        return experiment;
     }
 
-    @Test
-    public void testFindResponseTimeMeasurementPoint() {
-        ExperimentsFactory expFactory = ExperimentsFactory.eINSTANCE;
-        Experiment experiment = expFactory.createExperiment();
-
-        MonitorRepository monitorRepo = MonitorRepositoryFactory.eINSTANCE.createMonitorRepository();
-        Monitor rtMonitor = createResponseTimeMonitor();
+    public Experiment createExperimentWithMonitor(Monitor monitor) {
+        Experiment experiment = createBasicExperiment();
+        MonitorRepository monitorRepo = monitorRepoFactory.createMonitorRepository();
         monitorRepo.getMonitors()
-            .add(rtMonitor);
-        InitialModel initialModel = expFactory.createInitialModel();
+            .add(monitor);
+        InitialModel initialModel = experimentsFactory.createInitialModel();
         initialModel.setMonitorRepository(monitorRepo);
         experiment.setInitialModel(initialModel);
-
-        MonitorIdMeasuringPointLookup mpLookup = new MonitorIdMeasuringPointLookup(experiment);
-
-        Probe probe = createProbe(rtMonitor.getId());
-        MeasuringPoint actualMeasuringPoint = mpLookup.find(probe);
-
-        assertEquals(rtMonitor.getMeasuringPoint(), actualMeasuringPoint);
+        return experiment;
     }
 
-    private Probe createProbe(String monitorId) {
-        Probe probe = KmodelFactory.eINSTANCE.createProbe();
-        probe.setIdentifier(monitorId);
-        return probe;
-    }
-
-    private Monitor createResponseTimeMonitor() {
+    public Monitor createResponseTimeMonitor(String monitorName, String usageScenarioName, String metricDescrName) {
         Monitor monitor = MonitorRepositoryFactory.eINSTANCE.createMonitor();
-        monitor.setEntityName(MONITOR_NAME);
+        monitor.setEntityName(monitorName);
 
         // create response time measuring point
         UsageScenarioMeasuringPoint measuringPoint = PcmmeasuringpointFactory.eINSTANCE
             .createUsageScenarioMeasuringPoint();
         UsageScenario usageScenario = UsagemodelFactory.eINSTANCE.createUsageScenario();
-        usageScenario.setEntityName(USAGE_SCENARIO_NAME);
+        usageScenario.setEntityName(usageScenarioName);
         measuringPoint.setUsageScenario(usageScenario);
         monitor.setMeasuringPoint(measuringPoint);
 
         MeasurementSpecification spec = MonitorRepositoryFactory.eINSTANCE.createMeasurementSpecification();
         NumericalBaseMetricDescription metricDescription = MetricSpecFactory.eINSTANCE
             .createNumericalBaseMetricDescription();
-        metricDescription.setName(METRIC_DESCRIPTION_NAME);
+        metricDescription.setName(metricDescrName);
         spec.setMetricDescription(metricDescription);
         monitor.getMeasurementSpecifications()
             .add(spec);
 
         return monitor;
+    }
+
+    public Probe createProbe(String monitorId, ProbeAdressing value) {
+        Probe probe = kmodelFactory.createProbe();
+        probe.setIdentifier(monitorId);
+        probe.setKind(value);
+        return probe;
     }
 
 }
