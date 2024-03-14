@@ -40,10 +40,10 @@
 	
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
 			
-		<module>org.palladiosimulator.simexp.dsl.kmodel</module>
-		<module>org.palladiosimulator.simexp.dsl.kmodel.ide</module>
-		<module>org.palladiosimulator.simexp.dsl.kmodel.ui</module>
-		<module>org.palladiosimulator.simexp.dsl.kmodel.interpreter</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.ide</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.ui</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
 		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
 
