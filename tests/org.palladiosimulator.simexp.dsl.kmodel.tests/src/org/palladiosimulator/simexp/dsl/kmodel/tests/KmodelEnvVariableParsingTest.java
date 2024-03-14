@@ -29,8 +29,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseSingleBool() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "envvar bool varName : staticId \"statId\" dynamicId \"dynId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool varName : staticId "statId" dynamicId "dynId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -46,8 +47,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseSingleInt() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "envvar int varName : staticId \"statId\" dynamicId \"dynId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar int varName : staticId "statId" dynamicId "dynId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -63,8 +65,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseSingleFloat() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "envvar float varName : staticId \"statId\" dynamicId \"dynId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar float varName : staticId "statId" dynamicId "dynId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -80,8 +83,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseSingleString() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "envvar string varName : staticId \"statId\" dynamicId \"dynId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar string varName : staticId "statId" dynamicId "dynId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -97,9 +101,10 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseTwoEnvVariables() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "envvar bool varName1 : staticId \"statId1\" dynamicId \"dynId1\";",
-                "envvar int varName2 : staticId \"statId2\" dynamicId \"dynId2\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool varName1 : staticId "statId1" dynamicId "dynId1";
+                envvar int varName2 : staticId "statId2" dynamicId "dynId2";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -121,7 +126,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseWithoutStaticId() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "envvar bool varName : dynamicId \"dynId\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool varName : dynamicId "dynId";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -130,7 +137,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseWithoutDynamicId() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "envvar bool varName : staticId \"statId\" ;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool varName : staticId "statId" ;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -139,7 +148,9 @@ public class KmodelEnvVariableParsingTest {
 
     @Test
     public void parseWithoutIds() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "envvar bool varName : ;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                envvar bool varName : ;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

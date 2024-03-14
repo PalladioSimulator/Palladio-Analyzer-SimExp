@@ -29,7 +29,10 @@ public class KmodelParsingTest {
 
     @Test
     public void parseWithModelName() throws Exception {
-        String sb = String.join("\n", "modelName = \"name\";", "if (true) {}");
+        String sb = """
+                modelName = "name";
+                if (true) {}
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -38,7 +41,9 @@ public class KmodelParsingTest {
 
     @Test
     public void parseWithoutModelName() throws Exception {
-        String sb = String.join("\n", "if (true) {}");
+        String sb = """
+                if (true) {}
+                """;
         ResourceSet resourceSet = new ResourceSetImpl();
 
         parserHelper.parse(sb, resourceSet);
@@ -53,7 +58,10 @@ public class KmodelParsingTest {
 
     @Test
     public void parseEmptyModelName() throws Exception {
-        String sb = String.join("\n", "modelName = \"\";", "if (true) {}");
+        String sb = """
+                modelName = "";
+                if (true) {}
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

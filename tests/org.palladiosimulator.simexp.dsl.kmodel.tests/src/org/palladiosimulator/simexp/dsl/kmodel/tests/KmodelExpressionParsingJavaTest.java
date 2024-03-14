@@ -40,7 +40,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSimpleLiteralExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -57,7 +59,10 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSimpleFieldExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int a = 1;", "const int b = a;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int a = 1;
+                const int b = a;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -79,7 +84,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSimpleExpressionWithBrackets() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = (1);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = (1);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -96,7 +103,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseOrExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = true || false;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = true || false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -119,7 +128,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseAndExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = true && false;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = true && false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -142,7 +153,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseEqualExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = \"some\" == \"thing\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = "some" == "thing";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -165,7 +178,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseUnequalExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = \"some\" != \"thing\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = "some" != "thing";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -188,7 +203,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseNotExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = !true;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = !true;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -207,7 +224,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSmallerExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = 1 < 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = 1 < 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -230,7 +249,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSmallerOrEqualExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = 1 <= 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = 1 <= 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -253,7 +274,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseGreaterOrEqualExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = 1 >= 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = 1 >= 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -276,7 +299,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseGreaterExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = 1 > 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = 1 > 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -299,7 +324,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseAdditionExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = 1 + 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1 + 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -322,7 +349,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseSubtractionExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = 1 - 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1 - 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -345,7 +374,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseAdditiveInverseExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = -1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = -1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -364,7 +395,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseMultiplicationExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float constant = 1.0 * 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const float constant = 1.0 * 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -387,7 +420,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseDivisionExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float constant = 1 / 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const float constant = 1 / 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -410,7 +445,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseModuloExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = 1 % 2;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1 % 2;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -433,8 +470,10 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseComplexExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int a = 1;",
-                "const bool constant = -a > 1 == !(true || false && (a * (1 + a)) != 2.0);");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int a = 1;
+                const bool constant = -a > 1 == !(true || false && (a * (1 + a)) != 2.0);
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -444,7 +483,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseDisjunctionWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = true || 1.0;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = true || 1.0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -455,7 +496,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseConjunctionWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = \"true\" && false;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = "true" && false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -466,7 +509,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseEqualityWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = \"1.0\" == 1.0;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = "1.0" == 1.0;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -477,7 +522,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseNegationWithInvalidType() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = !1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = !1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -488,7 +535,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseComparisonWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const bool constant = 1 >= false;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const bool constant = 1 >= false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -499,7 +548,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseAdditionWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = true + 1;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = true + 1;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -510,7 +561,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseAdditiveInverseWithInvalidType() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const int constant = -false;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = -false;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -521,7 +574,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseMultiplicationWithInvalidTypes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const float constant = 1.5 * \"2\";");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const float constant = 1.5 * "2";
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -532,7 +587,9 @@ public class KmodelExpressionParsingJavaTest {
 
     @Test
     public void parseExpressionWithWrongBrackets() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "const string word = ((\"word\");");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                const string word = (("word");
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 

@@ -33,7 +33,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleBoolRuntime() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime bool rbool: simple: a;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime bool rbool: simple: a;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -51,7 +53,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleIntRuntime() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -69,7 +73,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleFloatRuntime() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime float rfloat: simple: a;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime float rfloat: simple: a;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -88,7 +94,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseSingleStringRuntime() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime string rstring: simple: a;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime string rstring: simple: a;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -106,8 +114,10 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseTwoRuntimes() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a;",
-                "runtime string rstring: simple: b;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a;
+                runtime string rstring: simple: b;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -132,7 +142,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithTwoReferences() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a.b;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a.b;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -153,7 +165,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithIndex() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a[1];");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a[1];
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -172,7 +186,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithBoolPredicate() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a{something=true};");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a{something=true};
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -192,7 +208,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithIntPredicate() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a{something=1};");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a{something=1};
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -212,7 +230,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithFloatPredicate() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE, "runtime int rint: simple: a{something=0.5};");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a{something=0.5};
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -232,8 +252,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithStringPredicate() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "runtime int rint: simple: a{something=\"something\"};");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a{something="something"};
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -253,8 +274,9 @@ public class KmodelRuntimeParsingJavaTest {
 
     @Test
     public void parseRuntimeWithComplexExpression() throws Exception {
-        String sb = String.join("\n", KmodelTestUtil.MODEL_NAME_LINE,
-                "runtime int rint: simple: a.b[3].c{selected=true}.d;");
+        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
+                runtime int rint: simple: a.b[3].c{selected=true}.d;
+                """;
 
         Kmodel model = parserHelper.parse(sb);
 
