@@ -72,7 +72,8 @@ Statement:
 	;
 
 ActionCall returns Statement:
-	{ActionCall} actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';'
+	{ActionCall} 
+	actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';'
 	;
 
 ArgumentKeyValue:
@@ -110,11 +111,11 @@ MultiplicativeExpr returns Expression:
 	;
 
 UnaryExpr returns Expression:
-	{Expression} op=UnaryOp? left=Term
+	op=UnaryOp? left=Term
 	;
 
 Term returns Expression:
-	{Expression} (fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')')
+	(fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')')
 	;
 
 Literal:
