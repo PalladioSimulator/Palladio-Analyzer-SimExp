@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import java.util.HashMap;
 import java.util.List;

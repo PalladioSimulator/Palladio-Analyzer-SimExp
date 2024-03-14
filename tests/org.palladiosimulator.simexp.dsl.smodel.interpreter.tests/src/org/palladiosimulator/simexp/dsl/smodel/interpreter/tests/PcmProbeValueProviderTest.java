@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +17,7 @@ import org.palladiosimulator.pcm.usagemodel.UsagemodelFactory;
 import org.palladiosimulator.pcmmeasuringpoint.PcmmeasuringpointFactory;
 import org.palladiosimulator.pcmmeasuringpoint.UsageScenarioMeasuringPoint;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;

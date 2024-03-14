@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;

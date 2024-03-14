@@ -1,6 +1,6 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks;
 
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
 public class TestProbeValueProvider implements ProbeValueProvider {

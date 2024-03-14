@@ -1,5 +1,6 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks;
 
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
@@ -10,8 +11,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
-public class DummyVariableValueProvider implements VariableValueProvider {
-
+public class TestVariableValueProvider implements VariableValueProvider {
     @Override
     public Object getValue(Optimizable variable) {
         Bounds bounds = variable.getValues();
@@ -31,22 +31,19 @@ public class DummyVariableValueProvider implements VariableValueProvider {
 
     private Object getValue(Literal literal) {
         if (literal instanceof BoolLiteral) {
-            return ((BoolLiteral) literal).isTrue();
-        }
-
-        if (literal instanceof IntLiteral) {
-            return ((IntLiteral) literal).getValue();
-        }
-
-        if (literal instanceof FloatLiteral) {
-            return ((FloatLiteral) literal).getValue();
-        }
-
-        if (literal instanceof StringLiteral) {
-            return ((StringLiteral) literal).getValue();
+            BoolLiteral boolLiteral = (BoolLiteral) literal;
+            return boolLiteral.isTrue();
+        } else if (literal instanceof IntLiteral) {
+            IntLiteral intLiteral = (IntLiteral) literal;
+            return intLiteral.getValue();
+        } else if (literal instanceof FloatLiteral) {
+            FloatLiteral floatLiteral = (FloatLiteral) literal;
+            return floatLiteral.getValue();
+        } else if (literal instanceof StringLiteral) {
+            StringLiteral stringLiteral = (StringLiteral) literal;
+            return stringLiteral.getValue();
         }
 
         return null;
     }
-
 }

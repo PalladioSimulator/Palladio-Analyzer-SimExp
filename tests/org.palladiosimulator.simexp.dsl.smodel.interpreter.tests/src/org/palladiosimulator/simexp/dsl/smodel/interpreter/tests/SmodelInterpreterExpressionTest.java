@@ -1,17 +1,17 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.VariableValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestRuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestRuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -22,11 +22,11 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
-public class KmodelInterpreterExpressionTest {
+public class SmodelInterpreterExpressionTest {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
     private ParseHelper<Kmodel> parserHelper;
-    private KmodelInterpreter interpreter;
+    private SmodelInterpreter interpreter;
     private VariableValueProvider vvp;
     private ProbeValueProvider pvp;
     private RuntimeValueProvider rvp;
@@ -50,7 +50,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -71,7 +71,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -92,7 +92,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -112,7 +112,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -130,7 +130,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -155,7 +155,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Optimizable variable = model.getOptimizables()
             .get(0);
@@ -175,7 +175,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Probe probe = model.getProbes()
             .get(0);
@@ -191,7 +191,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Runtime runtime = model.getRuntimes()
             .get(0);
@@ -210,7 +210,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -241,7 +241,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -270,7 +270,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -291,7 +291,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -312,7 +312,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -334,7 +334,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -360,7 +360,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -386,7 +386,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -412,7 +412,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -439,7 +439,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -470,7 +470,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -499,7 +499,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -525,7 +525,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -574,7 +574,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -630,7 +630,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -663,7 +663,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -684,7 +684,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -705,7 +705,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -726,7 +726,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -748,7 +748,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -773,7 +773,7 @@ public class KmodelInterpreterExpressionTest {
                 """;
 
         Kmodel model = parserHelper.parse(sb);
-        interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
         Constant constant = model.getConstants()
             .get(0);

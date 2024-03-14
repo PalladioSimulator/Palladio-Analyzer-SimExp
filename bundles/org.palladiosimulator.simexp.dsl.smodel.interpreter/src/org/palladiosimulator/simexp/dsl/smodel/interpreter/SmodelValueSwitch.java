@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,14 +21,14 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
-public class KmodelValueSwitch extends SmodelSwitch<Object> {
+public class SmodelValueSwitch extends SmodelSwitch<Object> {
 
     private final VariableValueProvider vvp;
     private final ProbeValueProvider pvp;
     private final RuntimeValueProvider rvp;
     private final Map<Constant, Object> resolvedConstants;
 
-    public KmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp, RuntimeValueProvider rvp) {
+    public SmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp, RuntimeValueProvider rvp) {
         this.vvp = vvp;
         this.pvp = pvp;
         this.rvp = rvp;

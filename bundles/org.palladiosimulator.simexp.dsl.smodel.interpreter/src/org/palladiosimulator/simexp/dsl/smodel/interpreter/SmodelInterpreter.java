@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +17,15 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
-public class KmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
+public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
 
     private final Kmodel model;
-    private final KmodelValueSwitch valueSwitch;
+    private final SmodelValueSwitch valueSwitch;
 
-    public KmodelInterpreter(Kmodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
+    public SmodelInterpreter(Kmodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
             RuntimeValueProvider rvp) {
         this.model = model;
-        this.valueSwitch = new KmodelValueSwitch(vvp, pvp, rvp);
+        this.valueSwitch = new SmodelValueSwitch(vvp, pvp, rvp);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.mocks;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks;
 
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 
 public class TestRuntimeValueProvider implements RuntimeValueProvider {

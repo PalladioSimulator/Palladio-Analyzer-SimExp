@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.kmodel.interpreter.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,8 +6,8 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
