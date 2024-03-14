@@ -44,7 +44,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("condition", variable.getName());
@@ -61,7 +61,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("count", variable.getName());
@@ -78,7 +78,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("number", variable.getName());
@@ -95,7 +95,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("word", variable.getName());
@@ -113,7 +113,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(2, variables.size());
         Field firstVariable = variables.get(0);
         Assert.assertEquals("count", firstVariable.getName());
@@ -133,7 +133,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
         Optimizable variable = (Optimizable) field;
@@ -160,7 +160,7 @@ public class KmodelVariableParsingJavaTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         Field field = variables.get(0);
         Optimizable variable = (Optimizable) field;

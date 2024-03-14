@@ -37,7 +37,7 @@ public class KmodelFieldParsingJavaTest {
         Kmodel model = parserHelper.parse(sb);
 
         KmodelTestUtil.assertModelWithoutErrors(model);
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Assert.assertEquals(1, variables.size());
         EList<Constant> constants = model.getConstants();
         Assert.assertEquals(1, constants.size());

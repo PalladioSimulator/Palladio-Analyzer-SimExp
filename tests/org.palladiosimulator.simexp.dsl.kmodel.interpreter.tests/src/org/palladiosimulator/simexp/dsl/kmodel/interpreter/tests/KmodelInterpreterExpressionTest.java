@@ -157,10 +157,10 @@ public class KmodelInterpreterExpressionTest {
         Kmodel model = parserHelper.parse(sb);
         interpreter = new KmodelInterpreter(model, vvp, pvp, rvp);
 
-        Optimizable variable = model.getVariables()
+        Optimizable variable = model.getOptimizables()
             .get(0);
         int value = ((Number) interpreter.getValue(variable)).intValue();
-        Optimizable variable2 = model.getVariables()
+        Optimizable variable2 = model.getOptimizables()
             .get(1);
         int value2 = ((Number) interpreter.getValue(variable2)).intValue();
 

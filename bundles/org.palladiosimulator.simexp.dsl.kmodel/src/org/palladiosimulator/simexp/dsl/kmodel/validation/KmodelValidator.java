@@ -70,7 +70,7 @@ public class KmodelValidator extends AbstractKmodelValidator {
             .thenComparing(EnvVariable::getDynamicId));
 
         checkUnusedFields(model.getConstants());
-        checkUnusedFields(model.getVariables());
+        checkUnusedFields(model.getOptimizables());
         checkUnusedFields(model.getEnvVariables());
         checkUnusedFields(model.getProbes());
         checkUnusedFields(model.getRuntimes());

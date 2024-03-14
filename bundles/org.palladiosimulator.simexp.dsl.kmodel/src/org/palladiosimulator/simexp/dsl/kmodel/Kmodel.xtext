@@ -7,7 +7,7 @@ generate kmodel "http://www.palladiosimulator.org/simexp/dsl/kmodel/Kmodel"
 Kmodel:
 	'modelName' '=' modelName=STRING ';'
 	(constants+=Constant |
-	variables+=Optimizable  ';' |
+	optimizables+=Optimizable  ';' |
 	envVariables+=EnvVariable |
 	probes+=Probe |
 	runtimes+=Runtime)*

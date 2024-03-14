@@ -373,7 +373,7 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getOptimizables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
@@ -400,7 +400,7 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getOptimizables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
@@ -427,7 +427,7 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getOptimizables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
@@ -455,7 +455,7 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getOptimizables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
@@ -482,7 +482,7 @@ public class KmodelAcceptanceFieldTest {
 
         KmodelTestUtil.assertModelWithoutErrors(model);
         KmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getVariables();
+        EList<Optimizable> fields = model.getOptimizables();
         assertEquals(1, fields.size());
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
@@ -518,7 +518,7 @@ public class KmodelAcceptanceFieldTest {
         assertEquals("pBool", probe.getName());
         assertEquals(DataType.BOOL, probe.getDataType());
         assertEquals("ab11", probe.getIdentifier());
-        EList<Optimizable> variables = model.getVariables();
+        EList<Optimizable> variables = model.getOptimizables();
         Optimizable variable = variables.get(0);
         assertEquals("vBool", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
