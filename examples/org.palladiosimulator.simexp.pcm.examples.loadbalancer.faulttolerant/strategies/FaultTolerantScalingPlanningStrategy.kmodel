@@ -1,3 +1,5 @@
+modelName = "FaultTolerantScalingPlanningStrategy";
+
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
 
