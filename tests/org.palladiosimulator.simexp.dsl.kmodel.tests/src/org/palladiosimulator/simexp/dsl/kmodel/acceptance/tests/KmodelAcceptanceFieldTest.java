@@ -208,7 +208,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseConstantWithVariableValue() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int variable;
+                optimizable int variable;
                 const int constant = variable;
                 """;
 
@@ -366,7 +366,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseBoolVarArray() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool{true,false} vName;
+                optimizable bool{true,false} vName;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -393,7 +393,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseIntVarArray() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int{1,3} vName;
+                optimizable int{1,3} vName;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -420,7 +420,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseFloatVarArray() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var float{1.0,3.0} vName;
+                optimizable float{1.0,3.0} vName;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -448,7 +448,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseStringVarArray() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var string{"s1","s2"} vName;
+                optimizable string{"s1","s2"} vName;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -475,7 +475,7 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseIntVarRange() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int[1,2,1] vName;
+                optimizable int[1,2,1] vName;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -501,7 +501,7 @@ public class KmodelAcceptanceFieldTest {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
                 const bool cBool = true;
                 probe bool pBool: id "ab11";
-                var bool{true,false} vBool;
+                optimizable bool{true,false} vBool;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -555,8 +555,8 @@ public class KmodelAcceptanceFieldTest {
     @Test
     public void parseDuplicateVariableNames() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool{true,false} name;
-                var int{1,2] name;
+                optimizable bool{true,false} name;
+                optimizable int{1,2] name;
                 """;
 
         Kmodel model = parserHelper.parse(sb);

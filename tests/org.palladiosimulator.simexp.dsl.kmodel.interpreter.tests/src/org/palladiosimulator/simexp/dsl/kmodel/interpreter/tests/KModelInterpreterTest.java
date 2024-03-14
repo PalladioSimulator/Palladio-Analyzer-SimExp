@@ -486,12 +486,12 @@ public class KModelInterpreterTest {
         String sb = MODEL_NAME_LINE + """
                 const int constant = 1;
                 const int anotherConstant = constant * 2;
-                var float{1.5, 2.5, 3.5} adaptationFactor;
+                optimizable float{1.5, 2.5, 3.5} adaptationFactor;
                 probe float someProbe : abc123;
                 runtime string someRuntime: simple: a[0].b;
 
                 action adapt(param int parameter, param float factor);
-                action adapt2(param float parameter, var float[1,5,1] someRange);
+                action adapt2(param float parameter, optimizable float[1,5,1] someRange);
                 action adapt3();
 
                 if (someProbe > 0 || someProbe <= -10 && someRuntime == \"string\") {

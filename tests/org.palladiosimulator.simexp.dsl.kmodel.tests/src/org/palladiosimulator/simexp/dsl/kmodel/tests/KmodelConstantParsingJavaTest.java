@@ -191,7 +191,7 @@ public class KmodelConstantParsingJavaTest {
     @Test
     public void parseConstantWithVariableValue() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int{0} variable;
+                optimizable int{0} variable;
                 const int constant = variable;
                 """;
 
@@ -233,7 +233,7 @@ public class KmodelConstantParsingJavaTest {
     @Test
     public void parseConstantWithExpressionContainingVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool{true} variable;
+                optimizable bool{true} variable;
                 const bool constant = variable && true;
                 """;
 

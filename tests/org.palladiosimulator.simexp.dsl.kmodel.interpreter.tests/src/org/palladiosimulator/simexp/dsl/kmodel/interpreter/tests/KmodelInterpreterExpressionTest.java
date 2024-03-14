@@ -150,8 +150,8 @@ public class KmodelInterpreterExpressionTest {
     @Test
     public void testVariableExpressionValue() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                var int{2, 1} value;
-                var int[0, 1, 1] value2;
+                optimizable int{2, 1} value;
+                optimizable int[0, 1, 1] value2;
                 """;
 
         Kmodel model = parserHelper.parse(sb);

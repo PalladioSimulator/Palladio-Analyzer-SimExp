@@ -176,7 +176,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(var float{1.25, 2.5} balancingFactor);
+                action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -209,7 +209,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithParameterAndVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param int factor1, var float{1.25, 2.5} factor2);
+                action scaleOut(param int factor1, optimizable float{1.25, 2.5} factor2);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -343,7 +343,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithField() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var float{0} argument;
+                optimizable float{0} argument;
                 action scaleOut(param float balancingFactor);
                 if(true){
                     scaleOut(balancingFactor=argument);
@@ -381,7 +381,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(var float{1.25, 2.5} balancingFactor);
+                action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
                 if (true) {
                     scaleOut();
                 }
@@ -415,14 +415,15 @@ public class KmodelActionParsingJavaTest {
 
     @Test
     public void parseComplexActionCall() throws Exception {
-        String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                const int constant = 1;
-                var float[1, 2, 1] variable;
-                action adapt(param float param1, param int param2, param bool param3, var int{1, 2, 3, 4} variable);
-                if(true) {
-                    adapt(param1=variable, param2=(constant + 1), param3=(true && false));
-                }
-                """;
+        String sb = KmodelTestUtil.MODEL_NAME_LINE
+                + """
+                        const int constant = 1;
+                        optimizable float[1, 2, 1] variable;
+                        action adapt(param float param1, param int param2, param bool param3, optimizable int{1, 2, 3, 4} variable);
+                        if(true) {
+                            adapt(param1=variable, param2=(constant + 1), param3=(true && false));
+                        }
+                        """;
 
         Kmodel model = parserHelper.parse(sb);
 
@@ -473,7 +474,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithSameParameterVariableName() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param int parameter, var int{1,2,3} parameter);
+                action adapt(param int parameter, optimizable int{1,2,3} parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -486,7 +487,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithSameVariableName() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(var int{1,2,3} parameter, var int{1,2,3} parameter);
+                action adapt(optimizable int{1,2,3} parameter, optimizable int{1,2,3} parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -499,12 +500,12 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(var int{1} variable, param float parameter);
+                action adapt(optimizable int{1} variable, param float parameter);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'var'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
 
     @Test
@@ -558,7 +559,7 @@ public class KmodelActionParsingJavaTest {
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param float parameter, var float{0} variable);
+                action adapt(param float parameter, optimizable float{0} variable);
                 if (true) {
                     adapt(parameter=1.0, variable=1.0);
                 }

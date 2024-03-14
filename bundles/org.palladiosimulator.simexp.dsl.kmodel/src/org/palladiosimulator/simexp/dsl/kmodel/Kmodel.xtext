@@ -24,7 +24,7 @@ Constant:
 	;
 
 Variable:
-	'var' dataType=PrimitiveType values=Bounds name=ID
+	'optimizable' dataType=PrimitiveType values=Bounds name=ID
 	;
 
 EnvVariable:	

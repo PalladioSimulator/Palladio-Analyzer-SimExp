@@ -85,7 +85,7 @@ public class KmodelAcceptanceActionCallsTest {
     @Test
     public void parseOneActionOneVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var int{1,2} vi);
+                action aName(optimizable int{1,2} vi);
                 if (true) {
                     aName();
                 }
@@ -100,7 +100,7 @@ public class KmodelAcceptanceActionCallsTest {
     @Test
     public void parseOneActionOneVariablePassed() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var int{1,2} vi);
+                action aName(optimizable int{1,2} vi);
                 if (true) {
                     aName(vi=1);
                 }
@@ -116,7 +116,7 @@ public class KmodelAcceptanceActionCallsTest {
     @Test
     public void parseOneActionMixedParam() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param int pi, var int{1,2} vi);
+                action aName(param int pi, optimizable int{1,2} vi);
                 if (true) {
                     aName(pi=1);
                 }
@@ -131,7 +131,7 @@ public class KmodelAcceptanceActionCallsTest {
     @Test
     public void parseOneActionMixedParams() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param int pi, var int{1,2} vi, var int{1,2} vi2);
+                action aName(param int pi, optimizable int{1,2} vi, optimizable int{1,2} vi2);
                 if (true) {
                     aName(pi=1);
                 }
@@ -180,8 +180,8 @@ public class KmodelAcceptanceActionCallsTest {
     @Test
     public void parseMultipleActionsMixedParams() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param int pia, var int{1,2} via);
-                action bName(param int pib, var int{1,2} vib);
+                action aName(param int pia, optimizable int{1,2} via);
+                action bName(param int pib, optimizable int{1,2} vib);
                 if (true) {
                     aName(pia=2);
                     bName(pib=2);

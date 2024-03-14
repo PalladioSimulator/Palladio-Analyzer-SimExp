@@ -215,7 +215,7 @@ public class KmodelAcceptanceActionsTest {
     @Test
     public void parseOneActionBoolVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var bool{true,false} vb);
+                action aName(optimizable bool{true,false} vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -249,7 +249,7 @@ public class KmodelAcceptanceActionsTest {
     @Test
     public void parseOneActionBoolVariableNoBounds() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var bool vb);
+                action aName(optimizable bool vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -260,7 +260,7 @@ public class KmodelAcceptanceActionsTest {
     @Test
     public void parseOneActionMultipleVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var bool{true,false} vb, var int{1,2} vi);
+                action aName(optimizable bool{true,false} vb, optimizable int{1,2} vi);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -306,7 +306,7 @@ public class KmodelAcceptanceActionsTest {
     @Test
     public void parseOneActionMixedParameters() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool pb, var bool{true,false} vb);
+                action aName(param bool pb, optimizable bool{true,false} vb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -343,18 +343,18 @@ public class KmodelAcceptanceActionsTest {
     @Test
     public void parseOneActionMixedParametersInvalidOrder() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(var bool{true,false} vb, param bool pb);
+                action aName(optimizable bool{true,false} vb, param bool pb);
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'var'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
     }
 
     @Test
     public void parseDuplicateParameterVarNames() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool p, var bool{true,false} p);
+                action aName(param bool p, optimizable bool{true,false} p);
                 """;
 
         Kmodel model = parserHelper.parse(sb);

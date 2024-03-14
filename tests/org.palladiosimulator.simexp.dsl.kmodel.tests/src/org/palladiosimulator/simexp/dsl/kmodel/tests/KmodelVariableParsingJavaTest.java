@@ -37,7 +37,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleBoolVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool{true} condition;
+                optimizable bool{true} condition;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -54,7 +54,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleIntVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int{1} count;
+                optimizable int{1} count;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -71,7 +71,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var float{1.0} number;
+                optimizable float{1.0} number;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -88,7 +88,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var string{"word"} word;
+                optimizable string{"word"} word;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -105,8 +105,8 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseTwoVariables() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int{1} count;
-                var string{"word"} word;
+                optimizable int{1} count;
+                optimizable string{"word"} word;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -126,7 +126,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithValueArray() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var int{1, 2, 3} count;
+                optimizable int{1, 2, 3} count;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -153,7 +153,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithValueRange() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var float[1.0, 2.0, 0.1] values;
+                optimizable float[1.0, 2.0, 0.1] values;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -178,7 +178,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseVariableWithWrongValueTypes() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var string{true, 1, 2.5} list;
+                optimizable string{true, 1, 2.5} list;
                 """;
 
         Kmodel model = parserHelper.parse(sb);
@@ -193,7 +193,7 @@ public class KmodelVariableParsingJavaTest {
     @Test
     public void parseNonNumberVariableWithRange() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool[true, false, true] range;
+                optimizable bool[true, false, true] range;
                 """;
 
         Kmodel model = parserHelper.parse(sb);

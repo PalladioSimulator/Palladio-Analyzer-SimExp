@@ -29,7 +29,7 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var bool{true, false} condition;
+                optimizable bool{true, false} condition;
                 const int one = 1;
                 probe float aliasName : id "someId";
                 """;
@@ -88,7 +88,7 @@ public class KmodelFieldParsingJavaTest {
     @Test
     public void parseDifferentFieldsWithSameName() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
-                var string{"word"} word;
+                optimizable string{"word"} word;
                 probe string word : id "someId";
                 """;
 
@@ -103,12 +103,12 @@ public class KmodelFieldParsingJavaTest {
     public void parseLocalField() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
                 if(true){
-                    var int variable = {1};
+                    optimizable int variable = {1};
                 }
                 """;
 
         Kmodel model = parserHelper.parse(sb);
 
-        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'var' expecting '}'");
+        KmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'optimizable' expecting '}'");
     }
 }

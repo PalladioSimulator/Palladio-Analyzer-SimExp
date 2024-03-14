@@ -266,10 +266,10 @@ public class KmodelIfParsingJavaTest {
     public void parseComplexStatement() throws Exception {
         String sb = KmodelTestUtil.MODEL_NAME_LINE + """
                 //Variable declarations
-                var float{1.0, 2.0} i;
+                optimizable float{1.0, 2.0} i;
                 // action declaration
                 action a(param float factor);
-                action anotherA(param float factor, var float[1,2,1] anotherFactor);
+                action anotherA(param float factor, optimizable float[1,2,1] anotherFactor);
                 // rule block
                 if (true) {
                     a(factor=i);        // execute action
