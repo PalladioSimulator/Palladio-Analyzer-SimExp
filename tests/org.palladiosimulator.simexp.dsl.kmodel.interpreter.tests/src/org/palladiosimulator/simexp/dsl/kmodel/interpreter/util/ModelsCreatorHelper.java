@@ -15,7 +15,7 @@ import org.palladiosimulator.pcmmeasuringpoint.PcmmeasuringpointFactory;
 import org.palladiosimulator.pcmmeasuringpoint.UsageScenarioMeasuringPoint;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.KmodelFactory;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 
 public class ModelsCreatorHelper {
     public static final String RESPONSE_TIME_MONITOR_NAME = "System Response Time";
@@ -65,7 +65,7 @@ public class ModelsCreatorHelper {
         return monitor;
     }
 
-    public Probe createProbe(String monitorId, ProbeAdressing value) {
+    public Probe createProbe(String monitorId, ProbeAdressingKind value) {
         Probe probe = kmodelFactory.createProbe();
         probe.setIdentifier(monitorId);
         probe.setKind(value);

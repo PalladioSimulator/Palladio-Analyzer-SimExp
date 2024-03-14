@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.util.ModelsCreatorHelper;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.util.SimulatedMeasurementSpecCreatorHelper;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
 public class PcmProbeValueProviderTest {
@@ -38,7 +38,8 @@ public class PcmProbeValueProviderTest {
 
     @Test
     public void testGetMeasuredValueForProbeWithMonitorId() {
-        Probe probe = modelsCreator.createProbe(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME, ProbeAdressing.MONITORID);
+        Probe probe = modelsCreator.createProbe(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME,
+                ProbeAdressingKind.MONITORID);
         Monitor rtMonitor = modelsCreator.createResponseTimeMonitor(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME,
                 ModelsCreatorHelper.USAGE_SCENARIO_NAME, ModelsCreatorHelper.RESPONSE_TIME_METRIC_DESCRIPTION_NAME);
         MeasuringPoint measuringPoint = rtMonitor.getMeasuringPoint();

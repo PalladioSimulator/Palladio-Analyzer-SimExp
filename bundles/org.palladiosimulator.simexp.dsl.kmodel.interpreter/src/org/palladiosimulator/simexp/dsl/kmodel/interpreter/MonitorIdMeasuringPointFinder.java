@@ -6,15 +6,15 @@ import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 
 public class MonitorIdMeasuringPointFinder implements IMeasuringPointFinder {
 
     @Override
     public MeasuringPoint find(Experiment experiment, Probe probe) {
-        if (probe.getKind() != ProbeAdressing.MONITORID) {
+        if (probe.getKind() != ProbeAdressingKind.MONITORID) {
             throw new RuntimeException(String.format("Wrong probe addressing mode. Expected '%s', but found '%s'",
-                    ProbeAdressing.MONITORID.getLiteral(), probe.getKind()
+                    ProbeAdressingKind.MONITORID.getLiteral(), probe.getKind()
                         .getLiteral()));
         }
         Monitor monitor = findMonitor(experiment, probe.getIdentifier());

@@ -11,7 +11,7 @@ import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.MonitorIdMeasuringPointFinder;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.util.ModelsCreatorHelper;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressing;
+import org.palladiosimulator.simexp.dsl.kmodel.kmodel.ProbeAdressingKind;
 
 public class MonitorIdMeasuringPointFinderTest {
 
@@ -27,7 +27,7 @@ public class MonitorIdMeasuringPointFinderTest {
     @Test
     public void testWrongProbeAddressing() throws Exception {
         Experiment experiment = modelsCreator.createBasicExperiment();
-        Probe probe = modelsCreator.createProbe("any", ProbeAdressing.ID);
+        Probe probe = modelsCreator.createProbe("any", ProbeAdressingKind.ID);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> mpLookup.find(experiment, probe));
 
@@ -40,7 +40,7 @@ public class MonitorIdMeasuringPointFinderTest {
         Monitor rtMonitor = modelsCreator.createResponseTimeMonitor(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME,
                 ModelsCreatorHelper.USAGE_SCENARIO_NAME, ModelsCreatorHelper.RESPONSE_TIME_METRIC_DESCRIPTION_NAME);
         Experiment experiment = modelsCreator.createExperimentWithMonitor(rtMonitor);
-        Probe probe = modelsCreator.createProbe("unknownMonitorId", ProbeAdressing.MONITORID);
+        Probe probe = modelsCreator.createProbe("unknownMonitorId", ProbeAdressingKind.MONITORID);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> mpLookup.find(experiment, probe));
 
@@ -53,7 +53,7 @@ public class MonitorIdMeasuringPointFinderTest {
         Monitor rtMonitor = modelsCreator.createResponseTimeMonitor(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME,
                 ModelsCreatorHelper.USAGE_SCENARIO_NAME, ModelsCreatorHelper.RESPONSE_TIME_METRIC_DESCRIPTION_NAME);
         Experiment experiment = modelsCreator.createExperimentWithMonitor(rtMonitor);
-        Probe probe = modelsCreator.createProbe(rtMonitor.getId(), ProbeAdressing.MONITORID);
+        Probe probe = modelsCreator.createProbe(rtMonitor.getId(), ProbeAdressingKind.MONITORID);
 
         MeasuringPoint actualMeasuringPoint = mpLookup.find(experiment, probe);
 
