@@ -28,6 +28,7 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.kmodel.interpreter.lookup.IModelNameLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -62,6 +63,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
+    private final IModelNameLookup modelNameLookup;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -70,11 +72,12 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel) {
+            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel, IModelNameLookup modelNameLookup) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
         this.kmodel = kmodel;
+        this.modelNameLookup = modelNameLookup;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -122,8 +125,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 experiment, specs, runners, params, beforeExecution, envProcess, simulatedExperienceStore, null,
                 reconfStrategy, reconfigurations, evaluator, isHidden);
 
-        // FIXME: make policyId configurable via dsl
-        String reconfigurationId = "ModelledReconfigurationStrategy";
+        String reconfigurationId = modelNameLookup.findModelName();
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfigurationId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
