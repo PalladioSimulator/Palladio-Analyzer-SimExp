@@ -125,8 +125,6 @@ Literal:
 	{StringLiteral} value=STRING
 	;
 
-// Rule 'DataType' is not used, but is necessary to provide a default value for data types.
-enum DataType: UNDEFINED;
 enum PrimitiveType returns DataType: 
 	BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string'
 	;
