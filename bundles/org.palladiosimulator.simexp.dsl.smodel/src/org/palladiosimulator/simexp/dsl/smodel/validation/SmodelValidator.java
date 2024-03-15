@@ -344,11 +344,10 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
     private boolean checkTypes(DataType expected, DataType actual, EStructuralFeature feature, int index) {
         /*
-         * The type UNDEFINED can only occur as a default value in unresolved field references, or
-         * when an expression isn't complete. In this cases, no error message regarding the type
-         * should be shown.
+         * Null only occurs in unresolved field references, or when an expression isn't complete. In
+         * this cases, no error message regarding the type should be shown.
          */
-        if (actual == DataType.UNDEFINED) {
+        if (actual == null) {
             return false;
         }
 
