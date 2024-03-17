@@ -35,13 +35,13 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.lookup.KModelLookup;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.SModelLookup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.KModelLoader;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
+import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -90,8 +90,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ResourceSet rs = new ResourceSetImpl();
 
             URI kmodelURI = config.getKmodelURI();
-            KModelLoader kmodelLoader = new KModelLoader();
-            Kmodel kmodel = kmodelLoader.load(rs, kmodelURI);
+            SModelLoader kmodelLoader = new SModelLoader();
+            Smodel kmodel = kmodelLoader.load(rs, kmodelURI);
             LOGGER.debug(String.format("Loaded kmodel from '%s'", kmodelURI.path()));
 
             URI experimentsFileURI = config.getExperimentsURI();
@@ -142,7 +142,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
-            KModelLookup kModelLookup = new KModelLookup(kmodel);
+            SModelLookup kModelLookup = new SModelLookup(kmodel);
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
@@ -182,8 +182,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            Kmodel kmodel, KModelLookup kModelLookup) {
-
+            Smodel kmodel, SModelLookup kModelLookup) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {

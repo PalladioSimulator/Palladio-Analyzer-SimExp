@@ -22,15 +22,15 @@ import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.lookup.IModelNameLookup;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.KnowledgeLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmMonitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.IModelNameLookup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
@@ -59,7 +59,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final Kmodel kmodel;
+    private final Smodel smodel;
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
@@ -72,11 +72,11 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel, IModelNameLookup modelNameLookup) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel, IModelNameLookup modelNameLookup) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        this.kmodel = kmodel;
+        this.smodel = smodel;
         this.modelNameLookup = modelNameLookup;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
@@ -104,12 +104,12 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         DummyVariableValueProvider vvp = new DummyVariableValueProvider();
         // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
-        List<Probe> probes = findProbes(kmodel);
+        List<Probe> probes = findProbes(smodel);
         PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
         RuntimeValueProvider rvp = new KnowledgeLookup(null);
 
         Monitor monitor = new PcmMonitor(simSpecs, pvp);
-        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
+        SmodelInterpreter kmodelInterpreter = new SmodelInterpreter(smodel, vvp, pvp, rvp);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 kmodelInterpreter, kmodelInterpreter);
 
@@ -136,7 +136,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         return executor;
     }
 
-    private List<Probe> findProbes(Kmodel kmodel) {
+    private List<Probe> findProbes(Smodel kmodel) {
         return kmodel.getProbes();
     }
 
