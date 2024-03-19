@@ -13,4 +13,3 @@ Require-Bundle: org.hamcrest;bundle-version="2.2.0",
  org.eclipse.xtext.xbase.testing,
  org.eclipse.xtext.xbase.lib;bundle-version="2.14.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: org.palladiosimulator.simexp.dsl.smodel.tests;x-internal=true
