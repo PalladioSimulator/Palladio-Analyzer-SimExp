@@ -17,8 +17,8 @@ public class ModelsLookup implements IModelsLookup {
 
         MeasuringPoint find = finder.find(experiment, probe);
         if (find == null) {
-            throw new RuntimeException(String.format("No monitor found for probe '%s' with id: '%s' found",
-                    probe.getName(), probe.getIdentifier()));
+            throw new RuntimeException(String.format("No MeasuringPoint found for probe '%s' with %s:%s found",
+                    probe.getName(), probe.getKind(), probe.getIdentifier()));
         }
         return find;
     }

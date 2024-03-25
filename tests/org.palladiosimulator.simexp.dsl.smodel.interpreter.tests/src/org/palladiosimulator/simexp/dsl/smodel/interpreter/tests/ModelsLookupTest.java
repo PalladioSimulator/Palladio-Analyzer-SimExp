@@ -48,7 +48,7 @@ public class ModelsLookupTest {
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> mpLookupFactory.findMeasuringPoint(probe));
 
-        String expectedMessage = "No monitor found for probe 'testProbe' with id: 'unknownMonitorId' found";
+        String expectedMessage = "No MeasuringPoint found for probe 'testProbe' with monitorId:unknownMonitorId found";
         assertEquals(expectedMessage, exception.getMessage());
     }
 }
