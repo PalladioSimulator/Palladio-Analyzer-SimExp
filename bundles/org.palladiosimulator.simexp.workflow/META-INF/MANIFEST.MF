@@ -46,5 +46,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.dependability.reliability.uncertainty.solver,
  org.palladiosimulator.simexp.pcm.examples.deltaiot.param,
  org.palladiosimulator.simexp.model.strategy;bundle-version="1.0.0",
- org.palladiosimulator.simexp.pcm.performance
+ org.palladiosimulator.simexp.pcm.performance,
+ org.palladiosimulator.simexp.dsl.smodel.interpreter
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

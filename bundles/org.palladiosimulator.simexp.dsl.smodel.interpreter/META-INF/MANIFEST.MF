@@ -17,4 +17,5 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  org.palladiosimulator.envdyn.api,
  tools.mdsd.probdist.api
 Export-Package: org.palladiosimulator.simexp.core.strategy.mape,
- org.palladiosimulator.simexp.dsl.smodel.interpreter
+ org.palladiosimulator.simexp.dsl.smodel.interpreter,
+ org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup
