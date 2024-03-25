@@ -23,7 +23,9 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.KnowledgeLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
@@ -105,7 +107,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         DummyVariableValueProvider vvp = new DummyVariableValueProvider();
         // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
         List<Probe> probes = findProbes(smodel);
-        PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
+        PcmProbeValueProvider pvp = new PcmProbeValueProvider(modelsLookup);
         RuntimeValueProvider rvp = new KnowledgeLookup(null);
 
         Monitor monitor = new PcmMonitor(simSpecs, pvp);
