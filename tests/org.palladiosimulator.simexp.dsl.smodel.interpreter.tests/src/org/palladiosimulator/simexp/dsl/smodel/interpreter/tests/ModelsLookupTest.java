@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,5 +35,20 @@ public class ModelsLookupTest {
         MeasuringPoint actualMeasuringPoint = mpLookupFactory.findMeasuringPoint(probe);
 
         assertEquals(monitor.getMeasuringPoint(), actualMeasuringPoint);
+    }
+
+    @Test
+    public void testNoMonitorFoundForProbe() throws Exception {
+        Monitor monitor = modelsCreator.createResponseTimeMonitor(ModelsCreatorHelper.RESPONSE_TIME_MONITOR_NAME,
+                ModelsCreatorHelper.USAGE_SCENARIO_NAME, ModelsCreatorHelper.RESPONSE_TIME_METRIC_DESCRIPTION_NAME);
+        Experiment experiment = modelsCreator.createExperimentWithMonitor(monitor);
+        mpLookupFactory = new ModelsLookup(experiment);
+        Probe probe = modelsCreator.createProbe("unknownMonitorId", ProbeAdressingKind.MONITORID);
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> mpLookupFactory.findMeasuringPoint(probe));
+
+        String expectedMessage = "No monitor found for probe 'testProbe' with id: 'unknownMonitorId' found";
+        assertEquals(expectedMessage, exception.getMessage());
     }
 }

@@ -14,7 +14,13 @@ public class ModelsLookup implements IModelsLookup {
     @Override
     public MeasuringPoint findMeasuringPoint(Probe probe) {
         IMeasuringPointFinder finder = getFinder(probe);
-        return finder.find(experiment, probe);
+
+        MeasuringPoint find = finder.find(experiment, probe);
+        if (find == null) {
+            throw new RuntimeException(String.format("No monitor found for probe '%s' with id: '%s' found",
+                    probe.getName(), probe.getIdentifier()));
+        }
+        return find;
     }
 
     private IMeasuringPointFinder getFinder(Probe probe) {

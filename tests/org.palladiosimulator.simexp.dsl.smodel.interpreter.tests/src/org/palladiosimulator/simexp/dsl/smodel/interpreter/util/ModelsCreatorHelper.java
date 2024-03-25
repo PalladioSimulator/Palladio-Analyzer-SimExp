@@ -67,6 +67,7 @@ public class ModelsCreatorHelper {
 
     public Probe createProbe(String monitorId, ProbeAdressingKind value) {
         Probe probe = smodelFactory.createProbe();
+        probe.setName("testProbe");
         probe.setIdentifier(monitorId);
         probe.setKind(value);
         return probe;
