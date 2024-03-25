@@ -176,6 +176,36 @@ public class SmodelActionParsingTest {
     }
 
     @Test
+    public void parseOneActionMixedParam() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param int pi, optimizable int{1,2} vi);
+                if (true) {
+                    aName(pi=1);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
+
+    @Test
+    public void parseOneActionMixedParams() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param int pi, optimizable int{1,2} vi, optimizable int{1,2} vi2);
+                if (true) {
+                    aName(pi=1);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
+
+    @Test
     public void parseActionWithVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
