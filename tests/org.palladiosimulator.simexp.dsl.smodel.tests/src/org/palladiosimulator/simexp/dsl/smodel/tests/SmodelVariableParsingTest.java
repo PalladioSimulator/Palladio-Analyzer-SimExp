@@ -1,5 +1,9 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,19 +13,22 @@ import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -124,30 +131,136 @@ public class SmodelVariableParsingTest {
     }
 
     @Test
-    public void parseVariableWithValueArray() throws Exception {
+    public void parseBoolVarArray() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable int{1, 2, 3} count;
+                optimizable bool{true,false} vName;
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field field = variables.get(0);
+        EList<Optimizable> fields = model.getOptimizables();
+        assertEquals(1, fields.size());
+        Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
+        assertEquals("vName", variable.getName());
+        assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
-        Assert.assertTrue(bounds instanceof Array);
-        Array valueArray = (Array) bounds;
-        List<Literal> values = valueArray.getValues();
-        Assert.assertEquals(3, values.size());
-        int firstValue = ((IntLiteral) values.get(0)).getValue();
-        Assert.assertEquals(1, firstValue);
-        int secondValue = ((IntLiteral) values.get(1)).getValue();
-        Assert.assertEquals(2, secondValue);
-        int thirdValue = ((IntLiteral) values.get(2)).getValue();
-        Assert.assertEquals(3, thirdValue);
+        assertTrue(bounds instanceof Array);
+        Array rangeArray = (Array) bounds;
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
+            .get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
+            .get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
+    }
+
+    @Test
+    public void parseIntVarArray() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable int{1,3} vName;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        EList<Optimizable> fields = model.getOptimizables();
+        assertEquals(1, fields.size());
+        Field field = fields.get(0);
+        Optimizable variable = (Optimizable) field;
+        assertEquals("vName", variable.getName());
+        assertEquals(DataType.INT, variable.getDataType());
+        Bounds bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array boundsArray = (Array) bounds;
+        IntLiteral intRange1 = (IntLiteral) boundsArray.getValues()
+            .get(0);
+        IntLiteral intRange2 = (IntLiteral) boundsArray.getValues()
+            .get(1);
+        List<Integer> actualIntBounds = Arrays.asList(intRange1.getValue(), intRange2.getValue());
+        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems(1, 3));
+    }
+
+    @Test
+    public void parseFloatVarArray() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable float{1.0,3.0} vName;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        EList<Optimizable> fields = model.getOptimizables();
+        assertEquals(1, fields.size());
+        Field field = fields.get(0);
+        Optimizable variable = (Optimizable) field;
+        assertEquals("vName", variable.getName());
+        assertEquals(DataType.FLOAT, variable.getDataType());
+        Bounds bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array boundsArray = (Array) bounds;
+        FloatLiteral floatRange1 = (FloatLiteral) boundsArray.getValues()
+            .get(0);
+        FloatLiteral floatRange2 = (FloatLiteral) boundsArray.getValues()
+            .get(1);
+        List<Double> actualFloatBounds = Arrays.asList(Double.valueOf(floatRange1.getValue()),
+                Double.valueOf(floatRange2.getValue()));
+        MatcherAssert.assertThat(actualFloatBounds, CoreMatchers.hasItems(1.0, 3.0));
+    }
+
+    @Test
+    public void parseStringVarArray() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable string{"s1","s2"} vName;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        EList<Optimizable> fields = model.getOptimizables();
+        assertEquals(1, fields.size());
+        Field field = fields.get(0);
+        Optimizable variable = (Optimizable) field;
+        assertEquals("vName", variable.getName());
+        assertEquals(DataType.STRING, variable.getDataType());
+        Bounds bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array boundsArray = (Array) bounds;
+        StringLiteral stringRange1 = (StringLiteral) boundsArray.getValues()
+            .get(0);
+        StringLiteral stringRange2 = (StringLiteral) boundsArray.getValues()
+            .get(1);
+        List<String> actualStringBounds = Arrays.asList(stringRange1.getValue(), stringRange2.getValue());
+        MatcherAssert.assertThat(actualStringBounds, CoreMatchers.hasItems("s1", "s2"));
+    }
+
+    @Test
+    public void parseIntVarRange() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable int[1,2,1] vName;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        EList<Optimizable> fields = model.getOptimizables();
+        assertEquals(1, fields.size());
+        Field field = fields.get(0);
+        Optimizable variable = (Optimizable) field;
+        assertEquals("vName", variable.getName());
+        assertEquals(DataType.INT, variable.getDataType());
+        Bounds bounds = variable.getValues();
+        assertTrue(bounds instanceof Range);
+        Range boundsRange = (Range) bounds;
+        assertEquals(1, ((IntLiteral) boundsRange.getStartValue()).getValue());
+        assertEquals(2, ((IntLiteral) boundsRange.getEndValue()).getValue());
+        assertEquals(1, ((IntLiteral) boundsRange.getStepSize()).getValue());
     }
 
     @Test
