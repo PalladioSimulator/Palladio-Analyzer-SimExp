@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 
 public class ModelsLookupTest {
 
-    ModelsLookup mpLookupFactory;
+    private ModelsLookup mpLookupFactory;
 
     private ModelsCreatorHelper modelsCreator;
 
