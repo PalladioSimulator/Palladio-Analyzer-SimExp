@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
-import java.util.stream.Stream;
-
+import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.monitorrepository.Monitor;
@@ -18,18 +17,26 @@ public class MonitorIdMeasuringPointFinder implements IMeasuringPointFinder {
                         .getLiteral()));
         }
         Monitor monitor = findMonitor(experiment, probe.getIdentifier());
+        if (monitor == null) {
+            return null;
+        }
         MeasuringPoint measuringPoint = monitor.getMeasuringPoint();
         return measuringPoint;
     }
 
     private Monitor findMonitor(Experiment experiment, String monitorId) {
-        Stream<Monitor> monitors = experiment.getInitialModel()
+        EList<Monitor> monitors = experiment.getInitialModel()
             .getMonitorRepository()
-            .getMonitors()
-            .stream();
-        return monitors.filter(m -> m.getId()
-            .equals(monitorId))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException(String.format("No monitor with id: '%s' found", monitorId)));
+            .getMonitors();
+        if (monitors == null || monitors.isEmpty()) {
+            return null;
+        }
+        for (Monitor monitor : monitors) {
+            if (monitor.getId()
+                .equals(monitorId)) {
+                return monitor;
+            }
+        }
+        return null;
     }
 }

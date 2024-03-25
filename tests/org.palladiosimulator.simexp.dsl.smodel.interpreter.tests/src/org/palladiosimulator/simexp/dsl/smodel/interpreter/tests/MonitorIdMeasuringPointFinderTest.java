@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 
 import org.junit.Before;
@@ -42,10 +43,9 @@ public class MonitorIdMeasuringPointFinderTest {
         Experiment experiment = modelsCreator.createExperimentWithMonitor(rtMonitor);
         Probe probe = modelsCreator.createProbe("unknownMonitorId", ProbeAdressingKind.MONITORID);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> mpLookup.find(experiment, probe));
+        MeasuringPoint actualMeasuringPoint = mpLookup.find(experiment, probe);
 
-        String expectedMessage = "No monitor with id: 'unknownMonitorId' found";
-        assertEquals(expectedMessage, exception.getMessage());
+        assertNull(actualMeasuringPoint);
     }
 
     @Test
