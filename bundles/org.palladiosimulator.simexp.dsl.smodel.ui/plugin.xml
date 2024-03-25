@@ -431,4 +431,32 @@
 			type="text">
 		</fileTypes>
 	</extension>
+	<extension
+		point="org.eclipse.ui.newWizards">
+		<category id="org.palladiosimulator.simexp.dsl.smodel.ui.category" name="Smodel">
+		</category>
+		<wizard
+			category="org.palladiosimulator.simexp.dsl.smodel.ui.category"
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.wizard.template.TemplateNewFileWizard"
+			id="org.palladiosimulator.simexp.dsl.smodel.ui.wizard.SmodelNewFileWizard"
+			name="Smodel File"
+			icon="icons/new_Smodel_file.png">
+		</wizard>
+	</extension>
+	<extension
+		point="org.eclipse.xtext.ui.fileTemplate">
+		<fileTemplateProvider
+			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.palladiosimulator.simexp.dsl.smodel.ui.wizard.SmodelFileTemplateProvider"
+			grammarName="org.palladiosimulator.simexp.dsl.smodel.Smodel">
+		</fileTemplateProvider>
+	</extension>
+	<extension
+		point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+			<newWizardShortcut id="org.palladiosimulator.simexp.dsl.smodel.ui.wizard.SmodelNewFileWizard"/>
+		</perspectiveExtension>
+		<perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+			<newWizardShortcut id="org.palladiosimulator.simexp.dsl.smodel.ui.wizard.SmodelNewFileWizard"/>
+		</perspectiveExtension>
+	</extension>
 </plugin>

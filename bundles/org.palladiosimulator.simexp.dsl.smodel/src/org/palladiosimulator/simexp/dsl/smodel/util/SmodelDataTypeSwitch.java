@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.dsl.smodel.util;
 
-import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
@@ -15,23 +14,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
-
-    @Override
-    public DataType doSwitch(EObject object) {
-        if (object == null) {
-            throw new RuntimeException("Couldn't determine the datatype of an object that is null.");
-        }
-
-        DataType result = super.doSwitch(object);
-
-        if (result == null) {
-            throw new RuntimeException("Couldn't determine the datatype of objects of class '" + object.eClass()
-                .getName() + "'.");
-        }
-
-        return result;
-    }
-
     @Override
     public DataType caseField(Field field) {
         return field.getDataType();
@@ -71,6 +53,9 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     public DataType caseExpression(Expression expression) {
         Field field = expression.getFieldRef();
         if (field != null) {
+            if (field.eContainer() == null) {
+                return null;
+            }
             return doSwitch(field);
         }
 
@@ -92,8 +77,12 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
         }
 
         switch (operation) {
-        case UNDEFINED:
-            return leftType != null ? leftType : DataType.UNDEFINED;
+        case UNDEFINED: {
+            if (leftType != null) {
+                return leftType;
+            }
+            return null;
+        }
 
         case OR:
         case AND:

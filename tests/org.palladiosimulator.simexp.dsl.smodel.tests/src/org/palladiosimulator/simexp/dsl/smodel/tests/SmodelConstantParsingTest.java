@@ -16,8 +16,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -175,6 +175,74 @@ public class SmodelConstantParsingTest {
             .getLiteral();
         Assert.assertEquals(firstConstant, fieldReference);
         Assert.assertEquals(((IntLiteral) firstValue).getValue(), ((IntLiteral) secondValue).getValue());
+    }
+
+    @Test
+    public void parseBoolConstantWithoutValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const bool noValue;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
+    }
+
+    @Test
+    public void parseIntConstantWithoutValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int noValue;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
+    }
+
+    @Test
+    public void parseFloatConstantWithoutValue() throws Exception {
+        String sb = String.join("\n", SmodelTestUtil.MODEL_NAME_LINE, "const float noValue;");
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
+    }
+
+    @Test
+    public void parseStringConstantWithoutValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const string noValue;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting '='");
+    }
+
+    @Test
+    public void parseBoolConstantWithIntValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const bool number = 1;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+                "Expected a value of type 'bool', got 'int' instead.");
+    }
+
+    @Test
+    public void parseIntConstantWithBoolValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int number = true;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+                "Expected a value of type 'int', got 'bool' instead.");
     }
 
     @Test

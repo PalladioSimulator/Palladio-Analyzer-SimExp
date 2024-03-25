@@ -13,9 +13,9 @@ import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -181,5 +181,49 @@ public class SmodelProbeParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting ':'");
+    }
+
+    @Test
+    public void parseBoolProbeAssignment() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                probe bool pName: id "ab11" = true;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+    }
+
+    @Test
+    public void parseIntProbeAssignment() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                probe int pName: id "ab11" = 1;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+    }
+
+    @Test
+    public void parseFloatProbeAssignment() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                probe float pName: id "ab11" = 1.0;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+    }
+
+    @Test
+    public void parseStringProbeAssignment() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                probe string pName: id "ab11" = "s";
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
     }
 }

@@ -1,14 +1,21 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,16 +23,18 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -171,6 +180,36 @@ public class SmodelActionParsingTest {
         Parameter secondParameter = parameters.get(1);
         Assert.assertEquals(DataType.BOOL, secondParameter.getDataType());
         Assert.assertEquals("in", secondParameter.getName());
+    }
+
+    @Test
+    public void parseOneActionMixedParam() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param int pi, optimizable int{1,2} vi);
+                if (true) {
+                    aName(pi=1);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    }
+
+    @Test
+    public void parseOneActionMixedParams() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(param int pi, optimizable int{1,2} vi, optimizable int{1,2} vi2);
+                if (true) {
+                    aName(pi=1);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
     }
 
     @Test
@@ -583,8 +622,7 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, Diagnostic.LINKING_DIAGNOSTIC,
                 "Couldn't resolve reference to Field 'factor'.");
     }
 
@@ -599,4 +637,50 @@ public class SmodelActionParsingTest {
 
         SmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
     }
+
+    @Test
+    public void parseOneActionBoolVariable() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(optimizable bool{true,false} vb);
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertModelWithoutErrors(model);
+        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        EList<Action> actions = model.getActions();
+        assertEquals(1, actions.size());
+        Action action = actions.get(0);
+        assertEquals("aName", action.getName());
+        EList<Parameter> parameters = action.getParameterList()
+            .getParameters();
+        assertEquals(0, parameters.size());
+        EList<Optimizable> variables = action.getParameterList()
+            .getVariables();
+        assertEquals(1, variables.size());
+        Optimizable variable = variables.get(0);
+        assertEquals("vb", variable.getName());
+        assertEquals(DataType.BOOL, variable.getDataType());
+        Bounds bounds = variable.getValues();
+        assertTrue(bounds instanceof Array);
+        Array rangeArray = (Array) bounds;
+        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
+            .get(0);
+        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
+            .get(1);
+        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
+        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
+    }
+
+    @Test
+    public void parseOneActionBoolVariableNoBounds() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action aName(optimizable bool vb);
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
+    }
+
 }

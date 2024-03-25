@@ -22,11 +22,10 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -38,25 +37,6 @@ public class SmodelAcceptanceActionsTest {
 
     @Inject
     private ValidationTestHelper validationTestHelper;
-
-    @Test
-    public void parseOneActionNoParam() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName();
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        assertEquals(0, action.getParameterList()
-            .getParameters()
-            .size());
-    }
 
     @Test
     public void parseMultipleActionNoParam() throws Exception {
@@ -81,81 +61,6 @@ public class SmodelAcceptanceActionsTest {
         assertEquals(0, action.getParameterList()
             .getParameters()
             .size());
-    }
-
-    @Test
-    public void parseOneActionBoolParam() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool pb);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
-            .getParameters();
-        assertEquals(1, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
-        assertEquals("pb", param.getName());
-        assertEquals(DataType.BOOL, param.getDataType());
-    }
-
-    @Test
-    public void parseOneActionStringParam() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param string ps);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
-            .getParameters();
-        assertEquals(1, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
-        assertEquals("ps", param.getName());
-        assertEquals(DataType.STRING, param.getDataType());
-    }
-
-    @Test
-    public void parseOneActionIntParam() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param int pi);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
-            .getParameters();
-        assertEquals(1, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(0, variables.size());
-        Parameter param = parameters.get(0);
-        assertEquals("pi", param.getName());
-        assertEquals(DataType.INT, param.getDataType());
     }
 
     @Test
@@ -184,77 +89,6 @@ public class SmodelAcceptanceActionsTest {
         param = parameters.get(1);
         assertEquals("pb2", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
-    }
-
-    @Test
-    public void parseDuplicateParameterNames1() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool pb, param bool pb);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'pb'",
-                "Duplicate Field 'pb'");
-    }
-
-    @Test
-    public void parseDuplicateParameterNames2() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool p, param int p);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
-                "Duplicate Field 'p'");
-    }
-
-    @Test
-    public void parseOneActionBoolVariable() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(optimizable bool{true,false} vb);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
-            .getParameters();
-        assertEquals(0, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(1, variables.size());
-        Optimizable variable = variables.get(0);
-        assertEquals("vb", variable.getName());
-        assertEquals(DataType.BOOL, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array rangeArray = (Array) bounds;
-        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
-            .get(0);
-        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
-            .get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-    }
-
-    @Test
-    public void parseOneActionBoolVariableNoBounds() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(optimizable bool vb);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
 
     @Test
@@ -304,43 +138,6 @@ public class SmodelAcceptanceActionsTest {
     }
 
     @Test
-    public void parseOneActionMixedParameters() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool pb, optimizable bool{true,false} vb);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
-            .getParameters();
-        assertEquals(1, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(1, variables.size());
-        Field param = parameters.get(0);
-        assertEquals("pb", param.getName());
-        assertEquals(DataType.BOOL, param.getDataType());
-        Optimizable variable = variables.get(0);
-        assertEquals("vb", variable.getName());
-        assertEquals(DataType.BOOL, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array rangeArray = (Array) bounds;
-        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
-            .get(0);
-        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
-            .get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-    }
-
-    @Test
     public void parseOneActionMixedParametersInvalidOrder() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 action aName(optimizable bool{true,false} vb, param bool pb);
@@ -349,18 +146,5 @@ public class SmodelAcceptanceActionsTest {
         Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
-    }
-
-    @Test
-    public void parseDuplicateParameterVarNames() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param bool p, optimizable bool{true,false} p);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'p'",
-                "Duplicate Field 'p'");
     }
 }

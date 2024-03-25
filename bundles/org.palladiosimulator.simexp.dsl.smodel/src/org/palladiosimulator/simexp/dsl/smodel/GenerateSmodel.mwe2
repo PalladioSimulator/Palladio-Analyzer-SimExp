@@ -47,6 +47,9 @@ Workflow {
 			generator = {
 				generateXtendStub = true
 			}
+		    fileWizard = {
+		    	generate = true
+		    }			
 			junitSupport = {
 				junitVersion = "4"
 			}
