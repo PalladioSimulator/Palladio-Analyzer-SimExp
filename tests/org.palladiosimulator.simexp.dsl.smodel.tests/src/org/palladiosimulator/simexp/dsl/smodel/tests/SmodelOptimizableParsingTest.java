@@ -34,7 +34,7 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(SmodelInjectorProvider.class)
-public class SmodelVariableParsingTest {
+public class SmodelOptimizableParsingTest {
     @Inject
     private ParseHelper<Smodel> parserHelper;
 
