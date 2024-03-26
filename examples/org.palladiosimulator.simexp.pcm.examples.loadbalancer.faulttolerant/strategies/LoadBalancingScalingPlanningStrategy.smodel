@@ -3,7 +3,7 @@ modelName = "LoadBalancingScalingPlanningStrategy";
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
 
-probe float responseTime : "Usage Scenario: EnvironmentPerception_Response Time";
+probe float responseTime : monitorId"_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 
 action scaleOut();
 action scaleIn();
