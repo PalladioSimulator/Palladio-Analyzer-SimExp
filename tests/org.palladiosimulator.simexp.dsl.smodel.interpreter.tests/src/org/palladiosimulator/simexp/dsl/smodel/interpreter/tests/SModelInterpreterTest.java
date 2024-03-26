@@ -63,19 +63,19 @@ public class SModelInterpreterTest {
          * }
          */
 
-        SmodelFactory kmodelFactory = SmodelFactory.eINSTANCE;
-        Smodel kmodel = kmodelFactory.createSmodel();
-        Constant constant = kmodelFactory.createConstant();
+        SmodelFactory smodelFactory = SmodelFactory.eINSTANCE;
+        Smodel smodel = smodelFactory.createSmodel();
+        Constant constant = smodelFactory.createConstant();
         constant.setName("simpleCondition");
         constant.setDataType(DataType.BOOL);
-        kmodel.getConstants()
+        smodel.getConstants()
             .add(constant);
-        IfStatement rule = kmodelFactory.createIfStatement();
-        Expression condExpr = kmodelFactory.createExpression();
-        BoolLiteral boolLiteral = kmodelFactory.createBoolLiteral();
+        IfStatement rule = smodelFactory.createIfStatement();
+        Expression condExpr = smodelFactory.createExpression();
+        BoolLiteral boolLiteral = smodelFactory.createBoolLiteral();
         condExpr.setLiteral(boolLiteral);
         rule.setCondition(condExpr);
-        interpreter = new SmodelInterpreter(kmodel, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(smodel, vvp, pvp, rvp);
 
         boolean actual = interpreter.analyze();
 
