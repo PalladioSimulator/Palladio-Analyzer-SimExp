@@ -99,8 +99,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 qvtoReconfigurationManager);
 
         // Monitor PcmMonitor
-        // Analyzer KmodelInterpreter
-        // Planner KmodelInterpreter
+        // Analyzer SmodelInterpreter
+        // Planner SmodelInterpreter
         // Executor not required
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
@@ -112,13 +112,13 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         RuntimeValueProvider rvp = new KnowledgeLookup(null);
 
         Monitor monitor = new PcmMonitor(simSpecs, pvp);
-        SmodelInterpreter kmodelInterpreter = new SmodelInterpreter(smodel, vvp, pvp, rvp);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, vvp, pvp, rvp);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
-                kmodelInterpreter, kmodelInterpreter);
+                smodelInterpreter, smodelInterpreter);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        // FIXME: read thresholds from kmodel
+        // FIXME: read thresholds from smodel
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
@@ -139,8 +139,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         return executor;
     }
 
-    private List<Probe> findProbes(Smodel kmodel) {
-        return kmodel.getProbes();
+    private List<Probe> findProbes(Smodel smodel) {
+        return smodel.getProbes();
     }
 
 }
