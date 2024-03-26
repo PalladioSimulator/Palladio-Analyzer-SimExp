@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class EnvironmentVariableLookupTest {
     }
 
     @Test
-    public void testFindStaticEnvVariable() {
+    public void testFindGroundRandomEnvVariable() {
         EnvironmentalDynamicsTestModels envDynModels = envDynCreator.createSimpleEnvDynamcisModels();
         ProbabilisticModelRepository staticEnvDynModel = envDynModels.getStaticEnvModel();
         GroundRandomVariable grv = staticEnvDynModel.getModels()
@@ -39,15 +40,22 @@ public class EnvironmentVariableLookupTest {
         String expectedGRVId = grv.getId();
         EnvVariable envVar = smodelCreator.createEnvVariable(DataType.FLOAT, expectedGRVId, expectedGRVId);
 
-        GroundRandomVariable actualGRV = lookup.findStaticEnvironmentVariable(envVar);
+        GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
 
         assertEquals(expectedGRVId, actualGRV.getId());
     }
 
-    // keine statische GRV in envdyn models
-    // intertimelslice
-    // intratimeslice
-    // keine intertimelslice
-    // keine intratimeslice
+    @Test
+    public void testFindUnknownGroundRandomEnvVariable() throws Exception {
+        EnvironmentalDynamicsTestModels envDynModels = envDynCreator.createSimpleEnvDynamcisModels();
+        ProbabilisticModelRepository staticEnvDynModel = envDynModels.getStaticEnvModel();
+        EnvironmentVariableLookup lookup = new EnvironmentVariableLookup(staticEnvDynModel);
+        String expectedGRVId = "unknownGVR";
+        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.FLOAT, expectedGRVId, expectedGRVId);
+
+        GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
+
+        assertNull(actualGRV);
+    }
 
 }
