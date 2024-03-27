@@ -100,7 +100,7 @@ public class SmodelAcceptanceFieldTest {
     public void parseDuplicateConstantEnvVariableName() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool name = true;
-                envvar bool name : staticId = "statId" dynamicId = "dynId";
+                envvar bool name : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -126,8 +126,8 @@ public class SmodelAcceptanceFieldTest {
     @Test
     public void parseDuplicateEnvVariableAddressing() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool name1 : staticId "statId" dynamicId "dynId";
-                envvar bool name2 : staticId "statId" dynamicId "dynId";
+                envvar bool name1 : variableId "statId";
+                envvar bool name2 : variableId "statId";
                 if (name1 && name2) {}
                 """;
 

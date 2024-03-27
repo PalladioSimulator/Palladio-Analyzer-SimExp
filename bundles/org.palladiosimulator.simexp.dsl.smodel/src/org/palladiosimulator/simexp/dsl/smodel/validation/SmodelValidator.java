@@ -66,8 +66,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
         checkDuplicateIds("probe", model.getProbes(), Comparator.comparing(Probe::getKind)
             .thenComparing(Probe::getIdentifier));
-        checkDuplicateIds("envvar", model.getEnvVariables(), Comparator.comparing(EnvVariable::getStaticId)
-            .thenComparing(EnvVariable::getDynamicId));
+        checkDuplicateIds("envvar", model.getEnvVariables(), Comparator.comparing(EnvVariable::getVariableId));
 
         checkUnusedFields(model.getConstants());
         checkUnusedFields(model.getOptimizables());

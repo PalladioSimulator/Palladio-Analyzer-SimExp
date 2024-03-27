@@ -28,7 +28,7 @@ Optimizable:
 	;
 
 EnvVariable:	
-	'envvar' dataType=PrimitiveType name=ID ':' 'staticId' '=' staticId=STRING 'dynamicId' '=' dynamicId=STRING  ';'
+	'envvar' dataType=PrimitiveType name=ID ':' 'variableId' '=' variableId=STRING  ';'
 	;
 
 Probe:

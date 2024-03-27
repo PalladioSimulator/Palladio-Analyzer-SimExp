@@ -30,7 +30,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleBool() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : staticId = "statId" dynamicId = "dynId";
+                envvar bool varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -40,15 +40,14 @@ public class SmodelEnvVariableParsingTest {
         EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.BOOL);
-        exptectedVariable.setStaticId("statId");
-        exptectedVariable.setDynamicId("dynId");
+        exptectedVariable.setVariableId("statId");
         assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
     }
 
     @Test
     public void parseSingleInt() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar int varName : staticId = "statId" dynamicId = "dynId";
+                envvar int varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -58,15 +57,14 @@ public class SmodelEnvVariableParsingTest {
         EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.INT);
-        exptectedVariable.setStaticId("statId");
-        exptectedVariable.setDynamicId("dynId");
+        exptectedVariable.setVariableId("statId");
         assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
     }
 
     @Test
     public void parseSingleFloat() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar float varName : staticId = "statId" dynamicId = "dynId";
+                envvar float varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -76,15 +74,14 @@ public class SmodelEnvVariableParsingTest {
         EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.FLOAT);
-        exptectedVariable.setStaticId("statId");
-        exptectedVariable.setDynamicId("dynId");
+        exptectedVariable.setVariableId("statId");
         assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
     }
 
     @Test
     public void parseSingleString() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar string varName : staticId = "statId" dynamicId = "dynId";
+                envvar string varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -94,16 +91,15 @@ public class SmodelEnvVariableParsingTest {
         EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.STRING);
-        exptectedVariable.setStaticId("statId");
-        exptectedVariable.setDynamicId("dynId");
+        exptectedVariable.setVariableId("statId");
         assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
     }
 
     @Test
     public void parseTwoEnvVariables() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName1 : staticId = "statId1" dynamicId = "dynId1";
-                envvar int varName2 : staticId = "statId2" dynamicId = "dynId2";
+                envvar bool varName1 : variableId = "statId1";
+                envvar int varName2 : variableId = "statId2";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -113,47 +109,23 @@ public class SmodelEnvVariableParsingTest {
         EnvVariable exptectedVariable1 = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable1.setName("varName1");
         exptectedVariable1.setDataType(DataType.BOOL);
-        exptectedVariable1.setStaticId("statId1");
-        exptectedVariable1.setDynamicId("dynId1");
+        exptectedVariable1.setVariableId("statId1");
         EnvVariable exptectedVariable2 = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable2.setName("varName2");
         exptectedVariable2.setDataType(DataType.INT);
-        exptectedVariable2.setStaticId("statId2");
-        exptectedVariable2.setDynamicId("dynId2");
+        exptectedVariable2.setVariableId("statId2");
         assertThat(model.getEnvVariables(),
                 contains(samePropertyValuesAs(exptectedVariable1), samePropertyValuesAs(exptectedVariable2)));
     }
 
     @Test
-    public void parseWithoutStaticId() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : dynamicId = "dynId";
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'dynamicId' expecting 'staticId'");
-    }
-
-    @Test
-    public void parseWithoutDynamicId() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : staticId = "statId" ;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting 'dynamicId'");
-    }
-
-    @Test
-    public void parseWithoutIds() throws Exception {
+    public void parseWithoutId() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 envvar bool varName : ;
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting 'staticId'");
+        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting 'variableId'");
     }
 }
