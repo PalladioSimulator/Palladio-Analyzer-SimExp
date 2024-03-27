@@ -93,10 +93,10 @@ public class SModelInterpreterTest {
                     adapt(parameter=1);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
-
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
+
         Assert.assertTrue(interpreter.analyze());
     }
 
@@ -111,8 +111,8 @@ public class SModelInterpreterTest {
                     adapt(parameter=1);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertTrue(interpreter.analyze());
@@ -128,6 +128,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertTrue(interpreter.analyze());
@@ -145,6 +146,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -160,6 +162,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -172,6 +175,8 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        validationTestHelper.assertWarning(model, model.eClass(), null, "The action 'adapt' is never used.");
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
@@ -187,11 +192,12 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -208,18 +214,17 @@ public class SModelInterpreterTest {
                     adapt2(parameter=2);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(2, resolvedActions.size());
 
+        Assert.assertEquals(2, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
         assertResolvedAction(adapt, resolvedAdapt, 1);
-
         Action adapt2 = model.getActions()
             .get(1);
         ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
@@ -235,11 +240,12 @@ public class SModelInterpreterTest {
                     adapt(parameter=2);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
+
         Assert.assertEquals(2, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
@@ -261,18 +267,17 @@ public class SModelInterpreterTest {
                     }
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(2, resolvedActions.size());
 
+        Assert.assertEquals(2, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
         assertResolvedAction(adapt, resolvedAdapt, 2);
-
         Action adapt2 = model.getActions()
             .get(1);
         ResolvedAction resolvedAdapt2 = resolvedActions.get(1);
@@ -287,13 +292,13 @@ public class SModelInterpreterTest {
                     adapt(parameter=1);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -312,11 +317,12 @@ public class SModelInterpreterTest {
                     }
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
+
         Assert.assertEquals(0, resolvedActions.size());
     }
 
@@ -332,13 +338,12 @@ public class SModelInterpreterTest {
                     }
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
-
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -350,11 +355,13 @@ public class SModelInterpreterTest {
         String sb = MODEL_NAME_LINE + """
                 action adapt(param int parameter);
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        validationTestHelper.assertWarning(model, model.eClass(), null, "The action 'adapt' is never used.");
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
+
         Assert.assertEquals(0, resolvedActions.size());
     }
 
@@ -366,13 +373,13 @@ public class SModelInterpreterTest {
                     adapt();
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -387,13 +394,13 @@ public class SModelInterpreterTest {
                     adapt(parameter=1);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -408,13 +415,13 @@ public class SModelInterpreterTest {
                     adapt(parameter=1, parameter2=2, parameter3=3);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -424,18 +431,18 @@ public class SModelInterpreterTest {
     @Test
     public void testPlanWithActionWithSingleVariable() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                action adapt(var int{5, 4, 3, 2, 1} variable);
+                action adapt(optimizable int{5, 4, 3, 2, 1} variable);
                 if (true) {
                     adapt();
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -445,13 +452,13 @@ public class SModelInterpreterTest {
     @Test
     public void testPlanWithActionWithMultipleVariables() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                action adapt(var int{5, 4, 3, 2, 1} variable, var float{0.1, 0.2, 0.3} variable2);
+                action adapt(optimizable int{5, 4, 3, 2, 1} variable, optimizable float{0.1, 0.2, 0.3} variable2);
                 if (true) {
                     adapt();
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
@@ -466,18 +473,18 @@ public class SModelInterpreterTest {
     @Test
     public void testPlanWithActionWithParameterAndVariable() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                action adapt(param int parameter, var float{0.1, 0.2, 0.3} variable);
+                action adapt(param int parameter, optimizable float{0.1, 0.2, 0.3} variable);
                 if (true) {
                     adapt(parameter=3);
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
-        Assert.assertEquals(1, resolvedActions.size());
 
+        Assert.assertEquals(1, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
@@ -507,12 +514,13 @@ public class SModelInterpreterTest {
                     adapt3();
                 }
                 """;
-
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
         interpreter = new SmodelInterpreter(model, vvp, pvp);
+
         List<ResolvedAction> resolvedActions = interpreter.plan();
+
         Assert.assertEquals(2, resolvedActions.size());
         Action adapt = model.getActions()
             .get(0);
