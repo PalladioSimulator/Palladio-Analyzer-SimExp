@@ -31,7 +31,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleProbeMonitorId() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe bool probeName : monitorId "someId";
+                probe bool probeName : monitorId = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -49,7 +49,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleProbeId() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe bool probeName : id "someId";
+                probe bool probeName : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -67,7 +67,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleBoolProbe() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe bool condition : id "someId";
+                probe bool condition : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -85,7 +85,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleIntProbe() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe int count : id "someId";
+                probe int count : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -103,7 +103,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe float number : id "someId";
+                probe float number : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -121,7 +121,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe string word : id "someId";
+                probe string word : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -139,8 +139,8 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseTwoProbes() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe int count : id "someId";
-                probe string word : id "someOtherId";
+                probe int count : id = "someId";
+                probe string word : id = "someOtherId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -186,7 +186,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseBoolProbeAssignment() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe bool pName: id "ab11" = true;
+                probe bool pName: id = "ab11" = true;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -197,7 +197,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseIntProbeAssignment() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe int pName: id "ab11" = 1;
+                probe int pName: id = "ab11" = 1;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -208,7 +208,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseFloatProbeAssignment() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe float pName: id "ab11" = 1.0;
+                probe float pName: id = "ab11" = 1.0;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -219,7 +219,7 @@ public class SmodelProbeParsingTest {
     @Test
     public void parseStringProbeAssignment() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe string pName: id "ab11" = "s";
+                probe string pName: id = "ab11" = "s";
                 """;
 
         Smodel model = parserHelper.parse(sb);

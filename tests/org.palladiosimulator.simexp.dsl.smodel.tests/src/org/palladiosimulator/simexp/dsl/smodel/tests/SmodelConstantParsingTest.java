@@ -273,7 +273,7 @@ public class SmodelConstantParsingTest {
     @Test
     public void parseConstantWithProbeValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe int someProbe : id "someId";
+                probe int someProbe : id = "someId";
                 const int constant = someProbe;
                 """;
 

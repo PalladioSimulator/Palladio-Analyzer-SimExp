@@ -11,9 +11,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -31,7 +31,7 @@ public class SmodelFieldParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true, false} condition;
                 const int one = 1;
-                probe float aliasName : id "someId";
+                probe float aliasName : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -86,7 +86,7 @@ public class SmodelFieldParsingTest {
     public void parseDifferentFieldsWithSameName() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"word"} word;
-                probe string word : id "someId";
+                probe string word : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);

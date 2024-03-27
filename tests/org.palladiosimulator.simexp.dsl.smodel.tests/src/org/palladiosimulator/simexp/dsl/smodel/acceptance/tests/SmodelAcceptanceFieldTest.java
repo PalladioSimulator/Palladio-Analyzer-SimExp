@@ -32,7 +32,7 @@ public class SmodelAcceptanceFieldTest {
     public void parseMultipleVariableTypes() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool cBool = true;
-                probe bool pBool: id "ab11";
+                probe bool pBool: id = "ab11";
                 optimizable bool{true,false} vBool;
                 """;
 
@@ -73,8 +73,8 @@ public class SmodelAcceptanceFieldTest {
     @Test
     public void parseDuplicateProbeNames() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe bool name: id "ax10";
-                probe int name: id "ax11";
+                probe bool name: id = "ax10";
+                probe int name: id = "ax11";
                 """;
 
         Smodel model = parserHelper.parse(sb);

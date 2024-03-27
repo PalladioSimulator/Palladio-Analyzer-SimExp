@@ -32,7 +32,7 @@ EnvVariable:
 	;
 
 Probe:
-	'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind identifier=STRING ';'
+	'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind '=' identifier=STRING ';'
 	;
 
 enum ProbeAdressingKind:
