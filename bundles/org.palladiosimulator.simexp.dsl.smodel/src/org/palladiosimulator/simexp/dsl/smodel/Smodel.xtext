@@ -9,14 +9,13 @@ Smodel:
 	(constants+=Constant |
 	optimizables+=Optimizable  ';' |
 	envVariables+=EnvVariable |
-	probes+=Probe |
-	runtimes+=Runtime)*
+	probes+=Probe)*
 	actions+=Action*
 	statements+=IfStatement*
 	;
 	
 Field:
-	Constant | Optimizable | EnvVariable | Probe | Runtime | Parameter
+	Constant | Optimizable | EnvVariable | Probe | Parameter
 	;
 
 Constant:
@@ -39,10 +38,6 @@ enum ProbeAdressingKind:
     MONITORID='monitorId' | ID='id'
     ;
 
-Runtime:
-	'runtime' dataType=PrimitiveType name=ID ':' 'simple' ':' exp=EcoreExpression ';'
-	;
-
 Parameter:
 	'param' dataType=PrimitiveType name=ID
 	;
@@ -52,11 +47,6 @@ Bounds:
 	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
 	;
 
-EcoreExpression: 
-	name=ID ((withIndex?='[' index=INT ']') | 
-	(withPredicate?='{' param=ID '=' value=Literal '}'))? ('.' exp=EcoreExpression)?
-	;
-	
 Action: 
 	'action' name=ID '(' parameterList=ParameterList ')' ';'
 	;

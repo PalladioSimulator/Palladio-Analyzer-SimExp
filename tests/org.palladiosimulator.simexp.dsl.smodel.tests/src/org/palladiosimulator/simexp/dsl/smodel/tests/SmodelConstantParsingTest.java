@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -151,12 +152,14 @@ public class SmodelConstantParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int const1 = 1;
                 const int const2 = const1;
+                if (const2 == 0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        validationTestHelper.assertNoErrors(model);
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.CONSTANT, null,
+                "Constant 'const2' is probably redundant.");
         EList<Constant> fields = model.getConstants();
         Assert.assertEquals(2, fields.size());
         Constant firstConstant = fields.get(0);
@@ -175,6 +178,19 @@ public class SmodelConstantParsingTest {
             .getLiteral();
         Assert.assertEquals(firstConstant, fieldReference);
         Assert.assertEquals(((IntLiteral) firstValue).getValue(), ((IntLiteral) secondValue).getValue());
+    }
+
+    @Test
+    public void parseConstantWithConstantValueComputed() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1;
+                const int anotherConstant = constant * 2;
+                if (anotherConstant == 0) {}
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoIssues(model);
     }
 
     @Test
@@ -275,20 +291,6 @@ public class SmodelConstantParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe int someProbe : id = "someId";
                 const int constant = someProbe;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Cannot assign an expression containing a non-constant value to a constant.");
-    }
-
-    @Test
-    public void parseConstantWithRuntimeValue() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                runtime int rint : simple: a;
-                const int constant = rint;
                 """;
 
         Smodel model = parserHelper.parse(sb);

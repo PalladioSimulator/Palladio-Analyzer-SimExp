@@ -22,10 +22,9 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     private final Smodel model;
     private final SmodelValueSwitch valueSwitch;
 
-    public SmodelInterpreter(Smodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
-            RuntimeValueProvider rvp) {
+    public SmodelInterpreter(Smodel model, VariableValueProvider vvp, ProbeValueProvider pvp) {
         this.model = model;
-        this.valueSwitch = new SmodelValueSwitch(vvp, pvp, rvp);
+        this.valueSwitch = new SmodelValueSwitch(vvp, pvp);
     }
 
     @Override

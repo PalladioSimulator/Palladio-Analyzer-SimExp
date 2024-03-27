@@ -17,7 +17,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
@@ -25,13 +24,11 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
 
     private final VariableValueProvider vvp;
     private final ProbeValueProvider pvp;
-    private final RuntimeValueProvider rvp;
     private final Map<Constant, Object> resolvedConstants;
 
-    public SmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp, RuntimeValueProvider rvp) {
+    public SmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp) {
         this.vvp = vvp;
         this.pvp = pvp;
-        this.rvp = rvp;
         this.resolvedConstants = new HashMap<>();
     }
 
@@ -87,18 +84,6 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
         if (value == null) {
             throw new RuntimeException(
                     "The ProbeValueProvider couldn't provide a value for probe '" + probe.getName() + "'.");
-        }
-
-        return value;
-    }
-
-    @Override
-    public Object caseRuntime(Runtime runtime) {
-        Object value = rvp.getValue(runtime);
-
-        if (value == null) {
-            throw new RuntimeException(
-                    "The RuntimeValueProvider couldn't provide a value for runtime '" + runtime.getName() + "'.");
         }
 
         return value;

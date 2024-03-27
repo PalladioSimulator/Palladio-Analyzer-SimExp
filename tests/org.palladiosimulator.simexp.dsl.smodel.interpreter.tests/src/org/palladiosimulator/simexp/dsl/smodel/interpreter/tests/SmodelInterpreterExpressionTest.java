@@ -6,17 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -29,7 +26,6 @@ public class SmodelInterpreterExpressionTest {
     private SmodelInterpreter interpreter;
     private VariableValueProvider vvp;
     private ProbeValueProvider pvp;
-    private RuntimeValueProvider rvp;
 
     @Before
     public void setUp() {
@@ -39,7 +35,6 @@ public class SmodelInterpreterExpressionTest {
 
         vvp = new TestVariableValueProvider();
         pvp = new TestProbeValueProvider();
-        rvp = new TestRuntimeValueProvider();
     }
 
     @Test
@@ -50,7 +45,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -71,7 +66,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -92,7 +87,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -112,7 +107,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -130,7 +125,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -155,7 +150,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Optimizable variable = model.getOptimizables()
             .get(0);
@@ -175,29 +170,13 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Probe probe = model.getProbes()
             .get(0);
         boolean value = (boolean) interpreter.getValue(probe);
 
         Assert.assertTrue(value);
-    }
-
-    @Test
-    public void testRuntimeExpressionValue() throws Exception {
-        String sb = MODEL_NAME_LINE + """
-                runtime int value: simple: a[0].b;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-
-        Runtime runtime = model.getRuntimes()
-            .get(0);
-        int value = ((Number) interpreter.getValue(runtime)).intValue();
-
-        Assert.assertEquals(1, value);
     }
 
     @Test
@@ -210,7 +189,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -241,7 +220,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -270,7 +249,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -291,7 +270,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -312,7 +291,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -334,7 +313,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -360,7 +339,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -386,7 +365,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -412,7 +391,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -439,7 +418,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -470,7 +449,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -499,7 +478,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -525,7 +504,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -574,7 +553,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -630,7 +609,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -663,7 +642,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -684,7 +663,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -705,7 +684,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -726,7 +705,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -748,7 +727,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);
@@ -773,7 +752,7 @@ public class SmodelInterpreterExpressionTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Constant constant = model.getConstants()
             .get(0);

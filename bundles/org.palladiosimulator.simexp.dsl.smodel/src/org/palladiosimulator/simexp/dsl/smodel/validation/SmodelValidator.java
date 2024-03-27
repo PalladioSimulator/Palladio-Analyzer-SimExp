@@ -72,7 +72,6 @@ public class SmodelValidator extends AbstractSmodelValidator {
         checkUnusedFields(model.getOptimizables());
         checkUnusedFields(model.getEnvVariables());
         checkUnusedFields(model.getProbes());
-        checkUnusedFields(model.getRuntimes());
 
         List<Action> actions = model.getActions();
         for (int i = 0; i < actions.size(); i++) {
@@ -131,12 +130,14 @@ public class SmodelValidator extends AbstractSmodelValidator {
             error("Cyclic reference detected.", constant, SmodelPackage.Literals.CONSTANT__VALUE);
         }
 
+        Expression expression = constant.getValue();
         if (allFieldReferences.size() == 1) {
-            warning("Constant '" + constant.getName() + "' is probably redundant.",
-                    SmodelPackage.Literals.CONSTANT__VALUE);
+            if (expression.getOp() == Operation.UNDEFINED) {
+                warning("Constant '" + constant.getName() + "' is probably redundant.",
+                        SmodelPackage.Literals.CONSTANT__VALUE);
+            }
         }
 
-        Expression expression = constant.getValue();
         if (expression != null) {
             DataType constantDataType = getDataType(constant);
             DataType valueDataType = getDataType(expression);

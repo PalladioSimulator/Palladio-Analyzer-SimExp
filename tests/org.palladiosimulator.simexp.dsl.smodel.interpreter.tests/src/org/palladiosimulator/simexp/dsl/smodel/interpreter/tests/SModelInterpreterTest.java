@@ -5,18 +5,19 @@ import static org.junit.Assert.assertFalse;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestRuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
@@ -41,17 +42,19 @@ public class SModelInterpreterTest {
     private SmodelInterpreter interpreter;
     private VariableValueProvider vvp;
     private ProbeValueProvider pvp;
-    private RuntimeValueProvider rvp;
+
+    @Inject
+    private ValidationTestHelper validationTestHelper;
 
     @Before
     public void setUp() {
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+        injector.injectMembers(this);
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
         }));
 
         pvp = new TestProbeValueProvider();
         vvp = new TestVariableValueProvider();
-        rvp = new TestRuntimeValueProvider();
     }
 
     @Test
@@ -75,7 +78,7 @@ public class SModelInterpreterTest {
         BoolLiteral boolLiteral = kmodelFactory.createBoolLiteral();
         condExpr.setLiteral(boolLiteral);
         rule.setCondition(condExpr);
-        interpreter = new SmodelInterpreter(kmodel, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(kmodel, vvp, pvp);
 
         boolean actual = interpreter.analyze();
 
@@ -93,7 +96,7 @@ public class SModelInterpreterTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
         Assert.assertTrue(interpreter.analyze());
     }
 
@@ -110,7 +113,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertTrue(interpreter.analyze());
     }
@@ -125,7 +128,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertTrue(interpreter.analyze());
     }
@@ -142,7 +145,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
     }
@@ -157,7 +160,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
     }
@@ -169,7 +172,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         Assert.assertFalse(interpreter.analyze());
     }
@@ -184,7 +187,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -207,7 +210,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(2, resolvedActions.size());
@@ -234,7 +237,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(2, resolvedActions.size());
@@ -260,7 +263,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(2, resolvedActions.size());
@@ -286,7 +289,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -311,7 +314,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(0, resolvedActions.size());
@@ -331,7 +334,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -349,7 +352,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(0, resolvedActions.size());
@@ -365,7 +368,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -386,7 +389,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -407,7 +410,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -428,7 +431,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -449,7 +452,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -470,7 +473,7 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
 
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(1, resolvedActions.size());
@@ -487,8 +490,8 @@ public class SModelInterpreterTest {
                 const int constant = 1;
                 const int anotherConstant = constant * 2;
                 optimizable float{1.5, 2.5, 3.5} adaptationFactor;
-                probe float someProbe : abc123;
-                runtime string someRuntime: simple: a[0].b;
+                probe float someProbe : id = "abc123";
+                probe string someRuntime: id = "b";
 
                 action adapt(param int parameter, param float factor);
                 action adapt2(param float parameter, optimizable float[1,5,1] someRange);
@@ -506,16 +509,15 @@ public class SModelInterpreterTest {
                 """;
 
         Smodel model = parserHelper.parse(sb);
-        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
 
+        validationTestHelper.assertNoIssues(model);
+        interpreter = new SmodelInterpreter(model, vvp, pvp);
         List<ResolvedAction> resolvedActions = interpreter.plan();
         Assert.assertEquals(2, resolvedActions.size());
-
         Action adapt = model.getActions()
             .get(0);
         ResolvedAction resolvedAdapt = resolvedActions.get(0);
         assertResolvedAction(adapt, resolvedAdapt, 2, 0.5f);
-
         Action adapt2 = model.getActions()
             .get(1);
         ResolvedAction resolvedAdapt2 = resolvedActions.get(1);

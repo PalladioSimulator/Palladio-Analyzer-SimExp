@@ -8,6 +8,7 @@ Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.13.0",
  com.google.inject;bundle-version="3.0.0",
+ org.eclipse.xtext.testing,
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.monitorrepository,
  org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0"

@@ -23,13 +23,11 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.DummyVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.RuntimeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
@@ -103,10 +101,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
         List<Probe> probes = findProbes(kmodel);
         PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
-        RuntimeValueProvider rvp = new KnowledgeLookup(null);
 
         Monitor monitor = new PcmMonitor(simSpecs, pvp);
-        SmodelInterpreter kmodelInterpreter = new SmodelInterpreter(kmodel, vvp, pvp, rvp);
+        SmodelInterpreter kmodelInterpreter = new SmodelInterpreter(kmodel, vvp, pvp);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 kmodelInterpreter, kmodelInterpreter);
 
