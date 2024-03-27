@@ -100,7 +100,7 @@ public class SmodelAcceptanceFieldTest {
     public void parseDuplicateConstantEnvVariableName() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool name = true;
-                envvar bool name : staticId "statId" dynamicId "dynId";
+                envvar bool name : staticId = "statId" dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);

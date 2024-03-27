@@ -30,7 +30,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleBool() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : staticId "statId" dynamicId "dynId";
+                envvar bool varName : staticId = "statId" dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -48,7 +48,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleInt() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar int varName : staticId "statId" dynamicId "dynId";
+                envvar int varName : staticId = "statId" dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -66,7 +66,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleFloat() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar float varName : staticId "statId" dynamicId "dynId";
+                envvar float varName : staticId = "statId" dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -84,7 +84,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleString() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar string varName : staticId "statId" dynamicId "dynId";
+                envvar string varName : staticId = "statId" dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -102,8 +102,8 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseTwoEnvVariables() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName1 : staticId "statId1" dynamicId "dynId1";
-                envvar int varName2 : staticId "statId2" dynamicId "dynId2";
+                envvar bool varName1 : staticId = "statId1" dynamicId = "dynId1";
+                envvar int varName2 : staticId = "statId2" dynamicId = "dynId2";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -127,7 +127,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseWithoutStaticId() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : dynamicId "dynId";
+                envvar bool varName : dynamicId = "dynId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -138,7 +138,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseWithoutDynamicId() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar bool varName : staticId "statId" ;
+                envvar bool varName : staticId = "statId" ;
                 """;
 
         Smodel model = parserHelper.parse(sb);
