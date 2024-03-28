@@ -53,8 +53,8 @@ Action:
 
 ParameterList: 
 	{ParameterList}
-	(((parameters+=Parameter (',' parameters+=Parameter)* (',' variables+=Optimizable)*)) |
-	(variables+=Optimizable (',' variables+=Optimizable)*))?
+	(((parameters+=Parameter (',' parameters+=Parameter)* (',' optimizables+=Optimizable)*)) |
+	(optimizables+=Optimizable (',' optimizables+=Optimizable)*))?
 	;
 
 Statement:

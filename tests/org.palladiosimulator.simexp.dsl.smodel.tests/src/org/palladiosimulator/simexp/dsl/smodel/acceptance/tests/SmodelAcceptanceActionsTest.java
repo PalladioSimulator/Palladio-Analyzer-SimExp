@@ -80,9 +80,9 @@ public class SmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(2, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(0, variables.size());
+        EList<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        assertEquals(0, optimizables.size());
         Parameter param = parameters.get(0);
         assertEquals("pb1", param.getName());
         assertEquals(DataType.BOOL, param.getDataType());
@@ -108,10 +108,10 @@ public class SmodelAcceptanceActionsTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(2, variables.size());
-        Optimizable variable1 = variables.get(0);
+        EList<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        assertEquals(2, optimizables.size());
+        Optimizable variable1 = optimizables.get(0);
         assertEquals("vb", variable1.getName());
         assertEquals(DataType.BOOL, variable1.getDataType());
         Bounds bounds = variable1.getValues();
@@ -123,7 +123,7 @@ public class SmodelAcceptanceActionsTest {
             .get(1);
         List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
         MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
-        Optimizable variable2 = variables.get(1);
+        Optimizable variable2 = optimizables.get(1);
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();

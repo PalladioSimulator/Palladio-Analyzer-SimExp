@@ -111,7 +111,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
 
         List<Optimizable> variables = actionCall.getActionRef()
             .getParameterList()
-            .getVariables();
+            .getOptimizables();
         resolvedArguments.putAll(variables.stream()
             .collect(Collectors.toMap(Field::getName, this::getValue)));
 

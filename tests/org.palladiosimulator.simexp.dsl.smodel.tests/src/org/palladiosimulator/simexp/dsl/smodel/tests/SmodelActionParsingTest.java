@@ -229,10 +229,10 @@ public class SmodelActionParsingTest {
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
+        List<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        Assert.assertEquals(1, optimizables.size());
+        Field variable = optimizables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
@@ -265,10 +265,10 @@ public class SmodelActionParsingTest {
         Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
-        List<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
+        List<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        Assert.assertEquals(1, optimizables.size());
+        Field variable = optimizables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
@@ -437,10 +437,10 @@ public class SmodelActionParsingTest {
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
+        List<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        Assert.assertEquals(1, optimizables.size());
+        Field variable = optimizables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         List<Statement> statements = model.getStatements();
@@ -655,10 +655,10 @@ public class SmodelActionParsingTest {
         EList<Parameter> parameters = action.getParameterList()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Optimizable> variables = action.getParameterList()
-            .getVariables();
-        assertEquals(1, variables.size());
-        Optimizable variable = variables.get(0);
+        EList<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
+        assertEquals(1, optimizables.size());
+        Optimizable variable = optimizables.get(0);
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();

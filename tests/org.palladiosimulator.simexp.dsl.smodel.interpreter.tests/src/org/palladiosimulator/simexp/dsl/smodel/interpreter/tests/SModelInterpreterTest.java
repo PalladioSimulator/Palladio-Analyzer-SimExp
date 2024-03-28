@@ -538,12 +538,12 @@ public class SModelInterpreterTest {
 
         List<Parameter> parameters = action.getParameterList()
             .getParameters();
-        List<Optimizable> variables = action.getParameterList()
-            .getVariables();
+        List<Optimizable> optimizables = action.getParameterList()
+            .getOptimizables();
         Map<String, Object> resolvedArguments = resolvedAction.getArguments();
 
         // Check, if the expected & actual amount of resolved arguments match.
-        Assert.assertEquals(parameters.size() + variables.size(), resolvedArguments.size());
+        Assert.assertEquals(parameters.size() + optimizables.size(), resolvedArguments.size());
 
         // Check if the expected & actual names & values for parameter arguments match.
         for (int i = 0; i < parameters.size(); i++) {
@@ -555,8 +555,8 @@ public class SModelInterpreterTest {
         }
 
         // Check if the expected & actual names & values for variable arguments match.
-        for (int i = 0; i < variables.size(); i++) {
-            Field variable = variables.get(i);
+        for (int i = 0; i < optimizables.size(); i++) {
+            Field variable = optimizables.get(i);
             Assert.assertTrue(resolvedArguments.containsKey(variable.getName()));
 
             Object value = resolvedArguments.get(variable.getName());
