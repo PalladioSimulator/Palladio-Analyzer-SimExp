@@ -66,19 +66,19 @@ public class SModelInterpreterTest {
          * }
          */
 
-        SmodelFactory kmodelFactory = SmodelFactory.eINSTANCE;
-        Smodel kmodel = kmodelFactory.createSmodel();
-        Constant constant = kmodelFactory.createConstant();
+        SmodelFactory smodelFactory = SmodelFactory.eINSTANCE;
+        Smodel smodel = smodelFactory.createSmodel();
+        Constant constant = smodelFactory.createConstant();
         constant.setName("simpleCondition");
         constant.setDataType(DataType.BOOL);
-        kmodel.getConstants()
+        smodel.getConstants()
             .add(constant);
-        IfStatement rule = kmodelFactory.createIfStatement();
-        Expression condExpr = kmodelFactory.createExpression();
-        BoolLiteral boolLiteral = kmodelFactory.createBoolLiteral();
+        IfStatement rule = smodelFactory.createIfStatement();
+        Expression condExpr = smodelFactory.createExpression();
+        BoolLiteral boolLiteral = smodelFactory.createBoolLiteral();
         condExpr.setLiteral(boolLiteral);
         rule.setCondition(condExpr);
-        interpreter = new SmodelInterpreter(kmodel, vvp, pvp);
+        interpreter = new SmodelInterpreter(smodel, vvp, pvp);
 
         boolean actual = interpreter.analyze();
 
@@ -498,13 +498,13 @@ public class SModelInterpreterTest {
                 const int anotherConstant = constant * 2;
                 optimizable float{1.5, 2.5, 3.5} adaptationFactor;
                 probe float someProbe : id = "abc123";
-                probe string someRuntime: id = "b";
+                probe float someRuntime: id = "b";
 
                 action adapt(param int parameter, param float factor);
                 action adapt2(param float parameter, optimizable float[1,5,1] someRange);
                 action adapt3();
 
-                if (someProbe > 0 || someProbe <= -10 && someRuntime == \"string\") {
+                if (someProbe > 0 || someProbe <= -10 && someRuntime == 0.0) {
                     adapt(parameter=anotherConstant, factor=0.5);
                     if (someProbe > 0 && someProbe < 10) {
                         adapt2(parameter=adaptationFactor);

@@ -15,6 +15,9 @@
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
     <stringAttribute key="location" value="${workspace_loc}/../runtime-SimExp"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
@@ -23,54 +26,49 @@
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="ch.ethz.iks.r_osgi.remote*1.2.201.v20191025-0020@default:default"/>
+        <setEntry value="ch.ethz.iks.r_osgi.remote@default:default"/>
         <setEntry value="com.google.auto.factory-annotations@default:default"/>
         <setEntry value="com.google.dagger@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
         <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
-        <setEntry value="com.google.guava*30.1.0.v20210127-2300@default:default"/>
-        <setEntry value="com.google.inject@default:default"/>
-        <setEntry value="com.ibm.icu@default:default"/>
-        <setEntry value="com.sun.jna*4.5.1.v20190425-1842@default:default"/>
-        <setEntry value="com.sun.jna*5.8.0.v20210503-0343@default:default"/>
-        <setEntry value="com.sun.jna.platform*4.5.1.v20190425-1842@default:default"/>
-        <setEntry value="com.sun.jna.platform*5.8.0.v20210406-1004@default:default"/>
+        <setEntry value="com.google.inject*5.0.1.v20221112-0806@default:default"/>
+        <setEntry value="com.ibm.icu*72.1.0@default:default"/>
+        <setEntry value="com.sun.jna.platform@default:default"/>
+        <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="de.desmoj@default:default"/>
         <setEntry value="de.mdelab.sdm.interpreter.core.eclipse@default:default"/>
         <setEntry value="de.mdelab.sdm.interpreter.core@default:default"/>
-        <setEntry value="io.github.classgraph@default:default"/>
+        <setEntry value="io.github.classgraph*4.8.149.v20220915-0556@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.inject@default:default"/>
         <setEntry value="lpg.runtime.java@default:default"/>
-        <setEntry value="org.antlr.runtime@default:default"/>
+        <setEntry value="org.antlr.runtime*3.2.0.v20220404-1927@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
         <setEntry value="org.apache.batik.bridge@default:default"/>
         <setEntry value="org.apache.batik.constants@default:default"/>
-        <setEntry value="org.apache.batik.css*1.14.0.v20210324-0332@default:default"/>
         <setEntry value="org.apache.batik.css*1.6.0.v201011041432@default:default"/>
+        <setEntry value="org.apache.batik.dom*1.16.0.v20230210-1249@default:default"/>
         <setEntry value="org.apache.batik.dom.svg@default:default"/>
-        <setEntry value="org.apache.batik.dom@default:default"/>
         <setEntry value="org.apache.batik.ext.awt@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.parser@default:default"/>
         <setEntry value="org.apache.batik.pdf@default:default"/>
-        <setEntry value="org.apache.batik.svggen@default:default"/>
+        <setEntry value="org.apache.batik.svggen*1.16.0.v20221027-0840@default:default"/>
         <setEntry value="org.apache.batik.transcoder@default:default"/>
-        <setEntry value="org.apache.batik.util*1.14.0.v20210324-0332@default:default"/>
         <setEntry value="org.apache.batik.util*1.6.0.v201011041432@default:default"/>
         <setEntry value="org.apache.batik.util.gui@default:default"/>
-        <setEntry value="org.apache.batik.xml@default:default"/>
+        <setEntry value="org.apache.batik.xml*1.16.0.v20221027-0840@default:default"/>
         <setEntry value="org.apache.commons.cli@default:default"/>
         <setEntry value="org.apache.commons.codec@default:default"/>
         <setEntry value="org.apache.commons.collections15@default:default"/>
         <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
-        <setEntry value="org.apache.commons.lang@default:default"/>
+        <setEntry value="org.apache.commons.lang*2.6.0.v20220406-2305@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.commons.math3*3.6.1.v20200817-1830@default:default"/>
         <setEntry value="org.apache.commons.math@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
-        <setEntry value="org.apache.log4j@default:default"/>
+        <setEntry value="org.apache.log4j*1.2.19.v20220208-1728@default:default"/>
         <setEntry value="org.apache.xmlgraphics@default:default"/>
         <setEntry value="org.bouncycastle.bcpg@default:default"/>
         <setEntry value="org.bouncycastle.bcprov@default:default"/>
@@ -121,8 +119,6 @@
         <setEntry value="org.eclipse.e4.ui.workbench3@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
-        <setEntry value="org.eclipse.ecf.remoteservice.asyncproxy*2.1.100.v20200611-2220@default:default"/>
-        <setEntry value="org.eclipse.ecf.remoteservice@default:default"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.emf.cdo.common@default:default"/>
         <setEntry value="org.eclipse.emf.cdo@default:default"/>
@@ -298,45 +294,16 @@
         <setEntry value="org.eclipse.update.configurator@default:default"/>
         <setEntry value="org.eclipse.urischeme@default:default"/>
         <setEntry value="org.eclipse.xpand@default:default"/>
-        <setEntry value="org.eclipse.xtend.core*2.25.0.v20210301-1408@default:default"/>
-        <setEntry value="org.eclipse.xtend.lib*2.25.0.v20210301-0821@default:default"/>
-        <setEntry value="org.eclipse.xtend.lib.macro*2.25.0.v20210301-0821@default:default"/>
-        <setEntry value="org.eclipse.xtend.standalone*2.25.0.v20210301-1408@default:default"/>
         <setEntry value="org.eclipse.xtend.typesystem.emf@default:default"/>
         <setEntry value="org.eclipse.xtend@default:default"/>
-        <setEntry value="org.eclipse.xtext*2.25.0.v20210301-0843@default:default"/>
-        <setEntry value="org.eclipse.xtext.activities*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.builder*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.builder.standalone*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.common.types*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.common.types.ui*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ecore*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.generator*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.ide*2.25.0.v20210301-0843@default:default"/>
-        <setEntry value="org.eclipse.xtext.junit4*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.smap*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.testing*2.25.0.v20210301-0843@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui.codetemplates*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui.codetemplates.ide*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui.codetemplates.ui*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui.shared*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.ui.testing*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.util*2.25.0.v20210301-0843@default:default"/>
-        <setEntry value="org.eclipse.xtext.xbase*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.xbase.ide*2.25.0.v20210301-0909@default:default"/>
-        <setEntry value="org.eclipse.xtext.xbase.junit*2.25.0.v20210301-0928@default:default"/>
-        <setEntry value="org.eclipse.xtext.xbase.lib*2.25.0.v20210301-0821@default:default"/>
-        <setEntry value="org.eclipse.xtext.xtext.generator*2.25.0.v20210301-0843@default:default"/>
+        <setEntry value="org.eclipse.xtext.generator@default:default"/>
         <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.jfree.jfreechart@default:default"/>
         <setEntry value="org.jgrapht.core@default:default"/>
         <setEntry value="org.jheaps@default:default"/>
         <setEntry value="org.jscience@default:default"/>
-        <setEntry value="org.junit@default:default"/>
-        <setEntry value="org.objectweb.asm*7.2.0.v20191010-1910@default:default"/>
+        <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
         <setEntry value="org.objectweb.asm*8.0.1.v20200420-1007@default:default"/>
-        <setEntry value="org.objectweb.asm*9.1.0.v20210209-1849@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.storydriven.core@default:default"/>
@@ -411,7 +378,6 @@
         <setEntry value="org.palladiosimulator.commons.stoex.ui@default:default"/>
         <setEntry value="org.palladiosimulator.commons.stoex@default:default"/>
         <setEntry value="org.palladiosimulator.commons@default:default"/>
-        <setEntry value="org.palladiosimulator.cost.profile@default:default"/>
         <setEntry value="org.palladiosimulator.dependability.ml.sensitivity@default:default"/>
         <setEntry value="org.palladiosimulator.dependability.ml.ui@default:default"/>
         <setEntry value="org.palladiosimulator.dependability.ml@default:default"/>
@@ -490,10 +456,6 @@
         <setEntry value="org.palladiosimulator.simexp.core@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.distribution.apache@1:true"/>
         <setEntry value="org.palladiosimulator.simexp.distribution@2:true"/>
-        <setEntry value="org.palladiosimulator.simexp.dsl.kmodel.ide@default:default"/>
-        <setEntry value="org.palladiosimulator.simexp.dsl.kmodel.interpreter@default:default"/>
-        <setEntry value="org.palladiosimulator.simexp.dsl.kmodel.ui@default:default"/>
-        <setEntry value="org.palladiosimulator.simexp.dsl.kmodel@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.environmentaldynamics@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.markovian.model@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.markovian@default:default"/>
@@ -507,7 +469,6 @@
         <setEntry value="org.palladiosimulator.simexp.pcm.examples@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.pcm.prism@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.pcm.reliability@default:default"/>
-        <setEntry value="org.palladiosimulator.simexp.pcm.ui@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.pcm@default:default"/>
         <setEntry value="org.palladiosimulator.simexp.service@3:true"/>
         <setEntry value="org.palladiosimulator.simexp.ui.workflow@default:default"/>

@@ -79,7 +79,13 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
 
     @Override
     public Object caseProbe(Probe probe) {
-        Object value = pvp.getValue(probe);
+        Object value = null;
+        if (DataType.FLOAT == probe.getDataType()) {
+            value = pvp.getDoubleValue(probe);
+        }
+        if (DataType.BOOL == probe.getDataType()) {
+            value = pvp.getBooleanValue(probe);
+        }
 
         if (value == null) {
             throw new RuntimeException(
