@@ -16,5 +16,6 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
  org.palladiosimulator.envdyn.model,
+ org.eclipse.xtext.testing,
  org.palladiosimulator.simexp.dsl.smodel
 Import-Package: org.eclipse.xtext.testing.util

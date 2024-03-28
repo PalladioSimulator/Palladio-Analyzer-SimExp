@@ -1,32 +1,45 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks.TestVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
-public class SmodelInterpreterExpressionTest {
+public class ExpressionCalculatorTest {
     public static final String MODEL_NAME_LINE = "modelName = \"name\";";
 
+    private ExpressionCalculator calculator;
+
     private ParseHelper<Smodel> parserHelper;
-    private SmodelInterpreter interpreter;
-    private VariableValueProvider vvp;
+    private ValidationTestHelper validationTestHelper;
+
+    @Mock
+    private IFieldValueProvider fieldValueProvider;
 
     @Before
     public void setUp() {
+        initMocks(this);
+        calculator = new ExpressionCalculator(fieldValueProvider);
+
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
         }));
-
-        vvp = new TestVariableValueProvider();
+        validationTestHelper = injector.getInstance(ValidationTestHelper.class);
     }
 
     @Test
@@ -35,17 +48,17 @@ public class SmodelInterpreterExpressionTest {
                 const bool value = true;
                 const bool value2 = false;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-        /*
-         * interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-         * 
-         * Constant constant = model.getConstants() .get(0); boolean value = (boolean)
-         * interpreter.getValue(constant); Constant constant2 = model.getConstants() .get(1);
-         * boolean value2 = (boolean) interpreter.getValue(constant2);
-         * 
-         * Assert.assertTrue(value); Assert.assertFalse(value2);
-         */
+        validationTestHelper.assertNoErrors(model);
+        EList<Constant> constants = model.getConstants();
+        Constant constant1 = constants.get(0);
+        Constant constant2 = constants.get(1);
+
+        boolean actualCalculatedBoolean1 = calculator.calculateBoolean(constant1.getValue());
+        boolean actualCalculatedBoolean2 = calculator.calculateBoolean(constant2.getValue());
+
+        assertTrue(actualCalculatedBoolean1);
+        assertFalse(actualCalculatedBoolean2);
     }
 
     @Test
