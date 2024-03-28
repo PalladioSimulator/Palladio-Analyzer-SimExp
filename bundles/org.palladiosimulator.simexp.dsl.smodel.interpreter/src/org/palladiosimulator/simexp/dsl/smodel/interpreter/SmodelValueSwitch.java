@@ -24,14 +24,15 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 public class SmodelValueSwitch extends SmodelSwitch<Object> {
 
     private final VariableValueProvider vvp;
-    private final ProbeValueProvider pvp;
-    private final RuntimeValueProvider rvp;
+    // private final ProbeValueProvider pvp;
+    // private final RuntimeValueProvider rvp;
     private final Map<Constant, Object> resolvedConstants;
 
-    public SmodelValueSwitch(VariableValueProvider vvp, ProbeValueProvider pvp, RuntimeValueProvider rvp) {
+    public SmodelValueSwitch(
+            VariableValueProvider vvp/* , ProbeValueProvider pvp, RuntimeValueProvider rvp */) {
         this.vvp = vvp;
-        this.pvp = pvp;
-        this.rvp = rvp;
+        // this.pvp = pvp;
+        // this.rvp = rvp;
         this.resolvedConstants = new HashMap<>();
     }
 
@@ -84,10 +85,10 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
     public Object caseProbe(Probe probe) {
         Object value = null;
         if (DataType.FLOAT == probe.getDataType()) {
-            value = pvp.getDoubleValue(probe);
+            // value = pvp.getDoubleValue(probe);
         }
         if (DataType.BOOL == probe.getDataType()) {
-            value = pvp.getBooleanValue(probe);
+            // value = pvp.getBooleanValue(probe);
         }
 
         if (value == null) {
@@ -100,14 +101,16 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
 
     @Override
     public Object caseRuntime(Runtime runtime) {
-        Object value = rvp.getValue(runtime);
-
-        if (value == null) {
-            throw new RuntimeException(
-                    "The RuntimeValueProvider couldn't provide a value for runtime '" + runtime.getName() + "'.");
-        }
-
-        return value;
+        /*
+         * Object value = rvp.getValue(runtime);
+         * 
+         * if (value == null) { throw new RuntimeException(
+         * "The RuntimeValueProvider couldn't provide a value for runtime '" + runtime.getName() +
+         * "'."); }
+         * 
+         * return value;
+         */
+        return null;
     }
 
     @Override

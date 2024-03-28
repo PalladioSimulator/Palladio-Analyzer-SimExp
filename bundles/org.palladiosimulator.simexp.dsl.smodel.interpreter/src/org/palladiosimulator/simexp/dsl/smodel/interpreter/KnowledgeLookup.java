@@ -11,14 +11,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Runtime;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
-public class KnowledgeLookup implements RuntimeValueProvider {
+public class KnowledgeLookup {
     private final EObject root;
 
     public KnowledgeLookup(EObject root) {
         this.root = root;
     }
 
-    @Override
     public Object getValue(Runtime runtime) {
         EcoreExpression expression = runtime.getExp();
         return getValue(expression, root);

@@ -7,19 +7,14 @@ Fragment-Host: org.palladiosimulator.simexp.dsl.smodel.interpreter;bundle-versio
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit;bundle-version="4.13.0",
- com.google.inject;bundle-version="3.0.0",
  org.palladiosimulator.simexp.pcm,
- org.palladiosimulator.monitorrepository,
  org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0",
  org.palladiosimulator.simexp.dsl.smodel.interpreter,
  org.palladiosimulator.experimentautomation,
- org.palladiosimulator.edp2,
  org.mockito.mockito-merged;bundle-version="3.3.3",
  net.bytebuddy.byte-buddy;bundle-version="1.10.9",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
  org.palladiosimulator.envdyn.model,
- org.eclipse.emf.ecore,
- tools.mdsd.probdist.model.basic;bundle-version="1.0.0",
- tools.mdsd.probdist.model
+ org.palladiosimulator.simexp.dsl.smodel
 Import-Package: org.eclipse.xtext.testing.util
