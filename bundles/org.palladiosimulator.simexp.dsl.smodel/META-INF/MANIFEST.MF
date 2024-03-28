@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.smodel
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: org.palladiosimulator.simexp.dsl.smodel,
+ org.palladiosimulator.simexp.dsl.smodel.generator,
+ org.palladiosimulator.simexp.dsl.smodel.smodel,
+ org.palladiosimulator.simexp.dsl.smodel.smodel.impl,
+ org.palladiosimulator.simexp.dsl.smodel.smodel.util,
+ org.palladiosimulator.simexp.dsl.smodel.parser.antlr,
+ org.palladiosimulator.simexp.dsl.smodel.parser.antlr.internal,
+ org.palladiosimulator.simexp.dsl.smodel.scoping,
+ org.palladiosimulator.simexp.dsl.smodel.serializer,
+ org.palladiosimulator.simexp.dsl.smodel.services,
+ org.palladiosimulator.simexp.dsl.smodel.util,
+ org.palladiosimulator.simexp.dsl.smodel.validation
+Import-Package: org.apache.log4j

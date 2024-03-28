@@ -29,6 +29,9 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
     protected boolean isFilteringActivated = false;
 
     public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
+        // FIXME: integration-ba
+//    public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
+//            super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
         this.responseTimeSpec = responseTimeSpec;
         this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
     }

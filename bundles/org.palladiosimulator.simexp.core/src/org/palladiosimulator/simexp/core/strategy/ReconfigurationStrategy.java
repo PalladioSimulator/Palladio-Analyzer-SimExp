@@ -30,6 +30,7 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
         LOGGER.info("'MONITOR' step done");
 
         LOGGER.info("'ANALYZE' step start");
+
         boolean isAnalyzable = analyse(source, knowledge);
         LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
         LOGGER.info("'ANALYZE' step done");
@@ -50,4 +51,5 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
     protected abstract Aa plan(State source, Set<Aa> options, SharedKnowledge knowledge);
 
     protected abstract Aa emptyReconfiguration();
+
 }

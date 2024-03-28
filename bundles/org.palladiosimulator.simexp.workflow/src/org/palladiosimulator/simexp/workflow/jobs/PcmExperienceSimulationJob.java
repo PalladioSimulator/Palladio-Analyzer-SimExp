@@ -11,9 +11,10 @@ import de.uka.ipd.sdq.workflow.jobs.UserCanceledException;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDSDBlackboard> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationJob.class.getName());
     
+
     private final SimulationExecutor simulationExecutor;
     
     private MDSDBlackboard blackboard;
@@ -32,24 +33,26 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
         LOGGER.info("**** PcmExperienceSimulationJob.execute - Done.****");
     }
 
+  
     @Override
     public void cleanup(IProgressMonitor monitor) throws CleanupFailedException {
         /**
          * 
          * nothing to do here
          * 
-         * */        
+         */
     }
 
     @Override
     public String getName() {
-        return this.getClass().getCanonicalName();
+        return this.getClass()
+            .getCanonicalName();
     }
 
     @Override
     public void setBlackboard(MDSDBlackboard blackboard) {
         this.blackboard = blackboard;
-        
+
     }
 
 }

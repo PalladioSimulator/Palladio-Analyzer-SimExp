@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>org.palladiosimulator.simexp.dsl.smodel.parent</name>
+	<comment></comment>
+	<projects>
+		<project>org.palladiosimulator.simexp.dsl.smodel</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.ide</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.interpreter</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.interpreter.tests</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.target</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.tests</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.ui</project>
+		<project>org.palladiosimulator.simexp.dsl.smodel.ui.tests</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+	</natures>
+</projectDescription>

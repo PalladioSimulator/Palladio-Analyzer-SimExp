@@ -30,14 +30,18 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.SModelLookup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
+import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -45,6 +49,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
@@ -83,6 +88,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Create SimExp workflow root job");
         try {
             ResourceSet rs = new ResourceSetImpl();
+
+            URI smodelURI = config.getSmodelURI();
+            SModelLoader smodelLoader = new SModelLoader();
+            Smodel smodel = smodelLoader.load(rs, smodelURI);
+            LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
             URI experimentsFileURI = config.getExperimentsURI();
             ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
@@ -131,11 +141,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
+            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
+            SModelLookup sModelLookup = new SModelLookup(smodel);
+
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
-                    config.getQualityObjective(), experiment, dbn, probabilityDistributionRegistry,
-                    probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                    launchDescriptionProvider, config.getMonitorNames(), config.getPropertyFiles(),
-                    config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager);
+                    simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
+                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
+                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
+                    qvtoReconfigurationManager, smodel, sModelLookup);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -161,15 +174,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createSimulationExecutor(String simulationEngine, String qualityObjective,
+    private SimulationExecutor createSimulationExecutor(String simulationEngine, SimulationKind simulationKind,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-
+            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
+            Smodel smodel, SModelLookup sModelLookup) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
@@ -178,24 +191,30 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 .map(provider::getSpecification)
                 .toList();
 
-            yield switch (qualityObjective) {
-            case SimulationConstants.PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            // FIMEX: smodel integration into factories
+            yield switch (simulationKind) {
+            case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case SimulationConstants.RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            case SimulationConstants.PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(
-                    experiment, dbn, pcmSpecs, simulationParameters,
-                    new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, simulationRunnerHolder);
+            case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-            default -> throw new RuntimeException("Unexpected quality objective " + qualityObjective);
+            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+                    sModelLookup);
+
+            default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };
         }
 
@@ -241,8 +260,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ArchitecturalModelsWorkflowConfiguration architecturalModels = new ArchitecturalModelsWorkflowConfiguration(
                     Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE));
-
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE),
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.SMODEL_FILE));
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));

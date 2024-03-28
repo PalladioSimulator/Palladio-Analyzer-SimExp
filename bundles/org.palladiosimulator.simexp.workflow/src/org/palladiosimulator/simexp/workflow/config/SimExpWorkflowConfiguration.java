@@ -13,8 +13,9 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * information
      * 
      */
-	private final String simulationEngine;
-	private final String qualityObjective;
+    private final URI smodelFile;
+    private final String simulationEngine;
+    private final String qualityObjective;
     private final URI experimentsFile;
     private final URI staticModelFile;
     private final URI dynamicModelFile;
@@ -24,12 +25,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
 
-    public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective, 
-    		ArchitecturalModelsWorkflowConfiguration architecturalModels,
-    		MonitorConfiguration monitors,
-    		PrismConfiguration prismConfiguration,
-    		EnvironmentalModelsWorkflowConfiguration environmentalModels,
-    		SimulationParameters simulationParameters) {
+    // FIXME: pass smodel as constructor parameter
+    public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective,
+            ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
+            PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
+            SimulationParameters simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -38,25 +38,26 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * refactoring for performability analysis it is current not required; therefore pass empty
          * list in order to successfully execute workflow
          */
-    	this.simulationEngine = simulationEngine;
-    	this.qualityObjective = qualityObjective;
+        this.simulationEngine = simulationEngine;
+        this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
+        this.smodelFile = URI.createURI(architecturalModels.getSmodelFile());
         this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
         this.monitorRepositoryFile = URI.createURI(monitors.getMonitorRepositoryFile());
         this.monitorNames = monitors.getMonitors();
-        
+
         this.propertyFiles = prismConfiguration.getPropertyFiles()
-        		.stream()
-        		.map(URI::createURI)
-        		.toList();
+            .stream()
+            .map(URI::createURI)
+            .toList();
         this.moduleFiles = prismConfiguration.getModuleFIles()
-        		.stream()
-        		.map(URI::createURI)
-        		.toList();
-        
+            .stream()
+            .map(URI::createURI)
+            .toList();
+
         this.simulationParameters = simulationParameters;
     }
 
@@ -72,43 +73,47 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         // FIXME: check what shall be done here
     }
 
+    public URI getSmodelURI() {
+        return smodelFile;
+    }
+
     public String getSimulationEngine() {
-		return simulationEngine;
-	}
-    
+        return simulationEngine;
+    }
+
     public String getQualityObjective() {
-		return qualityObjective;
-	}
-    
+        return qualityObjective;
+    }
+
     public URI getExperimentsURI() {
         return experimentsFile;
     }
-    
+
     public URI getStaticModelURI() {
-    	return staticModelFile;
+        return staticModelFile;
     }
-    
+
     public URI getDynamicModelURI() {
-    	return dynamicModelFile;
+        return dynamicModelFile;
     }
-    
+
     public URI getMonitorRepositoryURI() {
-    	return monitorRepositoryFile;
+        return monitorRepositoryFile;
     }
-    
+
     public List<String> getMonitorNames() {
-    	return List.copyOf(monitorNames);
+        return List.copyOf(monitorNames);
     }
-    
+
     public List<URI> getPropertyFiles() {
-    	return List.copyOf(propertyFiles);
+        return List.copyOf(propertyFiles);
     }
-    
+
     public List<URI> getModuleFiles() {
-    	return List.copyOf(moduleFiles);
+        return List.copyOf(moduleFiles);
     }
-    
+
     public SimulationParameters getSimulationParameters() {
-		return simulationParameters;
-	}
+        return simulationParameters;
+    }
 }
