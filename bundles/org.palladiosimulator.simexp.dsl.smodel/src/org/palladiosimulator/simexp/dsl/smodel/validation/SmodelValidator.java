@@ -20,7 +20,7 @@ import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
@@ -287,8 +287,8 @@ public class SmodelValidator extends AbstractSmodelValidator {
         Action action = actionCall.getActionRef();
 
         if (action != null) {
-            List<ArgumentKeyValue> arguments = actionCall.getArguments();
-            List<Parameter> parameters = action.getParameterList()
+            List<ActionArgumentValue> arguments = actionCall.getArguments();
+            List<Parameter> parameters = action.getArguments()
                 .getParameters();
 
             if (arguments.size() != parameters.size()) {
@@ -299,7 +299,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
             for (int i = 0; i < arguments.size(); i++) {
                 Field parameter = parameters.get(i);
-                ArgumentKeyValue argument = arguments.get(i);
+                ActionArgumentValue argument = arguments.get(i);
 
                 if (!argument.getParamRef()
                     .equals(parameter)) {

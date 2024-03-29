@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.util;
 
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -25,7 +25,7 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     }
 
     @Override
-    public DataType caseArgumentKeyValue(ArgumentKeyValue argument) {
+    public DataType caseActionArgumentValue(ActionArgumentValue argument) {
         return doSwitch(argument.getArgument());
     }
 

@@ -53,12 +53,12 @@ public class SmodelAcceptanceActionsTest {
         assertEquals(2, actions.size());
         Action action = actions.get(0);
         assertEquals("aName1", action.getName());
-        assertEquals(0, action.getParameterList()
+        assertEquals(0, action.getArguments()
             .getParameters()
             .size());
         action = actions.get(1);
         assertEquals("aName2", action.getName());
-        assertEquals(0, action.getParameterList()
+        assertEquals(0, action.getArguments()
             .getParameters()
             .size());
     }
@@ -77,10 +77,10 @@ public class SmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getArguments()
             .getParameters();
         assertEquals(2, parameters.size());
-        EList<Optimizable> optimizables = action.getParameterList()
+        EList<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         assertEquals(0, optimizables.size());
         Parameter param = parameters.get(0);
@@ -105,10 +105,10 @@ public class SmodelAcceptanceActionsTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getArguments()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Optimizable> optimizables = action.getParameterList()
+        EList<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         assertEquals(2, optimizables.size());
         Optimizable variable1 = optimizables.get(0);

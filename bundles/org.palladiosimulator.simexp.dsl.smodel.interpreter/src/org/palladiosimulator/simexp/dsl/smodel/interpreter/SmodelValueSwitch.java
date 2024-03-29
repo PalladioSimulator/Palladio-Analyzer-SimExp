@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -96,7 +96,7 @@ public class SmodelValueSwitch extends SmodelSwitch<Object> {
     }
 
     @Override
-    public Object caseArgumentKeyValue(ArgumentKeyValue argument) {
+    public Object caseActionArgumentValue(ActionArgumentValue argument) {
         Object value = doSwitch(argument.getArgument());
 
         Parameter parameter = argument.getParamRef();

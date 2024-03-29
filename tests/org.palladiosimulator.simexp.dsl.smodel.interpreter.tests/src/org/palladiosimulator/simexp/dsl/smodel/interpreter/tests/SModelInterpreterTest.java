@@ -536,9 +536,9 @@ public class SModelInterpreterTest {
         // Check, if the expected & actual action of the resolved action match.
         Assert.assertEquals(action, resolvedAction.getAction());
 
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
-        List<Optimizable> optimizables = action.getParameterList()
+        List<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         Map<String, Object> resolvedArguments = resolvedAction.getArguments();
 

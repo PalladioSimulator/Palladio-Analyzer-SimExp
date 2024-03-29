@@ -61,11 +61,11 @@ Bounds:
 	;
 
 Action: 
-	'action' name=ID '(' parameterList=ParameterList ')' ';'
+	'action' name=ID '(' arguments=ActionArguments ')' ';'
 	;
 
-ParameterList: 
-	{ParameterList}
+ActionArguments: 
+	{ActionArguments}
 	(((parameters+=Parameter (',' parameters+=Parameter)* (',' optimizables+=Optimizable)*)) |
 	(optimizables+=Optimizable (',' optimizables+=Optimizable)*))?
 	;
@@ -76,10 +76,10 @@ Statement:
 
 ActionCall returns Statement:
 	{ActionCall} 
-	actionRef=[Action] '(' (arguments+=ArgumentKeyValue (',' arguments+=ArgumentKeyValue)*)? ')' ';'
+	actionRef=[Action] '(' (arguments+=ActionArgumentValue (',' arguments+=ActionArgumentValue)*)? ')' ';'
 	;
 
-ArgumentKeyValue:
+ActionArgumentValue:
 	paramRef=[Parameter] '=' argument=DisjunctiveExpr
 	;
 

@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ArgumentKeyValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
@@ -64,7 +64,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setTextualMode", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
     }
@@ -83,7 +83,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("decreaseQuality", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -105,7 +105,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setNumCPUs", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -127,7 +127,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -149,7 +149,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("setConfiguration", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -171,7 +171,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scale", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(2, parameters.size());
         Parameter firstParameter = parameters.get(0);
@@ -226,10 +226,10 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Optimizable> optimizables = action.getParameterList()
+        List<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
@@ -259,13 +259,13 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.INT, parameter.getDataType());
         Assert.assertEquals("factor1", parameter.getName());
-        List<Optimizable> optimizables = action.getParameterList()
+        List<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
@@ -296,7 +296,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Parameter> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getArguments()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
         Parameter firstParameter = firstParameters.get(0);
@@ -304,7 +304,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals("scaleOutFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Parameter> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getArguments()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
         Parameter secondParameter = secondParameters.get(0);
@@ -327,7 +327,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(2, actions.size());
         Action firstAction = actions.get(0);
         Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Parameter> firstParameters = firstAction.getParameterList()
+        List<Parameter> firstParameters = firstAction.getArguments()
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
         Parameter firstParameter = firstParameters.get(0);
@@ -335,7 +335,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals("balancingFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Parameter> secondParameters = secondAction.getParameterList()
+        List<Parameter> secondParameters = secondAction.getArguments()
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
         Parameter secondParameter = secondParameters.get(0);
@@ -360,7 +360,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -371,7 +371,7 @@ public class SmodelActionParsingTest {
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ArgumentKeyValue> arguments = actionCall.getArguments();
+        List<ActionArgumentValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
         Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
@@ -397,7 +397,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
@@ -408,7 +408,7 @@ public class SmodelActionParsingTest {
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ArgumentKeyValue> arguments = actionCall.getArguments();
+        List<ActionArgumentValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
         Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
@@ -434,10 +434,10 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, actions.size());
         Action action = actions.get(0);
         Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getParameterList()
+        List<Parameter> parameters = action.getArguments()
             .getParameters();
         Assert.assertEquals(0, parameters.size());
-        List<Optimizable> optimizables = action.getParameterList()
+        List<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
@@ -448,7 +448,7 @@ public class SmodelActionParsingTest {
             .get(0);
         Action actionRef = actionCall.getActionRef();
         Assert.assertEquals(action, actionRef);
-        List<ArgumentKeyValue> arguments = actionCall.getArguments();
+        List<ActionArgumentValue> arguments = actionCall.getArguments();
         Assert.assertTrue(arguments.isEmpty());
     }
 
@@ -652,10 +652,10 @@ public class SmodelActionParsingTest {
         assertEquals(1, actions.size());
         Action action = actions.get(0);
         assertEquals("aName", action.getName());
-        EList<Parameter> parameters = action.getParameterList()
+        EList<Parameter> parameters = action.getArguments()
             .getParameters();
         assertEquals(0, parameters.size());
-        EList<Optimizable> optimizables = action.getParameterList()
+        EList<Optimizable> optimizables = action.getArguments()
             .getOptimizables();
         assertEquals(1, optimizables.size());
         Optimizable variable = optimizables.get(0);
