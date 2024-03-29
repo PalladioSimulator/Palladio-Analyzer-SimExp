@@ -16,8 +16,16 @@ Smodel:
 	;
 	
 Field:
-	Constant | Variable | Optimizable | EnvVariable | Probe | Parameter
+	InternalField | ExternalField
 	;
+	
+InternalField:
+	Constant | Variable | Parameter
+;
+
+ExternalField:
+	Optimizable | EnvVariable | Probe
+;
 
 Constant:
 	'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
@@ -25,6 +33,10 @@ Constant:
 
 Variable:
 	'var' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
+	;
+
+Parameter:
+	'param' dataType=PrimitiveType name=ID
 	;
 
 Optimizable:
@@ -42,10 +54,6 @@ Probe:
 enum ProbeAdressingKind:
     MONITORID='monitorId' | ID='id'
     ;
-
-Parameter:
-	'param' dataType=PrimitiveType name=ID
-	;
 
 Bounds:
 	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |

@@ -226,7 +226,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     @Check
-    public void checkVariable(Optimizable variable) {
+    public void checkOptimizable(Optimizable variable) {
         DataType dataType = getDataType(variable);
         Bounds bounds = variable.getValues();
 
