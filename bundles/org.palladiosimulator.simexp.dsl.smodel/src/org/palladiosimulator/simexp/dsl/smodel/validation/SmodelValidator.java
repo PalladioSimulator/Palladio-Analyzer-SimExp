@@ -71,7 +71,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
         // ToDo: add tests
         checkUnusedFields(model.getConstants());
-        // checkUnusedFields(model.getVariables());
+        checkUnusedFields(model.getVariables());
         checkUnusedFields(model.getOptimizables());
         checkUnusedFields(model.getEnvVariables());
         checkUnusedFields(model.getProbes());
@@ -100,7 +100,8 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
             if (fieldReferences.isEmpty()) {
                 EStructuralFeature feature = field.eContainmentFeature();
-                warning(String.format("The field '%s' is never used.", field.getName()), feature, index);
+                warning(String.format("The %s '%s' is never used.", field.eClass()
+                    .getName(), field.getName()), feature, index);
             }
         }
     }

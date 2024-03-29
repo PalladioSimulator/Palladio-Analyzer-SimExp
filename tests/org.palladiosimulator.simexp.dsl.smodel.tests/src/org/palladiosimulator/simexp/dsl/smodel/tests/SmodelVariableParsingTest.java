@@ -37,6 +37,7 @@ public class SmodelVariableParsingTest {
     public void parseSingleBool() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var bool condition = true;
+                if (condition) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -59,6 +60,7 @@ public class SmodelVariableParsingTest {
     public void parseSingleInt() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var int one = 1;
+                if (one == 0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -81,6 +83,7 @@ public class SmodelVariableParsingTest {
     public void parseSingleFloat() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var float one = 1.0;
+                if (one == 0.0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -103,6 +106,7 @@ public class SmodelVariableParsingTest {
     public void parseSingleString() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var string word = "word";
+                if (word == "") {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -126,6 +130,7 @@ public class SmodelVariableParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var int count = 1;
                 var string word = "word";
+                if (word == "" || count == 0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -198,6 +203,18 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
+    }
+
+    @Test
+    public void parseUnusedInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                var int one = 1;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The Variable 'one' is never used.");
     }
 
     @Test
