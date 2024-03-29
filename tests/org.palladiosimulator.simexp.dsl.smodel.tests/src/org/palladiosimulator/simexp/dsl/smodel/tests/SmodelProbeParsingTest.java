@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.palladiosimulator.simexp.dsl.smodel.tests.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 
@@ -43,7 +41,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.MONITORID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -61,7 +59,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -79,7 +77,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.BOOL);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -97,7 +95,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.INT);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -115,7 +113,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.FLOAT);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -133,7 +131,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe.setDataType(DataType.STRING);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
-        assertThat(model.getProbes(), contains(samePropertyValuesAs(exptectedProbe)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
     @Test
@@ -157,8 +155,7 @@ public class SmodelProbeParsingTest {
         exptectedProbe2.setDataType(DataType.STRING);
         exptectedProbe2.setKind(ProbeAdressingKind.ID);
         exptectedProbe2.setIdentifier("someOtherId");
-        assertThat(model.getProbes(),
-                contains(samePropertyValuesAs(exptectedProbe1), samePropertyValuesAs(exptectedProbe2)));
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe1, exptectedProbe2);
     }
 
     @Test

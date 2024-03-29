@@ -7,6 +7,7 @@ generate smodel "http://www.palladiosimulator.org/simexp/dsl/smodel/smodel"
 Smodel:
 	'modelName' '=' modelName=STRING ';'
 	(constants+=Constant |
+	 variables+=Variable |
 	optimizables+=Optimizable  ';' |
 	envVariables+=EnvVariable |
 	probes+=Probe)*
@@ -15,11 +16,15 @@ Smodel:
 	;
 	
 Field:
-	Constant | Optimizable | EnvVariable | Probe | Parameter
+	Constant | Variable | Optimizable | EnvVariable | Probe | Parameter
 	;
 
 Constant:
 	'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
+	;
+
+Variable:
+	'var' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
 	;
 
 Optimizable:

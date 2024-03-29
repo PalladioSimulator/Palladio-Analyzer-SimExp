@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 /**
@@ -68,7 +69,9 @@ public class SmodelValidator extends AbstractSmodelValidator {
             .thenComparing(Probe::getIdentifier));
         checkDuplicateIds("envvar", model.getEnvVariables(), Comparator.comparing(EnvVariable::getVariableId));
 
+        // ToDo: add tests
         checkUnusedFields(model.getConstants());
+        // checkUnusedFields(model.getVariables());
         checkUnusedFields(model.getOptimizables());
         checkUnusedFields(model.getEnvVariables());
         checkUnusedFields(model.getProbes());
@@ -147,20 +150,56 @@ public class SmodelValidator extends AbstractSmodelValidator {
         }
     }
 
-    private boolean containsCyclicReferences(Constant constant, Set<Field> allFieldReferences) {
-        for (Field field : allFieldReferences) {
-            Constant referredConstant = (Constant) field;
-            Set<Field> others = getAllFieldReferences(referredConstant);
-            if (others.contains(constant)) {
+    @Check
+    public void checkVariable(Variable variable) {
+        Set<Field> allFieldReferences = getAllFieldReferences(variable);
+        if (containsNonConstantFieldReference(allFieldReferences)) {
+            error("Cannot assign an expression containing a non-constant value to an variable.",
+                    SmodelPackage.Literals.VARIABLE__VALUE);
+            return;
+        }
+
+        Expression expression = variable.getValue();
+        if (expression != null) {
+            DataType constantDataType = getDataType(variable);
+            DataType valueDataType = getDataType(expression);
+            if (!checkTypes(constantDataType, valueDataType, SmodelPackage.Literals.VARIABLE__VALUE)) {
+                return;
+            }
+        }
+    }
+
+    private boolean containsCyclicReferences(Field field, Set<Field> allFieldReferences) {
+        for (Field refrerredField : allFieldReferences) {
+            Set<Field> others = getAllFieldReferences(refrerredField);
+            if (others.contains(field)) {
                 return true;
             }
         }
         return false;
     }
 
-    private Set<Field> getAllFieldReferences(Constant constant) {
-        Expression expression = constant.getValue();
+    private Set<Field> getAllFieldReferences(Field field) {
+        Expression expression = getValueExpression(field);
+        if (expression == null) {
+            return Collections.emptySet();
+        }
         return getAllFieldReferences(expression);
+    }
+
+    private Expression getValueExpression(Field field) {
+        if (field instanceof Constant) {
+            Constant constant = (Constant) field;
+            return constant.getValue();
+        }
+        if (field instanceof Variable) {
+            Variable variable = (Variable) field;
+            return variable.getValue();
+        }
+        if (field instanceof Probe) {
+            return null;
+        }
+        throw new RuntimeException("Field not supported: " + field);
     }
 
     private Set<Field> getAllFieldReferences(Expression expression) {

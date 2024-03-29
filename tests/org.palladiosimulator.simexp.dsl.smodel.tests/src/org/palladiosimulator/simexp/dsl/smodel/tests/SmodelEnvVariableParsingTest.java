@@ -1,8 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.palladiosimulator.simexp.dsl.smodel.tests.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 
@@ -41,7 +39,7 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.BOOL);
         exptectedVariable.setVariableId("statId");
-        assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
+        assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
     @Test
@@ -58,7 +56,7 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.INT);
         exptectedVariable.setVariableId("statId");
-        assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
+        assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
     @Test
@@ -75,7 +73,7 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.FLOAT);
         exptectedVariable.setVariableId("statId");
-        assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
+        assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
     @Test
@@ -92,7 +90,7 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable.setName("varName");
         exptectedVariable.setDataType(DataType.STRING);
         exptectedVariable.setVariableId("statId");
-        assertThat(model.getEnvVariables(), contains(samePropertyValuesAs(exptectedVariable)));
+        assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
     @Test
@@ -114,8 +112,7 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable2.setName("varName2");
         exptectedVariable2.setDataType(DataType.INT);
         exptectedVariable2.setVariableId("statId2");
-        assertThat(model.getEnvVariables(),
-                contains(samePropertyValuesAs(exptectedVariable1), samePropertyValuesAs(exptectedVariable2)));
+        assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable1, exptectedVariable2);
     }
 
     @Test
