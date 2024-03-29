@@ -194,6 +194,18 @@ public class SmodelConstantParsingTest {
     }
 
     @Test
+    public void parseUnusedInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int one = 1;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The Constant 'one' is never used.");
+    }
+
+    @Test
     public void parseBoolConstantWithoutValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const bool noValue;

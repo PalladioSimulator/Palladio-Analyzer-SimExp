@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -113,6 +114,18 @@ public class SmodelEnvVariableParsingTest {
         exptectedVariable2.setDataType(DataType.INT);
         exptectedVariable2.setVariableId("statId2");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable1, exptectedVariable2);
+    }
+
+    @Test
+    public void parseUnusedInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                envvar int one : variableId = "1";
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The EnvVariable 'one' is never used.");
     }
 
     @Test

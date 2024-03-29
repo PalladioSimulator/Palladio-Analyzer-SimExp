@@ -28,6 +28,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -286,6 +287,18 @@ public class SmodelOptimizableParsingTest {
         Assert.assertEquals(2, endValue, 0.0f);
         float stepSize = ((FloatLiteral) valueRange.getStepSize()).getValue();
         Assert.assertEquals(0.1f, stepSize, 0.0f);
+    }
+
+    @Test
+    public void parseUnusedInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable int{0} one;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The Optimizable 'one' is never used.");
     }
 
     @Test

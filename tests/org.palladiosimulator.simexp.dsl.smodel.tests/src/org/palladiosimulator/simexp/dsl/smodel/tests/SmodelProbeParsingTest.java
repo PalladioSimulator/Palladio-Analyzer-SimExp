@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -156,6 +157,18 @@ public class SmodelProbeParsingTest {
         exptectedProbe2.setKind(ProbeAdressingKind.ID);
         exptectedProbe2.setIdentifier("someOtherId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe1, exptectedProbe2);
+    }
+
+    @Test
+    public void parseUnusedInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                probe int one : id = "someId";
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The Probe 'one' is never used.");
     }
 
     @Test
