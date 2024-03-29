@@ -5,6 +5,7 @@ import java.util.List;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.assertj.core.api.ListAssert;
+import org.assertj.core.api.RecursiveComparisonAssert;
 import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.eclipse.emf.ecore.EObject;
 
@@ -17,9 +18,10 @@ public class EcoreAssert extends AbstractAssert<EcoreAssert, EObject> {
         super(actual, selfType);
     }
 
-    public static EcoreAssert assertThat(EObject actual) {
+    public static RecursiveComparisonAssert<?> assertThat(EObject actual) {
         EcoreAssert ecoreAssert = new EcoreAssert(actual, EcoreAssert.class);
-        return ecoreAssert;
+        RecursiveComparisonAssert<?> usingRecursiveComparison = ecoreAssert.usingRecursiveComparison(configuration);
+        return usingRecursiveComparison;
     }
 
     public static ListAssert<EObject> assertThat(List<? extends EObject> actual) {
