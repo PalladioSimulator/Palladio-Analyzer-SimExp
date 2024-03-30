@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
@@ -17,6 +18,11 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     @Override
     public DataType caseField(Field field) {
         return field.getDataType();
+    }
+
+    @Override
+    public DataType caseParameter(Parameter parameter) {
+        return parameter.getDataType();
     }
 
     @Override

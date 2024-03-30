@@ -20,7 +20,7 @@ Field:
 	;
 	
 InternalField:
-	Constant | Variable | Parameter
+	Constant | Variable
 ;
 
 ExternalField:
@@ -33,10 +33,6 @@ Constant:
 
 Variable:
 	'var' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
-	;
-
-Parameter:
-	'param' dataType=PrimitiveType name=ID
 	;
 
 Optimizable:
@@ -68,6 +64,10 @@ ActionArguments:
 	{ActionArguments}
 	(((parameters+=Parameter (',' parameters+=Parameter)* (',' optimizables+=Optimizable)*)) |
 	(optimizables+=Optimizable (',' optimizables+=Optimizable)*))?
+	;
+	
+Parameter:
+	'param' dataType=PrimitiveType name=ID
 	;
 
 Statement:

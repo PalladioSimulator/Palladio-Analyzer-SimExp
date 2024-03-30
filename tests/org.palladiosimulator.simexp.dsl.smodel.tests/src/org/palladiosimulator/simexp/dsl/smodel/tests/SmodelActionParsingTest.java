@@ -20,8 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
@@ -505,9 +505,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
-                "Duplicate Field 'parameter'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PARAMETER, null,
+                "Duplicate Parameter 'parameter'", "Duplicate Parameter 'parameter'");
     }
 
     @Test
@@ -518,9 +517,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
-                "Duplicate Field 'parameter'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_ARGUMENTS, null,
+                "Duplicate Optimizable 'parameter'");
     }
 
     @Test
@@ -531,9 +529,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'parameter'",
-                "Duplicate Field 'parameter'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_ARGUMENTS, null,
+                "Duplicate Optimizable 'parameter'");
     }
 
     @Test

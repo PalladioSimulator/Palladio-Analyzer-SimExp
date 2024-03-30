@@ -19,8 +19,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
@@ -55,7 +56,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     @Check
-    public void checkKmodel(Smodel model) {
+    public void checkSmodel(Smodel model) {
         String modelName = model.getModelName();
         if (modelName == null) {
             warning("No modelName given.", model, SmodelPackage.Literals.SMODEL__MODEL_NAME);
@@ -126,25 +127,25 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
         if (containsNonConstantFieldReference(allFieldReferences)) {
             error("Cannot assign an expression containing a non-constant value to a constant.",
-                    SmodelPackage.Literals.CONSTANT__VALUE);
+                    SmodelPackage.Literals.INTERNAL_FIELD__VALUE);
             return;
         }
         if (containsCyclicReferences(constant, allFieldReferences)) {
-            error("Cyclic reference detected.", constant, SmodelPackage.Literals.CONSTANT__VALUE);
+            error("Cyclic reference detected.", constant, SmodelPackage.Literals.INTERNAL_FIELD__VALUE);
         }
 
         Expression expression = constant.getValue();
         if (allFieldReferences.size() == 1) {
             if (expression.getOp() == Operation.UNDEFINED) {
                 warning("Constant '" + constant.getName() + "' is probably redundant.",
-                        SmodelPackage.Literals.CONSTANT__VALUE);
+                        SmodelPackage.Literals.INTERNAL_FIELD__VALUE);
             }
         }
 
         if (expression != null) {
             DataType constantDataType = getDataType(constant);
             DataType valueDataType = getDataType(expression);
-            if (!checkTypes(constantDataType, valueDataType, SmodelPackage.Literals.CONSTANT__VALUE)) {
+            if (!checkTypes(constantDataType, valueDataType, SmodelPackage.Literals.INTERNAL_FIELD__VALUE)) {
                 return;
             }
         }
@@ -155,7 +156,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
         Set<Field> allFieldReferences = getAllFieldReferences(variable);
         if (containsNonConstantFieldReference(allFieldReferences)) {
             error("Cannot assign an expression containing a non-constant value to an variable.",
-                    SmodelPackage.Literals.VARIABLE__VALUE);
+                    SmodelPackage.Literals.INTERNAL_FIELD__VALUE);
             return;
         }
 
@@ -163,7 +164,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
         if (expression != null) {
             DataType constantDataType = getDataType(variable);
             DataType valueDataType = getDataType(expression);
-            if (!checkTypes(constantDataType, valueDataType, SmodelPackage.Literals.VARIABLE__VALUE)) {
+            if (!checkTypes(constantDataType, valueDataType, SmodelPackage.Literals.INTERNAL_FIELD__VALUE)) {
                 return;
             }
         }
@@ -283,6 +284,32 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     @Check
+    public void checkActionArguments(ActionArguments actionArguments) {
+        Set<String> usedNames = new HashSet<>();
+        List<Parameter> parameters = actionArguments.getParameters();
+        for (Parameter parameter : parameters) {
+            String name = parameter.getName();
+            /*
+             * if (usedNames.contains(name)) { //
+             * error(String.format("Duplicate Parameter name '%s'.", name), //
+             * SmodelPackage.Literals.ACTION_ARGUMENTS__PARAMETERS); } else {
+             */
+            usedNames.add(name);
+            // }
+        }
+        List<Optimizable> optimizables = actionArguments.getOptimizables();
+        for (Optimizable optimizable : optimizables) {
+            String name = optimizable.getName();
+            if (usedNames.contains(name)) {
+                error(String.format("Duplicate Optimizable '%s'", name),
+                        SmodelPackage.Literals.ACTION_ARGUMENTS__OPTIMIZABLES);
+            } else {
+                usedNames.add(name);
+            }
+        }
+    }
+
+    @Check
     public void checkActionCall(ActionCall actionCall) {
         Action action = actionCall.getActionRef();
 
@@ -298,7 +325,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
             }
 
             for (int i = 0; i < arguments.size(); i++) {
-                Field parameter = parameters.get(i);
+                Parameter parameter = parameters.get(i);
                 ActionArgumentValue argument = arguments.get(i);
 
                 if (!argument.getParamRef()

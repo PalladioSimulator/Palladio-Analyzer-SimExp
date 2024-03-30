@@ -547,7 +547,7 @@ public class SModelInterpreterTest {
 
         // Check if the expected & actual names & values for parameter arguments match.
         for (int i = 0; i < parameters.size(); i++) {
-            Field parameter = parameters.get(i);
+            Parameter parameter = parameters.get(i);
             Assert.assertTrue(resolvedArguments.containsKey(parameter.getName()));
 
             Object value = resolvedArguments.get(parameter.getName());
