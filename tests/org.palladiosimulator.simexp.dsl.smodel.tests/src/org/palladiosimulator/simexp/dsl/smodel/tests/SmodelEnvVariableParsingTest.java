@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import static org.palladiosimulator.simexp.dsl.smodel.tests.util.EcoreAssert.assertThat;
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 

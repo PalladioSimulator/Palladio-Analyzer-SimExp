@@ -3,5 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Util
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel.test.util
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.dsl.smodel.test.util
+Require-Bundle: org.assertj;bundle-version="3.20.2",
+ org.eclipse.emf.ecore;bundle-version="2.33.0"
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.test.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.tests.util;
+package org.palladiosimulator.simexp.dsl.smodel.test.util;
 
 import java.util.List;
 
