@@ -12,9 +12,9 @@ import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.Scopes;
 import org.eclipse.xtext.scoping.impl.FilteringScope;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 
 /**
@@ -35,8 +35,8 @@ public class SmodelScopeProvider extends AbstractSmodelScopeProvider {
             }
         }
 
-        if (context instanceof ActionArgumentValue) {
-            if (reference == SmodelPackage.Literals.ACTION_ARGUMENT_VALUE__PARAM_REF) {
+        if (context instanceof ParameterValue) {
+            if (reference == SmodelPackage.Literals.PARAMETER_VALUE__PARAM_REF) {
                 ActionCall actionCall = EcoreUtil2.getContainerOfType(context, ActionCall.class);
                 Action action = actionCall.getActionRef();
                 List<Parameter> parameters = EcoreUtil2.getAllContentsOfType(action, Parameter.class);

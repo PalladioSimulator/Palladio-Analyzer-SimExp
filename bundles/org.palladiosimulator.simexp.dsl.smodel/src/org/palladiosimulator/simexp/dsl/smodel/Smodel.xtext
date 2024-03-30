@@ -76,10 +76,10 @@ Statement:
 
 ActionCall returns Statement:
 	{ActionCall} 
-	actionRef=[Action] '(' (arguments+=ActionArgumentValue (',' arguments+=ActionArgumentValue)*)? ')' ';'
+	actionRef=[Action] '(' (arguments+=ParameterValue (',' arguments+=ParameterValue)*)? ')' ';'
 	;
 
-ActionArgumentValue:
+ParameterValue:
 	paramRef=[Parameter] '=' argument=DisjunctiveExpr
 	;
 

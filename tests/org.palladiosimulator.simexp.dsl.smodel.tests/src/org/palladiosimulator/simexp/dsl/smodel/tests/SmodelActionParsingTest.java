@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArgumentValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
@@ -371,7 +371,7 @@ public class SmodelActionParsingTest {
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ActionArgumentValue> arguments = actionCall.getArguments();
+        List<ParameterValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
         Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
@@ -408,7 +408,7 @@ public class SmodelActionParsingTest {
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
         Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ActionArgumentValue> arguments = actionCall.getArguments();
+        List<ParameterValue> arguments = actionCall.getArguments();
         Assert.assertEquals(1, arguments.size());
         Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
@@ -448,7 +448,7 @@ public class SmodelActionParsingTest {
             .get(0);
         Action actionRef = actionCall.getActionRef();
         Assert.assertEquals(action, actionRef);
-        List<ActionArgumentValue> arguments = actionCall.getArguments();
+        List<ParameterValue> arguments = actionCall.getArguments();
         Assert.assertTrue(arguments.isEmpty());
     }
 
