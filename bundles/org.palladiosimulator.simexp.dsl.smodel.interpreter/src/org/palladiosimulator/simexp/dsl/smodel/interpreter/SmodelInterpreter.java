@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
 import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BlockStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
@@ -75,11 +76,11 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
         boolean condition = (boolean) getValue(ifStatement.getCondition());
 
         if (condition) {
-            for (GlobalStatement statement : ifStatement.getThenStatements()) {
+            for (BlockStatement statement : ifStatement.getThenStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }
         } else if (ifStatement.isWithElse()) {
-            for (GlobalStatement statement : ifStatement.getElseStatements()) {
+            for (BlockStatement statement : ifStatement.getElseStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }
         }

@@ -73,6 +73,14 @@ Parameter:
 GlobalStatement:
 	ActionCall | IfStatement
 	;
+	
+BlockStatement:
+	GlobalStatement | VariableAssignment
+;
+
+VariableAssignment:
+	variableRef=[Variable] '=' value=DisjunctiveExpr ';'
+;
 
 ActionCall returns GlobalStatement:
 	{ActionCall} 
@@ -85,8 +93,8 @@ ParameterValue:
 
 IfStatement returns GlobalStatement: 
 	{IfStatement}
-	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=GlobalStatement)* '}'
-	(withElse?='else' '{' (elseStatements+=GlobalStatement)* '}')?
+	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=BlockStatement)* '}'
+	(withElse?='else' '{' (elseStatements+=BlockStatement)* '}')?
 	;
 
 DisjunctiveExpr returns Expression:

@@ -12,12 +12,18 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     @Override
     public DataType caseField(Field field) {
         return field.getDataType();
+    }
+
+    @Override
+    public DataType caseVariableAssignment(VariableAssignment variableAssignment) {
+        return doSwitch(variableAssignment.getValue());
     }
 
     @Override

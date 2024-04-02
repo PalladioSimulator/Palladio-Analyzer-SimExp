@@ -40,6 +40,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 /**
@@ -325,6 +326,17 @@ public class SmodelValidator extends AbstractSmodelValidator {
                 DataType argumentType = getDataType(argument);
                 checkTypes(parameterType, argumentType, SmodelPackage.Literals.ACTION_CALL__ARGUMENTS, i);
             }
+        }
+    }
+
+    @Check
+    public void checkVariableAssignment(VariableAssignment variableAssignment) {
+        Variable variable = variableAssignment.getVariableRef();
+
+        if (variable != null) {
+            DataType variableType = getDataType(variable);
+            DataType valueType = getDataType(variableAssignment);
+            checkTypes(variableType, valueType, SmodelPackage.Literals.VARIABLE_ASSIGNMENT__VALUE);
         }
     }
 
