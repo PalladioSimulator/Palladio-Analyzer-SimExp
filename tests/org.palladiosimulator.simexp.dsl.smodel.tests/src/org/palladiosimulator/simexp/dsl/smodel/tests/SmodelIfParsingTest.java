@@ -25,7 +25,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
-import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(SmodelInjectorProvider.class)
@@ -34,8 +33,6 @@ public class SmodelIfParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
-
-    private ExpressionUtil expressionUtil = new ExpressionUtil();
 
     @Test
     public void parseIfStatementWithLiteralCondition() throws Exception {
