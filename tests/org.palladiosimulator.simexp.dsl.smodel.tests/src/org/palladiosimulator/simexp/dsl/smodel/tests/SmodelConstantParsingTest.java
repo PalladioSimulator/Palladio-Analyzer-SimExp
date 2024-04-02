@@ -285,7 +285,7 @@ public class SmodelConstantParsingTest {
     }
 
     @Test
-    public void parseConstantWithVariableValue() throws Exception {
+    public void parseConstantWithOptimizableValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{0} variable;
                 const int constant = variable;
@@ -302,6 +302,19 @@ public class SmodelConstantParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 probe int someProbe : id = "someId";
                 const int constant = someProbe;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, null,
+                "Cannot assign an expression containing a non-constant value to a constant.");
+    }
+
+    @Test
+    public void parseConstantWithVariableValue() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                var int variable = 1;
+                const int constant = variable;
                 """;
 
         Smodel model = parserHelper.parse(sb);
