@@ -70,7 +70,7 @@ Parameter:
 	'param' dataType=PrimitiveType name=ID
 	;
 
-Statement:
+GlobalStatement:
 	ActionCall | IfStatement
 	;
 
@@ -85,8 +85,8 @@ ParameterValue:
 
 IfStatement returns Statement: 
 	{IfStatement}
-	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
-	(withElse?='else' '{' (elseStatements+=Statement)* '}')?
+	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=GlobalStatement)* '}'
+	(withElse?='else' '{' (elseStatements+=GlobalStatement)* '}')?
 	;
 
 DisjunctiveExpr returns Expression:

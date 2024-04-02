@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.core.strategy.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -75,11 +76,11 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
         boolean condition = (boolean) getValue(ifStatement.getCondition());
 
         if (condition) {
-            for (Statement statement : ifStatement.getThenStatements()) {
+            for (GlobalStatement statement : ifStatement.getThenStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }
         } else if (ifStatement.isWithElse()) {
-            for (Statement statement : ifStatement.getElseStatements()) {
+            for (GlobalStatement statement : ifStatement.getElseStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }
         }
