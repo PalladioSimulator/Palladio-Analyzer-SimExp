@@ -29,6 +29,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.InternalField;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -189,16 +190,9 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     private Expression getValueExpression(Field field) {
-        if (field instanceof Constant) {
-            Constant constant = (Constant) field;
-            return constant.getValue();
-        }
-        if (field instanceof Variable) {
-            Variable variable = (Variable) field;
-            return variable.getValue();
-        }
-        if (field instanceof Probe) {
-            return null;
+        if (field instanceof InternalField) {
+            InternalField internalField = (InternalField) field;
+            return internalField.getValue();
         }
         throw new RuntimeException("Field not supported: " + field);
     }
