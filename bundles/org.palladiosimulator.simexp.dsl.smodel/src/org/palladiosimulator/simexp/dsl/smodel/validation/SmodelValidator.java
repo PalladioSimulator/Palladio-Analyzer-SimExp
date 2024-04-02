@@ -285,12 +285,10 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
     @Check
     public void checkActionArguments(ActionArguments actionArguments) {
-        Set<String> usedNames = new HashSet<>();
-        List<Parameter> parameters = actionArguments.getParameters();
-        for (Parameter parameter : parameters) {
-            String name = parameter.getName();
-            usedNames.add(name);
-        }
+        Set<String> usedNames = actionArguments.getParameters()
+            .stream()
+            .map(Parameter::getName)
+            .collect(Collectors.toSet());
         List<Optimizable> optimizables = actionArguments.getOptimizables();
         for (Optimizable optimizable : optimizables) {
             String name = optimizable.getName();
