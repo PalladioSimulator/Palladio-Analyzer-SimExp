@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
@@ -34,6 +33,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -289,13 +289,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
         List<Parameter> parameters = actionArguments.getParameters();
         for (Parameter parameter : parameters) {
             String name = parameter.getName();
-            /*
-             * if (usedNames.contains(name)) { //
-             * error(String.format("Duplicate Parameter name '%s'.", name), //
-             * SmodelPackage.Literals.ACTION_ARGUMENTS__PARAMETERS); } else {
-             */
             usedNames.add(name);
-            // }
         }
         List<Optimizable> optimizables = actionArguments.getOptimizables();
         for (Optimizable optimizable : optimizables) {
