@@ -1,25 +1,28 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
@@ -42,17 +45,11 @@ public class SmodelIfParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement statement = (IfStatement) statements.get(0);
-        Assert.assertTrue(!statement.isWithElse());
-        Expression condition = expressionUtil.getNextExpressionWithContent(statement.getCondition());
-        Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) condition.getLiteral()).isTrue());
-        EList<GlobalStatement> thenStatements = statement.getThenStatements();
-        Assert.assertTrue(thenStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition = createLiteralBoolCondition(true);
+        exptectedStatement.setCondition(exptectedCondition);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
@@ -64,25 +61,21 @@ public class SmodelIfParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> constants = model.getConstants();
-        assertEquals(1, constants.size());
-        Constant boolConditionVar = constants.get(0);
-        Assert.assertEquals("condition", boolConditionVar.getName());
-        Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement statement = (IfStatement) statements.get(0);
-        Assert.assertTrue(!statement.isWithElse());
-        Expression condition = expressionUtil.getNextExpressionWithContent(statement.getCondition());
-        Assert.assertEquals(boolConditionVar, condition.getFieldRef());
-        Assert.assertEquals(DataType.BOOL, condition.getFieldRef()
-            .getDataType());
-        Assert.assertEquals("condition", condition.getFieldRef()
-            .getName());
-        EList<GlobalStatement> thenStatements = statement.getThenStatements();
-        Assert.assertTrue(thenStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
+        expectedConstant.setName("condition");
+        expectedConstant.setDataType(DataType.BOOL);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        Expression expectedLiteralExpression = createLiteralBoolExpression(true);
+        expectedExpression.setLeft(expectedLiteralExpression);
+        expectedConstant.setValue(expectedExpression);
+        IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition = SmodelFactory.eINSTANCE.createExpression();
+        Expression exptectedLiteralCondition = SmodelFactory.eINSTANCE.createExpression();
+        exptectedLiteralCondition.setFieldRef(expectedConstant);
+        exptectedCondition.setLeft(exptectedLiteralCondition);
+        exptectedStatement.setCondition(exptectedCondition);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
@@ -94,145 +87,115 @@ public class SmodelIfParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(2, statements.size());
-        IfStatement firstStatement = (IfStatement) statements.get(0);
-        Assert.assertTrue(!firstStatement.isWithElse());
-        Expression firstCondition = expressionUtil.getNextExpressionWithContent(firstStatement.getCondition());
-        Assert.assertTrue(firstCondition.getLiteral() instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) firstCondition.getLiteral()).isTrue());
-        EList<GlobalStatement> firstThenStatements = firstStatement.getThenStatements();
-        Assert.assertTrue(firstThenStatements.isEmpty());
-        IfStatement secondStatement = (IfStatement) statements.get(1);
-        Assert.assertTrue(!secondStatement.isWithElse());
-        Expression secondCondition = expressionUtil.getNextExpressionWithContent(secondStatement.getCondition());
-        Assert.assertTrue(secondCondition.getLiteral() instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) secondCondition.getLiteral()).isTrue());
-        EList<GlobalStatement> secondThenStatements = secondStatement.getThenStatements();
-        Assert.assertTrue(secondThenStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition1 = createLiteralBoolCondition(true);
+        exptectedStatement1.setCondition(exptectedCondition1);
+        IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition2 = createLiteralBoolCondition(true);
+        exptectedStatement2.setCondition(exptectedCondition2);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement1, exptectedStatement2);
     }
 
     @Test
     public void parseNestedIfStatements() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const bool condition = true;
-                if (condition) {
-                    if (condition) {}
+                if (true) {
+                    if (true) {}
                 }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> constants = model.getConstants();
-        assertEquals(1, constants.size());
-        Constant boolConditionField = constants.get(0);
-        Assert.assertEquals("condition", boolConditionField.getName());
-        Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement outerStatement = (IfStatement) statements.get(0);
-        Assert.assertTrue(!outerStatement.isWithElse());
-        Expression outerCondition = expressionUtil.getNextExpressionWithContent(outerStatement.getCondition());
-        Field outerIfConditionField = outerCondition.getFieldRef();
-        Assert.assertEquals(boolConditionField, outerIfConditionField);
-        EList<GlobalStatement> outerThenStatements = outerStatement.getThenStatements();
-        Assert.assertEquals(1, outerThenStatements.size());
-        IfStatement innerStatement = (IfStatement) outerThenStatements.get(0);
-        Assert.assertTrue(!innerStatement.isWithElse());
-        Expression innerCondition = expressionUtil.getNextExpressionWithContent(innerStatement.getCondition());
-        Field innerIfConditionField = innerCondition.getFieldRef();
-        Assert.assertEquals(boolConditionField, innerIfConditionField);
-        EList<GlobalStatement> innerThenStatements = innerStatement.getThenStatements();
-        Assert.assertTrue(innerThenStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition1 = createLiteralBoolCondition(true);
+        exptectedStatement1.setCondition(exptectedCondition1);
+        IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition2 = createLiteralBoolCondition(true);
+        exptectedStatement2.setCondition(exptectedCondition2);
+        exptectedStatement1.getThenStatements()
+            .add(exptectedStatement2);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement1);
     }
 
     @Test
     public void parseIfElseStatement() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                if (true) {} else {}
+                if (true) {
+                } else {
+                }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement statement = (IfStatement) statements.get(0);
-        Assert.assertTrue(statement.isWithElse());
-        Expression condition = expressionUtil.getNextExpressionWithContent(statement.getCondition());
-        Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) condition.getLiteral()).isTrue());
-        EList<GlobalStatement> thenStatements = statement.getThenStatements();
-        Assert.assertTrue(thenStatements.isEmpty());
-        EList<GlobalStatement> elseStatements = statement.getElseStatements();
-        Assert.assertTrue(elseStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition = createLiteralBoolCondition(true);
+        exptectedStatement.setCondition(exptectedCondition);
+        exptectedStatement.setWithElse(true);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
     public void parseNestedIfElseStatement() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const bool condition = true;
-                if (condition) {} else {
-                    if (condition) {}
+                if (true) {
+                } else {
+                    if (true) {}
                 }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> constants = model.getConstants();
-        assertEquals(1, constants.size());
-        Constant boolConditionField = constants.get(0);
-        Assert.assertEquals("condition", boolConditionField.getName());
-        Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement outerStatement = (IfStatement) statements.get(0);
-        Assert.assertTrue(outerStatement.isWithElse());
-        Expression outerCondition = expressionUtil.getNextExpressionWithContent(outerStatement.getCondition());
-        Field outerIfConditionField = outerCondition.getFieldRef();
-        Assert.assertEquals(boolConditionField, outerIfConditionField);
-        EList<GlobalStatement> outerThenStatements = outerStatement.getThenStatements();
-        Assert.assertTrue(outerThenStatements.isEmpty());
-        EList<GlobalStatement> outerElseStatements = outerStatement.getElseStatements();
-        Assert.assertEquals(1, outerElseStatements.size());
-        IfStatement innerStatement = (IfStatement) outerElseStatements.get(0);
-        Assert.assertTrue(!innerStatement.isWithElse());
-        Expression innerCondition = expressionUtil.getNextExpressionWithContent(innerStatement.getCondition());
-        Field innerIfConditionField = innerCondition.getFieldRef();
-        Assert.assertEquals(boolConditionField, innerIfConditionField);
-        EList<GlobalStatement> innerThenStatements = innerStatement.getThenStatements();
-        Assert.assertTrue(innerThenStatements.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition1 = createLiteralBoolCondition(true);
+        exptectedStatement1.setCondition(exptectedCondition1);
+        IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition2 = createLiteralBoolCondition(true);
+        exptectedStatement2.setCondition(exptectedCondition2);
+        exptectedStatement1.setWithElse(true);
+        exptectedStatement1.getElseStatements()
+            .add(exptectedStatement2);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement1);
     }
 
     @Test
     public void parseIfStatementWithActionCall() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param float balancingFactor);
-                if (false) {
-                    scaleOut(balancingFactor=1.0);
+                action scaleOut(param bool p);
+                if (true) {
+                    scaleOut(p=true);
                 }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        IfStatement statement = (IfStatement) statements.get(0);
-        Assert.assertTrue(!statement.isWithElse());
-        Expression condition = expressionUtil.getNextExpressionWithContent(statement.getCondition());
-        Assert.assertTrue(condition.getLiteral() instanceof BoolLiteral);
-        Assert.assertEquals(false, ((BoolLiteral) condition.getLiteral()).isTrue());
-        EList<GlobalStatement> thenStatements = statement.getThenStatements();
-        Assert.assertEquals(1, thenStatements.size());
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = SmodelFactory.eINSTANCE.createAction();
+        expectedAction.setName("scaleOut");
+        ActionArguments expectedActionArguments = SmodelFactory.eINSTANCE.createActionArguments();
+        Parameter expectedParameter = SmodelFactory.eINSTANCE.createParameter();
+        expectedParameter.setName("p");
+        expectedParameter.setDataType(DataType.BOOL);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        expectedAction.setArguments(expectedActionArguments);
+        IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression exptectedCondition = createLiteralBoolCondition(true);
+        exptectedStatement.setCondition(exptectedCondition);
+        ActionCall expectedActionCall = SmodelFactory.eINSTANCE.createActionCall();
+        expectedActionCall.setActionRef(expectedAction);
+        ParameterValue expectedParameterValue = SmodelFactory.eINSTANCE.createParameterValue();
+        expectedParameterValue.setParamRef(expectedParameter);
+        Expression exptectedParameterValue = createLiteralBoolCondition(true);
+        expectedParameterValue.setArgument(exptectedParameterValue);
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
@@ -243,8 +206,7 @@ public class SmodelIfParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, null,
                 "Expected a value of type 'bool', got 'string' instead.");
     }
 
@@ -257,29 +219,27 @@ public class SmodelIfParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, null,
                 "Expected a value of type 'bool', got 'string' instead.");
     }
 
-    @Test
-    public void parseComplexStatement() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                //Variable declarations
-                optimizable float{1.0, 2.0} i;
-                // action declaration
-                action a(param float factor);
-                action anotherA(param float factor, optimizable float[1,2,1] anotherFactor);
-                // rule block
-                if (true) {
-                    a(factor=i);        // execute action
-                    anotherA(factor=i); // execute another action
-                }
-                """;
+    private Expression createLiteralBoolCondition(boolean value) {
+        Expression condition = SmodelFactory.eINSTANCE.createExpression();
+        Expression expectedLiteralExpression = createLiteralBoolExpression(value);
+        condition.setLeft(expectedLiteralExpression);
+        return condition;
+    }
 
-        Smodel model = parserHelper.parse(sb);
+    private Expression createLiteralBoolExpression(boolean value) {
+        Expression literalExpression = SmodelFactory.eINSTANCE.createExpression();
+        BoolLiteral expectedLiteral = createBoolLiteral(value);
+        literalExpression.setLiteral(expectedLiteral);
+        return literalExpression;
+    }
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+    private BoolLiteral createBoolLiteral(boolean value) {
+        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
+        literal.setTrue(value);
+        return literal;
     }
 }
