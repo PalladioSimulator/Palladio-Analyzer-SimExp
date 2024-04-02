@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
@@ -63,7 +62,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     public List<ResolvedAction> caseSmodel(Smodel model) {
         List<ResolvedAction> resolvedActions = new ArrayList<>();
 
-        for (Statement statement : model.getStatements()) {
+        for (GlobalStatement statement : model.getStatements()) {
             resolvedActions.addAll(doSwitch(statement));
         }
 

@@ -20,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
@@ -29,13 +28,14 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
@@ -366,7 +366,7 @@ public class SmodelActionParsingTest {
         Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
@@ -403,7 +403,7 @@ public class SmodelActionParsingTest {
         Parameter parameter = parameters.get(0);
         Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
@@ -443,7 +443,7 @@ public class SmodelActionParsingTest {
         Field variable = optimizables.get(0);
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
-        List<Statement> statements = model.getStatements();
+        List<GlobalStatement> statements = model.getStatements();
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
             .get(0);
         Action actionRef = actionCall.getActionRef();

@@ -74,7 +74,7 @@ GlobalStatement:
 	ActionCall | IfStatement
 	;
 
-ActionCall returns Statement:
+ActionCall returns GlobalStatement:
 	{ActionCall} 
 	actionRef=[Action] '(' (arguments+=ParameterValue (',' arguments+=ParameterValue)*)? ')' ';'
 	;
@@ -83,7 +83,7 @@ ParameterValue:
 	paramRef=[Parameter] '=' argument=DisjunctiveExpr
 	;
 
-IfStatement returns Statement: 
+IfStatement returns GlobalStatement: 
 	{IfStatement}
 	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=GlobalStatement)* '}'
 	(withElse?='else' '{' (elseStatements+=GlobalStatement)* '}')?

@@ -11,8 +11,8 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -35,7 +35,7 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
         // assertEquals(0, conditions.get);
@@ -52,7 +52,7 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
         // assertEquals(0, conditions.get);
@@ -69,7 +69,7 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
         // assertEquals(0, conditions.get);
@@ -86,7 +86,7 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
         // assertEquals(0, conditions.get);
@@ -103,7 +103,7 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
         // TODO check actions
         // assertEquals(0, conditions.get);
@@ -122,9 +122,9 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
-        Statement condition = conditions.get(0);
+        GlobalStatement condition = conditions.get(0);
         // TODO check action
     }
 
@@ -143,9 +143,9 @@ public class SmodelAcceptanceConditionsTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> conditions = model.getStatements();
+        EList<GlobalStatement> conditions = model.getStatements();
         assertEquals(1, conditions.size());
-        Statement condition = conditions.get(0);
+        GlobalStatement condition = conditions.get(0);
         // TODO check action
     }
 

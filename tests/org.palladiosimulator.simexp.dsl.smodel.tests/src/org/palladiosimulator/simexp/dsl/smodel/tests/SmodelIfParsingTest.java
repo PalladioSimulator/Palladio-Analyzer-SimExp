@@ -20,7 +20,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
@@ -45,7 +44,7 @@ public class SmodelIfParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement statement = (IfStatement) statements.get(0);
         Assert.assertTrue(!statement.isWithElse());
@@ -72,7 +71,7 @@ public class SmodelIfParsingTest {
         Constant boolConditionVar = constants.get(0);
         Assert.assertEquals("condition", boolConditionVar.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionVar.getDataType());
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement statement = (IfStatement) statements.get(0);
         Assert.assertTrue(!statement.isWithElse());
@@ -97,7 +96,7 @@ public class SmodelIfParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(2, statements.size());
         IfStatement firstStatement = (IfStatement) statements.get(0);
         Assert.assertTrue(!firstStatement.isWithElse());
@@ -133,7 +132,7 @@ public class SmodelIfParsingTest {
         Constant boolConditionField = constants.get(0);
         Assert.assertEquals("condition", boolConditionField.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement outerStatement = (IfStatement) statements.get(0);
         Assert.assertTrue(!outerStatement.isWithElse());
@@ -161,7 +160,7 @@ public class SmodelIfParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement statement = (IfStatement) statements.get(0);
         Assert.assertTrue(statement.isWithElse());
@@ -192,7 +191,7 @@ public class SmodelIfParsingTest {
         Constant boolConditionField = constants.get(0);
         Assert.assertEquals("condition", boolConditionField.getName());
         Assert.assertEquals(DataType.BOOL, boolConditionField.getDataType());
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement outerStatement = (IfStatement) statements.get(0);
         Assert.assertTrue(outerStatement.isWithElse());
@@ -225,7 +224,7 @@ public class SmodelIfParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Statement> statements = model.getStatements();
+        EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
         IfStatement statement = (IfStatement) statements.get(0);
         Assert.assertTrue(!statement.isWithElse());
