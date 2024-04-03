@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -631,7 +632,7 @@ public class ExpressionCalculatorTest {
 
         float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
 
-        assertEquals(1.0, actualCalculatedValue, Precision.EPSILON);
+        assertThat(actualCalculatedValue).isEqualTo(1.0f);
     }
 
     @Test
@@ -660,6 +661,20 @@ public class ExpressionCalculatorTest {
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
         assertEquals(2, actualCalculatedValue);
+    }
+
+    @Test
+    public void testFloatMultiplicationExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2.1 * 1.1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(2.31f);
     }
 
     @Test
