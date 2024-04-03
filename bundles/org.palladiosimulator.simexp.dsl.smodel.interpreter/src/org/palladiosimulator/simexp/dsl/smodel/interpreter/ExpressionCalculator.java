@@ -29,9 +29,10 @@ public class ExpressionCalculator {
         return floatValue.intValue();
     }
 
-    public double calculateDouble(Expression expression) {
-        // return (double) calculate(expression);
-        return 0;
+    public float calculateFloat(Expression expression) {
+        Object value = caseExpression(expression);
+        Float floatValue = (Float) value;
+        return floatValue;
     }
 
     public String calculateString(Expression expression) {

@@ -60,7 +60,7 @@ public class ActionCallExecutor implements IActionCallExecutor {
         case BOOL:
             return expressionCalculator.calculateBoolean(expression);
         case FLOAT:
-            return expressionCalculator.calculateDouble(expression);
+            return expressionCalculator.calculateFloat(expression);
         case INT:
             return expressionCalculator.calculateInteger(expression);
         case STRING:
