@@ -965,6 +965,64 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testIntPrecedenceParenthesis1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = (1 + 1) * 2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4);
+    }
+
+    @Test
+    public void testIntPrecedenceParenthesis2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 2 * (1 + 1);
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4);
+    }
+
+    @Ignore
+    @Test
+    public void testIntPrecedenceParenthesis3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = (2 - 1) / 2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(0);
+    }
+
+    @Ignore
+    @Test
+    public void testIntPrecedenceParenthesis4() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 2 / (1 + 2);
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(0);
+    }
+
+    @Test
     public void testFloatPrecedence1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const float value = 1.0 + 1.0 * 2.0;
@@ -1018,53 +1076,6 @@ public class ExpressionCalculatorTest {
         float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
 
         assertThat(actualCalculatedValue).isEqualTo(4.0f);
-    }
-
-    @Test
-    public void testFloatValuePrecision() throws Exception {
-        String sb = MODEL_NAME_LINE + """
-                const float value = 1.4e-45;
-                const float value2 = 3.4028235e38;
-                const float value3 = 1.17549435e-38
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        float value = ((Number) interpreter.getValue(constant)).floatValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        float value2 = ((Number) interpreter.getValue(constant2)).floatValue();
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        float value3 = ((Number) interpreter.getValue(constant3)).floatValue();
-//
-//        Assert.assertEquals(Float.MIN_VALUE, value, 0.0f);
-//        Assert.assertEquals(Float.MAX_VALUE, value2, 0.0f);
-//        Assert.assertEquals(Float.MIN_NORMAL, value3, 0.0f);
-    }
-
-    @Test
-    public void testComplexExpressionValue() throws Exception {
-        String sb = MODEL_NAME_LINE + """
-                const float value = -(2 + 3 * 10 / 2) - 3;
-                const bool value2 = !((value < 0 || value >= 10) && value == -20);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        float value = ((Number) interpreter.getValue(constant)).floatValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        boolean value2 = (boolean) interpreter.getValue(constant2);
-//
-//        Assert.assertEquals(-20f, value, 0.0f);
-//        Assert.assertFalse(value2);
     }
 
     private Constant getFirstConstant(Smodel model) {
