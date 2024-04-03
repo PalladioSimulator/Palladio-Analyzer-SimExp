@@ -110,7 +110,7 @@ public class ExpressionCalculator {
             return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
 
         case DIVIDE:
-            return ((Number) leftValue).floatValue() / ((Number) rightValue).floatValue();
+            return divide((Number) leftValue, (Number) rightValue);
 
         case MODULO:
             return ((Number) leftValue).floatValue() % ((Number) rightValue).floatValue();
@@ -119,6 +119,18 @@ public class ExpressionCalculator {
             throw new RuntimeException(
                     "Couldn't determine the value of an expression with operation '" + operation + "'.");
         }
+    }
+
+    private Number divide(Number divident, Number divisor) {
+        if ((divident instanceof Float) || (divisor instanceof Float)) {
+            Float floatDivident = divident.floatValue();
+            Float floatDivisor = divisor.floatValue();
+            return floatDivident / floatDivisor;
+        }
+        Integer intDivident = (Integer) divident;
+        Integer intDivisor = (Integer) divisor;
+        Integer result = intDivident / intDivisor;
+        return result.floatValue();
     }
 
     private Object getLiteralValue(Literal literal) {

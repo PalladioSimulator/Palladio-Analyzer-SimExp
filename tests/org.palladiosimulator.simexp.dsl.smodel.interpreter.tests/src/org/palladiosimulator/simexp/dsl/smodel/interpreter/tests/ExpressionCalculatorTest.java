@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +11,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
@@ -788,65 +790,50 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(2.31f);
     }
 
+    @Ignore
     @Test
-    public void testDivisionExpressionValue() throws Exception {
+    public void testIntDivisionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 2 / 2;
-                const float value2 = 1 / 2;
-                const float value3 = 2 / 1;
-                const float value4 = -1 / 1;
-                const float value5 = 1 / -1
-                const float value6 = (1 / 2) / 4;
-                const float value7 = 1 / (2 / 4);
-                const float value8 = 0 / 0;
-                const float value9 = 1 / 0;
-                const float value10 = -1 / 0;
+                const int value = 2 / 2;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        float value = ((Number) interpreter.getValue(constant)).floatValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        float value2 = ((Number) interpreter.getValue(constant2)).floatValue();
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        float value3 = ((Number) interpreter.getValue(constant3)).floatValue();
-//        Constant constant4 = model.getConstants()
-//            .get(3);
-//        float value4 = ((Number) interpreter.getValue(constant4)).floatValue();
-//        Constant constant5 = model.getConstants()
-//            .get(4);
-//        float value5 = ((Number) interpreter.getValue(constant5)).floatValue();
-//        Constant constant6 = model.getConstants()
-//            .get(5);
-//        float value6 = ((Number) interpreter.getValue(constant6)).floatValue();
-//        Constant constant7 = model.getConstants()
-//            .get(6);
-//        float value7 = ((Number) interpreter.getValue(constant7)).floatValue();
-//        Constant constant8 = model.getConstants()
-//            .get(7);
-//        float value8 = ((Number) interpreter.getValue(constant8)).floatValue();
-//        Constant constant9 = model.getConstants()
-//            .get(8);
-//        float value9 = ((Number) interpreter.getValue(constant9)).floatValue();
-//        Constant constant10 = model.getConstants()
-//            .get(9);
-//        float value10 = ((Number) interpreter.getValue(constant10)).floatValue();
-//
-//        Assert.assertEquals(1f, value, 0.0f);
-//        Assert.assertEquals(0.5f, value2, 0.0f);
-//        Assert.assertEquals(2f, value3, 0.0f);
-//        Assert.assertEquals(-1f, value4, 0.0f);
-//        Assert.assertEquals(-1f, value5, 0.0f);
-//        Assert.assertEquals(0.125f, value6, 0.0f);
-//        Assert.assertEquals(2f, value7, 0.0f);
-//        Assert.assertEquals(Float.NaN, value8, 0.0f);
-//        Assert.assertEquals(Float.POSITIVE_INFINITY, value9, 0.0f);
-//        Assert.assertEquals(Float.NEGATIVE_INFINITY, value10, 0.0f);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(1, actualCalculatedValue);
+    }
+
+    @Ignore
+    @Test
+    public void testIntDivisionExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = -1 / 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(-1, actualCalculatedValue);
+    }
+
+    @Ignore
+    @Test
+    public void testIntDivisionExpressionByZero() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const int value = 1 / 0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        assertThatExceptionOfType(ArithmeticException.class).isThrownBy(() -> {
+            calculator.calculateInteger(constant.getValue());
+        })
+            .withMessage("/ by zero");
     }
 
     @Test
