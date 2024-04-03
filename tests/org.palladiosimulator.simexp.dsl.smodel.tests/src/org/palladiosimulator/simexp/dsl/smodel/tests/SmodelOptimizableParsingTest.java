@@ -18,7 +18,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -148,8 +148,8 @@ public class SmodelOptimizableParsingTest {
         assertEquals("vName", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array rangeArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds rangeArray = (SetBounds) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
             .get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
@@ -175,8 +175,8 @@ public class SmodelOptimizableParsingTest {
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array boundsArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds boundsArray = (SetBounds) bounds;
         IntLiteral intRange1 = (IntLiteral) boundsArray.getValues()
             .get(0);
         IntLiteral intRange2 = (IntLiteral) boundsArray.getValues()
@@ -202,8 +202,8 @@ public class SmodelOptimizableParsingTest {
         assertEquals("vName", variable.getName());
         assertEquals(DataType.FLOAT, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array boundsArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds boundsArray = (SetBounds) bounds;
         FloatLiteral floatRange1 = (FloatLiteral) boundsArray.getValues()
             .get(0);
         FloatLiteral floatRange2 = (FloatLiteral) boundsArray.getValues()
@@ -230,8 +230,8 @@ public class SmodelOptimizableParsingTest {
         assertEquals("vName", variable.getName());
         assertEquals(DataType.STRING, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array boundsArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds boundsArray = (SetBounds) bounds;
         StringLiteral stringRange1 = (StringLiteral) boundsArray.getValues()
             .get(0);
         StringLiteral stringRange2 = (StringLiteral) boundsArray.getValues()
@@ -257,8 +257,8 @@ public class SmodelOptimizableParsingTest {
         assertEquals("vName", variable.getName());
         assertEquals(DataType.INT, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Range);
-        Range boundsRange = (Range) bounds;
+        assertTrue(bounds instanceof RangeBounds);
+        RangeBounds boundsRange = (RangeBounds) bounds;
         assertEquals(1, ((IntLiteral) boundsRange.getStartValue()).getValue());
         assertEquals(2, ((IntLiteral) boundsRange.getEndValue()).getValue());
         assertEquals(1, ((IntLiteral) boundsRange.getStepSize()).getValue());
@@ -279,8 +279,8 @@ public class SmodelOptimizableParsingTest {
         Field field = variables.get(0);
         Optimizable variable = (Optimizable) field;
         Bounds bounds = variable.getValues();
-        Assert.assertTrue(bounds instanceof Range);
-        Range valueRange = (Range) bounds;
+        Assert.assertTrue(bounds instanceof RangeBounds);
+        RangeBounds valueRange = (RangeBounds) bounds;
         float startValue = ((FloatLiteral) valueRange.getStartValue()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
         float endValue = ((FloatLiteral) valueRange.getEndValue()).getValue();

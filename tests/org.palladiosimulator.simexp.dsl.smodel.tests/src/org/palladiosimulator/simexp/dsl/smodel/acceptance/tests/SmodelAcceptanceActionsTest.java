@@ -18,7 +18,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -115,8 +115,8 @@ public class SmodelAcceptanceActionsTest {
         assertEquals("vb", variable1.getName());
         assertEquals(DataType.BOOL, variable1.getDataType());
         Bounds bounds = variable1.getValues();
-        assertTrue(bounds instanceof Array);
-        Array rangeArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds rangeArray = (SetBounds) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
             .get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
@@ -127,8 +127,8 @@ public class SmodelAcceptanceActionsTest {
         assertEquals("vi", variable2.getName());
         assertEquals(DataType.INT, variable2.getDataType());
         Bounds bounds2 = variable2.getValues();
-        assertTrue(bounds2 instanceof Array);
-        Array rangeArray2 = (Array) bounds2;
+        assertTrue(bounds2 instanceof SetBounds);
+        SetBounds rangeArray2 = (SetBounds) bounds2;
         IntLiteral intRange1 = (IntLiteral) rangeArray2.getValues()
             .get(0);
         IntLiteral intRange2 = (IntLiteral) rangeArray2.getValues()

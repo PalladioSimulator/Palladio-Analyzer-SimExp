@@ -21,7 +21,6 @@ import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -36,7 +35,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
@@ -227,7 +227,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
         Bounds bounds = variable.getValues();
 
         if (bounds != null) {
-            if (!compatibleTypes(DataType.FLOAT, dataType) && bounds instanceof Range) {
+            if (!compatibleTypes(DataType.FLOAT, dataType) && bounds instanceof RangeBounds) {
                 error("Cannot assign a range to a variable of the type '" + dataType + "'.",
                         SmodelPackage.Literals.OPTIMIZABLE__VALUES);
             }
@@ -235,18 +235,18 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     @Check
-    public void checkArray(Array array) {
+    public void checkArray(SetBounds array) {
         DataType dataType = getDataType(array);
         List<Literal> values = array.getValues();
 
         for (int i = 0; i < values.size(); i++) {
             DataType valueType = getDataType(values.get(i));
-            checkTypes(dataType, valueType, SmodelPackage.Literals.ARRAY__VALUES, i);
+            checkTypes(dataType, valueType, SmodelPackage.Literals.SET_BOUNDS__VALUES, i);
         }
     }
 
     @Check
-    public void checkRange(Range range) {
+    public void checkRange(RangeBounds range) {
         DataType dataType = getDataType(range);
         Literal startValue = range.getStartValue();
         Literal endValue = range.getEndValue();
@@ -254,17 +254,17 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
         if (startValue != null) {
             DataType startValueType = getDataType(startValue);
-            checkTypes(dataType, startValueType, SmodelPackage.Literals.RANGE__START_VALUE);
+            checkTypes(dataType, startValueType, SmodelPackage.Literals.RANGE_BOUNDS__START_VALUE);
         }
 
         if (endValue != null) {
             DataType endValueType = getDataType(endValue);
-            checkTypes(dataType, endValueType, SmodelPackage.Literals.RANGE__END_VALUE);
+            checkTypes(dataType, endValueType, SmodelPackage.Literals.RANGE_BOUNDS__END_VALUE);
         }
 
         if (stepSize != null) {
             DataType stepSizeType = getDataType(stepSize);
-            checkTypes(dataType, stepSizeType, SmodelPackage.Literals.RANGE__STEP_SIZE);
+            checkTypes(dataType, stepSizeType, SmodelPackage.Literals.RANGE_BOUNDS__STEP_SIZE);
         }
     }
 

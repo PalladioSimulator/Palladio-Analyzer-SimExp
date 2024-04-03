@@ -52,8 +52,15 @@ enum ProbeAdressingKind:
     ;
 
 Bounds:
-	{Array} '{' (values+=Literal (',' values+=Literal)*) '}' |
-	{Range} '[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
+	SetBounds | RangeBounds
+	;
+	
+SetBounds:
+	'{' (values+=Literal (',' values+=Literal)*) '}'
+	;
+
+RangeBounds:
+	'[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
 	;
 
 Action: 

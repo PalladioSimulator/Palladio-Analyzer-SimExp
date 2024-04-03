@@ -11,7 +11,6 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -21,6 +20,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
@@ -117,7 +117,7 @@ public class SmodelVariableAssignmentParsingTest {
         Optimizable exptectedOptimizable = SmodelFactory.eINSTANCE.createOptimizable();
         exptectedOptimizable.setName("opti");
         exptectedOptimizable.setDataType(DataType.INT);
-        Array expectedBounds = SmodelFactory.eINSTANCE.createArray();
+        SetBounds expectedBounds = SmodelFactory.eINSTANCE.createSetBounds();
         expectedBounds.getValues()
             .add(createIntLiteral(0));
         exptectedOptimizable.setValues(expectedBounds);

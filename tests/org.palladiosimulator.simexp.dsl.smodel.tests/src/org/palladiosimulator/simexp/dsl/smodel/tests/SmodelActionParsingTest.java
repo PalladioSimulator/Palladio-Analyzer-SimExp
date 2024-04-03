@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Array;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -236,8 +236,8 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
-        Assert.assertTrue(bounds instanceof Array);
-        List<Literal> values = ((Array) bounds).getValues();
+        Assert.assertTrue(bounds instanceof SetBounds);
+        List<Literal> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
         float firstValue = ((FloatLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
@@ -272,8 +272,8 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(DataType.FLOAT, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
-        Assert.assertTrue(bounds instanceof Array);
-        List<Literal> values = ((Array) bounds).getValues();
+        Assert.assertTrue(bounds instanceof SetBounds);
+        List<Literal> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
         float firstValue = ((FloatLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
@@ -659,8 +659,8 @@ public class SmodelActionParsingTest {
         assertEquals("vb", variable.getName());
         assertEquals(DataType.BOOL, variable.getDataType());
         Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof Array);
-        Array rangeArray = (Array) bounds;
+        assertTrue(bounds instanceof SetBounds);
+        SetBounds rangeArray = (SetBounds) bounds;
         BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
             .get(0);
         BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()

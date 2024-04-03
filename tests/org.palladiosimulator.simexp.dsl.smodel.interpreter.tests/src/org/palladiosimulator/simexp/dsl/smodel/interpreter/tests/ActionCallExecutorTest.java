@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Range;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 
 public class ActionCallExecutorTest {
@@ -100,7 +100,7 @@ public class ActionCallExecutorTest {
         Optimizable optimizable = smodelFactory.createOptimizable();
         optimizable.setName("o");
         optimizable.setDataType(DataType.INT);
-        Range bounds = smodelFactory.createRange();
+        RangeBounds bounds = smodelFactory.createRangeBounds();
         IntLiteral startLiteral = createIntLiteral(0);
         bounds.setStartValue(startLiteral);
         IntLiteral endLiteral = createIntLiteral(1);
@@ -135,7 +135,7 @@ public class ActionCallExecutorTest {
         Optimizable optimizable = smodelFactory.createOptimizable();
         optimizable.setName("o");
         optimizable.setDataType(DataType.INT);
-        Range bounds = smodelFactory.createRange();
+        RangeBounds bounds = smodelFactory.createRangeBounds();
         IntLiteral startLiteral = createIntLiteral(0);
         bounds.setStartValue(startLiteral);
         IntLiteral endLiteral = createIntLiteral(1);
