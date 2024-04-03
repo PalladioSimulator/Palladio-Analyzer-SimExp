@@ -19,16 +19,17 @@ import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
+import org.palladiosimulator.simexp.core.strategy.mape.pcm.PcmMonitor;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.DummyVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ModelsLookup;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmMonitor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.IModelNameLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -102,14 +103,14 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         // Executor not required
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
-        DummyVariableValueProvider vvp = new DummyVariableValueProvider();
-        // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
-        List<Probe> probes = findProbes(smodel);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
-        PcmProbeValueProvider pvp = new PcmProbeValueProvider(modelsLookup);
+        PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
+        // TODO:
+        IFieldValueProvider optimizableValueProvider = null;
+        IFieldValueProvider fieldValueProvider = new FieldValueProvider(probeValueProvider, optimizableValueProvider);
 
-        Monitor monitor = new PcmMonitor(simSpecs, pvp);
-        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, vvp, pvp);
+        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, fieldValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
 

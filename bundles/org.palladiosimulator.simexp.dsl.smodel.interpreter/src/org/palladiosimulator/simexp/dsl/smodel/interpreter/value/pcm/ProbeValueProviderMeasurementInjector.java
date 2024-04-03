@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 

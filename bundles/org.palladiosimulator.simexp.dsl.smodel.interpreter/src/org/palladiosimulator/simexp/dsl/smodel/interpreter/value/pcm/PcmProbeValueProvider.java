@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -6,10 +6,13 @@ import java.util.TreeMap;
 
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 
-public class PcmProbeValueProvider implements ProbeValueProvider, ProbeValueProviderMeasurementInjector {
+public class PcmProbeValueProvider implements IFieldValueProvider, ProbeValueProviderMeasurementInjector {
 
     private final Map<MeasuringPoint, Double> currentMeasurementPoints;
 
@@ -22,11 +25,11 @@ public class PcmProbeValueProvider implements ProbeValueProvider, ProbeValueProv
     }
 
     @Override
-    public double getDoubleValue(Probe probe) {
+    public Double getDoubleValue(Field field) {
+        Probe probe = (Probe) field;
         MeasuringPoint measuringPoint = modelsLookup.findMeasuringPoint(probe);
         if (measuringPoint == null) {
-            throw new RuntimeException(
-                    String.format("no MeasuringPoint found for probe: %s:%S", probe.getKind(), probe.getIdentifier()));
+            return null;
         }
         Double doubleValue = currentMeasurementPoints.get(measuringPoint);
         return doubleValue;
@@ -40,8 +43,18 @@ public class PcmProbeValueProvider implements ProbeValueProvider, ProbeValueProv
     }
 
     @Override
-    public boolean getBooleanValue(Probe probe) {
+    public Boolean getBoolValue(Field field) {
+        Probe probe = (Probe) field;
         throw new UnsupportedOperationException("Feature incomplete. Contact assistance.");
     }
 
+    @Override
+    public Integer getIntegerValue(Field field) {
+        throw new UnsupportedOperationException("Feature incomplete. Contact assistance.");
+    }
+
+    @Override
+    public String getStringValue(Field field) {
+        throw new UnsupportedOperationException("Feature incomplete. Contact assistance.");
+    }
 }
