@@ -20,7 +20,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     private final ExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
 
-    public SmodelInterpreter(Smodel model, VariableValueProvider vvp, IFieldValueProvider fieldValueProvider) {
+    public SmodelInterpreter(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.expressionCalculator = new ExpressionCalculator(saveFieldValueProvider);
