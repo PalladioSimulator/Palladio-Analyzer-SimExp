@@ -635,6 +635,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testFloatAdditionExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = -1.0 + 3.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(2.0f);
+    }
+
+    @Test
+    public void testFloatAdditionExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 3.0 + -1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(2.0f);
+    }
+
+    @Test
     public void testIntSubtractionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const int value = 1 - 0;
