@@ -257,6 +257,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testBoolEqualExpressionString1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = "a" == "a";
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
+    }
+
+    @Test
+    public void testBoolEqualExpressionString2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = "a" == "b";
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isFalse();
+    }
+
+    @Test
     public void testBoolUnequalExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true != true;
@@ -282,6 +310,34 @@ public class ExpressionCalculatorTest {
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
         assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolUnequalExpressionString1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = "a" != "a";
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isFalse();
+    }
+
+    @Test
+    public void testBoolUnequalExpressionString2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = "a" != "b";
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
