@@ -1,18 +1,15 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
 import org.palladiosimulator.simexp.core.strategy.mape.Planner;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
@@ -20,12 +17,14 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
 
     private final Smodel model;
-    private final SmodelValueSwitch valueSwitch;
+    private final ExpressionCalculator expressionCalculator;
+    private final IActionCallExecutor actionCallExecutor;
 
-    public SmodelInterpreter(Smodel model, VariableValueProvider vvp, ProbeValueProvider pvp,
-            RuntimeValueProvider rvp) {
+    public SmodelInterpreter(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;
-        this.valueSwitch = new SmodelValueSwitch(vvp, pvp, rvp);
+        IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(saveFieldValueProvider);
+        this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, saveFieldValueProvider);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
             .stream()
             .anyMatch(statement -> {
                 IfStatement ifStatement = (IfStatement) statement;
-                return ifStatement.isWithElse() || (boolean) getValue(ifStatement.getCondition());
+                return ifStatement.isWithElse() || expressionCalculator.calculateBoolean(ifStatement.getCondition());
             });
     }
 
@@ -73,7 +72,8 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     @Override
     public List<ResolvedAction> caseIfStatement(IfStatement ifStatement) {
         List<ResolvedAction> resolvedActions = new ArrayList<>();
-        boolean condition = (boolean) getValue(ifStatement.getCondition());
+        Expression ifExpression = ifStatement.getCondition();
+        boolean condition = expressionCalculator.calculateBoolean(ifExpression);
 
         if (condition) {
             for (Statement statement : ifStatement.getThenStatements()) {
@@ -90,32 +90,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
 
     @Override
     public List<ResolvedAction> caseActionCall(ActionCall actionCall) {
-        List<ResolvedAction> resolvedActions = new ArrayList<>();
-
-        Action action = actionCall.getActionRef();
-        Map<String, Object> arguments = resolveArguments(actionCall);
-        ResolvedAction resolvedAction = new ResolvedAction(action, arguments);
-        resolvedActions.add(resolvedAction);
-
-        return resolvedActions;
-    }
-
-    public Object getValue(EObject object) {
-        return valueSwitch.doSwitch(object);
-    }
-
-    private Map<String, Object> resolveArguments(ActionCall actionCall) {
-        Map<String, Object> resolvedArguments = actionCall.getArguments()
-            .stream()
-            .collect(Collectors.toMap(arg -> arg.getParamRef()
-                .getName(), this::getValue));
-
-        List<Optimizable> variables = actionCall.getActionRef()
-            .getParameterList()
-            .getVariables();
-        resolvedArguments.putAll(variables.stream()
-            .collect(Collectors.toMap(Field::getName, this::getValue)));
-
-        return resolvedArguments;
+        ResolvedAction resolvedAction = actionCallExecutor.execute(actionCall);
+        return Collections.singletonList(resolvedAction);
     }
 }
