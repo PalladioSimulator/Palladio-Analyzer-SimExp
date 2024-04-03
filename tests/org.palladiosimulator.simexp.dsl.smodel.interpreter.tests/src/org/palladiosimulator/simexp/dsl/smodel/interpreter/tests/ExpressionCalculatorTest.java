@@ -649,49 +649,17 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testMultiplicationExpressionValue() throws Exception {
+    public void testIntMultiplicationExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const int value = 0 * 1;
-                const int value2 = 2 * 1;
-                const int value3 = 1 * 2;
-                const int value4 = -1 * 1;
-                const int value5 = 1 * -1;
-                const int value6 = (1 * 2) * 3;
-                const int value7 = 1 * (2 * 3);
+                const int value = 2 * 1;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        int value = ((Number) interpreter.getValue(constant)).intValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        int value2 = ((Number) interpreter.getValue(constant2)).intValue();
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        int value3 = ((Number) interpreter.getValue(constant3)).intValue();
-//        Constant constant4 = model.getConstants()
-//            .get(3);
-//        int value4 = ((Number) interpreter.getValue(constant4)).intValue();
-//        Constant constant5 = model.getConstants()
-//            .get(4);
-//        int value5 = ((Number) interpreter.getValue(constant5)).intValue();
-//        Constant constant6 = model.getConstants()
-//            .get(5);
-//        int value6 = ((Number) interpreter.getValue(constant6)).intValue();
-//        Constant constant7 = model.getConstants()
-//            .get(6);
-//        int value7 = ((Number) interpreter.getValue(constant7)).intValue();
-//
-//        Assert.assertEquals(0, value);
-//        Assert.assertEquals(2, value2);
-//        Assert.assertEquals(2, value3);
-//        Assert.assertEquals(-1, value4);
-//        Assert.assertEquals(-1, value5);
-//        Assert.assertEquals(6, value6);
-//        Assert.assertEquals(6, value7);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(2, actualCalculatedValue);
     }
 
     @Test
