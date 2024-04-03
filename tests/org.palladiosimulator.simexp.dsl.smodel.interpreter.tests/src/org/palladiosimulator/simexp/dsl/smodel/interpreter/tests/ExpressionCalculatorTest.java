@@ -607,34 +607,31 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testSubtractionExpressionValue() throws Exception {
+    public void testIntSubtractionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const int value = 1 - 0;
-                const int value2 = 0 - 1;
-                const int value3 = (1 - 2) - 3;
-                const int value4 = 1 - (2 - 3);
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        int value = ((Number) interpreter.getValue(constant)).intValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        int value2 = ((Number) interpreter.getValue(constant2)).intValue();
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        int value3 = ((Number) interpreter.getValue(constant3)).intValue();
-//        Constant constant4 = model.getConstants()
-//            .get(3);
-//        int value4 = ((Number) interpreter.getValue(constant4)).intValue();
-//
-//        Assert.assertEquals(1, value);
-//        Assert.assertEquals(-1, value2);
-//        Assert.assertEquals(-4, value3);
-//        Assert.assertEquals(2, value4);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(1, actualCalculatedValue);
+    }
+
+    @Test
+    public void testFloatSubtractionExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 1.0 - 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertEquals(1.0, actualCalculatedValue, Precision.EPSILON);
     }
 
     @Test
