@@ -339,7 +339,7 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testBoolEqualExpressionNumbers1() throws Exception {
+    public void testBoolEqualExpressionInt1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 1 == 1;
                 """;
@@ -353,7 +353,7 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testBoolEqualExpressionNumbers2() throws Exception {
+    public void testBoolEqualExpressionInt2() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 1 == 2;
                 """;
@@ -367,11 +367,24 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testBoolEqualExpressionDouble1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1.0 == 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
     public void testBoolUnequalExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true != true;
                 """;
-
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
@@ -386,7 +399,6 @@ public class ExpressionCalculatorTest {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true != false;
                 """;
-
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
@@ -397,102 +409,171 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testSmallerExpressionValue() throws Exception {
+    public void testBoolSmallerExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 1 < 2;
-                const bool value2 = 1 < 1;
-                const bool value3 = 2 < 1;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-        /*
-         * interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-         * 
-         * Constant constant = model.getConstants() .get(0); boolean value = (boolean)
-         * interpreter.getValue(constant); Constant constant2 = model.getConstants() .get(1);
-         * boolean value2 = (boolean) interpreter.getValue(constant2); Constant constant3 =
-         * model.getConstants() .get(2); boolean value3 = (boolean) interpreter.getValue(constant3);
-         * 
-         * Assert.assertTrue(value); Assert.assertFalse(value2); Assert.assertFalse(value3);
-         */
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
     }
 
     @Test
-    public void testSmallerOrEqualExpressionValue() throws Exception {
+    public void testBoolSmallerExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 < 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolSmallerExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 2 < 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolSmallerOrEqualExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 1 <= 2;
-                const bool value2 = 1 <= 1;
-                const bool value3 = 2 <= 1;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        boolean value = (boolean) interpreter.getValue(constant);
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        boolean value2 = (boolean) interpreter.getValue(constant2);
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        boolean value3 = (boolean) interpreter.getValue(constant3);
-//
-//        Assert.assertTrue(value);
-//        Assert.assertTrue(value2);
-//        Assert.assertFalse(value3);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
     }
 
     @Test
-    public void testGreaterOrEqualExpressionValue() throws Exception {
+    public void testBoolSmallerOrEqualExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 <= 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolSmallerOrEqualExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 2 <= 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolGreaterOrEqualExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 2 >= 1;
-                const bool value2 = 1 >= 1;
-                const bool value3 = 1 >= 2;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        boolean value = (boolean) interpreter.getValue(constant);
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        boolean value2 = (boolean) interpreter.getValue(constant2);
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        boolean value3 = (boolean) interpreter.getValue(constant3);
-//
-//        Assert.assertTrue(value);
-//        Assert.assertTrue(value2);
-//        Assert.assertFalse(value3);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
     }
 
     @Test
-    public void testGreaterExpressionValue() throws Exception {
+    public void testBoolGreaterOrEqualExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 >= 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolGreaterOrEqualExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 >= 2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolGreaterExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 2 > 1;
-                const bool value2 = 1 > 1;
-                const bool value3 = 1 > 2;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        boolean value = (boolean) interpreter.getValue(constant);
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        boolean value2 = (boolean) interpreter.getValue(constant2);
-//        Constant constant3 = model.getConstants()
-//            .get(2);
-//        boolean value3 = (boolean) interpreter.getValue(constant3);
-//
-//        Assert.assertTrue(value);
-//        Assert.assertFalse(value2);
-//        Assert.assertFalse(value3);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolGreaterExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 > 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolGreaterExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 > 2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
     }
 
     @Test
