@@ -139,12 +139,12 @@ Term returns Expression:
 Literal:
 	{BoolLiteral} true=BOOL |
 	{IntLiteral} value=INT |
-	{FloatLiteral} value=FLOAT |
+	{DoubleLiteral} value=DOUBLE |
 	{StringLiteral} value=STRING
 	;
 
 enum PrimitiveType returns DataType: 
-	BOOL = 'bool' | INT = 'int' | FLOAT = 'float' | STRING = 'string'
+	BOOL = 'bool' | INT = 'int' | DOUBLE = 'double' | STRING = 'string'
 	;
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.
@@ -158,6 +158,6 @@ enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO 
 enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
-terminal FLOAT returns ecore::EFloat: 
+terminal DOUBLE returns ecore::EDouble: 
 	((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT)
 	;

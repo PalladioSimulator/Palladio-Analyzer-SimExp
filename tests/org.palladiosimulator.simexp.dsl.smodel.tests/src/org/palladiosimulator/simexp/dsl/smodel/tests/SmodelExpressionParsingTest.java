@@ -14,13 +14,13 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -396,7 +396,7 @@ public class SmodelExpressionParsingTest {
     @Test
     public void parseMultiplicationExpression() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const float constant = 1.0 * 2;
+                const double constant = 1.0 * 2;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -406,12 +406,12 @@ public class SmodelExpressionParsingTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.FLOAT, getDataType(expression));
+        Assert.assertEquals(DataType.DOUBLE, getDataType(expression));
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof FloatLiteral);
-        Assert.assertEquals(1, ((FloatLiteral) leftLiteral).getValue(), 0.0f);
+        Assert.assertTrue(leftLiteral instanceof DoubleLiteral);
+        Assert.assertEquals(1, ((DoubleLiteral) leftLiteral).getValue(), 0.0f);
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
         Literal rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
@@ -421,7 +421,7 @@ public class SmodelExpressionParsingTest {
     @Test
     public void parseDivisionExpression() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const float constant = 1 / 2;
+                const double constant = 1 / 2;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -431,7 +431,7 @@ public class SmodelExpressionParsingTest {
         EList<Constant> fields = model.getConstants();
         Constant constant = fields.get(0);
         Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.FLOAT, getDataType(expression));
+        Assert.assertEquals(DataType.DOUBLE, getDataType(expression));
         Assert.assertEquals(Operation.DIVIDE, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
         Literal leftLiteral = left.getLiteral();
@@ -491,7 +491,7 @@ public class SmodelExpressionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'bool', got 'float' instead.");
+                "Expected a value of type 'bool', got 'double' instead.");
     }
 
     @Test
@@ -517,7 +517,7 @@ public class SmodelExpressionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'int' or 'float', got 'string' instead.");
+                "Expected a value of type 'int' or 'double', got 'string' instead.");
     }
 
     @Test
@@ -543,7 +543,7 @@ public class SmodelExpressionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'int' or 'float', got 'bool' instead.");
+                "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
     @Test
@@ -556,7 +556,7 @@ public class SmodelExpressionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'int' or 'float', got 'bool' instead.");
+                "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
     @Test
@@ -569,20 +569,20 @@ public class SmodelExpressionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'int' or 'float', got 'bool' instead.");
+                "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
     @Test
     public void parseMultiplicationWithInvalidTypes() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const float constant = 1.5 * "2";
+                const double constant = 1.5 * "2";
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
-                "Expected a value of type 'int' or 'float', got 'string' instead.");
+                "Expected a value of type 'int' or 'double', got 'string' instead.");
     }
 
     @Test

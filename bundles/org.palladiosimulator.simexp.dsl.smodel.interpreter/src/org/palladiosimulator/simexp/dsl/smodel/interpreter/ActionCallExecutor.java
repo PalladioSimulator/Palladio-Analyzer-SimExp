@@ -59,8 +59,8 @@ public class ActionCallExecutor implements IActionCallExecutor {
         switch (dataType) {
         case BOOL:
             return expressionCalculator.calculateBoolean(expression);
-        case FLOAT:
-            return expressionCalculator.calculateFloat(expression);
+        case DOUBLE:
+            return expressionCalculator.calculateDouble(expression);
         case INT:
             return expressionCalculator.calculateInteger(expression);
         default:
@@ -73,7 +73,7 @@ public class ActionCallExecutor implements IActionCallExecutor {
         switch (datatype) {
         case BOOL:
             return fieldValueProvider.getBoolValue(optimizable);
-        case FLOAT:
+        case DOUBLE:
             return fieldValueProvider.getDoubleValue(optimizable);
         case INT:
             return fieldValueProvider.getIntegerValue(optimizable);

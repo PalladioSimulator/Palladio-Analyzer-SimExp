@@ -38,7 +38,7 @@ public class EnvironmentVariableLookupTest {
             .get(0);
         EnvironmentVariableLookup lookup = new EnvironmentVariableLookup(staticEnvDynModel);
         String expectedGRVId = grv.getId();
-        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.FLOAT, expectedGRVId);
+        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.DOUBLE, expectedGRVId);
 
         GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
 
@@ -51,7 +51,7 @@ public class EnvironmentVariableLookupTest {
         ProbabilisticModelRepository staticEnvDynModel = envDynModels.getStaticEnvModel();
         EnvironmentVariableLookup lookup = new EnvironmentVariableLookup(staticEnvDynModel);
         String expectedGRVId = "unknownGVR";
-        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.FLOAT, expectedGRVId);
+        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.DOUBLE, expectedGRVId);
 
         GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
 

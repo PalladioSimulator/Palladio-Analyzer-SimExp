@@ -18,15 +18,15 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -79,7 +79,7 @@ public class SmodelOptimizableParsingTest {
     @Test
     public void parseSingleFloatVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable float{1.0} number;
+                optimizable double{1.0} number;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -90,7 +90,7 @@ public class SmodelOptimizableParsingTest {
         Assert.assertEquals(1, variables.size());
         Field variable = variables.get(0);
         Assert.assertEquals("number", variable.getName());
-        Assert.assertEquals(DataType.FLOAT, variable.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
     }
 
     @Test
@@ -186,9 +186,9 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseFloatVarArray() throws Exception {
+    public void parseDoubleVarSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable float{1.0,3.0} vName;
+                optimizable double{1.0,3.0} vName;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -200,13 +200,13 @@ public class SmodelOptimizableParsingTest {
         Field field = fields.get(0);
         Optimizable variable = (Optimizable) field;
         assertEquals("vName", variable.getName());
-        assertEquals(DataType.FLOAT, variable.getDataType());
+        assertEquals(DataType.DOUBLE, variable.getDataType());
         Bounds bounds = variable.getValues();
         assertTrue(bounds instanceof SetBounds);
         SetBounds boundsArray = (SetBounds) bounds;
-        FloatLiteral floatRange1 = (FloatLiteral) boundsArray.getValues()
+        DoubleLiteral floatRange1 = (DoubleLiteral) boundsArray.getValues()
             .get(0);
-        FloatLiteral floatRange2 = (FloatLiteral) boundsArray.getValues()
+        DoubleLiteral floatRange2 = (DoubleLiteral) boundsArray.getValues()
             .get(1);
         List<Double> actualFloatBounds = Arrays.asList(Double.valueOf(floatRange1.getValue()),
                 Double.valueOf(floatRange2.getValue()));
@@ -267,7 +267,7 @@ public class SmodelOptimizableParsingTest {
     @Test
     public void parseVariableWithValueRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable float[1.0, 2.0, 0.1] values;
+                optimizable double[1.0, 2.0, 0.1] values;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -281,12 +281,12 @@ public class SmodelOptimizableParsingTest {
         Bounds bounds = variable.getValues();
         Assert.assertTrue(bounds instanceof RangeBounds);
         RangeBounds valueRange = (RangeBounds) bounds;
-        float startValue = ((FloatLiteral) valueRange.getStartValue()).getValue();
+        double startValue = ((DoubleLiteral) valueRange.getStartValue()).getValue();
         Assert.assertEquals(1, startValue, 0.0f);
-        float endValue = ((FloatLiteral) valueRange.getEndValue()).getValue();
+        double endValue = ((DoubleLiteral) valueRange.getEndValue()).getValue();
         Assert.assertEquals(2, endValue, 0.0f);
-        float stepSize = ((FloatLiteral) valueRange.getStepSize()).getValue();
-        Assert.assertEquals(0.1f, stepSize, 0.0f);
+        double stepSize = ((DoubleLiteral) valueRange.getStepSize()).getValue();
+        Assert.assertEquals(0.1, stepSize, 0.0);
     }
 
     @Test
@@ -313,7 +313,7 @@ public class SmodelOptimizableParsingTest {
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3,
                 "Expected a value of type 'string', got 'bool' instead.",
                 "Expected a value of type 'string', got 'int' instead.",
-                "Expected a value of type 'string', got 'float' instead.");
+                "Expected a value of type 'string', got 'double' instead.");
     }
 
     @Test

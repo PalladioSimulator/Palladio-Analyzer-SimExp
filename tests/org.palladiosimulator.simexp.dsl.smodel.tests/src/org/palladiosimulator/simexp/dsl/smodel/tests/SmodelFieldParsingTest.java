@@ -31,7 +31,7 @@ public class SmodelFieldParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true, false} condition;
                 const int one = 1;
-                probe float aliasName : id = "someId";
+                probe double aliasName : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);

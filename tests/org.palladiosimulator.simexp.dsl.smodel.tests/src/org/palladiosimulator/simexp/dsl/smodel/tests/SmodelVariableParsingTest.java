@@ -14,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
@@ -82,7 +82,7 @@ public class SmodelVariableParsingTest {
     @Test
     public void parseSingleFloat() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                var float one = 1.0;
+                var double one = 1.0;
                 if (one == 0.0) {}
                 """;
 
@@ -91,10 +91,10 @@ public class SmodelVariableParsingTest {
         validationTestHelper.assertNoIssues(model);
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("one");
-        exptectedVariable.setDataType(DataType.FLOAT);
+        exptectedVariable.setDataType(DataType.DOUBLE);
         Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
-        FloatLiteral expectedLiteral = SmodelFactory.eINSTANCE.createFloatLiteral();
-        expectedLiteral.setValue(1.0f);
+        DoubleLiteral expectedLiteral = SmodelFactory.eINSTANCE.createDoubleLiteral();
+        expectedLiteral.setValue(1.0);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
         expectedExpression.setLeft(expectedLiteralExpression);
@@ -242,9 +242,9 @@ public class SmodelVariableParsingTest {
     }
 
     @Test
-    public void parseFloatWithoutValue() throws Exception {
+    public void parseDoubleWithoutValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                var float noValue;
+                var double noValue;
                 """;
 
         Smodel model = parserHelper.parse(sb);

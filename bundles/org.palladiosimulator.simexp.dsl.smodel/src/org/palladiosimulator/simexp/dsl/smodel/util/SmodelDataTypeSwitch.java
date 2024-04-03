@@ -3,9 +3,9 @@ package org.palladiosimulator.simexp.dsl.smodel.util;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
@@ -52,8 +52,8 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     }
 
     @Override
-    public DataType caseFloatLiteral(FloatLiteral literal) {
-        return DataType.FLOAT;
+    public DataType caseDoubleLiteral(DoubleLiteral literal) {
+        return DataType.DOUBLE;
     }
 
     @Override
@@ -110,18 +110,18 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
         case PLUS:
         case MINUS:
         case MULTIPLY:
-            if (leftType == DataType.FLOAT || rightType == DataType.FLOAT) {
-                return DataType.FLOAT;
+            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
+                return DataType.DOUBLE;
             } else {
                 return DataType.INT;
             }
 
         case DIVIDE:
-            return DataType.FLOAT;
+            return DataType.DOUBLE;
 
         case MODULO:
-            if (leftType == DataType.FLOAT || rightType == DataType.FLOAT) {
-                return DataType.FLOAT;
+            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
+                return DataType.DOUBLE;
             } else {
                 return DataType.INT;
             }

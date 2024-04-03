@@ -2,9 +2,9 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
@@ -25,14 +25,14 @@ public class ExpressionCalculator {
 
     public int calculateInteger(Expression expression) {
         Object value = caseExpression(expression);
-        Float floatValue = (Float) value;
-        return floatValue.intValue();
+        Double doubleValue = (Double) value;
+        return doubleValue.intValue();
     }
 
-    public float calculateFloat(Expression expression) {
+    public double calculateDouble(Expression expression) {
         Object value = caseExpression(expression);
-        Float floatValue = (Float) value;
-        return floatValue;
+        Double doubleValue = (Double) value;
+        return doubleValue;
     }
 
     private Object caseExpression(Expression expression) {
@@ -78,37 +78,37 @@ public class ExpressionCalculator {
             return !leftValue.equals(rightValue);
 
         case SMALLER:
-            return ((Number) leftValue).floatValue() < ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() < ((Number) rightValue).doubleValue();
 
         case SMALLER_OR_EQUAL:
-            return ((Number) leftValue).floatValue() <= ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() <= ((Number) rightValue).doubleValue();
 
         case GREATER_OR_EQUAL:
-            return ((Number) leftValue).floatValue() >= ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() >= ((Number) rightValue).doubleValue();
 
         case GREATER:
-            return ((Number) leftValue).floatValue() > ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() > ((Number) rightValue).doubleValue();
 
         case PLUS:
             if (rightValue == null) {
-                return +((Number) leftValue).floatValue();
+                return +((Number) leftValue).doubleValue();
             }
-            return ((Number) leftValue).floatValue() + ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() + ((Number) rightValue).doubleValue();
 
         case MINUS:
             if (rightValue == null) {
-                return -((Number) leftValue).floatValue();
+                return -((Number) leftValue).doubleValue();
             }
-            return ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() - ((Number) rightValue).doubleValue();
 
         case MULTIPLY:
-            return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() * ((Number) rightValue).doubleValue();
 
         case DIVIDE:
             return divide((Number) leftValue, (Number) rightValue);
 
         case MODULO:
-            return ((Number) leftValue).floatValue() % ((Number) rightValue).floatValue();
+            return ((Number) leftValue).doubleValue() % ((Number) rightValue).doubleValue();
 
         default:
             throw new RuntimeException(
@@ -117,15 +117,15 @@ public class ExpressionCalculator {
     }
 
     private Number divide(Number divident, Number divisor) {
-        if ((divident instanceof Float) || (divisor instanceof Float)) {
-            Float floatDivident = divident.floatValue();
-            Float floatDivisor = divisor.floatValue();
-            return floatDivident / floatDivisor;
+        if ((divident instanceof Double) || (divisor instanceof Double)) {
+            Double doubleDivident = divident.doubleValue();
+            Double doubleDivisor = divisor.doubleValue();
+            return doubleDivident / doubleDivisor;
         }
         Integer intDivident = (Integer) divident;
         Integer intDivisor = (Integer) divisor;
         Integer result = intDivident / intDivisor;
-        return result.floatValue();
+        return result.doubleValue();
     }
 
     private Object getLiteralValue(Literal literal) {
@@ -134,8 +134,8 @@ public class ExpressionCalculator {
         switch (dataType) {
         case BOOL:
             return ((BoolLiteral) literal).isTrue();
-        case FLOAT:
-            return ((FloatLiteral) literal).getValue();
+        case DOUBLE:
+            return ((DoubleLiteral) literal).getValue();
         case INT:
             return ((IntLiteral) literal).getValue();
         case STRING:
@@ -150,7 +150,7 @@ public class ExpressionCalculator {
         switch (dataType) {
         case BOOL:
             return fieldValueProvider.getBoolValue(field);
-        case FLOAT:
+        case DOUBLE:
             return fieldValueProvider.getDoubleValue(field);
         case INT:
             return fieldValueProvider.getIntegerValue(field);

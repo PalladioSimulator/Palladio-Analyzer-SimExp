@@ -416,7 +416,7 @@ public class SModelInterpreterTest {
     @Test
     public void testPlanWithActionWithMultipleVariables() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                action adapt(optimizable int{5, 4, 3, 2, 1} variable, optimizable float{0.1, 0.2, 0.3} variable2);
+                action adapt(optimizable int{5, 4, 3, 2, 1} variable, optimizable double{0.1, 0.2, 0.3} variable2);
                 if (true) {
                     adapt();
                 }
@@ -437,7 +437,7 @@ public class SModelInterpreterTest {
     @Test
     public void testPlanWithActionWithParameterAndVariable() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                action adapt(param int parameter, optimizable float{0.1, 0.2, 0.3} variable);
+                action adapt(param int parameter, optimizable double{0.1, 0.2, 0.3} variable);
                 if (true) {
                     adapt(parameter=3);
                 }
@@ -460,12 +460,12 @@ public class SModelInterpreterTest {
         String sb = MODEL_NAME_LINE + """
                 const int constant = 1;
                 const int anotherConstant = constant * 2;
-                optimizable float{1.5, 2.5, 3.5} adaptationFactor;
-                probe float someProbe : id = "abc123";
-                probe float someRuntime: id = "b";
+                optimizable double{1.5, 2.5, 3.5} adaptationFactor;
+                probe double someProbe : id = "abc123";
+                probe double someRuntime: id = "b";
 
-                action adapt(param int parameter, param float factor);
-                action adapt2(param float parameter, optimizable float[1,5,1] someRange);
+                action adapt(param int parameter, param double factor);
+                action adapt2(param double parameter, optimizable double[1,5,1] someRange);
                 action adapt3();
 
                 if (someProbe > 0 || someProbe <= -10 && someRuntime == 0.0) {

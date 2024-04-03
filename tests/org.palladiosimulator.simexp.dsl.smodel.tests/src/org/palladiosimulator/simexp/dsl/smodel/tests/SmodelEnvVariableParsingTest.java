@@ -63,7 +63,7 @@ public class SmodelEnvVariableParsingTest {
     @Test
     public void parseSingleFloat() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                envvar float varName : variableId = "statId";
+                envvar double varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -72,7 +72,7 @@ public class SmodelEnvVariableParsingTest {
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
         exptectedVariable.setName("varName");
-        exptectedVariable.setDataType(DataType.FLOAT);
+        exptectedVariable.setDataType(DataType.DOUBLE);
         exptectedVariable.setVariableId("statId");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }

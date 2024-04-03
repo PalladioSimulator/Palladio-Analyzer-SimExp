@@ -4,7 +4,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -36,8 +36,8 @@ public class TestVariableValueProvider implements VariableValueProvider {
         } else if (literal instanceof IntLiteral) {
             IntLiteral intLiteral = (IntLiteral) literal;
             return intLiteral.getValue();
-        } else if (literal instanceof FloatLiteral) {
-            FloatLiteral floatLiteral = (FloatLiteral) literal;
+        } else if (literal instanceof DoubleLiteral) {
+            DoubleLiteral floatLiteral = (DoubleLiteral) literal;
             return floatLiteral.getValue();
         } else if (literal instanceof StringLiteral) {
             StringLiteral stringLiteral = (StringLiteral) literal;

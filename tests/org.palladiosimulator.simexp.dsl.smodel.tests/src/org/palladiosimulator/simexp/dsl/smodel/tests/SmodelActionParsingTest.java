@@ -21,19 +21,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
@@ -114,9 +114,9 @@ public class SmodelActionParsingTest {
     }
 
     @Test
-    public void parseActionWithFloatParameter() throws Exception {
+    public void parseActionWithDoubleParameter() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param float balancingFactor);
+                action scaleOut(param double balancingFactor);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -131,7 +131,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
     }
 
@@ -160,7 +160,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionWithTwoParameters() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scale(param float factor, param bool in);
+                action scale(param double factor, param bool in);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -175,7 +175,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(2, parameters.size());
         Parameter firstParameter = parameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
         Assert.assertEquals("factor", firstParameter.getName());
         Parameter secondParameter = parameters.get(1);
         Assert.assertEquals(DataType.BOOL, secondParameter.getDataType());
@@ -215,7 +215,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionWithVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
+                action scaleOut(optimizable double{1.25, 2.5} balancingFactor);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -233,22 +233,22 @@ public class SmodelActionParsingTest {
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.FLOAT, variable.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof SetBounds);
         List<Literal> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
-        float firstValue = ((FloatLiteral) values.get(0)).getValue();
+        double firstValue = ((DoubleLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
-        float secondValue = ((FloatLiteral) values.get(1)).getValue();
+        double secondValue = ((DoubleLiteral) values.get(1)).getValue();
         Assert.assertEquals(2.5, secondValue, 0.0f);
     }
 
     @Test
     public void parseActionWithParameterAndVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param int factor1, optimizable float{1.25, 2.5} factor2);
+                action scaleOut(param int factor1, optimizable double{1.25, 2.5} factor2);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -269,23 +269,23 @@ public class SmodelActionParsingTest {
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.FLOAT, variable.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof SetBounds);
         List<Literal> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
-        float firstValue = ((FloatLiteral) values.get(0)).getValue();
+        double firstValue = ((DoubleLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
-        float secondValue = ((FloatLiteral) values.get(1)).getValue();
+        double secondValue = ((DoubleLiteral) values.get(1)).getValue();
         Assert.assertEquals(2.5, secondValue, 0.0f);
     }
 
     @Test
     public void parseTwoActions() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param float scaleOutFactor);
-                action scaleIn(param float scaleInFactor);
+                action scaleOut(param double scaleOutFactor);
+                action scaleIn(param double scaleInFactor);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -300,7 +300,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
         Parameter firstParameter = firstParameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
         Assert.assertEquals("scaleOutFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
@@ -308,15 +308,15 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
         Parameter secondParameter = secondParameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, secondParameter.getDataType());
         Assert.assertEquals("scaleInFactor", secondParameter.getName());
     }
 
     @Test
     public void parseTwoActionsWithSameParameterName() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param float balancingFactor);
-                action scaleIn(param float balancingFactor);
+                action scaleOut(param double balancingFactor);
+                action scaleIn(param double balancingFactor);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -331,7 +331,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, firstParameters.size());
         Parameter firstParameter = firstParameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, firstParameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
         Assert.assertEquals("balancingFactor", firstParameter.getName());
         Action secondAction = actions.get(1);
         Assert.assertEquals("scaleIn", secondAction.getName());
@@ -339,14 +339,14 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, secondParameters.size());
         Parameter secondParameter = secondParameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, secondParameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, secondParameter.getDataType());
         Assert.assertEquals("balancingFactor", secondParameter.getName());
     }
 
     @Test
     public void parseActionCallWithLiteral() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param float balancingFactor);
+                action scaleOut(param double balancingFactor);
                 if(true) {
                     scaleOut(balancingFactor=1.0);
                 }
@@ -364,7 +364,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -375,15 +375,15 @@ public class SmodelActionParsingTest {
         Assert.assertEquals(1, arguments.size());
         Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
             .getArgument());
-        Assert.assertTrue(argument.getLiteral() instanceof FloatLiteral);
-        Assert.assertEquals(1, ((FloatLiteral) argument.getLiteral()).getValue(), 0.0f);
+        Assert.assertTrue(argument.getLiteral() instanceof DoubleLiteral);
+        Assert.assertEquals(1, ((DoubleLiteral) argument.getLiteral()).getValue(), 0.0f);
     }
 
     @Test
     public void parseActionCallWithField() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable float{0} argument;
-                action scaleOut(param float balancingFactor);
+                optimizable double{0} argument;
+                action scaleOut(param double balancingFactor);
                 if(true){
                     scaleOut(balancingFactor=argument);
                 }
@@ -401,7 +401,7 @@ public class SmodelActionParsingTest {
             .getParameters();
         Assert.assertEquals(1, parameters.size());
         Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.FLOAT, parameter.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
         Assert.assertEquals("balancingFactor", parameter.getName());
         EList<GlobalStatement> statements = model.getStatements();
         Assert.assertEquals(1, statements.size());
@@ -414,13 +414,13 @@ public class SmodelActionParsingTest {
             .getArgument());
         Field argumentField = argument.getFieldRef();
         Assert.assertEquals("argument", argumentField.getName());
-        Assert.assertEquals(DataType.FLOAT, argumentField.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, argumentField.getDataType());
     }
 
     @Test
     public void parseActionCallWithVariableParameter() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(optimizable float{1.25, 2.5} balancingFactor);
+                action scaleOut(optimizable double{1.25, 2.5} balancingFactor);
                 if (true) {
                     scaleOut();
                 }
@@ -441,7 +441,7 @@ public class SmodelActionParsingTest {
             .getOptimizables();
         Assert.assertEquals(1, optimizables.size());
         Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.FLOAT, variable.getDataType());
+        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
         Assert.assertEquals("balancingFactor", variable.getName());
         List<GlobalStatement> statements = model.getStatements();
         ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
@@ -457,8 +457,8 @@ public class SmodelActionParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE
                 + """
                         const int constant = 1;
-                        optimizable float[1, 2, 1] variable;
-                        action adapt(param float param1, param int param2, param bool param3, optimizable int{1, 2, 3, 4} variable);
+                        optimizable double[1, 2, 1] variable;
+                        action adapt(param double param1, param int param2, param bool param3, optimizable int{1, 2, 3, 4} variable);
                         if(true) {
                             adapt(param1=variable, param2=(constant + 1), param3=(true && false));
                         }
@@ -500,7 +500,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionWithSameParameterName() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param int parameter, param float parameter);
+                action adapt(param int parameter, param double parameter);
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -547,7 +547,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionCallWithWrongParameterTypes() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param float parameter1, param bool parameter2);
+                action adapt(param double parameter1, param bool parameter2);
                 if(true) {
                     adapt(parameter1=true, parameter2=2);
                 }
@@ -557,7 +557,7 @@ public class SmodelActionParsingTest {
 
         SmodelTestUtil.assertModelWithoutErrors(model);
         SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
-                "Expected a value of type 'int' or 'float', got 'bool' instead.",
+                "Expected a value of type 'int' or 'double', got 'bool' instead.",
                 "Expected a value of type 'bool', got 'int' instead.");
     }
 
@@ -580,7 +580,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionCallWithTooFewArguments() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param float parameter);
+                action adapt(param double parameter);
                 if (true) {
                     adapt();
                 }
@@ -595,7 +595,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionCallWithTooManyArguments() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param float parameter, optimizable float{0} variable);
+                action adapt(param double parameter, optimizable double{0} variable);
                 if (true) {
                     adapt(parameter=1.0, variable=1.0);
                 }

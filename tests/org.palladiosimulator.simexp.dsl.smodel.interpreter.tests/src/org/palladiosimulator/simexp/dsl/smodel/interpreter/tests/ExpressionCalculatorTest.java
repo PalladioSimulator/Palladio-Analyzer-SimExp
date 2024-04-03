@@ -7,6 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.assertj.core.util.DoubleComparator;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
@@ -551,45 +552,45 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testFloatAdditionExpression1() throws Exception {
+    public void testDoubleAdditionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 1.0 + 0.0;
+                const double value = 1.0 + 0.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
     }
 
     @Test
-    public void testFloatAdditionExpression2() throws Exception {
+    public void testDoubleAdditionExpression2() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = -1.0 + 3.0;
+                const double value = -1.0 + 3.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(2.0f);
+        assertThat(actualCalculatedValue).isEqualTo(2.0);
     }
 
     @Test
-    public void testFloatAdditionExpression3() throws Exception {
+    public void testDoubleAdditionExpression3() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 3.0 + -1.0;
+                const double value = 3.0 + -1.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(2.0f);
+        assertThat(actualCalculatedValue).isEqualTo(2.0);
     }
 
     @Test
@@ -635,45 +636,45 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testFloatSubtractionExpression1() throws Exception {
+    public void testDoubleSubtractionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 1.0 - 0.0;
+                const double value = 1.0 - 0.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
     }
 
     @Test
-    public void testFloatSubtractionExpression2() throws Exception {
+    public void testDoubleSubtractionExpression2() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = -1.0 - -3.0;
+                const double value = -1.0 - -3.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(2.0f);
+        assertThat(actualCalculatedValue).isEqualTo(2.0);
     }
 
     @Test
-    public void testFloatSubtractionExpression3() throws Exception {
+    public void testDoubleSubtractionExpression3() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 3.0 - -1.0;
+                const double value = 3.0 - -1.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(4.0f);
+        assertThat(actualCalculatedValue).isEqualTo(4.0);
     }
 
     @Test
@@ -704,18 +705,23 @@ public class ExpressionCalculatorTest {
         assertEquals(2, actualCalculatedValue);
     }
 
+    public class DComp {
+        double value;
+    }
+
     @Test
-    public void testFloatMultiplicationExpression1() throws Exception {
+    public void testDoubleMultiplicationExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 2.1 * 1.1;
+                const double value = 2.1 * 1.1;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(2.31f);
+        assertThat(actualCalculatedValue).usingComparator(new DoubleComparator(1e-15))
+            .isEqualTo(2.31);
     }
 
     @Ignore
@@ -951,115 +957,115 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testFloatPrecedence1() throws Exception {
+    public void testDoublePrecedence1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 1.0 + 1.0 * 2.0;
+                const double value = 1.0 + 1.0 * 2.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(3.0f);
+        assertThat(actualCalculatedValue).isEqualTo(3.0);
     }
 
     @Test
-    public void testFloatPrecedence2() throws Exception {
+    public void testDoublePrecedence2() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 2.0 * 1.0 + 1.0;
+                const double value = 2.0 * 1.0 + 1.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(3.0f);
+        assertThat(actualCalculatedValue).isEqualTo(3.0);
     }
 
     @Test
-    public void testFloatPrecedence3() throws Exception {
+    public void testDoublePrecedence3() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 2.0 - 1.0 / 2.0;
+                const double value = 2.0 - 1.0 / 2.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(1.5f);
+        assertThat(actualCalculatedValue).isEqualTo(1.5);
     }
 
     @Test
-    public void testFloatPrecedence4() throws Exception {
+    public void testDoublePrecedence4() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 2.0 / 1.0 + 2.0;
+                const double value = 2.0 / 1.0 + 2.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4.0);
+    }
+
+    @Test
+    public void testDoublePrecedenceParenthesis1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = (1.0 + 1.0) * 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4.0);
+    }
+
+    @Test
+    public void testDoublePrecedenceParenthesis2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 2.0 * (1.0 + 1.0);
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
         assertThat(actualCalculatedValue).isEqualTo(4.0f);
     }
 
     @Test
-    public void testFloatPrecedenceParenthesis1() throws Exception {
+    public void testDoublePrecedenceParenthesis3() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = (1.0 + 1.0) * 2.0;
+                const double value = (2.0 - 1.0) / 2.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
-
-        assertThat(actualCalculatedValue).isEqualTo(4.0f);
-    }
-
-    @Test
-    public void testFloatPrecedenceParenthesis2() throws Exception {
-        String sb = MODEL_NAME_LINE + """
-                const float value = 2.0 * (1.0 + 1.0);
-                """;
-        Smodel model = parserHelper.parse(sb);
-        validationTestHelper.assertNoErrors(model);
-        Constant constant = getFirstConstant(model);
-
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
-
-        assertThat(actualCalculatedValue).isEqualTo(4.0f);
-    }
-
-    @Test
-    public void testFloatPrecedenceParenthesis3() throws Exception {
-        String sb = MODEL_NAME_LINE + """
-                const float value = (2.0 - 1.0) / 2.0;
-                """;
-        Smodel model = parserHelper.parse(sb);
-        validationTestHelper.assertNoErrors(model);
-        Constant constant = getFirstConstant(model);
-
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
         assertThat(actualCalculatedValue).isEqualTo(0.5f);
     }
 
     @Test
-    public void testFloatPrecedenceParenthesis4() throws Exception {
+    public void testDoublePrecedenceParenthesis4() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const float value = 3.0 / (1.0 + 2.0);
+                const double value = 3.0 / (1.0 + 2.0);
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
         Constant constant = getFirstConstant(model);
 
-        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
     }
 
     private Constant getFirstConstant(Smodel model) {

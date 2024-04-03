@@ -14,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
@@ -79,7 +79,7 @@ public class SmodelConstantParsingTest {
     @Test
     public void parseSingleFloatConstant() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const float one = 1.0;
+                const double one = 1.0;
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -87,10 +87,10 @@ public class SmodelConstantParsingTest {
         validationTestHelper.assertNoErrors(model);
         Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
         expectedConstant.setName("one");
-        expectedConstant.setDataType(DataType.FLOAT);
+        expectedConstant.setDataType(DataType.DOUBLE);
         Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
-        FloatLiteral expectedLiteral = SmodelFactory.eINSTANCE.createFloatLiteral();
-        expectedLiteral.setValue(1.0f);
+        DoubleLiteral expectedLiteral = SmodelFactory.eINSTANCE.createDoubleLiteral();
+        expectedLiteral.setValue(1.0);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
         expectedExpression.setLeft(expectedLiteralExpression);
@@ -239,7 +239,7 @@ public class SmodelConstantParsingTest {
     @Test
     public void parseFloatConstantWithoutValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const float noValue;
+                const double noValue;
                 """;
 
         Smodel model = parserHelper.parse(sb);

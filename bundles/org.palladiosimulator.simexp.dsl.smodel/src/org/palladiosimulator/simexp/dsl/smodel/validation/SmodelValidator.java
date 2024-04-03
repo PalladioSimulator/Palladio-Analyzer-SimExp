@@ -227,7 +227,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
         Bounds bounds = variable.getValues();
 
         if (bounds != null) {
-            if (!compatibleTypes(DataType.FLOAT, dataType) && bounds instanceof RangeBounds) {
+            if (!compatibleTypes(DataType.DOUBLE, dataType) && bounds instanceof RangeBounds) {
                 error("Cannot assign a range to a variable of the type '" + dataType + "'.",
                         SmodelPackage.Literals.OPTIMIZABLE__VALUES);
             }
@@ -369,9 +369,9 @@ public class SmodelValidator extends AbstractSmodelValidator {
 
         case EQUAL:
         case UNEQUAL:
-            if (leftType == DataType.FLOAT || rightType == DataType.FLOAT) {
-                checkTypes(DataType.FLOAT, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
-                checkTypes(DataType.FLOAT, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
+            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
+                checkTypes(DataType.DOUBLE, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
+                checkTypes(DataType.DOUBLE, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
             } else {
                 checkTypes(rightType, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
                 checkTypes(leftType, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
@@ -387,9 +387,9 @@ public class SmodelValidator extends AbstractSmodelValidator {
         case MULTIPLY:
         case DIVIDE:
         case MODULO:
-            checkTypes(DataType.FLOAT, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
+            checkTypes(DataType.DOUBLE, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
             if (rightType != null) {
-                checkTypes(DataType.FLOAT, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
+                checkTypes(DataType.DOUBLE, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
             }
             break;
 
@@ -418,8 +418,8 @@ public class SmodelValidator extends AbstractSmodelValidator {
         if (!compatibleTypes(expected, actual)) {
             StringBuilder errorMessage = new StringBuilder("Expected a value of type '");
 
-            if (expected == DataType.FLOAT) {
-                errorMessage.append(DataType.INT + "' or '" + DataType.FLOAT);
+            if (expected == DataType.DOUBLE) {
+                errorMessage.append(DataType.INT + "' or '" + DataType.DOUBLE);
             } else {
                 errorMessage.append(expected);
             }
@@ -439,7 +439,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
     }
 
     private boolean isSubtypeOf(DataType supertype, DataType subtype) {
-        return supertype == DataType.FLOAT && subtype == DataType.INT;
+        return supertype == DataType.DOUBLE && subtype == DataType.INT;
     }
 
     private boolean containsNonConstantFieldReference(Set<Field> fields) {

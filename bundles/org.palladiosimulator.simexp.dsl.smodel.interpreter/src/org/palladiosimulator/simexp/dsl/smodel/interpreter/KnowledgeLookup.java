@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.FloatLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -23,8 +23,8 @@ public class KnowledgeLookup {
             return ((IntLiteral) literal).getValue();
         }
 
-        if (literal instanceof FloatLiteral) {
-            return ((FloatLiteral) literal).getValue();
+        if (literal instanceof DoubleLiteral) {
+            return ((DoubleLiteral) literal).getValue();
         }
 
         if (literal instanceof StringLiteral) {

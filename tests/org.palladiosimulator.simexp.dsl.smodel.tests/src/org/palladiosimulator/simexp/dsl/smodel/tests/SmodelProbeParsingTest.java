@@ -100,9 +100,9 @@ public class SmodelProbeParsingTest {
     }
 
     @Test
-    public void parseSingleFloatVariable() throws Exception {
+    public void parseSingleDoubleVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe float number : id = "someId";
+                probe double number : id = "someId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
@@ -111,7 +111,7 @@ public class SmodelProbeParsingTest {
         SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
         Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
         exptectedProbe.setName("number");
-        exptectedProbe.setDataType(DataType.FLOAT);
+        exptectedProbe.setDataType(DataType.DOUBLE);
         exptectedProbe.setKind(ProbeAdressingKind.ID);
         exptectedProbe.setIdentifier("someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
@@ -216,9 +216,9 @@ public class SmodelProbeParsingTest {
     }
 
     @Test
-    public void parseFloatProbeAssignment() throws Exception {
+    public void parseDoubleProbeAssignment() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                probe float pName: id = "ab11" = 1.0;
+                probe double pName: id = "ab11" = 1.0;
                 """;
 
         Smodel model = parserHelper.parse(sb);
