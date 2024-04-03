@@ -635,24 +635,17 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testInversionExpressionValue() throws Exception {
+    public void testIntInversionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const int value = -1;
-                const int value2 = -(-1);
+                const int value = -(-1);
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        int value = ((Number) interpreter.getValue(constant)).intValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        int value2 = ((Number) interpreter.getValue(constant2)).intValue();
-//
-//        Assert.assertEquals(-1, value);
-//        Assert.assertEquals(1, value2);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(1, actualCalculatedValue);
     }
 
     @Test
