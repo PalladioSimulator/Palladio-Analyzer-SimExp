@@ -35,11 +35,6 @@ public class ExpressionCalculator {
         return floatValue;
     }
 
-    public String calculateString(Expression expression) {
-        // return (String) calculate(expression);
-        return null;
-    }
-
     private Object caseExpression(Expression expression) {
         Field field = expression.getFieldRef();
         if (field != null) {

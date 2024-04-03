@@ -55,18 +55,16 @@ public class ActionCallExecutor implements IActionCallExecutor {
 
     private Object getParamValue(ArgumentKeyValue kv) {
         Expression expression = kv.getArgument();
-        DataType datatype = typeSwitch.doSwitch(expression);
-        switch (datatype) {
+        DataType dataType = typeSwitch.doSwitch(expression);
+        switch (dataType) {
         case BOOL:
             return expressionCalculator.calculateBoolean(expression);
         case FLOAT:
             return expressionCalculator.calculateFloat(expression);
         case INT:
             return expressionCalculator.calculateInteger(expression);
-        case STRING:
-            return expressionCalculator.calculateString(expression);
         default:
-            throw new RuntimeException("");
+            throw new RuntimeException("unsupported expression type: " + dataType);
         }
     }
 
