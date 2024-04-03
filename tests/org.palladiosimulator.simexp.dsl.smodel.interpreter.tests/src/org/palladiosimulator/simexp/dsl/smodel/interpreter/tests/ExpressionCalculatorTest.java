@@ -965,6 +965,62 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testFloatPrecedence1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 1.0 + 1.0 * 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(3.0f);
+    }
+
+    @Test
+    public void testFloatPrecedence2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2.0 * 1.0 + 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(3.0f);
+    }
+
+    @Test
+    public void testFloatPrecedence3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2.0 - 1.0 / 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.5f);
+    }
+
+    @Test
+    public void testFloatPrecedence4() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2.0 / 1.0 + 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4.0f);
+    }
+
+    @Test
     public void testFloatValuePrecision() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const float value = 1.4e-45;
