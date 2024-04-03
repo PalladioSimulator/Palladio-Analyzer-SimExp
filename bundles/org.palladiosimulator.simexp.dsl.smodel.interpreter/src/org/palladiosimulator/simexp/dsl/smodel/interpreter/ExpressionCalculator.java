@@ -24,8 +24,9 @@ public class ExpressionCalculator {
     }
 
     public int calculateInteger(Expression expression) {
-        // return (int) calculate(expression);
-        return 0;
+        Object value = caseExpression(expression);
+        Float floatValue = (Float) value;
+        return floatValue.intValue();
     }
 
     public double calculateDouble(Expression expression) {
@@ -95,18 +96,14 @@ public class ExpressionCalculator {
         case PLUS:
             if (rightValue == null) {
                 return +((Number) leftValue).floatValue();
-
-            } else {
-                return ((Number) leftValue).floatValue() + ((Number) rightValue).floatValue();
             }
+            return ((Number) leftValue).floatValue() + ((Number) rightValue).floatValue();
 
         case MINUS:
             if (rightValue == null) {
                 return -((Number) leftValue).floatValue();
-
-            } else {
-                return ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
             }
+            return ((Number) leftValue).floatValue() - ((Number) rightValue).floatValue();
 
         case MULTIPLY:
             return ((Number) leftValue).floatValue() * ((Number) rightValue).floatValue();
