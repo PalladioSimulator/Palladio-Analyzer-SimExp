@@ -339,6 +339,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testBoolEqualExpressionNumbers1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 == 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolEqualExpressionNumbers2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 == 2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertFalse(actualCalculatedValue);
+    }
+
+    @Test
     public void testBoolUnequalExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true != true;
