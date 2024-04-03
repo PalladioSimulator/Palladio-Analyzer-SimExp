@@ -1078,6 +1078,62 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(4.0f);
     }
 
+    @Test
+    public void testFloatPrecedenceParenthesis1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = (1.0 + 1.0) * 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4.0f);
+    }
+
+    @Test
+    public void testFloatPrecedenceParenthesis2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 2.0 * (1.0 + 1.0);
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(4.0f);
+    }
+
+    @Test
+    public void testFloatPrecedenceParenthesis3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = (2.0 - 1.0) / 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(0.5f);
+    }
+
+    @Test
+    public void testFloatPrecedenceParenthesis4() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const float value = 3.0 / (1.0 + 2.0);
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+    }
+
     private Constant getFirstConstant(Smodel model) {
         EList<Constant> constants = model.getConstants();
         Constant constant = constants.get(0);
