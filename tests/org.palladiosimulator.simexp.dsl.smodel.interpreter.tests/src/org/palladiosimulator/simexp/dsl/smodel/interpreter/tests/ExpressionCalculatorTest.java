@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.apache.commons.math3.util.Precision;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
@@ -594,6 +593,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testIntAdditionExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = -1 + 3;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(2, actualCalculatedValue);
+    }
+
+    @Test
+    public void testIntAdditionExpression3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 3 + -1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertEquals(2, actualCalculatedValue);
+    }
+
+    @Test
     public void testFloatAdditionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const float value = 1.0 + 0.0;
@@ -604,7 +631,7 @@ public class ExpressionCalculatorTest {
 
         float actualCalculatedValue = calculator.calculateFloat(constant.getValue());
 
-        assertEquals(1.0, actualCalculatedValue, Precision.EPSILON);
+        assertThat(actualCalculatedValue).isEqualTo(1.0f);
     }
 
     @Test
