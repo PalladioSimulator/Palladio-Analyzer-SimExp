@@ -130,7 +130,6 @@ public class SmodelIfParsingTest {
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
         Expression exptectedCondition = createLiteralBoolCondition(true);
         exptectedStatement.setCondition(exptectedCondition);
-        exptectedStatement.setWithElse(true);
         assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
@@ -152,7 +151,6 @@ public class SmodelIfParsingTest {
         IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
         Expression exptectedCondition2 = createLiteralBoolCondition(true);
         exptectedStatement2.setCondition(exptectedCondition2);
-        exptectedStatement1.setWithElse(true);
         exptectedStatement1.getElseStatements()
             .add(exptectedStatement2);
         assertThat(model.getStatements()).containsExactly(exptectedStatement1);

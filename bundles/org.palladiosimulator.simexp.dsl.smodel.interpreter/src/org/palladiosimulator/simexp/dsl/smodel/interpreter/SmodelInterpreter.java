@@ -34,7 +34,11 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
             .stream()
             .anyMatch(statement -> {
                 IfStatement ifStatement = (IfStatement) statement;
-                return ifStatement.isWithElse() || (boolean) getValue(ifStatement.getCondition());
+                if (!ifStatement.getElseStatements()
+                    .isEmpty()) {
+                    return true;
+                }
+                return (boolean) getValue(ifStatement.getCondition());
             });
     }
 
@@ -79,7 +83,7 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
             for (BlockStatement statement : ifStatement.getThenStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }
-        } else if (ifStatement.isWithElse()) {
+        } else {
             for (BlockStatement statement : ifStatement.getElseStatements()) {
                 resolvedActions.addAll(doSwitch(statement));
             }

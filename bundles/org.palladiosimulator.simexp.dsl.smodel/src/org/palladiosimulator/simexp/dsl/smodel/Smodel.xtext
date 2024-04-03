@@ -94,7 +94,7 @@ ParameterValue:
 IfStatement returns GlobalStatement: 
 	{IfStatement}
 	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=BlockStatement)* '}'
-	(withElse?='else' '{' (elseStatements+=BlockStatement)* '}')?
+	('else' '{' (elseStatements+=BlockStatement)* '}')?
 	;
 
 DisjunctiveExpr returns Expression:
