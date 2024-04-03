@@ -287,7 +287,7 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testBoolNotExpression1() throws Exception {
+    public void testBoolComplementExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = !false;
                 """;
@@ -301,7 +301,7 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testBoolNotExpression2() throws Exception {
+    public void testBoolComplementExpression2() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = !true;
                 """;
@@ -879,45 +879,31 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testDistributivity() throws Exception {
+    public void testBoolPrecedence1() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const int value = 2 * (3 + 4);
-                const int value = 2 * 3 + 2 * 4;
+                const bool value = true || false && false || false;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        int value = ((Number) interpreter.getValue(constant)).intValue();
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        int value2 = ((Number) interpreter.getValue(constant2)).intValue();
-//
-//        Assert.assertEquals(14, value);
-//        Assert.assertEquals(value, value2);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
-    public void testLogicPrecedence() throws Exception {
+    public void testBoolPrecedence2() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const bool value = true || true && false;
-                const bool value2 = (true || true) && false;
+                const bool value = !false || false;
                 """;
-
         Smodel model = parserHelper.parse(sb);
-//        interpreter = new SmodelInterpreter(model, vvp, pvp, rvp);
-//
-//        Constant constant = model.getConstants()
-//            .get(0);
-//        boolean value = (boolean) interpreter.getValue(constant);
-//        Constant constant2 = model.getConstants()
-//            .get(1);
-//        boolean value2 = (boolean) interpreter.getValue(constant2);
-//
-//        Assert.assertTrue(value);
-//        Assert.assertFalse(value2);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
