@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.presentation.StandardRepresentation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class EcoreRepresentation extends StandardRepresentation {
@@ -20,22 +22,37 @@ public class EcoreRepresentation extends StandardRepresentation {
 
     protected String toStringOf(EObject object) {
         StringBuilder result = new StringBuilder();
-        result.append(object.eClass()
-            .getInstanceTypeName());
-        result.append('@');
-        result.append(Integer.toHexString(object.hashCode()));
+        EClass eClass = object.eClass();
+        result.append(eClass.getName());
 
-        List<String> attributes = new ArrayList<>();
-        for (EAttribute attribute : object.eClass()
-            .getEAllAttributes()) {
+        List<String> values = new ArrayList<>();
+        for (EAttribute attribute : eClass.getEAllAttributes()) {
             StringBuilder attributeString = new StringBuilder();
             attributeString.append(attribute.getName());
             attributeString.append('=');
             attributeString.append(EcoreUtil.convertToString(attribute.getEAttributeType(), object.eGet(attribute)));
-            attributes.add(attributeString.toString());
+            values.add(attributeString.toString());
         }
+        for (EReference reference : eClass.getEAllReferences()) {
+            if (!reference.isContainment()) {
+                continue;
+            }
+
+            StringBuilder referenceString = new StringBuilder();
+            referenceString.append(reference.getName());
+            referenceString.append("=[");
+            if (object.eIsSet(reference)) {
+                Object containedObject = object.eGet(reference);
+                referenceString.append(toStringOf(containedObject));
+            } else {
+                referenceString.append("<null>");
+            }
+            referenceString.append(']');
+            values.add(referenceString.toString());
+        }
+
         result.append(": ");
-        result.append(StringUtils.join(attributes, ","));
+        result.append(StringUtils.join(values, ","));
         return result.toString();
     }
 }
