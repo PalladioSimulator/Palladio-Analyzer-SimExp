@@ -768,6 +768,90 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testDoubleDivisionExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 2.0 / 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+    }
+
+    @Test
+    public void testDoubleDivisionExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = -1.0 / 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(-1.0f);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 0.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isNaN();
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 1.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.POSITIVE_INFINITY);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = -1.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.NEGATIVE_INFINITY);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero4() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 1.0 / -0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.NEGATIVE_INFINITY);
+    }
+
+    @Test
     public void testIntModuloExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const int value =  4 % 2;
