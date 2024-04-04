@@ -12,7 +12,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
@@ -724,7 +723,6 @@ public class ExpressionCalculatorTest {
             .isEqualTo(2.31);
     }
 
-    @Ignore
     @Test
     public void testIntDivisionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -739,7 +737,6 @@ public class ExpressionCalculatorTest {
         assertEquals(1, actualCalculatedValue);
     }
 
-    @Ignore
     @Test
     public void testIntDivisionExpression2() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -754,7 +751,6 @@ public class ExpressionCalculatorTest {
         assertEquals(-1, actualCalculatedValue);
     }
 
-    @Ignore
     @Test
     public void testIntDivisionExpressionByZero() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -868,7 +864,6 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(3);
     }
 
-    @Ignore
     @Test
     public void testIntPrecedence3() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -883,7 +878,6 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
-    @Ignore
     @Test
     public void testIntPrecedence4() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -926,7 +920,6 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(4);
     }
 
-    @Ignore
     @Test
     public void testIntPrecedenceParenthesis3() throws Exception {
         String sb = MODEL_NAME_LINE + """
@@ -941,7 +934,6 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(0);
     }
 
-    @Ignore
     @Test
     public void testIntPrecedenceParenthesis4() throws Exception {
         String sb = MODEL_NAME_LINE + """
