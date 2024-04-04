@@ -7,7 +7,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
@@ -71,7 +70,7 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
             return doSwitch(field);
         }
 
-        Literal literal = expression.getLiteral();
+        Expression literal = expression.getLiteral();
         if (literal != null) {
             return doSwitch(literal);
         }

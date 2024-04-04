@@ -46,13 +46,11 @@ public class SmodelVariableParsingTest {
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("condition");
         exptectedVariable.setDataType(DataType.BOOL);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
         BoolLiteral expectedLiteral = SmodelFactory.eINSTANCE.createBoolLiteral();
         expectedLiteral.setTrue(true);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
-        expectedExpression.setLeft(expectedLiteralExpression);
-        exptectedVariable.setValue(expectedExpression);
+        exptectedVariable.setValue(expectedLiteralExpression);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -69,13 +67,11 @@ public class SmodelVariableParsingTest {
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("one");
         exptectedVariable.setDataType(DataType.INT);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
         IntLiteral expectedLiteral = SmodelFactory.eINSTANCE.createIntLiteral();
         expectedLiteral.setValue(1);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
-        expectedExpression.setLeft(expectedLiteralExpression);
-        exptectedVariable.setValue(expectedExpression);
+        exptectedVariable.setValue(expectedLiteralExpression);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -92,13 +88,11 @@ public class SmodelVariableParsingTest {
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("one");
         exptectedVariable.setDataType(DataType.DOUBLE);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
         DoubleLiteral expectedLiteral = SmodelFactory.eINSTANCE.createDoubleLiteral();
         expectedLiteral.setValue(1.0);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
-        expectedExpression.setLeft(expectedLiteralExpression);
-        exptectedVariable.setValue(expectedExpression);
+        exptectedVariable.setValue(expectedLiteralExpression);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -115,13 +109,11 @@ public class SmodelVariableParsingTest {
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("word");
         exptectedVariable.setDataType(DataType.STRING);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
         StringLiteral expectedLiteral = SmodelFactory.eINSTANCE.createStringLiteral();
         expectedLiteral.setValue("word");
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setLiteral(expectedLiteral);
-        expectedExpression.setLeft(expectedLiteralExpression);
-        exptectedVariable.setValue(expectedExpression);
+        exptectedVariable.setValue(expectedLiteralExpression);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -139,23 +131,19 @@ public class SmodelVariableParsingTest {
         Variable exptectedVariable1 = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable1.setName("count");
         exptectedVariable1.setDataType(DataType.INT);
-        Expression expectedExpression1 = SmodelFactory.eINSTANCE.createExpression();
         IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
         expectedLiteral1.setValue(1);
         Expression expectedLiteralExpression1 = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression1.setLiteral(expectedLiteral1);
-        expectedExpression1.setLeft(expectedLiteralExpression1);
-        exptectedVariable1.setValue(expectedExpression1);
+        exptectedVariable1.setValue(expectedLiteralExpression1);
         Variable exptectedVariable2 = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable2.setName("word");
         exptectedVariable2.setDataType(DataType.STRING);
-        Expression expectedExpression2 = SmodelFactory.eINSTANCE.createExpression();
         StringLiteral expectedLiteral2 = SmodelFactory.eINSTANCE.createStringLiteral();
         expectedLiteral2.setValue("word");
         Expression expectedLiteralExpression2 = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression2.setLiteral(expectedLiteral2);
-        expectedExpression2.setLeft(expectedLiteralExpression2);
-        exptectedVariable2.setValue(expectedExpression2);
+        exptectedVariable2.setValue(expectedLiteralExpression2);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable1, exptectedVariable2);
     }
 
@@ -173,22 +161,17 @@ public class SmodelVariableParsingTest {
         Constant exptectedConstant = SmodelFactory.eINSTANCE.createConstant();
         exptectedConstant.setName("constant");
         exptectedConstant.setDataType(DataType.INT);
-        Expression expectedExpression1 = SmodelFactory.eINSTANCE.createExpression();
         IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
         expectedLiteral1.setValue(1);
         Expression expectedLiteralExpression1 = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression1.setLiteral(expectedLiteral1);
-        expectedExpression1.setLeft(expectedLiteralExpression1);
-        exptectedConstant.setValue(expectedExpression1);
-        assertThat(model.getConstants()).containsExactlyInAnyOrder(exptectedConstant);
+        exptectedConstant.setValue(expectedLiteralExpression1);
         Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
         exptectedVariable.setName("variable");
         exptectedVariable.setDataType(DataType.INT);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setFieldRef(exptectedConstant);
-        expectedExpression.setLeft(expectedLiteralExpression);
-        exptectedVariable.setValue(expectedExpression);
+        exptectedVariable.setValue(expectedLiteralExpression);
         assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 

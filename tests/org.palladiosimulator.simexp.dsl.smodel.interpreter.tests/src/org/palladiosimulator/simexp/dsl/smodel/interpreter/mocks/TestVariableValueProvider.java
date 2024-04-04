@@ -1,14 +1,14 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.mocks;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
 public class TestVariableValueProvider implements VariableValueProvider {
@@ -29,7 +29,7 @@ public class TestVariableValueProvider implements VariableValueProvider {
         return null;
     }
 
-    private Object getValue(Literal literal) {
+    private Object getValue(Expression literal) {
         if (literal instanceof BoolLiteral) {
             BoolLiteral boolLiteral = (BoolLiteral) literal;
             return boolLiteral.isTrue();

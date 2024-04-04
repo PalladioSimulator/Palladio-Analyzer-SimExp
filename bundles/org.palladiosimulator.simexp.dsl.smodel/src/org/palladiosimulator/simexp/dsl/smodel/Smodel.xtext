@@ -144,7 +144,8 @@ MultiplicativeExpr returns Expression:
 enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO = '%';
 
 UnaryExpr returns Expression:
-	op=UnaryOp? left=Term
+	{UnaryExpr}
+	op=UnaryOp left=UnaryExpr | Term
 	;
 
 enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
@@ -157,26 +158,30 @@ ParenthesizedExpr returns Expression:
 	'(' DisjunctiveExpr ')'
 	;
 
-Literal:
+Literal returns Expression:
 	BoolLiteral |
 	IntLiteral |
 	DoubleLiteral |
 	StringLiteral
 	;
 	
-BoolLiteral:
+BoolLiteral returns Literal:
+	{BoolLiteral}
 	true=BOOL
 	;
 	
-IntLiteral:
+IntLiteral returns Literal:
+	{IntLiteral}
 	 value=INT
 	;
 
-DoubleLiteral:
+DoubleLiteral returns Literal:
+	{DoubleLiteral}
 	value=DOUBLE
 	;
 
-StringLiteral:
+StringLiteral returns Literal:
+	{StringLiteral}
 	value=STRING
 	;
 

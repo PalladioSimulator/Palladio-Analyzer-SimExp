@@ -18,7 +18,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -52,7 +51,7 @@ public class SmodelExpressionParsingTest {
         Constant constant = fields.get(0);
         Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, getDataType(expression));
-        Literal literal = expression.getLiteral();
+        Expression literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
     }
@@ -72,7 +71,7 @@ public class SmodelExpressionParsingTest {
         Constant firstConstant = fields.get(0);
         Expression firstExpression = expressionUtil.getNextExpressionWithContent(firstConstant.getValue());
         Assert.assertEquals(DataType.INT, getDataType(firstExpression));
-        Literal firstValue = firstExpression.getLiteral();
+        Expression firstValue = firstExpression.getLiteral();
         Assert.assertTrue(firstValue instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
         Constant secondConstant = fields.get(1);
@@ -96,7 +95,7 @@ public class SmodelExpressionParsingTest {
         Constant constant = fields.get(0);
         Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
         Assert.assertEquals(DataType.INT, getDataType(expression));
-        Literal literal = expression.getLiteral();
+        Expression literal = expression.getLiteral();
         Assert.assertTrue(literal instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) literal).getValue());
     }
@@ -117,11 +116,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.OR, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
         Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isTrue());
     }
@@ -142,11 +141,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.AND, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof BoolLiteral);
         Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isTrue());
     }
@@ -167,11 +166,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.EQUAL, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof StringLiteral);
         Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof StringLiteral);
         Assert.assertEquals("thing", ((StringLiteral) rightLiteral).getValue());
     }
@@ -192,11 +191,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.UNEQUAL, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof StringLiteral);
         Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof StringLiteral);
         Assert.assertEquals("thing", ((StringLiteral) rightLiteral).getValue());
     }
@@ -217,7 +216,7 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.NOT, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof BoolLiteral);
         Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
     }
@@ -238,11 +237,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.SMALLER, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -263,11 +262,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -288,11 +287,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.GREATER_OR_EQUAL, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -313,11 +312,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.BOOL, getDataType(expression));
         Assert.assertEquals(Operation.GREATER, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -338,11 +337,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.PLUS, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -363,11 +362,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -388,7 +387,7 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MINUS, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
     }
@@ -409,11 +408,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.DOUBLE, getDataType(expression));
         Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof DoubleLiteral);
         Assert.assertEquals(1, ((DoubleLiteral) leftLiteral).getValue(), 0.0f);
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -434,11 +433,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.DOUBLE, getDataType(expression));
         Assert.assertEquals(Operation.DIVIDE, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
@@ -459,11 +458,11 @@ public class SmodelExpressionParsingTest {
         Assert.assertEquals(DataType.INT, getDataType(expression));
         Assert.assertEquals(Operation.MODULO, expression.getOp());
         Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Literal leftLiteral = left.getLiteral();
+        Expression leftLiteral = left.getLiteral();
         Assert.assertTrue(leftLiteral instanceof IntLiteral);
         Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue(), 0.0f);
         Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Literal rightLiteral = right.getLiteral();
+        Expression rightLiteral = right.getLiteral();
         Assert.assertTrue(rightLiteral instanceof IntLiteral);
         Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
     }
