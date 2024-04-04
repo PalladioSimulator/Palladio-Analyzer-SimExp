@@ -4,13 +4,11 @@ import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.asse
 
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
@@ -18,17 +16,15 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
-import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
-import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 @RunWith(XtextRunner.class)
 @InjectWith(SmodelInjectorProvider.class)
@@ -38,53 +34,6 @@ public class SmodelExpressionParsingTest {
     @Inject
     private ValidationTestHelper validationTestHelper;
 
-    private SmodelDataTypeSwitch typeSwitch = new SmodelDataTypeSwitch();
-    private ExpressionUtil expressionUtil = new ExpressionUtil();
-
-    @Test
-    public void parseSimpleLiteralExpression() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const int constant = 1;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Expression literal = expression.getLiteral();
-        Assert.assertTrue(literal instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) literal).getValue());
-    }
-
-    @Test
-    public void parseSimpleFieldExpression() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const int a = 1;
-                const int b = a;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant firstConstant = fields.get(0);
-        Expression firstExpression = expressionUtil.getNextExpressionWithContent(firstConstant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(firstExpression));
-        Expression firstValue = firstExpression.getLiteral();
-        Assert.assertTrue(firstValue instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) firstValue).getValue());
-        Constant secondConstant = fields.get(1);
-        Expression secondExpression = expressionUtil.getNextExpressionWithContent(secondConstant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(secondExpression));
-        Field secondValue = secondExpression.getFieldRef();
-        Assert.assertEquals(firstConstant, secondValue);
-    }
-
     @Test
     public void parseSimpleExpressionWithBrackets() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
@@ -93,15 +42,8 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Expression literal = expression.getLiteral();
-        Assert.assertTrue(literal instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) literal).getValue());
+        Constant expectedConstant = createConstant("constant", DataType.INT, createIntLiteral(1));
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -112,21 +54,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.OR, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof BoolLiteral);
-        Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isTrue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.OR);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createBoolLiteral(true));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createBoolLiteral(false));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -137,21 +76,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.AND, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof BoolLiteral);
-        Assert.assertEquals(false, ((BoolLiteral) rightLiteral).isTrue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.AND);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createBoolLiteral(true));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createBoolLiteral(false));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -162,21 +98,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.EQUAL, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof StringLiteral);
-        Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof StringLiteral);
-        Assert.assertEquals("thing", ((StringLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.EQUAL);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createStringLiteral("some"));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createStringLiteral("thing"));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -187,21 +120,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.UNEQUAL, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof StringLiteral);
-        Assert.assertEquals("some", ((StringLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof StringLiteral);
-        Assert.assertEquals("thing", ((StringLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.UNEQUAL);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createStringLiteral("some"));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createStringLiteral("thing"));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -212,17 +142,15 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.NOT, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof BoolLiteral);
-        Assert.assertEquals(true, ((BoolLiteral) leftLiteral).isTrue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.NOT);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createBoolLiteral(true));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -233,21 +161,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.SMALLER, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.SMALLER);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -258,21 +183,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.SMALLER_OR_EQUAL, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.SMALLER_OR_EQUAL);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -283,21 +205,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.GREATER_OR_EQUAL, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.GREATER_OR_EQUAL);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -308,21 +227,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.BOOL, getDataType(expression));
-        Assert.assertEquals(Operation.GREATER, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.BOOL, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.GREATER);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -333,21 +249,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Assert.assertEquals(Operation.PLUS, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.INT, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.PLUS);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -358,21 +271,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Assert.assertEquals(Operation.MINUS, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.INT, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.MINUS);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -383,17 +293,15 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Assert.assertEquals(Operation.MINUS, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.INT, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.MINUS);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -404,21 +312,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.DOUBLE, getDataType(expression));
-        Assert.assertEquals(Operation.MULTIPLY, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof DoubleLiteral);
-        Assert.assertEquals(1, ((DoubleLiteral) leftLiteral).getValue(), 0.0f);
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.DOUBLE, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.MULTIPLY);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createDoubleLiteral(1.0));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -473,34 +378,18 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Constant> fields = model.getConstants();
-        Constant constant = fields.get(0);
-        Expression expression = expressionUtil.getNextExpressionWithContent(constant.getValue());
-        Assert.assertEquals(DataType.INT, getDataType(expression));
-        Assert.assertEquals(Operation.MODULO, expression.getOp());
-        Expression left = expressionUtil.getNextExpressionWithContent(expression.getLeft());
-        Expression leftLiteral = left.getLiteral();
-        Assert.assertTrue(leftLiteral instanceof IntLiteral);
-        Assert.assertEquals(1, ((IntLiteral) leftLiteral).getValue(), 0.0f);
-        Expression right = expressionUtil.getNextExpressionWithContent(expression.getRight());
-        Expression rightLiteral = right.getLiteral();
-        Assert.assertTrue(rightLiteral instanceof IntLiteral);
-        Assert.assertEquals(2, ((IntLiteral) rightLiteral).getValue());
-    }
-
-    @Test
-    public void parseComplexExpression() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                const int a = 1;
-                const bool constant = -a > 1 == !(true || false && (a * (1 + a)) != 2.0);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = createConstant("constant", DataType.INT, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.MODULO);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
@@ -511,8 +400,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'bool', got 'double' instead.");
     }
 
@@ -524,8 +412,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'bool', got 'string' instead.");
     }
 
@@ -537,8 +424,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'int' or 'double', got 'string' instead.");
     }
 
@@ -550,8 +436,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'bool', got 'int' instead.");
     }
 
@@ -563,8 +448,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
@@ -576,8 +460,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
@@ -589,8 +472,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
@@ -602,8 +484,7 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
                 "Expected a value of type 'int' or 'double', got 'string' instead.");
     }
 
@@ -615,11 +496,8 @@ public class SmodelExpressionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "missing ')' at ';'");
-    }
-
-    private DataType getDataType(EObject object) {
-        return typeSwitch.doSwitch(object);
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "missing ')' at ';'");
     }
 
     private IntLiteral createIntLiteral(int value) {
@@ -630,6 +508,18 @@ public class SmodelExpressionParsingTest {
 
     private DoubleLiteral createDoubleLiteral(double value) {
         DoubleLiteral literal = SmodelFactory.eINSTANCE.createDoubleLiteral();
+        literal.setValue(value);
+        return literal;
+    }
+
+    private BoolLiteral createBoolLiteral(boolean value) {
+        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
+        literal.setTrue(value);
+        return literal;
+    }
+
+    private StringLiteral createStringLiteral(String value) {
+        StringLiteral literal = SmodelFactory.eINSTANCE.createStringLiteral();
         literal.setValue(value);
         return literal;
     }
