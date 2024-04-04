@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -29,7 +28,6 @@ public class SModelInterpreterTest {
 
     private ParseHelper<Smodel> parserHelper;
     private SmodelInterpreter interpreter;
-    private VariableValueProvider vvp;
 
     @Inject
     private ValidationTestHelper validationTestHelper;
