@@ -2,9 +2,6 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.assertj.core.util.DoubleComparator;
@@ -58,7 +55,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -72,7 +69,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -86,7 +83,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -100,7 +97,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -114,7 +111,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -128,7 +125,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -142,7 +139,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -156,7 +153,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -170,7 +167,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -184,7 +181,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -198,7 +195,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -212,7 +209,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -226,7 +223,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -240,7 +237,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -254,7 +251,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -296,7 +293,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -310,7 +307,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -352,7 +349,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -366,7 +363,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -380,7 +377,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -394,7 +391,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -408,7 +405,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -422,7 +419,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -436,7 +433,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -450,7 +447,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -464,7 +461,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -478,7 +475,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -492,7 +489,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -506,7 +503,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -520,7 +517,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -534,7 +531,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     @Test
@@ -548,7 +545,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     @Test
@@ -604,7 +601,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -618,7 +615,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     @Test
@@ -632,7 +629,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(4, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(4);
     }
 
     @Test
@@ -688,7 +685,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -702,7 +699,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     public class DComp {
@@ -736,7 +733,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Ignore
@@ -751,7 +748,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(-1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(-1);
     }
 
     @Ignore
