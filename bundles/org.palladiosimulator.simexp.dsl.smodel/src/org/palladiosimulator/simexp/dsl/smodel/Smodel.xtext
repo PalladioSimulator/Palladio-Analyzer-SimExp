@@ -104,33 +104,50 @@ IfStatement returns GlobalStatement:
 	('else' '{' (elseStatements+=BlockStatement)* '}')?
 	;
 
+// Rule 'Operation' is not used, but is necessary to provide a default value for operations.
+enum Operation: UNDEFINED;
+
 DisjunctiveExpr returns Expression:
     ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*
     ;
+
+enum DisjunctiveOp returns Operation: OR = '||';
 
 ConjunctiveExpr returns Expression:
 	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*
 	;
 
+enum ConjunctiveOp returns Operation: AND = '&&';
+
 EquativeExpr returns Expression:
 	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*
 	;
+
+enum EquativeOp returns Operation: EQUAL = '==' | UNEQUAL = '!=';
 
 RelationalExpr returns Expression:
 	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?
 	;
 
+enum RelativeOp returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
+
 AdditiveExpr returns Expression:
 	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*
 	;
+
+enum AdditiveOp returns Operation: PLUS = '+' | MINUS = '-';
 
 MultiplicativeExpr returns Expression:
 	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*
 	;
 
+enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO = '%';
+
 UnaryExpr returns Expression:
 	op=UnaryOp? left=Term
 	;
+
+enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 Term returns Expression:
 	fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')'
@@ -146,16 +163,6 @@ Literal:
 enum PrimitiveType returns DataType: 
 	BOOL = 'bool' | INT = 'int' | DOUBLE = 'double' | STRING = 'string'
 	;
-
-// Rule 'Operation' is not used, but is necessary to provide a default value for operations.
-enum Operation: UNDEFINED;
-enum DisjunctiveOp returns Operation: OR = '||';
-enum ConjunctiveOp returns Operation: AND = '&&';
-enum EquativeOp returns Operation: EQUAL = '==' | UNEQUAL = '!=';
-enum RelativeOp returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
-enum AdditiveOp returns Operation: PLUS = '+' | MINUS = '-';
-enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO = '%';
-enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 terminal BOOL returns ecore::EBoolean: 'true' | 'false';
 terminal DOUBLE returns ecore::EDouble: 
