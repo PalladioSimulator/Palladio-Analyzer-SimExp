@@ -150,7 +150,11 @@ UnaryExpr returns Expression:
 enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
 
 Term returns Expression:
-	fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')'
+	fieldRef=[Field] | literal=Literal | ParenthesizedExpr
+	;
+	
+ParenthesizedExpr returns Expression:
+	'(' DisjunctiveExpr ')'
 	;
 
 Literal:
