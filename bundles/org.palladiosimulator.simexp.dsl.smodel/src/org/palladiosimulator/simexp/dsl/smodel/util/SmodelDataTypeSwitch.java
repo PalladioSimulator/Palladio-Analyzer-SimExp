@@ -111,19 +111,20 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
         case MULTIPLY:
             if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
                 return DataType.DOUBLE;
-            } else {
-                return DataType.INT;
             }
+            return DataType.INT;
 
         case DIVIDE:
-            return DataType.DOUBLE;
+            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
+                return DataType.DOUBLE;
+            }
+            return DataType.INT;
 
         case MODULO:
             if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
                 return DataType.DOUBLE;
-            } else {
-                return DataType.INT;
             }
+            return DataType.INT;
 
         default:
             throw new RuntimeException(
