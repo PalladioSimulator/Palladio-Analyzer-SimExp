@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.test.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,24 +31,32 @@ public class EcoreRepresentation extends StandardRepresentation {
             StringBuilder attributeString = new StringBuilder();
             attributeString.append(attribute.getName());
             attributeString.append('=');
-            attributeString.append(EcoreUtil.convertToString(attribute.getEAttributeType(), object.eGet(attribute)));
+            String valueAsString = EcoreUtil.convertToString(attribute.getEAttributeType(), object.eGet(attribute));
+            attributeString.append(valueAsString);
             values.add(attributeString.toString());
         }
         for (EReference reference : eClass.getEAllReferences()) {
-            if (!reference.isContainment()) {
-                continue;
-            }
-
             StringBuilder referenceString = new StringBuilder();
             referenceString.append(reference.getName());
-            referenceString.append("=[");
+            if (reference.isContainment()) {
+                referenceString.append("<>");
+            } else {
+                referenceString.append("->");
+            }
             if (object.eIsSet(reference)) {
                 Object containedObject = object.eGet(reference);
-                referenceString.append(toStringOf(containedObject));
+                if (containedObject instanceof Collection<?>) {
+                    referenceString.append(smartFormat((Collection<?>) containedObject));
+                } else {
+                    referenceString.append("{");
+                    referenceString.append(toStringOf(containedObject));
+                    referenceString.append('}');
+                }
             } else {
-                referenceString.append("<null>");
+                if (!reference.isMany()) {
+                    referenceString.append("<null>");
+                }
             }
-            referenceString.append(']');
             values.add(referenceString.toString());
         }
 
