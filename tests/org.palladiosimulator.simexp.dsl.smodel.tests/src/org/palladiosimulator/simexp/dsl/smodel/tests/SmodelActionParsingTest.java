@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
@@ -237,7 +236,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals("balancingFactor", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof SetBounds);
-        List<Literal> values = ((SetBounds) bounds).getValues();
+        List<Expression> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
         double firstValue = ((DoubleLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);
@@ -273,7 +272,7 @@ public class SmodelActionParsingTest {
         Assert.assertEquals("factor2", variable.getName());
         Bounds bounds = ((Optimizable) variable).getValues();
         Assert.assertTrue(bounds instanceof SetBounds);
-        List<Literal> values = ((SetBounds) bounds).getValues();
+        List<Expression> values = ((SetBounds) bounds).getValues();
         Assert.assertEquals(2, values.size());
         double firstValue = ((DoubleLiteral) values.get(0)).getValue();
         Assert.assertEquals(1.25, firstValue, 0.0f);

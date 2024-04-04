@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.InternalField;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
@@ -237,7 +236,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
     @Check
     public void checkArray(SetBounds array) {
         DataType dataType = getDataType(array);
-        List<Literal> values = array.getValues();
+        List<Expression> values = array.getValues();
 
         for (int i = 0; i < values.size(); i++) {
             DataType valueType = getDataType(values.get(i));
@@ -248,9 +247,9 @@ public class SmodelValidator extends AbstractSmodelValidator {
     @Check
     public void checkRange(RangeBounds range) {
         DataType dataType = getDataType(range);
-        Literal startValue = range.getStartValue();
-        Literal endValue = range.getEndValue();
-        Literal stepSize = range.getStepSize();
+        Expression startValue = range.getStartValue();
+        Expression endValue = range.getEndValue();
+        Expression stepSize = range.getStepSize();
 
         if (startValue != null) {
             DataType startValueType = getDataType(startValue);

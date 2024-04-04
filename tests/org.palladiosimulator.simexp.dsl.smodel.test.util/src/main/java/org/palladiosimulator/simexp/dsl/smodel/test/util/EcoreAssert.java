@@ -20,6 +20,7 @@ public class EcoreAssert extends AbstractAssert<EcoreAssert, EObject> {
 
     public static RecursiveComparisonAssert<?> assertThat(EObject actual) {
         EcoreAssert ecoreAssert = new EcoreAssert(actual, EcoreAssert.class);
+        ecoreAssert = ecoreAssert.withRepresentation(new EcoreRepresentation());
         RecursiveComparisonAssert<?> usingRecursiveComparison = ecoreAssert.usingRecursiveComparison(configuration);
         return usingRecursiveComparison;
     }
@@ -27,6 +28,7 @@ public class EcoreAssert extends AbstractAssert<EcoreAssert, EObject> {
     public static ListAssert<EObject> assertThat(List<? extends EObject> actual) {
         ListAssert<EObject> listAssert = AssertionsForInterfaceTypes.assertThat(actual);
         listAssert = listAssert.usingRecursiveFieldByFieldElementComparator(configuration);
+        listAssert = listAssert.withRepresentation(new EcoreRepresentation());
         return listAssert;
     }
 }

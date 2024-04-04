@@ -6,7 +6,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
@@ -41,7 +40,7 @@ public class ExpressionCalculator {
             return getFieldValue(field);
         }
 
-        Literal literal = expression.getLiteral();
+        Expression literal = expression.getLiteral();
         if (literal != null) {
             return getLiteralValue(literal);
         }
@@ -128,7 +127,7 @@ public class ExpressionCalculator {
         return result.doubleValue();
     }
 
-    private Object getLiteralValue(Literal literal) {
+    private Object getLiteralValue(Expression literal) {
         SmodelDataTypeSwitch smodelDataTypeSwitch = new SmodelDataTypeSwitch();
         DataType dataType = smodelDataTypeSwitch.doSwitch(literal);
         switch (dataType) {
