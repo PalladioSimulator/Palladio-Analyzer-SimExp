@@ -68,7 +68,8 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
         List<ResolvedAction> resolvedActions = new ArrayList<>();
 
         for (GlobalStatement statement : model.getStatements()) {
-            resolvedActions.addAll(doSwitch(statement));
+            List<ResolvedAction> actions = doSwitch(statement);
+            resolvedActions.addAll(actions);
         }
 
         return resolvedActions;
@@ -82,11 +83,13 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
 
         if (condition) {
             for (BlockStatement statement : ifStatement.getThenStatements()) {
-                resolvedActions.addAll(doSwitch(statement));
+                List<ResolvedAction> actions = doSwitch(statement);
+                resolvedActions.addAll(actions);
             }
         } else {
             for (BlockStatement statement : ifStatement.getElseStatements()) {
-                resolvedActions.addAll(doSwitch(statement));
+                List<ResolvedAction> actions = doSwitch(statement);
+                resolvedActions.addAll(actions);
             }
         }
 
