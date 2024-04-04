@@ -17,6 +17,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
@@ -41,14 +42,7 @@ public class SmodelConstantParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        expectedConstant.setName("condition");
-        expectedConstant.setDataType(DataType.BOOL);
-        BoolLiteral expectedLiteral = SmodelFactory.eINSTANCE.createBoolLiteral();
-        expectedLiteral.setTrue(true);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression.setLiteral(expectedLiteral);
-        expectedConstant.setValue(expectedExpression);
+        Constant expectedConstant = createConstant("condition", DataType.BOOL, createBoolLiteral(true));
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
@@ -61,19 +55,12 @@ public class SmodelConstantParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        expectedConstant.setName("one");
-        expectedConstant.setDataType(DataType.INT);
-        IntLiteral expectedLiteral = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral.setValue(1);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression.setLiteral(expectedLiteral);
-        expectedConstant.setValue(expectedExpression);
+        Constant expectedConstant = createConstant("one", DataType.INT, createIntLiteral(1));
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
     @Test
-    public void parseSingleFloatConstant() throws Exception {
+    public void parseSingleDoubleConstant() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const double one = 1.0;
                 """;
@@ -81,14 +68,7 @@ public class SmodelConstantParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        expectedConstant.setName("one");
-        expectedConstant.setDataType(DataType.DOUBLE);
-        DoubleLiteral expectedLiteral = SmodelFactory.eINSTANCE.createDoubleLiteral();
-        expectedLiteral.setValue(1.0);
-        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression.setLiteral(expectedLiteral);
-        expectedConstant.setValue(expectedExpression);
+        Constant expectedConstant = createConstant("one", DataType.DOUBLE, createDoubleLiteral(1.0));
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
     }
 
@@ -122,14 +102,7 @@ public class SmodelConstantParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Constant exptectedConstant1 = SmodelFactory.eINSTANCE.createConstant();
-        exptectedConstant1.setName("count");
-        exptectedConstant1.setDataType(DataType.INT);
-        IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral1.setValue(1);
-        Expression expectedExpression1 = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression1.setLiteral(expectedLiteral1);
-        exptectedConstant1.setValue(expectedExpression1);
+        Constant exptectedConstant1 = createConstant("count", DataType.INT, createIntLiteral(1));
         Constant exptectedConstant2 = SmodelFactory.eINSTANCE.createConstant();
         exptectedConstant2.setName("word");
         exptectedConstant2.setDataType(DataType.STRING);
@@ -154,14 +127,7 @@ public class SmodelConstantParsingTest {
         validationTestHelper.assertNoErrors(model);
         validationTestHelper.assertWarning(model, SmodelPackage.Literals.CONSTANT, null,
                 "Constant 'const2' is probably redundant.");
-        Constant exptectedConstant1 = SmodelFactory.eINSTANCE.createConstant();
-        exptectedConstant1.setName("const1");
-        exptectedConstant1.setDataType(DataType.INT);
-        IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral1.setValue(1);
-        Expression expectedExpression1 = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression1.setLiteral(expectedLiteral1);
-        exptectedConstant1.setValue(expectedExpression1);
+        Constant exptectedConstant1 = createConstant("const1", DataType.INT, createIntLiteral(1));
         Constant exptectedConstant2 = SmodelFactory.eINSTANCE.createConstant();
         exptectedConstant2.setName("const2");
         exptectedConstant2.setDataType(DataType.INT);
@@ -342,5 +308,33 @@ public class SmodelConstantParsingTest {
 
         validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, null, "Cyclic reference detected.",
                 "Cyclic reference detected.");
+    }
+
+    private IntLiteral createIntLiteral(int value) {
+        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
+        literal.setValue(value);
+        return literal;
+    }
+
+    private DoubleLiteral createDoubleLiteral(double value) {
+        DoubleLiteral literal = SmodelFactory.eINSTANCE.createDoubleLiteral();
+        literal.setValue(value);
+        return literal;
+    }
+
+    private BoolLiteral createBoolLiteral(boolean value) {
+        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
+        literal.setTrue(value);
+        return literal;
+    }
+
+    private Constant createConstant(String name, DataType type, Literal literal) {
+        Constant constant = SmodelFactory.eINSTANCE.createConstant();
+        constant.setName(name);
+        constant.setDataType(type);
+        Expression expression = SmodelFactory.eINSTANCE.createExpression();
+        expression.setLiteral(literal);
+        constant.setValue(expression);
+        return constant;
     }
 }
