@@ -133,7 +133,7 @@ UnaryExpr returns Expression:
 	;
 
 Term returns Expression:
-	(fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')')
+	fieldRef=[Field] | literal=Literal | '(' left=DisjunctiveExpr ')'
 	;
 
 Literal:
