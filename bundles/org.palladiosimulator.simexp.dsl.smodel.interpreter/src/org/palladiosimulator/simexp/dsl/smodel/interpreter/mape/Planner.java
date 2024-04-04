@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core.strategy.mape;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mape;
 
 import java.util.List;
 

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
-import org.palladiosimulator.simexp.core.strategy.mape.Planner;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BlockStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core.strategy.mape.pcm;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.pcm;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
