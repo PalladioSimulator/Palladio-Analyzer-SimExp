@@ -158,10 +158,26 @@ ParenthesizedExpr returns Expression:
 	;
 
 Literal:
-	{BoolLiteral} true=BOOL |
-	{IntLiteral} value=INT |
-	{DoubleLiteral} value=DOUBLE |
-	{StringLiteral} value=STRING
+	BoolLiteral |
+	IntLiteral |
+	DoubleLiteral |
+	StringLiteral
+	;
+	
+BoolLiteral:
+	true=BOOL
+	;
+	
+IntLiteral:
+	 value=INT
+	;
+
+DoubleLiteral:
+	value=DOUBLE
+	;
+
+StringLiteral:
+	value=STRING
 	;
 
 enum PrimitiveType returns DataType: 
