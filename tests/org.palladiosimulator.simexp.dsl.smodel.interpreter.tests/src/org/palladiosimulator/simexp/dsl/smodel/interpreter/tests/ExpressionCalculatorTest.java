@@ -825,7 +825,7 @@ public class ExpressionCalculatorTest {
     @Test
     public void testBoolPrecedence2() throws Exception {
         String sb = MODEL_NAME_LINE + """
-                const bool value = !false || false;
+                const bool value = !true || true;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);
