@@ -12,17 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -33,6 +29,8 @@ public class SmodelActionParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseActionWithoutParameter() throws Exception {
@@ -43,7 +41,7 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("setTextualMode");
+        Action expectedAction = smodelCreator.createAction("setTextualMode");
         assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
@@ -56,9 +54,9 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("decreaseQuality");
+        Action expectedAction = smodelCreator.createAction("decreaseQuality");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter = createParameter("decrease", DataType.BOOL);
+        Parameter expectedParameter = smodelCreator.createParameter("decrease", DataType.BOOL);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -73,9 +71,9 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("setNumCPUs");
+        Action expectedAction = smodelCreator.createAction("setNumCPUs");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter = createParameter("numCPUs", DataType.INT);
+        Parameter expectedParameter = smodelCreator.createParameter("numCPUs", DataType.INT);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -90,9 +88,9 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("scaleOut");
+        Action expectedAction = smodelCreator.createAction("scaleOut");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter = createParameter("balancingFactor", DataType.DOUBLE);
+        Parameter expectedParameter = smodelCreator.createParameter("balancingFactor", DataType.DOUBLE);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -107,9 +105,9 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("setConfiguration");
+        Action expectedAction = smodelCreator.createAction("setConfiguration");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter = createParameter("name", DataType.STRING);
+        Parameter expectedParameter = smodelCreator.createParameter("name", DataType.STRING);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -124,12 +122,12 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("scale");
+        Action expectedAction = smodelCreator.createAction("scale");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter1 = createParameter("factor", DataType.DOUBLE);
+        Parameter expectedParameter1 = smodelCreator.createParameter("factor", DataType.DOUBLE);
         expectedActionArguments.getParameters()
             .add(expectedParameter1);
-        Parameter expectedParameter2 = createParameter("in", DataType.BOOL);
+        Parameter expectedParameter2 = smodelCreator.createParameter("in", DataType.BOOL);
         expectedActionArguments.getParameters()
             .add(expectedParameter2);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -144,10 +142,12 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction = createAction("scaleOut");
+        Action expectedAction = smodelCreator.createAction("scaleOut");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        SetBounds expectedBounds = createSetBoundsBool(createDoubleLiteral(1.25), createDoubleLiteral(2.5));
-        Optimizable expectedOptimizable = createOptimizable("balancingFactor", DataType.DOUBLE, expectedBounds);
+        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.25),
+                smodelCreator.createDoubleLiteral(2.5));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
+                expectedBounds);
         expectedActionArguments.getOptimizables()
             .add(expectedOptimizable);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -165,13 +165,14 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Action expectedAction = createAction("aName");
+        Action expectedAction = smodelCreator.createAction("aName");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        Parameter expectedParameter = createParameter("pi", DataType.INT);
+        Parameter expectedParameter = smodelCreator.createParameter("pi", DataType.INT);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
-        SetBounds expectedBounds = createSetBoundsBool(createIntLiteral(1), createIntLiteral(2));
-        Optimizable expectedOptimizable = createOptimizable("vi", DataType.INT, expectedBounds);
+        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(1),
+                smodelCreator.createIntLiteral(2));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vi", DataType.INT, expectedBounds);
         expectedActionArguments.getOptimizables()
             .add(expectedOptimizable);
         assertThat(model.getActions()).containsExactly(expectedAction);
@@ -187,8 +188,8 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction1 = createAction("scaleOut");
-        Action expectedAction2 = createAction("scaleIn");
+        Action expectedAction1 = smodelCreator.createAction("scaleOut");
+        Action expectedAction2 = smodelCreator.createAction("scaleIn");
         assertThat(model.getActions()).containsExactly(expectedAction1, expectedAction2);
     }
 
@@ -201,14 +202,14 @@ public class SmodelActionParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Action expectedAction1 = createAction("scaleOut");
+        Action expectedAction1 = smodelCreator.createAction("scaleOut");
         ActionArguments expectedActionArguments1 = expectedAction1.getArguments();
-        Parameter expectedParameter1 = createParameter("balancingFactor", DataType.DOUBLE);
+        Parameter expectedParameter1 = smodelCreator.createParameter("balancingFactor", DataType.DOUBLE);
         expectedActionArguments1.getParameters()
             .add(expectedParameter1);
-        Action expectedAction2 = createAction("scaleIn");
+        Action expectedAction2 = smodelCreator.createAction("scaleIn");
         ActionArguments expectedActionArguments2 = expectedAction2.getArguments();
-        Parameter expectedParameter2 = createParameter("balancingFactor", DataType.DOUBLE);
+        Parameter expectedParameter2 = smodelCreator.createParameter("balancingFactor", DataType.DOUBLE);
         expectedActionArguments2.getParameters()
             .add(expectedParameter2);
         assertThat(model.getActions()).containsExactly(expectedAction1, expectedAction2);
@@ -300,47 +301,4 @@ public class SmodelActionParsingTest {
         SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
 
-    private SetBounds createSetBoundsBool(Literal... values) {
-        SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
-        for (Literal value : values) {
-            bounds.getValues()
-                .add(value);
-        }
-        return bounds;
-    }
-
-    private Optimizable createOptimizable(String name, DataType type, Bounds bounds) {
-        Optimizable optimizable = SmodelFactory.eINSTANCE.createOptimizable();
-        optimizable.setName(name);
-        optimizable.setDataType(type);
-        optimizable.setValues(bounds);
-        return optimizable;
-    }
-
-    private Parameter createParameter(String name, DataType type) {
-        Parameter parameter = SmodelFactory.eINSTANCE.createParameter();
-        parameter.setName(name);
-        parameter.setDataType(type);
-        return parameter;
-    }
-
-    private Action createAction(String name) {
-        Action action = SmodelFactory.eINSTANCE.createAction();
-        action.setName(name);
-        ActionArguments actionArguments = SmodelFactory.eINSTANCE.createActionArguments();
-        action.setArguments(actionArguments);
-        return action;
-    }
-
-    private IntLiteral createIntLiteral(int value) {
-        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
-        literal.setValue(value);
-        return literal;
-    }
-
-    private DoubleLiteral createDoubleLiteral(double value) {
-        DoubleLiteral literal = SmodelFactory.eINSTANCE.createDoubleLiteral();
-        literal.setValue(value);
-        return literal;
-    }
 }
