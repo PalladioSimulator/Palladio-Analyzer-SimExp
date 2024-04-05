@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
@@ -53,7 +54,39 @@ public class SmodelDataTypeSwitchTest {
     }
 
     @Test
-    public void expressionTypeBool() throws Exception {
+    public void expressionTypeFieldRef() throws Exception {
+        Probe probe = smodelCreator.createProbe("probe", DataType.STRING, ProbeAdressingKind.ID, "someId");
+        Expression expression = SmodelFactory.eINSTANCE.createExpression();
+        expression.setFieldRef(probe);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.STRING);
+    }
+
+    @Test
+    public void expressionTypeLiteral() throws Exception {
+        Literal literal = smodelCreator.createStringLiteral("");
+        Expression expression = SmodelFactory.eINSTANCE.createExpression();
+        expression.setLiteral(literal);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.STRING);
+    }
+
+    @Test
+    public void expressionTypeUnaryBool() throws Exception {
+        Expression left = smodelCreator.createLiteralBoolExpression(true);
+        Expression expression = createBinaryExpression(Operation.NOT, left, null);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.BOOL);
+    }
+
+    @Test
+    public void expressionTypeBinaryBool() throws Exception {
         Expression left = smodelCreator.createLiteralBoolExpression(true);
         Expression right = smodelCreator.createLiteralBoolExpression(false);
         Expression expression = createBinaryExpression(Operation.OR, left, right);
@@ -61,6 +94,39 @@ public class SmodelDataTypeSwitchTest {
         DataType actualDataType = typeSwitch.doSwitch(expression);
 
         assertThat(actualDataType).isEqualTo(DataType.BOOL);
+    }
+
+    @Test
+    public void expressionTypeBinaryInt() throws Exception {
+        Expression left = smodelCreator.createLiteralIntExpression(0);
+        Expression right = smodelCreator.createLiteralIntExpression(0);
+        Expression expression = createBinaryExpression(Operation.PLUS, left, right);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.INT);
+    }
+
+    @Test
+    public void expressionTypeBinaryDouble() throws Exception {
+        Expression left = smodelCreator.createLiteralDoubleExpression(0.0);
+        Expression right = smodelCreator.createLiteralDoubleExpression(0.0);
+        Expression expression = createBinaryExpression(Operation.PLUS, left, right);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.DOUBLE);
+    }
+
+    @Test
+    public void expressionTypeBinaryModulo() throws Exception {
+        Expression left = smodelCreator.createLiteralIntExpression(0);
+        Expression right = smodelCreator.createLiteralIntExpression(0);
+        Expression expression = createBinaryExpression(Operation.MODULO, left, right);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.INT);
     }
 
     private Expression createBinaryExpression(Operation op, Expression left, Expression right) {

@@ -48,6 +48,13 @@ public class SmodelCreator {
         return literalExpression;
     }
 
+    public Expression createLiteralDoubleExpression(double value) {
+        Expression literalExpression = SmodelFactory.eINSTANCE.createExpression();
+        DoubleLiteral literal = createDoubleLiteral(value);
+        literalExpression.setLiteral(literal);
+        return literalExpression;
+    }
+
     public SetBounds createSetBounds(Literal... values) {
         SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
         for (Literal value : values) {

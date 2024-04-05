@@ -64,9 +64,6 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
     public DataType caseExpression(Expression expression) {
         Field field = expression.getFieldRef();
         if (field != null) {
-            if (field.eContainer() == null) {
-                return null;
-            }
             return doSwitch(field);
         }
 
@@ -109,11 +106,6 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
         case PLUS:
         case MINUS:
         case MULTIPLY:
-            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
-                return DataType.DOUBLE;
-            }
-            return DataType.INT;
-
         case DIVIDE:
             if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
                 return DataType.DOUBLE;
