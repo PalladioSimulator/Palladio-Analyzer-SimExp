@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -23,6 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -33,6 +33,8 @@ public class SmodelIfParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseIfStatementWithLiteralCondition() throws Exception {
@@ -44,7 +46,7 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
@@ -59,11 +61,8 @@ public class SmodelIfParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Constant expectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        expectedConstant.setName("condition");
-        expectedConstant.setDataType(DataType.BOOL);
-        Expression expectedExpression = createLiteralBoolExpression(true);
-        expectedConstant.setValue(expectedExpression);
+        Constant expectedConstant = smodelCreator.createConstant("condition", DataType.BOOL,
+                smodelCreator.createBoolLiteral(true));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
         Expression exptectedLiteralCondition = SmodelFactory.eINSTANCE.createExpression();
         exptectedLiteralCondition.setFieldRef(expectedConstant);
@@ -82,10 +81,10 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition1 = createLiteralBoolExpression(true);
+        Expression exptectedCondition1 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement1.setCondition(exptectedCondition1);
         IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition2 = createLiteralBoolExpression(true);
+        Expression exptectedCondition2 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement2.setCondition(exptectedCondition2);
         assertThat(model.getStatements()).containsExactly(exptectedStatement1, exptectedStatement2);
     }
@@ -102,10 +101,10 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition1 = createLiteralBoolExpression(true);
+        Expression exptectedCondition1 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement1.setCondition(exptectedCondition1);
         IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition2 = createLiteralBoolExpression(true);
+        Expression exptectedCondition2 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement2.setCondition(exptectedCondition2);
         exptectedStatement1.getThenStatements()
             .add(exptectedStatement2);
@@ -124,7 +123,7 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
@@ -142,10 +141,10 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         IfStatement exptectedStatement1 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition1 = createLiteralBoolExpression(true);
+        Expression exptectedCondition1 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement1.setCondition(exptectedCondition1);
         IfStatement exptectedStatement2 = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition2 = createLiteralBoolExpression(true);
+        Expression exptectedCondition2 = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement2.setCondition(exptectedCondition2);
         exptectedStatement1.getElseStatements()
             .add(exptectedStatement2);
@@ -164,23 +163,19 @@ public class SmodelIfParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Action expectedAction = SmodelFactory.eINSTANCE.createAction();
-        expectedAction.setName("scaleOut");
-        ActionArguments expectedActionArguments = SmodelFactory.eINSTANCE.createActionArguments();
-        Parameter expectedParameter = SmodelFactory.eINSTANCE.createParameter();
-        expectedParameter.setName("p");
-        expectedParameter.setDataType(DataType.BOOL);
+        Action expectedAction = smodelCreator.createAction("scaleOut");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("p", DataType.BOOL);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
-        expectedAction.setArguments(expectedActionArguments);
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         ActionCall expectedActionCall = SmodelFactory.eINSTANCE.createActionCall();
         expectedActionCall.setActionRef(expectedAction);
         ParameterValue expectedParameterValue = SmodelFactory.eINSTANCE.createParameterValue();
         expectedParameterValue.setParamRef(expectedParameter);
-        Expression exptectedParameterValue = createLiteralBoolExpression(true);
+        Expression exptectedParameterValue = smodelCreator.createLiteralBoolExpression(true);
         expectedParameterValue.setArgument(exptectedParameterValue);
         expectedActionCall.getArguments()
             .add(expectedParameterValue);
@@ -212,18 +207,5 @@ public class SmodelIfParsingTest {
 
         validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, null,
                 "Expected a value of type 'bool', got 'string' instead.");
-    }
-
-    private Expression createLiteralBoolExpression(boolean value) {
-        Expression literalExpression = SmodelFactory.eINSTANCE.createExpression();
-        BoolLiteral expectedLiteral = createBoolLiteral(value);
-        literalExpression.setLiteral(expectedLiteral);
-        return literalExpression;
-    }
-
-    private BoolLiteral createBoolLiteral(boolean value) {
-        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
-        literal.setTrue(value);
-        return literal;
     }
 }

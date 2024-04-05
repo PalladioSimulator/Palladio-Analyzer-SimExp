@@ -11,20 +11,14 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -33,9 +27,10 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 public class SmodelFieldParsingTest {
     @Inject
     private ParseHelper<Smodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
@@ -48,12 +43,13 @@ public class SmodelFieldParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoErrors(model);
-        Optimizable expectedOptimizable = createOptimizable("condition", DataType.BOOL,
-                createSetBoundsBool(createBoolLiteral(true), createBoolLiteral(false)));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("condition", DataType.BOOL, smodelCreator
+            .createSetBoundsBool(smodelCreator.createBoolLiteral(true), smodelCreator.createBoolLiteral(false)));
         assertThat(model.getOptimizables()).containsExactlyInAnyOrder(expectedOptimizable);
-        Constant expectedConstant = createConstant("one", DataType.INT, createIntLiteral(1));
+        Constant expectedConstant = smodelCreator.createConstant("one", DataType.INT,
+                smodelCreator.createIntLiteral(1));
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
-        Probe expectedProbe = createProbe("aliasName", DataType.DOUBLE, ProbeAdressingKind.ID, "someId");
+        Probe expectedProbe = smodelCreator.createProbe("aliasName", DataType.DOUBLE, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(expectedProbe);
     }
 
@@ -125,53 +121,5 @@ public class SmodelFieldParsingTest {
 
         validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, Diagnostic.SYNTAX_DIAGNOSTIC,
                 "mismatched input 'optimizable' expecting '}'");
-    }
-
-    private Probe createProbe(String name, DataType type, ProbeAdressingKind kind, String id) {
-        Probe probe = SmodelFactory.eINSTANCE.createProbe();
-        probe.setName(name);
-        probe.setDataType(type);
-        probe.setKind(kind);
-        probe.setIdentifier(id);
-        return probe;
-    }
-
-    private SetBounds createSetBoundsBool(Literal... values) {
-        SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
-        for (Literal value : values) {
-            bounds.getValues()
-                .add(value);
-        }
-        return bounds;
-    }
-
-    private Optimizable createOptimizable(String name, DataType type, Bounds bounds) {
-        Optimizable optimizable = SmodelFactory.eINSTANCE.createOptimizable();
-        optimizable.setName(name);
-        optimizable.setDataType(type);
-        optimizable.setValues(bounds);
-        return optimizable;
-    }
-
-    private IntLiteral createIntLiteral(int value) {
-        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
-        literal.setValue(value);
-        return literal;
-    }
-
-    private BoolLiteral createBoolLiteral(boolean value) {
-        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
-        literal.setTrue(value);
-        return literal;
-    }
-
-    private Constant createConstant(String name, DataType type, Literal literal) {
-        Constant constant = SmodelFactory.eINSTANCE.createConstant();
-        constant.setName(name);
-        constant.setDataType(type);
-        Expression expression = SmodelFactory.eINSTANCE.createExpression();
-        expression.setLiteral(literal);
-        constant.setValue(expression);
-        return constant;
     }
 }

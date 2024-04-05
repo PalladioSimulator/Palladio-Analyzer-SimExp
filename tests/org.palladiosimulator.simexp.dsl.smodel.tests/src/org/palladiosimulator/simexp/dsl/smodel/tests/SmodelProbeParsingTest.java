@@ -4,6 +4,7 @@ import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.asse
 
 import javax.inject.Inject;
 
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
@@ -14,8 +15,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -26,6 +27,8 @@ public class SmodelProbeParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseSingleProbeMonitorId() throws Exception {
@@ -35,13 +38,9 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("probeName");
-        exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressingKind.MONITORID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("probeName", DataType.BOOL, ProbeAdressingKind.MONITORID,
+                "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -53,13 +52,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("probeName");
-        exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("probeName", DataType.BOOL, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -71,13 +65,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("condition");
-        exptectedProbe.setDataType(DataType.BOOL);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("condition", DataType.BOOL, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -89,13 +78,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("count");
-        exptectedProbe.setDataType(DataType.INT);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("count", DataType.INT, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -107,13 +91,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("number");
-        exptectedProbe.setDataType(DataType.DOUBLE);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("number", DataType.DOUBLE, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -125,13 +104,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("word");
-        exptectedProbe.setDataType(DataType.STRING);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe = smodelCreator.createProbe("word", DataType.STRING, ProbeAdressingKind.ID, "someId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe);
     }
 
@@ -144,18 +118,10 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        Probe exptectedProbe1 = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe1.setName("count");
-        exptectedProbe1.setDataType(DataType.INT);
-        exptectedProbe1.setKind(ProbeAdressingKind.ID);
-        exptectedProbe1.setIdentifier("someId");
-        Probe exptectedProbe2 = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe2.setName("word");
-        exptectedProbe2.setDataType(DataType.STRING);
-        exptectedProbe2.setKind(ProbeAdressingKind.ID);
-        exptectedProbe2.setIdentifier("someOtherId");
+        validationTestHelper.assertNoErrors(model);
+        Probe exptectedProbe1 = smodelCreator.createProbe("count", DataType.INT, ProbeAdressingKind.ID, "someId");
+        Probe exptectedProbe2 = smodelCreator.createProbe("word", DataType.STRING, ProbeAdressingKind.ID,
+                "someOtherId");
         assertThat(model.getProbes()).containsExactlyInAnyOrder(exptectedProbe1, exptectedProbe2);
     }
 
@@ -179,7 +145,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '\"someId\"' expecting ':'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '\"someId\"' expecting ':'");
     }
 
     @Test
@@ -190,7 +157,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input ';' expecting ':'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input ';' expecting ':'");
     }
 
     @Test
@@ -201,7 +169,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -212,7 +181,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -223,7 +193,8 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '=' expecting ';'");
     }
 
     @Test
@@ -234,6 +205,7 @@ public class SmodelProbeParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '=' expecting ';'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '=' expecting ';'");
     }
 }
