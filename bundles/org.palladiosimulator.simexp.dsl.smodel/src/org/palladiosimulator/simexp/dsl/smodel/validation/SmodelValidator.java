@@ -385,10 +385,16 @@ public class SmodelValidator extends AbstractSmodelValidator {
         case MINUS:
         case MULTIPLY:
         case DIVIDE:
-        case MODULO:
             checkTypes(DataType.DOUBLE, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
             if (rightType != null) {
                 checkTypes(DataType.DOUBLE, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
+            }
+            break;
+
+        case MODULO:
+            checkTypes(DataType.INT, leftType, SmodelPackage.Literals.EXPRESSION__LEFT);
+            if (rightType != null) {
+                checkTypes(DataType.INT, rightType, SmodelPackage.Literals.EXPRESSION__RIGHT);
             }
             break;
 

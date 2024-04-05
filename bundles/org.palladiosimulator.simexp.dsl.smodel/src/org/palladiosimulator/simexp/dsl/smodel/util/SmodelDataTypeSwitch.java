@@ -113,9 +113,6 @@ public class SmodelDataTypeSwitch extends SmodelSwitch<DataType> {
             return DataType.INT;
 
         case MODULO:
-            if (leftType == DataType.DOUBLE || rightType == DataType.DOUBLE) {
-                return DataType.DOUBLE;
-            }
             return DataType.INT;
 
         default:

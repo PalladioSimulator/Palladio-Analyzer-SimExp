@@ -370,7 +370,7 @@ public class SmodelExpressionParsingTest {
     }
 
     @Test
-    public void parseModuloExpression() throws Exception {
+    public void parseModuloExpressionInt1() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const int constant = 1 % 2;
                 """;
@@ -389,6 +389,81 @@ public class SmodelExpressionParsingTest {
         expectedExpression.setRight(expectedExpressionRight);
         expectedConstant.setValue(expectedExpression);
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseModuloExpressionInt2() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1.0 % 2;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
+                "Expected a value of type 'int', got 'double' instead.");
+    }
+
+    @Test
+    public void parseModuloExpressionInt3() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1 % 2.0;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null,
+                "Expected a value of type 'int', got 'double' instead.");
+    }
+
+    @Test
+    public void parseModuloExpressionInt4() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const int constant = 1.0 % 2.0;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null, 40, 3,
+                "Expected a value of type 'int', got 'double' instead.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null, 46, 3,
+                "Expected a value of type 'int', got 'double' instead.");
+    }
+
+    @Test
+    public void parseModuloExpressionDouble1() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double constant = 1 % 2;
+                if (constant==0.0) {}
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoIssues(model);
+        Constant expectedConstant = smodelCreator.createConstant("constant", DataType.DOUBLE, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.MODULO);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(smodelCreator.createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(smodelCreator.createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseModuloExpressionDouble2() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double constant = 1.0 % 2.0;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null, 43, 3,
+                "Expected a value of type 'int', got 'double' instead.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.EXPRESSION, null, 49, 3,
+                "Expected a value of type 'int', got 'double' instead.");
     }
 
     @Test
