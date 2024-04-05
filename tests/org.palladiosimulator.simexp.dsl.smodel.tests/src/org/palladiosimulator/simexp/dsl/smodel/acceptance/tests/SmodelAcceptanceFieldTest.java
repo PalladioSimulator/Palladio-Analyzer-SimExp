@@ -17,6 +17,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -134,5 +135,17 @@ public class SmodelAcceptanceFieldTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertError(model, model.eClass(), null, "envvar 'name2' duplicate addressing.");
+    }
+
+    @Test
+    public void parseUnusedOptimizableInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable int{0} one;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
+                "The Optimizable 'one' is never used.");
     }
 }

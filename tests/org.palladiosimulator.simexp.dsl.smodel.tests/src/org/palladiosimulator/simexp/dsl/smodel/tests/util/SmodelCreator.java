@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -53,6 +54,14 @@ public class SmodelCreator {
             bounds.getValues()
                 .add(value);
         }
+        return bounds;
+    }
+
+    public RangeBounds createRangeBounds(Literal start, Literal end, Literal step) {
+        RangeBounds bounds = SmodelFactory.eINSTANCE.createRangeBounds();
+        bounds.setStartValue(start);
+        bounds.setEndValue(end);
+        bounds.setStepSize(step);
         return bounds;
     }
 
