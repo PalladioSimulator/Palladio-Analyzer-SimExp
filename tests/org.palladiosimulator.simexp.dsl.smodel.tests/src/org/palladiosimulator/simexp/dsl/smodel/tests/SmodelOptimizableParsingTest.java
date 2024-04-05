@@ -40,7 +40,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createBoolLiteral(true));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createBoolLiteral(true));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("condition", DataType.BOOL, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
@@ -55,7 +55,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(1));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("count", DataType.INT, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
@@ -70,7 +70,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("number", DataType.DOUBLE, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
@@ -85,7 +85,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createStringLiteral("word"));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("word"));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("word", DataType.STRING, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
@@ -101,9 +101,9 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds1 = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(1));
+        SetBounds expectedBounds1 = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
         Optimizable expectedOptimizable1 = smodelCreator.createOptimizable("count", DataType.INT, expectedBounds1);
-        SetBounds expectedBounds2 = smodelCreator.createSetBoundsBool(smodelCreator.createStringLiteral("word"));
+        SetBounds expectedBounds2 = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("word"));
         Optimizable expectedOptimizable2 = smodelCreator.createOptimizable("word", DataType.STRING, expectedBounds2);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable1, expectedOptimizable2);
     }
@@ -118,7 +118,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createBoolLiteral(true),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createBoolLiteral(true),
                 smodelCreator.createBoolLiteral(false));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.BOOL, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
@@ -134,7 +134,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(1),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1),
                 smodelCreator.createIntLiteral(3));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.INT, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
@@ -150,7 +150,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0),
                 smodelCreator.createDoubleLiteral(3.0));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.DOUBLE, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
@@ -166,7 +166,7 @@ public class SmodelOptimizableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createStringLiteral("s1"),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("s1"),
                 smodelCreator.createStringLiteral("s2"));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.STRING, expectedBounds);
         assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);

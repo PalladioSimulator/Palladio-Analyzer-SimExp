@@ -107,7 +107,7 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(0));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(0));
         Optimizable exptectedOptimizable = smodelCreator.createOptimizable("opti", DataType.INT, expectedBounds);
         Variable expectedVariable = smodelCreator.createVariable("variable", DataType.INT,
                 smodelCreator.createIntLiteral(0));

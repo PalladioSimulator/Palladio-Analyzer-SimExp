@@ -100,7 +100,7 @@ public class SmodelActionCallParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(0.0));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(0.0));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("argument", DataType.DOUBLE, expectedBounds);
         Action expectedAction = smodelCreator.createAction("scaleOut");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
@@ -133,7 +133,7 @@ public class SmodelActionCallParsingTest {
 
         validationTestHelper.assertNoIssues(model);
         Action expectedAction = smodelCreator.createAction("scaleOut");
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
                 expectedBounds);
         ActionArguments expectedActionArguments = expectedAction.getArguments();
@@ -163,7 +163,7 @@ public class SmodelActionCallParsingTest {
         Parameter expectedParameter = smodelCreator.createParameter("enable", DataType.BOOL);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0));
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
                 expectedBounds);
         expectedActionArguments.getOptimizables()

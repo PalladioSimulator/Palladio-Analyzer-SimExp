@@ -44,7 +44,7 @@ public class SmodelFieldParsingTest {
 
         validationTestHelper.assertNoErrors(model);
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("condition", DataType.BOOL, smodelCreator
-            .createSetBoundsBool(smodelCreator.createBoolLiteral(true), smodelCreator.createBoolLiteral(false)));
+            .createSetBounds(smodelCreator.createBoolLiteral(true), smodelCreator.createBoolLiteral(false)));
         assertThat(model.getOptimizables()).containsExactlyInAnyOrder(expectedOptimizable);
         Constant expectedConstant = smodelCreator.createConstant("one", DataType.INT,
                 smodelCreator.createIntLiteral(1));

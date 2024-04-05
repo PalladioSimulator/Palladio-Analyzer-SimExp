@@ -145,7 +145,7 @@ public class SmodelActionParsingTest {
         validationTestHelper.assertNoErrors(model);
         Action expectedAction = smodelCreator.createAction("scaleOut");
         ActionArguments expectedActionArguments = expectedAction.getArguments();
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.25),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.25),
                 smodelCreator.createDoubleLiteral(2.5));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
                 expectedBounds);
@@ -171,7 +171,7 @@ public class SmodelActionParsingTest {
         Parameter expectedParameter = smodelCreator.createParameter("pi", DataType.INT);
         expectedActionArguments.getParameters()
             .add(expectedParameter);
-        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createIntLiteral(1),
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1),
                 smodelCreator.createIntLiteral(2));
         Optimizable expectedOptimizable = smodelCreator.createOptimizable("vi", DataType.INT, expectedBounds);
         expectedActionArguments.getOptimizables()

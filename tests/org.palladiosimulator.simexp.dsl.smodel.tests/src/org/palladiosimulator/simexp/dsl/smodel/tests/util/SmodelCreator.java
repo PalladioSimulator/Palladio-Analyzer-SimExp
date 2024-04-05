@@ -48,7 +48,7 @@ public class SmodelCreator {
         return literalExpression;
     }
 
-    public SetBounds createSetBoundsBool(Literal... values) {
+    public SetBounds createSetBounds(Literal... values) {
         SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
         for (Literal value : values) {
             bounds.getValues()
