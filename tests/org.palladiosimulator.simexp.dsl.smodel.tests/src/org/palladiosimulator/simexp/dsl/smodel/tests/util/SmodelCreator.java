@@ -7,6 +7,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
@@ -61,6 +62,14 @@ public class SmodelCreator {
         optimizable.setDataType(type);
         optimizable.setValues(bounds);
         return optimizable;
+    }
+
+    public EnvVariable createEnvVariable(String name, DataType type, String id) {
+        EnvVariable variable = SmodelFactory.eINSTANCE.createEnvVariable();
+        variable.setName(name);
+        variable.setDataType(type);
+        variable.setVariableId(id);
+        return variable;
     }
 
     public Parameter createParameter(String name, DataType type) {
