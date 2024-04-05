@@ -348,7 +348,7 @@ public class SmodelExpressionParsingTest {
     }
 
     @Test
-    public void parseDivisionExpressionDouble() throws Exception {
+    public void parseDivisionExpressionDouble1() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const double constant = 1.0 / 2.0;
                 """;
@@ -364,6 +364,72 @@ public class SmodelExpressionParsingTest {
         expectedExpression.setLeft(expectedExpressionLeft);
         Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
         expectedExpressionRight.setLiteral(smodelCreator.createDoubleLiteral(2.0));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseDivisionExpressionDouble2() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double constant = 1 / 2.0;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = smodelCreator.createConstant("constant", DataType.DOUBLE, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.DIVIDE);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(smodelCreator.createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(smodelCreator.createDoubleLiteral(2.0));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseDivisionExpressionDouble3() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double constant = 1.0 / 2;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = smodelCreator.createConstant("constant", DataType.DOUBLE, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.DIVIDE);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(smodelCreator.createDoubleLiteral(1.0));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(smodelCreator.createIntLiteral(2));
+        expectedExpression.setRight(expectedExpressionRight);
+        expectedConstant.setValue(expectedExpression);
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseDivisionExpressionDouble4() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double constant = 1 / 2;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = smodelCreator.createConstant("constant", DataType.DOUBLE, null);
+        Expression expectedExpression = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpression.setOp(Operation.DIVIDE);
+        Expression expectedExpressionLeft = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionLeft.setLiteral(smodelCreator.createIntLiteral(1));
+        expectedExpression.setLeft(expectedExpressionLeft);
+        Expression expectedExpressionRight = SmodelFactory.eINSTANCE.createExpression();
+        expectedExpressionRight.setLiteral(smodelCreator.createIntLiteral(2));
         expectedExpression.setRight(expectedExpressionRight);
         expectedConstant.setValue(expectedExpression);
         assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);

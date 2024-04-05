@@ -108,9 +108,31 @@ public class SmodelDataTypeSwitchTest {
     }
 
     @Test
-    public void expressionTypeBinaryDouble() throws Exception {
+    public void expressionTypeBinaryDouble1() throws Exception {
         Expression left = smodelCreator.createLiteralDoubleExpression(0.0);
         Expression right = smodelCreator.createLiteralDoubleExpression(0.0);
+        Expression expression = createBinaryExpression(Operation.PLUS, left, right);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.DOUBLE);
+    }
+
+    @Test
+    public void expressionTypeBinaryDouble2() throws Exception {
+        Expression left = smodelCreator.createLiteralIntExpression(0);
+        Expression right = smodelCreator.createLiteralDoubleExpression(0.0);
+        Expression expression = createBinaryExpression(Operation.PLUS, left, right);
+
+        DataType actualDataType = typeSwitch.doSwitch(expression);
+
+        assertThat(actualDataType).isEqualTo(DataType.DOUBLE);
+    }
+
+    @Test
+    public void expressionTypeBinaryDouble3() throws Exception {
+        Expression left = smodelCreator.createLiteralDoubleExpression(0.0);
+        Expression right = smodelCreator.createLiteralIntExpression(0);
         Expression expression = createBinaryExpression(Operation.PLUS, left, right);
 
         DataType actualDataType = typeSwitch.doSwitch(expression);
