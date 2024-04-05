@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
@@ -29,11 +31,14 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
@@ -57,15 +62,9 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("setTextualMode", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(0, parameters.size());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("setTextualMode");
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -76,18 +75,13 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("decreaseQuality", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.BOOL, parameter.getDataType());
-        Assert.assertEquals("decrease", parameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("decreaseQuality");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = createParameter("decrease", DataType.BOOL);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -98,18 +92,13 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("setNumCPUs", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.INT, parameter.getDataType());
-        Assert.assertEquals("numCPUs", parameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("setNumCPUs");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = createParameter("numCPUs", DataType.INT);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -120,18 +109,13 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
-        Assert.assertEquals("balancingFactor", parameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("scaleOut");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = createParameter("balancingFactor", DataType.DOUBLE);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -142,18 +126,13 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("setConfiguration", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.STRING, parameter.getDataType());
-        Assert.assertEquals("name", parameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("setConfiguration");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = createParameter("name", DataType.STRING);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -164,21 +143,34 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scale", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(2, parameters.size());
-        Parameter firstParameter = parameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
-        Assert.assertEquals("factor", firstParameter.getName());
-        Parameter secondParameter = parameters.get(1);
-        Assert.assertEquals(DataType.BOOL, secondParameter.getDataType());
-        Assert.assertEquals("in", secondParameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("scale");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter1 = createParameter("factor", DataType.DOUBLE);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter1);
+        Parameter expectedParameter2 = createParameter("in", DataType.BOOL);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter2);
+        assertThat(model.getActions()).containsExactly(expectedAction);
+    }
+
+    @Test
+    public void parseActionWithOptimizeble() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action scaleOut(optimizable double{1.25, 2.5} balancingFactor);
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction = createAction("scaleOut");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        SetBounds expectedBounds = createSetBoundsBool(createDoubleLiteral(1.25), createDoubleLiteral(2.5));
+        Optimizable expectedOptimizable = createOptimizable("balancingFactor", DataType.DOUBLE, expectedBounds);
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
@@ -192,123 +184,32 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-    }
-
-    @Test
-    public void parseOneActionMixedParams() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action aName(param int pi, optimizable int{1,2} vi, optimizable int{1,2} vi2);
-                if (true) {
-                    aName(pi=1);
-                }
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-    }
-
-    @Test
-    public void parseActionWithVariable() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(optimizable double{1.25, 2.5} balancingFactor);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(0, parameters.size());
-        List<Optimizable> optimizables = action.getArguments()
-            .getOptimizables();
-        Assert.assertEquals(1, optimizables.size());
-        Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
-        Assert.assertEquals("balancingFactor", variable.getName());
-        Bounds bounds = ((Optimizable) variable).getValues();
-        Assert.assertTrue(bounds instanceof SetBounds);
-        List<Expression> values = ((SetBounds) bounds).getValues();
-        Assert.assertEquals(2, values.size());
-        double firstValue = ((DoubleLiteral) values.get(0)).getValue();
-        Assert.assertEquals(1.25, firstValue, 0.0f);
-        double secondValue = ((DoubleLiteral) values.get(1)).getValue();
-        Assert.assertEquals(2.5, secondValue, 0.0f);
-    }
-
-    @Test
-    public void parseActionWithParameterAndVariable() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param int factor1, optimizable double{1.25, 2.5} factor2);
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.INT, parameter.getDataType());
-        Assert.assertEquals("factor1", parameter.getName());
-        List<Optimizable> optimizables = action.getArguments()
-            .getOptimizables();
-        Assert.assertEquals(1, optimizables.size());
-        Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
-        Assert.assertEquals("factor2", variable.getName());
-        Bounds bounds = ((Optimizable) variable).getValues();
-        Assert.assertTrue(bounds instanceof SetBounds);
-        List<Expression> values = ((SetBounds) bounds).getValues();
-        Assert.assertEquals(2, values.size());
-        double firstValue = ((DoubleLiteral) values.get(0)).getValue();
-        Assert.assertEquals(1.25, firstValue, 0.0f);
-        double secondValue = ((DoubleLiteral) values.get(1)).getValue();
-        Assert.assertEquals(2.5, secondValue, 0.0f);
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = createAction("aName");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = createParameter("pi", DataType.INT);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        SetBounds expectedBounds = createSetBoundsBool(createIntLiteral(1), createIntLiteral(2));
+        Optimizable expectedOptimizable = createOptimizable("vi", DataType.INT, expectedBounds);
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        assertThat(model.getActions()).containsExactly(expectedAction);
     }
 
     @Test
     public void parseTwoActions() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param double scaleOutFactor);
-                action scaleIn(param double scaleInFactor);
+                action scaleOut();
+                action scaleIn();
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(2, actions.size());
-        Action firstAction = actions.get(0);
-        Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Parameter> firstParameters = firstAction.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, firstParameters.size());
-        Parameter firstParameter = firstParameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
-        Assert.assertEquals("scaleOutFactor", firstParameter.getName());
-        Action secondAction = actions.get(1);
-        Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Parameter> secondParameters = secondAction.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, secondParameters.size());
-        Parameter secondParameter = secondParameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, secondParameter.getDataType());
-        Assert.assertEquals("scaleInFactor", secondParameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction1 = createAction("scaleOut");
+        Action expectedAction2 = createAction("scaleIn");
+        assertThat(model.getActions()).containsExactly(expectedAction1, expectedAction2);
     }
 
     @Test
@@ -317,29 +218,20 @@ public class SmodelActionParsingTest {
                 action scaleOut(param double balancingFactor);
                 action scaleIn(param double balancingFactor);
                 """;
-
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(2, actions.size());
-        Action firstAction = actions.get(0);
-        Assert.assertEquals("scaleOut", firstAction.getName());
-        List<Parameter> firstParameters = firstAction.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, firstParameters.size());
-        Parameter firstParameter = firstParameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, firstParameter.getDataType());
-        Assert.assertEquals("balancingFactor", firstParameter.getName());
-        Action secondAction = actions.get(1);
-        Assert.assertEquals("scaleIn", secondAction.getName());
-        List<Parameter> secondParameters = secondAction.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, secondParameters.size());
-        Parameter secondParameter = secondParameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, secondParameter.getDataType());
-        Assert.assertEquals("balancingFactor", secondParameter.getName());
+        validationTestHelper.assertNoErrors(model);
+        Action expectedAction1 = createAction("scaleOut");
+        ActionArguments expectedActionArguments1 = expectedAction1.getArguments();
+        Parameter expectedParameter1 = createParameter("balancingFactor", DataType.DOUBLE);
+        expectedActionArguments1.getParameters()
+            .add(expectedParameter1);
+        Action expectedAction2 = createAction("scaleIn");
+        ActionArguments expectedActionArguments2 = expectedAction2.getArguments();
+        Parameter expectedParameter2 = createParameter("balancingFactor", DataType.DOUBLE);
+        expectedActionArguments2.getParameters()
+            .add(expectedParameter2);
+        assertThat(model.getActions()).containsExactly(expectedAction1, expectedAction2);
     }
 
     @Test
@@ -679,4 +571,47 @@ public class SmodelActionParsingTest {
         SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
     }
 
+    private SetBounds createSetBoundsBool(Literal... values) {
+        SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
+        for (Literal value : values) {
+            bounds.getValues()
+                .add(value);
+        }
+        return bounds;
+    }
+
+    private Optimizable createOptimizable(String name, DataType type, Bounds bounds) {
+        Optimizable optimizable = SmodelFactory.eINSTANCE.createOptimizable();
+        optimizable.setName(name);
+        optimizable.setDataType(type);
+        optimizable.setValues(bounds);
+        return optimizable;
+    }
+
+    private Parameter createParameter(String name, DataType type) {
+        Parameter parameter = SmodelFactory.eINSTANCE.createParameter();
+        parameter.setName(name);
+        parameter.setDataType(type);
+        return parameter;
+    }
+
+    private Action createAction(String name) {
+        Action action = SmodelFactory.eINSTANCE.createAction();
+        action.setName(name);
+        ActionArguments actionArguments = SmodelFactory.eINSTANCE.createActionArguments();
+        action.setArguments(actionArguments);
+        return action;
+    }
+
+    private IntLiteral createIntLiteral(int value) {
+        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
+        literal.setValue(value);
+        return literal;
+    }
+
+    private DoubleLiteral createDoubleLiteral(double value) {
+        DoubleLiteral literal = SmodelFactory.eINSTANCE.createDoubleLiteral();
+        literal.setValue(value);
+        return literal;
+    }
 }
