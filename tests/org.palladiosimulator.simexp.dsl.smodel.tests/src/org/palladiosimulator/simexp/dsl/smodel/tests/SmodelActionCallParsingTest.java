@@ -1,34 +1,33 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import java.util.List;
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
-import org.palladiosimulator.simexp.dsl.smodel.util.ExpressionUtil;
 
 @RunWith(XtextRunner.class)
 @InjectWith(SmodelInjectorProvider.class)
@@ -37,49 +36,61 @@ public class SmodelActionCallParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
-
-    private ExpressionUtil expressionUtil = new ExpressionUtil();
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
-    public void parseActionCallWithLiteral() throws Exception {
+    public void parseActionCallNoParameters() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(param double balancingFactor);
+                action a();
                 if(true) {
-                    scaleOut(balancingFactor=1.0);
+                    a();
                 }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
-        Assert.assertEquals("balancingFactor", parameter.getName());
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
-            .get(0);
-        Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ParameterValue> arguments = actionCall.getArguments();
-        Assert.assertEquals(1, arguments.size());
-        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
-            .getArgument());
-        Assert.assertTrue(argument.getLiteral() instanceof DoubleLiteral);
-        Assert.assertEquals(1, ((DoubleLiteral) argument.getLiteral()).getValue(), 0.0f);
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = smodelCreator.createAction("a");
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = createActionCall(expectedAction);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
+    }
+
+    @Test
+    public void parseActionCallWithLiteral() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action a(param double pd);
+                if(true) {
+                    a(pd=1.0);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = smodelCreator.createAction("a");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("pd", DataType.DOUBLE);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = createActionCall(expectedAction);
+        ParameterValue expectedParameterValue = createParameterValue(expectedParameter,
+                smodelCreator.createDoubleLiteral(1.0));
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
     public void parseActionCallWithField() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable double{0} argument;
+                optimizable double{0.0} argument;
                 action scaleOut(param double balancingFactor);
                 if(true){
                     scaleOut(balancingFactor=argument);
@@ -88,36 +99,31 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(1, parameters.size());
-        Parameter parameter = parameters.get(0);
-        Assert.assertEquals(DataType.DOUBLE, parameter.getDataType());
-        Assert.assertEquals("balancingFactor", parameter.getName());
-        EList<GlobalStatement> statements = model.getStatements();
-        Assert.assertEquals(1, statements.size());
-        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
-            .get(0);
-        Assert.assertEquals(actionCall.getActionRef(), action);
-        List<ParameterValue> arguments = actionCall.getArguments();
-        Assert.assertEquals(1, arguments.size());
-        Expression argument = expressionUtil.getNextExpressionWithContent(arguments.get(0)
-            .getArgument());
-        Field argumentField = argument.getFieldRef();
-        Assert.assertEquals("argument", argumentField.getName());
-        Assert.assertEquals(DataType.DOUBLE, argumentField.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(0.0));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("argument", DataType.DOUBLE, expectedBounds);
+        Action expectedAction = smodelCreator.createAction("scaleOut");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("balancingFactor", DataType.DOUBLE);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = createActionCall(expectedAction);
+        ParameterValue expectedParameterValue = createParameterValue(expectedParameter, null);
+        Expression expectedParameterArgument = SmodelFactory.eINSTANCE.createExpression();
+        expectedParameterArgument.setFieldRef(expectedOptimizable);
+        expectedParameterValue.setArgument(expectedParameterArgument);
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
-    public void parseActionCallWithVariableParameter() throws Exception {
+    public void parseActionCallWithOnlyOptimizable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action scaleOut(optimizable double{1.25, 2.5} balancingFactor);
+                action scaleOut(optimizable double{1.0} balancingFactor);
                 if (true) {
                     scaleOut();
                 }
@@ -125,63 +131,67 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Action> actions = model.getActions();
-        Assert.assertEquals(1, actions.size());
-        Action action = actions.get(0);
-        Assert.assertEquals("scaleOut", action.getName());
-        List<Parameter> parameters = action.getArguments()
-            .getParameters();
-        Assert.assertEquals(0, parameters.size());
-        List<Optimizable> optimizables = action.getArguments()
-            .getOptimizables();
-        Assert.assertEquals(1, optimizables.size());
-        Field variable = optimizables.get(0);
-        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
-        Assert.assertEquals("balancingFactor", variable.getName());
-        List<GlobalStatement> statements = model.getStatements();
-        ActionCall actionCall = (ActionCall) ((IfStatement) statements.get(0)).getThenStatements()
-            .get(0);
-        Action actionRef = actionCall.getActionRef();
-        Assert.assertEquals(action, actionRef);
-        List<ParameterValue> arguments = actionCall.getArguments();
-        Assert.assertTrue(arguments.isEmpty());
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = smodelCreator.createAction("scaleOut");
+        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
+                expectedBounds);
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = createActionCall(expectedAction);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
     }
 
     @Test
-    public void parseComplexActionCall() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE
-                + """
-                        const int constant = 1;
-                        optimizable double[1, 2, 1] variable;
-                        action adapt(param double param1, param int param2, param bool param3, optimizable int{1, 2, 3, 4} variable);
-                        if(true) {
-                            adapt(param1=variable, param2=(constant + 1), param3=(true && false));
-                        }
-                        """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-    }
-
-    @Test
-    public void parseActionCallWithWrongParameterTypes() throws Exception {
+    public void parseActionCallParameterAndOptimizable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param double parameter1, param bool parameter2);
-                if(true) {
-                    adapt(parameter1=true, parameter2=2);
+                action scaleOut(param bool enable, optimizable double{1.0} balancingFactor);
+                if (true) {
+                    scaleOut(enable=true);
                 }
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
-                "Expected a value of type 'int' or 'double', got 'bool' instead.",
-                "Expected a value of type 'bool', got 'int' instead.");
+        validationTestHelper.assertNoIssues(model);
+        Action expectedAction = smodelCreator.createAction("scaleOut");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("enable", DataType.BOOL);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        SetBounds expectedBounds = smodelCreator.createSetBoundsBool(smodelCreator.createDoubleLiteral(1.0));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("balancingFactor", DataType.DOUBLE,
+                expectedBounds);
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = createActionCall(expectedAction);
+        ParameterValue expectedParameterValue = createParameterValue(expectedParameter,
+                smodelCreator.createBoolLiteral(true));
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        assertThat(model.getStatements()).containsExactly(exptectedStatement);
+    }
+
+    @Test
+    public void parseActionCallWithWrongParameterTypes() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                action adapt(param double parameter);
+                if(true) {
+                    adapt(parameter=true);
+                }
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_CALL, null,
+                "Expected a value of type 'int' or 'double', got 'bool' instead.");
     }
 
     @Test
@@ -195,8 +205,7 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_CALL, null,
                 "Arguments must be provided in the order as declared.");
     }
 
@@ -211,8 +220,8 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1, "Expected 1 arguments, got 0 instead.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_CALL, null,
+                "Expected 1 arguments, got 0 instead.");
     }
 
     @Test
@@ -226,9 +235,10 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2,
-                "Couldn't resolve reference to Parameter 'variable'.", "Expected 1 arguments, got 2 instead.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PARAMETER_VALUE, Diagnostic.LINKING_DIAGNOSTIC,
+                "Couldn't resolve reference to Parameter 'variable'.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_CALL, null,
+                "Expected 1 arguments, got 2 instead.");
     }
 
     @Test
@@ -255,6 +265,31 @@ public class SmodelActionCallParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "missing EOF at 'adapt'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.SMODEL, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "missing EOF at 'adapt'");
+    }
+
+    private IfStatement createIfStatement() {
+        IfStatement statement = SmodelFactory.eINSTANCE.createIfStatement();
+        Expression condition = smodelCreator.createLiteralBoolExpression(true);
+        statement.setCondition(condition);
+        return statement;
+    }
+
+    private ActionCall createActionCall(Action action) {
+        ActionCall actionCall = SmodelFactory.eINSTANCE.createActionCall();
+        actionCall.setActionRef(action);
+        return actionCall;
+    }
+
+    private ParameterValue createParameterValue(Parameter parameter, Literal argument) {
+        ParameterValue parameterValue = SmodelFactory.eINSTANCE.createParameterValue();
+        parameterValue.setParamRef(parameter);
+        if (argument != null) {
+            Expression parameterArgument = SmodelFactory.eINSTANCE.createExpression();
+            parameterArgument.setLiteral(argument);
+            parameterValue.setArgument(parameterArgument);
+        }
+        return parameterValue;
     }
 }
