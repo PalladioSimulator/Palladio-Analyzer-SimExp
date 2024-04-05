@@ -4,6 +4,7 @@ import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.asse
 
 import javax.inject.Inject;
 
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
@@ -224,10 +225,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        // TODO
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Action 'adapt'",
-                "Duplicate Action 'adapt'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION, null, 26, 5, "Duplicate Action 'adapt'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION, null, 61, 5, "Duplicate Action 'adapt'");
     }
 
     @Test
@@ -240,7 +239,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'action' expecting '}'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input 'action' expecting '}'");
     }
 
     @Test
@@ -287,7 +287,8 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'param' expecting 'optimizable'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.ACTION_ARGUMENTS, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input 'param' expecting 'optimizable'");
     }
 
     @Test
@@ -298,7 +299,7 @@ public class SmodelActionParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "no viable alternative at input 'vb'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.OPTIMIZABLE, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "no viable alternative at input 'vb'");
     }
-
 }
