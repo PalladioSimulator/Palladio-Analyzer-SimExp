@@ -178,7 +178,7 @@ public class SmodelConstantParsingTest {
     }
 
     @Test
-    public void parseFloatConstantWithoutValue() throws Exception {
+    public void parseDoubleConstantWithoutValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const double noValue;
                 """;

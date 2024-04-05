@@ -63,7 +63,7 @@ public class SmodelVariableParsingTest {
     }
 
     @Test
-    public void parseSingleFloat() throws Exception {
+    public void parseSingleDouble() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var double one = 1.0;
                 if (one == 0.0) {}

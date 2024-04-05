@@ -282,7 +282,7 @@ public class SmodelActionParsingTest {
     @Test
     public void parseActionWithWrongParameterOrder() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(optimizable int{1} variable, param float parameter);
+                action adapt(optimizable int{1} variable, param double parameter);
                 """;
 
         Smodel model = parserHelper.parse(sb);

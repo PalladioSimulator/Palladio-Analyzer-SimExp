@@ -244,7 +244,7 @@ public class SmodelActionCallParsingTest {
     @Test
     public void parseActionCallWithParameterSelfReference() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                action adapt(param float factor);
+                action adapt(param double factor);
                 if(true) {
                     adapt(factor=factor);
                 }

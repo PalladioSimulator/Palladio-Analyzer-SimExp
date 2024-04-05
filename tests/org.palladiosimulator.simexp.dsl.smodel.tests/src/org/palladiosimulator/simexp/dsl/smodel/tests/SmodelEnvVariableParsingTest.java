@@ -55,7 +55,7 @@ public class SmodelEnvVariableParsingTest {
     }
 
     @Test
-    public void parseSingleFloat() throws Exception {
+    public void parseSingleDouble() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 envvar double varName : variableId = "statId";
                 """;
