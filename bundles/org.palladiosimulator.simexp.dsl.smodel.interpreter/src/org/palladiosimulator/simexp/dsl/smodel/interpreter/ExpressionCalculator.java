@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
+import org.apache.commons.math3.util.Precision;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
@@ -116,6 +117,11 @@ public class ExpressionCalculator {
     }
 
     private boolean isEqual(Object left, Object right) {
+        if ((left instanceof Double) || (right instanceof Double)) {
+            Double leftDouble = (Double) left;
+            Double rightDouble = (Double) right;
+            return Precision.compareTo(leftDouble, rightDouble, Precision.EPSILON) == 0;
+        }
         return left.equals(right);
     }
 
