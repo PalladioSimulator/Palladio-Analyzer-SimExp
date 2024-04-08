@@ -11,17 +11,14 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -32,6 +29,8 @@ public class SmodelVariableParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseSingleBool() throws Exception {
@@ -43,15 +42,9 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable.setName("condition");
-        exptectedVariable.setDataType(DataType.BOOL);
-        BoolLiteral expectedLiteral = SmodelFactory.eINSTANCE.createBoolLiteral();
-        expectedLiteral.setTrue(true);
-        Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression.setLiteral(expectedLiteral);
-        exptectedVariable.setValue(expectedLiteralExpression);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
+        Variable expectedVariable = smodelCreator.createVariable("condition", DataType.BOOL,
+                smodelCreator.createBoolLiteral(true));
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable);
     }
 
     @Test
@@ -64,19 +57,13 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable.setName("one");
-        exptectedVariable.setDataType(DataType.INT);
-        IntLiteral expectedLiteral = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral.setValue(1);
-        Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression.setLiteral(expectedLiteral);
-        exptectedVariable.setValue(expectedLiteralExpression);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
+        Variable expectedVariable = smodelCreator.createVariable("one", DataType.INT,
+                smodelCreator.createIntLiteral(1));
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable);
     }
 
     @Test
-    public void parseSingleFloat() throws Exception {
+    public void parseSingleDouble() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 var double one = 1.0;
                 if (one == 0.0) {}
@@ -85,15 +72,9 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable.setName("one");
-        exptectedVariable.setDataType(DataType.DOUBLE);
-        DoubleLiteral expectedLiteral = SmodelFactory.eINSTANCE.createDoubleLiteral();
-        expectedLiteral.setValue(1.0);
-        Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression.setLiteral(expectedLiteral);
-        exptectedVariable.setValue(expectedLiteralExpression);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
+        Variable expectedVariable = smodelCreator.createVariable("one", DataType.DOUBLE,
+                smodelCreator.createDoubleLiteral(1.0));
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable);
     }
 
     @Test
@@ -106,15 +87,9 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable.setName("word");
-        exptectedVariable.setDataType(DataType.STRING);
-        StringLiteral expectedLiteral = SmodelFactory.eINSTANCE.createStringLiteral();
-        expectedLiteral.setValue("word");
-        Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression.setLiteral(expectedLiteral);
-        exptectedVariable.setValue(expectedLiteralExpression);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
+        Variable expectedVariable = smodelCreator.createVariable("word", DataType.STRING,
+                smodelCreator.createStringLiteral("word"));
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable);
     }
 
     @Test
@@ -128,23 +103,11 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable exptectedVariable1 = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable1.setName("count");
-        exptectedVariable1.setDataType(DataType.INT);
-        IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral1.setValue(1);
-        Expression expectedLiteralExpression1 = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression1.setLiteral(expectedLiteral1);
-        exptectedVariable1.setValue(expectedLiteralExpression1);
-        Variable exptectedVariable2 = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable2.setName("word");
-        exptectedVariable2.setDataType(DataType.STRING);
-        StringLiteral expectedLiteral2 = SmodelFactory.eINSTANCE.createStringLiteral();
-        expectedLiteral2.setValue("word");
-        Expression expectedLiteralExpression2 = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression2.setLiteral(expectedLiteral2);
-        exptectedVariable2.setValue(expectedLiteralExpression2);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable1, exptectedVariable2);
+        Variable expectedVariable1 = smodelCreator.createVariable("count", DataType.INT,
+                smodelCreator.createIntLiteral(1));
+        Variable expectedVariable2 = smodelCreator.createVariable("word", DataType.STRING,
+                smodelCreator.createStringLiteral("word"));
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable1, expectedVariable2);
     }
 
     @Test
@@ -158,21 +121,13 @@ public class SmodelVariableParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Constant exptectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        exptectedConstant.setName("constant");
-        exptectedConstant.setDataType(DataType.INT);
-        IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral1.setValue(1);
-        Expression expectedLiteralExpression1 = SmodelFactory.eINSTANCE.createExpression();
-        expectedLiteralExpression1.setLiteral(expectedLiteral1);
-        exptectedConstant.setValue(expectedLiteralExpression1);
-        Variable exptectedVariable = SmodelFactory.eINSTANCE.createVariable();
-        exptectedVariable.setName("variable");
-        exptectedVariable.setDataType(DataType.INT);
+        Constant exptectedConstant = smodelCreator.createConstant("constant", DataType.INT,
+                smodelCreator.createIntLiteral(1));
+        Variable expectedVariable = smodelCreator.createVariable("variable", DataType.INT, null);
         Expression expectedLiteralExpression = SmodelFactory.eINSTANCE.createExpression();
         expectedLiteralExpression.setFieldRef(exptectedConstant);
-        exptectedVariable.setValue(expectedLiteralExpression);
-        assertThat(model.getVariables()).containsExactlyInAnyOrder(exptectedVariable);
+        expectedVariable.setValue(expectedLiteralExpression);
+        assertThat(model.getVariables()).containsExactlyInAnyOrder(expectedVariable);
     }
 
     @Test
@@ -332,8 +287,9 @@ public class SmodelVariableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        validationTestHelper.assertError(model, SmodelPackage.Literals.VARIABLE, null,
-                "Cannot assign an expression containing a non-constant value to an variable.",
+        validationTestHelper.assertError(model, SmodelPackage.Literals.VARIABLE, null, 36, 6,
+                "Cannot assign an expression containing a non-constant value to an variable.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.VARIABLE, null, 61, 6,
                 "Cannot assign an expression containing a non-constant value to an variable.");
     }
 }

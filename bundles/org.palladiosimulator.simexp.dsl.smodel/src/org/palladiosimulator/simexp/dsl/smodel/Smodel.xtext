@@ -77,13 +77,9 @@ Parameter:
 	'param' dataType=PrimitiveType name=ID
 	;
 
-GlobalStatement:
-	ActionCall | IfStatement
+Statement:
+	ActionCall | IfStatement | VariableAssignment
 	;
-	
-BlockStatement:
-	GlobalStatement | VariableAssignment
-;
 
 VariableAssignment:
 	variableRef=[Variable] '=' value=DisjunctiveExpr ';'
@@ -100,8 +96,8 @@ ParameterValue:
 
 IfStatement returns GlobalStatement: 
 	{IfStatement}
-	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=BlockStatement)* '}'
-	('else' '{' (elseStatements+=BlockStatement)* '}')?
+	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
+	('else' '{' (elseStatements+=Statement)* '}')?
 	;
 
 // Rule 'Operation' is not used, but is necessary to provide a default value for operations.

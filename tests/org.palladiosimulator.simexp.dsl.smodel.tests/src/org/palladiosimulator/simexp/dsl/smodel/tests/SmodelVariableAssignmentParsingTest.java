@@ -11,12 +11,10 @@ import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
@@ -26,6 +24,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -36,6 +35,8 @@ public class SmodelVariableAssignmentParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseSingleBool() throws Exception {
@@ -49,13 +50,14 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable expectedVariable = createBoolVariable("condition", true);
+        Variable expectedVariable = smodelCreator.createVariable("condition", DataType.BOOL,
+                smodelCreator.createBoolLiteral(true));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         VariableAssignment expectedAssignment = SmodelFactory.eINSTANCE.createVariableAssignment();
         expectedAssignment.setVariableRef(expectedVariable);
-        Expression expectedExpression = createLiteralBoolExpression(false);
+        Expression expectedExpression = smodelCreator.createLiteralBoolExpression(false);
         expectedAssignment.setValue(expectedExpression);
         exptectedStatement.getThenStatements()
             .add(expectedAssignment);
@@ -75,17 +77,12 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Constant exptectedConstant = SmodelFactory.eINSTANCE.createConstant();
-        exptectedConstant.setName("constant");
-        exptectedConstant.setDataType(DataType.INT);
-        IntLiteral expectedLiteral1 = SmodelFactory.eINSTANCE.createIntLiteral();
-        expectedLiteral1.setValue(1);
-        Expression expectedExpression1 = SmodelFactory.eINSTANCE.createExpression();
-        expectedExpression1.setLiteral(expectedLiteral1);
-        exptectedConstant.setValue(expectedExpression1);
-        Variable expectedVariable = createIntVariable("variable", 0);
+        Constant exptectedConstant = smodelCreator.createConstant("constant", DataType.INT,
+                smodelCreator.createIntLiteral(1));
+        Variable expectedVariable = smodelCreator.createVariable("variable", DataType.INT,
+                smodelCreator.createIntLiteral(0));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         VariableAssignment expectedAssignment = SmodelFactory.eINSTANCE.createVariableAssignment();
         expectedAssignment.setVariableRef(expectedVariable);
@@ -110,16 +107,12 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Optimizable exptectedOptimizable = SmodelFactory.eINSTANCE.createOptimizable();
-        exptectedOptimizable.setName("opti");
-        exptectedOptimizable.setDataType(DataType.INT);
-        SetBounds expectedBounds = SmodelFactory.eINSTANCE.createSetBounds();
-        expectedBounds.getValues()
-            .add(createIntLiteral(0));
-        exptectedOptimizable.setValues(expectedBounds);
-        Variable expectedVariable = createIntVariable("variable", 0);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(0));
+        Optimizable exptectedOptimizable = smodelCreator.createOptimizable("opti", DataType.INT, expectedBounds);
+        Variable expectedVariable = smodelCreator.createVariable("variable", DataType.INT,
+                smodelCreator.createIntLiteral(0));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         VariableAssignment expectedAssignment = SmodelFactory.eINSTANCE.createVariableAssignment();
         expectedAssignment.setVariableRef(expectedVariable);
@@ -144,14 +137,11 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Probe exptectedProbe = SmodelFactory.eINSTANCE.createProbe();
-        exptectedProbe.setName("someProbe");
-        exptectedProbe.setDataType(DataType.INT);
-        exptectedProbe.setKind(ProbeAdressingKind.ID);
-        exptectedProbe.setIdentifier("someId");
-        Variable expectedVariable = createIntVariable("variable", 0);
+        Probe exptectedProbe = smodelCreator.createProbe("someProbe", DataType.INT, ProbeAdressingKind.ID, "someId");
+        Variable expectedVariable = smodelCreator.createVariable("variable", DataType.INT,
+                smodelCreator.createIntLiteral(0));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         VariableAssignment expectedAssignment = SmodelFactory.eINSTANCE.createVariableAssignment();
         expectedAssignment.setVariableRef(expectedVariable);
@@ -175,9 +165,10 @@ public class SmodelVariableAssignmentParsingTest {
         Smodel model = parserHelper.parse(sb);
 
         validationTestHelper.assertNoIssues(model);
-        Variable expectedVariable = createBoolVariable("variable", true);
+        Variable expectedVariable = smodelCreator.createVariable("variable", DataType.BOOL,
+                smodelCreator.createBoolLiteral(true));
         IfStatement exptectedStatement = SmodelFactory.eINSTANCE.createIfStatement();
-        Expression exptectedCondition = createLiteralBoolExpression(true);
+        Expression exptectedCondition = smodelCreator.createLiteralBoolExpression(true);
         exptectedStatement.setCondition(exptectedCondition);
         VariableAssignment expectedAssignment = SmodelFactory.eINSTANCE.createVariableAssignment();
         expectedAssignment.setVariableRef(expectedVariable);
@@ -232,49 +223,5 @@ public class SmodelVariableAssignmentParsingTest {
 
         validationTestHelper.assertError(model, SmodelPackage.Literals.VARIABLE_ASSIGNMENT, null,
                 "Expected a value of type 'int', got 'bool' instead.");
-    }
-
-    private Variable createBoolVariable(String name, boolean value) {
-        Variable variable = SmodelFactory.eINSTANCE.createVariable();
-        variable.setName(name);
-        variable.setDataType(DataType.BOOL);
-        Expression expression = createLiteralBoolExpression(value);
-        variable.setValue(expression);
-        return variable;
-    }
-
-    private Variable createIntVariable(String name, int value) {
-        Variable variable = SmodelFactory.eINSTANCE.createVariable();
-        variable.setName(name);
-        variable.setDataType(DataType.INT);
-        Expression expression = createLiteralIntExpression(value);
-        variable.setValue(expression);
-        return variable;
-    }
-
-    private Expression createLiteralIntExpression(int value) {
-        Expression literalExpression = SmodelFactory.eINSTANCE.createExpression();
-        IntLiteral literal = createIntLiteral(value);
-        literalExpression.setLiteral(literal);
-        return literalExpression;
-    }
-
-    private IntLiteral createIntLiteral(int value) {
-        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
-        literal.setValue(value);
-        return literal;
-    }
-
-    private Expression createLiteralBoolExpression(boolean value) {
-        Expression literalExpression = SmodelFactory.eINSTANCE.createExpression();
-        BoolLiteral literal = createBoolLiteral(value);
-        literalExpression.setLiteral(literal);
-        return literalExpression;
-    }
-
-    private BoolLiteral createBoolLiteral(boolean value) {
-        BoolLiteral literal = SmodelFactory.eINSTANCE.createBoolLiteral();
-        literal.setTrue(value);
-        return literal;
     }
 }

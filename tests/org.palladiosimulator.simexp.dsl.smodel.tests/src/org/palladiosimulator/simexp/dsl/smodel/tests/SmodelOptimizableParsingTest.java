@@ -1,35 +1,22 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -38,76 +25,69 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 public class SmodelOptimizableParsingTest {
     @Inject
     private ParseHelper<Smodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseSingleBoolVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true} condition;
+                if (condition) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
-        Assert.assertEquals("condition", variable.getName());
-        Assert.assertEquals(DataType.BOOL, variable.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createBoolLiteral(true));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("condition", DataType.BOOL, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
     public void parseSingleIntVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1} count;
+                if (count==0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
-        Assert.assertEquals("count", variable.getName());
-        Assert.assertEquals(DataType.INT, variable.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("count", DataType.INT, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
-    public void parseSingleFloatVariable() throws Exception {
+    public void parseSingleDoubleVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double{1.0} number;
+                if (number==0.0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
-        Assert.assertEquals("number", variable.getName());
-        Assert.assertEquals(DataType.DOUBLE, variable.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("number", DataType.DOUBLE, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
     public void parseSingleStringVariable() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"word"} word;
+                if (word=="") {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field variable = variables.get(0);
-        Assert.assertEquals("word", variable.getName());
-        Assert.assertEquals(DataType.STRING, variable.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("word"));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("word", DataType.STRING, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
@@ -115,205 +95,125 @@ public class SmodelOptimizableParsingTest {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1} count;
                 optimizable string{"word"} word;
+                if (count==0 && word=="") {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(2, variables.size());
-        Field firstVariable = variables.get(0);
-        Assert.assertEquals("count", firstVariable.getName());
-        Assert.assertEquals(DataType.INT, firstVariable.getDataType());
-        Field secondVariable = variables.get(1);
-        Assert.assertEquals("word", secondVariable.getName());
-        Assert.assertEquals(DataType.STRING, secondVariable.getDataType());
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds1 = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable1 = smodelCreator.createOptimizable("count", DataType.INT, expectedBounds1);
+        SetBounds expectedBounds2 = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("word"));
+        Optimizable expectedOptimizable2 = smodelCreator.createOptimizable("word", DataType.STRING, expectedBounds2);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable1, expectedOptimizable2);
     }
 
     @Test
-    public void parseBoolVarArray() throws Exception {
+    public void parseBoolVarSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true,false} vName;
+                if (vName) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getOptimizables();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Optimizable variable = (Optimizable) field;
-        assertEquals("vName", variable.getName());
-        assertEquals(DataType.BOOL, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof SetBounds);
-        SetBounds rangeArray = (SetBounds) bounds;
-        BoolLiteral boolRange1 = (BoolLiteral) rangeArray.getValues()
-            .get(0);
-        BoolLiteral boolRange2 = (BoolLiteral) rangeArray.getValues()
-            .get(1);
-        List<Boolean> actualBoolBounds = Arrays.asList(boolRange1.isTrue(), boolRange2.isTrue());
-        MatcherAssert.assertThat(actualBoolBounds, CoreMatchers.hasItems(true, false));
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createBoolLiteral(true),
+                smodelCreator.createBoolLiteral(false));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.BOOL, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
-    public void parseIntVarArray() throws Exception {
+    public void parseIntVarSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1,3} vName;
+                if (vName==0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getOptimizables();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Optimizable variable = (Optimizable) field;
-        assertEquals("vName", variable.getName());
-        assertEquals(DataType.INT, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof SetBounds);
-        SetBounds boundsArray = (SetBounds) bounds;
-        IntLiteral intRange1 = (IntLiteral) boundsArray.getValues()
-            .get(0);
-        IntLiteral intRange2 = (IntLiteral) boundsArray.getValues()
-            .get(1);
-        List<Integer> actualIntBounds = Arrays.asList(intRange1.getValue(), intRange2.getValue());
-        MatcherAssert.assertThat(actualIntBounds, CoreMatchers.hasItems(1, 3));
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1),
+                smodelCreator.createIntLiteral(3));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.INT, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
     public void parseDoubleVarSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double{1.0,3.0} vName;
+                if (vName==0.0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getOptimizables();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Optimizable variable = (Optimizable) field;
-        assertEquals("vName", variable.getName());
-        assertEquals(DataType.DOUBLE, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof SetBounds);
-        SetBounds boundsArray = (SetBounds) bounds;
-        DoubleLiteral floatRange1 = (DoubleLiteral) boundsArray.getValues()
-            .get(0);
-        DoubleLiteral floatRange2 = (DoubleLiteral) boundsArray.getValues()
-            .get(1);
-        List<Double> actualFloatBounds = Arrays.asList(Double.valueOf(floatRange1.getValue()),
-                Double.valueOf(floatRange2.getValue()));
-        MatcherAssert.assertThat(actualFloatBounds, CoreMatchers.hasItems(1.0, 3.0));
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createDoubleLiteral(1.0),
+                smodelCreator.createDoubleLiteral(3.0));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.DOUBLE, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
-    public void parseStringVarArray() throws Exception {
+    public void parseStringVarSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"s1","s2"} vName;
+                if (vName=="") {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getOptimizables();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Optimizable variable = (Optimizable) field;
-        assertEquals("vName", variable.getName());
-        assertEquals(DataType.STRING, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof SetBounds);
-        SetBounds boundsArray = (SetBounds) bounds;
-        StringLiteral stringRange1 = (StringLiteral) boundsArray.getValues()
-            .get(0);
-        StringLiteral stringRange2 = (StringLiteral) boundsArray.getValues()
-            .get(1);
-        List<String> actualStringBounds = Arrays.asList(stringRange1.getValue(), stringRange2.getValue());
-        MatcherAssert.assertThat(actualStringBounds, CoreMatchers.hasItems("s1", "s2"));
+        validationTestHelper.assertNoIssues(model);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createStringLiteral("s1"),
+                smodelCreator.createStringLiteral("s2"));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.STRING, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
     public void parseIntVarRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int[1,2,1] vName;
+                if (vName==0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> fields = model.getOptimizables();
-        assertEquals(1, fields.size());
-        Field field = fields.get(0);
-        Optimizable variable = (Optimizable) field;
-        assertEquals("vName", variable.getName());
-        assertEquals(DataType.INT, variable.getDataType());
-        Bounds bounds = variable.getValues();
-        assertTrue(bounds instanceof RangeBounds);
-        RangeBounds boundsRange = (RangeBounds) bounds;
-        assertEquals(1, ((IntLiteral) boundsRange.getStartValue()).getValue());
-        assertEquals(2, ((IntLiteral) boundsRange.getEndValue()).getValue());
-        assertEquals(1, ((IntLiteral) boundsRange.getStepSize()).getValue());
+        validationTestHelper.assertNoIssues(model);
+        RangeBounds expectedBounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(1),
+                smodelCreator.createIntLiteral(2), smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("vName", DataType.INT, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
     public void parseVariableWithValueRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double[1.0, 2.0, 0.1] values;
+                if (values==0.0) {}
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        Field field = variables.get(0);
-        Optimizable variable = (Optimizable) field;
-        Bounds bounds = variable.getValues();
-        Assert.assertTrue(bounds instanceof RangeBounds);
-        RangeBounds valueRange = (RangeBounds) bounds;
-        double startValue = ((DoubleLiteral) valueRange.getStartValue()).getValue();
-        Assert.assertEquals(1, startValue, 0.0f);
-        double endValue = ((DoubleLiteral) valueRange.getEndValue()).getValue();
-        Assert.assertEquals(2, endValue, 0.0f);
-        double stepSize = ((DoubleLiteral) valueRange.getStepSize()).getValue();
-        Assert.assertEquals(0.1, stepSize, 0.0);
+        validationTestHelper.assertNoIssues(model);
+        RangeBounds expectedBounds = smodelCreator.createRangeBounds(smodelCreator.createDoubleLiteral(1.0),
+                smodelCreator.createDoubleLiteral(2.0), smodelCreator.createDoubleLiteral(0.1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("values", DataType.DOUBLE, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
     }
 
     @Test
-    public void parseUnusedInt() throws Exception {
+    public void parseVariableWithWrongValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable int{0} one;
+                optimizable string{true} list;
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        validationTestHelper.assertWarning(model, SmodelPackage.Literals.SMODEL, null,
-                "The Optimizable 'one' is never used.");
-    }
-
-    @Test
-    public void parseVariableWithWrongValueTypes() throws Exception {
-        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
-                optimizable string{true, 1, 2.5} list;
-                """;
-
-        Smodel model = parserHelper.parse(sb);
-
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 3,
-                "Expected a value of type 'string', got 'bool' instead.",
-                "Expected a value of type 'string', got 'int' instead.",
-                "Expected a value of type 'string', got 'double' instead.");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.SET_BOUNDS, null,
+                "Expected a value of type 'string', got 'bool' instead.");
     }
 
     @Test
@@ -324,8 +224,7 @@ public class SmodelOptimizableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 1,
+        validationTestHelper.assertError(model, SmodelPackage.Literals.OPTIMIZABLE, null,
                 "Cannot assign a range to a variable of the type 'bool'.");
     }
 }

@@ -8,11 +8,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BlockStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implements Analyzer, Planner {
@@ -82,14 +82,12 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
         boolean condition = expressionCalculator.calculateBoolean(ifExpression);
 
         if (condition) {
-            for (BlockStatement statement : ifStatement.getThenStatements()) {
-                List<ResolvedAction> actions = doSwitch(statement);
-                resolvedActions.addAll(actions);
+            for (Statement statement : ifStatement.getThenStatements()) {
+                resolvedActions.addAll(doSwitch(statement));
             }
         } else {
-            for (BlockStatement statement : ifStatement.getElseStatements()) {
-                List<ResolvedAction> actions = doSwitch(statement);
-                resolvedActions.addAll(actions);
+            for (Statement statement : ifStatement.getElseStatements()) {
+                resolvedActions.addAll(doSwitch(statement));
             }
         }
 

@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -25,6 +25,8 @@ public class SmodelEnvVariableParsingTest {
     private ParseHelper<Smodel> parserHelper;
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseSingleBool() throws Exception {
@@ -34,12 +36,8 @@ public class SmodelEnvVariableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable.setName("varName");
-        exptectedVariable.setDataType(DataType.BOOL);
-        exptectedVariable.setVariableId("statId");
+        validationTestHelper.assertNoErrors(model);
+        EnvVariable exptectedVariable = smodelCreator.createEnvVariable("varName", DataType.BOOL, "statId");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -51,29 +49,21 @@ public class SmodelEnvVariableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable.setName("varName");
-        exptectedVariable.setDataType(DataType.INT);
-        exptectedVariable.setVariableId("statId");
+        validationTestHelper.assertNoErrors(model);
+        EnvVariable exptectedVariable = smodelCreator.createEnvVariable("varName", DataType.INT, "statId");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
     @Test
-    public void parseSingleFloat() throws Exception {
+    public void parseSingleDouble() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 envvar double varName : variableId = "statId";
                 """;
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable.setName("varName");
-        exptectedVariable.setDataType(DataType.DOUBLE);
-        exptectedVariable.setVariableId("statId");
+        validationTestHelper.assertNoErrors(model);
+        EnvVariable exptectedVariable = smodelCreator.createEnvVariable("varName", DataType.DOUBLE, "statId");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -85,12 +75,8 @@ public class SmodelEnvVariableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable.setName("varName");
-        exptectedVariable.setDataType(DataType.STRING);
-        exptectedVariable.setVariableId("statId");
+        validationTestHelper.assertNoErrors(model);
+        EnvVariable exptectedVariable = smodelCreator.createEnvVariable("varName", DataType.STRING, "statId");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable);
     }
 
@@ -103,16 +89,9 @@ public class SmodelEnvVariableParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertNoValidationIssues(validationTestHelper, model);
-        EnvVariable exptectedVariable1 = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable1.setName("varName1");
-        exptectedVariable1.setDataType(DataType.BOOL);
-        exptectedVariable1.setVariableId("statId1");
-        EnvVariable exptectedVariable2 = SmodelFactory.eINSTANCE.createEnvVariable();
-        exptectedVariable2.setName("varName2");
-        exptectedVariable2.setDataType(DataType.INT);
-        exptectedVariable2.setVariableId("statId2");
+        validationTestHelper.assertNoErrors(model);
+        EnvVariable exptectedVariable1 = smodelCreator.createEnvVariable("varName1", DataType.BOOL, "statId1");
+        EnvVariable exptectedVariable2 = smodelCreator.createEnvVariable("varName2", DataType.INT, "statId2");
         assertThat(model.getEnvVariables()).containsExactlyInAnyOrder(exptectedVariable1, exptectedVariable2);
     }
 

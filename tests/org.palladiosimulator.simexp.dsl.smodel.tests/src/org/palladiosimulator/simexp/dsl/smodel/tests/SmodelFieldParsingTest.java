@@ -1,19 +1,24 @@
 package org.palladiosimulator.simexp.dsl.smodel.tests;
 
+import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
+
 import javax.inject.Inject;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.XtextRunner;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
+import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 
@@ -22,9 +27,10 @@ import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 public class SmodelFieldParsingTest {
     @Inject
     private ParseHelper<Smodel> parserHelper;
-
     @Inject
     private ValidationTestHelper validationTestHelper;
+    @Inject
+    private SmodelCreator smodelCreator;
 
     @Test
     public void parseAllDifferentFieldTypes() throws Exception {
@@ -36,13 +42,15 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        EList<Optimizable> variables = model.getOptimizables();
-        Assert.assertEquals(1, variables.size());
-        EList<Constant> constants = model.getConstants();
-        Assert.assertEquals(1, constants.size());
-        EList<Probe> probes = model.getProbes();
-        Assert.assertEquals(1, probes.size());
+        validationTestHelper.assertNoErrors(model);
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("condition", DataType.BOOL, smodelCreator
+            .createSetBounds(smodelCreator.createBoolLiteral(true), smodelCreator.createBoolLiteral(false)));
+        assertThat(model.getOptimizables()).containsExactlyInAnyOrder(expectedOptimizable);
+        Constant expectedConstant = smodelCreator.createConstant("one", DataType.INT,
+                smodelCreator.createIntLiteral(1));
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+        Probe expectedProbe = smodelCreator.createProbe("aliasName", DataType.DOUBLE, ProbeAdressingKind.ID, "someId");
+        assertThat(model.getProbes()).containsExactlyInAnyOrder(expectedProbe);
     }
 
     @Test
@@ -53,7 +61,8 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input '123' expecting RULE_ID");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '123' expecting RULE_ID");
     }
 
     @Test
@@ -64,8 +73,12 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 3, "mismatched input 'const' expecting RULE_ID",
-                "no viable alternative at input '='", "mismatched input '<EOF>' expecting RULE_ID");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input 'const' expecting RULE_ID");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "no viable alternative at input '='");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.SMODEL, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input '<EOF>' expecting RULE_ID");
     }
 
     @Test
@@ -77,8 +90,9 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'number'",
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, null, 29, 6,
+                "Duplicate Field 'number'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.CONSTANT, null, 51, 6,
                 "Duplicate Field 'number'");
     }
 
@@ -91,9 +105,8 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertModelWithoutErrors(model);
-        SmodelTestUtil.assertValidationIssues(validationTestHelper, model, 2, "Duplicate Field 'word'",
-                "Duplicate Field 'word'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.OPTIMIZABLE, null, "Duplicate Field 'word'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.PROBE, null, "Duplicate Field 'word'");
     }
 
     @Test
@@ -106,6 +119,7 @@ public class SmodelFieldParsingTest {
 
         Smodel model = parserHelper.parse(sb);
 
-        SmodelTestUtil.assertErrorMessages(model, 1, "mismatched input 'optimizable' expecting '}'");
+        validationTestHelper.assertError(model, SmodelPackage.Literals.IF_STATEMENT, Diagnostic.SYNTAX_DIAGNOSTIC,
+                "mismatched input 'optimizable' expecting '}'");
     }
 }
