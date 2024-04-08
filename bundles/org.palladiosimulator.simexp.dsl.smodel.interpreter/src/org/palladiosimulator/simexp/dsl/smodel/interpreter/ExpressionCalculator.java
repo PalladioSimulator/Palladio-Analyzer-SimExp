@@ -71,10 +71,10 @@ public class ExpressionCalculator {
             return !(Boolean) leftValue;
 
         case EQUAL:
-            return leftValue.equals(rightValue);
+            return isEqual(leftValue, rightValue);
 
         case UNEQUAL:
-            return !leftValue.equals(rightValue);
+            return !isEqual(leftValue, rightValue);
 
         case SMALLER:
             return ((Number) leftValue).doubleValue() < ((Number) rightValue).doubleValue();
@@ -113,6 +113,10 @@ public class ExpressionCalculator {
             throw new RuntimeException(
                     "Couldn't determine the value of an expression with operation '" + operation + "'.");
         }
+    }
+
+    private boolean isEqual(Object left, Object right) {
+        return left.equals(right);
     }
 
     private Number divide(Number divident, Number divisor) {
