@@ -4,6 +4,8 @@
 package org.palladiosimulator.simexp.dsl.smodel.ui.outline;
 
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 
 /**
  * Customization of the default outline structure.
@@ -11,5 +13,11 @@ import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
  * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#outline
  */
 public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
+    protected boolean _isLeaf(Constant ele) {
+        return true;
+    }
 
+    protected boolean _isLeaf(Action ele) {
+        return true;
+    }
 }

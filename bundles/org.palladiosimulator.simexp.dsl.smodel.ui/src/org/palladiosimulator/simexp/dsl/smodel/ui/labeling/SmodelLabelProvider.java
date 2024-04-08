@@ -3,9 +3,27 @@
  */
 package org.palladiosimulator.simexp.dsl.smodel.ui.labeling;
 
-import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+
+import com.google.inject.Inject;
 
 /**
  * Provides labels for EObjects.
@@ -14,18 +32,118 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
  */
 public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
 
-	@Inject
-	public SmodelLabelProvider(AdapterFactoryLabelProvider delegate) {
-		super(delegate);
-	}
+    @Inject
+    public SmodelLabelProvider(AdapterFactoryLabelProvider delegate) {
+        super(delegate);
+    }
 
-	// Labels and icons can be computed like this:
-	
-//	String text(Greeting ele) {
-//		return "A greeting to " + ele.getName();
-//	}
-//
-//	String image(Greeting ele) {
-//		return "Greeting.gif";
-//	}
+    public String text(Constant ele) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Constant ");
+        sb.append(ele.getName());
+
+        DataType dataType = ele.getDataType();
+        sb.append(" ");
+        sb.append(dataType.getLiteral());
+        Expression value = ele.getValue();
+
+        if (value != null) {
+            sb.append(" = ");
+            sb.append(getText(value));
+        }
+
+        return sb.toString();
+    }
+
+    public String text(Action ele) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Action ");
+        sb.append(ele.getName());
+        sb.append("(");
+        ActionArguments arguments = ele.getArguments();
+        if (arguments != null) {
+            List<String> paramEntries = new ArrayList<>();
+            List<Parameter> parameters = arguments.getParameters();
+            for (Parameter parameter : parameters) {
+                if (parameter != null) {
+                    DataType dataType = parameter.getDataType();
+                    paramEntries.add(dataType.getLiteral());
+                }
+            }
+            sb.append(StringUtils.join(paramEntries, ", "));
+
+            List<Optimizable> optimizables = arguments.getOptimizables();
+            if (!(parameters.isEmpty() && optimizables.isEmpty())) {
+                sb.append(" | ");
+                List<String> optimizableEntries = new ArrayList<>();
+
+                for (Optimizable optimizable : optimizables) {
+                    if (optimizable != null) {
+                        DataType dataType = optimizable.getDataType();
+                        optimizableEntries.add(dataType.getLiteral());
+                    }
+                }
+                sb.append(StringUtils.join(optimizableEntries, ", "));
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
+    public String text(Expression expression) {
+        Field fieldRef = expression.getFieldRef();
+        if (fieldRef != null) {
+            return getText(fieldRef);
+        }
+        Expression literal = expression.getLiteral();
+        if (literal != null) {
+            return getText(literal);
+        }
+
+        Operation operation = expression.getOp();
+        Expression left = expression.getLeft();
+        switch (operation) {
+        case UNDEFINED: {
+            if (left != null) {
+                return getText(left);
+            }
+            return "";
+        }
+
+        case NOT:
+            if (left != null) {
+                return getText(left);
+            }
+            return "";
+
+        default:
+            StringBuilder sb = new StringBuilder();
+            sb.append(getText(left));
+            sb.append(" ");
+            sb.append(operation.getLiteral());
+            sb.append(" ");
+
+            Expression right = expression.getRight();
+            if (right != null) {
+                sb.append(getText(right));
+            }
+            return sb.toString();
+        }
+    }
+
+    public String text(IntLiteral literal) {
+        return Integer.toString(literal.getValue());
+    }
+
+    public String text(DoubleLiteral literal) {
+        return Double.toString(literal.getValue());
+    }
+
+    public String text(BoolLiteral literal) {
+        return Boolean.toString(literal.isTrue());
+    }
+
+    public String text(StringLiteral literal) {
+        return literal.getValue();
+    }
 }
