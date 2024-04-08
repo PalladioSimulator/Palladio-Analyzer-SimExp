@@ -244,9 +244,37 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testBoolEqualExpressionDouble() throws Exception {
+    public void testBoolEqualExpressionDouble1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = 1.0 == 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolEqualExpressionDouble2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1.0 == 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolEqualExpressionDouble3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 == 1.0;
                 """;
         Smodel model = parserHelper.parse(sb);
         validationTestHelper.assertNoErrors(model);

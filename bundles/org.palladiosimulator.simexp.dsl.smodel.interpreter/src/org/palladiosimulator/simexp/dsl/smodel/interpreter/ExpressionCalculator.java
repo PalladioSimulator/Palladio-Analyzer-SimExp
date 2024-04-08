@@ -118,9 +118,9 @@ public class ExpressionCalculator {
 
     private boolean isEqual(Object left, Object right) {
         if ((left instanceof Double) || (right instanceof Double)) {
-            Double leftDouble = (Double) left;
-            Double rightDouble = (Double) right;
-            return Precision.compareTo(leftDouble, rightDouble, Precision.EPSILON) == 0;
+            Number leftDouble = (Number) left;
+            Number rightDouble = (Number) right;
+            return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), Precision.EPSILON) == 0;
         }
         return left.equals(right);
     }
