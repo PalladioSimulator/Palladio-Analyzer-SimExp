@@ -25,14 +25,14 @@ public class ExpressionCalculator {
 
     public int calculateInteger(Expression expression) {
         Object value = caseExpression(expression);
-        Number doubleValue = (Number) value;
-        return doubleValue.intValue();
+        Number numberValue = (Number) value;
+        return numberValue.intValue();
     }
 
     public double calculateDouble(Expression expression) {
         Object value = caseExpression(expression);
-        Double doubleValue = (Double) value;
-        return doubleValue;
+        Number numberValue = (Number) value;
+        return numberValue.doubleValue();
     }
 
     private Object caseExpression(Expression expression) {

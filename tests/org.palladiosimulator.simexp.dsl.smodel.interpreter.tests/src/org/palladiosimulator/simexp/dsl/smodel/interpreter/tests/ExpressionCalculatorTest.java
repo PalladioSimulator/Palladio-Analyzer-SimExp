@@ -634,6 +634,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testDoubleAssignmentExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
+    }
+
+    @Test
+    public void testDoubleAssignmentExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
+    }
+
+    @Test
     public void testDoubleAdditionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const double value = 1.0 + 0.0;
