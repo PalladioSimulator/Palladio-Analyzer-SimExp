@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.util;
 
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
@@ -20,14 +18,6 @@ public class SModelCreatorHelper {
         probe.setIdentifier(monitorId);
         probe.setKind(value);
         return probe;
-    }
-
-    public EnvVariable createEnvVariable(DataType dataType, String staticId) {
-        EnvVariable envVariable = smodelFactory.createEnvVariable();
-        envVariable.setName("testEnvVar");
-        envVariable.setVariableId(staticId);
-        envVariable.setDataType(dataType);
-        return envVariable;
     }
 
 }
