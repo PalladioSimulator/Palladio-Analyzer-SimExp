@@ -3,9 +3,14 @@
  */
 package org.palladiosimulator.simexp.dsl.smodel.ui.outline;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 
 /**
  * Customization of the default outline structure.
@@ -20,4 +25,23 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
     protected boolean _isLeaf(Action ele) {
         return true;
     }
+
+    protected void _createChildren(IOutlineNode parentNode, IfStatement ifStatement) {
+        EList<Statement> thenStatements = ifStatement.getThenStatements();
+        if (!thenStatements.isEmpty()) {
+            TextNode thenNode = new TextNode(parentNode, (Image) null, "then", false);
+            for (Statement element : thenStatements) {
+                createNode(thenNode, element);
+            }
+        }
+
+        EList<Statement> elseStatements = ifStatement.getElseStatements();
+        if (!elseStatements.isEmpty()) {
+            TextNode elseNode = new TextNode(parentNode, (Image) null, "else", false);
+            for (Statement element : elseStatements) {
+                createNode(elseNode, element);
+            }
+        }
+    }
+
 }

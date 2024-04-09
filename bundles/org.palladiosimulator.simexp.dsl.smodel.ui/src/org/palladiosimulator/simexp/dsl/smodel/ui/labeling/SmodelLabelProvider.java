@@ -11,16 +11,19 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
 import com.google.inject.Inject;
@@ -37,15 +40,15 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
         super(delegate);
     }
 
-    public String text(Constant ele) {
+    public String text(Constant constant) {
         StringBuilder sb = new StringBuilder();
         sb.append("Constant ");
-        sb.append(ele.getName());
+        sb.append(constant.getName());
 
-        DataType dataType = ele.getDataType();
+        DataType dataType = constant.getDataType();
         sb.append(" ");
         sb.append(dataType.getLiteral());
-        Expression value = ele.getValue();
+        Expression value = constant.getValue();
 
         if (value != null) {
             sb.append(" = ");
@@ -55,12 +58,12 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
         return sb.toString();
     }
 
-    public String text(Action ele) {
+    public String text(Action action) {
         StringBuilder sb = new StringBuilder();
         sb.append("Action ");
-        sb.append(ele.getName());
+        sb.append(action.getName());
         sb.append("(");
-        ActionArguments arguments = ele.getArguments();
+        ActionArguments arguments = action.getArguments();
         if (arguments != null) {
             List<String> paramEntries = new ArrayList<>();
             List<Parameter> parameters = arguments.getParameters();
@@ -85,6 +88,38 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
                 }
                 sb.append(StringUtils.join(optimizableEntries, ", "));
             }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
+    public String text(ActionCall actionCall) {
+        StringBuilder sb = new StringBuilder();
+        Action actionRef = actionCall.getActionRef();
+        sb.append("ActionCall ");
+        if (actionRef != null) {
+            sb.append(actionRef.getName());
+        }
+        sb.append("(");
+        List<String> entries = new ArrayList<>();
+        List<ParameterValue> arguments = actionCall.getArguments();
+        for (ParameterValue parameterValue : arguments) {
+            Parameter paramRef = parameterValue.getParamRef();
+            String value = getText(parameterValue.getArgument());
+            entries.add(String.format("%s=%s", paramRef.getName(), value));
+        }
+        sb.append(StringUtils.join(entries, ", "));
+        sb.append(")");
+        return sb.toString();
+    }
+
+    public String text(IfStatement ifStatement) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("if ");
+        sb.append("(");
+        Expression condition = ifStatement.getCondition();
+        if (condition != null) {
+            sb.append(getText(condition));
         }
         sb.append(")");
         return sb.toString();
