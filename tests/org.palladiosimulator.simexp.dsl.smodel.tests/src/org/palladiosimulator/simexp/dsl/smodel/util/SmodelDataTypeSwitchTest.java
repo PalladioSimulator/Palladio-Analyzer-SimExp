@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
-import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class SmodelDataTypeSwitchTest {
 

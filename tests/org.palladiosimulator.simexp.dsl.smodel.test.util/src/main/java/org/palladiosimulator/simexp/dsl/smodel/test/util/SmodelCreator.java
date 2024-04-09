@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.tests.util;
+package org.palladiosimulator.simexp.dsl.smodel.test.util;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
