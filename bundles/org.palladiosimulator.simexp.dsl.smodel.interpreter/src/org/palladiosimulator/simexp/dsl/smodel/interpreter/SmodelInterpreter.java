@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelAnalyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
@@ -20,27 +21,19 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
     private final Smodel model;
     private final ExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
+    private final SmodelAnalyzer smodelAnalyzer;
 
     public SmodelInterpreter(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.expressionCalculator = new ExpressionCalculator(saveFieldValueProvider);
         this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, saveFieldValueProvider);
+        this.smodelAnalyzer = new SmodelAnalyzer(model, fieldValueProvider);
     }
 
     @Override
     public boolean analyze() {
-        return model.getStatements()
-            .stream()
-            .anyMatch(statement -> {
-                IfStatement ifStatement = (IfStatement) statement;
-                if (!ifStatement.getElseStatements()
-                    .isEmpty()) {
-                    return true;
-                }
-                Expression condition = ifStatement.getCondition();
-                return expressionCalculator.calculateBoolean(condition);
-            });
+        return smodelAnalyzer.analyze();
     }
 
     @Override
