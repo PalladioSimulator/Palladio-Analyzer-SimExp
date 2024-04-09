@@ -44,6 +44,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testBoolExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
+    }
+
+    @Test
+    public void testBoolExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = false;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isFalse();
+    }
+
+    @Test
     public void testBoolOrExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true || true;
