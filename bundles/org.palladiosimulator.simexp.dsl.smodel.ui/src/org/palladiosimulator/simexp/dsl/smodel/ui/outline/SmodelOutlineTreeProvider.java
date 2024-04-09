@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
@@ -43,6 +44,10 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
 
     protected boolean _isLeaf(Action ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(ActionCall ele) {
         return true;
     }
 
