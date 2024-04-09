@@ -578,6 +578,20 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testIntAssignmentExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1);
+    }
+
+    @Test
     public void testIntAdditionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const int value = 1 + 0;

@@ -25,7 +25,7 @@ public class ExpressionCalculator {
 
     public int calculateInteger(Expression expression) {
         Object value = caseExpression(expression);
-        Double doubleValue = (Double) value;
+        Number doubleValue = (Number) value;
         return doubleValue.intValue();
     }
 
