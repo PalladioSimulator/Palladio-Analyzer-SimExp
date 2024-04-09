@@ -49,11 +49,16 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
 
     protected boolean _isLeaf(ActionCall ele) {
-        return true;
+        return false;
     }
 
     protected boolean _isLeaf(VariableAssignment ele) {
         return true;
+    }
+
+    protected void _createChildren(IOutlineNode parentNode, ActionCall actionCall) {
+        Action actionRef = actionCall.getActionRef();
+        createNode(parentNode, actionRef);
     }
 
     protected void _createChildren(IOutlineNode parentNode, IfStatement ifStatement) {
