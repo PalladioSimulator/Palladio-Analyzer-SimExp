@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,13 +11,12 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelAnalyzer;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
@@ -29,12 +27,14 @@ public class SmodelAnalyzerTest {
     private final SmodelFactory smodelFactory = SmodelFactory.eINSTANCE;
 
     private SmodelCreator smodelCreator;
+    private Smodel smodel;
     @Mock
     IFieldValueProvider fvp;
 
     @Before
     public void setUp() {
         initMocks(this);
+        smodel = smodelFactory.createSmodel();
         smodelCreator = new SmodelCreator();
     }
 
@@ -56,11 +56,13 @@ public class SmodelAnalyzerTest {
 //                  a();
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
         smodel.getActions()
             .add(expectedAction);
         IfStatement ifStmt = createIfStatement();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
+        ifStmt.getThenStatements()
+            .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
         SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
@@ -78,16 +80,14 @@ public class SmodelAnalyzerTest {
 //                  a();
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
         smodel.getActions()
             .add(expectedAction);
-        IfStatement ifStmt = smodelFactory.createIfStatement();
-        BoolLiteral boolLiteral = smodelFactory.createBoolLiteral();
-        boolLiteral.setTrue(false);
-        Expression boolCond = smodelFactory.createExpression();
-        boolCond.setLiteral(boolLiteral);
-        ifStmt.setCondition(boolCond);
+        Expression condition = smodelCreator.createLiteralBoolExpression(false);
+        IfStatement ifStmt = smodelCreator.createIfStatement(condition);
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
+        ifStmt.getThenStatements()
+            .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
         SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
@@ -107,20 +107,14 @@ public class SmodelAnalyzerTest {
 //                  a();
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
         smodel.getActions()
             .add(expectedAction);
-        IfStatement ifStmt = smodelFactory.createIfStatement();
-        BoolLiteral boolLiteral = smodelFactory.createBoolLiteral();
-        boolLiteral.setTrue(false);
-        Expression boolCond = smodelFactory.createExpression();
-        boolCond.setLiteral(boolLiteral);
-        ifStmt.setCondition(boolCond);
-        ActionCall elseActionCall = smodelFactory.createActionCall();
-        elseActionCall.setActionRef(expectedAction);
+        Expression condition = smodelCreator.createLiteralBoolExpression(false);
+        IfStatement ifStmt = smodelCreator.createIfStatement(condition);
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
         ifStmt.getElseStatements()
-            .add(elseActionCall);
+            .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
         SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
@@ -140,15 +134,14 @@ public class SmodelAnalyzerTest {
 //                    }
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
         smodel.getActions()
             .add(expectedAction);
         IfStatement ifStmt = createIfStatement();
         IfStatement nestedIfStmt = createIfStatement();
-        ActionCall actionCall = smodelFactory.createActionCall();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
         nestedIfStmt.getThenStatements()
-            .add(actionCall);
+            .add(expectedActionCall);
         ifStmt.getThenStatements()
             .add(nestedIfStmt);
         smodel.getStatements()
@@ -171,17 +164,16 @@ public class SmodelAnalyzerTest {
 //                    }
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
         smodel.getActions()
             .add(expectedAction);
-        ActionCall actionCall = smodelFactory.createActionCall();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
         IfStatement ifStmt = createIfStatement();
         ifStmt.getThenStatements()
-            .add(actionCall);
+            .add(expectedActionCall);
         IfStatement nestedIfStmt = createIfStatement();
         nestedIfStmt.getThenStatements()
-            .add(actionCall);
+            .add(expectedActionCall);
         ifStmt.getThenStatements()
             .add(nestedIfStmt);
         smodel.getStatements()
@@ -201,23 +193,22 @@ public class SmodelAnalyzerTest {
 //                    a(p=1);
 //                }
 //                """;
-        Smodel smodel = smodelFactory.createSmodel();
         Action expectedAction = smodelCreator.createAction("a");
-        Parameter param = smodelFactory.createParameter();
-        param.setDataType(DataType.INT);
-        param.setName("p");
-        ActionArguments actionArgs = smodelFactory.createActionArguments();
-        EList<Parameter> parameters = actionArgs.getParameters();
-        parameters.add(param);
-        expectedAction.setArguments(actionArgs);
-        smodel.getActions()
-            .add(expectedAction);
-        ActionCall actionCall = smodelFactory.createActionCall();
-        IfStatement ifStmt = createIfStatement();
-        ifStmt.getThenStatements()
-            .add(actionCall);
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("pd", DataType.INT);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
+        ParameterValue expectedParameterValue = smodelCreator.createParameterValue(expectedParameter,
+                smodelCreator.createDoubleLiteral(1.0));
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
         smodel.getStatements()
-            .add(ifStmt);
+            .add(exptectedStatement);
+
         SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
@@ -227,44 +218,24 @@ public class SmodelAnalyzerTest {
 
     @Test
     public void testAnalyzeWithSingleActionWithBoolCondition7() throws Exception {
-//        String sb = MODEL_NAME_LINE + """
-//                action a(param int p, optimizable int {1,2} opt);
-//                if (true) {
-//                    a(p=1);
-//                }
-//                """;
-        Smodel smodel = smodelFactory.createSmodel();
+        // String sb = MODEL_NAME_LINE + """
+        // action a(optimizable int {1} opt);
+        // if (true) {
+//              a();
+        // }
+        // """;
         Action expectedAction = smodelCreator.createAction("a");
-        Parameter param = smodelFactory.createParameter();
-        param.setDataType(DataType.INT);
-        param.setName("p");
-        ActionArguments actionArgs = smodelFactory.createActionArguments();
-        EList<Parameter> parameters = actionArgs.getParameters();
-        parameters.add(param);
-        Optimizable opt = smodelFactory.createOptimizable();
-        opt.setDataType(DataType.INT);
-        opt.setName("opt");
-        SetBounds bounds = smodelFactory.createSetBounds();
-        IntLiteral literal1 = smodelFactory.createIntLiteral();
-        literal1.setValue(1);
-        IntLiteral literal2 = smodelFactory.createIntLiteral();
-        literal2.setValue(2);
-        bounds.getValues()
-            .add(0, literal1);
-        bounds.getValues()
-            .add(1, literal2);
-        opt.setValues(bounds);
-        EList<Optimizable> optimizables = actionArgs.getOptimizables();
-        optimizables.add(opt);
-        expectedAction.setArguments(actionArgs);
-        smodel.getActions()
-            .add(expectedAction);
-        ActionCall actionCall = smodelFactory.createActionCall();
-        IfStatement ifStmt = createIfStatement();
-        ifStmt.getThenStatements()
-            .add(actionCall);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("opt", DataType.INT, expectedBounds);
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
         smodel.getStatements()
-            .add(ifStmt);
+            .add(exptectedStatement);
         SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
