@@ -13,9 +13,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
@@ -24,7 +26,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 
 import com.google.inject.Inject;
 
@@ -42,19 +49,103 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
 
     public String text(Constant constant) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Constant ");
-        sb.append(constant.getName());
-
-        DataType dataType = constant.getDataType();
-        sb.append(" ");
-        sb.append(dataType.getLiteral());
+        sb.append(toTextField(constant));
         Expression value = constant.getValue();
-
         if (value != null) {
             sb.append(" = ");
             sb.append(getText(value));
         }
+        return sb.toString();
+    }
 
+    public String text(Variable variable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toTextField(variable));
+        Expression value = variable.getValue();
+        if (value != null) {
+            sb.append(" = ");
+            sb.append(getText(value));
+        }
+        return sb.toString();
+    }
+
+    public String text(EnvVariable envVariable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toTextField(envVariable));
+        String variableId = envVariable.getVariableId();
+        sb.append(" ");
+        sb.append("variableId");
+        sb.append("=");
+        sb.append(variableId);
+        return sb.toString();
+    }
+
+    public String text(Probe probe) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toTextField(probe));
+        ProbeAdressingKind kind = probe.getKind();
+        sb.append(" ");
+        sb.append(kind.getLiteral());
+        sb.append("=");
+        sb.append(probe.getIdentifier());
+        return sb.toString();
+    }
+
+    public String text(Optimizable optimizable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toTextField(optimizable));
+        Bounds bounds = optimizable.getValues();
+        if (bounds != null) {
+            sb.append(" ");
+            sb.append(getText(bounds));
+        }
+        return sb.toString();
+    }
+
+    private String toTextField(Field field) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(field.eClass()
+            .getName());
+        sb.append(" ");
+        sb.append(field.getName());
+
+        DataType dataType = field.getDataType();
+        sb.append(" ");
+        sb.append(dataType.getLiteral());
+
+        return sb.toString();
+    }
+
+    public String text(SetBounds bounds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        List<String> entries = new ArrayList<>();
+        for (Expression value : bounds.getValues()) {
+            entries.add(getText(value));
+        }
+        sb.append(StringUtils.join(entries, ", "));
+        sb.append("}");
+        return sb.toString();
+    }
+
+    public String text(RangeBounds bounds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[start=");
+        Expression startValue = bounds.getStartValue();
+        if (startValue != null) {
+            sb.append(getText(startValue));
+        }
+        sb.append(", end=");
+        Expression endValue = bounds.getEndValue();
+        if (endValue != null) {
+            sb.append(getText(endValue));
+        }
+        sb.append(", step=");
+        Expression stepSize = bounds.getStepSize();
+        if (stepSize != null) {
+            sb.append(getText(stepSize));
+        }
+        sb.append("]");
         return sb.toString();
     }
 

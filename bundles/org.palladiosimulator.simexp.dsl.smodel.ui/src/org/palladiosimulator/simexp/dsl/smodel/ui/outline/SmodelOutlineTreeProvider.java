@@ -9,8 +9,12 @@ import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 
 /**
  * Customization of the default outline structure.
@@ -19,6 +23,22 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
  */
 public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
     protected boolean _isLeaf(Constant ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(Variable ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(EnvVariable ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(Optimizable ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(Probe ele) {
         return true;
     }
 
