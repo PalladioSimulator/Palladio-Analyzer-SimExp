@@ -74,6 +74,34 @@ public class SmodelConstantParsingTest {
     }
 
     @Test
+    public void parseSingleDoubleConstantScientificNotationLarge() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double one = 2.5645E8;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = smodelCreator.createConstant("one", DataType.DOUBLE,
+                smodelCreator.createDoubleLiteral(256450000));
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
+    public void parseSingleDoubleConstantScientificNotationSmall() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                const double one = 4.6E-6;
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoErrors(model);
+        Constant expectedConstant = smodelCreator.createConstant("one", DataType.DOUBLE,
+                smodelCreator.createDoubleLiteral(0.0000046));
+        assertThat(model.getConstants()).containsExactlyInAnyOrder(expectedConstant);
+    }
+
+    @Test
     public void parseSingleStringConstant() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 const string word = "word";

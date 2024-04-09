@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
+import org.apache.commons.math3.util.Precision;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
@@ -71,10 +72,10 @@ public class ExpressionCalculator {
             return !(Boolean) leftValue;
 
         case EQUAL:
-            return leftValue.equals(rightValue);
+            return isEqual(leftValue, rightValue);
 
         case UNEQUAL:
-            return !leftValue.equals(rightValue);
+            return !isEqual(leftValue, rightValue);
 
         case SMALLER:
             return ((Number) leftValue).doubleValue() < ((Number) rightValue).doubleValue();
@@ -113,6 +114,15 @@ public class ExpressionCalculator {
             throw new RuntimeException(
                     "Couldn't determine the value of an expression with operation '" + operation + "'.");
         }
+    }
+
+    private boolean isEqual(Object left, Object right) {
+        if ((left instanceof Double) || (right instanceof Double)) {
+            Number leftDouble = (Number) left;
+            Number rightDouble = (Number) right;
+            return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), Precision.EPSILON) == 0;
+        }
+        return left.equals(right);
     }
 
     private Number divide(Number divident, Number divisor) {

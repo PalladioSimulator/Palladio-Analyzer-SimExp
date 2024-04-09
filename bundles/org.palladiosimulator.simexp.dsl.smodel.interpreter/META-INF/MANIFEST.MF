@@ -18,6 +18,7 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  tools.mdsd.probdist.api,
  org.palladiosimulator.experimentautomation,
  org.apache.commons.lang3;bundle-version="3.1.0",
+ org.apache.commons.math3;bundle-version="3.6.1",
  org.palladiosimulator.envdyn.model
 Export-Package: org.palladiosimulator.simexp.dsl.smodel.interpreter,
  org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup,

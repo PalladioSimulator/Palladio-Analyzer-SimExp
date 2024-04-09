@@ -2,9 +2,10 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.offset;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.assertj.core.util.DoubleComparator;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
@@ -22,7 +23,8 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
 public class ExpressionCalculatorTest {
-    public static final String MODEL_NAME_LINE = "modelName = \"name\";";
+    private static final String MODEL_NAME_LINE = "modelName = \"name\";";
+    private static final double DOUBLE_EPSILON = 1e-15;
 
     private ExpressionCalculator calculator;
 
@@ -279,6 +281,48 @@ public class ExpressionCalculatorTest {
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
         assertThat(actualCalculatedValue).isTrue();
+    }
+
+    @Test
+    public void testBoolEqualExpressionDouble2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1.0 == 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolEqualExpressionDouble3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 1 == 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
+    }
+
+    @Test
+    public void testBoolEqualExpressionDoublePrecision1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = 0.1 + 0.2 == 0.3;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertTrue(actualCalculatedValue);
     }
 
     @Test
@@ -618,6 +662,20 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testDoubleAdditionPrecision1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 0.1 + 0.2;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(0.3, offset(DOUBLE_EPSILON));
+    }
+
+    @Test
     public void testIntSubtractionExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const int value = 1 - 0;
@@ -734,7 +792,7 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
-    public void testDoubleMultiplicationExpression1() throws Exception {
+    public void testDoubleMultiplicationPrecision1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const double value = 2.1 * 1.1;
                 """;
@@ -744,8 +802,7 @@ public class ExpressionCalculatorTest {
 
         double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).usingComparator(new DoubleComparator(1e-15))
-            .isEqualTo(2.31);
+        assertThat(actualCalculatedValue).isEqualTo(2.31, offset(DOUBLE_EPSILON));
     }
 
     @Test
