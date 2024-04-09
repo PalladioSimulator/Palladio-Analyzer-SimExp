@@ -683,6 +683,61 @@ public class SModelInterpreterTest {
         assertThat(actualOptimizable.getDataType()).isEqualTo(expectedOptimizable.getDataType());
     }
 
+    @Test
+    public void testPlanWithSingleActionWithBoolCondition9() throws Exception {
+//        String sb = MODEL_NAME_LINE + """
+//                action a(param int p, optimizable int {1} opt);
+//                if (true) {
+//                    a(p=1);
+//                }
+//                """;
+        Smodel smodel = smodelFactory.createSmodel();
+        Action expectedAction = smodelCreator.createAction("a");
+        ActionArguments expectedActionArguments = expectedAction.getArguments();
+        Parameter expectedParameter = smodelCreator.createParameter("p", DataType.INT);
+        expectedActionArguments.getParameters()
+            .add(expectedParameter);
+        SetBounds expectedBounds = smodelCreator.createSetBounds(smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("opt", DataType.INT, expectedBounds);
+        expectedActionArguments.getOptimizables()
+            .add(expectedOptimizable);
+        IfStatement exptectedStatement = createIfStatement();
+        ActionCall expectedActionCall = smodelCreator.createActionCall(expectedAction);
+        ParameterValue expectedParameterValue = smodelCreator.createParameterValue(expectedParameter,
+                smodelCreator.createIntLiteral(1));
+        expectedActionCall.getArguments()
+            .add(expectedParameterValue);
+        exptectedStatement.getThenStatements()
+            .add(expectedActionCall);
+        smodel.getStatements()
+            .add(exptectedStatement);
+        SmodelInterpreter interpreter = new SmodelInterpreter(smodel, fvp);
+
+        List<ResolvedAction> actualResults = interpreter.plan();
+
+        assertThat(actualResults).size()
+            .isEqualTo(1);
+        ResolvedAction actualResult = actualResults.get(0);
+        assertThat(actualResult.getAction()).isEqualTo(expectedAction);
+        EList<Parameter> actualParamArgs = actualResult.getAction()
+            .getArguments()
+            .getParameters();
+        assertThat(actualParamArgs.size()).isEqualTo(1);
+        Parameter actualParam = actualParamArgs.get(0);
+        assertThat(actualParam.getName()).isEqualTo(expectedParameter.getName());
+        assertThat(actualParam.getDataType()).isEqualTo(expectedParameter.getDataType());
+        EList<Optimizable> actualOptimizableArgs = actualResult.getAction()
+            .getArguments()
+            .getOptimizables();
+        assertThat(actualOptimizableArgs.size()).isEqualTo(1);
+        Optimizable actualOptimizable = actualOptimizableArgs.get(0);
+        assertThat(actualOptimizable.getName()).isEqualTo(expectedOptimizable.getName());
+        assertThat(actualOptimizable.getDataType()).isEqualTo(expectedOptimizable.getDataType());
+
+        // resolved parameter = 1
+        // resolved opt = 2
+    }
+
 //    @Test
 //    public void testAnalyzeWithSecondTrueCondition() throws Exception {
 //        String sb = MODEL_NAME_LINE + """
