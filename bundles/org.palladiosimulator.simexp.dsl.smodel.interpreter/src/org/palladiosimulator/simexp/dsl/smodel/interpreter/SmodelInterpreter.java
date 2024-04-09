@@ -38,7 +38,8 @@ public class SmodelInterpreter extends SmodelSwitch<List<ResolvedAction>> implem
                     .isEmpty()) {
                     return true;
                 }
-                return expressionCalculator.calculateBoolean(ifStatement.getCondition());
+                Expression condition = ifStatement.getCondition();
+                return expressionCalculator.calculateBoolean(condition);
             });
     }
 
