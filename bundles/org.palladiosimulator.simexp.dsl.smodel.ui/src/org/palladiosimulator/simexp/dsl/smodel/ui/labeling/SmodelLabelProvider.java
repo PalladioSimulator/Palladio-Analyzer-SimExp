@@ -32,6 +32,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 
 import com.google.inject.Inject;
 
@@ -206,13 +207,26 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
 
     public String text(IfStatement ifStatement) {
         StringBuilder sb = new StringBuilder();
-        sb.append("if ");
+        sb.append("If ");
         sb.append("(");
         Expression condition = ifStatement.getCondition();
         if (condition != null) {
             sb.append(getText(condition));
         }
         sb.append(")");
+        return sb.toString();
+    }
+
+    public String text(VariableAssignment variableAssignment) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Assign ");
+        Variable variableRef = variableAssignment.getVariableRef();
+        sb.append(variableRef.getName());
+        sb.append(" = ");
+        Expression value = variableAssignment.getValue();
+        if (value != null) {
+            sb.append(getText(value));
+        }
         return sb.toString();
     }
 

@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 
 /**
  * Customization of the default outline structure.
@@ -48,6 +49,10 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
 
     protected boolean _isLeaf(ActionCall ele) {
+        return true;
+    }
+
+    protected boolean _isLeaf(VariableAssignment ele) {
         return true;
     }
 
