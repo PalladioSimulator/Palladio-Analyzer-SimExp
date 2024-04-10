@@ -19,6 +19,7 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.ui.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.tests</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.tests</module>
 		<module>org.palladiosimulator.simexp.model.strategy.tests</module>
 	</modules>
 	
