@@ -110,9 +110,11 @@ public class SmodelCreator {
         Constant constant = SmodelFactory.eINSTANCE.createConstant();
         constant.setName(name);
         constant.setDataType(type);
-        Expression expression = SmodelFactory.eINSTANCE.createExpression();
-        expression.setLiteral(literal);
-        constant.setValue(expression);
+        if (literal != null) {
+            Expression expression = SmodelFactory.eINSTANCE.createExpression();
+            expression.setLiteral(literal);
+            constant.setValue(expression);
+        }
         return constant;
     }
 
