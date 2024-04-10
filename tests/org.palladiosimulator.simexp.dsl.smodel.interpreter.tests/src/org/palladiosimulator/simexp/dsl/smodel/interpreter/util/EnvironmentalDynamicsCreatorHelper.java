@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticModel;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
@@ -17,7 +16,6 @@ import org.palladiosimulator.envdyn.environment.templatevariable.TemplateFactor;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariable;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplateVariableDefinitions;
 import org.palladiosimulator.envdyn.environment.templatevariable.TemplatevariableFactory;
-import org.palladiosimulator.pcm.usagemodel.UsageModel;
 
 import tools.mdsd.probdist.distributionfunction.ProbabilityDistribution;
 import tools.mdsd.probdist.distributionfunction.ProbabilityDistributionFunctionRepository;
@@ -29,11 +27,9 @@ public class EnvironmentalDynamicsCreatorHelper {
     private final StaticmodelFactory staticEnvModelFactory = StaticmodelFactory.eINSTANCE;
     private static TemplatevariableFactory templateVarFactory = TemplatevariableFactory.eINSTANCE;
 
-    private final PcmModelsCreatorHelper pcmModelsCreator;
     private final ProbabilityDistributionCreatorHelper probDistCreator;
 
     public EnvironmentalDynamicsCreatorHelper() {
-        this.pcmModelsCreator = new PcmModelsCreatorHelper();
         this.probDistCreator = new ProbabilityDistributionCreatorHelper();
     }
 
@@ -77,8 +73,7 @@ public class EnvironmentalDynamicsCreatorHelper {
         GroundProbabilisticModel gpModel = createGroundProbModel("testGPModel", multinomialDistribution, staticFactor);
         List<GroundProbabilisticModel> gpModels = Arrays.asList(gpModel);
 
-        UsageModel usageModel = pcmModelsCreator.createBasicUsageScenario();
-        GroundRandomVariable groundRandomVar = createGroundRandomVariable("testGRV", gpModel, templateVar, usageModel);
+        GroundRandomVariable groundRandomVar = createGroundRandomVariable("testGRV", gpModel, templateVar);
         List<GroundRandomVariable> grvs = Arrays.asList(groundRandomVar);
         GroundProbabilisticNetwork groundProbabilisticNetwork = createGroundProbNetwork(gpModels, grvs);
         ProbabilisticModelRepository staticEnvDynamcisModel = createStaticEnvDynamcisModel(groundProbabilisticNetwork);
@@ -87,12 +82,6 @@ public class EnvironmentalDynamicsCreatorHelper {
         EnvironmentalDynamicsTestModels testEnvDynModels = new EnvironmentalDynamicsTestModels("testSimulation",
                 templateVarDefinitions, staticEnvDynamcisModel);
         return testEnvDynModels;
-    }
-
-//    public void createPerformanceAnalysisEnvDynamicModels() { }
-
-    private void createDistributionFunctionModel() {
-
     }
 
     private TemplateVariableDefinitions createTemplateVarsDefinitionModel(List<TemplateVariable> templateVars,
@@ -177,13 +166,11 @@ public class EnvironmentalDynamicsCreatorHelper {
     }
 
     public GroundRandomVariable createGroundRandomVariable(String entityName, GroundProbabilisticModel gpModel,
-            TemplateVariable templateVar, EObject appliedObject) {
+            TemplateVariable templateVar) {
         GroundRandomVariable groundRandomVar = staticEnvModelFactory.createGroundRandomVariable();
         groundRandomVar.setEntityName(entityName);
         groundRandomVar.setDescriptiveModel(gpModel);
         groundRandomVar.setInstantiatedTemplate(templateVar);
-        groundRandomVar.getAppliedObjects()
-            .add(appliedObject); // refers to an PCM model e.g. usageScenario
         return groundRandomVar;
     }
 
