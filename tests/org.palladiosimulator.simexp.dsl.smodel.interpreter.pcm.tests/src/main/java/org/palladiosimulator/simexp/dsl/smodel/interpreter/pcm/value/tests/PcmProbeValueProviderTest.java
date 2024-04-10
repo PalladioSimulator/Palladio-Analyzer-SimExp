@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -9,10 +9,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.monitorrepository.Monitor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.ModelsCreatorHelper;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.SimulatedMeasurementSpecCreatorHelper;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.IModelsLookup;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.util.ModelsCreatorHelper;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.util.SimulatedMeasurementSpecCreatorHelper;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;

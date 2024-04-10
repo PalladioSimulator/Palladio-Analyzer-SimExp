@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value;
 
 import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;

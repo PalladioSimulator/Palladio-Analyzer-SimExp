@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.ProbeValueProviderMeasurementInjector;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;

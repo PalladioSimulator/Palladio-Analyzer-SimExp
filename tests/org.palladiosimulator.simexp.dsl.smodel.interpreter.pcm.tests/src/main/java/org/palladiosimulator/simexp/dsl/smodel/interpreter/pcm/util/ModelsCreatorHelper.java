@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.util;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.util;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentsFactory;

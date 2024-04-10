@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.monitorrepository.Monitor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.ModelsCreatorHelper;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm.MonitorIdMeasuringPointFinder;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.util.ModelsCreatorHelper;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.MonitorIdMeasuringPointFinder;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 
