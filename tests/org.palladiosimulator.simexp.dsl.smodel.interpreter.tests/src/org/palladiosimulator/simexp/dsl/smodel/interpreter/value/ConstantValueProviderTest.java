@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -14,6 +15,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class ConstantValueProviderTest {
+    private static final double DOUBLE_EPSILON = 1e-15;
+
     private ConstantValueProvider provider;
 
     private SmodelCreator smodelCreator;
@@ -52,4 +55,35 @@ public class ConstantValueProviderTest {
         assertThat(actualValue).isTrue();
     }
 
+    @Test
+    public void intLiteral() {
+        Constant constant = smodelCreator.createConstant("const", DataType.INT, smodelCreator.createIntLiteral(1));
+        when(expressionCalculator.calculateBoolean(constant.getValue())).thenReturn(true);
+
+        Integer actualValue = provider.getIntegerValue(constant);
+
+        assertThat(actualValue).isEqualTo(1);
+    }
+
+    @Test
+    public void doubleLiteral() {
+        Constant constant = smodelCreator.createConstant("const", DataType.DOUBLE,
+                smodelCreator.createDoubleLiteral(1.0));
+        when(expressionCalculator.calculateBoolean(constant.getValue())).thenReturn(true);
+
+        Double actualValue = provider.getDoubleValue(constant);
+
+        assertThat(actualValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
+    }
+
+    @Test
+    public void stringLiteral() {
+        Constant constant = smodelCreator.createConstant("const", DataType.STRING,
+                smodelCreator.createStringLiteral("s"));
+        when(expressionCalculator.calculateBoolean(constant.getValue())).thenReturn(true);
+
+        String actualValue = provider.getStringValue(constant);
+
+        assertThat(actualValue).isEqualTo("s");
+    }
 }
