@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Interpreter
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm
+Bundle-RequiredExecutionEnvironment: JavaSE-17

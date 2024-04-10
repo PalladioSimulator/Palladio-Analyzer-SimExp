@@ -44,6 +44,7 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.ide</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
 
