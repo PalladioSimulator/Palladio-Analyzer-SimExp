@@ -58,7 +58,7 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
     protected void _createChildren(IOutlineNode parentNode, ActionCall actionCall) {
         Action actionRef = actionCall.getActionRef();
-        createNode(parentNode, actionRef);
+        createEObjectNode(parentNode, actionRef);
     }
 
     protected void _createChildren(IOutlineNode parentNode, IfStatement ifStatement) {
@@ -66,7 +66,7 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
         if (!thenStatements.isEmpty()) {
             TextNode thenNode = new TextNode(parentNode, (Image) null, "then", false);
             for (Statement element : thenStatements) {
-                createNode(thenNode, element);
+                createEObjectNode(thenNode, element);
             }
         }
 
@@ -74,7 +74,7 @@ public class SmodelOutlineTreeProvider extends DefaultOutlineTreeProvider {
         if (!elseStatements.isEmpty()) {
             TextNode elseNode = new TextNode(parentNode, (Image) null, "else", false);
             for (Statement element : elseStatements) {
-                createNode(elseNode, element);
+                createEObjectNode(elseNode, element);
             }
         }
     }
