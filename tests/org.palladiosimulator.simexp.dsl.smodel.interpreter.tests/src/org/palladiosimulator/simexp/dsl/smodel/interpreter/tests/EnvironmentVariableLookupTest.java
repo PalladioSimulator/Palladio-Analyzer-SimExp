@@ -10,18 +10,18 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.EnvironmentVariableLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.EnvironmentalDynamicsCreatorHelper;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.EnvironmentalDynamicsTestModels;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.util.SModelCreatorHelper;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class EnvironmentVariableLookupTest {
 
-    private SModelCreatorHelper smodelCreator;
+    private SmodelCreator smodelCreator;
     private EnvironmentalDynamicsCreatorHelper envDynCreator;
 
     @Before
     public void setUp() throws Exception {
-        smodelCreator = new SModelCreatorHelper();
+        smodelCreator = new SmodelCreator();
         envDynCreator = new EnvironmentalDynamicsCreatorHelper();
 
     }
@@ -38,7 +38,7 @@ public class EnvironmentVariableLookupTest {
             .get(0);
         EnvironmentVariableLookup lookup = new EnvironmentVariableLookup(staticEnvDynModel);
         String expectedGRVId = grv.getId();
-        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.DOUBLE, expectedGRVId);
+        EnvVariable envVar = smodelCreator.createEnvVariable("varName", DataType.DOUBLE, expectedGRVId);
 
         GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
 
@@ -51,7 +51,7 @@ public class EnvironmentVariableLookupTest {
         ProbabilisticModelRepository staticEnvDynModel = envDynModels.getStaticEnvModel();
         EnvironmentVariableLookup lookup = new EnvironmentVariableLookup(staticEnvDynModel);
         String expectedGRVId = "unknownGVR";
-        EnvVariable envVar = smodelCreator.createEnvVariable(DataType.DOUBLE, expectedGRVId);
+        EnvVariable envVar = smodelCreator.createEnvVariable("varName", DataType.DOUBLE, expectedGRVId);
 
         GroundRandomVariable actualGRV = lookup.findEnvironmentVariable(envVar);
 

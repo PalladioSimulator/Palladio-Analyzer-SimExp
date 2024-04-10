@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core.strategy.mape;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.mape;
 
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 

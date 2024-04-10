@@ -3,8 +3,6 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.offset;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -48,6 +46,34 @@ public class ExpressionCalculatorTest {
     }
 
     @Test
+    public void testBoolExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = true;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isTrue();
+    }
+
+    @Test
+    public void testBoolExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const bool value = false;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
+
+        assertThat(actualCalculatedValue).isFalse();
+    }
+
+    @Test
     public void testBoolOrExpression1() throws Exception {
         String sb = MODEL_NAME_LINE + """
                 const bool value = true || true;
@@ -58,7 +84,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -72,7 +98,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -86,7 +112,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -100,7 +126,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -114,7 +140,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -128,7 +154,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -142,7 +168,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -156,7 +182,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -170,7 +196,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -184,7 +210,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -198,7 +224,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -212,7 +238,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -226,7 +252,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -240,7 +266,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -254,7 +280,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -338,7 +364,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -352,7 +378,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -394,7 +420,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -408,7 +434,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -422,7 +448,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -436,7 +462,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -450,7 +476,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -464,7 +490,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -478,7 +504,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -492,7 +518,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -506,7 +532,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -520,7 +546,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertTrue(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isTrue();
     }
 
     @Test
@@ -534,7 +560,7 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
     }
 
     @Test
@@ -548,7 +574,21 @@ public class ExpressionCalculatorTest {
 
         boolean actualCalculatedValue = calculator.calculateBoolean(constant.getValue());
 
-        assertFalse(actualCalculatedValue);
+        assertThat(actualCalculatedValue).isFalse();
+    }
+
+    @Test
+    public void testIntAssignmentExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -562,7 +602,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -576,7 +616,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     @Test
@@ -590,7 +630,35 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
+    }
+
+    @Test
+    public void testDoubleAssignmentExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
+    }
+
+    @Test
+    public void testDoubleAssignmentExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0);
     }
 
     @Test
@@ -660,7 +728,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -674,7 +742,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     @Test
@@ -688,7 +756,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(4, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(4);
     }
 
     @Test
@@ -744,7 +812,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -758,7 +826,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(2, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(2);
     }
 
     public class DComp {
@@ -790,7 +858,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(1);
     }
 
     @Test
@@ -804,7 +872,7 @@ public class ExpressionCalculatorTest {
 
         int actualCalculatedValue = calculator.calculateInteger(constant.getValue());
 
-        assertEquals(-1, actualCalculatedValue);
+        assertThat(actualCalculatedValue).isEqualTo(-1);
     }
 
     @Test
@@ -820,6 +888,90 @@ public class ExpressionCalculatorTest {
             calculator.calculateInteger(constant.getValue());
         })
             .withMessage("/ by zero");
+    }
+
+    @Test
+    public void testDoubleDivisionExpression1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 2.0 / 2.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0f);
+    }
+
+    @Test
+    public void testDoubleDivisionExpression2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = -1.0 / 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(-1.0f);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero1() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 0.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isNaN();
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero2() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 1.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.POSITIVE_INFINITY);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero3() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = -1.0 / 0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.NEGATIVE_INFINITY);
+    }
+
+    @Test
+    public void testDoubleDivisionExpressionByZero4() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                 const double value = 1.0 / -0.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo(Double.NEGATIVE_INFINITY);
     }
 
     @Test

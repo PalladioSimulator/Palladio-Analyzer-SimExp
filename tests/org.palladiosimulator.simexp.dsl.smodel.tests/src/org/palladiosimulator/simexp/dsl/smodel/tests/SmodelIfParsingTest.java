@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelPackage;
-import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelCreator;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelInjectorProvider;
 import org.palladiosimulator.simexp.dsl.smodel.tests.util.SmodelTestUtil;
 

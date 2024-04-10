@@ -7,7 +7,6 @@ import java.util.TreeMap;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.IModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;

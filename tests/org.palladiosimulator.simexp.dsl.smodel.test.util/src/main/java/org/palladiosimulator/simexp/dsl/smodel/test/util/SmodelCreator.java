@@ -1,7 +1,8 @@
-package org.palladiosimulator.simexp.dsl.smodel.tests.util;
+package org.palladiosimulator.simexp.dsl.smodel.test.util;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
@@ -9,10 +10,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
@@ -144,5 +147,28 @@ public class SmodelCreator {
         StringLiteral literal = SmodelFactory.eINSTANCE.createStringLiteral();
         literal.setValue(value);
         return literal;
+    }
+
+    public IfStatement createIfStatement(Expression condition) {
+        IfStatement statement = SmodelFactory.eINSTANCE.createIfStatement();
+        statement.setCondition(condition);
+        return statement;
+    }
+
+    public ActionCall createActionCall(Action action) {
+        ActionCall actionCall = SmodelFactory.eINSTANCE.createActionCall();
+        actionCall.setActionRef(action);
+        return actionCall;
+    }
+
+    public ParameterValue createParameterValue(Parameter parameter, Literal argument) {
+        ParameterValue parameterValue = SmodelFactory.eINSTANCE.createParameterValue();
+        parameterValue.setParamRef(parameter);
+        if (argument != null) {
+            Expression parameterArgument = SmodelFactory.eINSTANCE.createExpression();
+            parameterArgument.setLiteral(argument);
+            parameterValue.setArgument(parameterArgument);
+        }
+        return parameterValue;
     }
 }

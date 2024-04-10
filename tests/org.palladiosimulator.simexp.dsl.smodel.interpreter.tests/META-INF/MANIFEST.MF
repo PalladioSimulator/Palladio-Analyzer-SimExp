@@ -21,5 +21,6 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  org.eclipse.xtext.testing,
  org.palladiosimulator.simexp.dsl.smodel,
  org.apache.commons.math3;bundle-version="3.6.1",
- org.assertj;bundle-version="3.20.2"
+ org.assertj;bundle-version="3.20.2",
+ org.palladiosimulator.simexp.dsl.smodel.test.util
 Import-Package: org.eclipse.xtext.testing.util
