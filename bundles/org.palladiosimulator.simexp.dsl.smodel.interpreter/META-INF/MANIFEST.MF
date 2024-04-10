@@ -23,6 +23,5 @@ Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
 Export-Package: org.palladiosimulator.simexp.dsl.smodel.interpreter,
  org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup,
  org.palladiosimulator.simexp.dsl.smodel.interpreter.mape,
- org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.pcm,
  org.palladiosimulator.simexp.dsl.smodel.interpreter.value,
  org.palladiosimulator.simexp.dsl.smodel.interpreter.value.pcm

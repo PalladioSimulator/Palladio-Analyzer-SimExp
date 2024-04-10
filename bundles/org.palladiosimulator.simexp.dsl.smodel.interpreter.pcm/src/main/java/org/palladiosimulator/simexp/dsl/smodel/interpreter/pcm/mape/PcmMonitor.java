@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.pcm;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape;
 
 import java.util.List;
 
