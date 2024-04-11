@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -107,10 +106,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         // TODO:
         IFieldValueProvider optimizableValueProvider = null;
-        IFieldValueProvider fieldValueProvider = new FieldValueProvider(probeValueProvider, optimizableValueProvider);
 
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider);
-        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, fieldValueProvider);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
+                optimizableValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
 
