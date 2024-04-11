@@ -7,12 +7,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
 public class FieldValueProvider implements IFieldValueProvider {
+    private final IFieldValueProvider constantValueProvider;
     private final IFieldValueProvider probeValueProvider;
     private final IFieldValueProvider optimizableValueProvider;
-    private final IFieldValueProvider constantValueProvider;
 
-    public FieldValueProvider(IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider,
-            IFieldValueProvider constantValueProvider) {
+    public FieldValueProvider(IFieldValueProvider constantValueProvider, IFieldValueProvider probeValueProvider,
+            IFieldValueProvider optimizableValueProvider) {
         this.probeValueProvider = probeValueProvider;
         this.optimizableValueProvider = optimizableValueProvider;
         this.constantValueProvider = constantValueProvider;
