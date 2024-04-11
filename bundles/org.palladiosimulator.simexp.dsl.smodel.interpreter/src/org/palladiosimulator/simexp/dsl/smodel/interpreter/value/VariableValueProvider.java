@@ -1,7 +1,8 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
@@ -23,7 +24,8 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
     public VariableValueProvider(IFieldValueProvider fieldValueProvider) {
         this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
         this.dataTypeSwitch = new SmodelDataTypeSwitch();
-        this.variableValueMap = new HashMap<>();
+        Comparator<Variable> comparator = Comparator.comparing(Variable::getName);
+        this.variableValueMap = new TreeMap<>(comparator);
     }
 
     @Override

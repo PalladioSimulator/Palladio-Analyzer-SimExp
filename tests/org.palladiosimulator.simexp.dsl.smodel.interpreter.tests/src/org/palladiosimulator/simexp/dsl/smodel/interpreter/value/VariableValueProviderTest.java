@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -54,6 +56,23 @@ public class VariableValueProviderTest {
         Boolean actualValue = provider.getBoolValue(variable);
 
         assertThat(actualValue).isTrue();
+    }
+
+    @Test
+    public void boolLookup() {
+        Constant constant = smodelCreator.createConstant("const", DataType.BOOL, smodelCreator.createBoolLiteral(true));
+        when(fieldValueProvider.getBoolValue(constant)).thenReturn(true);
+        Variable variable1 = smodelCreator.createVariable("variable", DataType.BOOL, null);
+        Expression fieldExpression = SmodelFactory.eINSTANCE.createExpression();
+        fieldExpression.setFieldRef(constant);
+        variable1.setValue(fieldExpression);
+        Variable variable2 = smodelCreator.createVariable("variable", DataType.BOOL, null);
+        provider.getBoolValue(variable1);
+
+        Boolean actualValue = provider.getBoolValue(variable2);
+
+        assertThat(actualValue).isTrue();
+        verify(fieldValueProvider, times(1)).getBoolValue(constant);
     }
 
     @Test
