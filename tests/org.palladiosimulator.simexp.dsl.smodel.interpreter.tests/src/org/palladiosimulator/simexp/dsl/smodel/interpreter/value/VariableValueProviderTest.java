@@ -24,14 +24,18 @@ public class VariableValueProviderTest {
     private VariableValueProvider provider;
 
     @Mock
-    private IFieldValueProvider fieldValueProvider;
+    private IFieldValueProvider constantValueProvider;
+    @Mock
+    private IFieldValueProvider probeValueProvider;
+    @Mock
+    private IFieldValueProvider optimizableValueProvider;
 
     private SmodelCreator smodelCreator;
 
     public VariableValueProviderTest() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
-        provider = new VariableValueProvider(fieldValueProvider);
+        provider = new VariableValueProvider(constantValueProvider, probeValueProvider, optimizableValueProvider);
     }
 
     @Test
@@ -47,7 +51,7 @@ public class VariableValueProviderTest {
     @Test
     public void boolConstant() {
         Constant constant = smodelCreator.createConstant("const", DataType.BOOL, smodelCreator.createBoolLiteral(true));
-        when(fieldValueProvider.getBoolValue(constant)).thenReturn(true);
+        when(constantValueProvider.getBoolValue(constant)).thenReturn(true);
         Variable variable = smodelCreator.createVariable("variable", DataType.BOOL, null);
         Expression fieldExpression = SmodelFactory.eINSTANCE.createExpression();
         fieldExpression.setFieldRef(constant);
@@ -61,7 +65,7 @@ public class VariableValueProviderTest {
     @Test
     public void boolLookup() {
         Constant constant = smodelCreator.createConstant("const", DataType.BOOL, smodelCreator.createBoolLiteral(true));
-        when(fieldValueProvider.getBoolValue(constant)).thenReturn(true);
+        when(constantValueProvider.getBoolValue(constant)).thenReturn(true);
         Variable variable1 = smodelCreator.createVariable("variable", DataType.BOOL, null);
         Expression fieldExpression = SmodelFactory.eINSTANCE.createExpression();
         fieldExpression.setFieldRef(constant);
@@ -72,7 +76,7 @@ public class VariableValueProviderTest {
         Boolean actualValue = provider.getBoolValue(variable2);
 
         assertThat(actualValue).isTrue();
-        verify(fieldValueProvider, times(1)).getBoolValue(constant);
+        verify(constantValueProvider, times(1)).getBoolValue(constant);
     }
 
     @Test

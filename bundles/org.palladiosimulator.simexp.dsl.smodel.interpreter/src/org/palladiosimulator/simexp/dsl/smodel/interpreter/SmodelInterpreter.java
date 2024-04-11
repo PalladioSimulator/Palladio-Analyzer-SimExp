@@ -9,6 +9,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.ConstantValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.SaveFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class SmodelInterpreter implements Analyzer, Planner {
@@ -19,8 +20,10 @@ public class SmodelInterpreter implements Analyzer, Planner {
     public SmodelInterpreter(Smodel model, IFieldValueProvider probeValueProvider,
             IFieldValueProvider optimizableValueProvider) {
         IFieldValueProvider constantValueProvider = new ConstantValueProvider();
-        IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, probeValueProvider,
+        IFieldValueProvider variableValueProvider = new VariableValueProvider(constantValueProvider, probeValueProvider,
                 optimizableValueProvider);
+        IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, variableValueProvider,
+                probeValueProvider, optimizableValueProvider);
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.smodelAnalyzer = new SmodelAnalyzer(model, saveFieldValueProvider);
         this.smodelPlaner = new SmodelPlaner(model, saveFieldValueProvider);

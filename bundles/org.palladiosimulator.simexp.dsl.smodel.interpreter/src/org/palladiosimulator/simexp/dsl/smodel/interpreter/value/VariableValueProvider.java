@@ -22,7 +22,10 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
     private final SmodelDataTypeSwitch dataTypeSwitch;
     private final Map<Variable, Object> variableValueMap;
 
-    public VariableValueProvider(IFieldValueProvider fieldValueProvider) {
+    public VariableValueProvider(IFieldValueProvider constantValueProvider, IFieldValueProvider probeValueProvider,
+            IFieldValueProvider optimizableValueProvider) {
+        IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, this, probeValueProvider,
+                optimizableValueProvider);
         this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
         this.dataTypeSwitch = new SmodelDataTypeSwitch();
         Comparator<Variable> comparator = Comparator.comparing(Variable::getName);
