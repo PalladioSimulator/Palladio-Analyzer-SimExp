@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
