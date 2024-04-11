@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.IActionCallExecutor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
