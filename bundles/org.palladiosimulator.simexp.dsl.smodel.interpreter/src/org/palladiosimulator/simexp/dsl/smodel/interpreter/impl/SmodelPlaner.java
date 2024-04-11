@@ -10,7 +10,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IActionCallExecutor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.SaveFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -28,9 +27,8 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
 
     public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;
-        IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
-        this.expressionCalculator = new ExpressionCalculator(saveFieldValueProvider);
-        this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, saveFieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, fieldValueProvider);
     }
 
     @Override
