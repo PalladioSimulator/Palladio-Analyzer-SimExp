@@ -11,10 +11,6 @@ public class FieldValueProvider implements IFieldValueProvider {
     private final IFieldValueProvider optimizableValueProvider;
     private final IFieldValueProvider constantValueProvider;
 
-    public FieldValueProvider(IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider) {
-        this(probeValueProvider, optimizableValueProvider, new ConstantValueProvider());
-    }
-
     public FieldValueProvider(IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider,
             IFieldValueProvider constantValueProvider) {
         this.probeValueProvider = probeValueProvider;
