@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ActionCallExecutor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
@@ -35,7 +34,7 @@ public class ActionCallExecutorTest {
     @Mock
     private IFieldValueProvider fieldValueProvider;
     @Mock
-    private ExpressionCalculator exprCalculator;
+    private IExpressionCalculator exprCalculator;
 
     @Before
     public void setUp() throws Exception {

@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 

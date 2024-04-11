@@ -16,10 +16,10 @@ import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 public class ActionCallExecutor implements IActionCallExecutor {
     private final SmodelDataTypeSwitch typeSwitch;
-    private final ExpressionCalculator expressionCalculator;
+    private final IExpressionCalculator expressionCalculator;
     private final IFieldValueProvider fieldValueProvider;
 
-    public ActionCallExecutor(ExpressionCalculator expressionCalculator, IFieldValueProvider fieldValueProvider) {
+    public ActionCallExecutor(IExpressionCalculator expressionCalculator, IFieldValueProvider fieldValueProvider) {
         this.typeSwitch = new SmodelDataTypeSwitch();
         this.expressionCalculator = expressionCalculator;
         this.fieldValueProvider = fieldValueProvider;

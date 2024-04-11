@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements Planner {
 
     private final Smodel model;
-    private final ExpressionCalculator expressionCalculator;
+    private final IExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
 
     public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider) {

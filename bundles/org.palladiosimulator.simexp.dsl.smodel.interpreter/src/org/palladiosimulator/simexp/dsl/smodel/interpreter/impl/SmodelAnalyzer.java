@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class SmodelAnalyzer implements Analyzer {
     private final Smodel model;
-    private final ExpressionCalculator expressionCalculator;
+    private final IExpressionCalculator expressionCalculator;
 
     public SmodelAnalyzer(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;

@@ -12,24 +12,27 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
-public class ExpressionCalculator {
+public class ExpressionCalculator implements IExpressionCalculator {
     private final IFieldValueProvider fieldValueProvider;
 
     public ExpressionCalculator(IFieldValueProvider fieldValueProvider) {
         this.fieldValueProvider = fieldValueProvider;
     }
 
+    @Override
     public boolean calculateBoolean(Expression expression) {
         Object value = caseExpression(expression);
         return (boolean) value;
     }
 
+    @Override
     public int calculateInteger(Expression expression) {
         Object value = caseExpression(expression);
         Number numberValue = (Number) value;
         return numberValue.intValue();
     }
 
+    @Override
     public double calculateDouble(Expression expression) {
         Object value = caseExpression(expression);
         Number numberValue = (Number) value;
