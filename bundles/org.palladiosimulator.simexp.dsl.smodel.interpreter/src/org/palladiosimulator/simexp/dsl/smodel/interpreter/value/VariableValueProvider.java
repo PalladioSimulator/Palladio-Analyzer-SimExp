@@ -5,18 +5,24 @@ import java.util.Map;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
+import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
-public class VariableValueProvider implements IFieldValueProvider {
+public class VariableValueProvider implements IFieldValueProvider, IVariableAssigner {
 
     private final ExpressionCalculator expressionCalculator;
+    private final SmodelDataTypeSwitch dataTypeSwitch;
     private final Map<Variable, Object> variableValueMap;
 
     public VariableValueProvider(IFieldValueProvider fieldValueProvider) {
         this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.dataTypeSwitch = new SmodelDataTypeSwitch();
         this.variableValueMap = new HashMap<>();
     }
 
@@ -71,5 +77,31 @@ public class VariableValueProvider implements IFieldValueProvider {
         String calculatedValue = literal.getValue();
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
+    }
+
+    @Override
+    public void assign(VariableAssignment variableAssignment) {
+        Variable variableRef = variableAssignment.getVariableRef();
+        Expression value = variableAssignment.getValue();
+        DataType dataType = dataTypeSwitch.doSwitch(variableRef);
+        final Object calculatedValue;
+        switch (dataType) {
+        case BOOL:
+            calculatedValue = expressionCalculator.calculateBoolean(value);
+            break;
+        case DOUBLE:
+            calculatedValue = expressionCalculator.calculateDouble(value);
+            break;
+        case INT:
+            calculatedValue = expressionCalculator.calculateInteger(value);
+            break;
+        case STRING:
+            StringLiteral literal = (StringLiteral) value.getLiteral();
+            calculatedValue = literal.getValue();
+            break;
+        default:
+            throw new RuntimeException("unsupported DataType: " + dataType);
+        }
+        variableValueMap.put(variableRef, calculatedValue);
     }
 }

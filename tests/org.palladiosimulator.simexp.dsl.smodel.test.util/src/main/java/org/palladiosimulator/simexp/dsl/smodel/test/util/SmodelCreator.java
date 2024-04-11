@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 
 public class SmodelCreator {
     public Variable createVariable(String name, DataType type, Literal literal) {
@@ -35,6 +36,13 @@ public class SmodelCreator {
             variable.setValue(expression);
         }
         return variable;
+    }
+
+    public VariableAssignment createVariableAssignment(Variable variable, Expression value) {
+        VariableAssignment assignment = SmodelFactory.eINSTANCE.createVariableAssignment();
+        assignment.setVariableRef(variable);
+        assignment.setValue(value);
+        return assignment;
     }
 
     public Expression createLiteralBoolExpression(boolean value) {

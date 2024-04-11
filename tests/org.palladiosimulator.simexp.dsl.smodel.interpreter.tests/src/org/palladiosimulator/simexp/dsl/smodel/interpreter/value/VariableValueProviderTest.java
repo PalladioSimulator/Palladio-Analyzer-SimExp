@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class VariableValueProviderTest {
@@ -82,5 +83,19 @@ public class VariableValueProviderTest {
         String actualValue = provider.getStringValue(variable);
 
         assertThat(actualValue).isEqualTo("s");
+    }
+
+    @Test
+    public void boolAssignLiteral() {
+        Variable variable = smodelCreator.createVariable("variable", DataType.BOOL,
+                smodelCreator.createBoolLiteral(false));
+        provider.getBoolValue(variable);
+        Expression expression = smodelCreator.createLiteralBoolExpression(true);
+        VariableAssignment variableAssignment = smodelCreator.createVariableAssignment(variable, expression);
+
+        provider.assign(variableAssignment);
+
+        Boolean actualValue = provider.getBoolValue(variable);
+        assertThat(actualValue).isTrue();
     }
 }
