@@ -15,5 +15,6 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  org.objenesis;bundle-version="2.6.0",
  org.apache.commons.math3;bundle-version="3.6.1",
  org.assertj;bundle-version="3.20.2",
- org.palladiosimulator.simexp.dsl.smodel.test.util
+ org.palladiosimulator.simexp.dsl.smodel.test.util,
+ org.palladiosimulator.envdyn.api
 Import-Package: org.eclipse.xtext.testing.util
