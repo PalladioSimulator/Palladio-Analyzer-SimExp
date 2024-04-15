@@ -148,7 +148,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
                     parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
                     config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
-                    qvtoReconfigurationManager, smodel, sModelLookup);
+                    qvtoReconfigurationManager, smodel, sModelLookup, probModelRepo);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -182,7 +182,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            Smodel smodel, SModelLookup sModelLookup) {
+            Smodel smodel, SModelLookup sModelLookup, ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
@@ -212,7 +212,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
-                    sModelLookup);
+                    sModelLookup, staticEnvDynModel);
 
             default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };

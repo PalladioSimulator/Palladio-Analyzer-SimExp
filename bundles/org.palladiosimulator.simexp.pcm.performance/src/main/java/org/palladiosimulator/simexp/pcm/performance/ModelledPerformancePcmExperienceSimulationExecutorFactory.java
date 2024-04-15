@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -29,6 +30,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -65,6 +67,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
     private final IModelNameLookup modelNameLookup;
+    private final ProbabilisticModelRepository staticEnvDynModel;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -73,12 +76,14 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel, IModelNameLookup modelNameLookup) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel, IModelNameLookup modelNameLookup,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
         this.smodel = smodel;
         this.modelNameLookup = modelNameLookup;
+        this.staticEnvDynModel = staticEnvDynModel;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -105,11 +110,13 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
+        EnvironmentVariableValueProvider environmentalStateValueInjector = new EnvironmentVariableValueProvider(
+                staticEnvDynModel);
         // TODO:
         IFieldValueProvider optimizableValueProvider = null;
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(probeValueProvider, optimizableValueProvider);
 
-        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider);
+        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentalStateValueInjector);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, fieldValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
