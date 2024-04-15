@@ -14,18 +14,22 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class OptimizableValueProviderTest {
 
+    private OptimizableValueProvider valueProvider;
+    private SmodelCreator smodelCreator;
+
     @Before
     public void setUp() throws Exception {
+        valueProvider = new OptimizableValueProvider();
+        smodelCreator = new SmodelCreator();
     }
 
     @Test
     public void testGetBoolValueNotSupported() {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.BOOL);
+        Optimizable expectedField = smodelCreator.createOptimizable("boolOpt", DataType.BOOL, null);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
             valueProvider.getBoolValue(expectedField);
@@ -35,9 +39,7 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetStringValueNotSupported() {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.STRING);
+        Optimizable expectedField = smodelCreator.createOptimizable("stringOpt", DataType.STRING, null);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
             valueProvider.getStringValue(expectedField);
@@ -47,7 +49,6 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetIntegerValueForUnsupportedField() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
         EnvVariable expectedField = SmodelFactory.eINSTANCE.createEnvVariable();
 
         Integer actualValue = valueProvider.getIntegerValue(expectedField);
@@ -58,17 +59,10 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetIntegerValueForSet() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.INT);
-        SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
-        IntLiteral expectedValue1 = createIntLiteral(2);
-        IntLiteral expectedValue2 = createIntLiteral(1);
-        bounds.getValues()
-            .add(expectedValue1);
-        bounds.getValues()
-            .add(expectedValue2);
-        expectedField.setValues(bounds);
+        IntLiteral expectedValue1 = smodelCreator.createIntLiteral(2);
+        IntLiteral expectedValue2 = smodelCreator.createIntLiteral(1);
+        SetBounds bounds = smodelCreator.createSetBounds(expectedValue1, expectedValue2);
+        Optimizable expectedField = smodelCreator.createOptimizable("IntOpt", DataType.INT, bounds);
 
         Integer actualValue = valueProvider.getIntegerValue(expectedField);
 
@@ -77,15 +71,10 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetIntegerValueForRange() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.INT);
-        RangeBounds bounds = SmodelFactory.eINSTANCE.createRangeBounds();
-        IntLiteral expectedValue1 = createIntLiteral(2);
-        IntLiteral expectedValue2 = createIntLiteral(1);
-        bounds.setStartValue(expectedValue1);
-        bounds.setEndValue(expectedValue2);
-        expectedField.setValues(bounds);
+        IntLiteral expectedValue1 = smodelCreator.createIntLiteral(2);
+        IntLiteral expectedValue2 = smodelCreator.createIntLiteral(1);
+        RangeBounds bounds = smodelCreator.createRangeBounds(expectedValue1, expectedValue2, null);
+        Optimizable expectedField = smodelCreator.createOptimizable("IntOpt", DataType.INT, bounds);
 
         Integer actualValue = valueProvider.getIntegerValue(expectedField);
 
@@ -94,7 +83,6 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetDoubleValueForUnsupportedField() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
         EnvVariable expectedField = SmodelFactory.eINSTANCE.createEnvVariable();
 
         Double actualValue = valueProvider.getDoubleValue(expectedField);
@@ -105,17 +93,10 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetDoubleValueForSet() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.DOUBLE);
-        SetBounds bounds = SmodelFactory.eINSTANCE.createSetBounds();
-        DoubleLiteral expectedValue1 = createDoubleLiteral(2.0);
-        DoubleLiteral expectedValue2 = createDoubleLiteral(1.0);
-        bounds.getValues()
-            .add(expectedValue1);
-        bounds.getValues()
-            .add(expectedValue2);
-        expectedField.setValues(bounds);
+        DoubleLiteral expectedValue1 = smodelCreator.createDoubleLiteral(2.0);
+        DoubleLiteral expectedValue2 = smodelCreator.createDoubleLiteral(1.0);
+        SetBounds bounds = smodelCreator.createSetBounds(expectedValue1, expectedValue2);
+        Optimizable expectedField = smodelCreator.createOptimizable("DoubleOpt", DataType.DOUBLE, bounds);
 
         Double actualValue = valueProvider.getDoubleValue(expectedField);
 
@@ -124,31 +105,14 @@ public class OptimizableValueProviderTest {
 
     @Test
     public void testGetDoubleValueForRange() throws Exception {
-        OptimizableValueProvider valueProvider = new OptimizableValueProvider();
-        Optimizable expectedField = SmodelFactory.eINSTANCE.createOptimizable();
-        expectedField.setDataType(DataType.DOUBLE);
-        RangeBounds bounds = SmodelFactory.eINSTANCE.createRangeBounds();
-        DoubleLiteral expectedValue1 = createDoubleLiteral(2.0);
-        DoubleLiteral expectedValue2 = createDoubleLiteral(1.0);
-        bounds.setStartValue(expectedValue1);
-        bounds.setEndValue(expectedValue2);
-        expectedField.setValues(bounds);
+        DoubleLiteral expectedValue1 = smodelCreator.createDoubleLiteral(2.0);
+        DoubleLiteral expectedValue2 = smodelCreator.createDoubleLiteral(1.0);
+        RangeBounds bounds = smodelCreator.createRangeBounds(expectedValue1, expectedValue2, null);
+        Optimizable expectedField = smodelCreator.createOptimizable("DoubleOpt", DataType.DOUBLE, bounds);
 
         Double actualValue = valueProvider.getDoubleValue(expectedField);
 
         assertThat(actualValue).isEqualTo(expectedValue1.getValue());
-    }
-
-    private IntLiteral createIntLiteral(int value) {
-        IntLiteral literal = SmodelFactory.eINSTANCE.createIntLiteral();
-        literal.setValue(value);
-        return literal;
-    }
-
-    private DoubleLiteral createDoubleLiteral(double value) {
-        DoubleLiteral literal = SmodelFactory.eINSTANCE.createDoubleLiteral();
-        literal.setValue(value);
-        return literal;
     }
 
 }
