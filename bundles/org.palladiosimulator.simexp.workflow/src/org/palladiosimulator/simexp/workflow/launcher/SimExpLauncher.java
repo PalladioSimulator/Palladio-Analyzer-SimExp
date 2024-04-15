@@ -35,7 +35,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.SModelLookup;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
@@ -142,13 +141,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
-            SModelLookup sModelLookup = new SModelLookup(smodel);
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
                     parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
                     config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
-                    qvtoReconfigurationManager, smodel, sModelLookup, probModelRepo);
+                    qvtoReconfigurationManager, smodel, probModelRepo);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -182,7 +180,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            Smodel smodel, SModelLookup sModelLookup, ProbabilisticModelRepository staticEnvDynModel) {
+            Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
@@ -212,7 +210,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
-                    sModelLookup, staticEnvDynModel);
+                    staticEnvDynModel);
 
             default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };

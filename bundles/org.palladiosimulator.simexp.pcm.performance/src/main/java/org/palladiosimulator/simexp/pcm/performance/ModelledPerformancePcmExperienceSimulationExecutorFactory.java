@@ -24,7 +24,6 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.lookup.IModelNameLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
@@ -66,7 +65,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-    private final IModelNameLookup modelNameLookup;
     private final ProbabilisticModelRepository staticEnvDynModel;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
@@ -76,13 +74,12 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel, IModelNameLookup modelNameLookup,
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
             ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
         this.smodel = smodel;
-        this.modelNameLookup = modelNameLookup;
         this.staticEnvDynModel = staticEnvDynModel;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
@@ -133,7 +130,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 experiment, specs, runners, params, beforeExecution, envProcess, simulatedExperienceStore, null,
                 reconfStrategy, reconfigurations, evaluator, isHidden);
 
-        String reconfigurationId = modelNameLookup.findModelName();
+        String reconfigurationId = smodel.getModelName();
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfigurationId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
