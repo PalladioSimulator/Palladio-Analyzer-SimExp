@@ -22,7 +22,6 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
@@ -30,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLook
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -112,10 +110,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
-        IFieldValueProvider fieldValueProvider = new FieldValueProvider(probeValueProvider, optimizableValueProvider);
-
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
-        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, fieldValueProvider);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
+                optimizableValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
 

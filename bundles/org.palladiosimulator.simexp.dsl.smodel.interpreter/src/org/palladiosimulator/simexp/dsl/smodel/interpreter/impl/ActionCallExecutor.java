@@ -1,8 +1,10 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
@@ -14,10 +16,10 @@ import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 public class ActionCallExecutor implements IActionCallExecutor {
     private final SmodelDataTypeSwitch typeSwitch;
-    private final ExpressionCalculator expressionCalculator;
+    private final IExpressionCalculator expressionCalculator;
     private final IFieldValueProvider fieldValueProvider;
 
-    public ActionCallExecutor(ExpressionCalculator expressionCalculator, IFieldValueProvider fieldValueProvider) {
+    public ActionCallExecutor(IExpressionCalculator expressionCalculator, IFieldValueProvider fieldValueProvider) {
         this.typeSwitch = new SmodelDataTypeSwitch();
         this.expressionCalculator = expressionCalculator;
         this.fieldValueProvider = fieldValueProvider;

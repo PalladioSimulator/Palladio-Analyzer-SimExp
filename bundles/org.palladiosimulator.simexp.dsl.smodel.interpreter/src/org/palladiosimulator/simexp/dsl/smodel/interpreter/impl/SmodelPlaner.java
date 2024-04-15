@@ -5,12 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.ActionCallExecutor;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.ExpressionCalculator;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.IActionCallExecutor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.SaveFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -23,14 +19,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements Planner {
 
     private final Smodel model;
-    private final ExpressionCalculator expressionCalculator;
+    private final IExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
 
     public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider) {
         this.model = model;
-        IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
-        this.expressionCalculator = new ExpressionCalculator(saveFieldValueProvider);
-        this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, saveFieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, fieldValueProvider);
     }
 
     @Override
