@@ -32,7 +32,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeVal
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -108,7 +107,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
-        // TODO: rework; introduce lookup interface to find GVRs instead of passing staticEnvDynModel directly
+        // TODO: rework; introduce lookup interface to find GVRs instead of passing
+        // staticEnvDynModel directly
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
@@ -140,10 +140,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
         return executor;
-    }
-
-    private List<Probe> findProbes(Smodel smodel) {
-        return smodel.getProbes();
     }
 
 }
