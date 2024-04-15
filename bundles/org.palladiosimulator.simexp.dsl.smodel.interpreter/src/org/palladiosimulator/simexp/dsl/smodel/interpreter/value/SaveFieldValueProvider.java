@@ -23,8 +23,12 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
 
     @Override
     public Double getDoubleValue(Field field) {
-        // TODO Auto-generated method stub
-        return null;
+        Double doubleValue = delegateFieldValueProvider.getDoubleValue(field);
+        if (doubleValue == null) {
+            throw new RuntimeException(String.format("cannot resolve %s: %s", field.eClass()
+                .getName(), createFieldIdentifier(field)));
+        }
+        return doubleValue;
     }
 
     @Override
