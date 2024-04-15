@@ -1,13 +1,13 @@
 modelName = "FaultTolerantScalingPlanningStrategy";
 
-const float lowerThreshold = 1.0;
-const float upperThreshold = 2.0;
+const double lowerThreshold = 1.0;
+const double upperThreshold = 2.0;
 const string available = "available";
 
-envvar string serverNode1:staticId"_AiOj4AFHEe6baZPxrKywYw"	dynamicId"_AiOj4AFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode1
-envvar string serverNode2:staticId"_QZ8DcAFHEe6baZPxrKywYw"	dynamicId"_QZ8DcAFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode2
+envvar string serverNode1: variableId = "_AiOj4AFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode1
+envvar string serverNode2:variableId = "_QZ8DcAFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode2
 
-probe float responseTime : monitorId"_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
+probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 
 
 action scaleOut();
