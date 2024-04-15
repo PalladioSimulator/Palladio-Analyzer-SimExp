@@ -1,9 +1,9 @@
 modelName = "ModelledNStepLoadbalancerStratgy";
 
-const float lowerThreshold = 1.0;
-const float upperThreshold = 2.0;
+const double lowerThreshold = 1.0;
+const double upperThreshold = 2.0;
 
-probe float responseTime : "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
+probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 
 action Step1Outsource();
 action Step1ScaleIn();
