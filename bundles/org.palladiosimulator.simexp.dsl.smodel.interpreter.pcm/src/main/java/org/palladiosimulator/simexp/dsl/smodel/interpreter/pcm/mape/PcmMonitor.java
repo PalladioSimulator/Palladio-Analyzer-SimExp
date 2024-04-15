@@ -8,6 +8,9 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ProbeValueProviderMeasurementInjector;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.PerceivedEnvironmentalStateValueInjector;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
+import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -18,11 +21,14 @@ public class PcmMonitor implements Monitor {
 
     private final List<SimulatedMeasurementSpecification> measurementSpecs;
     private final ProbeValueProviderMeasurementInjector pvpInjector;
+    private final PerceivedEnvironmentalStateValueInjector environmentalStateValueInjector;
 
     public PcmMonitor(List<SimulatedMeasurementSpecification> measurementSpecs,
-            ProbeValueProviderMeasurementInjector pvpInjector) {
+            ProbeValueProviderMeasurementInjector pvpInjector,
+            PerceivedEnvironmentalStateValueInjector environmentalStateValueInjector) {
         this.measurementSpecs = measurementSpecs;
         this.pvpInjector = pvpInjector;
+        this.environmentalStateValueInjector = environmentalStateValueInjector;
     }
 
     @Override
@@ -37,6 +43,10 @@ public class PcmMonitor implements Monitor {
             pvpInjector.injectMeasurement(measurementSpec, currentMeasurementValue);
         }
 
+        PerceivableEnvironmentalState<List<InputValue<CategoricalValue>>> perceivedEnvironmentalState = sasState
+            .getPerceivedEnvironmentalState();
+        PerceivedValue<List<InputValue<CategoricalValue>>> currentValue = perceivedEnvironmentalState.getValue();
+        List<InputValue<CategoricalValue>> values = currentValue.getValue();
+        environmentalStateValueInjector.injectPerceivedEnvironmentStateValues(values);
     }
-
 }
