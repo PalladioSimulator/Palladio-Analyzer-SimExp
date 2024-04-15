@@ -2,17 +2,19 @@ modelName = "FaultTolerantScalingPlanningStrategy";
 
 const float lowerThreshold = 1.0;
 const float upperThreshold = 2.0;
+const string available = "available";
 
-probe bool node1Available : "id_node1";
-probe bool node2Available : "id_node2";
-probe bool node3Available : "id_node3";
-probe int responseTime : "Usage Scenario: EnvironmentPerception_Response Time";
+envvar string serverNode1:staticId"_AiOj4AFHEe6baZPxrKywYw"	dynamicId"_AiOj4AFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode1
+envvar string serverNode2:staticId"_QZ8DcAFHEe6baZPxrKywYw"	dynamicId"_QZ8DcAFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode2
+
+probe float responseTime : monitorId"_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
+
 
 action scaleOut();
 action scaleIn();
 action nodeRecovery();
 
-if (node1Available && node2Available && node3Available) {
+if ((serverNode1==available) && (serverNode2==available)) {
 	if (responseTime >= upperThreshold) {
 		scaleOut();
 	}
