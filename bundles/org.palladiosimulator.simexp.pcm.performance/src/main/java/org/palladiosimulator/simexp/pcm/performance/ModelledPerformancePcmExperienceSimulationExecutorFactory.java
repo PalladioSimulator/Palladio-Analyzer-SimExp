@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLooku
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -107,13 +108,13 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
-        EnvironmentVariableValueProvider environmentalStateValueInjector = new EnvironmentVariableValueProvider(
+        // TODO: rework; introduce lookup interface to find GVRs instead of passing staticEnvDynModel directly
+        EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
-        // TODO:
-        IFieldValueProvider optimizableValueProvider = null;
+        OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(probeValueProvider, optimizableValueProvider);
 
-        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentalStateValueInjector);
+        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, fieldValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
