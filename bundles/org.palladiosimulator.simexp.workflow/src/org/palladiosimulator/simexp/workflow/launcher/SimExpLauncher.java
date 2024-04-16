@@ -35,12 +35,12 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.KModelLoader;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
+import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -88,10 +88,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             ResourceSet rs = new ResourceSetImpl();
 
-            URI kmodelURI = config.getKmodelURI();
-            KModelLoader kmodelLoader = new KModelLoader();
-            Kmodel kmodel = kmodelLoader.load(rs, kmodelURI);
-            LOGGER.debug(String.format("Loaded kmodel from '%s'", kmodelURI.path()));
+            URI smodelURI = config.getSmodelURI();
+            SModelLoader smodelLoader = new SModelLoader();
+            Smodel smodel = smodelLoader.load(rs, smodelURI);
+            LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
             URI experimentsFileURI = config.getExperimentsURI();
             ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
@@ -140,16 +140,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
-//            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
-            // TODO: Remove workaround
-            SimulationKind simulationKind = SimulationKind.MODELLED;
-            List monitorNames = Arrays.asList("System Response Time", "System ExecutionResultType");
+            SimulationKind simulationKind = SimulationKind.valueOf(config.getQualityObjective());
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(config.getSimulationEngine(),
                     simulationKind, experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
-                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider, monitorNames,
-                    config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager,
-                    kmodel);
+                    parameterParser, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
+                    config.getMonitorNames(), config.getPropertyFiles(), config.getModuleFiles(), experimentProvider,
+                    qvtoReconfigurationManager, smodel, probModelRepo);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -183,17 +180,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            Kmodel kmodel) {
-
+            Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationEngine) {
+
         case SimulationConstants.SIMULATION_ENGINE_PCM -> {
             PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
             List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
                 .map(provider::getSpecification)
                 .toList();
 
-            // FIMEX: kmodel integration into factories
+            // FIMEX: smodel integration into factories
             yield switch (simulationKind) {
             case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
@@ -213,8 +210,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             case MODELLED -> new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, kmodel);
-
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel);
+////            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+////                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+////                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+////                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+////                    staticEnvDynModel);
+//
             default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };
         }
@@ -262,7 +264,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     Arrays.asList((String) launchConfigurationParams.get(ModelFileTypeConstants.ALLOCATION_FILE)),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.USAGE_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.EXPERIMENTS_FILE),
-                    (String) launchConfigurationParams.get(ModelFileTypeConstants.KMODEL_FILE));
+                    (String) launchConfigurationParams.get(ModelFileTypeConstants.SMODEL_FILE));
             EnvironmentalModelsWorkflowConfiguration environmentalModels = new EnvironmentalModelsWorkflowConfiguration(
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.STATIC_MODEL_FILE),
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));

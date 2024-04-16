@@ -18,7 +18,6 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -28,9 +27,9 @@ import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
 import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
@@ -62,7 +61,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final Kmodel kmodel;
+    private final Smodel smodel;
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
@@ -74,11 +73,11 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        this.kmodel = kmodel;
+        this.smodel = smodel;
 
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);

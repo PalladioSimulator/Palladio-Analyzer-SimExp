@@ -7,10 +7,10 @@ import java.util.Set;
 
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
-import org.palladiosimulator.simexp.core.strategy.mape.Analyzer;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
-import org.palladiosimulator.simexp.core.strategy.mape.Planner;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.ResolvedAction;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;

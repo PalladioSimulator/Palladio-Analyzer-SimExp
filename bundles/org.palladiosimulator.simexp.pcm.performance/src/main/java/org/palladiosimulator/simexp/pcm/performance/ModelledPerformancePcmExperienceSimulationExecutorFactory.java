@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.EList;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -19,19 +19,18 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.strategy.mape.Monitor;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.DummyVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KmodelInterpreter;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.KnowledgeLookup;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmMonitor;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.PcmProbeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.interpreter.RuntimeValueProvider;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Field;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Kmodel;
-import org.palladiosimulator.simexp.dsl.kmodel.kmodel.Probe;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
@@ -60,10 +59,11 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final Kmodel kmodel;
+    private final Smodel smodel;
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
+    private final ProbabilisticModelRepository staticEnvDynModel;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -72,11 +72,13 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Kmodel kmodel) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder);
-        this.kmodel = kmodel;
+        this.smodel = smodel;
+        this.staticEnvDynModel = staticEnvDynModel;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -96,25 +98,27 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 qvtoReconfigurationManager);
 
         // Monitor PcmMonitor
-        // Analyzer KmodelInterpreter
-        // Planner KmodelInterpreter
+        // Analyzer SmodelInterpreter
+        // Planner SmodelInterpreter
         // Executor not required
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
-        DummyVariableValueProvider vvp = new DummyVariableValueProvider();
-        // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
-        List<Probe> probes = findProbes(kmodel);
-        PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
-        RuntimeValueProvider rvp = new KnowledgeLookup(null);
-
-        Monitor monitor = new PcmMonitor(simSpecs, pvp);
-        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
+        PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
+        // TODO: rework; introduce lookup interface to find GVRs instead of passing
+        // staticEnvDynModel directly
+        EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
+                staticEnvDynModel);
+        OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
+        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
+                optimizableValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
-                kmodelInterpreter, kmodelInterpreter);
+                smodelInterpreter, smodelInterpreter);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        // FIXME: read thresholds from kmodel
+        // FIXME: read thresholds from smodel
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
@@ -124,8 +128,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 experiment, specs, runners, params, beforeExecution, envProcess, simulatedExperienceStore, null,
                 reconfStrategy, reconfigurations, evaluator, isHidden);
 
-        // FIXME: make policyId configurable via dsl
-        String reconfigurationId = "ModelledReconfigurationStrategy";
+        String reconfigurationId = smodel.getModelName();
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
                 reconfigurationId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
@@ -134,19 +137,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
         return executor;
-    }
-
-    private List<Probe> findProbes(Kmodel kmodel) {
-        List<Probe> probes = new ArrayList<>();
-        EList<Field> fields = kmodel.getFields();
-
-        for (Field f : kmodel.getFields()) {
-            if (f instanceof Probe) {
-                Probe probe = (Probe) f;
-                probes.add(probe);
-            }
-        }
-        return probes;
     }
 
 }
