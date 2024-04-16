@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
@@ -12,13 +13,17 @@ public class FieldValueProvider implements IFieldValueProvider {
     private final IFieldValueProvider variableValueProvider;
     private final IFieldValueProvider probeValueProvider;
     private final IFieldValueProvider optimizableValueProvider;
+    private final IFieldValueProvider envVariableValueProvider;
 
     public FieldValueProvider(IFieldValueProvider constantValueProvider, IFieldValueProvider variableValueProvider,
-            IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider) {
+            IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider,
+            IFieldValueProvider envVariableValueProvider) {
         this.constantValueProvider = constantValueProvider;
         this.variableValueProvider = variableValueProvider;
         this.probeValueProvider = probeValueProvider;
         this.optimizableValueProvider = optimizableValueProvider;
+        this.envVariableValueProvider = envVariableValueProvider;
+
     }
 
     @Override
@@ -34,6 +39,9 @@ public class FieldValueProvider implements IFieldValueProvider {
         }
         if (field instanceof Optimizable) {
             return optimizableValueProvider.getBoolValue(field);
+        }
+        if (field instanceof EnvVariable) {
+            return envVariableValueProvider.getBoolValue(field);
         }
         throw new RuntimeException("unknown field type: " + field);
     }
@@ -52,6 +60,9 @@ public class FieldValueProvider implements IFieldValueProvider {
         if (field instanceof Optimizable) {
             return optimizableValueProvider.getDoubleValue(field);
         }
+        if (field instanceof EnvVariable) {
+            return envVariableValueProvider.getDoubleValue(field);
+        }
         throw new RuntimeException("unknown field type: " + field);
     }
 
@@ -69,6 +80,9 @@ public class FieldValueProvider implements IFieldValueProvider {
         if (field instanceof Optimizable) {
             return optimizableValueProvider.getIntegerValue(field);
         }
+        if (field instanceof EnvVariable) {
+            return envVariableValueProvider.getIntegerValue(field);
+        }
         throw new RuntimeException("unknown field type: " + field);
     }
 
@@ -85,6 +99,9 @@ public class FieldValueProvider implements IFieldValueProvider {
         }
         if (field instanceof Optimizable) {
             return optimizableValueProvider.getStringValue(field);
+        }
+        if (field instanceof EnvVariable) {
+            return envVariableValueProvider.getStringValue(field);
         }
         throw new RuntimeException("unknown field type: " + field);
     }

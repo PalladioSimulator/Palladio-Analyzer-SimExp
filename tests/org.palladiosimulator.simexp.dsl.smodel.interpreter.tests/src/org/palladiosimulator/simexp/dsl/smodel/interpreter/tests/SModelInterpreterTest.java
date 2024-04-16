@@ -30,13 +30,15 @@ public class SModelInterpreterTest {
     private IFieldValueProvider fvp;
     @Mock
     private IFieldValueProvider optimizableValueProvider;
+    @Mock
+    private IFieldValueProvider envVariableValueProvider;
 
     @Before
     public void setUp() {
         initMocks(this);
         smodel = SmodelFactory.eINSTANCE.createSmodel();
         smodelCreator = new SmodelCreator();
-        interpreter = new SmodelInterpreter(smodel, fvp, optimizableValueProvider);
+        interpreter = new SmodelInterpreter(smodel, fvp, optimizableValueProvider, envVariableValueProvider);
     }
 
     @Test
