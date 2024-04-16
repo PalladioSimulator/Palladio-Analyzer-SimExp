@@ -23,9 +23,9 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
     private final Map<Variable, Object> variableValueMap;
 
     public VariableValueProvider(IFieldValueProvider constantValueProvider, IFieldValueProvider probeValueProvider,
-            IFieldValueProvider optimizableValueProvider) {
+            IFieldValueProvider optimizableValueProvider, IFieldValueProvider envVariableValueProvider) {
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, this, probeValueProvider,
-                optimizableValueProvider);
+                optimizableValueProvider, envVariableValueProvider);
         this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
         this.dataTypeSwitch = new SmodelDataTypeSwitch();
         Comparator<Variable> comparator = Comparator.comparing(Variable::getName);

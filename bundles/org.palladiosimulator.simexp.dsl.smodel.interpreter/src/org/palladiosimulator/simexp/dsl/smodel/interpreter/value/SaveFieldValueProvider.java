@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
 public class SaveFieldValueProvider implements IFieldValueProvider {
@@ -33,20 +35,36 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
 
     @Override
     public Integer getIntegerValue(Field field) {
-        // TODO Auto-generated method stub
-        return null;
+        Integer intValue = delegateFieldValueProvider.getIntegerValue(field);
+        if (intValue == null) {
+            throw new RuntimeException(String.format("cannot resolve %s: %s", field.eClass()
+                .getName(), createFieldIdentifier(field)));
+        }
+        return intValue;
     }
 
     @Override
     public String getStringValue(Field field) {
-        // TODO Auto-generated method stub
-        return null;
+        String stringValue = delegateFieldValueProvider.getStringValue(field);
+        if (stringValue == null) {
+            throw new RuntimeException(String.format("cannot resolve %s: %s", field.eClass()
+                .getName(), createFieldIdentifier(field)));
+        }
+        return stringValue;
     }
 
     private String createFieldIdentifier(Field field) {
         if (field instanceof Probe) {
             Probe probe = (Probe) field;
             return String.format("%s:%s", probe.getKind(), probe.getIdentifier());
+        }
+        if (field instanceof EnvVariable) {
+            EnvVariable envVar = (EnvVariable) field;
+            return String.format("%s", envVar.getVariableId());
+        }
+        if (field instanceof Optimizable) {
+            Optimizable optimizable = (Optimizable) field;
+            return String.format("%s", optimizable.getName());
         }
         throw new RuntimeException("unknown field: " + field);
     }

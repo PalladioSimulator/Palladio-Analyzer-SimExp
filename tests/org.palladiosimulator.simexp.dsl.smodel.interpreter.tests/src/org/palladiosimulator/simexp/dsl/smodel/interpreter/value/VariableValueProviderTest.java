@@ -30,12 +30,16 @@ public class VariableValueProviderTest {
     @Mock
     private IFieldValueProvider optimizableValueProvider;
 
+    @Mock
+    private IFieldValueProvider envVariableValueProvider;
+
     private SmodelCreator smodelCreator;
 
     public VariableValueProviderTest() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
-        provider = new VariableValueProvider(constantValueProvider, probeValueProvider, optimizableValueProvider);
+        provider = new VariableValueProvider(constantValueProvider, probeValueProvider, optimizableValueProvider,
+                envVariableValueProvider);
     }
 
     @Test

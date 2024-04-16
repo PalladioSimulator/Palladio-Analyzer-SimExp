@@ -18,12 +18,12 @@ public class SmodelInterpreter implements Analyzer, Planner {
     private final SmodelPlaner smodelPlaner;
 
     public SmodelInterpreter(Smodel model, IFieldValueProvider probeValueProvider,
-            IFieldValueProvider optimizableValueProvider) {
+            IFieldValueProvider optimizableValueProvider, IFieldValueProvider envVariableValueProvider) {
         IFieldValueProvider constantValueProvider = new ConstantValueProvider();
         IFieldValueProvider variableValueProvider = new VariableValueProvider(constantValueProvider, probeValueProvider,
-                optimizableValueProvider);
+                optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, variableValueProvider,
-                probeValueProvider, optimizableValueProvider);
+                probeValueProvider, optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.smodelAnalyzer = new SmodelAnalyzer(model, saveFieldValueProvider);
         this.smodelPlaner = new SmodelPlaner(model, saveFieldValueProvider);

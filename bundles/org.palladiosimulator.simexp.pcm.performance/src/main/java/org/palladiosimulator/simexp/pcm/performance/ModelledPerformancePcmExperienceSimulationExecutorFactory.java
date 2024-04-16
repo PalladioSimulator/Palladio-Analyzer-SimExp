@@ -110,9 +110,11 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
+        EnvironmentVariableValueProvider envVariableValueProvider = new EnvironmentVariableValueProvider(
+                staticEnvDynModel);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
-                optimizableValueProvider);
+                optimizableValueProvider, envVariableValueProvider);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
                 smodelInterpreter, smodelInterpreter);
 
