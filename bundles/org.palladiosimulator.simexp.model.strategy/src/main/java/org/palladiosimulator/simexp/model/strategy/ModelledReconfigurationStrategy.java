@@ -20,8 +20,10 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
     private final Monitor monitor;
     private final Analyzer analyzer;
     private final Planner planner;
+    private final String strategyId;
 
-    public ModelledReconfigurationStrategy(Monitor monitor, Analyzer analyzer, Planner planner) {
+    public ModelledReconfigurationStrategy(String strategyId, Monitor monitor, Analyzer analyzer, Planner planner) {
+        this.strategyId = strategyId;
         this.monitor = monitor;
         this.analyzer = analyzer;
         this.planner = planner;
@@ -29,7 +31,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
 
     @Override
     public String getId() {
-        return "ModelledReconfigurationStrategy";
+        return strategyId;
     }
 
     @Override

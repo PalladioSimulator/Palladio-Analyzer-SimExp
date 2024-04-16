@@ -110,25 +110,6 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
 //                    specs.get(0), config, emptyStrategy);
 //            Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
 
-        // Monitor PcmMonitor
-        // Analyzer KmodelInterpreter
-        // Planner KmodelInterpreter
-        // Executor not required
-
-//        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
-//        DummyVariableValueProvider vvp = new DummyVariableValueProvider();
-        // DummyProbeValueProvider pvp = new DummyProbeValueProvider();
-//        List<Probe> probes = findProbes(kmodel);
-//        PcmProbeValueProvider pvp = new PcmProbeValueProvider(probes, specs);
-//        RuntimeValueProvider rvp = new KnowledgeLookup(null);
-
-//        Monitor monitor = new PcmMonitor(simSpecs, pvp);
-//        KmodelInterpreter kmodelInterpreter = new KmodelInterpreter(kmodel, vvp, pvp, rvp);
-//        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
-//                kmodelInterpreter, kmodelInterpreter);
-
-//        Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
-
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
@@ -139,9 +120,10 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
-                optimizableValueProvider);
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
-                smodelInterpreter, smodelInterpreter);
+                optimizableValueProvider, environmentVariableValueProvider);
+        String reconfigurationStrategyId = smodel.getModelName();
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
+                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
@@ -157,27 +139,13 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
                 experiment, specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore,
                 null, reconfStrategy, reconfigurations, evaluator, false);
 
-        String reconfigurationId = smodel.getModelName();
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
-                reconfigurationId);
+                reconfigurationStrategyId);
         TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(params.getSimulationID(), sampleSpaceId);
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
         return executor;
     }
-
-//    private List<Probe> findProbes(Kmodel kmodel) {
-//        List<Probe> probes = new ArrayList<>();
-//        EList<Field> fields = kmodel.getFields();
-//
-//        for (Field f : kmodel.getFields()) {
-//            if (f instanceof Probe) {
-//                Probe probe = (Probe) f;
-//                probes.add(probe);
-//            }
-//        }
-//        return probes;
-//    }
 
 }

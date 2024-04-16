@@ -115,8 +115,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 optimizableValueProvider, envVariableValueProvider);
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(monitor,
-                smodelInterpreter, smodelInterpreter);
+        String reconfigurationStrategyId = smodel.getModelName();
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
+                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
@@ -130,9 +131,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 experiment, specs, runners, params, beforeExecution, envProcess, simulatedExperienceStore, null,
                 reconfStrategy, reconfigurations, evaluator, isHidden);
 
-        String reconfigurationId = smodel.getModelName();
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
-                reconfigurationId);
+                reconfigurationStrategyId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
                 sampleSpaceId);
 
