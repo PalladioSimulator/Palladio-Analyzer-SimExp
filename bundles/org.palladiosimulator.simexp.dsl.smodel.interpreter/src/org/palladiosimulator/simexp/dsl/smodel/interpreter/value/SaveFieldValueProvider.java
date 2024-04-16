@@ -33,14 +33,22 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
 
     @Override
     public Integer getIntegerValue(Field field) {
-        // TODO Auto-generated method stub
-        return null;
+        Integer intValue = delegateFieldValueProvider.getIntegerValue(field);
+        if (intValue == null) {
+            throw new RuntimeException(String.format("cannot resolve %s: %s", field.eClass()
+                .getName(), createFieldIdentifier(field)));
+        }
+        return intValue;
     }
 
     @Override
     public String getStringValue(Field field) {
-        // TODO Auto-generated method stub
-        return null;
+        String stringValue = delegateFieldValueProvider.getStringValue(field);
+        if (stringValue == null) {
+            throw new RuntimeException(String.format("cannot resolve %s: %s", field.eClass()
+                .getName(), createFieldIdentifier(field)));
+        }
+        return stringValue;
     }
 
     private String createFieldIdentifier(Field field) {
@@ -48,6 +56,7 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
             Probe probe = (Probe) field;
             return String.format("%s:%s", probe.getKind(), probe.getIdentifier());
         }
+
         throw new RuntimeException("unknown field: " + field);
     }
 }
