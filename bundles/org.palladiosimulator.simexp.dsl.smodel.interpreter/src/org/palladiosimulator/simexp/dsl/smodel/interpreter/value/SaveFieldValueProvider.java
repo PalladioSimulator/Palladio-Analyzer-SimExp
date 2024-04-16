@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
@@ -56,7 +57,10 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
             Probe probe = (Probe) field;
             return String.format("%s:%s", probe.getKind(), probe.getIdentifier());
         }
-
+        if (field instanceof EnvVariable) {
+            EnvVariable envVar = (EnvVariable) field;
+            return String.format("%s", envVar.getVariableId());
+        }
         throw new RuntimeException("unknown field: " + field);
     }
 }
