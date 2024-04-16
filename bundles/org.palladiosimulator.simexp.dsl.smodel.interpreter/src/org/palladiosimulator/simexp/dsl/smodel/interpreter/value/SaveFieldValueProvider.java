@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 
 public class SaveFieldValueProvider implements IFieldValueProvider {
@@ -60,6 +61,10 @@ public class SaveFieldValueProvider implements IFieldValueProvider {
         if (field instanceof EnvVariable) {
             EnvVariable envVar = (EnvVariable) field;
             return String.format("%s", envVar.getVariableId());
+        }
+        if (field instanceof Optimizable) {
+            Optimizable optimizable = (Optimizable) field;
+            return String.format("%s", optimizable.getName());
         }
         throw new RuntimeException("unknown field: " + field);
     }
