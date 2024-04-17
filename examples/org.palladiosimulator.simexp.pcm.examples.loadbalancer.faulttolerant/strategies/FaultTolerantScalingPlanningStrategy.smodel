@@ -12,7 +12,10 @@ probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Res
 
 action scaleOut();
 action scaleIn();
-action nodeRecovery();
+action setBranchProbabilityNode1();
+action setBranchProbabilityNode2();
+action unsetBranchProbabilityNode1();
+action unsetBranchProbabilityNode2();
 
 if ((serverNode1==available) && (serverNode2==available)) {
 	if (responseTime >= upperThreshold) {
@@ -22,6 +25,26 @@ if ((serverNode1==available) && (serverNode2==available)) {
 	if (responseTime <= lowerThreshold) {
 		scaleIn();	
 	}
-} else {
-	nodeRecovery();
+} else { // node recovery
+	// if (node1 available && node2 unavailable) then setProbabilityNode1(1.0); setProbabilityNode2(0.0);
+ 	if ((serverNode1==available) && (serverNode2!=available)){
+	 	setBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
+	// if (node1 unavailable && node2 available) then setProbabilityNode1(0.0); setProbabilityNode2(1.0);
+ 	if ((serverNode1!=available) && (serverNode2==available)){
+	 	unsetBranchProbabilityNode1(); 
+	 	setBranchProbabilityNode2();
+ 	}
+	// if (node1 unavailable && node2 unavailable) then setProbabilityNode1(0.0); setProbabilityNode2(0.0);
+	// FIXME: currently not supported by Simulizar simulation; causes ClassCastException as TransitionDeterminer.getRandomIndex returns -1
+ 	if ((serverNode1!=available) && (serverNode2!=available)){
+	 	unsetBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
+ 	else {
+		// default:  if (node1 available && node2 available) then setProbabilityNode1(1.0); setProbabilityNode2(0.0); 		
+	 	setBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
 }
