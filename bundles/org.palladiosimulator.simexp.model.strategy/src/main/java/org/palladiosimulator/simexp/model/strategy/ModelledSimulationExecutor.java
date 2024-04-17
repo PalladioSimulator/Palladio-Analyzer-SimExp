@@ -15,7 +15,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 public class ModelledSimulationExecutor<R>
         extends PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> {
 
-    protected ModelledSimulationExecutor(ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator,
+    public ModelledSimulationExecutor(ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator,
             Experiment experiment, SimulationParameters simulationParameters,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy,
             TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,

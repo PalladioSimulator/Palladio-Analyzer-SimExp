@@ -38,7 +38,7 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
     private Text textExperiments;
     private Text textStaticModel;
     private Text textDynamicModel;
-    private Text textKModel;
+    private Text textSModel;
 
     @Override
     public void createControl(Composite parent) {
@@ -68,9 +68,9 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File",
                 getShell(), ModelFileTypeConstants.EMPTY_STRING);
 
-        textKModel = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "KModel File",
-                ModelFileTypeConstants.KMODEL_FILE_EXTENSION, textKModel, "Select KModel File", getShell(),
+        textSModel = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "SModel File",
+                ModelFileTypeConstants.SMODEL_FILE_EXTENSION, textSModel, "Select SModel File", getShell(),
                 ModelFileTypeConstants.EMPTY_STRING);
 
         Group environmentalModelsGroup = new Group(container, SWT.NONE);

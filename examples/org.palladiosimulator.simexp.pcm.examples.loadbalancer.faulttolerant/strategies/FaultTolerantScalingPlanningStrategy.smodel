@@ -1,0 +1,50 @@
+modelName = "FaultTolerantScalingPlanningStrategy";
+
+const double lowerThreshold = 1.0;
+const double upperThreshold = 2.0;
+const string available = "available";
+
+envvar string serverNode1: variableId = "_AiOj4AFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode1
+envvar string serverNode2:variableId = "_QZ8DcAFHEe6baZPxrKywYw";	// entity name: GRV_StaticInstance_ServerNode2
+
+probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
+
+
+action scaleOut();
+action scaleIn();
+action setBranchProbabilityNode1();
+action setBranchProbabilityNode2();
+action unsetBranchProbabilityNode1();
+action unsetBranchProbabilityNode2();
+
+if ((serverNode1==available) && (serverNode2==available)) {
+	if (responseTime >= upperThreshold) {
+		scaleOut();
+	}
+
+	if (responseTime <= lowerThreshold) {
+		scaleIn();	
+	}
+} else { // node recovery
+	// if (node1 available && node2 unavailable) then setProbabilityNode1(1.0); setProbabilityNode2(0.0);
+ 	if ((serverNode1==available) && (serverNode2!=available)){
+	 	setBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
+	// if (node1 unavailable && node2 available) then setProbabilityNode1(0.0); setProbabilityNode2(1.0);
+ 	if ((serverNode1!=available) && (serverNode2==available)){
+	 	unsetBranchProbabilityNode1(); 
+	 	setBranchProbabilityNode2();
+ 	}
+	// if (node1 unavailable && node2 unavailable) then setProbabilityNode1(0.0); setProbabilityNode2(0.0);
+	// FIXME: currently not supported by Simulizar simulation; causes ClassCastException as TransitionDeterminer.getRandomIndex returns -1
+ 	if ((serverNode1!=available) && (serverNode2!=available)){
+	 	unsetBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
+ 	else {
+		// default:  if (node1 available && node2 available) then setProbabilityNode1(1.0); setProbabilityNode2(0.0); 		
+	 	setBranchProbabilityNode1(); 
+	 	unsetBranchProbabilityNode2();
+ 	}
+}

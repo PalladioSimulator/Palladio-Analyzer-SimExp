@@ -9,6 +9,11 @@
 			<unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
 			<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository"/>
+			<unit id="org.assertj" version="3.20.2.v20210706-1104"/>
+			<unit id="org.assertj.source" version="3.20.2.v20210706-1104"/>
+	</location>
 	
 
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" refresh="true">
@@ -32,6 +37,7 @@
 		<unit id="com.google.auto.factory-annotations.feature.feature.group" version="1.0.0"/>
 		<unit id="org.mockito.core-with-junit-extension.feature.feature.group" version="3.3.3"/>
 		<unit id="net.bytebuddy.byte-buddy.feature.feature.group" version="1.10.9"/>
+		<unit id="org.hamcrest" version="2.2"/>
 
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
