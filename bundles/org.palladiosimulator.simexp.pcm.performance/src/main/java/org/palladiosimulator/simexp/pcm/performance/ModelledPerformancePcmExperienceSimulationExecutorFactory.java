@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLook
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -109,12 +108,11 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         // staticEnvDynModel directly
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
-        OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider();
         EnvironmentVariableValueProvider envVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
-                optimizableValueProvider, envVariableValueProvider);
+                envVariableValueProvider);
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter);
