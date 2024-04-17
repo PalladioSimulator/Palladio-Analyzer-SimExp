@@ -210,13 +210,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             case MODELLED -> new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel);
-////            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
-////                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-////                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-////                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
-////                    staticEnvDynModel);
-//
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+                    staticEnvDynModel);
+//            case MODELLED -> new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+//                    simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+//                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+//                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+//                    staticEnvDynModel);
+
             default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
             };
         }
