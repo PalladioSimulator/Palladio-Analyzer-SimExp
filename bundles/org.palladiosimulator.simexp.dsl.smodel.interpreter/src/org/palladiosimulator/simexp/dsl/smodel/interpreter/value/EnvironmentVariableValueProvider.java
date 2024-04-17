@@ -21,14 +21,16 @@ public class EnvironmentVariableValueProvider implements IFieldValueProvider, Pe
 
     private final ProbabilisticModelRepository staticEnvDynModel;
 
-    // private List<InputValue<CategoricalValue>> values;
     private final Map<GroundRandomVariable, CategoricalValue> valueMap;
+    private final Map<EnvVariable, GroundRandomVariable> envVarMap;
 
     public EnvironmentVariableValueProvider(ProbabilisticModelRepository staticEnvDynModel) {
         this.staticEnvDynModel = staticEnvDynModel;
-        // this.values = Collections.emptyList();
         Comparator<GroundRandomVariable> comparator = Comparator.comparing(GroundRandomVariable::getId);
         this.valueMap = new TreeMap<>(comparator);
+
+        Comparator<EnvVariable> envVarComparator = Comparator.comparing(EnvVariable::getName);
+        this.envVarMap = new TreeMap<>(envVarComparator);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class EnvironmentVariableValueProvider implements IFieldValueProvider, Pe
     @Override
     public Double getDoubleValue(Field field) {
         EnvVariable envVariable = (EnvVariable) field;
-        GroundRandomVariable groundRandomVariable = findEnvironmentVariable(envVariable);
+        GroundRandomVariable groundRandomVariable = getEnvironmentVariable(envVariable);
         if (groundRandomVariable == null) {
             return null;
         }
@@ -55,7 +57,7 @@ public class EnvironmentVariableValueProvider implements IFieldValueProvider, Pe
     @Override
     public Integer getIntegerValue(Field field) {
         EnvVariable envVariable = (EnvVariable) field;
-        GroundRandomVariable groundRandomVariable = findEnvironmentVariable(envVariable);
+        GroundRandomVariable groundRandomVariable = getEnvironmentVariable(envVariable);
         if (groundRandomVariable == null) {
             return null;
         }
@@ -70,7 +72,7 @@ public class EnvironmentVariableValueProvider implements IFieldValueProvider, Pe
     @Override
     public String getStringValue(Field field) {
         EnvVariable envVariable = (EnvVariable) field;
-        GroundRandomVariable groundRandomVariable = findEnvironmentVariable(envVariable);
+        GroundRandomVariable groundRandomVariable = getEnvironmentVariable(envVariable);
         if (groundRandomVariable == null) {
             return null;
         }
@@ -79,6 +81,17 @@ public class EnvironmentVariableValueProvider implements IFieldValueProvider, Pe
             return null;
         }
         return stringCategoricalValue;
+    }
+
+    private GroundRandomVariable getEnvironmentVariable(EnvVariable envVar) {
+        GroundRandomVariable groundRandomVariable = envVarMap.get(envVar);
+        if (groundRandomVariable == null) {
+            groundRandomVariable = findEnvironmentVariable(envVar);
+            if (groundRandomVariable != null) {
+                envVarMap.put(envVar, groundRandomVariable);
+            }
+        }
+        return groundRandomVariable;
     }
 
     private GroundRandomVariable findEnvironmentVariable(EnvVariable envVar) {
