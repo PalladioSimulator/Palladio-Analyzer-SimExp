@@ -71,7 +71,11 @@ public class SimulatorConfiguration {
         this.ctx = ctx;
     }
 
-    public void createControl(Composite simulationParent, ModifyListener modifyListener) {
+    public void createControl(Composite parent, ModifyListener modifyListener) {
+        Composite simulationParent = new Composite(parent, SWT.BORDER);
+        simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        simulationParent.setLayout(new GridLayout(2, false));
+
         Composite simulationEngineContainer = new Composite(simulationParent, SWT.NONE);
         simulationEngineContainer.setLayoutData(new GridData(SWT.None, SWT.TOP, false, true));
         simulationEngineContainer.setLayout(new GridLayout());
