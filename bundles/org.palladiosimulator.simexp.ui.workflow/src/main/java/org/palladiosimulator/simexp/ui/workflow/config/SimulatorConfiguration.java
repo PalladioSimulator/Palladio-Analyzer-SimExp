@@ -134,89 +134,6 @@ public class SimulatorConfiguration {
         return content;
     }
 
-    private void createPrismTab(Composite parent, ModifyListener modifyListener) {
-        Group modulesParent = new Group(parent, SWT.NONE);
-        modulesParent.setLayout(new GridLayout(2, false));
-        modulesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        modulesParent.setText("Module Files");
-        moduleFilesTarget = createPrismList(modulesParent, modifyListener, "Module File",
-                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION);
-
-        Group propertiesParent = new Group(parent, SWT.NONE);
-        propertiesParent.setLayout(new GridLayout(2, false));
-        propertiesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        propertiesParent.setText("Property Files");
-        propertyFilesTarget = createPrismList(propertiesParent, modifyListener, "Property File",
-                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION);
-    }
-
-    private WritableList<String> createPrismList(Composite parent, ModifyListener modifyListener, String type,
-            String[] extension) {
-        ListViewer listViewer = new ListViewer(parent, SWT.SINGLE | SWT.BORDER);
-        listViewer.getControl()
-            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        ObservableListContentProvider<String> modulesObservableInput = new ObservableListContentProvider<>();
-        listViewer.setContentProvider(modulesObservableInput);
-        WritableList<String> filesInput = new WritableList<>();
-        listViewer.setInput(filesInput);
-
-        Composite buttonParent = new Composite(parent, SWT.NONE);
-        buttonParent.setLayout(new GridLayout());
-        buttonParent.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true));
-
-        Button addButton = new Button(buttonParent, SWT.PUSH);
-        addButton.setText("Add...");
-        addButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Add " + type, type,
-                        extension);
-                if (dialog.open() == Window.OK) {
-                    String uri = dialog.getRepositoryModelUri();
-                    filesInput.add(uri);
-                    modifyListener.modifyText(null);
-                }
-            }
-        });
-        Button editButton = new Button(buttonParent, SWT.PUSH);
-        editButton.setText("Edit...");
-        editButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = listViewer.getStructuredSelection();
-                if (selection.isEmpty()) {
-                    return;
-                }
-                String selectedUri = (String) selection.getFirstElement();
-                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Edit " + type, type,
-                        extension, selectedUri);
-                if (dialog.open() == Window.OK) {
-                    String uri = dialog.getRepositoryModelUri();
-                    int index = filesInput.indexOf(selectedUri);
-                    filesInput.remove(index);
-                    filesInput.add(index, uri);
-                    modifyListener.modifyText(null);
-                }
-            }
-        });
-        Button removeButton = new Button(buttonParent, SWT.PUSH);
-        removeButton.setText("Remove");
-        removeButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                IStructuredSelection selection = listViewer.getStructuredSelection();
-                if (selection.isEmpty()) {
-                    return;
-                }
-                String selectedUri = (String) selection.getFirstElement();
-                filesInput.remove(selectedUri);
-                modifyListener.modifyText(null);
-            }
-        });
-
-        return filesInput;
-    }
-
     private void createPcmTab(Composite content, ModifyListener modifyListener) {
         final Group qualityObjectivesGroup = new Group(content, SWT.NONE);
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
@@ -300,6 +217,89 @@ public class SimulatorConfiguration {
         TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
                 ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel,
                 "Select Failure Scenario File", shell, ModelFileTypeConstants.EMPTY_STRING);
+    }
+
+    private void createPrismTab(Composite parent, ModifyListener modifyListener) {
+        Group modulesParent = new Group(parent, SWT.NONE);
+        modulesParent.setLayout(new GridLayout(2, false));
+        modulesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        modulesParent.setText("Module Files");
+        moduleFilesTarget = createPrismList(modulesParent, modifyListener, "Module File",
+                ModelFileTypeConstants.PRISM_MODULE_FILE_EXTENSION);
+
+        Group propertiesParent = new Group(parent, SWT.NONE);
+        propertiesParent.setLayout(new GridLayout(2, false));
+        propertiesParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        propertiesParent.setText("Property Files");
+        propertyFilesTarget = createPrismList(propertiesParent, modifyListener, "Property File",
+                ModelFileTypeConstants.PRISM_PROPERTY_FILE_EXTENSION);
+    }
+
+    private WritableList<String> createPrismList(Composite parent, ModifyListener modifyListener, String type,
+            String[] extension) {
+        ListViewer listViewer = new ListViewer(parent, SWT.SINGLE | SWT.BORDER);
+        listViewer.getControl()
+            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ObservableListContentProvider<String> modulesObservableInput = new ObservableListContentProvider<>();
+        listViewer.setContentProvider(modulesObservableInput);
+        WritableList<String> filesInput = new WritableList<>();
+        listViewer.setInput(filesInput);
+
+        Composite buttonParent = new Composite(parent, SWT.NONE);
+        buttonParent.setLayout(new GridLayout());
+        buttonParent.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, true));
+
+        Button addButton = new Button(buttonParent, SWT.PUSH);
+        addButton.setText("Add...");
+        addButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Add " + type, type,
+                        extension);
+                if (dialog.open() == Window.OK) {
+                    String uri = dialog.getRepositoryModelUri();
+                    filesInput.add(uri);
+                    modifyListener.modifyText(null);
+                }
+            }
+        });
+        Button editButton = new Button(buttonParent, SWT.PUSH);
+        editButton.setText("Edit...");
+        editButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                IStructuredSelection selection = listViewer.getStructuredSelection();
+                if (selection.isEmpty()) {
+                    return;
+                }
+                String selectedUri = (String) selection.getFirstElement();
+                EditRepositoryDialog dialog = new EditRepositoryDialog(parent.getShell(), "Edit " + type, type,
+                        extension, selectedUri);
+                if (dialog.open() == Window.OK) {
+                    String uri = dialog.getRepositoryModelUri();
+                    int index = filesInput.indexOf(selectedUri);
+                    filesInput.remove(index);
+                    filesInput.add(index, uri);
+                    modifyListener.modifyText(null);
+                }
+            }
+        });
+        Button removeButton = new Button(buttonParent, SWT.PUSH);
+        removeButton.setText("Remove");
+        removeButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                IStructuredSelection selection = listViewer.getStructuredSelection();
+                if (selection.isEmpty()) {
+                    return;
+                }
+                String selectedUri = (String) selection.getFirstElement();
+                filesInput.remove(selectedUri);
+                modifyListener.modifyText(null);
+            }
+        });
+
+        return filesInput;
     }
 
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
