@@ -8,12 +8,12 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public interface IQVToReconfigurationManager {
 
-	QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider);
+    QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider);
 
-	void resetReconfigurator();
+    void resetReconfigurator();
 
-	void addModelsToTransform(Resource eResource);
+    void addModelsToTransform(Resource eResource);
 
-	List<QVToReconfiguration> loadReconfigurations();
+    List<QVToReconfiguration> loadReconfigurations();
 
 }
