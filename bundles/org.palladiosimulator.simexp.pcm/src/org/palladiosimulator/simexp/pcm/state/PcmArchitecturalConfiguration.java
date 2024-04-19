@@ -64,9 +64,13 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
         return difference((PcmArchitecturalConfiguration<A>) other);
     }
 
+    private boolean isNotValid(ArchitecturalConfiguration<PCMInstance, A> other) {
+        return other == null || !(other instanceof PcmArchitecturalConfiguration);
+    }
+
     @Override
     public ArchitecturalConfiguration<PCMInstance, A> apply(Reconfiguration<A> reconf) {
-        if (isNotValid(reconf)) {
+        if (!(reconf instanceof IPCMReconfigurationExecutor)) {
             throw new RuntimeException(
                     "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of IPCMReconfigurationExecutor");
         }
@@ -82,18 +86,6 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
     private PCMInstance makeSnapshot(IExperimentProvider experimentProvider) {
         return experimentProvider.getExperimentRunner()
             .makeSnapshotOfPCM();
-    }
-
-    private boolean isNotValid(Reconfiguration<A> action) {
-        return !isValid(action);
-    }
-
-    private boolean isValid(Reconfiguration<A> action) {
-        return action instanceof IPCMReconfigurationExecutor;
-    }
-
-    private boolean isNotValid(ArchitecturalConfiguration<PCMInstance, A> other) {
-        return other == null || !(other instanceof PcmArchitecturalConfiguration);
     }
 
     private String difference(PcmArchitecturalConfiguration<A> other) {
