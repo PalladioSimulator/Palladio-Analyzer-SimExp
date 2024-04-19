@@ -62,6 +62,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
 
     private final Smodel smodel;
     private final ProbabilisticModelRepository staticEnvDynModel;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
@@ -77,9 +78,10 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
             ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
         this.smodel = smodel;
         this.staticEnvDynModel = staticEnvDynModel;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -87,7 +89,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
         this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
     }
 
     @Override

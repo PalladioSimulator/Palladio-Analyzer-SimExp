@@ -8,7 +8,6 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -18,22 +17,18 @@ public class InitialPcmStateCreator<A, V>
 
     private final Set<SimulatedMeasurementSpecification> pcmMeasurementSpecs;
     private final IExperimentProvider experimentProvider;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     public InitialPcmStateCreator(Set<SimulatedMeasurementSpecification> specs, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         this.pcmMeasurementSpecs = specs;
         this.experimentProvider = experimentProvider;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
     public static <A, V> InitialPcmStateCreator<A, V> with(Set<SimulatedMeasurementSpecification> specs,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
-        return new InitialPcmStateCreator<>(specs, experimentProvider, qvtoReconfigurationManager,
-                simulationRunnerHolder);
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+        return new InitialPcmStateCreator<>(specs, experimentProvider, simulationRunnerHolder);
     }
 
     public Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
@@ -54,7 +49,7 @@ public class InitialPcmStateCreator<A, V>
     public ArchitecturalConfiguration<PCMInstance, A> getInitialArchitecturalConfiguration() {
         ExperimentRunner experimentRunner = experimentProvider.getExperimentRunner();
         PCMInstance snapshotOfPCM = experimentRunner.makeSnapshotOfPCM();
-        return PcmArchitecturalConfiguration.<A> of(snapshotOfPCM, experimentProvider, qvtoReconfigurationManager);
+        return PcmArchitecturalConfiguration.<A> of(snapshotOfPCM, experimentProvider);
     }
 
 }

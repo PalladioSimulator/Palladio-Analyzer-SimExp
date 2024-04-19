@@ -56,6 +56,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
@@ -67,12 +68,12 @@ public class DeltaIoTSimulationExecutorFactory extends
             SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
-
+                simulationRunnerHolder);
         this.modelAccess = new DeltaIoTModelAccess<>();
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
                 modelAccess, simulationRunnerHolder);
         this.envProcess = p.getEnvironmentProcess();
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
