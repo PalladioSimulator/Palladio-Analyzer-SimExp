@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.compare.PcmModelComparison;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
@@ -21,18 +20,15 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
 
     private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class.getName());
     private final IExperimentProvider experimentProvider;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+    private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider) {
         super(configuration);
         this.experimentProvider = experimentProvider;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     public static <A> PcmArchitecturalConfiguration<A> of(PCMInstance configuration,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new PcmArchitecturalConfiguration<>(configuration, experimentProvider, qvtoReconfigurationManager);
+            IExperimentProvider experimentProvider) {
+        return new PcmArchitecturalConfiguration<>(configuration, experimentProvider);
     }
 
     @Override
@@ -80,7 +76,7 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
 
         LOGGER.info("'EXECUTE' step done");
         PcmArchitecturalConfiguration<A> updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration<>(
-                makeSnapshot(experimentProvider), experimentProvider, qvtoReconfigurationManager);
+                makeSnapshot(experimentProvider), experimentProvider);
         return updatedArchitecturalConfiguration;
     }
 
