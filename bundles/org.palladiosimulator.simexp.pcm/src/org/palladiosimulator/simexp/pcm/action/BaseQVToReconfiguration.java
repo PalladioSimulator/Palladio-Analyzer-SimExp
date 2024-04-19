@@ -1,9 +1,9 @@
 package org.palladiosimulator.simexp.pcm.action;
 
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
+import org.palladiosimulator.simexp.core.action.ReconfigurationImpl;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public abstract class BaseQVToReconfiguration extends Reconfiguration<QVTOReconfigurator> {
+public abstract class BaseQVToReconfiguration extends ReconfigurationImpl<QVTOReconfigurator> {
 
     protected static final String EMPTY_RECONFIGURATION_NAME = "EmptyReconf";
 
