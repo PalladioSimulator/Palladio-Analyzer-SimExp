@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.action;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,15 +35,18 @@ public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements
     public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
         LOGGER.info(String.format("'EXECUTE' applying %d reconfigurations", transformations.size()));
         QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
-        for (QvtoModelTransformation transformation : transformations) {
+        ListIterator<QvtoModelTransformation> trafoIterator = transformations.listIterator();
+        while (trafoIterator.hasNext()) {
+            QvtoModelTransformation transformation = trafoIterator.next();
+            int index = trafoIterator.nextIndex();
             String transformationName = transformation.getTransformationName();
             boolean succeded = qvtoReconf.runExecute(ECollections.asEList(transformation), null, resourceTableManager);
             if (succeded) {
-                LOGGER.info(String.format("'EXECUTE' applied reconfiguration '%s'", transformationName));
+                LOGGER.info(String.format("'EXECUTE' applied reconfiguration %d: '%s'", index, transformationName));
             } else {
                 LOGGER.error(String.format(
-                        "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration '%s'",
-                        transformationName));
+                        "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration %d: '%s'",
+                        index, transformationName));
                 break;
             }
         }
