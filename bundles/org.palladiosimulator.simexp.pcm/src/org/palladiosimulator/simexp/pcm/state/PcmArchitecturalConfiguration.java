@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.util.Collections;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
@@ -14,10 +13,8 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.compare.PcmModelComparison;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
 
 public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration<PCMInstance, A> {
@@ -79,12 +76,7 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
                     "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of QVToReconfiguration");
         }
         QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
-        if (qvtoReconf.isEmptyReconfiguration() == false) {
-            String transformationName = qvtoReconf.getTransformation()
-                .getTransformationName();
-            LOGGER.info(String.format("'EXECUTE' apply reconfiguration '%s'", transformationName));
-            doApply(qvtoReconf, new ResourceTableManager(), qvtoReconfigurationManager);
-        }
+        qvtoReconf.apply(experimentProvider, new ResourceTableManager(), qvtoReconfigurationManager);
 
         LOGGER.info("'EXECUTE' step done");
         PcmArchitecturalConfiguration<A> updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration<>(
@@ -95,22 +87,6 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
     private PCMInstance makeSnapshot(IExperimentProvider experimentProvider) {
         return experimentProvider.getExperimentRunner()
             .makeSnapshotOfPCM();
-    }
-
-    private void doApply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
-        boolean succeded = false;
-        QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
-        succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
-        String transformationName = reconf.getTransformation()
-            .getTransformationName();
-        if (succeded) {
-            LOGGER.info(String.format("'EXECUTE' applied reconfiguration '%s'", transformationName));
-        } else {
-            LOGGER.error(String.format(
-                    "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration '%s'",
-                    transformationName));
-        }
     }
 
     private boolean isNotValid(Reconfiguration<A> action) {
