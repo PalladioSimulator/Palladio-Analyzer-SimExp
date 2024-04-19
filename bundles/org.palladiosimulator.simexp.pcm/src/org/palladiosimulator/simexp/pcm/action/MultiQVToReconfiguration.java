@@ -8,14 +8,13 @@ import java.util.ListIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.ECollections;
-import org.palladiosimulator.simexp.pcm.state.IPCMReconfigurationExecutor;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
-public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements IPCMReconfigurationExecutor {
+public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements QVToReconfiguration {
     private static final Logger LOGGER = Logger.getLogger(MultiQVToReconfiguration.class);
 
     private final List<QvtoModelTransformation> transformations;

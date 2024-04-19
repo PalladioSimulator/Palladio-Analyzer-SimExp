@@ -55,7 +55,7 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
     public List<QVToReconfiguration> loadReconfigurations() {
         return transformations.stream()
             .filter(each -> each instanceof QvtoModelTransformation)
-            .map(each -> QVToReconfiguration.of((QvtoModelTransformation) each, this))
+            .map(each -> SingleQVToReconfiguration.of((QvtoModelTransformation) each, this))
             .collect(Collectors.toList());
     }
 

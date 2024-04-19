@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
@@ -73,7 +74,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
-        return QVToReconfiguration.empty();
+        return SingleQVToReconfiguration.empty();
     }
 
 }

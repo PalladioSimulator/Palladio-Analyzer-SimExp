@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
@@ -70,7 +71,7 @@ public class RobotCognitionReconfigurationStrategy<C>
         } else if (isResponseTimeNotSatisfied) {
             return managePerformance(asReconfigurations(options));
         } else {
-            return QVToReconfiguration.empty();
+            return SingleQVToReconfiguration.empty();
         }
     }
 
@@ -80,7 +81,7 @@ public class RobotCognitionReconfigurationStrategy<C>
         } else if (isDefaultMLModelActivated) {
             return switchToRobustMLModel(options);
         } else {
-            return QVToReconfiguration.empty();
+            return SingleQVToReconfiguration.empty();
         }
     }
 
@@ -90,7 +91,7 @@ public class RobotCognitionReconfigurationStrategy<C>
         } else if (isFilteringActivated) {
             return deactivateFilteringReconfiguration(options);
         } else {
-            return QVToReconfiguration.empty();
+            return SingleQVToReconfiguration.empty();
         }
     }
 

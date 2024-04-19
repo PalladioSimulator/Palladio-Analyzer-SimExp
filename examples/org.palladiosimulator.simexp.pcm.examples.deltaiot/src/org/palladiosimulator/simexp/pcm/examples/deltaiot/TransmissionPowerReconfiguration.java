@@ -6,26 +6,41 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.palladiosimulator.simexp.core.action.ReconfigurationImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPower;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Sets;
 
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.stoex.VariableReference;
 
-public class TransmissionPowerReconfiguration extends QVToReconfiguration {
+public class TransmissionPowerReconfiguration extends ReconfigurationImpl<QVTOReconfigurator>
+        implements QVToReconfiguration {
 
     private final static String QVT_FILE_SUFFIX = "TransmissionPower";
     private final static int MAX_POWER = 15;
     private final static int MIN_POWER = 0;
 
+    private final QVToReconfiguration reconfiguration;
     private final Set<TransmissionPower> powerSettings;
 
     public TransmissionPowerReconfiguration(QVToReconfiguration reconfiguration, Set<TransmissionPower> powerSettings) {
-        super(reconfiguration);
-
+        this.reconfiguration = reconfiguration;
         this.powerSettings = powerSettings;
+    }
+
+    @Override
+    public String getStringRepresentation() {
+        return reconfiguration.getStringRepresentation();
+    }
+
+    @Override
+    public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
+        reconfiguration.execute(experimentProvider, resourceTableManager);
     }
 
     public TransmissionPowerReconfiguration(QVToReconfiguration reconfiguration,

@@ -9,26 +9,42 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
+import org.palladiosimulator.simexp.core.action.ReconfigurationImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 
-public class DistributionFactorReconfiguration extends QVToReconfiguration {
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
+
+public class DistributionFactorReconfiguration extends ReconfigurationImpl<QVTOReconfigurator>
+        implements QVToReconfiguration {
 
     private final static String QVT_FILE_SUFFIX = "DistributionFactor";
     private final static double DEFAULT_VALUE = 0.0;
     private final static double TOLERANCE = 0.001;
 
+    private final QVToReconfiguration reconfiguration;
     private final Set<DistributionFactor> distFactors;
 
     public DistributionFactorReconfiguration(QVToReconfiguration reconfiguration, Set<DistributionFactor> distFactors) {
-        super(reconfiguration);
-
+        this.reconfiguration = reconfiguration;
         this.distFactors = distFactors;
+    }
+
+    @Override
+    public String getStringRepresentation() {
+        return reconfiguration.getStringRepresentation();
+    }
+
+    @Override
+    public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
+        reconfiguration.execute(experimentProvider, resourceTableManager);
     }
 
     public void setDistributionFactorValuesToDefaults() {
@@ -110,5 +126,4 @@ public class DistributionFactorReconfiguration extends QVToReconfiguration {
             .getId()
             .equals(givenBranch.getId());
     }
-
 }
