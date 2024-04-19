@@ -2,12 +2,15 @@ package org.palladiosimulator.simexp.ui.workflow.config;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
+import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
@@ -28,6 +31,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
@@ -199,11 +203,23 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
             .observe(textSModel);
         IObservableValue<String> smodelModel = ConfigurationProperties.string(ModelFileTypeConstants.SMODEL_FILE)
             .observe(configuration);
+        Predicate<ControllableValidator<String>> isSmodelEnabled = new Predicate<>() {
+            private final IObservableValue<SimulatorType> simulatorTypeValue = ComputedValue.create(() -> {
+                return simulatorTypeTarget.getValue();
+            });
+
+            @Override
+            public boolean test(ControllableValidator<String> t) {
+                SimulatorType selectedType = simulatorTypeValue.getValue();
+                return SimulatorType.MODELLED == selectedType;
+            }
+        };
         UpdateValueStrategy<String, String> smodelUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        CompoundStringValidator smodelUriValidator = new CompoundStringValidator(
-                Arrays.asList(new FileURIValidator("Usage file"),
-                        new ExtensionValidator("Usage file", ModelFileTypeConstants.SMODEL_FILE_EXTENSION[0])));
+        IValidator<String> smodelUriValidator = new ControllableValidator<>(
+                new CompoundStringValidator(Arrays.asList(new FileURIValidator("Usage file"),
+                        new ExtensionValidator("Usage file", ModelFileTypeConstants.SMODEL_FILE_EXTENSION[0]))),
+                isSmodelEnabled);
         smodelUpdateStrategy.setBeforeSetValidator(smodelUriValidator);
         Binding smodelBindValue = ctx.bindValue(smodelTarget, smodelModel, smodelUpdateStrategy, null);
         ControlDecorationSupport.create(smodelBindValue, SWT.TOP | SWT.RIGHT);
