@@ -38,7 +38,7 @@ public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> imp
     }
 
     @Override
-    public void apply(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
+    public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
         if (isEmptyReconfiguration()) {
             return;
         }
