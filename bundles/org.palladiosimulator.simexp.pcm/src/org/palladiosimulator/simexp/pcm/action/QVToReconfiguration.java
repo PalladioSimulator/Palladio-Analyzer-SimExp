@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.action;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.ECollections;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
+import org.palladiosimulator.simexp.pcm.state.IPCMReconfigurationExecutor;
 import org.palladiosimulator.simexp.pcm.state.PcmArchitecturalConfiguration;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -10,7 +11,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformat
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
-public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> {
+public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> implements IPCMReconfigurationExecutor {
     private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class);
     private static final String EMPTY_RECONFIGURATION_NAME = "EmptyReconf";
 
@@ -36,6 +37,7 @@ public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> {
         return new QVToReconfiguration((QvtoModelTransformation) null, null);
     }
 
+    @Override
     public void apply(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
         if (isEmptyReconfiguration()) {
             return;
