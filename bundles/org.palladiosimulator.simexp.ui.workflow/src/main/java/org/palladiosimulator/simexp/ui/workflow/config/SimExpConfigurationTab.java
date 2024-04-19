@@ -199,18 +199,14 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
             .observe(textSModel);
         IObservableValue<String> smodelModel = ConfigurationProperties.string(ModelFileTypeConstants.SMODEL_FILE)
             .observe(configuration);
-        UpdateValueStrategy<String, String> smodelUpdateStrategy = createUpdateStrategy("Usage file",
-                ModelFileTypeConstants.SMODEL_FILE_EXTENSION[0]);
+        UpdateValueStrategy<String, String> smodelUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        CompoundStringValidator smodelUriValidator = new CompoundStringValidator(
+                Arrays.asList(new FileURIValidator("Usage file"),
+                        new ExtensionValidator("Usage file", ModelFileTypeConstants.SMODEL_FILE_EXTENSION[0])));
+        smodelUpdateStrategy.setBeforeSetValidator(smodelUriValidator);
         Binding smodelBindValue = ctx.bindValue(smodelTarget, smodelModel, smodelUpdateStrategy, null);
         ControlDecorationSupport.create(smodelBindValue, SWT.TOP | SWT.RIGHT);
-    }
-
-    private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {
-        UpdateValueStrategy<String, String> updateValueStrategy = new UpdateValueStrategy<>(
-                UpdateValueStrategy.POLICY_CONVERT);
-        updateValueStrategy.setBeforeSetValidator(new CompoundStringValidator(
-                Arrays.asList(new FileURIValidator(field), new ExtensionValidator(field, extension))));
-        return updateValueStrategy;
     }
 
     @Override
