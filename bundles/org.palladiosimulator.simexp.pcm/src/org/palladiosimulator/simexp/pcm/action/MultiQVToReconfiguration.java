@@ -20,7 +20,7 @@ public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements
 
     private final List<QvtoModelTransformation> transformations;
 
-    protected MultiQVToReconfiguration(List<QvtoModelTransformation> transformations,
+    private MultiQVToReconfiguration(List<QvtoModelTransformation> transformations,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
         super(qvtoReconfigurationManager);
         this.transformations = Collections.unmodifiableList(transformations);
