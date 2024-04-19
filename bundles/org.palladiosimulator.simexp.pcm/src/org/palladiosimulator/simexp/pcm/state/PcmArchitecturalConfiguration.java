@@ -76,7 +76,7 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
                     "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of QVToReconfiguration");
         }
         QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
-        qvtoReconf.apply(experimentProvider, new ResourceTableManager(), qvtoReconfigurationManager);
+        qvtoReconf.apply(experimentProvider, new ResourceTableManager());
 
         LOGGER.info("'EXECUTE' step done");
         PcmArchitecturalConfiguration<A> updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration<>(

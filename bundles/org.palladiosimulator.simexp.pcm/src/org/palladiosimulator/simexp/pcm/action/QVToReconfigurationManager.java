@@ -28,77 +28,87 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 //TODO Refactor to QVTOTransformationJob
 public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
-	private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
+    private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
 
-	private QVTOReconfigurator reconfigurator;
+    private QVTOReconfigurator reconfigurator;
 
-	private final List<ModelTransformation<? extends Object>> transformations = Lists.newArrayList();
-	private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
+    private final List<ModelTransformation<? extends Object>> transformations = Lists.newArrayList();
+    private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
-	public QVToReconfigurationManager(String qvtoFilePath) {
-		this.reconfigurator = new QVTOReconfigurator(null, null);
-		this.loadTransformations(qvtoFilePath);
-	}
+    public QVToReconfigurationManager(String qvtoFilePath) {
+        this.reconfigurator = new QVTOReconfigurator(null, null);
+        this.loadTransformations(qvtoFilePath);
+    }
 
-	private void loadTransformations(String qvtoFilePath) {
-		URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
-		if (qvtoFiles.length == 0) {
-			// TODO exception handling
-			throw new RuntimeException("There are no qvto transformation specified.");
-		}
-		ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles);
-		transformationCache.getAll().forEach(t -> this.transformations.add(t));
-	}
+    private void loadTransformations(String qvtoFilePath) {
+        URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
+        if (qvtoFiles.length == 0) {
+            // TODO exception handling
+            throw new RuntimeException("There are no qvto transformation specified.");
+        }
+        ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles);
+        transformationCache.getAll()
+            .forEach(t -> this.transformations.add(t));
+    }
 
-	@Override
-	public List<QVToReconfiguration> loadReconfigurations() {
-		return transformations.stream().filter(each -> each instanceof QvtoModelTransformation)
-				.map(each -> QVToReconfiguration.of((QvtoModelTransformation) each)).collect(Collectors.toList());
-	}
+    @Override
+    public List<QVToReconfiguration> loadReconfigurations() {
+        return transformations.stream()
+            .filter(each -> each instanceof QvtoModelTransformation)
+            .map(each -> QVToReconfiguration.of((QvtoModelTransformation) each, this))
+            .collect(Collectors.toList());
+    }
 
-	@Override
-	public QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider) {
-		reconfigurator.setPCMPartitionManager(getPartitionManager(experimentProvider));
-		return reconfigurator;
-	}
+    @Override
+    public QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider) {
+        reconfigurator.setPCMPartitionManager(getPartitionManager(experimentProvider));
+        return reconfigurator;
+    }
 
-	private PCMPartitionManager getPartitionManager(IExperimentProvider experimentProvider) {
-		PCMResourceSetPartition partition = experimentProvider.getExperimentRunner().getWorkingPartition();
-		for (Resource each : additonalModelsToTransform) {
-			partition.getResourceSet().getResources().add(each);
-		}
-		
-		MDSDBlackboard blackboard = new MDSDBlackboard();
-		blackboard.addPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID, partition);
-		return new PCMPartitionManager(blackboard, createNewConfig(experimentProvider));
-	}
+    private PCMPartitionManager getPartitionManager(IExperimentProvider experimentProvider) {
+        PCMResourceSetPartition partition = experimentProvider.getExperimentRunner()
+            .getWorkingPartition();
+        for (Resource each : additonalModelsToTransform) {
+            partition.getResourceSet()
+                .getResources()
+                .add(each);
+        }
 
-	private SimuLizarWorkflowConfiguration createNewConfig(IExperimentProvider experimentProvider) {
-		Optional<MonitorRepository> monitorRepo = Optional.empty();
-		List<EObject> result = experimentProvider.getExperimentRunner().getWorkingPartition()
-				.getElement(MonitorRepositoryPackage.eINSTANCE.getMonitorRepository());
-		if (result.isEmpty() == false) {
-			monitorRepo = Optional.of(MonitorRepository.class.cast(result.get(0)));
-		}
+        MDSDBlackboard blackboard = new MDSDBlackboard();
+        blackboard.addPartition(LoadPCMModelsIntoBlackboardJob.PCM_MODELS_PARTITION_ID, partition);
+        return new PCMPartitionManager(blackboard, createNewConfig(experimentProvider));
+    }
 
-		SimuLizarWorkflowConfiguration config = new SimuLizarWorkflowConfiguration(Maps.newHashMap());
-		if (monitorRepo.isPresent()) {
-			String monitorRepoFile = monitorRepo.get().eResource().getURI().toFileString();
-			config.setMonitorRepositoryFile(monitorRepoFile);
-		} else {
-			config.setMonitorRepositoryFile(null);
-		}
-		return config;
-	}
+    private SimuLizarWorkflowConfiguration createNewConfig(IExperimentProvider experimentProvider) {
+        Optional<MonitorRepository> monitorRepo = Optional.empty();
+        List<EObject> result = experimentProvider.getExperimentRunner()
+            .getWorkingPartition()
+            .getElement(MonitorRepositoryPackage.eINSTANCE.getMonitorRepository());
+        if (result.isEmpty() == false) {
+            monitorRepo = Optional.of(MonitorRepository.class.cast(result.get(0)));
+        }
 
-	@Override
-	public void resetReconfigurator() {
-		reconfigurator = new QVTOReconfigurator(null, null);
-	}
+        SimuLizarWorkflowConfiguration config = new SimuLizarWorkflowConfiguration(Maps.newHashMap());
+        if (monitorRepo.isPresent()) {
+            String monitorRepoFile = monitorRepo.get()
+                .eResource()
+                .getURI()
+                .toFileString();
+            config.setMonitorRepositoryFile(monitorRepoFile);
+        } else {
+            config.setMonitorRepositoryFile(null);
+        }
+        return config;
+    }
 
-	@Override
-	public void addModelsToTransform(Resource modelsToTransform) {
-		additonalModelsToTransform.add(modelsToTransform);
-	}
+    @Override
+    public void resetReconfigurator() {
+        reconfigurator = new QVTOReconfigurator(null, null);
+    }
+
+    @Override
+    public void addModelsToTransform(Resource modelsToTransform) {
+        additonalModelsToTransform.add(modelsToTransform);
+    }
 
 }
