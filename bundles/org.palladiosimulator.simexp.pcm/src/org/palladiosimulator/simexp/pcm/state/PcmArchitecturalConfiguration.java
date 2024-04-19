@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.compare.PcmModelComparison;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -69,9 +68,9 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
     public ArchitecturalConfiguration<PCMInstance, A> apply(Reconfiguration<A> reconf) {
         if (isNotValid(reconf)) {
             throw new RuntimeException(
-                    "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of QVToReconfiguration");
+                    "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of IPCMReconfigurationExecutor");
         }
-        QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
+        IPCMReconfigurationExecutor qvtoReconf = (IPCMReconfigurationExecutor) reconf;
         qvtoReconf.apply(experimentProvider, new ResourceTableManager());
 
         LOGGER.info("'EXECUTE' step done");
@@ -90,7 +89,7 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
     }
 
     private boolean isValid(Reconfiguration<A> action) {
-        return action instanceof QVToReconfiguration;
+        return action instanceof IPCMReconfigurationExecutor;
     }
 
     private boolean isNotValid(ArchitecturalConfiguration<PCMInstance, A> other) {
