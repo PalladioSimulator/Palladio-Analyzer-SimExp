@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.action;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.ECollections;
 import org.palladiosimulator.simexp.pcm.state.IPCMReconfigurationExecutor;
-import org.palladiosimulator.simexp.pcm.state.PcmArchitecturalConfiguration;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
@@ -11,7 +10,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformat
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public class QVToReconfiguration extends BaseQVToReconfiguration implements IPCMReconfigurationExecutor {
-    private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class);
+    private static final Logger LOGGER = Logger.getLogger(QVToReconfiguration.class);
 
     private final QvtoModelTransformation transformation;
 
