@@ -15,25 +15,28 @@ public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> {
     private static final String EMPTY_RECONFIGURATION_NAME = "EmptyReconf";
 
     private final QvtoModelTransformation transformation;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     protected QVToReconfiguration(QVToReconfiguration transformation) {
-        this(transformation.transformation);
+        this(transformation.transformation, transformation.qvtoReconfigurationManager);
     }
 
-    protected QVToReconfiguration(QvtoModelTransformation transformation) {
+    protected QVToReconfiguration(QvtoModelTransformation transformation,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
         this.transformation = transformation;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
-    public static QVToReconfiguration of(QvtoModelTransformation transformation) {
-        return new QVToReconfiguration(transformation);
+    public static QVToReconfiguration of(QvtoModelTransformation transformation,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
+        return new QVToReconfiguration(transformation, qvtoReconfigurationManager);
     }
 
     public static QVToReconfiguration empty() {
-        return new QVToReconfiguration((QvtoModelTransformation) null);
+        return new QVToReconfiguration((QvtoModelTransformation) null, null);
     }
 
-    public void apply(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+    public void apply(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
         if (isEmptyReconfiguration()) {
             return;
         }
