@@ -5,5 +5,5 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public interface IPCMReconfigurationExecutor {
-    void apply(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager);
+    void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager);
 }
