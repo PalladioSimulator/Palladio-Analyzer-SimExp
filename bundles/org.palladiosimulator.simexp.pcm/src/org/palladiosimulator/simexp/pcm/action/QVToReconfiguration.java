@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.action;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.ECollections;
-import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.pcm.state.IPCMReconfigurationExecutor;
 import org.palladiosimulator.simexp.pcm.state.PcmArchitecturalConfiguration;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
@@ -11,12 +10,10 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformat
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
-public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> implements IPCMReconfigurationExecutor {
+public class QVToReconfiguration extends BaseQVToReconfiguration implements IPCMReconfigurationExecutor {
     private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class);
-    private static final String EMPTY_RECONFIGURATION_NAME = "EmptyReconf";
 
     private final QvtoModelTransformation transformation;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     protected QVToReconfiguration(QVToReconfiguration transformation) {
         this(transformation.transformation, transformation.qvtoReconfigurationManager);
@@ -24,8 +21,8 @@ public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> imp
 
     protected QVToReconfiguration(QvtoModelTransformation transformation,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
+        super(qvtoReconfigurationManager);
         this.transformation = transformation;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     public static QVToReconfiguration of(QvtoModelTransformation transformation,
@@ -55,16 +52,13 @@ public class QVToReconfiguration extends Reconfiguration<QVTOReconfigurator> imp
         }
     }
 
-    private boolean isEmptyReconfiguration() {
+    @Override
+    protected boolean isEmptyReconfiguration() {
         return transformation == null;
     }
 
     @Override
-    public String getStringRepresentation() {
-        if (isEmptyReconfiguration()) {
-            return EMPTY_RECONFIGURATION_NAME;
-        }
+    protected String getTransformationName() {
         return transformation.getTransformationName();
     }
-
 }
