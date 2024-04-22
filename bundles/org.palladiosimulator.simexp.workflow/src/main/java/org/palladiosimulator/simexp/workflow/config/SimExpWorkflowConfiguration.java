@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
@@ -18,7 +19,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final URI smodelFile;
     private final SimulatorType simulatorType;
     private final SimulationEngine simulationEngine;
-    private final String qualityObjective;
+    private final QualityObjective qualityObjective;
     private final URI experimentsFile;
     private final URI staticModelFile;
     private final URI dynamicModelFile;
@@ -28,9 +29,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
 
-    // FIXME: pass kmodel as constructor parameter
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
-            String qualityObjective, ArchitecturalModelsWorkflowConfiguration architecturalModels,
+            QualityObjective qualityObjective, ArchitecturalModelsWorkflowConfiguration architecturalModels,
             MonitorConfiguration monitors, PrismConfiguration prismConfiguration,
             EnvironmentalModelsWorkflowConfiguration environmentalModels, SimulationParameters simulationParameters) {
 
@@ -89,7 +89,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         return simulationEngine;
     }
 
-    public String getQualityObjective() {
+    public QualityObjective getQualityObjective() {
         return qualityObjective;
     }
 

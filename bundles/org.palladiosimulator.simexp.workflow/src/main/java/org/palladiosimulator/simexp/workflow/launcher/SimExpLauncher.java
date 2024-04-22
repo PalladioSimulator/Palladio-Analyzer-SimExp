@@ -28,9 +28,9 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
-import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -115,7 +115,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationEngine simulationEngine = config.getSimulationEngine();
-            QualityObjective qualityObjective = QualityObjective.fromName(config.getQualityObjective());
+            QualityObjective qualityObjective = config.getQualityObjective();
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
@@ -130,9 +130,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                yield createModelledSimulationExecutor(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
-                        probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                        launchDescriptionProvider, config.getMonitorNames(), smodel, probModelRepo);
+                yield createModelledSimulationExecutor(qualityObjective, experiment, dbn,
+                        probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
+                        smodel, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -176,8 +177,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         };
     }
 
-    private SimulationExecutor createModelledSimulationExecutor(QualityObjective qualityObjective, Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createModelledSimulationExecutor(QualityObjective qualityObjective,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -222,11 +223,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                     (String) launchConfigurationParams.get(ModelFileTypeConstants.DYNAMIC_MODEL_FILE));
 
             /** simulation type = PCM */
-            String qualityObjective = StringUtils.EMPTY;
+            QualityObjective qualityObjective = SimulationConstants.DEFAULT_QUALITY_OBJECTIVE;
             String monitorRepositoryFile = StringUtils.EMPTY;
             List<String> configuredMonitors = new ArrayList<>();
             if (simulationEngine == SimulationEngine.PCM) {
-                qualityObjective = (String) launchConfigurationParams.get(SimulationConstants.QUALITY_OBJECTIVE);
+                String qualityObjectiveStr = (String) launchConfigurationParams
+                    .get(SimulationConstants.QUALITY_OBJECTIVE);
+                qualityObjective = QualityObjective.fromName(qualityObjectiveStr);
 
                 monitorRepositoryFile = (String) launchConfigurationParams
                     .get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
