@@ -3,8 +3,7 @@ package org.palladiosimulator.simexp.commons.constants.model;
 public enum SimulationKind {
     PERFORMANCE("Performance"), //
     RELIABILITY("Reliability"), //
-    PERFORMABILITY("Performability"), //
-    MODELLED("Modelled");
+    PERFORMABILITY("Performability");
 
     private final String name;
 

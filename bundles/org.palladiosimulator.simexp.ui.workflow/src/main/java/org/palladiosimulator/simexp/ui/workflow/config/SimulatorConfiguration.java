@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +147,6 @@ public class SimulatorConfiguration {
         simulationKindMonitorItems.put(SimulationKind.RELIABILITY, Arrays.asList("System Response Time"));
         simulationKindMonitorItems.put(SimulationKind.PERFORMABILITY,
                 Arrays.asList("System Response Time", "System ExecutionResultType"));
-        simulationKindMonitorItems.put(SimulationKind.MODELLED, Collections.emptyList());
 
         simulationKindTarget = new SelectObservableValue<>();
         for (SimulationKind kind : SimulationKind.values()) {
