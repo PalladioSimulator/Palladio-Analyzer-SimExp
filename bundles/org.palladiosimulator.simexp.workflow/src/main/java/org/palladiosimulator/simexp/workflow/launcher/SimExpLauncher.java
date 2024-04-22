@@ -70,11 +70,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             ResourceSet rs = new ResourceSetImpl();
 
-            URI smodelURI = config.getSmodelURI();
-            SModelLoader smodelLoader = new SModelLoader();
-            Smodel smodel = smodelLoader.load(rs, smodelURI);
-            LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
-
             URI experimentsFileURI = config.getExperimentsURI();
             ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
             LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
@@ -130,6 +125,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                         config.getPropertyFiles(), config.getModuleFiles());
             }
             case MODELLED -> {
+                URI smodelURI = config.getSmodelURI();
+                SModelLoader smodelLoader = new SModelLoader();
+                Smodel smodel = smodelLoader.load(rs, smodelURI);
+                LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
+
                 ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
                 yield factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
                         probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
