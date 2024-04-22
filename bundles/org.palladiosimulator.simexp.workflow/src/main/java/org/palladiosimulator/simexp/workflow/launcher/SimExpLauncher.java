@@ -38,10 +38,6 @@ import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
-import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -118,10 +114,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe,
                     probabilityDistributionFactory);
 
-            IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
-            IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
-                    getReconfigurationRulesLocation(experiment));
-
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
@@ -131,8 +123,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationExecutor simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind,
                     experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                    config.getPropertyFiles(), config.getModuleFiles(), experimentProvider, qvtoReconfigurationManager,
-                    smodel, probModelRepo);
+                    config.getPropertyFiles(), config.getModuleFiles(), smodel, probModelRepo);
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -140,15 +131,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
-    }
-
-    private String getReconfigurationRulesLocation(Experiment experiment) {
-        String path = experiment.getInitialModel()
-            .getReconfigurationRules()
-            .getFolderUri();
-        experiment.getInitialModel()
-            .setReconfigurationRules(null);
-        return path;
     }
 
     @Override
@@ -164,21 +146,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
+            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
             yield factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
                     probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                    descriptionProvider, monitorNames, experimentProvider, qvtoReconfigurationManager);
+                    descriptionProvider, monitorNames);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
             yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
                     parameterParser, probDistRepoLookup, simulationParameters, descriptionProvider, propertyFiles,
-                    moduleFiles, experimentProvider, qvtoReconfigurationManager);
+                    moduleFiles);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
