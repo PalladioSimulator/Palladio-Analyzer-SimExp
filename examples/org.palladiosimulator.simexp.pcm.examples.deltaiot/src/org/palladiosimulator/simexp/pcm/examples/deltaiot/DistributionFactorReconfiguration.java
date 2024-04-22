@@ -9,93 +9,121 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
+import org.palladiosimulator.simexp.core.action.ReconfigurationImpl;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
+import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 
-public class DistributionFactorReconfiguration extends QVToReconfiguration {
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
-	private final static String QVT_FILE_SUFFIX = "DistributionFactor";
-	private final static double DEFAULT_VALUE = 0.0;
-	private final static double TOLERANCE = 0.001;
+public class DistributionFactorReconfiguration extends ReconfigurationImpl<QVTOReconfigurator>
+        implements QVToReconfiguration {
 
-	private final Set<DistributionFactor> distFactors;
+    private final static String QVT_FILE_SUFFIX = "DistributionFactor";
+    private final static double DEFAULT_VALUE = 0.0;
+    private final static double TOLERANCE = 0.001;
 
-	public DistributionFactorReconfiguration(QVToReconfiguration reconfiguration, Set<DistributionFactor> distFactors) {
-		super(reconfiguration.getTransformation());
+    private final QVToReconfiguration reconfiguration;
+    private final Set<DistributionFactor> distFactors;
 
-		this.distFactors = distFactors;
-	}
+    public DistributionFactorReconfiguration(QVToReconfiguration reconfiguration, Set<DistributionFactor> distFactors) {
+        this.reconfiguration = reconfiguration;
+        this.distFactors = distFactors;
+    }
 
-	public void setDistributionFactorValuesToDefaults() {
-		for (DistributionFactor each : distFactors) {
-			each.getFactorValues().forEach(value -> value.setValue(DEFAULT_VALUE));
-		}
-	}
+    @Override
+    public String getStringRepresentation() {
+        return reconfiguration.getStringRepresentation();
+    }
 
-	public DistributionFactorReconfiguration(QVToReconfiguration reconfiguration,
-			List<DistributionFactor> distFactors) {
-		this(reconfiguration, Sets.newHashSet(distFactors));
-	}
+    @Override
+    public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
+        reconfiguration.execute(experimentProvider, resourceTableManager);
+    }
 
-	public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-		return qvt.getStringRepresentation().endsWith(QVT_FILE_SUFFIX);
-	}
+    public void setDistributionFactorValuesToDefaults() {
+        for (DistributionFactor each : distFactors) {
+            each.getFactorValues()
+                .forEach(value -> value.setValue(DEFAULT_VALUE));
+        }
+    }
 
-	public void adjustDistributionFactors(Map<ProbabilisticBranchTransition, Double> factorAdjustements) {
-		for (ProbabilisticBranchTransition each : factorAdjustements.keySet()) {
-			findDistFactorValueWith(each).ifPresent(v -> v.setValue(factorAdjustements.get(each)));
-		}
-	}
+    public DistributionFactorReconfiguration(QVToReconfiguration reconfiguration,
+            List<DistributionFactor> distFactors) {
+        this(reconfiguration, Sets.newHashSet(distFactors));
+    }
 
-	public boolean canBeIncreased(Map<ProbabilisticBranchTransition, Double> factors) {
-		if (factors.size() != 2) {
-			return false;
-		}
+    public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
+        return qvt.getStringRepresentation()
+            .endsWith(QVT_FILE_SUFFIX);
+    }
 
-		List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
-		double branchProb1 = transitions.get(0).getBranchProbability();
-		double branchProb2 = transitions.get(1).getBranchProbability();
-		return (branchProb1 == branchProb2) == false;
-	}
+    public void adjustDistributionFactors(Map<ProbabilisticBranchTransition, Double> factorAdjustements) {
+        for (ProbabilisticBranchTransition each : factorAdjustements.keySet()) {
+            findDistFactorValueWith(each).ifPresent(v -> v.setValue(factorAdjustements.get(each)));
+        }
+    }
 
-	public boolean canBeDecreased(Map<ProbabilisticBranchTransition, Double> factors) {
-		if (factors.size() != 2) {
-			return false;
-		}
+    public boolean canBeIncreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
 
-		List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
-		double branchProb1 = transitions.get(0).getBranchProbability() + factors.get(transitions.get(0));
-		double branchProb2 = transitions.get(1).getBranchProbability() + factors.get(transitions.get(1));
-		return max(branchProb1, branchProb2) <= 1.0;
-	}
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability();
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability();
+        return (branchProb1 == branchProb2) == false;
+    }
 
-	public boolean isValid(Map<ProbabilisticBranchTransition, Double> factors) {
-		if (factors.size() != 2) {
-			return false;
-		}
+    public boolean canBeDecreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
 
-		List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
-		double branchProb1 = transitions.get(0).getBranchProbability() + factors.get(transitions.get(0));
-		double branchProb2 = transitions.get(1).getBranchProbability() + factors.get(transitions.get(1));
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability() + factors.get(transitions.get(0));
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability() + factors.get(transitions.get(1));
+        return max(branchProb1, branchProb2) <= 1.0;
+    }
 
-		boolean sumsUpToOne = DoubleMath.fuzzyEquals((branchProb1 + branchProb2), 1.0, TOLERANCE);
-		boolean areInRange = Boolean.logicalAnd(Boolean.logicalAnd(branchProb1 >= 0, branchProb1 <= 1),
-				Boolean.logicalAnd(branchProb2 >= 0, branchProb2 <= 1));
-		return Boolean.logicalAnd(sumsUpToOne, areInRange);
-	}
+    public boolean isValid(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
 
-	private Optional<DistributionFactorValue> findDistFactorValueWith(ProbabilisticBranchTransition branch) {
-		return distFactors.stream().flatMap(each -> each.getFactorValues().stream())
-				.filter(factorValueAppliedTo(branch)).findFirst();
-	}
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability() + factors.get(transitions.get(0));
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability() + factors.get(transitions.get(1));
 
-	private Predicate<DistributionFactorValue> factorValueAppliedTo(ProbabilisticBranchTransition givenBranch) {
-		return value -> value.getAppliedBranch().getId().equals(givenBranch.getId());
-	}
+        boolean sumsUpToOne = DoubleMath.fuzzyEquals((branchProb1 + branchProb2), 1.0, TOLERANCE);
+        boolean areInRange = Boolean.logicalAnd(Boolean.logicalAnd(branchProb1 >= 0, branchProb1 <= 1),
+                Boolean.logicalAnd(branchProb2 >= 0, branchProb2 <= 1));
+        return Boolean.logicalAnd(sumsUpToOne, areInRange);
+    }
 
+    private Optional<DistributionFactorValue> findDistFactorValueWith(ProbabilisticBranchTransition branch) {
+        return distFactors.stream()
+            .flatMap(each -> each.getFactorValues()
+                .stream())
+            .filter(factorValueAppliedTo(branch))
+            .findFirst();
+    }
+
+    private Predicate<DistributionFactorValue> factorValueAppliedTo(ProbabilisticBranchTransition givenBranch) {
+        return value -> value.getAppliedBranch()
+            .getId()
+            .equals(givenBranch.getId());
+    }
 }

@@ -59,6 +59,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -70,14 +71,15 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
             SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
         this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
     private final ProbabilisticModelRepository staticEnvDynModel;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -75,9 +76,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
         this.smodel = smodel;
         this.staticEnvDynModel = staticEnvDynModel;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -85,12 +87,11 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
         this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
     }
 
     @Override
     public ModelledSimulationExecutor<Integer> create() {
-
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(experimentProvider,

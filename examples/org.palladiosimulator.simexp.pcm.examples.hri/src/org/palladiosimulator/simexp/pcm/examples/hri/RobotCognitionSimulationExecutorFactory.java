@@ -54,6 +54,7 @@ public class RobotCognitionSimulationExecutorFactory extends
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public RobotCognitionSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -65,12 +66,13 @@ public class RobotCognitionSimulationExecutorFactory extends
             SimulationRunnerHolder simulationRunnerHolder) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         this.envProcess = p;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override

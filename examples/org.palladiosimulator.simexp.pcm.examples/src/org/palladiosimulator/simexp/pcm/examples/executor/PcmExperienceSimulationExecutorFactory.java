@@ -16,7 +16,6 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
@@ -43,7 +42,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     protected final ParameterParser parameterParser;
     protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     protected final IExperimentProvider experimentProvider;
-    protected final IQVToReconfigurationManager qvtoReconfigurationManager;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -52,8 +50,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;
@@ -64,7 +61,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.parameterParser = parameterParser;
         this.probDistRepoLookup = probDistRepoLookup;
         this.experimentProvider = experimentProvider;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.simulationRunnerHolder = simulationRunnerHolder;
 
         probabilityDistributionRegistry
@@ -83,8 +79,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, qvtoReconfigurationManager,
-                    simulationRunnerHolder)
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))
