@@ -32,7 +32,6 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
@@ -71,7 +70,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             URI smodelURI = config.getSmodelURI();
             SModelLoader smodelLoader = new SModelLoader();
-            Smodel smodel = smodelLoader.load(rs, smodelURI);
+            // Smodel smodel = smodelLoader.load(rs, smodelURI);
             LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
             URI experimentsFileURI = config.getExperimentsURI();
@@ -123,7 +122,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationExecutor simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind,
                     experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                    config.getPropertyFiles(), config.getModuleFiles(), smodel, probModelRepo);
+                    config.getPropertyFiles(), config.getModuleFiles());
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -146,8 +145,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
