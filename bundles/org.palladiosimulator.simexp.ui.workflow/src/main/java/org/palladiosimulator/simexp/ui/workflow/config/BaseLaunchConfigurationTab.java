@@ -14,13 +14,13 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
+public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
     private final DataBindingContext ctx;
 
     private LaunchConfigurationDispatcher dispatcher;
     private boolean isReset = false;
 
-    public SimExpLaunchConfigurationTab() {
+    public BaseLaunchConfigurationTab() {
         this.ctx = new DataBindingContext();
     }
 

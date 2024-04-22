@@ -42,7 +42,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.No
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
+public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 

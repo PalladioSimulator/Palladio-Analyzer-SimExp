@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
+public class SimExpModelsTab extends BaseLaunchConfigurationTab {
 
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
