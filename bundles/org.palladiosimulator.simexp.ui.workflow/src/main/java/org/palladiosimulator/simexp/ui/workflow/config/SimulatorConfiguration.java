@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
-import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
@@ -57,7 +57,7 @@ public class SimulatorConfiguration {
     private final DataBindingContext ctx;
 
     private SelectObservableValue<SimulationEngine> simulationEngineTarget;
-    private SelectObservableValue<SimulationKind> simulationKindTarget;
+    private SelectObservableValue<QualityObjective> qualityObjectiveTarget;
 
     private Text textMonitorRepository;
     private ListViewer monitors;
@@ -142,28 +142,28 @@ public class SimulatorConfiguration {
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-        Map<SimulationKind, List<String>> simulationKindMonitorItems = new HashMap<>();
-        simulationKindMonitorItems.put(SimulationKind.PERFORMANCE, Arrays.asList("System Response Time"));
-        simulationKindMonitorItems.put(SimulationKind.RELIABILITY, Arrays.asList("System Response Time"));
-        simulationKindMonitorItems.put(SimulationKind.PERFORMABILITY,
+        Map<QualityObjective, List<String>> simulationKindMonitorItems = new HashMap<>();
+        simulationKindMonitorItems.put(QualityObjective.PERFORMANCE, Arrays.asList("System Response Time"));
+        simulationKindMonitorItems.put(QualityObjective.RELIABILITY, Arrays.asList("System Response Time"));
+        simulationKindMonitorItems.put(QualityObjective.PERFORMABILITY,
                 Arrays.asList("System Response Time", "System ExecutionResultType"));
 
-        simulationKindTarget = new SelectObservableValue<>();
-        for (SimulationKind kind : SimulationKind.values()) {
+        qualityObjectiveTarget = new SelectObservableValue<>();
+        for (QualityObjective kind : QualityObjective.values()) {
             Button button = new Button(qualityObjectivesGroup, SWT.RADIO);
             button.setText(kind.getName());
             ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
                 .observe(button);
-            simulationKindTarget.addOption(kind, observeable);
+            qualityObjectiveTarget.addOption(kind, observeable);
         }
-        simulationKindTarget.setValue(SimulationKind.PERFORMANCE);
+        qualityObjectiveTarget.setValue(QualityObjective.PERFORMANCE);
 
         ISideEffect.create(() -> {
-            return simulationKindTarget.getValue();
-        }, new Consumer<SimulationKind>() {
+            return qualityObjectiveTarget.getValue();
+        }, new Consumer<QualityObjective>() {
 
             @Override
-            public void accept(SimulationKind selectedKind) {
+            public void accept(QualityObjective selectedKind) {
                 if (selectedKind == null) {
                     return;
                 }
@@ -198,16 +198,16 @@ public class SimulatorConfiguration {
 
         ISWTObservableList<String> monitorsTarget = WidgetProperties.items()
             .observe(monitors.getList());
-        IObservableFactory<SimulationKind, IObservableList<String>> detailFactory = new IObservableFactory<>() {
+        IObservableFactory<QualityObjective, IObservableList<String>> detailFactory = new IObservableFactory<>() {
 
             @Override
-            public IObservableList<String> createObservable(SimulationKind master) {
+            public IObservableList<String> createObservable(QualityObjective master) {
                 IObservableList<String> listModel = new WritableList<>(simulationKindMonitorItems.get(master),
                         String.class);
                 return listModel;
             }
         };
-        IObservableList<String> monitorsModel = MasterDetailObservables.detailList(simulationKindTarget, detailFactory,
+        IObservableList<String> monitorsModel = MasterDetailObservables.detailList(qualityObjectiveTarget, detailFactory,
                 String.class);
         ctx.bindList(monitorsTarget, monitorsModel, new UpdateListStrategy<>(UpdateValueStrategy.POLICY_NEVER), null);
 
@@ -336,12 +336,12 @@ public class SimulatorConfiguration {
     }
 
     private void initializeFromPCM(ILaunchConfiguration configuration, UpdateStrategyController pcmUpdateController) {
-        IObservableValue<SimulationKind> simulationKindModel = ConfigurationProperties
-            .enummeration(SimulationConstants.QUALITY_OBJECTIVE, SimulationKind.class)
+        IObservableValue<QualityObjective> qualityObjectiveModel = ConfigurationProperties
+            .enummeration(SimulationConstants.QUALITY_OBJECTIVE, QualityObjective.class)
             .observe(configuration);
-        UpdateValueStrategy<SimulationKind, SimulationKind> simulationKindUpdateStrategy = new ConditionalUpdateValueStrategy<>(
+        UpdateValueStrategy<QualityObjective, QualityObjective> qualityObjectiveUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
-        ctx.bindValue(simulationKindTarget, simulationKindModel, simulationKindUpdateStrategy,
+        ctx.bindValue(qualityObjectiveTarget, qualityObjectiveModel, qualityObjectiveUpdateStrategy,
                 new ConditionalUpdateValueStrategy<>(pcmUpdateController));
 
         IObservableValue<String> monitorRepositoryTarget = WidgetProperties.text(SWT.Modify)

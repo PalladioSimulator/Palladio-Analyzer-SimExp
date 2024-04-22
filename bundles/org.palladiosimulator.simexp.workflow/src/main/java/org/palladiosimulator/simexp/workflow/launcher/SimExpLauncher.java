@@ -30,7 +30,7 @@ import org.palladiosimulator.experimentautomation.experiments.ExperimentReposito
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
-import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -115,11 +115,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationEngine simulationEngine = config.getSimulationEngine();
-            SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
+            QualityObjective qualityObjective = QualityObjective.fromName(config.getQualityObjective());
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
+                yield createCustomSimulationExecutor(simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
                         config.getPropertyFiles(), config.getModuleFiles());
@@ -130,7 +130,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                yield createModelledSimulationExecutor(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+                yield createModelledSimulationExecutor(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
                         probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                         launchDescriptionProvider, config.getMonitorNames(), smodel, probModelRepo);
             }
@@ -153,7 +153,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(SimulationEngine simulationEngine,
-            SimulationKind simulationKind, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -162,7 +162,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+            yield factory.create(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
                     probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                     descriptionProvider, monitorNames);
         }
@@ -176,7 +176,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         };
     }
 
-    private SimulationExecutor createModelledSimulationExecutor(SimulationKind simulationKind, Experiment experiment,
+    private SimulationExecutor createModelledSimulationExecutor(QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -184,7 +184,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
             List<String> monitorNames, Smodel smodel, ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+        return factory.create(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
                 probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                 launchDescriptionProvider, monitorNames, smodel, probModelRepo);
     }

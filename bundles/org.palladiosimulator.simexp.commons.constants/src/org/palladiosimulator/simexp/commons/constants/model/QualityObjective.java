@@ -14,4 +14,14 @@ public enum QualityObjective {
     public String getName() {
         return name;
     }
+
+    public static QualityObjective fromName(String name) {
+        for (QualityObjective kind : QualityObjective.values()) {
+            if (kind.getName()
+                .equals(name)) {
+                return kind;
+            }
+        }
+        throw new RuntimeException(String.format("Invalid QualityObjective: %s", name));
+    }
 }

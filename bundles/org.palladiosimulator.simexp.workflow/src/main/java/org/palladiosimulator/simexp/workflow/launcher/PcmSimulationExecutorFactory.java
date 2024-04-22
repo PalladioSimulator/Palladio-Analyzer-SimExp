@@ -5,7 +5,7 @@ import java.util.List;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
@@ -29,7 +29,7 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(SimulationKind simulationKind, Experiment experiment,
+    public SimulationExecutor create(QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -44,7 +44,7 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             .map(provider::getSpecification)
             .toList();
 
-        PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationKind) {
+        PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
@@ -60,7 +60,7 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
                 experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-        default -> throw new RuntimeException("Unexpected quality objective " + simulationKind);
+        default -> throw new RuntimeException("Unexpected QualityObjective: " + qualityObjective);
         };
         return factory.create();
     }

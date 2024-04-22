@@ -6,7 +6,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
@@ -29,7 +29,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
-    public SimulationExecutor create(SimulationKind simulationKind, Experiment experiment,
+    public SimulationExecutor create(QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -44,7 +44,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             .map(provider::getSpecification)
             .toList();
 
-        PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (simulationKind) {
+        PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(experiment, dbn, pcmSpecs,
                     simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
@@ -59,7 +59,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
                     staticEnvDynModel);
         }
-        default -> throw new IllegalArgumentException("SimulationKind not supported: " + simulationKind);
+        default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
 
         return factory.create();
