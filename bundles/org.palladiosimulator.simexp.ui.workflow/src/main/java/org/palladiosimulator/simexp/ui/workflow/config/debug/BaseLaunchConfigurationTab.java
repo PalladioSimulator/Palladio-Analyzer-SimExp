@@ -75,19 +75,21 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
             dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
             doInitializeFrom(dispatcher, ctx);
             ctx.updateTargets();
-        } else {
-            try {
-                ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-                dispatcher.setDelegate(workingCopy);
-            } catch (CoreException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
-            isReset = true;
-            try {
-                ctx.updateTargets();
-            } finally {
-                isReset = false;
-            }
+            return;
+        }
+
+        // reset handling
+        try {
+            ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+            dispatcher.setDelegate(workingCopy);
+        } catch (CoreException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        isReset = true;
+        try {
+            ctx.updateTargets();
+        } finally {
+            isReset = false;
         }
     }
 
@@ -112,5 +114,4 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
         setErrorMessage(null);
         return true;
     }
-
 }
