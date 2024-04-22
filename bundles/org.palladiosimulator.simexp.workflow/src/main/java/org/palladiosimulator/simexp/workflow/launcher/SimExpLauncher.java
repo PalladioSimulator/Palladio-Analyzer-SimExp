@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstan
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
+import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
@@ -116,8 +117,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
-            SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
+            SimulatorType simulatorType = config.getSimulatorType();
             SimulationEngine simulationEngine = config.getSimulationEngine();
+            SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
 
             SimulationExecutor simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind,
                     experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
@@ -176,6 +178,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 }
             }
 
+            String simulatorTypeStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATOR_TYPE);
+            SimulatorType simulatorType = SimulatorType.fromName(simulatorTypeStr);
             String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
             SimulationEngine simulationEngine = SimulationEngine.fromName(simulationEngineStr);
 
@@ -222,7 +226,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulationEngine, qualityObjective,
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, qualityObjective,
                     architecturalModels, monitors, prismConfig, environmentalModels, simulationParameters);
         } catch (CoreException e) {
             LOGGER.error(

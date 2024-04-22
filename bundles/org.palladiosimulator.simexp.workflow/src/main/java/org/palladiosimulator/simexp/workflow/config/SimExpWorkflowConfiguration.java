@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
+import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
@@ -15,6 +16,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * 
      */
     private final URI smodelFile;
+    private final SimulatorType simulatorType;
     private final SimulationEngine simulationEngine;
     private final String qualityObjective;
     private final URI experimentsFile;
@@ -27,10 +29,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final SimulationParameters simulationParameters;
 
     // FIXME: pass kmodel as constructor parameter
-    public SimExpWorkflowConfiguration(SimulationEngine simulationEngine, String qualityObjective,
-            ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
-            PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters) {
+    public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
+            String qualityObjective, ArchitecturalModelsWorkflowConfiguration architecturalModels,
+            MonitorConfiguration monitors, PrismConfiguration prismConfiguration,
+            EnvironmentalModelsWorkflowConfiguration environmentalModels, SimulationParameters simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -39,6 +41,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * refactoring for performability analysis it is current not required; therefore pass empty
          * list in order to successfully execute workflow
          */
+        this.simulatorType = simulatorType;
         this.simulationEngine = simulationEngine;
         this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
@@ -76,6 +79,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
     public URI getSmodelURI() {
         return smodelFile;
+    }
+
+    public SimulatorType getSimulatorType() {
+        return simulatorType;
     }
 
     public SimulationEngine getSimulationEngine() {
