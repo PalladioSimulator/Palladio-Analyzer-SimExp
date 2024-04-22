@@ -116,7 +116,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 envVariableValueProvider);
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
-                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter);
+                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.model.strategy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,12 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
@@ -22,12 +26,15 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
     private final Analyzer analyzer;
     private final Planner planner;
     private final String strategyId;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public ModelledReconfigurationStrategy(String strategyId, Monitor monitor, Analyzer analyzer, Planner planner) {
+    public ModelledReconfigurationStrategy(String strategyId, Monitor monitor, Analyzer analyzer, Planner planner,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
         this.strategyId = strategyId;
         this.monitor = monitor;
         this.analyzer = analyzer;
         this.planner = planner;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
@@ -63,10 +70,16 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
         for (QVToReconfiguration option : options) {
             reconfigurationMap.put(option.getStringRepresentation(), option);
         }
-        String resolvedActionName = actions.get(0)
-            .getAction()
-            .getName();
-        QVToReconfiguration reconfiguration = reconfigurationMap.get(resolvedActionName);
+        List<QvtoModelTransformation> transformations = new ArrayList<>();
+        for (ResolvedAction resolvedAction : actions) {
+            String resolvedActionName = resolvedAction.getAction()
+                .getName();
+            QVToReconfiguration transformation = reconfigurationMap.get(resolvedActionName);
+            transformations.add((QvtoModelTransformation) transformation);
+        }
+        MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(transformations,
+                qvtoReconfigurationManager);
+
         LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
         return reconfiguration;
 
