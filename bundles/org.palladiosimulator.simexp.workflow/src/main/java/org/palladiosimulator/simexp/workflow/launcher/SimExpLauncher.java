@@ -119,7 +119,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
+                yield createCustomSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
                         config.getPropertyFiles(), config.getModuleFiles());
@@ -130,8 +130,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-                yield factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+                yield createModelledSimulationExecutor(simulationKind, experiment, dbn, probabilityDistributionRegistry,
                         probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                         launchDescriptionProvider, config.getMonitorNames(), smodel, probModelRepo);
             }
@@ -153,7 +152,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createSimulationExecutor(SimulationEngine simulationEngine,
+    private SimulationExecutor createCustomSimulationExecutor(SimulationEngine simulationEngine,
             SimulationKind simulationKind, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -175,6 +174,19 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
+    }
+
+    private SimulationExecutor createModelledSimulationExecutor(SimulationKind simulationKind, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
+            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
+            List<String> monitorNames, Smodel smodel, ProbabilisticModelRepository probModelRepo) {
+        ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
+        return factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+                probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                launchDescriptionProvider, monitorNames, smodel, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")
