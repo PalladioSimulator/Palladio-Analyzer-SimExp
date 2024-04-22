@@ -1,9 +1,7 @@
 package org.palladiosimulator.simexp.model.strategy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
@@ -66,23 +64,24 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
      * 
      */
     private QVToReconfiguration findReconfiguration(Set<QVToReconfiguration> options, List<ResolvedAction> actions) {
-        Map<String, QVToReconfiguration> reconfigurationMap = new HashMap<>();
-        for (QVToReconfiguration option : options) {
-            reconfigurationMap.put(option.getStringRepresentation(), option);
-        }
+//        Map<String, QVToReconfiguration> reconfigurationMap = new HashMap<>();
+//        for (QVToReconfiguration option : options) {
+//            reconfigurationMap.put(option.getStringRepresentation(), option);
+//        }
         List<QvtoModelTransformation> transformations = new ArrayList<>();
         for (ResolvedAction resolvedAction : actions) {
             String resolvedActionName = resolvedAction.getAction()
                 .getName();
-            QVToReconfiguration transformation = reconfigurationMap.get(resolvedActionName);
-            transformations.add((QvtoModelTransformation) transformation);
+//            QVToReconfiguration reconfiguration = reconfigurationMap.get(resolvedActionName);
+            QvtoModelTransformation transformation = qvtoReconfigurationManager
+                .findQvtoModelTransformation(resolvedActionName);
+            transformations.add(transformation);
         }
+
         MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(transformations,
                 qvtoReconfigurationManager);
 
-        LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
         return reconfiguration;
-
     }
 
     @Override
