@@ -59,7 +59,6 @@ public class SimulatorConfiguration {
 
     private Text textMonitorRepository;
     private ListViewer monitors;
-    private Text textFailureScenarioModel;
 
     private WritableList<String> moduleFilesTarget;
     private WritableList<String> propertyFilesTarget;
@@ -204,15 +203,6 @@ public class SimulatorConfiguration {
         IObservableList<String> monitorsModel = MasterDetailObservables.detailList(qualityObjectiveTarget,
                 detailFactory, String.class);
         ctx.bindList(monitorsTarget, monitorsModel, new UpdateListStrategy<>(UpdateValueStrategy.POLICY_NEVER), null);
-
-        // TODO: remove
-        final Composite failureComposite = new Composite(parent, SWT.NONE);
-        failureComposite.setLayout(new GridLayout());
-        failureComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false));
-        textFailureScenarioModel = new Text(failureComposite, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(failureComposite, modifyListener, "Failure Scenario File",
-                ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE_EXTENSION, textFailureScenarioModel,
-                "Select Failure Scenario File", shell, ModelFileTypeConstants.EMPTY_STRING);
     }
 
     private void createPrismTab(Composite parent, ModifyListener modifyListener) {
@@ -362,13 +352,6 @@ public class SimulatorConfiguration {
         UpdateListStrategy<String, String> monitorsModelToTarget = new ConditionalUpdateListStrategy<>(
                 UpdateValueStrategy.POLICY_NEVER, pcmUpdateController);
         ctx.bindList(monitorTarget, monitorModel, monitorsTargetToModel, monitorsModelToTarget);
-
-        /*
-         * try { textFailureScenarioModel.setText(configuration
-         * .getAttribute(ModelFileTypeConstants.FAILURE_SCENARIO_MODEL_FILE,
-         * ModelFileTypeConstants.EMPTY_STRING)); } catch (CoreException e) {
-         * LaunchConfigPlugin.errorLogger(getName(), "Failure Scenario File", e.getMessage()); }
-         */
     }
 
     private void initializeFromPRISM(ILaunchConfiguration configuration, DataBindingContext ctx,
