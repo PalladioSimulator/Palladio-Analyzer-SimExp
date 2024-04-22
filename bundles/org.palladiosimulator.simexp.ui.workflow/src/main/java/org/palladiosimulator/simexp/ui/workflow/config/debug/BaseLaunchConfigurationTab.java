@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.ui.workflow.config;
+package org.palladiosimulator.simexp.ui.workflow.config.debug;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -30,6 +30,9 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
     }
 
     protected class SimExpModifyListener implements ModifyListener {
+        public SimExpModifyListener() {
+        }
+
         @Override
         public void modifyText(ModifyEvent e) {
             if (isReset) {

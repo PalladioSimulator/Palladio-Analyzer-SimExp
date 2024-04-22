@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.Configuration
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;

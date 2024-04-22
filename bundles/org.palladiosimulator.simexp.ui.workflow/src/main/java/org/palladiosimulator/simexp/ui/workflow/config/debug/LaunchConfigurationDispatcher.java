@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.ui.workflow.config;
+package org.palladiosimulator.simexp.ui.workflow.config.debug;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchDelegate;
 
-public class LaunchConfigurationDispatcher implements ILaunchConfigurationWorkingCopy {
+class LaunchConfigurationDispatcher implements ILaunchConfigurationWorkingCopy {
     private ILaunchConfigurationWorkingCopy delegate;
 
     public LaunchConfigurationDispatcher(ILaunchConfigurationWorkingCopy delegate) {
