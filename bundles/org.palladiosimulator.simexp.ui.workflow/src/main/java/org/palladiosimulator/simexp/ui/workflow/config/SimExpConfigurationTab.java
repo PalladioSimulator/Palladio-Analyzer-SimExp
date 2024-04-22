@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.ComputedValue;
@@ -54,11 +55,11 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     private Text textSModel;
 
     public SimExpConfigurationTab() {
-        this.simulatorConfiguration = new SimulatorConfiguration(ctx);
+        this.simulatorConfiguration = new SimulatorConfiguration();
     }
 
     @Override
-    public void createControl(Composite parent) {
+    public void doCreateControl(Composite parent, DataBindingContext ctx) {
         ModifyListener modifyListener = new SimExpModifyListener();
 
         Composite container = new Composite(parent, SWT.NONE);
@@ -84,7 +85,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
 
         createSimulatorType(container, modifyListener);
-        simulatorConfiguration.createControl(container, modifyListener);
+        simulatorConfiguration.createControl(container, ctx, modifyListener);
     }
 
     private void createSimulatorType(Composite parent, ModifyListener modifyListener) {
@@ -160,7 +161,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     }
 
     @Override
-    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration) {
+    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
         IObservableValue<String> simulationIdTarget = WidgetProperties.text(SWT.Modify)
             .observe(textSimulationID);
         IObservableValue<String> simulationIdModel = ConfigurationProperties.string(SimulationConstants.SIMULATION_ID)
@@ -197,11 +198,11 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
 
-        initializeSimulatorTypeFrom(configuration);
-        simulatorConfiguration.initializeFrom(configuration);
+        initializeSimulatorTypeFrom(configuration, ctx);
+        simulatorConfiguration.initializeFrom(configuration, ctx);
     }
 
-    private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration) {
+    private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
         IObservableValue<SimulatorType> simulatorTypeModel = ConfigurationProperties
             .enummeration(SimulationConstants.SIMULATOR_TYPE, SimulatorType.class)
             .observe(configuration);

@@ -40,9 +40,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
-import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateListStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUpdateValueStrategy;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
@@ -54,8 +54,6 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
 public class SimulatorConfiguration {
-    private final DataBindingContext ctx;
-
     private SelectObservableValue<SimulationEngine> simulationEngineTarget;
     private SelectObservableValue<QualityObjective> qualityObjectiveTarget;
 
@@ -66,11 +64,7 @@ public class SimulatorConfiguration {
     private WritableList<String> moduleFilesTarget;
     private WritableList<String> propertyFilesTarget;
 
-    public SimulatorConfiguration(DataBindingContext ctx) {
-        this.ctx = ctx;
-    }
-
-    public void createControl(Composite parent, ModifyListener modifyListener) {
+    public void createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
         Composite simulationParent = new Composite(parent, SWT.BORDER);
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         simulationParent.setLayout(new GridLayout(2, false));
@@ -119,7 +113,7 @@ public class SimulatorConfiguration {
         simulationDetails.setLayout(new GridLayout());
 
         Composite pcmDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PCM);
-        createPcmTab(pcmDetails, modifyListener);
+        createPcmTab(pcmDetails, ctx, modifyListener);
         engineDetailsMap.put(SimulationEngine.PCM, pcmDetails);
         Composite prismDetails = createEngineDetailsComposite(simulationDetails, SimulationEngine.PRISM);
         createPrismTab(prismDetails, modifyListener);
@@ -137,8 +131,8 @@ public class SimulatorConfiguration {
         return content;
     }
 
-    private void createPcmTab(Composite content, ModifyListener modifyListener) {
-        final Group qualityObjectivesGroup = new Group(content, SWT.NONE);
+    private void createPcmTab(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
+        final Group qualityObjectivesGroup = new Group(parent, SWT.NONE);
         qualityObjectivesGroup.setText(SimulationConstants.QUALITY_OBJECTIVE);
         qualityObjectivesGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
 
@@ -179,14 +173,14 @@ public class SimulatorConfiguration {
             }
         });
 
-        final Shell shell = content.getShell();
+        final Shell shell = parent.getShell();
 
-        textMonitorRepository = new Text(content, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(content, modifyListener, "Monitor Repository File",
+        textMonitorRepository = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        TabHelper.createFileInputSection(parent, modifyListener, "Monitor Repository File",
                 ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION, textMonitorRepository,
                 "Select Monitor Repository File", shell, ModelFileTypeConstants.EMPTY_STRING);
 
-        final Group monitorsGroup = new Group(content, SWT.NONE);
+        final Group monitorsGroup = new Group(parent, SWT.NONE);
         monitorsGroup.setText("Monitors");
         monitorsGroup.setLayout(new GridLayout(1, false));
         monitorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -207,12 +201,12 @@ public class SimulatorConfiguration {
                 return listModel;
             }
         };
-        IObservableList<String> monitorsModel = MasterDetailObservables.detailList(qualityObjectiveTarget, detailFactory,
-                String.class);
+        IObservableList<String> monitorsModel = MasterDetailObservables.detailList(qualityObjectiveTarget,
+                detailFactory, String.class);
         ctx.bindList(monitorsTarget, monitorsModel, new UpdateListStrategy<>(UpdateValueStrategy.POLICY_NEVER), null);
 
         // TODO: remove
-        final Composite failureComposite = new Composite(content, SWT.NONE);
+        final Composite failureComposite = new Composite(parent, SWT.NONE);
         failureComposite.setLayout(new GridLayout());
         failureComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false));
         textFailureScenarioModel = new Text(failureComposite, SWT.SINGLE | SWT.BORDER);
@@ -309,7 +303,7 @@ public class SimulatorConfiguration {
                 SimulationConstants.DEFAULT_SIMULATION_ENGINE.name());
     }
 
-    public void initializeFrom(ILaunchConfiguration configuration) {
+    public void initializeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
         IObservableValue<SimulationEngine> simulationEngineModel = ConfigurationProperties
             .enummeration(SimulationConstants.SIMULATION_ENGINE, SimulationEngine.class)
             .observe(configuration);
@@ -331,11 +325,12 @@ public class SimulatorConfiguration {
                 return simulationEngineTarget.getValue() == SimulationEngine.PRISM;
             }
         };
-        initializeFromPCM(configuration, pcmUpdateController);
-        initializeFromPRISM(configuration, prismUpdateController);
+        initializeFromPCM(configuration, ctx, pcmUpdateController);
+        initializeFromPRISM(configuration, ctx, prismUpdateController);
     }
 
-    private void initializeFromPCM(ILaunchConfiguration configuration, UpdateStrategyController pcmUpdateController) {
+    private void initializeFromPCM(ILaunchConfiguration configuration, DataBindingContext ctx,
+            UpdateStrategyController pcmUpdateController) {
         IObservableValue<QualityObjective> qualityObjectiveModel = ConfigurationProperties
             .enummeration(SimulationConstants.QUALITY_OBJECTIVE, QualityObjective.class)
             .observe(configuration);
@@ -376,7 +371,7 @@ public class SimulatorConfiguration {
          */
     }
 
-    private void initializeFromPRISM(ILaunchConfiguration configuration,
+    private void initializeFromPRISM(ILaunchConfiguration configuration, DataBindingContext ctx,
             UpdateStrategyController prismUpdateController) {
         IObservableList<String> moduleFilesModel = ConfigurationProperties
             .list(ModelFileTypeConstants.PRISM_MODULE_FILE)

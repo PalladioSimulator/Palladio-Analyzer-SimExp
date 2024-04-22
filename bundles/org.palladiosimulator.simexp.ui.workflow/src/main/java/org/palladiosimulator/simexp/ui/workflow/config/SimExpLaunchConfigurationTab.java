@@ -12,9 +12,10 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.widgets.Composite;
 
 public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
-    protected final DataBindingContext ctx;
+    private final DataBindingContext ctx;
 
     private LaunchConfigurationDispatcher dispatcher;
     private boolean isReset = false;
@@ -58,11 +59,18 @@ public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigu
     }
 
     @Override
+    public final void createControl(Composite parent) {
+        doCreateControl(parent, ctx);
+    }
+
+    protected abstract void doCreateControl(Composite parent, DataBindingContext ctx);
+
+    @Override
     public final void initializeFrom(ILaunchConfiguration configuration) {
         if (configuration instanceof ILaunchConfigurationWorkingCopy) {
             ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
             dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
-            doInitializeFrom(dispatcher);
+            doInitializeFrom(dispatcher, ctx);
             ctx.updateTargets();
         } else {
             try {
@@ -80,7 +88,7 @@ public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigu
         }
     }
 
-    protected abstract void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration);
+    protected abstract void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx);
 
     @Override
     public final void performApply(ILaunchConfigurationWorkingCopy configuration) {

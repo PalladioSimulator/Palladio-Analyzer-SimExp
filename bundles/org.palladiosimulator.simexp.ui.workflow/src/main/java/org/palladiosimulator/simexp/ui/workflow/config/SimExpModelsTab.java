@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.ui.workflow.config;
 import java.util.Arrays;
 
 import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -39,7 +40,7 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
     private Text textDynamicModel;
 
     @Override
-    public void createControl(Composite parent) {
+    public void doCreateControl(Composite parent, DataBindingContext ctx) {
         ModifyListener modifyListener = new SimExpModifyListener();
 
         Composite container = new Composite(parent, SWT.NONE);
@@ -87,7 +88,7 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
     }
 
     @Override
-    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration) {
+    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
         IObservableValue<String> allocationTarget = WidgetProperties.text(SWT.Modify)
             .observe(textAllocation);
         IObservableValue<String> allocationModel = ConfigurationProperties
