@@ -11,7 +11,6 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
@@ -38,8 +37,7 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
-                getReconfigurationRulesLocation(experiment));
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
         List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()

@@ -13,7 +13,6 @@ import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
@@ -38,8 +37,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             List<String> monitorNames, Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
-                getReconfigurationRulesLocation(experiment));
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
         List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
