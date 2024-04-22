@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationKind;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
@@ -71,7 +72,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             URI smodelURI = config.getSmodelURI();
             SModelLoader smodelLoader = new SModelLoader();
-            // Smodel smodel = smodelLoader.load(rs, smodelURI);
+            Smodel smodel = smodelLoader.load(rs, smodelURI);
             LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
             URI experimentsFileURI = config.getExperimentsURI();
@@ -121,10 +122,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationEngine simulationEngine = config.getSimulationEngine();
             SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
 
-            SimulationExecutor simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind,
-                    experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                    config.getPropertyFiles(), config.getModuleFiles());
+            SimulationExecutor simulationExecutor;
+            if (simulatorType == SimulatorType.CUSTOM) {
+                simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
+                        probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
+                        config.getPropertyFiles(), config.getModuleFiles());
+            } else {
+                ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
+                simulationExecutor = factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+                        probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                        launchDescriptionProvider, config.getMonitorNames(), smodel, probModelRepo);
+            }
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
