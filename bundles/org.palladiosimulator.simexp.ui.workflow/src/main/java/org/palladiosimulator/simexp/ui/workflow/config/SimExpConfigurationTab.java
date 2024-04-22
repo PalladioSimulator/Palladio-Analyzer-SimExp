@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -129,10 +130,21 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
                     return;
                 }
 
-                modelledContainer.setEnabled(selectedSimulatorType == SimulatorType.MODELLED);
+                recursiveSetEnabled(modelledContainer, selectedSimulatorType == SimulatorType.MODELLED);
                 modifyListener.modifyText(null);
             }
         });
+    }
+
+    private void recursiveSetEnabled(Control ctrl, boolean enabled) {
+        if (ctrl instanceof Composite) {
+            Composite comp = (Composite) ctrl;
+            for (Control c : comp.getChildren()) {
+                recursiveSetEnabled(c, enabled);
+            }
+        } else {
+            ctrl.setEnabled(enabled);
+        }
     }
 
     @Override
