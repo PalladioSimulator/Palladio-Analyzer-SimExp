@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
@@ -88,7 +87,7 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
     }
 
     @Override
-    public void initializeFrom(ILaunchConfiguration configuration) {
+    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration) {
         IObservableValue<String> allocationTarget = WidgetProperties.text(SWT.Modify)
             .observe(textAllocation);
         IObservableValue<String> allocationModel = ConfigurationProperties
@@ -137,8 +136,6 @@ public class SimExpModelsTab extends SimExpLaunchConfigurationTab {
                 ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION[0]);
         Binding dynamicBindValue = ctx.bindValue(dynamicTarget, dynamicModel, dynamicUpdateStrategy, null);
         ControlDecorationSupport.create(dynamicBindValue, SWT.TOP | SWT.RIGHT);
-
-        ctx.updateTargets();
     }
 
     private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {

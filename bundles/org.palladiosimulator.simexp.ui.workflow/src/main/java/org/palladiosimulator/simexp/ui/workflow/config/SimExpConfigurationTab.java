@@ -160,7 +160,7 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
     }
 
     @Override
-    public void initializeFrom(ILaunchConfiguration configuration) {
+    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration) {
         IObservableValue<String> simulationIdTarget = WidgetProperties.text(SWT.Modify)
             .observe(textSimulationID);
         IObservableValue<String> simulationIdModel = ConfigurationProperties.string(SimulationConstants.SIMULATION_ID)
@@ -199,8 +199,6 @@ public class SimExpConfigurationTab extends SimExpLaunchConfigurationTab {
 
         initializeSimulatorTypeFrom(configuration);
         simulatorConfiguration.initializeFrom(configuration);
-
-        ctx.updateTargets();
     }
 
     private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration) {

@@ -4,6 +4,7 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.ValidationStatusProvider;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -14,6 +15,9 @@ import org.eclipse.swt.events.ModifyListener;
 
 public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
     protected final DataBindingContext ctx;
+
+    private LaunchConfigurationDispatcher dispatcher;
+    private boolean isReset = false;
 
     public SimExpLaunchConfigurationTab() {
         this.ctx = new DataBindingContext();
@@ -27,6 +31,9 @@ public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigu
     protected class SimExpModifyListener implements ModifyListener {
         @Override
         public void modifyText(ModifyEvent e) {
+            if (isReset) {
+                return;
+            }
             resetValidationStatuses();
             validateTargetToModel();
             setDirty(true);
@@ -51,7 +58,33 @@ public abstract class SimExpLaunchConfigurationTab extends AbstractLaunchConfigu
     }
 
     @Override
-    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+    public final void initializeFrom(ILaunchConfiguration configuration) {
+        if (configuration instanceof ILaunchConfigurationWorkingCopy) {
+            ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
+            dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
+            doInitializeFrom(dispatcher);
+            ctx.updateTargets();
+        } else {
+            try {
+                ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+                dispatcher.setDelegate(workingCopy);
+            } catch (CoreException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+            isReset = true;
+            try {
+                ctx.updateTargets();
+            } finally {
+                isReset = false;
+            }
+        }
+    }
+
+    protected abstract void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration);
+
+    @Override
+    public final void performApply(ILaunchConfigurationWorkingCopy configuration) {
+        dispatcher.setDelegate(configuration);
         ctx.updateModels();
     }
 
