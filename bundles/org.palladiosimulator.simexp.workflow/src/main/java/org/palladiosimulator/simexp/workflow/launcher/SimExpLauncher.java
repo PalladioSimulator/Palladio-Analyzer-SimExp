@@ -122,18 +122,21 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationEngine simulationEngine = config.getSimulationEngine();
             SimulationKind simulationKind = SimulationKind.fromName(config.getQualityObjective());
 
-            SimulationExecutor simulationExecutor;
-            if (simulatorType == SimulatorType.CUSTOM) {
-                simulationExecutor = createSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
+            SimulationExecutor simulationExecutor = switch (simulatorType) {
+            case CUSTOM -> {
+                yield createSimulationExecutor(simulationEngine, simulationKind, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
                         config.getPropertyFiles(), config.getModuleFiles());
-            } else {
+            }
+            case MODELLED -> {
                 ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-                simulationExecutor = factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
+                yield factory.create(simulationKind, experiment, dbn, probabilityDistributionRegistry,
                         probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                         launchDescriptionProvider, config.getMonitorNames(), smodel, probModelRepo);
             }
+            default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
+            };
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
