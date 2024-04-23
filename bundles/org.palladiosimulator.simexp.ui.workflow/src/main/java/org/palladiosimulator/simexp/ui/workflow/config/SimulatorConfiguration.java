@@ -17,6 +17,7 @@ import org.eclipse.core.databinding.observable.masterdetail.MasterDetailObservab
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
@@ -48,6 +49,8 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConditionalUp
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.UpdateStrategyController;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
 
@@ -321,6 +324,8 @@ public class SimulatorConfiguration {
 
     private void initializeFromPCM(ILaunchConfiguration configuration, DataBindingContext ctx,
             UpdateStrategyController pcmUpdateController) {
+        ControllableValidator.Enabled isPcmEnabled = new EnumEnabler<>(SimulationEngine.PCM, simulationEngineTarget);
+
         IObservableValue<QualityObjective> qualityObjectiveModel = ConfigurationProperties
             .enummeration(SimulationConstants.QUALITY_OBJECTIVE, QualityObjective.class)
             .observe(configuration);
@@ -336,9 +341,14 @@ public class SimulatorConfiguration {
             .observe(configuration);
         UpdateValueStrategy<String, String> monitorRepositoryUpdateStrategy = new ConditionalUpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT, pcmUpdateController);
-        monitorRepositoryUpdateStrategy.setBeforeSetValidator(new CompoundStringValidator(
-                Arrays.asList(new FileURIValidator("Monitor Repository File"), new ExtensionValidator(
-                        "Monitor Repository File", ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION[0]))));
+        IValidator<String> monitorRepositoryValidator = new ControllableValidator<>(
+                new CompoundStringValidator(
+                        Arrays
+                            .asList(new FileURIValidator("Monitor Repository File"),
+                                    new ExtensionValidator("Monitor Repository File",
+                                            ModelFileTypeConstants.MONITOR_REPOSITORY_FILE_EXTENSION[0]))),
+                isPcmEnabled);
+        monitorRepositoryUpdateStrategy.setBeforeSetValidator(monitorRepositoryValidator);
         Binding monitorRepositoryBindValue = ctx.bindValue(monitorRepositoryTarget, monitorRepositoryModel,
                 monitorRepositoryUpdateStrategy, new ConditionalUpdateValueStrategy<>(pcmUpdateController));
         ControlDecorationSupport.create(monitorRepositoryBindValue, SWT.TOP | SWT.RIGHT);
