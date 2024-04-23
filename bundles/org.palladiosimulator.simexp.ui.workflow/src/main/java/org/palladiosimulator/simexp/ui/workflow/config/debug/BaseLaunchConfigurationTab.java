@@ -3,10 +3,8 @@ package org.palladiosimulator.simexp.ui.workflow.config.debug;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.ValidationStatusProvider;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -38,22 +36,11 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
             if (isReset) {
                 return;
             }
-            resetValidationStatuses();
             validateTargetToModel();
             setDirty(true);
             updateLaunchConfigurationDialog();
         }
     };
-
-    private void resetValidationStatuses() {
-        for (Binding binding : ctx.getBindings()) {
-            IObservableValue<IStatus> validationStatus = binding.getValidationStatus();
-            if (!validationStatus.getValue()
-                .isOK()) {
-                validationStatus.setValue(Status.OK_STATUS);
-            }
-        }
-    }
 
     private void validateTargetToModel() {
         for (Binding binding : ctx.getBindings()) {
