@@ -22,13 +22,13 @@ public class SmodelInterpreter implements Analyzer, Planner {
             IFieldValueProvider envVariableValueProvider) {
         IFieldValueProvider optimizableValueProvider = new OptimizableValueProvider();
         IFieldValueProvider constantValueProvider = new ConstantValueProvider();
-        IFieldValueProvider variableValueProvider = new VariableValueProvider(constantValueProvider, probeValueProvider,
-                optimizableValueProvider, envVariableValueProvider);
+        VariableValueProvider variableValueProvider = new VariableValueProvider(constantValueProvider,
+                probeValueProvider, optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, variableValueProvider,
                 probeValueProvider, optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.smodelAnalyzer = new SmodelAnalyzer(model, saveFieldValueProvider);
-        this.smodelPlaner = new SmodelPlaner(model, saveFieldValueProvider);
+        this.smodelPlaner = new SmodelPlaner(model, saveFieldValueProvider, variableValueProvider);
     }
 
     @Override

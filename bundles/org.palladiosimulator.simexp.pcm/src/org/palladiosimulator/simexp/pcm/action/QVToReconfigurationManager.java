@@ -2,7 +2,9 @@ package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -57,6 +59,35 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
             .filter(each -> each instanceof QvtoModelTransformation)
             .map(each -> SingleQVToReconfiguration.of((QvtoModelTransformation) each, this))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public QvtoModelTransformation findQvtoModelTransformation(String transformationName) {
+        Stream<ModelTransformation<?>> stream = transformations.stream();
+        ModelTransformation<?> result = stream.filter(new TransformationNamePredicate(transformationName))
+            .findFirst()
+            .orElse(null);
+        return (QvtoModelTransformation) result;
+    }
+
+    private static class TransformationNamePredicate implements Predicate<ModelTransformation<?>> {
+        private final String name;
+
+        public TransformationNamePredicate(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean test(ModelTransformation<?> each) {
+            if (!(each instanceof QvtoModelTransformation)) {
+                return false;
+            }
+            QvtoModelTransformation qvtoModelTransformation = (QvtoModelTransformation) each;
+            if (!name.equals(qvtoModelTransformation.getTransformationName())) {
+                return false;
+            }
+            return true;
+        }
     }
 
     @Override
