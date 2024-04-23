@@ -31,15 +31,14 @@ public abstract class AbstractPcmModelChange<V> implements PcmModelChange<V> {
     @Override
     public void apply(PerceivedValue<V> change) {
         PerceivedElement<V> pe = (PerceivedElement<V>) change;
-        LOGGER
-            .debug(String.format("Apply perceived environmental value '%s' to PCM model element '%s'", change.getValue()
-                .toString(), pcmAttrbuteName));
         // fixme: replace ? with a concrete type
         Optional<?> newValue = pe.getElement(pcmAttrbuteName);
 
         if (newValue.isPresent()) {
             CategoricalValue changedValue = perceivedValueConverter.convertElement(change, pcmAttrbuteName);
             applyChange(changedValue);
+            LOGGER.debug(String.format("Applied perceived environmental value '%s' to PCM model element '%s'",
+                    changedValue.get(), pcmAttrbuteName));
         } else {
             LOGGER.error(String.format(
                     "Failed binding: could not apply perceived environmental value '%s' to PCM model element '%s'",
