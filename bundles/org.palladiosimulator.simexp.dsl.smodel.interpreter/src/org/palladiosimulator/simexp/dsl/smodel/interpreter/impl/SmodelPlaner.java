@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
@@ -14,6 +15,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements Planner {
@@ -21,11 +23,13 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
     private final Smodel model;
     private final IExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
+    private final IVariableAssigner variableAssigner;
 
-    public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider) {
+    public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider, IVariableAssigner variableAssigner) {
         this.model = model;
         this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
         this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, fieldValueProvider);
+        this.variableAssigner = variableAssigner;
     }
 
     @Override
@@ -84,5 +88,11 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
     public List<ResolvedAction> caseActionCall(ActionCall actionCall) {
         ResolvedAction resolvedAction = actionCallExecutor.execute(actionCall);
         return Collections.singletonList(resolvedAction);
+    }
+
+    @Override
+    public List<ResolvedAction> caseVariableAssignment(VariableAssignment variableAssignment) {
+        variableAssigner.assign(variableAssignment);
+        return Collections.emptyList();
     }
 }
