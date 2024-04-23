@@ -57,7 +57,7 @@ transformation unsetBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 		allocationContexts->forEach(allocation){
 
 			if( allocation.assemblyContext_AllocationContext.id = "_6F6LYAEnEeS7FKokKTKFow" ) {
-			log('Found load balancer: AC_LoadBalancer');
+			//log('Found load balancer: AC_LoadBalancer');
 				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
 					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
 						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_ridTkAEoEeS7FKokKTKFow"); // entityName="delegateToServer1"
