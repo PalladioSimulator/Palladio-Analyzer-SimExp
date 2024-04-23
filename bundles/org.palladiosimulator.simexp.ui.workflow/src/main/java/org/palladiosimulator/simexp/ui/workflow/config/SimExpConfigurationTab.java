@@ -7,7 +7,6 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
-import org.eclipse.core.databinding.observable.value.ComputedValue;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
 import org.eclipse.core.databinding.validation.IValidator;
@@ -33,7 +32,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
@@ -215,17 +214,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
             .observe(textSModel);
         IObservableValue<String> smodelModel = ConfigurationProperties.string(ModelFileTypeConstants.SMODEL_FILE)
             .observe(configuration);
-        ControllableValidator.Enabled isSmodelEnabled = new Enabled() {
-            private final IObservableValue<SimulatorType> simulatorTypeValue = ComputedValue.create(() -> {
-                return simulatorTypeTarget.getValue();
-            });
-
-            @Override
-            public boolean isEnabled() {
-                SimulatorType selectedType = simulatorTypeValue.getValue();
-                return SimulatorType.MODELLED == selectedType;
-            }
-        };
+        ControllableValidator.Enabled isSmodelEnabled = new EnumEnabler<>(SimulatorType.MODELLED, simulatorTypeTarget);
         UpdateValueStrategy<String, String> smodelUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         IValidator<String> smodelUriValidator = new ControllableValidator<>(
