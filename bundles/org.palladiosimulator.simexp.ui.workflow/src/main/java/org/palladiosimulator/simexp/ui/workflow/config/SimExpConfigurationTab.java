@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.ui.workflow.config;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -34,6 +33,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
@@ -215,13 +215,13 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
             .observe(textSModel);
         IObservableValue<String> smodelModel = ConfigurationProperties.string(ModelFileTypeConstants.SMODEL_FILE)
             .observe(configuration);
-        Predicate<ControllableValidator<String>> isSmodelEnabled = new Predicate<>() {
+        ControllableValidator.Enabled isSmodelEnabled = new Enabled() {
             private final IObservableValue<SimulatorType> simulatorTypeValue = ComputedValue.create(() -> {
                 return simulatorTypeTarget.getValue();
             });
 
             @Override
-            public boolean test(ControllableValidator<String> t) {
+            public boolean isEnabled() {
                 SimulatorType selectedType = simulatorTypeValue.getValue();
                 return SimulatorType.MODELLED == selectedType;
             }
