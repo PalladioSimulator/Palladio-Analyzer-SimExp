@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.palladiosimulator.simexp.dsl.smodel.test.util.EcoreAssert.assertThat;
 
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelPlaner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
@@ -27,6 +29,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class SmodelPlanerTest {
@@ -36,7 +40,9 @@ public class SmodelPlanerTest {
     private SmodelCreator smodelCreator;
     private Smodel smodel;
     @Mock
-    IFieldValueProvider fvp;
+    private IFieldValueProvider fvp;
+    @Mock
+    private IVariableAssigner variableAssigner;
 
     @Before
     public void setUp() {
@@ -47,7 +53,7 @@ public class SmodelPlanerTest {
 
     @Test
     public void testPlanWithEmptyModel() throws Exception {
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -77,7 +83,7 @@ public class SmodelPlanerTest {
             .add(actionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -110,7 +116,7 @@ public class SmodelPlanerTest {
             .add(actionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -142,7 +148,7 @@ public class SmodelPlanerTest {
             .add(elseActionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -177,7 +183,7 @@ public class SmodelPlanerTest {
             .add(elseActionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -215,7 +221,7 @@ public class SmodelPlanerTest {
             .add(nestedIfStmt);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -250,7 +256,7 @@ public class SmodelPlanerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(exptectedStatement);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -292,7 +298,7 @@ public class SmodelPlanerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(exptectedStatement);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -334,7 +340,7 @@ public class SmodelPlanerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(exptectedStatement);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -382,7 +388,7 @@ public class SmodelPlanerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(exptectedStatement);
-        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
 
         List<ResolvedAction> actualResults = smodelPlaner.plan();
 
@@ -404,6 +410,31 @@ public class SmodelPlanerTest {
         Optimizable actualOptimizable = actualOptimizableArgs.get(0);
         assertThat(actualOptimizable.getName()).isEqualTo(expectedOptimizable.getName());
         assertThat(actualOptimizable.getDataType()).isEqualTo(expectedOptimizable.getDataType());
+    }
+
+    @Test
+    public void testPlanWithSingleDoubleVarAssignment1() throws Exception {
+//      String sb = MODEL_NAME_LINE + """
+//      var double value = 0.0;     
+//      if (true) {
+//          value = 1.0;
+//      }
+//      """;
+        Variable expectedVar = smodelCreator.createVariable("value", DataType.DOUBLE,
+                smodelCreator.createDoubleLiteral(0.0));
+        IfStatement ifStmt = createIfStatement();
+        VariableAssignment expectedVarAssigment = smodelCreator.createVariableAssignment(expectedVar,
+                smodelCreator.createDoubleLiteral(1.0));
+        ifStmt.getThenStatements()
+            .add(expectedVarAssigment);
+        smodel.getStatements()
+            .add(ifStmt);
+        SmodelPlaner smodelPlaner = new SmodelPlaner(smodel, fvp, variableAssigner);
+
+        List<ResolvedAction> actualResults = smodelPlaner.plan();
+
+        assertThat(actualResults).isEmpty();
+        verify(variableAssigner).assign(expectedVarAssigment);
     }
 
     private IfStatement createIfStatement() {
