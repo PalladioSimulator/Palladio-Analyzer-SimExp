@@ -53,12 +53,8 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
     private final ReconfigurationPlanningStrategy reconfigurationPlanningStrategy;
 
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
-    // FIXME: integration-ba
-//            , Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
             PerformabilityStrategyConfiguration strategyConfiguration,
             ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
-        // FIXME: integration-ba
-//        super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
