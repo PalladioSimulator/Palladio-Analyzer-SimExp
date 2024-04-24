@@ -1,7 +1,7 @@
-modelName = "LoadBalancingScalingPlanningStrategy";
+modelName = "LoadBalancingScalingPlanningStrategy";				// smodel equivalent to custom 'LoadBalancingScalingPlanningStrategy.java'
 
-const double lowerThreshold = 1.0;
-const double upperThreshold = 2.0;
+const double lowerThreshold = 0.1;
+const double upperThreshold = 0.4;
 
 probe double responseTime : monitorId="_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 

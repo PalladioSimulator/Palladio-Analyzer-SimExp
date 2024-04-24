@@ -31,7 +31,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
+transformation setBranchProbabilityFailSave( in pcmAllocation : PCM_ALLOC ) {
 							
 
 	/**
@@ -40,12 +40,12 @@ transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 	 */
 	main() {
 
-		log('*** STARTED: Transformation rule [setBranchProbabilityNode1] ...');
+		log('*** STARTED: Transformation rule [setBranchProbabilityFailSave] ...');
 		pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					setBranchProbabilities(allocation.allocationContexts_Allocation)
 				);
-		log('*** DONE: Transformation rule [setBranchProbabilityNode1]');
+	log('*** DONE: Transformation rule [setBranchProbabilityFailSave]');
 	}
 	
 	
@@ -60,9 +60,9 @@ transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 			//log('Found load balancer: AC_LoadBalancer');
 				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
 					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
-						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_ridTkAEoEeS7FKokKTKFow"); // entityName="delegateToServer1"
-						branch1.branchProbability := 1.0;
-						log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
+						var branchFailSave : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_fm8UkQFdEe-xm__qsFXqOw"); // entityName="failSavee"
+						branchFailSave.branchProbability := 1.0;
+						log('Set branchFailSave.branchProbability to ' + branchFailSave.branchProbability.toString());
 						return true;
 					}
 				}

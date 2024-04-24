@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
+import org.palladiosimulator.simexp.pcm.examples.performability.ReconfigurationPlanningStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.performability.PerformabilityRewardEvaluation;
@@ -97,13 +98,25 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
+
+        // node recovery strategy
         NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<>(
                 config, new RepositoryModelLookup(), new ResourceEnvironmentModelLookup(),
                 new RepositoryModelUpdater());
+
+        // configure the different planning strategies that shall be investigated by accordingly
+        // (un)comment the required strategy definition: empty, scaling, fault-tolerant scaling
         LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
                 specs.get(0), config, nodeRecoveryStrategy);
+        LoadBalancingScalingPlanningStrategy<PCMInstance> loadBalancingPlanningStrategy = new LoadBalancingScalingPlanningStrategy<>(
+                specs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+        FaultTolerantScalingPlanningStrategy<PCMInstance> ftLoadBalancingScalingPlanningStrategy = new FaultTolerantScalingPlanningStrategy<>(
+                specs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+        ReconfigurationPlanningStrategy reconfigurationPlanningStrategy = ftLoadBalancingScalingPlanningStrategy;
+
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
-                specs.get(0), config, emptyStrategy);
+                specs.get(0), config, reconfigurationPlanningStrategy);
+
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());

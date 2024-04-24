@@ -40,12 +40,12 @@ transformation setBranchProbabilityNode2( in pcmAllocation : PCM_ALLOC ) {
 	 */
 	main() {
 
-		log('Transformation rule [setBranchProbabilityNode2] started ...');
+		log('*** STARTED: Transformation rule [setBranchProbabilityNode2] ...');
 		pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					setBranchProbabilities(allocation.allocationContexts_Allocation)
 				);
-	log('Transformation rule [setBranchProbabilityNode2] DONE.');
+		log('*** DONE: Transformation rule [setBranchProbabilityNode2]');
 	}
 	
 	
@@ -57,7 +57,7 @@ transformation setBranchProbabilityNode2( in pcmAllocation : PCM_ALLOC ) {
 		allocationContexts->forEach(allocation){
 
 			if( allocation.assemblyContext_AllocationContext.id = "_6F6LYAEnEeS7FKokKTKFow" ) {
-			log('Found load balancer: AC_LoadBalancer');
+			//log('Found load balancer: AC_LoadBalancer');
 				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
 					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
 						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_tjFukAEoEeS7FKokKTKFow"); // entityName="delegateToServer2"
