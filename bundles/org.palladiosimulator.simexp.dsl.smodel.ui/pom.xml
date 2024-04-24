@@ -122,7 +122,7 @@
 									<include>**/*</include>
 								</includes>
 								<excludes>
-									<exclude>**/.gitignore</exclude>
+									<exclude>**/.git*</exclude>
 								</excludes>								
 							</fileset>
 						</filesets>

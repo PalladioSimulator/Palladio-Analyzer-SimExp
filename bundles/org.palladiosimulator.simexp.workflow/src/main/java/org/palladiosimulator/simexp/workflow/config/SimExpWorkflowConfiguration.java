@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
+import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
@@ -14,8 +17,9 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * 
      */
     private final URI smodelFile;
-    private final String simulationEngine;
-    private final String qualityObjective;
+    private final SimulatorType simulatorType;
+    private final SimulationEngine simulationEngine;
+    private final QualityObjective qualityObjective;
     private final URI experimentsFile;
     private final URI staticModelFile;
     private final URI dynamicModelFile;
@@ -25,11 +29,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
 
-    // FIXME: pass smodel as constructor parameter
-    public SimExpWorkflowConfiguration(String simulationEngine, String qualityObjective,
-            ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
-            PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters) {
+    public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
+            QualityObjective qualityObjective, ArchitecturalModelsWorkflowConfiguration architecturalModels,
+            MonitorConfiguration monitors, PrismConfiguration prismConfiguration,
+            EnvironmentalModelsWorkflowConfiguration environmentalModels, SimulationParameters simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -38,6 +41,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          * refactoring for performability analysis it is current not required; therefore pass empty
          * list in order to successfully execute workflow
          */
+        this.simulatorType = simulatorType;
         this.simulationEngine = simulationEngine;
         this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
@@ -77,11 +81,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         return smodelFile;
     }
 
-    public String getSimulationEngine() {
+    public SimulatorType getSimulatorType() {
+        return simulatorType;
+    }
+
+    public SimulationEngine getSimulationEngine() {
         return simulationEngine;
     }
 
-    public String getQualityObjective() {
+    public QualityObjective getQualityObjective() {
         return qualityObjective;
     }
 

@@ -1,11 +1,15 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
+import java.util.Arrays;
+
+import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -14,12 +18,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.CompoundStringValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ExtensionValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.FileURIValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
-import de.uka.ipd.sdq.workflow.launchconfig.LaunchConfigPlugin;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
+public class SimExpModelsTab extends BaseLaunchConfigurationTab {
 
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
@@ -31,21 +39,12 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
     private Text textExperiments;
     private Text textStaticModel;
     private Text textDynamicModel;
-    private Text textSModel;
-
-    private Composite container;
-    private ModifyListener modifyListener;
 
     @Override
-    public void createControl(Composite parent) {
-        modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                setDirty(true);
-                updateLaunchConfigurationDialog();
-            }
-        };
-        container = new Composite(parent, SWT.NONE);
+    public void doCreateControl(Composite parent, DataBindingContext ctx) {
+        ModifyListener modifyListener = new SimExpModifyListener();
+
+        Composite container = new Composite(parent, SWT.NONE);
         setControl(container);
         container.setLayout(new GridLayout());
 
@@ -69,11 +68,6 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File",
                 getShell(), ModelFileTypeConstants.EMPTY_STRING);
 
-        textSModel = new Text(architecturalModelsGroup, SWT.SINGLE | SWT.BORDER);
-        TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "SModel File",
-                ModelFileTypeConstants.SMODEL_FILE_EXTENSION, textSModel, "Select SModel File", getShell(),
-                ModelFileTypeConstants.EMPTY_STRING);
-
         Group environmentalModelsGroup = new Group(container, SWT.NONE);
         environmentalModelsGroup.setText("Environmental Models");
         environmentalModelsGroup.setLayout(new GridLayout());
@@ -92,104 +86,66 @@ public class SimExpModelsTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-        // TODO Auto-generated method stub
     }
 
     @Override
-    public void initializeFrom(ILaunchConfiguration configuration) {
-        try {
-            textAllocation.setText(configuration.getAttribute(ModelFileTypeConstants.ALLOCATION_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Allocation File", e.getMessage());
-        }
+    protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
+        IObservableValue<String> allocationTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textAllocation);
+        IObservableValue<String> allocationModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.ALLOCATION_FILE)
+            .observe(configuration);
+        UpdateValueStrategy<String, String> allocationUpdateStrategy = createUpdateStrategy("Allocation file",
+                ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION[0]);
+        Binding allocationBindValue = ctx.bindValue(allocationTarget, allocationModel, allocationUpdateStrategy, null);
+        ControlDecorationSupport.create(allocationBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            textUsage.setText(
-                    configuration.getAttribute(ModelFileTypeConstants.USAGE_FILE, ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Usage File", e.getMessage());
-        }
+        IObservableValue<String> usageTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textUsage);
+        IObservableValue<String> usageModel = ConfigurationProperties.string(ModelFileTypeConstants.USAGE_FILE)
+            .observe(configuration);
+        UpdateValueStrategy<String, String> usageUpdateStrategy = createUpdateStrategy("Usage file",
+                ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION[0]);
+        Binding usageBindValue = ctx.bindValue(usageTarget, usageModel, usageUpdateStrategy, null);
+        ControlDecorationSupport.create(usageBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            textExperiments.setText(configuration.getAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Experiments File", e.getMessage());
-        }
+        IObservableValue<String> experimentsTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textExperiments);
+        IObservableValue<String> experimentsModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.EXPERIMENTS_FILE)
+            .observe(configuration);
+        UpdateValueStrategy<String, String> experimentsUpdateStrategy = createUpdateStrategy("Experiments file",
+                ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION[0]);
+        Binding experimentsBindValue = ctx.bindValue(experimentsTarget, experimentsModel, experimentsUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(experimentsBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            textSModel.setText(configuration.getAttribute(ModelFileTypeConstants.SMODEL_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "SModel File", e.getMessage());
-        }
+        IObservableValue<String> staticTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textStaticModel);
+        IObservableValue<String> staticModel = ConfigurationProperties.string(ModelFileTypeConstants.STATIC_MODEL_FILE)
+            .observe(configuration);
+        UpdateValueStrategy<String, String> staticUpdateStrategy = createUpdateStrategy("Static environment file",
+                ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION[0]);
+        Binding staticBindValue = ctx.bindValue(staticTarget, staticModel, staticUpdateStrategy, null);
+        ControlDecorationSupport.create(staticBindValue, SWT.TOP | SWT.RIGHT);
 
-        try {
-            textStaticModel.setText(configuration.getAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Static Model File", e.getMessage());
-        }
-
-        try {
-            textDynamicModel.setText(configuration.getAttribute(ModelFileTypeConstants.DYNAMIC_MODEL_FILE,
-                    ModelFileTypeConstants.EMPTY_STRING));
-        } catch (CoreException e) {
-            LaunchConfigPlugin.errorLogger(getName(), "Dynamic Model File", e.getMessage());
-        }
+        IObservableValue<String> dynamicTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textDynamicModel);
+        IObservableValue<String> dynamicModel = ConfigurationProperties
+            .string(ModelFileTypeConstants.DYNAMIC_MODEL_FILE)
+            .observe(configuration);
+        UpdateValueStrategy<String, String> dynamicUpdateStrategy = createUpdateStrategy("Dynamic environment file",
+                ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION[0]);
+        Binding dynamicBindValue = ctx.bindValue(dynamicTarget, dynamicModel, dynamicUpdateStrategy, null);
+        ControlDecorationSupport.create(dynamicBindValue, SWT.TOP | SWT.RIGHT);
     }
 
-    @Override
-    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        configuration.setAttribute(ModelFileTypeConstants.ALLOCATION_FILE, textAllocation.getText());
-        configuration.setAttribute(ModelFileTypeConstants.USAGE_FILE, textUsage.getText());
-        configuration.setAttribute(ModelFileTypeConstants.EXPERIMENTS_FILE, textExperiments.getText());
-        configuration.setAttribute(ModelFileTypeConstants.SMODEL_FILE, textSModel.getText());
-        configuration.setAttribute(ModelFileTypeConstants.STATIC_MODEL_FILE, textStaticModel.getText());
-        configuration.setAttribute(ModelFileTypeConstants.DYNAMIC_MODEL_FILE, textDynamicModel.getText());
-    }
-
-    @Override
-    public boolean isValid(ILaunchConfiguration launchConfig) {
-        setErrorMessage(null);
-
-        if (!TabHelper.validateFilenameExtension(textAllocation.getText(),
-                ModelFileTypeConstants.ALLOCATION_FILE_EXTENSION)) {
-            setErrorMessage("Allocation is missing.");
-            return false;
-        }
-
-        if (!TabHelper.validateFilenameExtension(textUsage.getText(),
-                ModelFileTypeConstants.USAGEMODEL_FILE_EXTENSION)) {
-            setErrorMessage("Usage is missing.");
-            return false;
-        }
-
-        if (!TabHelper.validateFilenameExtension(textExperiments.getText(),
-                ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION)) {
-            setErrorMessage("Experiments is missing.");
-            return false;
-        }
-
-        if (!TabHelper.validateFilenameExtension(textSModel.getText(), ModelFileTypeConstants.SMODEL_FILE_EXTENSION)) {
-            setErrorMessage("SModel is missing.");
-            return false;
-        }
-
-        if (!TabHelper.validateFilenameExtension(textStaticModel.getText(),
-                ModelFileTypeConstants.STATIC_MODEL_FILE_EXTENSION)) {
-            setErrorMessage("Static Model is missing.");
-            return false;
-        }
-
-        if (!TabHelper.validateFilenameExtension(textDynamicModel.getText(),
-                ModelFileTypeConstants.DYNAMIC_MODEL_FILE_EXTENSION)) {
-            setErrorMessage("Dynamic Model is missing.");
-            return false;
-        }
-
-        return true;
+    private UpdateValueStrategy<String, String> createUpdateStrategy(String field, String extension) {
+        UpdateValueStrategy<String, String> updateValueStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        updateValueStrategy.setBeforeSetValidator(new CompoundStringValidator(
+                Arrays.asList(new FileURIValidator(field), new ExtensionValidator(field, extension))));
+        return updateValueStrategy;
     }
 
     @Override

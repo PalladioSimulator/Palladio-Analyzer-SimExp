@@ -12,7 +12,6 @@ public class ModelFileTypeConstants {
     public static final String STATIC_MODEL_FILE = "staticModelFile";
     public static final String DYNAMIC_MODEL_FILE = "dynamicModelFile";
     public static final String MONITORS = "monitors";
-    public static final String FAILURE_SCENARIO_MODEL_FILE = "failureScenarioFile";
     public static final String PRISM_MODULE_FILE = "prismModuleFile";
     public static final String PRISM_PROPERTY_FILE = "prismPropertyFile";
 
@@ -29,8 +28,6 @@ public class ModelFileTypeConstants {
             "*." + ModelTypeConstants.STATIC_MODEL_EXTENSION };
     public static final String[] DYNAMIC_MODEL_FILE_EXTENSION = new String[] {
             "*." + ModelTypeConstants.DYNAMIC_MODEL_EXTENSION };
-    public static final String[] FAILURE_SCENARIO_MODEL_FILE_EXTENSION = new String[] {
-            "*." + ModelTypeConstants.FAILURE_SCENARIO_MODEL_EXTENSION };
     public static final String[] PRISM_MODULE_FILE_EXTENSION = new String[] {
             "*." + ModelTypeConstants.PRISM_MODULE_EXTENSION };
     public static final String[] PRISM_PROPERTY_FILE_EXTENSION = new String[] {
