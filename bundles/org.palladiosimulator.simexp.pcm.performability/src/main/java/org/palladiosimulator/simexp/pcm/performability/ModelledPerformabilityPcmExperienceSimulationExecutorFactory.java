@@ -99,23 +99,9 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        // TODO: old reconfiguration strategy, which shall be replaced by the modelled one
-//            PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
-//                    LOAD_BALANCER_ID);
-//            NodeRecoveryStrategy<PCMInstance, QVTOReconfigurator> nodeRecoveryStrategy = new FaultTolerantScalingNodeFailureRecoveryStrategy<>(
-//                    config, new RepositoryModelLookup(), new ResourceEnvironmentModelLookup(),
-//                    new RepositoryModelUpdater());
-//            LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
-//                    specs.get(0), config, nodeRecoveryStrategy);
-//            ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
-//                    specs.get(0), config, emptyStrategy);
-//            Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
-
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
-        // TODO: rework; introduce lookup interface to find GVRs instead of passing
-        // staticEnvDynModel directly
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
