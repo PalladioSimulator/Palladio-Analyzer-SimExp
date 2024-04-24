@@ -105,8 +105,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
-        // TODO: rework; introduce lookup interface to find GVRs instead of passing
-        // staticEnvDynModel directly
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         EnvironmentVariableValueProvider envVariableValueProvider = new EnvironmentVariableValueProvider(
