@@ -2,7 +2,7 @@
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
     <intAttribute key="NumberOfRuns" value="3"/>
     <intAttribute key="NumberOfSimulationsPerRun" value="10"/>
-    <stringAttribute key="Quality Objective" value="Modelled"/>
+    <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="MODELLED"/>
     <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/loadbalancer_on_iaas.allocation"/>
@@ -11,7 +11,9 @@
     <stringAttribute key="failureScenarioFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/failureScenarios/node1DownAndNode2Down.failurescenario"/>
     <stringAttribute key="kmodelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/strategies/NStepLoadBalancerStrategy.kmodel"/>
     <stringAttribute key="monitorRepositoryFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/monitors/monitoring.monitorrepository"/>
-    <listAttribute key="monitors"/>
+    <listAttribute key="monitors">
+        <listEntry value="System Response Time"/>
+    </listAttribute>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="prismModuleFile">
         <listEntry value=""/>
@@ -19,6 +21,7 @@
     <listAttribute key="prismPropertyFile">
         <listEntry value=""/>
     </listAttribute>
+    <stringAttribute key="smodelFile" value=""/>
     <stringAttribute key="staticModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerNonTemporalEnvironment.staticmodel"/>
     <stringAttribute key="usageFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/overload.usagemodel"/>
 </launchConfiguration>
