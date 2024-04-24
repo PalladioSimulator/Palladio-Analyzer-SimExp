@@ -36,9 +36,11 @@ public class PcmProbeValueProvider implements IFieldValueProvider, ProbeValuePro
 
     @Override
     public void injectMeasurement(SimulatedMeasurementSpecification spec, double measurementValue) {
-        PcmMeasurementSpecification pcmSpec = (PcmMeasurementSpecification) spec;
-        MeasuringPoint measuringPoint = pcmSpec.getMeasuringPoint();
-        currentMeasurementPoints.put(measuringPoint, measurementValue);
+        if (spec instanceof PcmMeasurementSpecification) {
+            PcmMeasurementSpecification pcmSpec = (PcmMeasurementSpecification) spec;
+            MeasuringPoint measuringPoint = pcmSpec.getMeasuringPoint();
+            currentMeasurementPoints.put(measuringPoint, measurementValue);
+        }
     }
 
     @Override
