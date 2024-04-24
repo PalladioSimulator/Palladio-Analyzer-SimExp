@@ -204,9 +204,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
 
             String simulatorTypeStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATOR_TYPE);
-            SimulatorType simulatorType = SimulatorType.fromName(simulatorTypeStr);
+            SimulatorType simulatorType = SimulatorType.valueOf(simulatorTypeStr);
             String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
-            SimulationEngine simulationEngine = SimulationEngine.fromName(simulationEngineStr);
+            SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -229,7 +229,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             if (simulationEngine == SimulationEngine.PCM) {
                 String qualityObjectiveStr = (String) launchConfigurationParams
                     .get(SimulationConstants.QUALITY_OBJECTIVE);
-                qualityObjective = QualityObjective.fromName(qualityObjectiveStr);
+                qualityObjective = QualityObjective.valueOf(qualityObjectiveStr);
 
                 monitorRepositoryFile = (String) launchConfigurationParams
                     .get(ModelFileTypeConstants.MONITOR_REPOSITORY_FILE);
