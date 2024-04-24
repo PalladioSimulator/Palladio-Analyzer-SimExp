@@ -304,6 +304,11 @@ public class SimulatorConfiguration {
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(simulationEngineTarget, simulationEngineModel, simulationEngineUpdateStrategy, null);
 
+        initializeFromPCM(configuration, ctx);
+        initializeFromPRISM(configuration, ctx);
+    }
+
+    private void initializeFromPCM(ILaunchConfiguration configuration, DataBindingContext ctx) {
         UpdateStrategyController pcmUpdateController = new UpdateStrategyController() {
 
             @Override
@@ -311,19 +316,6 @@ public class SimulatorConfiguration {
                 return simulationEngineTarget.getValue() == SimulationEngine.PCM;
             }
         };
-        UpdateStrategyController prismUpdateController = new UpdateStrategyController() {
-
-            @Override
-            public boolean isEnabled() {
-                return simulationEngineTarget.getValue() == SimulationEngine.PRISM;
-            }
-        };
-        initializeFromPCM(configuration, ctx, pcmUpdateController);
-        initializeFromPRISM(configuration, ctx, prismUpdateController);
-    }
-
-    private void initializeFromPCM(ILaunchConfiguration configuration, DataBindingContext ctx,
-            UpdateStrategyController pcmUpdateController) {
         ControllableValidator.Enabled isPcmEnabled = new EnumEnabler<>(SimulationEngine.PCM, simulationEngineTarget);
 
         IObservableValue<QualityObjective> qualityObjectiveModel = ConfigurationProperties
@@ -364,8 +356,15 @@ public class SimulatorConfiguration {
         ctx.bindList(monitorTarget, monitorModel, monitorsTargetToModel, monitorsModelToTarget);
     }
 
-    private void initializeFromPRISM(ILaunchConfiguration configuration, DataBindingContext ctx,
-            UpdateStrategyController prismUpdateController) {
+    private void initializeFromPRISM(ILaunchConfiguration configuration, DataBindingContext ctx) {
+        UpdateStrategyController prismUpdateController = new UpdateStrategyController() {
+
+            @Override
+            public boolean isEnabled() {
+                return simulationEngineTarget.getValue() == SimulationEngine.PRISM;
+            }
+        };
+
         IObservableList<String> moduleFilesModel = ConfigurationProperties
             .list(ModelFileTypeConstants.PRISM_MODULE_FILE)
             .observe(configuration);
