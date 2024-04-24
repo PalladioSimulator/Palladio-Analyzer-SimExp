@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.hri;
+package org.palladiosimulator.simexp.pcm.reliability;
 
 import static java.util.stream.Collectors.toList;
 

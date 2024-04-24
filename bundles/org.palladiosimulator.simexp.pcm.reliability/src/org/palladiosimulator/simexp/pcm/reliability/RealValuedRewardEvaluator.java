@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.hri;
+package org.palladiosimulator.simexp.pcm.reliability;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;

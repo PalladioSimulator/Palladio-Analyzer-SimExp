@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.examples.hri;
+package org.palladiosimulator.simexp.pcm.reliability;
 
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
