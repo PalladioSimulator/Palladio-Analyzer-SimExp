@@ -18,9 +18,6 @@ public class RandomizedAdaptationStrategy<C> extends ReliabilityPrioritizedStrat
 
     public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
         super(responseTimeSpec, thresholdRt);
-//    // FIXME: integration-ba   
-//    public RandomizedAdaptationStrategy(SimulatedMeasurementSpecification responseTimeSpec, Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
-//            super(responseTimeSpec, monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
     }
 
     @Override

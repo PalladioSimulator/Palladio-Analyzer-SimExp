@@ -11,11 +11,6 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public class StaticSystemSimulation extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
-    // // FIXME: integration-ba
-//	public StaticSystemSimulation(Monitor monitor, Analyzer analyzer, Planner planner, Executer executer, SimulatedMeasurementSpecification measurementSpec, ProbeValueProviderMeasurementInjector pvpInjector) {
-//		super(monitor, analyzer, planner, executer, measurementSpec, pvpInjector);
-//	}
-
     @Override
     public String getId() {
         return "StaticSystemSimulation";
