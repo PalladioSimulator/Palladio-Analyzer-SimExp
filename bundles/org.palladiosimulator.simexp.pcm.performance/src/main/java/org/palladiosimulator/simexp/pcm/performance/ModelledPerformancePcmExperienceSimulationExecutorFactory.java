@@ -62,7 +62,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
     private final ProbabilisticModelRepository staticEnvDynModel;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
@@ -71,13 +70,12 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         this.staticEnvDynModel = staticEnvDynModel;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
@@ -92,6 +90,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     public ModelledSimulationExecutor<Integer> create() {
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 

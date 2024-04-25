@@ -60,7 +60,6 @@ public class RobotCognitionSimulationExecutorFactory extends
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -69,8 +68,7 @@ public class RobotCognitionSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
@@ -79,7 +77,6 @@ public class RobotCognitionSimulationExecutorFactory extends
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         this.envProcess = p;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
@@ -113,6 +110,7 @@ public class RobotCognitionSimulationExecutorFactory extends
             );
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
                 reconfSelectionPolicy, getExperimentProvider(), qvtoReconfigurationManager);
 

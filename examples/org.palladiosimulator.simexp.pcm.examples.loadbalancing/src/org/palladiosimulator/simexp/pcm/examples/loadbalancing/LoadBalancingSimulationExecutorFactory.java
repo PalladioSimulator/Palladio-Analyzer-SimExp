@@ -50,7 +50,6 @@ public class LoadBalancingSimulationExecutorFactory extends
 
     private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -59,15 +58,13 @@ public class LoadBalancingSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
         this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
@@ -78,6 +75,7 @@ public class LoadBalancingSimulationExecutorFactory extends
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
         List<ExperienceSimulationRunner> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(

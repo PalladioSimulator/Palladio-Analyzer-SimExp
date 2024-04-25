@@ -12,7 +12,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
@@ -37,7 +36,6 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
         List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
@@ -50,7 +48,7 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
+                simulationRunnerHolder);
         return factory.create();
     }
 }

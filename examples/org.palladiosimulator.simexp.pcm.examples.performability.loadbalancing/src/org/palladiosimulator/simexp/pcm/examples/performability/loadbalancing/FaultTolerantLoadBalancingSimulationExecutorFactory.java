@@ -61,7 +61,6 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
 
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -70,15 +69,13 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
         this.envProcess = p.getEnvironmentProcess();
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
         this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
@@ -89,6 +86,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
         List<ExperienceSimulationRunner> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 

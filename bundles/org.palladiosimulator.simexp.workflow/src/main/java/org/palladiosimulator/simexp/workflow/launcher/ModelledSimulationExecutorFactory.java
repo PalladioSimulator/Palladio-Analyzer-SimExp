@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledPcmWorkflowConfiguration;
@@ -69,7 +68,6 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
         List<String> monitorNames = workflowConfiguration.getMonitorNames();
@@ -82,22 +80,20 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder,
-                    staticEnvDynModel);
+                    probDistRepoLookup, experimentProvider, simulationRunnerHolder, staticEnvDynModel);
         }
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder,
-                    staticEnvDynModel);
+                    probDistRepoLookup, experimentProvider, simulationRunnerHolder, staticEnvDynModel);
         }
         case PERFORMABILITY -> {
             yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs,
                     experiment, dbn, pcmSpecs, simulationParameters,
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, simulationRunnerHolder, staticEnvDynModel);
+                    simulationRunnerHolder, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -113,7 +109,6 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
         List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
@@ -126,7 +121,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder, staticEnvDynModel);
+                simulationRunnerHolder, staticEnvDynModel);
         return factory.create();
     }
 

@@ -58,7 +58,6 @@ public class DeltaIoTSimulationExecutorFactory extends
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -67,8 +66,7 @@ public class DeltaIoTSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
@@ -76,7 +74,6 @@ public class DeltaIoTSimulationExecutorFactory extends
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
                 modelAccess, simulationRunnerHolder);
         this.envProcess = p.getEnvironmentProcess();
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
@@ -101,6 +98,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,

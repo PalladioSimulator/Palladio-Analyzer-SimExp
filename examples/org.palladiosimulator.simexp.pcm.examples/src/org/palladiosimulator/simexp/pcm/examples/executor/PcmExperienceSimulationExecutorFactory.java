@@ -17,7 +17,9 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -148,4 +150,21 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .done()
             .build();
     }
+
+    protected IQVToReconfigurationManager createQvtoReconfigurationManager() {
+        String reconfigurationRulesLocation = getReconfigurationRulesLocation(getExperiment());
+        IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
+                reconfigurationRulesLocation);
+        return qvtoReconfigurationManager;
+    }
+
+    private String getReconfigurationRulesLocation(Experiment experiment) {
+        String path = experiment.getInitialModel()
+            .getReconfigurationRules()
+            .getFolderUri();
+        experiment.getInitialModel()
+            .setReconfigurationRules(null);
+        return path;
+    }
+
 }

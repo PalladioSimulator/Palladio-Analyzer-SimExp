@@ -69,7 +69,6 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
 
     private final ProbabilisticModelRepository staticEnvDynModel;
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
@@ -78,8 +77,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
@@ -89,7 +88,6 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         this.envProcess = p;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
@@ -110,6 +108,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
             );
 
         // FIXME: check if reconfigurationStrategy must be initialized
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 getExperimentProvider(), qvtoReconfigurationManager);
         UsageScenario usageScenario = getExperiment().getInitialModel()

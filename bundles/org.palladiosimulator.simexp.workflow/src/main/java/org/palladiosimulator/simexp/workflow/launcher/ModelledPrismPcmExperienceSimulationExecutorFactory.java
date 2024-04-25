@@ -81,7 +81,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
     private final ProbabilisticModelRepository staticEnvDynModel;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
@@ -90,8 +89,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
@@ -100,7 +99,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
                 modelAccess, simulationRunnerHolder);
         this.envProcess = p.getEnvironmentProcess();
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override
@@ -129,6 +127,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
                 prismLogFile, reconfParamsRepo, getExperimentProvider());
 
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);

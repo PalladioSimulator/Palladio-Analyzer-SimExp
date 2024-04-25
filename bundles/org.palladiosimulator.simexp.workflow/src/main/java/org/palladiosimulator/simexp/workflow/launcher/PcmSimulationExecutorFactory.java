@@ -11,7 +11,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -38,7 +37,6 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
         List<String> monitorNames = workflowConfiguration.getMonitorNames();
@@ -50,17 +48,17 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, experiment, dbn,
                 pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
-                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder);
 
         case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, rs, experiment, dbn,
                 pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
-                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder);
 
         case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration, rs,
                 experiment, dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
-                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder);
 
         default -> throw new RuntimeException("Unexpected QualityObjective: " + qualityObjective);
         };
