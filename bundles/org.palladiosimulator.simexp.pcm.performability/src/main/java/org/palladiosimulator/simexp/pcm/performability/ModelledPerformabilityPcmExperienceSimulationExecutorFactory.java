@@ -62,7 +62,6 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final Smodel smodel;
     private final ProbabilisticModelRepository staticEnvDynModel;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
@@ -77,12 +76,10 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
-        this.smodel = smodel;
         this.staticEnvDynModel = staticEnvDynModel;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
 
@@ -108,6 +105,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
+        Smodel smodel = getSmodel();
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
         String reconfigurationStrategyId = smodel.getModelName();

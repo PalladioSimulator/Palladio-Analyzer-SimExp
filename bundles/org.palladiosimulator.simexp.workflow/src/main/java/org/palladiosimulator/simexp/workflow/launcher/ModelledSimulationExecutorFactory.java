@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.workflow.launcher;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -16,8 +15,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -41,8 +38,6 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
-    private static final Logger LOGGER = Logger.getLogger(ModelledSimulationExecutorFactory.class);
-
     public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -51,21 +46,16 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        URI smodelURI = workflowConfiguration.getSmodelURI();
-        SModelLoader smodelLoader = new SModelLoader();
-        Smodel smodel = smodelLoader.load(rs, smodelURI);
-        LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
-
         return switch (simulationEngine) {
         case PCM -> {
             yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, experiment,
                     dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
+                    probDistRepoLookup, simulationParameters, descriptionProvider, staticEnvDynModel);
         }
         case PRISM -> {
             yield createPRISM((IModelledPrismWorkflowConfiguration) workflowConfiguration, rs, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
+                    probDistRepoLookup, simulationParameters, descriptionProvider, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("Unexpected value: " + simulationEngine);
         };
@@ -76,7 +66,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, Smodel smodel,
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
@@ -92,14 +82,14 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder,
                     staticEnvDynModel);
         }
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
+                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder,
                     staticEnvDynModel);
         }
         case PERFORMABILITY -> {
@@ -107,7 +97,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
                     experiment, dbn, pcmSpecs, simulationParameters,
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                     probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                    qvtoReconfigurationManager, simulationRunnerHolder, smodel, staticEnvDynModel);
+                    qvtoReconfigurationManager, simulationRunnerHolder, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -120,7 +110,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, Smodel smodel,
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
@@ -136,7 +126,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder, smodel, staticEnvDynModel);
+                qvtoReconfigurationManager, simulationRunnerHolder, staticEnvDynModel);
         return factory.create();
     }
 
