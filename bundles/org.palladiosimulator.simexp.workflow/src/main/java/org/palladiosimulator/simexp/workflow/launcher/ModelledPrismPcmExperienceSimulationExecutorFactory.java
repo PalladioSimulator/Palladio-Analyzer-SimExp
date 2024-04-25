@@ -106,11 +106,11 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
+        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(getSpecs(), "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) packetLossSpec);
         prismFileUpdaters.add(packetLossUpdater);
-        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(specs,
+        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(getSpecs(),
                 "EnergyConsumption.prism");
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
@@ -127,14 +127,14 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
-                prismLogFile, reconfParamsRepo, experimentProvider);
+                prismLogFile, reconfParamsRepo, getExperimentProvider());
 
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
-        IModelsLookup modelsLookup = new ModelsLookup(experiment);
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
@@ -165,23 +165,23 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
             });
 
         // FIXME: read thresholds from launch config
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(getSpecs().get(0),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(specs.get(1),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(getSpecs().get(1),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
                 lowerEnergyConsumptionThreshold);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                experiment, specs, List.of(runner), params, beforeExecutionInitializable, null,
-                simulatedExperienceStore, envProcess, reconfStrategy, reconfigurations, evaluator, false);
+                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable, null,
+                getSimulatedExperienceStore(), envProcess, reconfStrategy, reconfigurations, evaluator, false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
                 sampleSpaceId);
-        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
-                params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, getExperiment(),
+                getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
         return executor;
     }
 

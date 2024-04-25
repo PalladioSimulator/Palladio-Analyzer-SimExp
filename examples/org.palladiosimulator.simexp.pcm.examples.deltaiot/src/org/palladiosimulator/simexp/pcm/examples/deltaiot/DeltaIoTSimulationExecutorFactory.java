@@ -84,11 +84,11 @@ public class DeltaIoTSimulationExecutorFactory extends
             .toFileString());
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
+        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(getSpecs(), "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) packetLossSpec);
         prismFileUpdaters.add(packetLossUpdater);
-        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(specs,
+        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(getSpecs(),
                 "EnergyConsumption.prism");
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
@@ -101,8 +101,8 @@ public class DeltaIoTSimulationExecutorFactory extends
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
-                prismLogFile, reconfParamsRepo, experimentProvider);
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
+                prismLogFile, reconfParamsRepo, getExperimentProvider());
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
@@ -112,9 +112,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
             .build();
 
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(getSpecs().get(0),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(specs.get(1),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(getSpecs().get(1),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
                 lowerEnergyConsumptionThreshold);
@@ -132,17 +132,17 @@ public class DeltaIoTSimulationExecutorFactory extends
                 }
             });
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, List.of(runner), params, beforeExecutionInitializable, null, simulatedExperienceStore,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(getExperiment(),
+                getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable, null, getSimulatedExperienceStore(),
                 envProcess, reconfSelectionPolicy, reconfigurations, evaluator, false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
                 sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
-                rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
+                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,

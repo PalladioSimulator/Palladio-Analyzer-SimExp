@@ -74,28 +74,28 @@ public class LoadBalancingSimulationExecutorFactory extends
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
         List<ExperienceSimulationRunner> simulationRunners = List
-            .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
+            .of(new PcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
-                1, specs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
+                1, getSpecs().get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 
-        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, simulationRunners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(getExperiment(),
+                getSpecs(), simulationRunners, getSimulationParameters(), beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(),
                 null, reconfSelectionPolicy, reconfigurations, evaluator, false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
                 sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
-                rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
+                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 }

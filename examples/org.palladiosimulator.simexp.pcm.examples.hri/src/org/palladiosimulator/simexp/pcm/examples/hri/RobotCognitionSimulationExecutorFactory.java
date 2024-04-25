@@ -81,16 +81,16 @@ public class RobotCognitionSimulationExecutorFactory extends
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        UsageScenario usageScenario = experiment.getInitialModel()
+        UsageScenario usageScenario = getExperiment().getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-        List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(specs);
+        List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(getSpecs());
         relSpecs.add(reliabilitySpec);
 
         List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
-        joinedSpecs.addAll(specs); // currently contains the performance related measurement specs
+        joinedSpecs.addAll(getSpecs()); // currently contains the performance related measurement specs
                                    // derived from monitorrepository model
         joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
                                           // specs derived from usage_scenario model
@@ -98,7 +98,7 @@ public class RobotCognitionSimulationExecutorFactory extends
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
         List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner<>(predictionConfig,
-                probabilityDistributionRegistry, distributionFactory, parameterParser, probDistRepoLookup)
+                getProbabilityDistributionRegistry(), getDistributionFactory(), getParameterParser(), getProbDistRepoLookup())
         /**
          * disabled PCM performance analysis based on SimuCom for RobotCognition example; SimuCom is
          * deprecated and simulation currently fails
@@ -109,22 +109,22 @@ public class RobotCognitionSimulationExecutorFactory extends
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
-                reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
+                reconfSelectionPolicy, getExperimentProvider(), qvtoReconfigurationManager);
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                joinedSpecs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(getExperiment(),
+                joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(), null,
                 reconfSelectionPolicy, reconfigurations, evaluator, true);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(params.getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
-                rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
+                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 
     private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

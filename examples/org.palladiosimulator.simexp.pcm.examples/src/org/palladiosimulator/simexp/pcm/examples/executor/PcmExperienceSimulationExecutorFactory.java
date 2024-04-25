@@ -31,17 +31,16 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
-    protected final Experiment experiment;
-    protected final DynamicBayesianNetwork<CategoricalValue> dbn;
-    protected final List<T> specs;
-    protected final SimulationParameters params;
-    protected final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
-
-    protected final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
-    protected final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
-    protected final ParameterParser parameterParser;
-    protected final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-    protected final IExperimentProvider experimentProvider;
+    private final Experiment experiment;
+    private final DynamicBayesianNetwork<CategoricalValue> dbn;
+    private final List<T> specs;
+    private final SimulationParameters params;
+    private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
+    private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
+    private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
+    private final ParameterParser parameterParser;
+    private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
+    private final IExperimentProvider experimentProvider;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -69,6 +68,46 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();
 
+    protected Experiment getExperiment() {
+        return experiment;
+    }
+
+    protected IExperimentProvider getExperimentProvider() {
+        return experimentProvider;
+    }
+
+    protected DynamicBayesianNetwork<CategoricalValue> getDbn() {
+        return dbn;
+    }
+
+    protected SimulationParameters getSimulationParameters() {
+        return params;
+    }
+
+    protected ParameterParser getParameterParser() {
+        return parameterParser;
+    }
+
+    protected SimulatedExperienceStore<QVTOReconfigurator, R> getSimulatedExperienceStore() {
+        return simulatedExperienceStore;
+    }
+
+    protected IProbabilityDistributionFactory<CategoricalValue> getDistributionFactory() {
+        return distributionFactory;
+    }
+
+    protected IProbabilityDistributionRegistry<CategoricalValue> getProbabilityDistributionRegistry() {
+        return probabilityDistributionRegistry;
+    }
+
+    protected IProbabilityDistributionRepositoryLookup getProbDistRepoLookup() {
+        return probDistRepoLookup;
+    }
+
+    protected List<T> getSpecs() {
+        return specs;
+    }
+
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
             SimulationParameters params, Initializable beforeExecution,
@@ -79,7 +118,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(getExperimentProvider(), simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))

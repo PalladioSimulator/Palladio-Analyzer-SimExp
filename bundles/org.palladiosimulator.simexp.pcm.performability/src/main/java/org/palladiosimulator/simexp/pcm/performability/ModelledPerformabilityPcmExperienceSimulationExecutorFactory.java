@@ -95,12 +95,12 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
     @Override
     public ModelledSimulationExecutor<Double> create() {
         List<ExperienceSimulationRunner> runners = List
-            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
+            .of(new PerformabilityPcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
-        IModelsLookup modelsLookup = new ModelsLookup(experiment);
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
@@ -114,23 +114,23 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         // FIXME: read thresholds from kmodel
-        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
-        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(specs.get(0), specs.get(1), upperThresh,
+        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1), upperThresh,
                 lowerThresh);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                experiment, specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore,
+                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(),
                 null, reconfStrategy, reconfigurations, evaluator, false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(params.getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
-                params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, getExperiment(),
+                getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
         return executor;
     }
 

@@ -85,15 +85,15 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
         List<ExperienceSimulationRunner> runners = List
-            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
+            .of(new PerformabilityPcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
                 qvtoReconfigurationManager);
 
-        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(specs.get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
-        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(specs.get(0), specs.get(1), upperThresh,
+        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1), upperThresh,
                 lowerThresh);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
@@ -107,30 +107,30 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
         // configure the different planning strategies that shall be investigated by accordingly
         // (un)comment the required strategy definition: empty, scaling, fault-tolerant scaling
         LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
-                specs.get(0), config, nodeRecoveryStrategy);
+                getSpecs().get(0), config, nodeRecoveryStrategy);
         LoadBalancingScalingPlanningStrategy<PCMInstance> loadBalancingPlanningStrategy = new LoadBalancingScalingPlanningStrategy<>(
-                specs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+                getSpecs().get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
         FaultTolerantScalingPlanningStrategy<PCMInstance> ftLoadBalancingScalingPlanningStrategy = new FaultTolerantScalingPlanningStrategy<>(
-                specs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+                getSpecs().get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
         ReconfigurationPlanningStrategy reconfigurationPlanningStrategy = ftLoadBalancingScalingPlanningStrategy;
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
-                specs.get(0), config, reconfigurationPlanningStrategy);
+                getSpecs().get(0), config, reconfigurationPlanningStrategy);
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                specs, runners, params, beforeExecutionInitializable, envProcess, simulatedExperienceStore, null,
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(getExperiment(),
+                getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(), null,
                 reconfSelectionPolicy, reconfigurations, evaluator, false);
 
         // TODO: use from store
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
+        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
                 reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(params.getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
-                rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
+                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 }
