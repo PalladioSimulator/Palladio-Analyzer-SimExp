@@ -19,10 +19,10 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.modelled.config.IModelledPcmWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.modelled.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
@@ -58,12 +58,12 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
 
         return switch (simulationEngine) {
         case PCM -> {
-            yield createPCM((IPCMWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, experiment, dbn,
-                    probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+            yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, experiment,
+                    dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
         case PRISM -> {
-            yield createPRISM((IPrismWorkflowConfiguration) workflowConfiguration, rs, experiment, dbn,
+            yield createPRISM((IModelledPrismWorkflowConfiguration) workflowConfiguration, rs, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
@@ -71,7 +71,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         };
     }
 
-    private SimulationExecutor createPCM(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+    private SimulationExecutor createPCM(IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -115,7 +115,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         return factory.create();
     }
 
-    private SimulationExecutor createPRISM(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+    private SimulationExecutor createPRISM(IModelledPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
