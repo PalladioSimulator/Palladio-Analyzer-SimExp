@@ -33,12 +33,10 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
-import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
@@ -128,14 +126,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider);
             }
             case MODELLED -> {
-                URI smodelURI = config.getSmodelURI();
-                SModelLoader smodelLoader = new SModelLoader();
-                Smodel smodel = smodelLoader.load(rs, smodelURI);
-                LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
-
                 yield createModelledSimulationExecutor(config, rs, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, smodel, probModelRepo);
+                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -186,11 +179,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
-            Smodel smodel, ProbabilisticModelRepository probModelRepo) {
+            ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
         return factory.create(workflowConfiguration, rs, simulationEngine, qualityObjective, experiment, dbn,
                 probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
-                simulationParameters, launchDescriptionProvider, smodel, probModelRepo);
+                simulationParameters, launchDescriptionProvider, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")
