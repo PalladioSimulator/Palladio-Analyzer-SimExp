@@ -15,8 +15,6 @@ public interface IWorkflowConfiguration {
 
     URI getDynamicModelURI();
 
-    URI getSmodelURI();
-
     SimulationParameters getSimulationParameters();
 
 }
