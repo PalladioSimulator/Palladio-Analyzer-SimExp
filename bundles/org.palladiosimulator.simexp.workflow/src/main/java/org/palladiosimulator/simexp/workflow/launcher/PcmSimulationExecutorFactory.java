@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -30,8 +31,8 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration, QualityObjective qualityObjective,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,

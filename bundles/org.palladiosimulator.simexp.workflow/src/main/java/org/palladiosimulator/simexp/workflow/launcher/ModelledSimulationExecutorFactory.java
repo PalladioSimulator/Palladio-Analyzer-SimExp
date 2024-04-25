@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -38,7 +39,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
-    public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
+    public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,

@@ -123,7 +123,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
+                yield createCustomSimulationExecutor(config, rs, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider);
             }
@@ -133,7 +133,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                yield createModelledSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
+                yield createModelledSimulationExecutor(config, rs, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, smodel, probModelRepo);
             }
@@ -156,7 +156,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
+            ResourceSet rs, SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -165,13 +165,13 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
-                    probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, experiment,
+                    dbn, probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, experiment, dbn,
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, rs, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider);
         }
@@ -180,7 +180,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
+            ResourceSet rs, SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -188,7 +188,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
             Smodel smodel, ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, simulationEngine, qualityObjective, experiment, dbn,
+        return factory.create(workflowConfiguration, rs, simulationEngine, qualityObjective, experiment, dbn,
                 probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
                 simulationParameters, launchDescriptionProvider, smodel, probModelRepo);
     }

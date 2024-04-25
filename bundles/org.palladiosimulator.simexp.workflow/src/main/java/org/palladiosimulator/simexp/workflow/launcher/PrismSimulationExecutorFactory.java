@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -29,8 +30,8 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration, Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+    public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
