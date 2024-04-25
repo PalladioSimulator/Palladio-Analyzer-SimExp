@@ -43,8 +43,8 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, List<URI> propertyFiles,
-            List<URI> moduleFiles, Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         return switch (simulationEngine) {
         case PCM -> {
             yield createPCM((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
@@ -54,8 +54,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         case PRISM -> {
             yield createPRISM((IPrismWorkflowConfiguration) workflowConfiguration, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, descriptionProvider, propertyFiles, moduleFiles, smodel,
-                    staticEnvDynModel);
+                    probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("Unexpected value: " + simulationEngine);
         };
@@ -110,12 +109,14 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, List<URI> propertyFiles,
-            List<URI> moduleFiles, Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
+        List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
+        List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
         List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
             .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
             .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))

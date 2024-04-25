@@ -34,12 +34,13 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, List<URI> propertyFiles,
-            List<URI> moduleFiles) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
+        List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
+        List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
         List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
             .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
             .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
