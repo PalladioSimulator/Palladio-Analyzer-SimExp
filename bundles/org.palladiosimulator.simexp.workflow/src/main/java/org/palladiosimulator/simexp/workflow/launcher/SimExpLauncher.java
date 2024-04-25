@@ -39,6 +39,7 @@ import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -178,7 +179,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         };
     }
 
-    private SimulationExecutor createModelledSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
+    private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
             SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,

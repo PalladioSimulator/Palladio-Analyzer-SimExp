@@ -16,9 +16,9 @@ import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
@@ -38,8 +38,9 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
-    public SimulationExecutor create(IWorkflowConfiguration workflowConfiguration, SimulationEngine simulationEngine,
-            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
+            SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
