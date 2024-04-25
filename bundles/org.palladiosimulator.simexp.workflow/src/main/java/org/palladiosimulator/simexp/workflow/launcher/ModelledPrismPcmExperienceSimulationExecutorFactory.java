@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -84,7 +85,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,

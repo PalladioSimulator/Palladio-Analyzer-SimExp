@@ -58,12 +58,12 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
 
         return switch (simulationEngine) {
         case PCM -> {
-            yield createPCM((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
+            yield createPCM((IPCMWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
         case PRISM -> {
-            yield createPRISM((IPrismWorkflowConfiguration) workflowConfiguration, experiment, dbn,
+            yield createPRISM((IPrismWorkflowConfiguration) workflowConfiguration, rs, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
@@ -71,7 +71,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         };
     }
 
-    private SimulationExecutor createPCM(IPCMWorkflowConfiguration workflowConfiguration,
+    private SimulationExecutor createPCM(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
@@ -89,25 +89,25 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
 
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
-            yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
+                    dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
                     staticEnvDynModel);
         }
         case RELIABILITY -> {
-            yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, experiment, dbn,
-                    pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+            yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
+                    dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
                     staticEnvDynModel);
         }
         case PERFORMABILITY -> {
-            yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, experiment,
-                    dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder, smodel,
-                    staticEnvDynModel);
+            yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs,
+                    experiment, dbn, pcmSpecs, simulationParameters,
+                    new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
+                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
+                    qvtoReconfigurationManager, simulationRunnerHolder, smodel, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -115,8 +115,8 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         return factory.create();
     }
 
-    private SimulationExecutor createPRISM(IPrismWorkflowConfiguration workflowConfiguration, Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createPRISM(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -133,7 +133,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
             .toList();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
-                workflowConfiguration, experiment, dbn, prismSpecs, simulationParameters,
+                workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 qvtoReconfigurationManager, simulationRunnerHolder, smodel, staticEnvDynModel);
