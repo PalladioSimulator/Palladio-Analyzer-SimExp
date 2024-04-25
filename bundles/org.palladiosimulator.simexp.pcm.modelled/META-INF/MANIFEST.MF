@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PCM modelled
+Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.modelled
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: org.palladiosimulator.simexp.pcm.modelled
+Bundle-ActivationPolicy: lazy
