@@ -28,6 +28,7 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -58,15 +59,15 @@ public class DeltaIoTSimulationExecutorFactory extends
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+    public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn, List<PrismSimulatedMeasurementSpec> specs,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder simulationRunnerHolder) {
-        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         this.modelAccess = new DeltaIoTModelAccess<>();
@@ -132,17 +133,18 @@ public class DeltaIoTSimulationExecutorFactory extends
                 }
             });
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(getExperiment(),
-                getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable, null, getSimulatedExperienceStore(),
-                envProcess, reconfSelectionPolicy, reconfigurations, evaluator, false);
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
+                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
+                null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
+                false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
-                reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
-                sampleSpaceId);
+        String sampleSpaceId = SimulatedExperienceConstants
+            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
+            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
-                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
+                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,

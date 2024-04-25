@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -28,7 +29,8 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -43,9 +45,10 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
             .toList();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                experiment, dbn, prismSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
-                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+                workflowConfiguration, experiment, dbn, prismSpecs, simulationParameters,
+                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
+                qvtoReconfigurationManager, simulationRunnerHolder);
         return factory.create();
     }
 }

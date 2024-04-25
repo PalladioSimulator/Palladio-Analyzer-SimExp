@@ -39,6 +39,9 @@ import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -119,7 +122,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(simulationEngine, qualityObjective, experiment, dbn,
+                yield createCustomSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
                         config.getPropertyFiles(), config.getModuleFiles());
@@ -130,7 +133,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                yield createModelledSimulationExecutor(simulationEngine, qualityObjective, experiment, dbn,
+                yield createModelledSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
                         config.getPropertyFiles(), config.getModuleFiles(), smodel, probModelRepo);
@@ -153,8 +156,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createCustomSimulationExecutor(SimulationEngine simulationEngine,
-            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
+            SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -163,22 +167,23 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
-                    probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                    descriptionProvider, monitorNames);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
+                    probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+                    probDistRepoLookup, simulationParameters, descriptionProvider, monitorNames);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create(experiment, dbn, probabilityDistributionRegistry, probabilityDistributionFactory,
-                    parameterParser, probDistRepoLookup, simulationParameters, descriptionProvider, propertyFiles,
-                    moduleFiles);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, experiment, dbn,
+                    probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
+                    probDistRepoLookup, simulationParameters, descriptionProvider, propertyFiles, moduleFiles);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
     }
 
-    private SimulationExecutor createModelledSimulationExecutor(SimulationEngine simulationEngine,
-            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createModelledSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
+            SimulationEngine simulationEngine, QualityObjective qualityObjective, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -186,9 +191,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
             ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(simulationEngine, qualityObjective, experiment, dbn, probabilityDistributionRegistry,
-                probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                launchDescriptionProvider, monitorNames, propertyFiles, moduleFiles, smodel, probModelRepo);
+        return factory.create(workflowConfiguration, simulationEngine, qualityObjective, experiment, dbn,
+                probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
+                simulationParameters, launchDescriptionProvider, monitorNames, propertyFiles, moduleFiles, smodel,
+                probModelRepo);
     }
 
     @SuppressWarnings("unchecked")

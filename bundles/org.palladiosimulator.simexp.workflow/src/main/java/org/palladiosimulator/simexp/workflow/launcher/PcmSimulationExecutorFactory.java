@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
@@ -29,8 +30,8 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(QualityObjective qualityObjective, Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+    public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration, QualityObjective qualityObjective,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -45,18 +46,18 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             .toList();
 
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
-        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs, simulationParameters,
-                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
-
-        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(experiment, dbn, pcmSpecs, simulationParameters,
-                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                qvtoReconfigurationManager, simulationRunnerHolder);
-
-        case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(experiment, dbn, pcmSpecs,
+        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, experiment, dbn, pcmSpecs,
                 simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
+                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+
+        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, experiment, dbn,
+                pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
+                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+
+        case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration,
+                experiment, dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
                 experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 

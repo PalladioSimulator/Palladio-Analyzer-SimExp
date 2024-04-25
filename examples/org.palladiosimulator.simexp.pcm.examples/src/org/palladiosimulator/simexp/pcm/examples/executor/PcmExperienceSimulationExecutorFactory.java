@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -31,6 +32,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
+    private final IWorkflowConfiguration workflowConfiguration;
     private final Experiment experiment;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
     private final List<T> specs;
@@ -43,13 +45,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IExperimentProvider experimentProvider;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
-    public PcmExperienceSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<T> specs, SimulationParameters params,
+    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+        this.workflowConfiguration = workflowConfiguration;
         this.experiment = experiment;
         this.dbn = dbn;
         this.specs = specs;

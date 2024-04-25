@@ -26,6 +26,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -61,15 +62,16 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
     private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public FaultTolerantLoadBalancingSimulationExecutorFactory(Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+    public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder simulationRunnerHolder) {
-        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
@@ -93,8 +95,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
         Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(getSpecs().get(0),
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
-        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1), upperThresh,
-                lowerThresh);
+        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1),
+                upperThresh, lowerThresh);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
@@ -121,16 +123,18 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(getExperiment(),
-                getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(), null,
-                reconfSelectionPolicy, reconfigurations, evaluator, false);
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(
+                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable,
+                envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
+                false);
 
         // TODO: use from store
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
-                reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(getSimulationParameters().getSimulationID(), sampleSpaceId);
+        String sampleSpaceId = SimulatedExperienceConstants
+            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
+        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(
+                getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(), reconfSelectionPolicy,
-                rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
+                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
     }
 }

@@ -38,6 +38,7 @@ import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrate
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -70,16 +71,17 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public ModelledReliabilityPcmExperienceSimulationExecutorFactory(Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+    public ModelledReliabilityPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         this.smodel = smodel;
@@ -98,15 +100,16 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
 
-        List<ExperienceSimulationRunner> runners = List.of(new PcmRelExperienceSimulationRunner<>(predictionConfig,
-                getProbabilityDistributionRegistry(), getDistributionFactory(), getParameterParser(), getProbDistRepoLookup())
-        /**
-         * disabled PCM performance analysis based on SimuCom for RobotCognition example; SimuCom is
-         * deprecated and simulation currently fails
-         * 
-         * , new PcmExperienceSimulationRunner(experimentProvider)
-         */
-        );
+        List<ExperienceSimulationRunner> runners = List
+            .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, getProbabilityDistributionRegistry(),
+                    getDistributionFactory(), getParameterParser(), getProbDistRepoLookup())
+            /**
+             * disabled PCM performance analysis based on SimuCom for RobotCognition example;
+             * SimuCom is deprecated and simulation currently fails
+             * 
+             * , new PcmExperienceSimulationRunner(experimentProvider)
+             */
+            );
 
         // FIXME: check if reconfigurationStrategy must be initialized
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
@@ -120,8 +123,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
         simSpecs.add(reliabilitySpec);
 
         List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
-        joinedSpecs.addAll(getSpecs()); // currently contains the performance related measurement specs
-                                   // derived from monitorrepository model
+        joinedSpecs.addAll(getSpecs()); // currently contains the performance related measurement
+                                        // specs
+        // derived from monitorrepository model
         joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
                                           // specs derived from usage_scenario model
 
@@ -141,15 +145,17 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                getExperiment(), joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
-                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true);
+                getExperiment(), joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
+                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
-                reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getSimulationParameters().getSimulationID(), sampleSpaceId);
+        String sampleSpaceId = SimulatedExperienceConstants
+            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
+                getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, getExperiment(),
-                getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator,
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                qvtoReconfigurationManager);
 
         return executor;
     }

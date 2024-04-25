@@ -40,6 +40,7 @@ import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrate
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
@@ -82,16 +83,17 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public ModelledPrismPcmExperienceSimulationExecutorFactory(Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn, List<PrismSimulatedMeasurementSpec> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+    public ModelledPrismPcmExperienceSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         this.smodel = smodel;
@@ -173,15 +175,16 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
                 lowerEnergyConsumptionThreshold);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable, null,
-                getSimulatedExperienceStore(), envProcess, reconfStrategy, reconfigurations, evaluator, false);
+                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
+                null, getSimulatedExperienceStore(), envProcess, reconfStrategy, reconfigurations, evaluator, false);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
-                reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
-                sampleSpaceId);
-        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, getExperiment(),
-                getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+        String sampleSpaceId = SimulatedExperienceConstants
+            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
+            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
+        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator,
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                qvtoReconfigurationManager);
         return executor;
     }
 

@@ -36,6 +36,7 @@ import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrate
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -65,16 +66,17 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final ProbabilisticModelRepository staticEnvDynModel;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public ModelledPerformancePcmExperienceSimulationExecutorFactory(Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+    public ModelledPerformancePcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
             SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
         this.smodel = smodel;
@@ -125,16 +127,17 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         boolean isHidden = false;
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecution, envProcess, getSimulatedExperienceStore(), null,
-                reconfStrategy, reconfigurations, evaluator, isHidden);
+                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecution, envProcess,
+                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, isHidden);
 
-        String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(getSimulationParameters().getSimulationID(),
-                reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(getSimulationParameters().getSimulationID(),
-                sampleSpaceId);
+        String sampleSpaceId = SimulatedExperienceConstants
+            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
+            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, getExperiment(),
-                getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator,
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                qvtoReconfigurationManager);
         return executor;
     }
 
