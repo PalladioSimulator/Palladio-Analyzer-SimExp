@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Workflow
+Bundle-Name: Workflow UI
 Bundle-SymbolicName: org.palladiosimulator.simexp.ui.workflow;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.ui.workflow
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.debug.ui;bundle-version="3.14.500",
- de.uka.ipd.sdq.codegen.simucontroller;bundle-version="4.3.0",
+ de.uka.ipd.sdq.codegen.simucontroller;bundle-version="5.2.0",
  org.palladiosimulator.solver;bundle-version="4.3.0",
  org.palladiosimulator.analyzer.workflow;bundle-version="4.3.0",
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
