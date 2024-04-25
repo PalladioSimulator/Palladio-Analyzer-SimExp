@@ -32,5 +32,6 @@ Require-Bundle: org.apache.log4j,
  com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  org.palladiosimulator.simexp.dsl.smodel.interpreter,
- org.palladiosimulator.simexp.pcm.performability
+ org.palladiosimulator.simexp.pcm.performability,
+ org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing

@@ -29,4 +29,5 @@ Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.simexp.pcm.examples,
  org.palladiosimulator.experimentautomation;bundle-version="4.3.0",
  org.palladiosimulator.simexp.dsl.smodel.interpreter,
- org.palladiosimulator.simexp.dsl.smodel
+ org.palladiosimulator.simexp.dsl.smodel,
+ org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0"
