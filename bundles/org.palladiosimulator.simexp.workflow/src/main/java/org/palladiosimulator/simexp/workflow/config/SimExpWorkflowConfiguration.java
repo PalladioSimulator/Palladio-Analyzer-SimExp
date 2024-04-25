@@ -7,9 +7,10 @@ import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflo
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 
-public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration {
+public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration implements IPCMWorkflowConfiguration {
 
     /**
      * This class serves as container configuration class to hold all relevant configuration
@@ -77,18 +78,22 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         // FIXME: check what shall be done here
     }
 
+    @Override
     public URI getSmodelURI() {
         return smodelFile;
     }
 
+    @Override
     public SimulatorType getSimulatorType() {
         return simulatorType;
     }
 
+    @Override
     public SimulationEngine getSimulationEngine() {
         return simulationEngine;
     }
 
+    @Override
     public QualityObjective getQualityObjective() {
         return qualityObjective;
     }

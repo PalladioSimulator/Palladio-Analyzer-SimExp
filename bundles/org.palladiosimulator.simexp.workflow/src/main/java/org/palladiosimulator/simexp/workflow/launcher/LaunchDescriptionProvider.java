@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.workflow.launcher;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 
 class LaunchDescriptionProvider implements DescriptionProvider {
     private final String simulationID;
