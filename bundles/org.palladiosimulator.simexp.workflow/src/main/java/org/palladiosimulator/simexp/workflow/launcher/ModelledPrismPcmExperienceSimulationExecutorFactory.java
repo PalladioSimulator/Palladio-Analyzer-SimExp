@@ -89,11 +89,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         this.staticEnvDynModel = staticEnvDynModel;
         this.modelAccess = new DeltaIoTModelAccess<>();
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
@@ -124,12 +122,13 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
+        IExperimentProvider experimentProvider = createExperimentProvider();
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
-                prismLogFile, reconfParamsRepo, getExperimentProvider());
+                prismLogFile, reconfParamsRepo, experimentProvider);
 
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
@@ -181,7 +180,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
         ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
     }

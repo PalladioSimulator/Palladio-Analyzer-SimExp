@@ -68,10 +68,9 @@ public class RobotCognitionSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
@@ -111,8 +110,9 @@ public class RobotCognitionSimulationExecutorFactory extends
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        IExperimentProvider experimentProvider = createExperimentProvider();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
-                reconfSelectionPolicy, getExperimentProvider(), qvtoReconfigurationManager);
+                reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
 
@@ -129,7 +129,7 @@ public class RobotCognitionSimulationExecutorFactory extends
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 
     private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

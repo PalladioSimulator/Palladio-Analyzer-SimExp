@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -45,7 +46,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-    private final IExperimentProvider experimentProvider;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
@@ -54,7 +54,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         this.workflowConfiguration = workflowConfiguration;
         this.experiment = experiment;
         this.dbn = dbn;
@@ -65,7 +65,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.probabilityDistributionRegistry = probabilityDistributionRegistry;
         this.parameterParser = parameterParser;
         this.probDistRepoLookup = probDistRepoLookup;
-        this.experimentProvider = experimentProvider;
         this.simulationRunnerHolder = simulationRunnerHolder;
 
         probabilityDistributionRegistry
@@ -78,8 +77,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return experiment;
     }
 
-    protected IExperimentProvider getExperimentProvider() {
-        return experimentProvider;
+    protected IExperimentProvider createExperimentProvider() {
+        return new ExperimentProvider(getExperiment());
     }
 
     protected DynamicBayesianNetwork<CategoricalValue> getDbn() {
@@ -114,6 +113,10 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return specs;
     }
 
+    protected SimulationRunnerHolder getSimulationRunnerHolder() {
+        return simulationRunnerHolder;
+    }
+
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
             SimulationParameters params, Initializable beforeExecution,
@@ -124,7 +127,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             RewardEvaluator<R> evaluator, boolean hidden) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(getExperimentProvider(), simulationRunnerHolder)
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(createExperimentProvider(),
+                    getSimulationRunnerHolder())
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))
@@ -137,7 +141,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .andOptionalExecutionBeforeEachRun(beforeExecution)
             .done()
             .specifySelfAdaptiveSystemState()
-            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)
+            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, getSimulationRunnerHolder())
             .asPartiallyEnvironmentalDrivenProcess(navigator)
             .asHiddenProcess(hidden)
             .done()

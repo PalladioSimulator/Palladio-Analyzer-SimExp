@@ -48,9 +48,6 @@ public class LoadBalancingSimulationExecutorFactory extends
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -58,25 +55,27 @@ public class LoadBalancingSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
-        VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
-                dbn, experimentProvider);
-        this.envProcess = p.getEnvironmentProcess();
-
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
-        this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
+        IExperimentProvider experimentProvider = createExperimentProvider();
+        VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
+                getDbn(), experimentProvider);
+        EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
+            .getEnvironmentProcess();
+
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
+                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+
         List<ExperienceSimulationRunner> simulationRunners = List
-            .of(new PcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+            .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
                 1, getSpecs().get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
@@ -98,6 +97,6 @@ public class LoadBalancingSimulationExecutorFactory extends
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 }

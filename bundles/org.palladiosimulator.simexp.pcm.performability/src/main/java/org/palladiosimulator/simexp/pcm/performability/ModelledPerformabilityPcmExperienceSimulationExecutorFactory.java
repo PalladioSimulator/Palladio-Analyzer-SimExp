@@ -64,9 +64,6 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
 
     private final ProbabilisticModelRepository staticEnvDynModel;
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
             DynamicBayesianNetwork<CategoricalValue> dbn, List<PcmMeasurementSpecification> specs,
@@ -74,28 +71,27 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         this.staticEnvDynModel = staticEnvDynModel;
-
-        PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
-                dbn, experimentProvider);
-        this.envProcess = p.getEnvironmentProcess();
-
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
-        this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                simulationRunnerHolder);
     }
 
     @Override
     public ModelledSimulationExecutor<Double> create() {
+        IExperimentProvider experimentProvider = createExperimentProvider();
+        PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
+                getDbn(), experimentProvider);
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
+            .getEnvironmentProcess();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
+                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+
         List<ExperienceSimulationRunner> runners = List
-            .of(new PerformabilityPcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
@@ -131,7 +127,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
     }

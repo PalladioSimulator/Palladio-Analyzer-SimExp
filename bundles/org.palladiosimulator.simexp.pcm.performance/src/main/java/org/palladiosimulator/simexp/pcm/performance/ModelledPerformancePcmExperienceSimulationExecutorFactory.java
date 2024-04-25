@@ -59,8 +59,6 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
     private final ProbabilisticModelRepository staticEnvDynModel;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
@@ -70,28 +68,27 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         this.staticEnvDynModel = staticEnvDynModel;
-
-        PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
-                dbn, experimentProvider);
-        this.envProcess = p.getEnvironmentProcess();
-
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
-        this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                simulationRunnerHolder);
     }
 
     @Override
     public ModelledSimulationExecutor<Integer> create() {
+        IExperimentProvider experimentProvider = createExperimentProvider();
+        PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
+                getDbn(), experimentProvider);
+        EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
+            .getEnvironmentProcess();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
+                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+
         List<ExperienceSimulationRunner> runners = List
-            .of(new PcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+            .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+        Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         // Monitor PcmMonitor
@@ -131,7 +128,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
     }

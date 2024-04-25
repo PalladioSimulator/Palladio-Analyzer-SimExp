@@ -66,10 +66,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         this.modelAccess = new DeltaIoTModelAccess<>();
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
                 modelAccess, simulationRunnerHolder);
@@ -101,9 +100,10 @@ public class DeltaIoTSimulationExecutorFactory extends
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
+        IExperimentProvider experimentProvider = createExperimentProvider();
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
-                prismLogFile, reconfParamsRepo, getExperimentProvider());
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+                prismLogFile, reconfParamsRepo, experimentProvider);
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
@@ -144,7 +144,7 @@ public class DeltaIoTSimulationExecutorFactory extends
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,

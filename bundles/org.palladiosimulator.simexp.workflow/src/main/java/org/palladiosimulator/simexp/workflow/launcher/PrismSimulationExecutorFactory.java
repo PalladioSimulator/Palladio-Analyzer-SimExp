@@ -17,8 +17,6 @@ import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
-import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
-import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -36,7 +34,6 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
-        IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
         List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
         List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
@@ -47,8 +44,7 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         return factory.create();
     }
 }

@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.model.io.SModelLoader;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -36,10 +35,9 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();
         this.smodel = smodelLoader.load(rs, smodelURI);

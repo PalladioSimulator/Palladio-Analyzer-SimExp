@@ -77,11 +77,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
         this.staticEnvDynModel = staticEnvDynModel;
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -109,8 +107,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
 
         // FIXME: check if reconfigurationStrategy must be initialized
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        IExperimentProvider experimentProvider = createExperimentProvider();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
-                getExperimentProvider(), qvtoReconfigurationManager);
+                experimentProvider, qvtoReconfigurationManager);
         UsageScenario usageScenario = getExperiment().getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
@@ -152,7 +151,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, getExperimentProvider(),
+                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
 
         return executor;

@@ -59,9 +59,6 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
-    private final InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator;
-
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             List<PcmMeasurementSpecification> specs, SimulationParameters params,
@@ -69,25 +66,27 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
-                simulationRunnerHolder);
-        FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
-                dbn, experimentProvider);
-        this.envProcess = p.getEnvironmentProcess();
-
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(specs);
-        this.initialStateCreator = new InitialPcmStateCreator<>(simulatedMeasurementSpecs, experimentProvider,
-                simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
+        IExperimentProvider experimentProvider = createExperimentProvider();
+        FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
+                getDbn(), experimentProvider);
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
+            .getEnvironmentProcess();
+
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
+                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+
         List<ExperienceSimulationRunner> runners = List
-            .of(new PerformabilityPcmExperienceSimulationRunner<>(getExperimentProvider(), initialStateCreator));
+            .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(getExperimentProvider(),
+        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(getSpecs().get(0),
@@ -134,6 +133,6 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, getExperimentProvider(), qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 }
