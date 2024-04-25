@@ -7,10 +7,13 @@ import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflo
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 
-public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration implements IPCMWorkflowConfiguration {
+public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration
+        implements IPCMWorkflowConfiguration, IPrismWorkflowConfiguration, IModelledWorkflowConfiguration {
 
     /**
      * This class serves as container configuration class to hold all relevant configuration
@@ -98,14 +101,17 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         return qualityObjective;
     }
 
+    @Override
     public URI getExperimentsURI() {
         return experimentsFile;
     }
 
+    @Override
     public URI getStaticModelURI() {
         return staticModelFile;
     }
 
+    @Override
     public URI getDynamicModelURI() {
         return dynamicModelFile;
     }
@@ -114,18 +120,22 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         return monitorRepositoryFile;
     }
 
+    @Override
     public List<String> getMonitorNames() {
         return List.copyOf(monitorNames);
     }
 
+    @Override
     public List<URI> getPropertyFiles() {
         return List.copyOf(propertyFiles);
     }
 
+    @Override
     public List<URI> getModuleFiles() {
         return List.copyOf(moduleFiles);
     }
 
+    @Override
     public SimulationParameters getSimulationParameters() {
         return simulationParameters;
     }
