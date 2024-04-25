@@ -43,15 +43,13 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
-            ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, List<URI> propertyFiles,
+            List<URI> moduleFiles, Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
         return switch (simulationEngine) {
         case PCM -> {
             yield createPCM((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, descriptionProvider, monitorNames, smodel,
-                    staticEnvDynModel);
+                    probDistRepoLookup, simulationParameters, descriptionProvider, smodel, staticEnvDynModel);
         }
         case PRISM -> {
             yield createPRISM((IPrismWorkflowConfiguration) workflowConfiguration, experiment, dbn,
@@ -68,12 +66,13 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames, Smodel smodel, ProbabilisticModelRepository staticEnvDynModel) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
+        List<String> monitorNames = workflowConfiguration.getMonitorNames();
         List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
             .map(provider::getSpecification)
             .toList();

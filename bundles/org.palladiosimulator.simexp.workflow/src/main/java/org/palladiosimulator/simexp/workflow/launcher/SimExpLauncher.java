@@ -124,8 +124,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             case CUSTOM -> {
                 yield createCustomSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                        config.getPropertyFiles(), config.getModuleFiles());
+                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getPropertyFiles(),
+                        config.getModuleFiles());
             }
             case MODELLED -> {
                 URI smodelURI = config.getSmodelURI();
@@ -135,8 +135,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
                 yield createModelledSimulationExecutor(config, simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                        config.getPropertyFiles(), config.getModuleFiles(), smodel, probModelRepo);
+                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getPropertyFiles(),
+                        config.getModuleFiles(), smodel, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -162,14 +162,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider, List<URI> propertyFiles,
+            List<URI> moduleFiles) {
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
             yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, qualityObjective, experiment, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                    probDistRepoLookup, simulationParameters, descriptionProvider, monitorNames);
+                    probDistRepoLookup, simulationParameters, descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
@@ -188,13 +188,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
-            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
-            ProbabilisticModelRepository probModelRepo) {
+            List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel, ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
         return factory.create(workflowConfiguration, simulationEngine, qualityObjective, experiment, dbn,
                 probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
-                simulationParameters, launchDescriptionProvider, monitorNames, propertyFiles, moduleFiles, smodel,
-                probModelRepo);
+                simulationParameters, launchDescriptionProvider, propertyFiles, moduleFiles, smodel, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")

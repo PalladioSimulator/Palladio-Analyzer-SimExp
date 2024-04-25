@@ -35,12 +35,12 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
-            List<String> monitorNames) {
+            SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
         SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = new ExperimentProvider(experiment);
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
+        List<String> monitorNames = workflowConfiguration.getMonitorNames();
         List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
             .map(provider::getSpecification)
             .toList();
