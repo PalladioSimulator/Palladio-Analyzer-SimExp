@@ -42,7 +42,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
-import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.reliability.entity.PcmRelSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.process.PcmRelExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -59,7 +59,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
-        PcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
+        ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
 
     // public static final double UPPER_THRESHOLD_RT = 0.1;
     // public static final double LOWER_THRESHOLD_REL = 0.9;
