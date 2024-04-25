@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.config;
+package org.palladiosimulator.simexp.pcm.simulator.config;
 
 import java.util.List;
 
