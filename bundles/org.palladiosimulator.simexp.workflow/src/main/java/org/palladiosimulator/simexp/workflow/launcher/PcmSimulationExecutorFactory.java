@@ -47,17 +47,17 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             .toList();
 
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
-        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, experiment, dbn, pcmSpecs,
-                simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
-                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
-
-        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, experiment, dbn,
+        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, experiment, dbn,
                 pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
                 experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
 
-        case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration,
+        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, rs, experiment, dbn,
+                pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
+                experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);
+
+        case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration, rs,
                 experiment, dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                 probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser, probDistRepoLookup,
                 experimentProvider, qvtoReconfigurationManager, simulationRunnerHolder);

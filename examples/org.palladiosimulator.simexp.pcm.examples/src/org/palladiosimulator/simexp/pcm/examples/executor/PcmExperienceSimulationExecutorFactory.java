@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -45,9 +46,9 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IExperimentProvider experimentProvider;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
-    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, Experiment experiment,
-            DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
