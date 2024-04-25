@@ -71,9 +71,9 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder, ProbabilisticModelRepository staticEnvDynModel) {
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
     }
 
@@ -85,8 +85,9 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
-                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+                simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
 
         List<ExperienceSimulationRunner> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
@@ -119,7 +120,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable,
-                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false);
+                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
+                experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

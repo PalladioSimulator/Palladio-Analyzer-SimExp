@@ -67,10 +67,9 @@ public class RobotCognitionSimulationExecutorFactory extends
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
@@ -118,10 +117,11 @@ public class RobotCognitionSimulationExecutorFactory extends
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
+        SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(
                 getExperiment(), joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                true);
+                true, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

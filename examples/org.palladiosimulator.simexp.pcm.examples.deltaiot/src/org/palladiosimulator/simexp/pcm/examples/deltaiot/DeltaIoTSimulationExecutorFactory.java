@@ -57,7 +57,6 @@ public class DeltaIoTSimulationExecutorFactory extends
     public final static String PRISM_FOLDER = "prism";
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
-    private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -65,18 +64,20 @@ public class DeltaIoTSimulationExecutorFactory extends
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.modelAccess = new DeltaIoTModelAccess<>();
-        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
-                modelAccess, simulationRunnerHolder);
-        this.envProcess = p.getEnvironmentProcess();
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
+        SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
+        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(getDbn(),
+                getSimulatedExperienceStore(), modelAccess, simulationRunnerHolder);
+        SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
+            .getEnvironmentProcess();
+
         URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER)
             .toString(), true);
         File prismLogFile = new File(CommonPlugin.resolve(uri)
@@ -136,7 +137,7 @@ public class DeltaIoTSimulationExecutorFactory extends
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
                 getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
                 null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
-                false);
+                false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

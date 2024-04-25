@@ -54,10 +54,9 @@ public class LoadBalancingSimulationExecutorFactory extends
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
     @Override
@@ -69,8 +68,9 @@ public class LoadBalancingSimulationExecutorFactory extends
             .getEnvironmentProcess();
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
-                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+                simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
 
         List<ExperienceSimulationRunner> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
@@ -89,7 +89,7 @@ public class LoadBalancingSimulationExecutorFactory extends
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
                 getExperiment(), getSpecs(), simulationRunners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false);
+                false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

@@ -9,7 +9,6 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
@@ -33,7 +32,6 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
-        SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
         List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
         List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
@@ -44,7 +42,7 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         return factory.create();
     }
 }

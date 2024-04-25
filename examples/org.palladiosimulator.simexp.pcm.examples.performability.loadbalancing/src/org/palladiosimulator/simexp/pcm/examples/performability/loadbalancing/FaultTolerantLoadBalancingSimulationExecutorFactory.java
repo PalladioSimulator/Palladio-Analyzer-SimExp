@@ -65,10 +65,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
     @Override
@@ -80,8 +79,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
             .getEnvironmentProcess();
 
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
-                simulatedMeasurementSpecs, experimentProvider, getSimulationRunnerHolder());
+                simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
 
         List<ExperienceSimulationRunner> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
@@ -124,7 +124,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(
                 getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false);
+                false, experimentProvider, simulationRunnerHolder);
 
         // TODO: use from store
         String sampleSpaceId = SimulatedExperienceConstants

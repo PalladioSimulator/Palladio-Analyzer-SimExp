@@ -46,15 +46,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-    private final SimulationRunnerHolder simulationRunnerHolder;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs,
             SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         this.workflowConfiguration = workflowConfiguration;
         this.experiment = experiment;
         this.dbn = dbn;
@@ -65,7 +63,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.probabilityDistributionRegistry = probabilityDistributionRegistry;
         this.parameterParser = parameterParser;
         this.probDistRepoLookup = probDistRepoLookup;
-        this.simulationRunnerHolder = simulationRunnerHolder;
 
         probabilityDistributionRegistry
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
@@ -113,8 +110,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return specs;
     }
 
-    protected SimulationRunnerHolder getSimulationRunnerHolder() {
-        return simulationRunnerHolder;
+    protected SimulationRunnerHolder createSimulationRunnerHolder() {
+        return new SimulationRunnerHolder();
     }
 
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
@@ -124,11 +121,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
-            RewardEvaluator<R> evaluator, boolean hidden) {
+            RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
+            SimulationRunnerHolder simulationRunnerHolder) {
 
         return PcmExperienceSimulationBuilder
-            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(createExperimentProvider(),
-                    getSimulationRunnerHolder())
+            .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
             .andSimulatedMeasurementSpecs(new HashSet<>(specs))
@@ -141,7 +138,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .andOptionalExecutionBeforeEachRun(beforeExecution)
             .done()
             .specifySelfAdaptiveSystemState()
-            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, getSimulationRunnerHolder())
+            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)
             .asPartiallyEnvironmentalDrivenProcess(navigator)
             .asHiddenProcess(hidden)
             .done()

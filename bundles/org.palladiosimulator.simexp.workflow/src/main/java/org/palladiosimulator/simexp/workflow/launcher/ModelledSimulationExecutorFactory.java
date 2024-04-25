@@ -12,7 +12,6 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -65,7 +64,6 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
         List<String> monitorNames = workflowConfiguration.getMonitorNames();
         List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
@@ -77,20 +75,19 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, simulationRunnerHolder, staticEnvDynModel);
+                    probDistRepoLookup, staticEnvDynModel);
         }
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
                     dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
-                    probDistRepoLookup, simulationRunnerHolder, staticEnvDynModel);
+                    probDistRepoLookup, staticEnvDynModel);
         }
         case PERFORMABILITY -> {
             yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs,
                     experiment, dbn, pcmSpecs, simulationParameters,
                     new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder,
-                    staticEnvDynModel);
+                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -105,7 +102,6 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        SimulationRunnerHolder simulationRunnerHolder = new SimulationRunnerHolder();
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
         List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
         List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
@@ -116,8 +112,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, simulationRunnerHolder,
-                staticEnvDynModel);
+                probabilityDistributionRegistry, parameterParser, probDistRepoLookup, staticEnvDynModel);
         return factory.create();
     }
 
