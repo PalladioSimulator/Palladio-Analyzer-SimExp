@@ -130,10 +130,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Smodel smodel = smodelLoader.load(rs, smodelURI);
                 LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
 
-                yield createModelledSimulationExecutor(qualityObjective, experiment, dbn,
+                yield createModelledSimulationExecutor(simulationEngine, qualityObjective, experiment, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, config.getMonitorNames(),
-                        smodel, probModelRepo);
+                        config.getPropertyFiles(), config.getModuleFiles(), smodel, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -177,17 +177,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         };
     }
 
-    private SimulationExecutor createModelledSimulationExecutor(QualityObjective qualityObjective,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+    private SimulationExecutor createModelledSimulationExecutor(SimulationEngine simulationEngine,
+            QualityObjective qualityObjective, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
-            List<String> monitorNames, Smodel smodel, ProbabilisticModelRepository probModelRepo) {
+            List<String> monitorNames, List<URI> propertyFiles, List<URI> moduleFiles, Smodel smodel,
+            ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(qualityObjective, experiment, dbn, probabilityDistributionRegistry,
+        return factory.create(simulationEngine, qualityObjective, experiment, dbn, probabilityDistributionRegistry,
                 probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
-                launchDescriptionProvider, monitorNames, smodel, probModelRepo);
+                launchDescriptionProvider, monitorNames, propertyFiles, moduleFiles, smodel, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")

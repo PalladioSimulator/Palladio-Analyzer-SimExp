@@ -1,7 +1,8 @@
-package org.palladiosimulator.simexp.pcm.examples.deltaiot;
+package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -25,9 +27,28 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
+import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationParamsLoader;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.EnergyConsumptionPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.GlobalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.PacketLossPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -47,28 +68,34 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class DeltaIoTSimulationExecutorFactory extends
+public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         PcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>, PrismSimulatedMeasurementSpec> {
+
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
+    private final Smodel smodel;
+    private final ProbabilisticModelRepository staticEnvDynModel;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public DeltaIoTSimulationExecutorFactory(Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+    public ModelledPrismPcmExperienceSimulationExecutorFactory(Experiment experiment,
+            DynamicBayesianNetwork<CategoricalValue> dbn, List<PrismSimulatedMeasurementSpec> specs,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder, Smodel smodel,
+            ProbabilisticModelRepository staticEnvDynModel) {
         super(experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup, experimentProvider,
                 simulationRunnerHolder);
+        this.smodel = smodel;
+        this.staticEnvDynModel = staticEnvDynModel;
         this.modelAccess = new DeltaIoTModelAccess<>();
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, simulatedExperienceStore,
                 modelAccess, simulationRunnerHolder);
@@ -78,11 +105,6 @@ public class DeltaIoTSimulationExecutorFactory extends
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER)
-            .toString(), true);
-        File prismLogFile = new File(CommonPlugin.resolve(uri)
-            .toFileString());
-
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
@@ -93,31 +115,41 @@ public class DeltaIoTSimulationExecutorFactory extends
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
         prismFileUpdaters.add(engergyConsumptionUpdater);
+
         PrismGenerator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> prismGenerator = new PrismFileUpdateGenerator<>(
                 prismFileUpdaters);
 
+        URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER)
+            .toString(), true);
+        File prismLogFile = new File(CommonPlugin.resolve(uri)
+            .toFileString());
+
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
-
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
                 prismLogFile, reconfParamsRepo, experimentProvider);
+
+        qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
-            .newBuilder(modelAccess)
-            .withReconfigurationParams(reconfParamsRepo)
-            .andPacketLossSpec((PrismSimulatedMeasurementSpec) packetLossSpec)
-            .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
-            .build();
-
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(specs.get(0),
-                GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(specs.get(1),
-                GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
-        RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
-                lowerEnergyConsumptionThreshold);
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(specs);
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
+        PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
+        EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
+                staticEnvDynModel);
+        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
+                environmentVariableValueProvider);
+        String reconfigurationStrategyId = smodel.getModelName();
+//        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = LocalQualityBasedReconfigurationStrategy
+//            .newBuilder(modelAccess)
+//            .withReconfigurationParams(reconfParamsRepo)
+//            .andPacketLossSpec((PrismSimulatedMeasurementSpec) packetLossSpec)
+//            .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
+//            .build();
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
+                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
@@ -132,17 +164,25 @@ public class DeltaIoTSimulationExecutorFactory extends
                 }
             });
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                specs, List.of(runner), params, beforeExecutionInitializable, null, simulatedExperienceStore,
-                envProcess, reconfSelectionPolicy, reconfigurations, evaluator, false);
+        // FIXME: read thresholds from launch config
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(specs.get(0),
+                GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(specs.get(1),
+                GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
+        RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
+                lowerEnergyConsumptionThreshold);
+
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
+                experiment, specs, List.of(runner), params, beforeExecutionInitializable, null,
+                simulatedExperienceStore, envProcess, reconfStrategy, reconfigurations, evaluator, false);
 
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(params.getSimulationID(),
-                reconfSelectionPolicy.getId());
+                reconfigurationStrategyId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(params.getSimulationID(),
                 sampleSpaceId);
-
-        return new PcmExperienceSimulationExecutor<>(simulator, experiment, params, reconfSelectionPolicy,
-                rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
+                params, reconfStrategy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+        return executor;
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,
@@ -155,4 +195,5 @@ public class DeltaIoTSimulationExecutorFactory extends
         }
         return null;
     }
+
 }

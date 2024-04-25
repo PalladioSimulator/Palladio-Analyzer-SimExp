@@ -48,5 +48,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.model.strategy;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.performance,
  org.palladiosimulator.simexp.pcm.performability,
- org.palladiosimulator.simexp.dsl.smodel.interpreter
+ org.palladiosimulator.simexp.dsl.smodel.interpreter,
+ org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm;bundle-version="0.1.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher
