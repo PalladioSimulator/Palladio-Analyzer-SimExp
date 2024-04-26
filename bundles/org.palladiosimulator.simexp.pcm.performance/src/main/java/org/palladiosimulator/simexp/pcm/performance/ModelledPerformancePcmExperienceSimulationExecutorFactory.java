@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -53,13 +52,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
-    private final ProbabilisticModelRepository staticEnvDynModel;
-
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        this.staticEnvDynModel = probabilisticModelRepository;
     }
 
     @Override
@@ -91,9 +87,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
-                staticEnvDynModel);
+                probabilisticModelRepository);
         EnvironmentVariableValueProvider envVariableValueProvider = new EnvironmentVariableValueProvider(
-                staticEnvDynModel);
+                probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(getSmodel(), probeValueProvider,
                 envVariableValueProvider);

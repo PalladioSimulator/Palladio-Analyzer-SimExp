@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
@@ -56,13 +55,10 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
     public static final String SERVER_FAILURE_TEMPLATE_ID = "_VtIJEPtrEeuPUtFH1XJrHw";
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
-    private final ProbabilisticModelRepository staticEnvDynModel;
-
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        this.staticEnvDynModel = probabilisticModelRepository;
     }
 
     @Override
@@ -89,7 +85,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
-                staticEnvDynModel);
+                probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         Smodel smodel = getSmodel();
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,

@@ -11,7 +11,6 @@ import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -62,14 +61,12 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final ProbabilisticModelRepository staticEnvDynModel;
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        this.staticEnvDynModel = probabilisticModelRepository;
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 getDbn());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
@@ -121,7 +118,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
-                staticEnvDynModel);
+                probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         Smodel smodel = getSmodel();
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,

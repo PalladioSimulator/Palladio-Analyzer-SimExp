@@ -11,7 +11,6 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -71,14 +70,12 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
-    private final ProbabilisticModelRepository staticEnvDynModel;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        this.staticEnvDynModel = probabilisticModelRepository;
         this.modelAccess = new DeltaIoTModelAccess<>();
     }
 
@@ -127,7 +124,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
-                staticEnvDynModel);
+                probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         Smodel smodel = getSmodel();
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
