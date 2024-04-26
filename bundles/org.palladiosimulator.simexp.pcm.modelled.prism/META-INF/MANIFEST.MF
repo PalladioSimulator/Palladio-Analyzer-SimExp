@@ -21,7 +21,15 @@ Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
  org.palladiosimulator.simexp.pcm.examples;bundle-version="1.0.0",
  org.palladiosimulator.solver;bundle-version="5.2.0",
  org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
- org.palladiosimulator.simexp.environmentaldynamics;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.environmentaldynamics;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm.examples.deltaiot;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.dsl.smodel.interpreter;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.param;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.model.strategy;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm.binding;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
+ org.palladiosimulator.analyzer.workflow;bundle-version="5.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.modelled.prism
 Bundle-ActivationPolicy: lazy
