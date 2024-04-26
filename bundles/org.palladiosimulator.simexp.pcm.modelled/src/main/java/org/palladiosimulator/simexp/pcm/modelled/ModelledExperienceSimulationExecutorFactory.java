@@ -8,7 +8,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
-import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -25,12 +24,12 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     private final Smodel smodel;
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, probDistRepoLookup);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();

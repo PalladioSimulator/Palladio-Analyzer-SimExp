@@ -27,7 +27,6 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.performability.NodeRecoveryStrategy;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategy;
@@ -59,12 +58,12 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, probDistRepoLookup);
     }
 

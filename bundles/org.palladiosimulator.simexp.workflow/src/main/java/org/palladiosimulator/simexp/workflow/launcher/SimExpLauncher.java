@@ -101,17 +101,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulatorType simulatorType = config.getSimulatorType();
-
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
                 yield createCustomSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
-                        probabilityDistributionFactory, probDistRepoLookup, simulationParameters,
-                        launchDescriptionProvider);
+                        probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider);
             }
             case MODELLED -> {
                 yield createModelledSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
-                        probabilityDistributionFactory, probDistRepoLookup, simulationParameters,
-                        launchDescriptionProvider, probModelRepo);
+                        probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -135,21 +132,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-            DescriptionProvider descriptionProvider) {
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup, DescriptionProvider descriptionProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
             yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, probDistRepoLookup,
-                    simulationParameters, descriptionProvider);
+                    descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
             yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, rs, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, probDistRepoLookup,
-                    simulationParameters, descriptionProvider);
+                    descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
@@ -159,12 +155,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             LaunchDescriptionProvider launchDescriptionProvider, ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
         return factory.create(workflowConfiguration, rs, dbn, probabilityDistributionRegistry,
-                probabilityDistributionFactory, probDistRepoLookup, simulationParameters, launchDescriptionProvider,
-                probModelRepo);
+                probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")

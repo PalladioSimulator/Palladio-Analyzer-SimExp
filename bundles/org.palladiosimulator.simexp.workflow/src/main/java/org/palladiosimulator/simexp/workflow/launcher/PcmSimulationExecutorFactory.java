@@ -7,7 +7,6 @@ import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
@@ -25,21 +24,20 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-            DescriptionProvider descriptionProvider) {
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup, DescriptionProvider descriptionProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, dbn,
-                simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                probabilityDistributionFactory, probabilityDistributionRegistry, probDistRepoLookup);
+                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
+                probabilityDistributionRegistry, probDistRepoLookup);
 
         case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, rs, dbn,
-                simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                probabilityDistributionFactory, probabilityDistributionRegistry, probDistRepoLookup);
+                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
+                probabilityDistributionRegistry, probDistRepoLookup);
 
         case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, dbn,
-                simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
-                probabilityDistributionFactory, probabilityDistributionRegistry, probDistRepoLookup);
+                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
+                probabilityDistributionRegistry, probDistRepoLookup);
 
         default -> throw new RuntimeException("Unexpected QualityObjective: " + qualityObjective);
         };

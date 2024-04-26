@@ -6,7 +6,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.provider.PcmMeasurementSpecificationProvider;
@@ -21,12 +20,12 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends Number, V>
         extends PcmExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
     public SimulatorPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, probDistRepoLookup);
     }
 

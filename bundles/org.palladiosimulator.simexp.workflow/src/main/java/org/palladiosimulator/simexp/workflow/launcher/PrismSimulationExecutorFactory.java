@@ -7,7 +7,6 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 
@@ -22,12 +21,10 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, SimulationParameters simulationParameters,
-            DescriptionProvider descriptionProvider) {
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup, DescriptionProvider descriptionProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                workflowConfiguration, rs, dbn, simulationParameters,
-                new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                probabilityDistributionRegistry, probDistRepoLookup);
+                workflowConfiguration, rs, dbn, new SimulatedExperienceStore<>(descriptionProvider),
+                probabilityDistributionFactory, probabilityDistributionRegistry, probDistRepoLookup);
         return factory.create();
     }
 }

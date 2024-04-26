@@ -47,7 +47,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IWorkflowConfiguration workflowConfiguration;
     private final ResourceSet rs;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
-    private final SimulationParameters params;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
@@ -55,7 +54,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
@@ -63,7 +62,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.workflowConfiguration = workflowConfiguration;
         this.rs = rs;
         this.dbn = dbn;
-        this.params = params;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.distributionFactory = distributionFactory;
         this.probabilityDistributionRegistry = probabilityDistributionRegistry;
@@ -100,7 +98,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     }
 
     protected SimulationParameters getSimulationParameters() {
-        return params;
+        return getWorkflowConfiguration().getSimulationParameters();
     }
 
     protected ParameterParser getParameterParser() {
