@@ -104,18 +104,17 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulatorType simulatorType = config.getSimulatorType();
-            SimulationEngine simulationEngine = config.getSimulationEngine();
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, rs, simulationEngine, dbn, probabilityDistributionRegistry,
+                yield createCustomSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
                         probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                         launchDescriptionProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, rs, simulationEngine, dbn,
-                        probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                        probDistRepoLookup, simulationParameters, launchDescriptionProvider, probModelRepo);
+                yield createModelledSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
+                        probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                        launchDescriptionProvider, probModelRepo);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -136,11 +135,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulationEngine simulationEngine, DynamicBayesianNetwork<CategoricalValue> dbn,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
+        SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
@@ -159,14 +159,14 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulationEngine simulationEngine, DynamicBayesianNetwork<CategoricalValue> dbn,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
             ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, rs, simulationEngine, dbn, probabilityDistributionRegistry,
+        return factory.create(workflowConfiguration, rs, dbn, probabilityDistributionRegistry,
                 probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
                 launchDescriptionProvider, probModelRepo);
     }
