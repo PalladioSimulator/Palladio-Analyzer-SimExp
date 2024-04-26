@@ -51,7 +51,12 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
-        this.smodelFile = URI.createURI(architecturalModels.getSmodelFile());
+        String smodelFileUriStr = architecturalModels.getSmodelFile();
+        if (smodelFileUriStr != null) {
+            this.smodelFile = URI.createURI(smodelFileUriStr);
+        } else {
+            this.smodelFile = null;
+        }
         this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
         this.monitorRepositoryFile = URI.createURI(monitors.getMonitorRepositoryFile());
