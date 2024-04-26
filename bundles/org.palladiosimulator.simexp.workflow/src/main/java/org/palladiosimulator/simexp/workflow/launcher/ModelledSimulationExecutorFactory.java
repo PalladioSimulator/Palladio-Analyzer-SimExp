@@ -27,8 +27,7 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
     public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            SimulationEngine simulationEngine, QualityObjective qualityObjective,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+            SimulationEngine simulationEngine, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -36,7 +35,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ProbabilisticModelRepository staticEnvDynModel) {
         return switch (simulationEngine) {
         case PCM -> {
-            yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, dbn,
+            yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, rs, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider, staticEnvDynModel);
         }
@@ -50,12 +49,13 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPCM(IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            QualityObjective qualityObjective, DynamicBayesianNetwork<CategoricalValue> dbn,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
+        QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, dbn,

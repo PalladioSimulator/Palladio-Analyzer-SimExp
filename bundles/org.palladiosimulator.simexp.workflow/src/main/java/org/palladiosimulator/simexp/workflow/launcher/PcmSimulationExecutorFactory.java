@@ -23,11 +23,12 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
     public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            QualityObjective qualityObjective, DynamicBayesianNetwork<CategoricalValue> dbn,
+            DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
+        QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, dbn,
                 simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),

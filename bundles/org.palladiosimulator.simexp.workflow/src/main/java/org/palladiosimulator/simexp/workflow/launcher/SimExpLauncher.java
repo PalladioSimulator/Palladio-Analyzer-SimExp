@@ -105,16 +105,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationEngine simulationEngine = config.getSimulationEngine();
-            QualityObjective qualityObjective = config.getQualityObjective();
 
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, rs, simulationEngine, qualityObjective, dbn,
-                        probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
-                        probDistRepoLookup, simulationParameters, launchDescriptionProvider);
+                yield createCustomSimulationExecutor(config, rs, simulationEngine, dbn, probabilityDistributionRegistry,
+                        probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                        launchDescriptionProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, rs, simulationEngine, qualityObjective, dbn,
+                yield createModelledSimulationExecutor(config, rs, simulationEngine, dbn,
                         probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                         probDistRepoLookup, simulationParameters, launchDescriptionProvider, probModelRepo);
             }
@@ -137,8 +136,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulationEngine simulationEngine, QualityObjective qualityObjective,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+            ResourceSet rs, SimulationEngine simulationEngine, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
@@ -146,7 +144,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, qualityObjective, dbn,
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, dbn,
                     probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser,
                     probDistRepoLookup, simulationParameters, descriptionProvider);
         }
@@ -161,17 +159,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulationEngine simulationEngine, QualityObjective qualityObjective,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
+            ResourceSet rs, SimulationEngine simulationEngine, DynamicBayesianNetwork<CategoricalValue> dbn,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, LaunchDescriptionProvider launchDescriptionProvider,
             ProbabilisticModelRepository probModelRepo) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, rs, simulationEngine, qualityObjective, dbn,
-                probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
-                simulationParameters, launchDescriptionProvider, probModelRepo);
+        return factory.create(workflowConfiguration, rs, simulationEngine, dbn, probabilityDistributionRegistry,
+                probabilityDistributionFactory, parameterParser, probDistRepoLookup, simulationParameters,
+                launchDescriptionProvider, probModelRepo);
     }
 
     @SuppressWarnings("unchecked")
