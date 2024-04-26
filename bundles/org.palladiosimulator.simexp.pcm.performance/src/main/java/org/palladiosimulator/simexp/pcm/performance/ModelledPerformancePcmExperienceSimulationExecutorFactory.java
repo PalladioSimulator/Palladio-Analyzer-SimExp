@@ -53,8 +53,8 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
-        ModelledPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
+public class ModelledPerformancePcmExperienceSimulationExecutorFactory
+        extends ModelledPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>> {
 
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;

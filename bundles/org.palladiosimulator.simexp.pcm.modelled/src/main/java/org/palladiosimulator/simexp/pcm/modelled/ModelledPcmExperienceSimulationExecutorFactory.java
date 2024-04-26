@@ -5,10 +5,10 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -17,14 +17,15 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification>
-        extends ModelledExperienceSimulationExecutorFactory<R, V, T> {
+public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends Number, V>
+        extends ModelledExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
 
-    private final List<T> specs;
+    private final List<PcmMeasurementSpecification> specs;
 
     public ModelledPcmExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
+            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
@@ -34,7 +35,7 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
     }
 
     @Override
-    protected List<T> createSpecs() {
+    protected List<PcmMeasurementSpecification> createSpecs() {
         return specs;
     }
 }
