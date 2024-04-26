@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.workflow.provider;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.EList;
@@ -11,6 +12,7 @@ import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
 import org.palladiosimulator.simexp.pcm.examples.performability.SystemExecutionResultTypeMeasurementAggregator;
+import org.palladiosimulator.simexp.pcm.simulator.config.IPCMConfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;
 
@@ -18,13 +20,23 @@ public class PcmMeasurementSpecificationProvider {
     private static final String RESPONSE_TIME_MONITOR = "System Response Time";
     private static final String SYSTEM_EXECUTION_RESULTTYPE = "System ExecutionResultType";
 
+    private final IPCMConfiguration workflowConfiguration;
     private final Experiment experiment;
 
-    public PcmMeasurementSpecificationProvider(Experiment experiment) {
+    public PcmMeasurementSpecificationProvider(IPCMConfiguration workflowConfiguration, Experiment experiment) {
+        this.workflowConfiguration = workflowConfiguration;
         this.experiment = experiment;
     }
 
-    public PcmMeasurementSpecification getSpecification(String monitorName) {
+    public List<PcmMeasurementSpecification> getSpecifications() {
+        List<String> monitorNames = workflowConfiguration.getMonitorNames();
+        List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
+            .map(this::getSpecification)
+            .toList();
+        return pcmSpecs;
+    }
+
+    private PcmMeasurementSpecification getSpecification(String monitorName) {
         return switch (monitorName) {
         case RESPONSE_TIME_MONITOR -> buildResponseTimeSpec();
         case SYSTEM_EXECUTION_RESULTTYPE -> buildSystemExecutionResultTypeSpec();

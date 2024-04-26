@@ -1,9 +1,7 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -32,13 +30,9 @@ public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactor
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
-        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
-        List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
-        List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
-        List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
-            .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
-            .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
-            .toList();
+        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
+                workflowConfiguration);
+        List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,

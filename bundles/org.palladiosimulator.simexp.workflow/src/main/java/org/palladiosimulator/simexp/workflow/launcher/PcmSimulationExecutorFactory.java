@@ -33,12 +33,9 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider) {
-        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
-        List<String> monitorNames = workflowConfiguration.getMonitorNames();
-        List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
-            .map(provider::getSpecification)
-            .toList();
-
+        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(workflowConfiguration,
+                experiment);
+        List<PcmMeasurementSpecification> pcmSpecs = provider.getSpecifications();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, rs, experiment, dbn,
                 pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),

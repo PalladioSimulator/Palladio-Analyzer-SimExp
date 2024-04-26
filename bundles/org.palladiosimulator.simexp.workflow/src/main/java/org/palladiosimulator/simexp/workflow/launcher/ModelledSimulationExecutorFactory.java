@@ -1,9 +1,7 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -64,12 +62,9 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(experiment);
-        List<String> monitorNames = workflowConfiguration.getMonitorNames();
-        List<PcmMeasurementSpecification> pcmSpecs = monitorNames.stream()
-            .map(provider::getSpecification)
-            .toList();
-
+        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(workflowConfiguration,
+                experiment);
+        List<PcmMeasurementSpecification> pcmSpecs = provider.getSpecifications();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
@@ -102,13 +97,9 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider();
-        List<URI> propertyFiles = workflowConfiguration.getPropertyFiles();
-        List<URI> moduleFiles = workflowConfiguration.getModuleFiles();
-        List<PrismSimulatedMeasurementSpec> prismSpecs = IntStream
-            .range(0, Math.min(propertyFiles.size(), moduleFiles.size()))
-            .mapToObj(i -> provider.getSpecification(moduleFiles.get(i), propertyFiles.get(i)))
-            .toList();
+        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
+                workflowConfiguration);
+        List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, rs, experiment, dbn, prismSpecs, simulationParameters,
                 new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
