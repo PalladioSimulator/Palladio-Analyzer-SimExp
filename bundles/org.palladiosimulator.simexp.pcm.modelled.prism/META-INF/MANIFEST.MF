@@ -3,6 +3,25 @@ Bundle-ManifestVersion: 2
 Bundle-Name: modelled prism
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.modelled.prism
 Bundle-Version: 1.0.0.qualifier
+Export-Package: org.palladiosimulator.simexp.pcm.modelled.prism,
+ org.palladiosimulator.simexp.pcm.modelled.prism.config
+Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
+ org.eclipse.emf.ecore;bundle-version="2.33.0",
+ org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.core;bundle-version="1.0.0",
+ org.palladiosimulator.experimentautomation;bundle-version="5.2.0",
+ org.palladiosimulator.envdyn.api;bundle-version="5.2.0",
+ org.palladiosimulator.envdyn.model;bundle-version="5.2.0",
+ org.palladiosimulator.simexp.pcm.prism;bundle-version="1.0.0",
+ tools.mdsd.probdist.api;bundle-version="1.0.0",
+ tools.mdsd.probdist.api.apache;bundle-version="1.0.0",
+ org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="5.2.0",
+ org.palladiosimulator.simexp.pcm.modelled;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.pcm.examples;bundle-version="1.0.0",
+ org.palladiosimulator.solver;bundle-version="5.2.0",
+ org.palladiosimulator.simexp.markovian;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.environmentaldynamics;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.modelled.prism
 Bundle-ActivationPolicy: lazy
