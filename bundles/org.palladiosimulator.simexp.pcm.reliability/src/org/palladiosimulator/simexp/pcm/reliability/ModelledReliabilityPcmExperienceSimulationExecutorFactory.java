@@ -116,7 +116,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
             .getUsageScenario_UsageModel()
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
         simSpecs.add(reliabilitySpec);
 

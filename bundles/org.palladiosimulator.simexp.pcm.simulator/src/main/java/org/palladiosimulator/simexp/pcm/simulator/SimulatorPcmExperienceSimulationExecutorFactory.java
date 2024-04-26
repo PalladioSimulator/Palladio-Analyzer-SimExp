@@ -37,9 +37,9 @@ public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends 
     }
 
     @Override
-    protected List<PcmMeasurementSpecification> createSpecs() {
+    protected List<PcmMeasurementSpecification> createSpecs(Experiment experiment) {
         PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(
-                getWorkflowConfiguration(), getExperiment());
+                getWorkflowConfiguration(), experiment);
         List<PcmMeasurementSpecification> pcmSpecs = provider.getSpecifications();
         return pcmSpecs;
     }

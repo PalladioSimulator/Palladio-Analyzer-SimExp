@@ -103,7 +103,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .getEnvironmentProcess();
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs();
+        Experiment experiment = getExperiment();
+        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
@@ -125,7 +126,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        Experiment experiment = getExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
                 prismLogFile, reconfParamsRepo, experimentProvider);

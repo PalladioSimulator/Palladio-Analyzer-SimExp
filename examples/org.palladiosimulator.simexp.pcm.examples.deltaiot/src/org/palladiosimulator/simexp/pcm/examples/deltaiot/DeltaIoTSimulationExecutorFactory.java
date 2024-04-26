@@ -76,7 +76,7 @@ public class DeltaIoTSimulationExecutorFactory extends
     }
 
     @Override
-    protected List<PrismSimulatedMeasurementSpec> createSpecs() {
+    protected List<PrismSimulatedMeasurementSpec> createSpecs(Experiment experiment) {
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
                 getWorkflowConfiguration());
         List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
@@ -97,7 +97,8 @@ public class DeltaIoTSimulationExecutorFactory extends
             .toFileString());
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs();
+        Experiment experiment = getExperiment();
+        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
@@ -113,7 +114,6 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        Experiment experiment = getExperiment();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 

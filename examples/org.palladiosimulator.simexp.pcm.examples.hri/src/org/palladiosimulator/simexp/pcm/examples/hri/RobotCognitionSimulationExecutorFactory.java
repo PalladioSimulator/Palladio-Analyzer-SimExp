@@ -78,12 +78,13 @@ public class RobotCognitionSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        UsageScenario usageScenario = getExperiment().getInitialModel()
+        Experiment experiment = getExperiment();
+        UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
         List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(pcmMeasurementSpecs);
         relSpecs.add(reliabilitySpec);
 
@@ -109,7 +110,6 @@ public class RobotCognitionSimulationExecutorFactory
             );
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
-        Experiment experiment = getExperiment();
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(

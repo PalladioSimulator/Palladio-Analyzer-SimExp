@@ -78,7 +78,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
-        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(

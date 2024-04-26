@@ -108,7 +108,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return probDistRepoLookup;
     }
 
-    protected abstract List<T> createSpecs();
+    protected abstract List<T> createSpecs(Experiment experiment);
 
     protected SimulationRunnerHolder createSimulationRunnerHolder() {
         return new SimulationRunnerHolder();

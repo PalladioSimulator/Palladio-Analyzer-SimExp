@@ -38,7 +38,7 @@ public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends
     }
 
     @Override
-    protected List<PrismSimulatedMeasurementSpec> createSpecs() {
+    protected List<PrismSimulatedMeasurementSpec> createSpecs(Experiment experiment) {
         PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
                 getWorkflowConfiguration());
         List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
