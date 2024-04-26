@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.modelled;
+package org.palladiosimulator.simexp.pcm.modelled.simulator;
 
 import java.util.List;
 
@@ -7,7 +7,8 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledPcmWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
