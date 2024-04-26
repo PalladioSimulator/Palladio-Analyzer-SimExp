@@ -14,25 +14,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
-import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
-import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
-import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
-import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
-import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
-import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -47,14 +38,6 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
-import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
-import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
-import tools.mdsd.probdist.api.entity.CategoricalValue;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
-import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
-import tools.mdsd.probdist.distributiontype.ProbabilityDistributionRepository;
-import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
@@ -66,49 +49,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             ResourceSet rs = new ResourceSetImpl();
 
-            URI staticModelURI = config.getStaticModelURI();
-            ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
-            LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
-            // env model assumption: a ProbabilisticModelRepository (root) contains a single
-            // GroundProbabilisticNetwork
-            ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
-            GroundProbabilisticNetwork gpn = probModelRepo.getModels()
-                .get(0);
-
-            URI dynamicModelURI = config.getDynamicModelURI();
-            DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
-            LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
-            // env model assumption: a DynamicBehaviourRepository (root) contains a single
-            // DynamicBehaviourExtension
-            DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
-            DynamicBehaviourExtension dbe = dynBehaveRepo.getExtensions()
-                .get(0);
-
-            ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
-            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory = defaultProbabilityDistributionFactory;
-
-            ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
-                .loadRepository();
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(
-                    probabilityDistributionRepository);
-
-            BayesianNetwork<CategoricalValue> bn = new BayesianNetwork<>(null, gpn, probabilityDistributionFactory);
-            DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe,
-                    probabilityDistributionFactory);
-
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
-                        probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider);
+                yield createCustomSimulationExecutor(config, rs, launchDescriptionProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, rs, dbn, probabilityDistributionRegistry,
-                        probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider, probModelRepo);
+                yield createModelledSimulationExecutor(config, rs, launchDescriptionProvider);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -129,37 +79,25 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup, DescriptionProvider descriptionProvider) {
+            ResourceSet rs, DescriptionProvider descriptionProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, dbn,
-                    probabilityDistributionRegistry, probabilityDistributionFactory, probDistRepoLookup,
-                    descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, rs, dbn,
-                    probabilityDistributionRegistry, probabilityDistributionFactory, probDistRepoLookup,
-                    descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, rs, descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            LaunchDescriptionProvider launchDescriptionProvider, ProbabilisticModelRepository probModelRepo) {
+            ResourceSet rs, LaunchDescriptionProvider launchDescriptionProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, rs, dbn, probabilityDistributionRegistry,
-                probabilityDistributionFactory, probDistRepoLookup, launchDescriptionProvider, probModelRepo);
+        return factory.create(workflowConfiguration, rs, launchDescriptionProvider);
     }
 
     @SuppressWarnings("unchecked")

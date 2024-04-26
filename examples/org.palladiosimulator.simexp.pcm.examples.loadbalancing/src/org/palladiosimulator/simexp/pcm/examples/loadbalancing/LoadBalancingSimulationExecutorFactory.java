@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -36,10 +35,7 @@ import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 
 public class LoadBalancingSimulationExecutorFactory
         extends SimulatorPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>> {
@@ -47,13 +43,8 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
-            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, probDistRepoLookup);
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
+        super(workflowConfiguration, rs, simulatedExperienceStore);
     }
 
     @Override

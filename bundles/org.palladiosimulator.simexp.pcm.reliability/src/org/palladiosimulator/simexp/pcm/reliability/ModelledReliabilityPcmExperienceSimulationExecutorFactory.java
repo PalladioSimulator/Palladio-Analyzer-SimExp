@@ -10,7 +10,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
-import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -51,10 +50,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
-import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
@@ -71,17 +67,11 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup,
-            ProbabilisticModelRepository staticEnvDynModel) {
-        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, probDistRepoLookup);
-        this.staticEnvDynModel = staticEnvDynModel;
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
+        super(workflowConfiguration, rs, simulatedExperienceStore);
+        this.staticEnvDynModel = probabilisticModelRepository;
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
-                dbn);
+                getDbn());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         this.envProcess = p;

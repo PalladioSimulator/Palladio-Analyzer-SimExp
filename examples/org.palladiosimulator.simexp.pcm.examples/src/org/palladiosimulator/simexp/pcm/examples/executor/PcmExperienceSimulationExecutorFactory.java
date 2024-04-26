@@ -7,7 +7,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
+import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
+import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -20,8 +25,10 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
+import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -35,11 +42,15 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.apache.supplier.MultinomialDistributionSupplier;
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
+import tools.mdsd.probdist.api.apache.util.ProbabilityDistributionRepositoryLookup;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.parser.DefaultParameterParser;
 import tools.mdsd.probdist.api.parser.ParameterParser;
+import tools.mdsd.probdist.distributiontype.ProbabilityDistributionRepository;
+import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutorFactory.class);
@@ -53,23 +64,63 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
+    protected final ProbabilisticModelRepository probabilisticModelRepository;
+
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            // DynamicBayesianNetwork<CategoricalValue> dbn,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore
+    // IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
+    // IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
+    // IProbabilityDistributionRepositoryLookup probDistRepoLookup
+    ) {
         this.workflowConfiguration = workflowConfiguration;
         this.rs = rs;
-        this.dbn = dbn;
+        // this.dbn = dbn;
         this.simulatedExperienceStore = simulatedExperienceStore;
-        this.distributionFactory = distributionFactory;
-        this.probabilityDistributionRegistry = probabilityDistributionRegistry;
+        // this.distributionFactory = distributionFactory;
+        // this.probabilityDistributionRegistry = probabilityDistributionRegistry;
         this.parameterParser = new DefaultParameterParser();
-        this.probDistRepoLookup = probDistRepoLookup;
+        // this.probDistRepoLookup = probDistRepoLookup;
+
+        ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
+        this.probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
+        this.distributionFactory = defaultProbabilityDistributionFactory;
+
+        ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
+            .loadRepository();
+        this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+
+        this.probabilisticModelRepository = loadProbabilisticModelRepository();
+        GroundProbabilisticNetwork gpn = probabilisticModelRepository.getModels()
+            .get(0);
+        BayesianNetwork<CategoricalValue> bn = new BayesianNetwork<>(null, gpn, distributionFactory);
+        DynamicBehaviourRepository dynamicBehaviourRepository = loadDynamicBehaviourRepository();
+        DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
+            .get(0);
+        this.dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
 
         probabilityDistributionRegistry
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
+    }
+
+    private ProbabilisticModelRepository loadProbabilisticModelRepository() {
+        URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
+        ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
+        LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
+        // env model assumption: a ProbabilisticModelRepository (root) contains a single
+        // GroundProbabilisticNetwork
+        ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
+        return probModelRepo;
+    }
+
+    private DynamicBehaviourRepository loadDynamicBehaviourRepository() {
+        URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
+        DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
+        LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
+        // env model assumption: a DynamicBehaviourRepository (root) contains a single
+        // DynamicBehaviourExtension
+        DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
+        return dynBehaveRepo;
     }
 
     public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();

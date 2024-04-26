@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.modelled.prism;
 import java.util.List;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
@@ -12,22 +11,12 @@ import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWork
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
-import tools.mdsd.probdist.api.entity.CategoricalValue;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
-import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
-
 public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends Number, V>
         extends ModelledExperienceSimulationExecutorFactory<R, V, PrismSimulatedMeasurementSpec> {
 
     public ModelledPrismExperienceSimulationExecutorFactory(IModelledPrismWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
-            IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, dbn, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, probDistRepoLookup);
+            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, rs, simulatedExperienceStore);
     }
 
     @Override
