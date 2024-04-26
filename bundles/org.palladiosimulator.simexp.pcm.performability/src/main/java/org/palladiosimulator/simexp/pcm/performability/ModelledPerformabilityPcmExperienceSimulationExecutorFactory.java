@@ -84,7 +84,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
                 getDbn(), experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
                 simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
@@ -95,7 +96,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
         IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
@@ -111,15 +112,15 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory extend
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         // FIXME: read thresholds from kmodel
-        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
-        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1),
-                upperThresh, lowerThresh);
+        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
+                pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable,
+                getExperiment(), pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder);
 

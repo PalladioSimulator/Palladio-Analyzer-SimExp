@@ -27,6 +27,7 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
     private static final Logger LOGGER = Logger.getLogger(ModelledPcmExperienceSimulationExecutorFactory.class);
 
     private final Smodel smodel;
+    private final List<T> specs;
 
     public ModelledPcmExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs,
@@ -34,12 +35,18 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();
         this.smodel = smodelLoader.load(rs, smodelURI);
         LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
+        this.specs = specs;
+    }
+
+    @Override
+    protected List<T> createSpecs() {
+        return specs;
     }
 
     protected Smodel getSmodel() {

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.workflow.provider;
+package org.palladiosimulator.simexp.pcm.simulator.provider;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -11,7 +11,6 @@ import org.palladiosimulator.monitorrepository.MeasurementSpecification;
 import org.palladiosimulator.monitorrepository.Monitor;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.examples.measurements.aggregator.UtilizationAggregator;
-import org.palladiosimulator.simexp.pcm.examples.performability.SystemExecutionResultTypeMeasurementAggregator;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMConfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification.MeasurementAggregator;

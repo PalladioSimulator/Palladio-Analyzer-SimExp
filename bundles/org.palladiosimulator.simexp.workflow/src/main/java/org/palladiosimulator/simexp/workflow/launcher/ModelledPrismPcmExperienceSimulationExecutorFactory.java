@@ -104,12 +104,14 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
             .getEnvironmentProcess();
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(getSpecs(), "PacketLoss.prism");
+        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs();
+        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
+                "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) packetLossSpec);
         prismFileUpdaters.add(packetLossUpdater);
-        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(getSpecs(),
-                "EnergyConsumption.prism");
+        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(
+                prismSimulatedMeasurementSpec, "EnergyConsumption.prism");
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
         prismFileUpdaters.add(engergyConsumptionUpdater);
@@ -133,7 +135,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(prismSimulatedMeasurementSpec);
         IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
@@ -166,17 +168,18 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
             });
 
         // FIXME: read thresholds from launch config
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(getSpecs().get(0),
-                GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(getSpecs().get(1),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair
+            .of(prismSimulatedMeasurementSpec.get(0), GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(
+                prismSimulatedMeasurementSpec.get(1),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
                 lowerEnergyConsumptionThreshold);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
-                null, getSimulatedExperienceStore(), envProcess, reconfStrategy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder);
+                getExperiment(), prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
+                beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfStrategy,
+                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

@@ -57,6 +57,7 @@ public class DeltaIoTSimulationExecutorFactory extends
     public final static String PRISM_FOLDER = "prism";
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
+    private final List<PrismSimulatedMeasurementSpec> specs;
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -65,9 +66,15 @@ public class DeltaIoTSimulationExecutorFactory extends
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.modelAccess = new DeltaIoTModelAccess<>();
+        this.specs = specs;
+    }
+
+    @Override
+    protected List<PrismSimulatedMeasurementSpec> createSpecs() {
+        return specs;
     }
 
     @Override
@@ -84,12 +91,14 @@ public class DeltaIoTSimulationExecutorFactory extends
             .toFileString());
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(getSpecs(), "PacketLoss.prism");
+        List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs();
+        SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
+                "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) packetLossSpec);
         prismFileUpdaters.add(packetLossUpdater);
-        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(getSpecs(),
-                "EnergyConsumption.prism");
+        SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(
+                prismSimulatedMeasurementSpec, "EnergyConsumption.prism");
         EnergyConsumptionPrismFileUpdater<QVTOReconfigurator> engergyConsumptionUpdater = new EnergyConsumptionPrismFileUpdater<>(
                 (PrismSimulatedMeasurementSpec) energyConsumptionSpec);
         prismFileUpdaters.add(engergyConsumptionUpdater);
@@ -114,9 +123,10 @@ public class DeltaIoTSimulationExecutorFactory extends
             .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
             .build();
 
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair.of(getSpecs().get(0),
-                GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(getSpecs().get(1),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerPacketLossThreshold = Pair
+            .of(prismSimulatedMeasurementSpec.get(0), GlobalQualityBasedReconfigurationStrategy.LOWER_PACKET_LOSS);
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerEnergyConsumptionThreshold = Pair.of(
+                prismSimulatedMeasurementSpec.get(1),
                 GlobalQualityBasedReconfigurationStrategy.LOWER_ENERGY_CONSUMPTION);
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(lowerPacketLossThreshold,
                 lowerEnergyConsumptionThreshold);
@@ -135,9 +145,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             });
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
-                null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder);
+                getExperiment(), prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
+                beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy,
+                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

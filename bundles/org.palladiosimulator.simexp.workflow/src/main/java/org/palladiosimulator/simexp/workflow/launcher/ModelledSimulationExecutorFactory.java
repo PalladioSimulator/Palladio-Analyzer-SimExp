@@ -21,8 +21,8 @@ import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcm
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.simulator.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
-import org.palladiosimulator.simexp.workflow.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;

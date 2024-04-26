@@ -43,19 +43,18 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class LoadBalancingSimulationExecutorFactory extends
-        SimulatorPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
+public class LoadBalancingSimulationExecutorFactory
+        extends SimulatorPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>> {
     public final static double UPPER_THRESHOLD_RT = 2.0;
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
@@ -67,7 +66,8 @@ public class LoadBalancingSimulationExecutorFactory extends
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
                 simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
@@ -78,18 +78,18 @@ public class LoadBalancingSimulationExecutorFactory extends
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
-                1, getSpecs().get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
+                1, pcmMeasurementSpecs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 
-        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), simulationRunners, getSimulationParameters(), beforeExecutionInitializable,
-                envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder);
+                getExperiment(), pcmMeasurementSpecs, simulationRunners, getSimulationParameters(),
+                beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy,
+                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

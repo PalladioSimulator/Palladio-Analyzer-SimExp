@@ -51,8 +51,8 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class RobotCognitionSimulationExecutorFactory extends
-        SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
+public class RobotCognitionSimulationExecutorFactory
+        extends SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
     public static final double UPPER_THRESHOLD_RT = 0.1;
     public static final double LOWER_THRESHOLD_REL = 0.9;
 
@@ -62,13 +62,12 @@ public class RobotCognitionSimulationExecutorFactory extends
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PcmMeasurementSpecification> specs, SimulationParameters params,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -84,12 +83,14 @@ public class RobotCognitionSimulationExecutorFactory extends
             .getUsageScenario_UsageModel()
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-        List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        List<SimulatedMeasurementSpecification> relSpecs = new ArrayList<>(pcmMeasurementSpecs);
         relSpecs.add(reliabilitySpec);
 
         List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
-        joinedSpecs.addAll(getSpecs()); // currently contains the performance related measurement
-                                        // specs
+        joinedSpecs.addAll(pcmMeasurementSpecs); // currently contains the performance related
+                                                 // measurement
+        // specs
         // derived from monitorrepository model
         joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
                                           // specs derived from usage_scenario model

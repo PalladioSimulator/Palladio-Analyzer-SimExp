@@ -39,7 +39,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IWorkflowConfiguration workflowConfiguration;
     private final Experiment experiment;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
-    private final List<T> specs;
     private final SimulationParameters params;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
@@ -48,15 +47,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, List<T> specs,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         this.workflowConfiguration = workflowConfiguration;
         this.experiment = experiment;
         this.dbn = dbn;
-        this.specs = specs;
         this.params = params;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.distributionFactory = distributionFactory;
@@ -69,6 +67,10 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     }
 
     public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();
+
+    protected IWorkflowConfiguration getWorkflowConfiguration() {
+        return workflowConfiguration;
+    }
 
     protected Experiment getExperiment() {
         return experiment;
@@ -106,9 +108,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return probDistRepoLookup;
     }
 
-    protected List<T> getSpecs() {
-        return specs;
-    }
+    protected abstract List<T> createSpecs();
 
     protected SimulationRunnerHolder createSimulationRunnerHolder() {
         return new SimulationRunnerHolder();

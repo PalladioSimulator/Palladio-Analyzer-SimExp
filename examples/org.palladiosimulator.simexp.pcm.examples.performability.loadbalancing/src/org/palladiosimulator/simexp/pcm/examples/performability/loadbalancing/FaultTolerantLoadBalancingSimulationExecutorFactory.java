@@ -51,8 +51,8 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
-public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
-        SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PcmMeasurementSpecification> {
+public class FaultTolerantLoadBalancingSimulationExecutorFactory
+        extends SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 
@@ -61,12 +61,11 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, specs, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
@@ -78,7 +77,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
                 simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
@@ -89,12 +89,12 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
-        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> upperThresh = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT.getValue()));
-        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> lowerThresh = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
-        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(getSpecs().get(0), getSpecs().get(1),
-                upperThresh, lowerThresh);
+        RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
+                pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
@@ -107,22 +107,22 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory extends
         // configure the different planning strategies that shall be investigated by accordingly
         // (un)comment the required strategy definition: empty, scaling, fault-tolerant scaling
         LoadBalancingEmptyReconfigurationPlanningStrategy<PCMInstance, QVTOReconfigurator> emptyStrategy = new LoadBalancingEmptyReconfigurationPlanningStrategy<>(
-                getSpecs().get(0), config, nodeRecoveryStrategy);
+                pcmMeasurementSpecs.get(0), config, nodeRecoveryStrategy);
         LoadBalancingScalingPlanningStrategy<PCMInstance> loadBalancingPlanningStrategy = new LoadBalancingScalingPlanningStrategy<>(
-                getSpecs().get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+                pcmMeasurementSpecs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
         FaultTolerantScalingPlanningStrategy<PCMInstance> ftLoadBalancingScalingPlanningStrategy = new FaultTolerantScalingPlanningStrategy<>(
-                getSpecs().get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
+                pcmMeasurementSpecs.get(0), config, nodeRecoveryStrategy, LOWER_THRESHOLD_RT, UPPER_THRESHOLD_RT);
         ReconfigurationPlanningStrategy reconfigurationPlanningStrategy = ftLoadBalancingScalingPlanningStrategy;
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new PerformabilityStrategy<>(
-                getSpecs().get(0), config, reconfigurationPlanningStrategy);
+                pcmMeasurementSpecs.get(0), config, reconfigurationPlanningStrategy);
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = reconfStrategy;
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecutionInitializable,
+                getExperiment(), pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
                 false, experimentProvider, simulationRunnerHolder);
 

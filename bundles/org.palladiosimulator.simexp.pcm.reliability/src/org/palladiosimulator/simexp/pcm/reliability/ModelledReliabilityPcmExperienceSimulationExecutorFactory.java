@@ -115,12 +115,14 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory extends
             .getUsageScenario_UsageModel()
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
         simSpecs.add(reliabilitySpec);
 
         List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
-        joinedSpecs.addAll(getSpecs()); // currently contains the performance related measurement
-                                        // specs
+        joinedSpecs.addAll(pcmMeasurementSpecs); // currently contains the performance related
+                                                 // measurement
+        // specs
         // derived from monitorrepository model
         joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
                                           // specs derived from usage_scenario model

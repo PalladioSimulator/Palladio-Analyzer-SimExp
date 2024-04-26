@@ -4,7 +4,8 @@ Bundle-Name: PCM Simulator
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.simulator
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.palladiosimulator.simexp.pcm.simulator,
- org.palladiosimulator.simexp.pcm.simulator.config
+ org.palladiosimulator.simexp.pcm.simulator.config,
+ org.palladiosimulator.simexp.pcm.simulator.provider
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.simulator
 Bundle-ActivationPolicy: lazy

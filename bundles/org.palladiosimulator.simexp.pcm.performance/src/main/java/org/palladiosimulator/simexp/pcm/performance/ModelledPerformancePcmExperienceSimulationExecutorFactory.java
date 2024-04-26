@@ -81,7 +81,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
                 getDbn(), experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(getSpecs());
+        List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs();
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
                 simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);
@@ -97,7 +98,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         // Planner SmodelInterpreter
         // Executor not required
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(getSpecs());
+        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
         IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
@@ -114,13 +115,13 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory extends
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         // FIXME: read thresholds from smodel
-        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(getSpecs().get(0),
+        Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
         boolean isHidden = false;
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                getExperiment(), getSpecs(), runners, getSimulationParameters(), beforeExecution, envProcess,
+                getExperiment(), pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecution, envProcess,
                 getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, isHidden,
                 experimentProvider, simulationRunnerHolder);
 
