@@ -7,7 +7,8 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.modelled.config.IModelledPcmWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.simulator.provider.PcmMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
@@ -20,22 +21,26 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends Number, V>
         extends ModelledExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
 
-    private final List<PcmMeasurementSpecification> specs;
-
-    public ModelledPcmExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
+    public ModelledPcmExperienceSimulationExecutorFactory(IModelledPcmWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PcmMeasurementSpecification> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
-        this.specs = specs;
+    }
+
+    @Override
+    protected IModelledPcmWorkflowConfiguration getWorkflowConfiguration() {
+        return (IModelledPcmWorkflowConfiguration) super.getWorkflowConfiguration();
     }
 
     @Override
     protected List<PcmMeasurementSpecification> createSpecs() {
-        return specs;
+        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(
+                getWorkflowConfiguration(), getExperiment());
+        List<PcmMeasurementSpecification> pcmSpecs = provider.getSpecifications();
+        return pcmSpecs;
     }
 }

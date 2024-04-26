@@ -21,8 +21,6 @@ import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcm
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperienceSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.simulator.provider.PcmMeasurementSpecificationProvider;
-import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.workflow.provider.PrismMeasurementSpecificationProvider;
 
 import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLookup;
@@ -62,27 +60,24 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             SimulationParameters simulationParameters, DescriptionProvider descriptionProvider,
             ProbabilisticModelRepository staticEnvDynModel) {
-        PcmMeasurementSpecificationProvider provider = new PcmMeasurementSpecificationProvider(workflowConfiguration,
-                experiment);
-        List<PcmMeasurementSpecification> pcmSpecs = provider.getSpecifications();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
-                    dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    dbn, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, staticEnvDynModel);
         }
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs, experiment,
-                    dbn, pcmSpecs, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    dbn, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
                     probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
                     probDistRepoLookup, staticEnvDynModel);
         }
         case PERFORMABILITY -> {
             yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, rs,
-                    experiment, dbn, pcmSpecs, simulationParameters,
-                    new SimulatedExperienceStore<>(descriptionProvider), probabilityDistributionFactory,
-                    probabilityDistributionRegistry, parameterParser, probDistRepoLookup, staticEnvDynModel);
+                    experiment, dbn, simulationParameters, new SimulatedExperienceStore<>(descriptionProvider),
+                    probabilityDistributionFactory, probabilityDistributionRegistry, parameterParser,
+                    probDistRepoLookup, staticEnvDynModel);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
