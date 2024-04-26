@@ -48,7 +48,7 @@ public class LoadBalancingSimulationExecutorFactory
     }
 
     @Override
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
+    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> doCreate() {
         Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(

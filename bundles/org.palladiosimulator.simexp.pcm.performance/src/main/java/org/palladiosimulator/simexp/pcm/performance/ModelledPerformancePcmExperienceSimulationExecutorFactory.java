@@ -59,7 +59,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     }
 
     @Override
-    public ModelledSimulationExecutor<Integer> create() {
+    protected ModelledSimulationExecutor<Integer> doCreate() {
         Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(

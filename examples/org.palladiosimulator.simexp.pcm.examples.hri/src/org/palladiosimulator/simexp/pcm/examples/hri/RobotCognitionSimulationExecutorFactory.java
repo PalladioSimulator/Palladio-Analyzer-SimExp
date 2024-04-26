@@ -67,7 +67,7 @@ public class RobotCognitionSimulationExecutorFactory
     }
 
     @Override
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
+    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doCreate() {
         Experiment experiment = loadExperiment();
         UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()

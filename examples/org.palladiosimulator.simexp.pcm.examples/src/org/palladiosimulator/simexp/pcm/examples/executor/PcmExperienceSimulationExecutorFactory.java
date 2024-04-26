@@ -114,7 +114,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return dynBehaveRepo;
     }
 
-    public abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create();
+    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create() {
+        return doCreate();
+    }
+
+    protected abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate();
 
     protected IWorkflowConfiguration getWorkflowConfiguration() {
         return workflowConfiguration;
