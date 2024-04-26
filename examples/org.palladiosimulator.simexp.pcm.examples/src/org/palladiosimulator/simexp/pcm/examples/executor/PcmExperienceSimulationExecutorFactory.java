@@ -67,20 +67,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     protected final ProbabilisticModelRepository probabilisticModelRepository;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            // DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore
-    // IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
-    // IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-    // IProbabilityDistributionRepositoryLookup probDistRepoLookup
-    ) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
         this.workflowConfiguration = workflowConfiguration;
         this.rs = rs;
-        // this.dbn = dbn;
         this.simulatedExperienceStore = simulatedExperienceStore;
-        // this.distributionFactory = distributionFactory;
-        // this.probabilityDistributionRegistry = probabilityDistributionRegistry;
         this.parameterParser = new DefaultParameterParser();
-        // this.probDistRepoLookup = probDistRepoLookup;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
         this.probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
