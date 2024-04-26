@@ -28,6 +28,8 @@
 		<module>org.palladiosimulator.simexp.pcm</module>
 		<module>org.palladiosimulator.simexp.pcm.simulator</module>
 		<module>org.palladiosimulator.simexp.pcm.modelled</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.simulator</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.prism</module>
 		
 		<module>org.palladiosimulator.pcm.query</module>
 		

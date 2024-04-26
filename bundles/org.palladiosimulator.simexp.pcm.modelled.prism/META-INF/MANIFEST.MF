@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: modelled prism
+Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.modelled.prism
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: org.palladiosimulator.simexp.pcm.modelled.prism
+Bundle-ActivationPolicy: lazy
