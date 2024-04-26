@@ -32,6 +32,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -57,11 +58,9 @@ public class DeltaIoTSimulationExecutorFactory extends
     public final static String PRISM_FOLDER = "prism";
 
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
-    private final List<PrismSimulatedMeasurementSpec> specs;
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
@@ -69,12 +68,19 @@ public class DeltaIoTSimulationExecutorFactory extends
         super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.modelAccess = new DeltaIoTModelAccess<>();
-        this.specs = specs;
+    }
+
+    @Override
+    protected IPrismWorkflowConfiguration getWorkflowConfiguration() {
+        return (IPrismWorkflowConfiguration) super.getWorkflowConfiguration();
     }
 
     @Override
     protected List<PrismSimulatedMeasurementSpec> createSpecs() {
-        return specs;
+        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
+                getWorkflowConfiguration());
+        List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
+        return prismSpecs;
     }
 
     @Override

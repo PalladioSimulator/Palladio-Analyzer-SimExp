@@ -7,8 +7,9 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledExperienceSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
@@ -21,22 +22,26 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends Number, V>
         extends ModelledExperienceSimulationExecutorFactory<R, V, PrismSimulatedMeasurementSpec> {
 
-    private final List<PrismSimulatedMeasurementSpec> specs;
-
-    public ModelledPrismExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
+    public ModelledPrismExperienceSimulationExecutorFactory(IModelledPrismWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            List<PrismSimulatedMeasurementSpec> specs, SimulationParameters params,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
-        this.specs = specs;
+    }
+
+    @Override
+    protected IModelledPrismWorkflowConfiguration getWorkflowConfiguration() {
+        return (IModelledPrismWorkflowConfiguration) super.getWorkflowConfiguration();
     }
 
     @Override
     protected List<PrismSimulatedMeasurementSpec> createSpecs() {
-        return specs;
+        PrismMeasurementSpecificationProvider provider = new PrismMeasurementSpecificationProvider(
+                getWorkflowConfiguration());
+        List<PrismSimulatedMeasurementSpec> prismSpecs = provider.getSpecifications();
+        return prismSpecs;
     }
 }
