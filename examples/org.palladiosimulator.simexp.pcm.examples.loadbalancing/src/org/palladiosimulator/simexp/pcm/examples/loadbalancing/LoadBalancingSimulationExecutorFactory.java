@@ -60,7 +60,8 @@ public class LoadBalancingSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        Experiment experiment = getExperiment();
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
@@ -74,7 +75,7 @@ public class LoadBalancingSimulationExecutorFactory
 
         List<ExperienceSimulationRunner> simulationRunners = List
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
@@ -86,17 +87,17 @@ public class LoadBalancingSimulationExecutorFactory
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
-                getExperiment(), pcmMeasurementSpecs, simulationRunners, getSimulationParameters(),
-                beforeExecutionInitializable, envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy,
-                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
+                pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializable,
+                envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
+                false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
+        return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 }

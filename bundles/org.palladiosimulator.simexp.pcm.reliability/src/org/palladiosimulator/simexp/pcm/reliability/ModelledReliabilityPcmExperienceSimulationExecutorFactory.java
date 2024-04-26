@@ -105,12 +105,13 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
              */
             );
 
+        Experiment experiment = getExperiment();
         // FIXME: check if reconfigurationStrategy must be initialized
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 experimentProvider, qvtoReconfigurationManager);
-        UsageScenario usageScenario = getExperiment().getInitialModel()
+        UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
             .get(0);
@@ -127,7 +128,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         joinedSpecs.add(reliabilitySpec); // currently contains the reliability related measurement
                                           // specs derived from usage_scenario model
 
-        IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
@@ -145,8 +146,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                getExperiment(), joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
-                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
+                experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
+                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
                 experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
@@ -154,8 +155,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
+        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
+                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
 
         return executor;

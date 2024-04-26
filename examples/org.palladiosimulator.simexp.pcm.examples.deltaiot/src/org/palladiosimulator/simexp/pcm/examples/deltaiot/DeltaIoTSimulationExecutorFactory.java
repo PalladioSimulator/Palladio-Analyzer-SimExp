@@ -113,10 +113,11 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        Experiment experiment = getExperiment();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
                 prismLogFile, reconfParamsRepo, experimentProvider);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
@@ -150,17 +151,17 @@ public class DeltaIoTSimulationExecutorFactory extends
                 }
             });
 
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(
-                getExperiment(), prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
-                beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy,
-                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
+                prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
+                null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
+                false, experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
+        return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 

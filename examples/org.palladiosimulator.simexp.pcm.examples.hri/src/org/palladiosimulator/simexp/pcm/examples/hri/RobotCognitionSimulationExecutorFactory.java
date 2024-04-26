@@ -109,8 +109,9 @@ public class RobotCognitionSimulationExecutorFactory
             );
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        Experiment experiment = getExperiment();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
@@ -119,17 +120,17 @@ public class RobotCognitionSimulationExecutorFactory
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(qvtoReconfigurationManager.loadReconfigurations());
 
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
-        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(
-                getExperiment(), joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
-                envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                true, experimentProvider, simulationRunnerHolder);
+        ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
+                joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
+                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
+                experimentProvider, simulationRunnerHolder);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
         TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        return new PcmExperienceSimulationExecutor<>(simulator, getExperiment(), getSimulationParameters(),
+        return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 

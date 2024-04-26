@@ -76,8 +76,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return experiment;
     }
 
-    protected IExperimentProvider createExperimentProvider() {
-        return new ExperimentProvider(getExperiment());
+    protected IExperimentProvider createExperimentProvider(Experiment experiment) {
+        return new ExperimentProvider(experiment);
     }
 
     protected DynamicBayesianNetwork<CategoricalValue> getDbn() {
@@ -152,8 +152,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .build();
     }
 
-    protected IQVToReconfigurationManager createQvtoReconfigurationManager() {
-        String reconfigurationRulesLocation = getReconfigurationRulesLocation(getExperiment());
+    protected IQVToReconfigurationManager createQvtoReconfigurationManager(Experiment experiment) {
+        String reconfigurationRulesLocation = getReconfigurationRulesLocation(experiment);
         IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
                 reconfigurationRulesLocation);
         return qvtoReconfigurationManager;

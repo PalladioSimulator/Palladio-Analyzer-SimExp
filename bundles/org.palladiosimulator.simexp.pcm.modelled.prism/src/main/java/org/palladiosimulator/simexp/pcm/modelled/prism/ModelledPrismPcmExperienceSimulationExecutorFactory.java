@@ -125,17 +125,18 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        Experiment experiment = getExperiment();
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
                 prismLogFile, reconfParamsRepo, experimentProvider);
 
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(prismSimulatedMeasurementSpec);
-        IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
@@ -176,7 +177,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 lowerEnergyConsumptionThreshold);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                getExperiment(), prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
+                experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
                 beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfStrategy,
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
 
@@ -184,8 +185,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
         TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
+        ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
+                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
     }

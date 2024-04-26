@@ -79,7 +79,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
 
     @Override
     public ModelledSimulationExecutor<Double> create() {
-        IExperimentProvider experimentProvider = createExperimentProvider();
+        Experiment experiment = getExperiment();
+        IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
@@ -92,12 +93,12 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
 
         List<ExperienceSimulationRunner> runners = List
             .of(new PerformabilityPcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager();
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
-        IModelsLookup modelsLookup = new ModelsLookup(getExperiment());
+        IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 staticEnvDynModel);
@@ -120,7 +121,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                getExperiment(), pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
+                experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder);
 
@@ -129,8 +130,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
-        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator,
-                getExperiment(), getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
+        ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
+                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
     }
