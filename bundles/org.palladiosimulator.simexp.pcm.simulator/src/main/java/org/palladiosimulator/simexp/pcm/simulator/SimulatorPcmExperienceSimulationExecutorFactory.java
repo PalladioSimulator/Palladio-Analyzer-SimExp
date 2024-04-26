@@ -17,7 +17,6 @@ import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLoo
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
-import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends Number, V>
         extends PcmExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
@@ -26,9 +25,9 @@ public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends 
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
+                probabilityDistributionRegistry, probDistRepoLookup);
     }
 
     @Override

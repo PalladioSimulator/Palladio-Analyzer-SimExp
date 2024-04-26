@@ -51,7 +51,6 @@ import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLoo
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
-import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
@@ -70,10 +69,10 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
+                probabilityDistributionRegistry, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
     }
 

@@ -38,6 +38,7 @@ import tools.mdsd.probdist.api.apache.util.IProbabilityDistributionRepositoryLoo
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
+import tools.mdsd.probdist.api.parser.DefaultParameterParser;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
@@ -58,7 +59,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         this.workflowConfiguration = workflowConfiguration;
         this.rs = rs;
         this.dbn = dbn;
@@ -66,7 +67,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.distributionFactory = distributionFactory;
         this.probabilityDistributionRegistry = probabilityDistributionRegistry;
-        this.parameterParser = parameterParser;
+        this.parameterParser = new DefaultParameterParser();
         this.probDistRepoLookup = probDistRepoLookup;
 
         probabilityDistributionRegistry

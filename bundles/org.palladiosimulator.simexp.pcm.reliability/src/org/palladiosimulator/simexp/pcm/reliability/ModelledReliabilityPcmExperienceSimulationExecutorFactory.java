@@ -76,10 +76,10 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             ProbabilisticModelRepository staticEnvDynModel) {
         super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
-                probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
+                probabilityDistributionRegistry, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -94,9 +94,10 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
 
+        ParameterParser parameterParser = getParameterParser();
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, getProbabilityDistributionRegistry(),
-                    getDistributionFactory(), getParameterParser(), getProbDistRepoLookup())
+                    getDistributionFactory(), parameterParser, getProbDistRepoLookup())
             /**
              * disabled PCM performance analysis based on SimuCom for RobotCognition example;
              * SimuCom is deprecated and simulation currently fails
