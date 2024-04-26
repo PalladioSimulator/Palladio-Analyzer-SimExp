@@ -71,14 +71,14 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
@@ -105,7 +105,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
              */
             );
 
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         // FIXME: check if reconfigurationStrategy must be initialized
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);

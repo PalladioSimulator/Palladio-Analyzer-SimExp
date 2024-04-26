@@ -49,18 +49,18 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> create() {
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);

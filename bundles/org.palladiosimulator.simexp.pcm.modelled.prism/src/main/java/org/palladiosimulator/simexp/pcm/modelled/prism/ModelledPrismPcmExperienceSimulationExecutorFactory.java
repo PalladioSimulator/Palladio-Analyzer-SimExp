@@ -81,14 +81,14 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
-            IModelledPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
+            IModelledPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
         this.modelAccess = new DeltaIoTModelAccess<>();
@@ -103,7 +103,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .getEnvironmentProcess();
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");

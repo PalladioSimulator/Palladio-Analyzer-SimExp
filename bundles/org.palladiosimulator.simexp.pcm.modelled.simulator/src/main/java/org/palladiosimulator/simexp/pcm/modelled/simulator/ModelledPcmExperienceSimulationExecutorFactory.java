@@ -23,12 +23,12 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
         extends ModelledExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
 
     public ModelledPcmExperienceSimulationExecutorFactory(IModelledPcmWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 

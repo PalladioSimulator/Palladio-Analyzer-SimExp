@@ -62,12 +62,12 @@ public class RobotCognitionSimulationExecutorFactory
     private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -78,7 +78,7 @@ public class RobotCognitionSimulationExecutorFactory
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()

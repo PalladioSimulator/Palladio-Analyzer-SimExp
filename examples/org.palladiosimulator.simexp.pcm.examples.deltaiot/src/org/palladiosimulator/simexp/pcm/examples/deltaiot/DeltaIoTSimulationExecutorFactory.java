@@ -60,12 +60,12 @@ public class DeltaIoTSimulationExecutorFactory extends
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.modelAccess = new DeltaIoTModelAccess<>();
     }
@@ -97,7 +97,7 @@ public class DeltaIoTSimulationExecutorFactory extends
             .toFileString());
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");

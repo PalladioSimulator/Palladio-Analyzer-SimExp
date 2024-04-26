@@ -22,12 +22,12 @@ import tools.mdsd.probdist.api.parser.ParameterParser;
 public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends Number, V>
         extends PcmExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
     public SimulatorPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 

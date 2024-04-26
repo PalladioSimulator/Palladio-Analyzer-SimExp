@@ -62,21 +62,21 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     private final ProbabilisticModelRepository staticEnvDynModel;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs, Experiment experiment,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
             ProbabilisticModelRepository staticEnvDynModel) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         this.staticEnvDynModel = staticEnvDynModel;
     }
 
     @Override
     public ModelledSimulationExecutor<Integer> create() {
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);

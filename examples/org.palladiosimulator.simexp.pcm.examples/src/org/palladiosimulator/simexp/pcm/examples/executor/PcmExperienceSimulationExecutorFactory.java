@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -17,6 +20,8 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
+import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -36,8 +41,10 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
+    private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutorFactory.class);
+
     private final IWorkflowConfiguration workflowConfiguration;
-    private final Experiment experiment;
+    private final ResourceSet rs;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
     private final SimulationParameters params;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
@@ -47,13 +54,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
         this.workflowConfiguration = workflowConfiguration;
-        this.experiment = experiment;
+        this.rs = rs;
         this.dbn = dbn;
         this.params = params;
         this.simulatedExperienceStore = simulatedExperienceStore;
@@ -72,7 +79,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return workflowConfiguration;
     }
 
-    protected Experiment getExperiment() {
+    protected Experiment loadExperiment() {
+        URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
+        ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
+        LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
+        ExperimentRepository experimentRepository = expLoader.load(rs, experimentsFileURI);
+
+        ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
+        Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository);
         return experiment;
     }
 

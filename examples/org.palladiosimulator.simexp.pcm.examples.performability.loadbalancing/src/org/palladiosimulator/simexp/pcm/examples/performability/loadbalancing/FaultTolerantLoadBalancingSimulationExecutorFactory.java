@@ -60,18 +60,18 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
     }
 
     @Override
     public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> create() {
-        Experiment experiment = getExperiment();
+        Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);

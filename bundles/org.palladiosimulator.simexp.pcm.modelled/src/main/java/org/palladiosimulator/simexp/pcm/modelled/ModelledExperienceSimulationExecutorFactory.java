@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
-import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -27,12 +26,12 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     private final Smodel smodel;
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulationParameters params, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ResourceSet rs, DynamicBayesianNetwork<CategoricalValue> dbn, SimulationParameters params,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             IProbabilityDistributionFactory<CategoricalValue> distributionFactory,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
-        super(workflowConfiguration, rs, experiment, dbn, params, simulatedExperienceStore, distributionFactory,
+        super(workflowConfiguration, rs, dbn, params, simulatedExperienceStore, distributionFactory,
                 probabilityDistributionRegistry, parameterParser, probDistRepoLookup);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();
