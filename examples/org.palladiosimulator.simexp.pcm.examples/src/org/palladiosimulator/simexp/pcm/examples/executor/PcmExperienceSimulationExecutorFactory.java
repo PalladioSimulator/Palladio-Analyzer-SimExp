@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -15,7 +14,6 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -26,10 +24,6 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
-import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
-import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
-import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -54,9 +48,8 @@ import tools.mdsd.probdist.distributiontype.ProbabilityDistributionRepository;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
-    private static final Logger LOGGER = Logger.getLogger(PcmExperienceSimulationExecutorFactory.class);
-
     private final IWorkflowConfiguration workflowConfiguration;
+    private final ModelLoader modelLoader;
     private final ResourceSet rs;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
@@ -67,9 +60,10 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected final ProbabilisticModelRepository probabilisticModelRepository;
 
-    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ResourceSet rs,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
+            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
         this.workflowConfiguration = workflowConfiguration;
+        this.modelLoader = modelLoader;
         this.rs = rs;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
@@ -97,21 +91,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     private ProbabilisticModelRepository loadProbabilisticModelRepository() {
         URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
-        ProbabilisticModelLoader gpnLoader = new ProbabilisticModelLoader();
-        LOGGER.debug(String.format("Loading static model from: '%s'", staticModelURI));
-        // env model assumption: a ProbabilisticModelRepository (root) contains a single
-        // GroundProbabilisticNetwork
-        ProbabilisticModelRepository probModelRepo = gpnLoader.load(rs, staticModelURI);
+        ProbabilisticModelRepository probModelRepo = modelLoader.loadProbabilisticModelRepository(rs, staticModelURI);
         return probModelRepo;
     }
 
     private DynamicBehaviourRepository loadDynamicBehaviourRepository() {
         URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
-        DynamicBehaviourLoader dbeLoader = new DynamicBehaviourLoader();
-        LOGGER.debug(String.format("Loading dynamic model from: '%s'", dynamicModelURI));
-        // env model assumption: a DynamicBehaviourRepository (root) contains a single
-        // DynamicBehaviourExtension
-        DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
+        DynamicBehaviourRepository dynBehaveRepo = modelLoader.loadDynamicBehaviourRepository(rs, dynamicModelURI);
         return dynBehaveRepo;
     }
 
@@ -127,12 +113,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected Experiment loadExperiment() {
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
-        ExperimentRepositoryLoader expLoader = new ExperimentRepositoryLoader();
-        LOGGER.debug(String.format("Loading experiment from: '%s'", experimentsFileURI));
-        ExperimentRepository experimentRepository = expLoader.load(rs, experimentsFileURI);
-
-        ExperimentRepositoryResolver expRepoResolver = new ExperimentRepositoryResolver();
-        Experiment experiment = expRepoResolver.resolveExperiment(experimentRepository);
+        Experiment experiment = modelLoader.loadExperiment(rs, experimentsFileURI);
         return experiment;
     }
 

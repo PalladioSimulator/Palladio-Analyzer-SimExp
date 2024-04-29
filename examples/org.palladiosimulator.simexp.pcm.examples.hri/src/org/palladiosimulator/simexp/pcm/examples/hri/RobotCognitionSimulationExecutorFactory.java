@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.reliability.RealValuedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.reliability.RobotCognitionBeforeExecutionInitialization;
@@ -54,9 +55,10 @@ public class RobotCognitionSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration, ResourceSet rs,
+    public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
+            ModelLoader modelLoader, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, rs, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
     }
 
     @Override

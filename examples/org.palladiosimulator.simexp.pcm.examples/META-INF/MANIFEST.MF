@@ -29,7 +29,6 @@ Require-Bundle: com.google.guava;bundle-version="27.1.0",
  tools.mdsd.probdist.api.apache,
  org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="5.1.0",
  org.palladiosimulator.solver;bundle-version="5.1.0",
- org.palladiosimulator.simexp.model.io;bundle-version="1.0.0",
  tools.mdsd.probdist.model;bundle-version="0.1.0",
  tools.mdsd.probdist.model.basic;bundle-version="1.0.0",
  org.palladiosimulator.envdyn.model;bundle-version="5.2.0"

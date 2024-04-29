@@ -80,15 +80,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, DescriptionProvider descriptionProvider) {
+        PcmModelLoader modelLoader = new PcmModelLoader();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, rs, descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoader, rs,
+                    descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, rs, descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoader, rs,
+                    descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
@@ -97,7 +100,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
             ResourceSet rs, LaunchDescriptionProvider launchDescriptionProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, rs, launchDescriptionProvider);
+        PcmModelLoader modelLoader = new PcmModelLoader();
+        return factory.create(workflowConfiguration, modelLoader, rs, launchDescriptionProvider);
     }
 
     @SuppressWarnings("unchecked")

@@ -7,6 +7,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.SModelLoader;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -18,8 +19,9 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     private final Smodel smodel;
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, rs, simulatedExperienceStore);
+            ModelLoader modelLoader, ResourceSet rs,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();
         this.smodel = smodelLoader.load(rs, smodelURI);

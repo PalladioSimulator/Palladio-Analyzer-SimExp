@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
@@ -15,8 +16,9 @@ public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends
         extends ModelledExperienceSimulationExecutorFactory<R, V, PrismSimulatedMeasurementSpec> {
 
     public ModelledPrismExperienceSimulationExecutorFactory(IModelledPrismWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, rs, simulatedExperienceStore);
+            ModelLoader modelLoader, ResourceSet rs,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
     }
 
     @Override
