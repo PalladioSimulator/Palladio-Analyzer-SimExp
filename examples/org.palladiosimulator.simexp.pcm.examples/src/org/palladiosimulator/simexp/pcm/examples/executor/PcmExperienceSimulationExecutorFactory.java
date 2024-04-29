@@ -76,27 +76,20 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
     }
 
-    private ProbabilisticModelRepository loadProbabilisticModelRepository() {
-        URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
-        ProbabilisticModelRepository probModelRepo = getModelLoader().loadProbabilisticModelRepository(rs,
-                staticModelURI);
-        return probModelRepo;
-    }
-
-    private DynamicBehaviourRepository loadDynamicBehaviourRepository() {
-        URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
-        DynamicBehaviourRepository dynBehaveRepo = getModelLoader().loadDynamicBehaviourRepository(rs, dynamicModelURI);
-        return dynBehaveRepo;
-    }
-
     public SimulationExecutor create() {
         probabilityDistributionRegistry
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
         Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
 
-        ProbabilisticModelRepository probabilisticModelRepository = loadProbabilisticModelRepository();
-        DynamicBehaviourRepository dynamicBehaviourRepository = loadDynamicBehaviourRepository();
+        URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
+        ProbabilisticModelRepository probabilisticModelRepository = getModelLoader()
+            .loadProbabilisticModelRepository(rs, staticModelURI);
+
+        URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
+        DynamicBehaviourRepository dynamicBehaviourRepository = getModelLoader().loadDynamicBehaviourRepository(rs,
+                dynamicModelURI);
+
         return createLoaded(experiment, probabilisticModelRepository, dynamicBehaviourRepository);
     }
 
