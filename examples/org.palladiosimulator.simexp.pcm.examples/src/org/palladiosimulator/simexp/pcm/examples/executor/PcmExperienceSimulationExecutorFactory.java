@@ -86,9 +86,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
             .get(0);
         this.dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
-
-        probabilityDistributionRegistry
-            .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
     }
 
     private ProbabilisticModelRepository loadProbabilisticModelRepository() {
@@ -105,6 +102,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     }
 
     public SimulationExecutor create() {
+        probabilityDistributionRegistry
+            .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
         Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
         return doCreate(experiment);
