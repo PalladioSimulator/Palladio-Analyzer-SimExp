@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourExtension;
@@ -114,7 +115,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return dynBehaveRepo;
     }
 
-    public PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> create() {
+    public SimulationExecutor create() {
         return doCreate();
     }
 
