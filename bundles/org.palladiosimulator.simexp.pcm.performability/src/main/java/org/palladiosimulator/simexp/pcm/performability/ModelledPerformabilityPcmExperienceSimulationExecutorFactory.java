@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -57,9 +56,9 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader, ResourceSet rs,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

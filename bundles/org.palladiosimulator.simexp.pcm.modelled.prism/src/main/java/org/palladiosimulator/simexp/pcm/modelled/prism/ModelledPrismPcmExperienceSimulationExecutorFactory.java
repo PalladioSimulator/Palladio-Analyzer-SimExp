@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -72,9 +71,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public final static String PRISM_FOLDER = "prism";
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
-            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader, ResourceSet rs,
+            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

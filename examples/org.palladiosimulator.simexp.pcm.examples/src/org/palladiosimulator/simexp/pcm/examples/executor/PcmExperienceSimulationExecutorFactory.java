@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -50,7 +51,8 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     private final IWorkflowConfiguration workflowConfiguration;
     private final ModelLoader modelLoader;
-    private final ResourceSet rs;
+    // TODO:
+    protected final ResourceSet rs;
     private final DynamicBayesianNetwork<CategoricalValue> dbn;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
@@ -61,10 +63,10 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     protected final ProbabilisticModelRepository probabilisticModelRepository;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoader = modelLoader;
-        this.rs = rs;
+        this.rs = new ResourceSetImpl();
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
 

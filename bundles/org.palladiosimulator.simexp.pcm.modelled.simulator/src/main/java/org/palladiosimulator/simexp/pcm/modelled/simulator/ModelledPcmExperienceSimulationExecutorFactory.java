@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.modelled.simulator;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
@@ -16,9 +15,8 @@ public abstract class ModelledPcmExperienceSimulationExecutorFactory<R extends N
         extends ModelledExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
 
     public ModelledPcmExperienceSimulationExecutorFactory(IModelledPcmWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, ResourceSet rs,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

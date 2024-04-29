@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
@@ -63,9 +62,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader, ResourceSet rs,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

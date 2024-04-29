@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -53,8 +52,8 @@ public class DeltaIoTSimulationExecutorFactory extends
     public final static String PRISM_FOLDER = "prism";
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            ResourceSet rs, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

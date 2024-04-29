@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -54,9 +53,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader, ResourceSet rs,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

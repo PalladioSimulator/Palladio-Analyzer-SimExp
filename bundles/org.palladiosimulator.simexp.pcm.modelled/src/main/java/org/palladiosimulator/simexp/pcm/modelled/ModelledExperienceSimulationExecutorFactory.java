@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.modelled;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -19,9 +18,8 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     private final Smodel smodel;
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, ResourceSet rs,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
         URI smodelURI = workflowConfiguration.getSmodelURI();
         SModelLoader smodelLoader = new SModelLoader();
         this.smodel = smodelLoader.load(rs, smodelURI);

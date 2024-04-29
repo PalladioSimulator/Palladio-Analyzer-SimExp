@@ -14,8 +14,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
@@ -47,18 +45,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
         LOGGER.debug("Create SimExp workflow root job");
         try {
-            ResourceSet rs = new ResourceSetImpl();
-
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, rs, launchDescriptionProvider);
+                yield createCustomSimulationExecutor(config, launchDescriptionProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, rs, launchDescriptionProvider);
+                yield createModelledSimulationExecutor(config, launchDescriptionProvider);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -79,29 +75,27 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider) {
         PcmModelLoader modelLoader = new PcmModelLoader();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoader, rs,
-                    descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoader, descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoader, rs,
-                    descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoader, descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            ResourceSet rs, LaunchDescriptionProvider launchDescriptionProvider) {
+            LaunchDescriptionProvider launchDescriptionProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
         PcmModelLoader modelLoader = new PcmModelLoader();
-        return factory.create(workflowConfiguration, modelLoader, rs, launchDescriptionProvider);
+        return factory.create(workflowConfiguration, modelLoader, launchDescriptionProvider);
     }
 
     @SuppressWarnings("unchecked")

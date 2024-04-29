@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -44,9 +43,8 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, ResourceSet rs,
-            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, rs, simulatedExperienceStore);
+            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -16,17 +15,17 @@ import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfigurati
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
     public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            ResourceSet rs, DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
-        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, modelLoader, rs,
+        case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, modelLoader,
                 new SimulatedExperienceStore<>(descriptionProvider));
 
-        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, modelLoader, rs,
+        case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, modelLoader,
                 new SimulatedExperienceStore<>(descriptionProvider));
 
         case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration,
-                modelLoader, rs, new SimulatedExperienceStore<>(descriptionProvider));
+                modelLoader, new SimulatedExperienceStore<>(descriptionProvider));
 
         default -> throw new RuntimeException("Unexpected QualityObjective: " + qualityObjective);
         };

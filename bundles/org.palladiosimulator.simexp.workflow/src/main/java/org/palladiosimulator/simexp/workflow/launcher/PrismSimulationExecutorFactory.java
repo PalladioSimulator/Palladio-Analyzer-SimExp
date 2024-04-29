@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
@@ -13,9 +12,9 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
     public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            ResourceSet rs, DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                workflowConfiguration, modelLoader, rs, new SimulatedExperienceStore<>(descriptionProvider));
+                workflowConfiguration, modelLoader, new SimulatedExperienceStore<>(descriptionProvider));
         return factory.create();
     }
 }
