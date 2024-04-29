@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
+import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
@@ -61,7 +62,7 @@ public class RobotCognitionSimulationExecutorFactory
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doCreate(
-            Experiment experiment) {
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn) {
         UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
@@ -100,7 +101,7 @@ public class RobotCognitionSimulationExecutorFactory
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);
 
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
-                getDbn());
+                dbn);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p;

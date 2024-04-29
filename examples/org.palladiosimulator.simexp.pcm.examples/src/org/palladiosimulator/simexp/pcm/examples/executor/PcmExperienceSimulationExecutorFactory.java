@@ -53,14 +53,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ModelLoader modelLoader;
     // TODO:
     protected final ResourceSet rs;
-    private final DynamicBayesianNetwork<CategoricalValue> dbn;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-
-    protected final ProbabilisticModelRepository probabilisticModelRepository;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
@@ -77,15 +74,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
             .loadRepository();
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
-
-        this.probabilisticModelRepository = loadProbabilisticModelRepository();
-        GroundProbabilisticNetwork gpn = probabilisticModelRepository.getModels()
-            .get(0);
-        BayesianNetwork<CategoricalValue> bn = new BayesianNetwork<>(null, gpn, distributionFactory);
-        DynamicBehaviourRepository dynamicBehaviourRepository = loadDynamicBehaviourRepository();
-        DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
-            .get(0);
-        this.dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
     }
 
     private ProbabilisticModelRepository loadProbabilisticModelRepository() {
@@ -106,11 +94,34 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
         Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
-        return doCreate(experiment);
+
+        ProbabilisticModelRepository probabilisticModelRepository = loadProbabilisticModelRepository();
+        DynamicBehaviourRepository dynamicBehaviourRepository = loadDynamicBehaviourRepository();
+        return createLoaded(experiment, probabilisticModelRepository, dynamicBehaviourRepository);
+    }
+
+    protected SimulationExecutor createLoaded(Experiment experiment,
+            ProbabilisticModelRepository probabilisticModelRepository,
+            DynamicBehaviourRepository dynamicBehaviourRepository) {
+        DynamicBayesianNetwork<CategoricalValue> dbn = createDBN(probabilisticModelRepository,
+                dynamicBehaviourRepository);
+        return doCreate(experiment, dbn);
+    }
+
+    protected DynamicBayesianNetwork<CategoricalValue> createDBN(
+            ProbabilisticModelRepository probabilisticModelRepository,
+            DynamicBehaviourRepository dynamicBehaviourRepository) {
+        GroundProbabilisticNetwork gpn = probabilisticModelRepository.getModels()
+            .get(0);
+        BayesianNetwork<CategoricalValue> bn = new BayesianNetwork<>(null, gpn, distributionFactory);
+        DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
+            .get(0);
+        DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
+        return dbn;
     }
 
     protected abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate(
-            Experiment experiment);
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn);
 
     protected IWorkflowConfiguration getWorkflowConfiguration() {
         return workflowConfiguration;
@@ -122,10 +133,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected IExperimentProvider createExperimentProvider(Experiment experiment) {
         return new ExperimentProvider(experiment);
-    }
-
-    protected DynamicBayesianNetwork<CategoricalValue> getDbn() {
-        return dbn;
     }
 
     protected SimulationParameters getSimulationParameters() {

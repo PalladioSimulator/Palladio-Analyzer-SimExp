@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
@@ -60,10 +61,10 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doCreate(
-            Experiment experiment) {
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn) {
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
-                getDbn(), experimentProvider);
+                dbn, experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 

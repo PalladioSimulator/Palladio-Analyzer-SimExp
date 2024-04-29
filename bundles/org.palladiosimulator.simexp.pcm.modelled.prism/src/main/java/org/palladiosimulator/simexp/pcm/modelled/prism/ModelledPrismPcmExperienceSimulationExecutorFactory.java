@@ -9,7 +9,9 @@ import java.util.Set;
 
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
+import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
@@ -78,11 +80,12 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> doModelledCreate(
-            Experiment experiment, Smodel smodel) {
+            Experiment experiment, ProbabilisticModelRepository probabilisticModelRepository,
+            DynamicBayesianNetwork<CategoricalValue> dbn, Smodel smodel) {
         DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
-        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(getDbn(),
-                getSimulatedExperienceStore(), modelAccess, simulationRunnerHolder);
+        DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, getSimulatedExperienceStore(),
+                modelAccess, simulationRunnerHolder);
         SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 

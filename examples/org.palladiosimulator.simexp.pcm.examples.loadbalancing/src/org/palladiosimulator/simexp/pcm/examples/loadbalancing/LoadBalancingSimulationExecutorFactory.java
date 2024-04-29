@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -49,10 +50,10 @@ public class LoadBalancingSimulationExecutorFactory
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> doCreate(
-            Experiment experiment) {
+            Experiment experiment, DynamicBayesianNetwork<CategoricalValue> dbn) {
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         VaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new VaryingInterarrivelRateProcess<>(
-                getDbn(), experimentProvider);
+                dbn, experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
