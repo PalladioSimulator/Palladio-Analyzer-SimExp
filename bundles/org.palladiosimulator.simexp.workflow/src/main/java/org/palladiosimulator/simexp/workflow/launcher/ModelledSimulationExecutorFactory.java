@@ -6,8 +6,8 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.modelled.prism.ModelledPrismPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
@@ -17,8 +17,8 @@ import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperi
 import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperienceSimulationExecutorFactory;
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
-    public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            DescriptionProvider descriptionProvider) {
+    public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
+            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
@@ -34,7 +34,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPCM(IModelledPcmWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
@@ -56,7 +56,7 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPRISM(IModelledPrismWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, modelLoader, new SimulatedExperienceStore<>(descriptionProvider));
         return factory.create();

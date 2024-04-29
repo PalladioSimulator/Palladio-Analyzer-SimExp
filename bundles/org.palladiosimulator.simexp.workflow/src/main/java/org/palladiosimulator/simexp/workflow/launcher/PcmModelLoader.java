@@ -7,13 +7,15 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.experimentautomation.experiments.ExperimentRepository;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.model.io.DynamicBehaviourLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryLoader;
 import org.palladiosimulator.simexp.model.io.ExperimentRepositoryResolver;
 import org.palladiosimulator.simexp.model.io.ProbabilisticModelLoader;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
+import org.palladiosimulator.simexp.model.io.SModelLoader;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 
-public class PcmModelLoader implements ModelLoader {
+public class PcmModelLoader implements ModelledModelLoader {
     private static final Logger LOGGER = Logger.getLogger(PcmModelLoader.class);
 
     @Override
@@ -45,5 +47,13 @@ public class PcmModelLoader implements ModelLoader {
         // DynamicBehaviourExtension
         DynamicBehaviourRepository dynBehaveRepo = dbeLoader.load(rs, dynamicModelURI);
         return dynBehaveRepo;
+    }
+
+    @Override
+    public Smodel loadSModel(ResourceSet rs, URI smodelURI) {
+        SModelLoader smodelLoader = new SModelLoader();
+        LOGGER.debug(String.format("Loading smodel from '%s'", smodelURI.path()));
+        Smodel smodel = smodelLoader.load(rs, smodelURI);
+        return smodel;
     }
 }

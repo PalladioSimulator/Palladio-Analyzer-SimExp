@@ -41,5 +41,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.modelled;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.prism;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
- org.palladiosimulator.simexp.model.io;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.model.io;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher

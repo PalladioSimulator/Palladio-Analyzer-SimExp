@@ -1,33 +1,25 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
-import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
-import org.palladiosimulator.simexp.model.io.SModelLoader;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public abstract class ModelledExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification>
         extends PcmExperienceSimulationExecutorFactory<R, V, T> {
-    private static final Logger LOGGER = Logger.getLogger(ModelledExperienceSimulationExecutorFactory.class);
-
     private final Smodel smodel;
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+            ModelledModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
         super(workflowConfiguration, modelLoader, simulatedExperienceStore);
         URI smodelURI = workflowConfiguration.getSmodelURI();
-        SModelLoader smodelLoader = new SModelLoader();
-        this.smodel = smodelLoader.load(rs, smodelURI);
-        LOGGER.debug(String.format("Loaded smodel from '%s'", smodelURI.path()));
+        this.smodel = modelLoader.loadSModel(rs, smodelURI);
     }
 
     protected Smodel getSmodel() {
         return smodel;
     }
-
 }

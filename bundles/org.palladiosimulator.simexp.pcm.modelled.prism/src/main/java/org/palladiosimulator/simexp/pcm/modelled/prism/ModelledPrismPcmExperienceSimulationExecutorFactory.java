@@ -48,9 +48,9 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.GlobalQualityBasedReco
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.PacketLossPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
@@ -71,7 +71,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public final static String PRISM_FOLDER = "prism";
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
-            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
+            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader modelLoader,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
         super(workflowConfiguration, modelLoader, simulatedExperienceStore);
     }
