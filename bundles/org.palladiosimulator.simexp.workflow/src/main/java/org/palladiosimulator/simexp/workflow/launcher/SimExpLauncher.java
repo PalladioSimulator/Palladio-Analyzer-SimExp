@@ -76,18 +76,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
             DescriptionProvider descriptionProvider) {
-        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
-                    descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
-                    descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
@@ -96,8 +93,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
             LaunchDescriptionProvider launchDescriptionProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
-        return factory.create(workflowConfiguration, modelLoaderFactory, launchDescriptionProvider);
+        return factory.create(workflowConfiguration, launchDescriptionProvider);
     }
 
     @SuppressWarnings("unchecked")

@@ -5,7 +5,6 @@ import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingSimulationExecutorFactory;
@@ -15,7 +14,8 @@ import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfigurati
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
     public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider) {
+        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> new LoadBalancingSimulationExecutorFactory(workflowConfiguration, modelLoaderFactory,

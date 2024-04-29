@@ -18,7 +18,8 @@ import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperi
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
     public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider) {
+        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
