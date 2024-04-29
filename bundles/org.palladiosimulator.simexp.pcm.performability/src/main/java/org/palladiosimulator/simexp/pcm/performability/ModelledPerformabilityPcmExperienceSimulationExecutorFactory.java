@@ -62,7 +62,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
     }
 
     @Override
-    protected ModelledSimulationExecutor<Double> doCreate() {
+    protected ModelledSimulationExecutor<Double> doModelledCreate(Smodel smodel) {
         Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
@@ -87,7 +87,6 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
-        Smodel smodel = getSmodel();
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
         String reconfigurationStrategyId = smodel.getModelName();

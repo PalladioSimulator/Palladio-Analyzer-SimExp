@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLook
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
@@ -59,7 +60,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     }
 
     @Override
-    protected ModelledSimulationExecutor<Integer> doCreate() {
+    protected ModelledSimulationExecutor<Integer> doModelledCreate(Smodel smodel) {
         Experiment experiment = loadExperiment();
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformanceVaryingInterarrivelRateProcess<QVTOReconfigurator, QVToReconfiguration, Integer> p = new PerformanceVaryingInterarrivelRateProcess<>(
@@ -91,9 +92,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         EnvironmentVariableValueProvider envVariableValueProvider = new EnvironmentVariableValueProvider(
                 probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
-        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(getSmodel(), probeValueProvider,
+        SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 envVariableValueProvider);
-        String reconfigurationStrategyId = getSmodel().getModelName();
+        String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 

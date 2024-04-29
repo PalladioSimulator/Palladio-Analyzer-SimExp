@@ -93,13 +93,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     private ProbabilisticModelRepository loadProbabilisticModelRepository() {
         URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
-        ProbabilisticModelRepository probModelRepo = modelLoader.loadProbabilisticModelRepository(rs, staticModelURI);
+        ProbabilisticModelRepository probModelRepo = getModelLoader().loadProbabilisticModelRepository(rs,
+                staticModelURI);
         return probModelRepo;
     }
 
     private DynamicBehaviourRepository loadDynamicBehaviourRepository() {
         URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
-        DynamicBehaviourRepository dynBehaveRepo = modelLoader.loadDynamicBehaviourRepository(rs, dynamicModelURI);
+        DynamicBehaviourRepository dynBehaveRepo = getModelLoader().loadDynamicBehaviourRepository(rs, dynamicModelURI);
         return dynBehaveRepo;
     }
 
@@ -113,9 +114,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return workflowConfiguration;
     }
 
+    protected ModelLoader getModelLoader() {
+        return modelLoader;
+    }
+
     protected Experiment loadExperiment() {
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
-        Experiment experiment = modelLoader.loadExperiment(rs, experimentsFileURI);
+        Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
         return experiment;
     }
 
