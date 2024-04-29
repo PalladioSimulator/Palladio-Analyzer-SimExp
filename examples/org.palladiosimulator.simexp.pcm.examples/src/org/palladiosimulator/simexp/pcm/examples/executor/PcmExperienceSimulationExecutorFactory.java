@@ -105,10 +105,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     }
 
     public SimulationExecutor create() {
-        return doCreate();
+        URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
+        Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
+        return doCreate(experiment);
     }
 
-    protected abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate();
+    protected abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate(
+            Experiment experiment);
 
     protected IWorkflowConfiguration getWorkflowConfiguration() {
         return workflowConfiguration;
@@ -116,12 +119,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected ModelLoader getModelLoader() {
         return modelLoader;
-    }
-
-    protected Experiment loadExperiment() {
-        URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
-        Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
-        return experiment;
     }
 
     protected IExperimentProvider createExperimentProvider(Experiment experiment) {

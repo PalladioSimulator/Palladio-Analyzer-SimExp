@@ -59,8 +59,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     }
 
     @Override
-    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doCreate() {
-        Experiment experiment = loadExperiment();
+    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doCreate(
+            Experiment experiment) {
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);

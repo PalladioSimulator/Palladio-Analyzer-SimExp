@@ -62,8 +62,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
     }
 
     @Override
-    protected ModelledSimulationExecutor<Double> doModelledCreate(Smodel smodel) {
-        Experiment experiment = loadExperiment();
+    protected ModelledSimulationExecutor<Double> doModelledCreate(Experiment experiment, Smodel smodel) {
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
                 getDbn(), experimentProvider);

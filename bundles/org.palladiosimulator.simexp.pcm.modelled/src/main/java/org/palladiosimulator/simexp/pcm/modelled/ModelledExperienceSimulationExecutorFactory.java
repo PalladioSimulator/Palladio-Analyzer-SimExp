@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
 import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -30,12 +31,13 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     }
 
     @Override
-    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate() {
+    protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doCreate(
+            Experiment experiment) {
         URI smodelURI = getWorkflowConfiguration().getSmodelURI();
         Smodel smodel = getModelLoader().loadSModel(rs, smodelURI);
-        return doModelledCreate(smodel);
+        return doModelledCreate(experiment, smodel);
     }
 
     protected abstract PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, R> doModelledCreate(
-            Smodel smodel);
+            Experiment experiment, Smodel smodel);
 }

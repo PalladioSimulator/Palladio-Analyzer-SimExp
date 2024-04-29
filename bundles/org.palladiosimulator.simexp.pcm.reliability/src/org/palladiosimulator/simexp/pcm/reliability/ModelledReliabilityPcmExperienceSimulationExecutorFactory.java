@@ -69,7 +69,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> doModelledCreate(
-            Smodel smodel) {
+            Experiment experiment, Smodel smodel) {
         UncertaintyBasedReliabilityPredictionConfig predictionConfig = new UncertaintyBasedReliabilityPredictionConfig(
                 createDefaultRunConfig(), null, loadUncertaintyRepository(), null);
 
@@ -85,7 +85,6 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
              */
             );
 
-        Experiment experiment = loadExperiment();
         // FIXME: check if reconfigurationStrategy must be initialized
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
