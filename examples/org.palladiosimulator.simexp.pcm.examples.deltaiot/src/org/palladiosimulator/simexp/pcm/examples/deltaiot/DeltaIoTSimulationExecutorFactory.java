@@ -51,12 +51,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
-    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
-
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        this.modelAccess = new DeltaIoTModelAccess<>();
     }
 
     @Override
@@ -74,6 +71,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
     @Override
     protected PcmExperienceSimulationExecutor<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Integer> doCreate() {
+        DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         DeltaIoTPartiallyEnvDynamics<Integer> p = new DeltaIoTPartiallyEnvDynamics<>(getDbn(),
                 getSimulatedExperienceStore(), modelAccess, simulationRunnerHolder);

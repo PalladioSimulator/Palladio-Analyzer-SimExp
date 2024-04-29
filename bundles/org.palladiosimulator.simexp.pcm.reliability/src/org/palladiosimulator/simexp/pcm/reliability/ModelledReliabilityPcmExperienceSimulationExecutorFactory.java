@@ -61,17 +61,10 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
     public final static URI UNCERTAINTY_MODEL_URI = URI.createPlatformResourceURI(
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
-    private final EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess;
-
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ResourceSet rs,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
         super(workflowConfiguration, rs, simulatedExperienceStore);
-        RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
-                getDbn());
-        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
-            .getEnvironmentProcess();
-        this.envProcess = p;
     }
 
     @Override
@@ -97,6 +90,13 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 experimentProvider, qvtoReconfigurationManager);
+
+        RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
+                getDbn());
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
+            .getEnvironmentProcess();
+        EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p;
+
         UsageScenario usageScenario = experiment.getInitialModel()
             .getUsageModel()
             .getUsageScenario_UsageModel()
