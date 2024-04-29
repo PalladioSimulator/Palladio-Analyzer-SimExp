@@ -18,15 +18,15 @@ import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperi
 
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
     public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
-            yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, modelLoader,
+            yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
                     descriptionProvider);
         }
         case PRISM -> {
-            yield createPRISM((IModelledPrismWorkflowConfiguration) workflowConfiguration, modelLoader,
+            yield createPRISM((IModelledPrismWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
                     descriptionProvider);
         }
         default -> throw new IllegalArgumentException("Unexpected value: " + simulationEngine);
@@ -34,20 +34,20 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPCM(IModelledPcmWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
-            yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration, modelLoader,
-                    new SimulatedExperienceStore<>(descriptionProvider));
+            yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration,
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
         }
         case RELIABILITY -> {
-            yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, modelLoader,
-                    new SimulatedExperienceStore<>(descriptionProvider));
+            yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration,
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
         }
         case PERFORMABILITY -> {
-            yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration, modelLoader,
-                    new SimulatedExperienceStore<>(descriptionProvider));
+            yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration,
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -56,9 +56,9 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPRISM(IModelledPrismWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader modelLoader, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
-                workflowConfiguration, modelLoader, new SimulatedExperienceStore<>(descriptionProvider));
+                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
         return factory.create();
     }
 

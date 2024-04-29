@@ -56,8 +56,9 @@ public class RobotCognitionSimulationExecutorFactory
             "/org.palladiosimulator.dependability.ml.hri/RobotCognitionUncertaintyModel.uncertainty", true);
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+            ModelLoader.Factory modelLoaderFactory,
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override

@@ -56,9 +56,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
     public ModelledPerformancePcmExperienceSimulationExecutorFactory(
-            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader modelLoader,
+            IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override

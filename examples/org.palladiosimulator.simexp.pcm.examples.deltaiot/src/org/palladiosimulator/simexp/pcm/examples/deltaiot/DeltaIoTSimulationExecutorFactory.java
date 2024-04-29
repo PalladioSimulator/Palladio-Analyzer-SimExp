@@ -52,9 +52,10 @@ public class DeltaIoTSimulationExecutorFactory extends
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
     public final static String PRISM_FOLDER = "prism";
 
-    public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
+    public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
+            ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override

@@ -44,8 +44,9 @@ public class LoadBalancingSimulationExecutorFactory
     public final static double LOWER_THRESHOLD_RT = 0.3;
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+            ModelLoader.Factory modelLoaderFactory,
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override

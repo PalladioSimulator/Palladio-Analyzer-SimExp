@@ -73,9 +73,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public final static String PRISM_FOLDER = "prism";
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
-            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader modelLoader,
+            IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override

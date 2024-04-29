@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
@@ -22,18 +23,14 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
         extends PcmExperienceSimulationExecutorFactory<R, V, T> {
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader modelLoader, SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoader, simulatedExperienceStore);
+            ModelledModelLoader.Factory modelLoaderFactory,
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
     }
 
     @Override
     protected IModelledWorkflowConfiguration getWorkflowConfiguration() {
         return (IModelledWorkflowConfiguration) super.getWorkflowConfiguration();
-    }
-
-    @Override
-    protected ModelledModelLoader getModelLoader() {
-        return (ModelledModelLoader) super.getModelLoader();
     }
 
     @Override
@@ -43,11 +40,12 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     }
 
     @Override
-    protected SimulationExecutor createLoaded(Experiment experiment,
+    protected SimulationExecutor createLoaded(ModelLoader modelLoader, Experiment experiment,
             ProbabilisticModelRepository probabilisticModelRepository,
             DynamicBehaviourRepository dynamicBehaviourRepository) {
         URI smodelURI = getWorkflowConfiguration().getSmodelURI();
-        Smodel smodel = getModelLoader().loadSModel(rs, smodelURI);
+        ModelledModelLoader modelledModelLoader = (ModelledModelLoader) modelLoader;
+        Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
 
         DynamicBayesianNetwork<CategoricalValue> dbn = createDBN(probabilisticModelRepository,
                 dynamicBehaviourRepository);

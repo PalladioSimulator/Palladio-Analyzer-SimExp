@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.BayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -50,20 +48,18 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     private final IWorkflowConfiguration workflowConfiguration;
-    private final ModelLoader modelLoader;
-    // TODO:
-    protected final ResourceSet rs;
+    private final ModelLoader.Factory modelLoaderFactory;
     private final SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
 
-    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
+    public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
+            ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
         this.workflowConfiguration = workflowConfiguration;
-        this.modelLoader = modelLoader;
-        this.rs = new ResourceSetImpl();
+        this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
 
@@ -79,21 +75,24 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     public SimulationExecutor create() {
         probabilityDistributionRegistry
             .register(new MultinomialDistributionSupplier(parameterParser, probDistRepoLookup));
+
+        ModelLoader modelLoader = modelLoaderFactory.create();
+
         URI experimentsFileURI = getWorkflowConfiguration().getExperimentsURI();
-        Experiment experiment = getModelLoader().loadExperiment(rs, experimentsFileURI);
+        Experiment experiment = modelLoader.loadExperiment(experimentsFileURI);
 
         URI staticModelURI = getWorkflowConfiguration().getStaticModelURI();
-        ProbabilisticModelRepository probabilisticModelRepository = getModelLoader()
-            .loadProbabilisticModelRepository(rs, staticModelURI);
+        ProbabilisticModelRepository probabilisticModelRepository = modelLoader
+            .loadProbabilisticModelRepository(staticModelURI);
 
         URI dynamicModelURI = getWorkflowConfiguration().getDynamicModelURI();
-        DynamicBehaviourRepository dynamicBehaviourRepository = getModelLoader().loadDynamicBehaviourRepository(rs,
-                dynamicModelURI);
+        DynamicBehaviourRepository dynamicBehaviourRepository = modelLoader
+            .loadDynamicBehaviourRepository(dynamicModelURI);
 
-        return createLoaded(experiment, probabilisticModelRepository, dynamicBehaviourRepository);
+        return createLoaded(modelLoader, experiment, probabilisticModelRepository, dynamicBehaviourRepository);
     }
 
-    protected SimulationExecutor createLoaded(Experiment experiment,
+    protected SimulationExecutor createLoaded(ModelLoader modelLoader, Experiment experiment,
             ProbabilisticModelRepository probabilisticModelRepository,
             DynamicBehaviourRepository dynamicBehaviourRepository) {
         DynamicBayesianNetwork<CategoricalValue> dbn = createDBN(probabilisticModelRepository,
@@ -118,10 +117,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected IWorkflowConfiguration getWorkflowConfiguration() {
         return workflowConfiguration;
-    }
-
-    protected ModelLoader getModelLoader() {
-        return modelLoader;
     }
 
     protected IExperimentProvider createExperimentProvider(Experiment experiment) {

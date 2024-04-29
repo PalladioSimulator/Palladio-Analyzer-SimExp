@@ -11,10 +11,10 @@ import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulatio
 
 public class PrismSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
-    public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration, ModelLoader modelLoader,
-            DescriptionProvider descriptionProvider) {
+    public SimulationExecutor create(IPrismWorkflowConfiguration workflowConfiguration,
+            ModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                workflowConfiguration, modelLoader, new SimulatedExperienceStore<>(descriptionProvider));
+                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
         return factory.create();
     }
 }

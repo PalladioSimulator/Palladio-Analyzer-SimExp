@@ -76,16 +76,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
             DescriptionProvider descriptionProvider) {
-        PcmModelLoader modelLoader = new PcmModelLoader();
+        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoader, descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
+                    descriptionProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoader, descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
+                    descriptionProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
@@ -94,8 +96,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
             LaunchDescriptionProvider launchDescriptionProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        PcmModelLoader modelLoader = new PcmModelLoader();
-        return factory.create(workflowConfiguration, modelLoader, launchDescriptionProvider);
+        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
+        return factory.create(workflowConfiguration, modelLoaderFactory, launchDescriptionProvider);
     }
 
     @SuppressWarnings("unchecked")

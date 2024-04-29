@@ -1,15 +1,18 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRepository;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 
 public interface ModelLoader {
-    Experiment loadExperiment(ResourceSet rs, URI experimentsFileURI);
+    interface Factory {
+        ModelLoader create();
+    }
 
-    ProbabilisticModelRepository loadProbabilisticModelRepository(ResourceSet rs, URI probabilisticModelURI);
+    Experiment loadExperiment(URI experimentsFileURI);
 
-    DynamicBehaviourRepository loadDynamicBehaviourRepository(ResourceSet rs, URI dynamicModelURI);
+    ProbabilisticModelRepository loadProbabilisticModelRepository(URI probabilisticModelURI);
+
+    DynamicBehaviourRepository loadDynamicBehaviourRepository(URI dynamicModelURI);
 }
