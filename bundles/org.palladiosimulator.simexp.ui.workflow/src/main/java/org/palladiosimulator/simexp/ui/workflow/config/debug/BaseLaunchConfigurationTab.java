@@ -58,14 +58,16 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
     @Override
     public final void initializeFrom(ILaunchConfiguration configuration) {
         if (configuration instanceof ILaunchConfigurationWorkingCopy) {
-            ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
-            dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
-            doInitializeFrom(dispatcher, ctx);
-            ctx.updateTargets();
-            return;
+            if (dispatcher == null) {
+                ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
+                dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
+                doInitializeFrom(dispatcher, ctx);
+                ctx.updateTargets();
+                return;
+            }
         }
 
-        // reset handling
+        // Reset and copy handling.
         try {
             ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
             dispatcher.setDelegate(workingCopy);
