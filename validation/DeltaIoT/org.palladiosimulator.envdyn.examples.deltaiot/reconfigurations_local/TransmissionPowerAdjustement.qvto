@@ -1,0 +1,65 @@
+/*
+ * This simple QVTO SimuLizar reconfiguration rule to decrease the distribution
+ *
+ */
+
+/*
+ * Two modeltypes are declared. The http NS URIs correspond to those used to register the 
+ * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
+ * in conjunction with mappings defined in the project properties.
+ */
+//modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
+//modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
+//modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
+//modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
+modeltype PCM_SYS uses 'http://palladiosimulator.org/PalladioComponentModel/System/5.2';
+//modeltype PCM_RES_ENV uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2';
+//modeltype PCM_RES_TYPE uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2';
+//modeltype PCM_USAGE uses 'http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2';
+//modeltype PCM_FEATURE_CONF uses 'http://sdq.ipd.uka.de/FeatureConfig/2.0';
+//modeltype PCM_FEATURE_MOD uses 'http://sdq.ipd.uka.de/FeatureModel/2.0';
+modeltype PCM_CORE uses 'http://palladiosimulator.org/PalladioComponentModel/Core/5.2';
+modeltype PCM_COMP uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2';
+modeltype PCM_ENTITY uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2';
+modeltype PCM_PARAM uses 'http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2';
+modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
+modeltype PCM_DIS_FACTOR uses 'http://palladiosimulator.org/reconfigurationparams/1.0';
+
+transformation adaptTransmissionPower(inout pcmSystem : PCM_SYS, in reconfParamRepo : PCM_DIS_FACTOR) {
+
+	/**
+	 * The main transformation.
+	 * This is the entry point to the overall transformation.
+	 */
+	main() {
+	
+		adjustPowerSettings();
+						 								  
+	}
+	
+	/**
+	 * Power setting adjustement.
+	 */
+	helper adjustPowerSettings() {
+	
+		log('Start to adjust settings of transmission power.');
+		
+		reconfParamRepo.rootObjects()[DeltaIoTReconfigurationParamRepository].allSubobjects()[TransmissionPower]->forEach(powerSetting) {
+			pcmSystem.rootObjects()[System].allSubobjects()[AssemblyContext]->forEach(assembly) {
+				if powerSetting.appliedAssembly.id = assembly.id then {
+					log('Found target assembly ' + assembly.entityName + ' for transmission power adjustement.');
+					powerSetting.transmissionPowerValues->forEach(value) {
+						var variableUsage : VariableUsage := assembly.configParameterUsages__AssemblyContext->any(namedReference__VariableUsage.referenceName = value.variableRef.referenceName);
+						var variableToAdjust : PCMRandomVariable := variableUsage.variableCharacterisation_VariableUsage->asSequence()->first().specification_VariableCharacterisation;
+						
+						assert fatal(variableToAdjust != null) with log('The found assembly ' + assembly.entityName + ' does not include the power settings to adjust; as specified in the reconfiguration params.');
+						
+						variableToAdjust.specification := value.powerSetting.toString();
+					};
+				} 
+				endif
+			};
+		};	
+	}
+	
+}

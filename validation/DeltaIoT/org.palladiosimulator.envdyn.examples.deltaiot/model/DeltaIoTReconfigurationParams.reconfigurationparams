@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reconfigurationparams:DeltaIoTReconfigurationParamRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:reconfigurationparams="http://palladiosimulator.org/reconfigurationparams/1.0" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" entityName="DeltaIoTReconfParams">
+  <distributionFactors entityName="Mote10">
+    <factorValues value="0.4">
+      <appliedBranch href="DeltaIoTRepository.repository#_b9JK4MTdEem6vJHOl6M9XA"/>
+    </factorValues>
+    <factorValues value="0.6">
+      <appliedBranch href="DeltaIoTRepository.repository#_exC14MTdEem6vJHOl6M9XA"/>
+    </factorValues>
+    <appliedComponent xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_sFgc8MTaEem6vJHOl6M9XA"/>
+  </distributionFactors>
+  <distributionFactors entityName="Mote12">
+    <factorValues value="0.4">
+      <appliedBranch href="DeltaIoTRepository.repository#_1MCNgMTjEem6vJHOl6M9XA"/>
+    </factorValues>
+    <factorValues value="0.6">
+      <appliedBranch href="DeltaIoTRepository.repository#_3LSIcMTjEem6vJHOl6M9XA"/>
+    </factorValues>
+    <appliedComponent xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_KS5BkMTbEem6vJHOl6M9XA"/>
+  </distributionFactors>
+  <distributionFactors entityName="Mote7">
+    <factorValues value="0.4">
+      <appliedBranch href="DeltaIoTRepository.repository#_LRnwsMorEem4ZN5Unn2ciQ"/>
+    </factorValues>
+    <factorValues value="0.6">
+      <appliedBranch href="DeltaIoTRepository.repository#_ZfeWgMorEem4ZN5Unn2ciQ"/>
+    </factorValues>
+    <appliedComponent xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_gw6rMMooEem4ZN5Unn2ciQ"/>
+  </distributionFactors>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.9/@configParameterUsages__AssemblyContext.1/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.9/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_7iTqQMVrEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.20/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_fnNxAMVuEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.22/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_1qCH8MVuEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.17/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_qjREUMVtEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.8/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_ys03UMVrEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.3/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_9shcUMTtEem6vJHOl6M9XA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.19/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_btcqIMVuEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.21/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.21/@configParameterUsages__AssemblyContext.1/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_oXbpcMVuEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.11/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_TzjAkMVsEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.15/@configParameterUsages__AssemblyContext.1/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.15/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_a37z4MVtEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.23/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_5Y_F8MVuEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.2/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_cd24AMTtEem6vJHOl6M9XA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.13/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_uUhk4MVsEem8XvI7PKw-OA"/>
+  </transmissionPower>
+  <transmissionPower>
+    <transmissionPowerValues>
+      <variableRef href="DeltaIoTSystem.system#/0/@assemblyContexts__ComposedStructure.6/@configParameterUsages__AssemblyContext.0/@namedReference__VariableUsage"/>
+    </transmissionPowerValues>
+    <appliedAssembly href="DeltaIoTSystem.system#_efL5UMVrEem8XvI7PKw-OA"/>
+  </transmissionPower>
+</reconfigurationparams:DeltaIoTReconfigurationParamRepository>

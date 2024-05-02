@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.core.strategy;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,6 +23,10 @@ public class SharedKnowledge {
 			return result.map(v -> (T) v);
 		}
 		return Optional.empty();
+	}
+	
+	public Collection<Object> getValues() {
+		return knowledgeStore.values();
 	}
 	
 	@Override

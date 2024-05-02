@@ -1,0 +1,66 @@
+/*
+ * This simple QVTO SimuLizar reconfiguration rule to decrease the distribution
+ *
+ */
+
+/*
+ * Two modeltypes are declared. The http NS URIs correspond to those used to register the 
+ * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
+ * in conjunction with mappings defined in the project properties.
+ */
+//modeltype RUNTIMEMEASUREMENT uses 'http://simulizar.palladiosimulator.org/RuntimeMeasurement/1.0';
+//modeltype PCM_ALLOC uses 'http://palladiosimulator.org/PalladioComponentModel/Allocation/5.2';
+modeltype PCM_REP uses 'http://palladiosimulator.org/PalladioComponentModel/Repository/5.2';
+modeltype PCM_SEFF uses 'http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2';
+//modeltype PCM_SYS uses 'http://palladiosimulator.org/PalladioComponentModel/System/5.2';
+//modeltype PCM_RES_ENV uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2';
+//modeltype PCM_RES_TYPE uses 'http://palladiosimulator.org/PalladioComponentModel/ResourceType/5.2';
+//modeltype PCM_USAGE uses 'http://palladiosimulator.org/PalladioComponentModel/UsageModel/5.2';
+//modeltype PCM_FEATURE_CONF uses 'http://sdq.ipd.uka.de/FeatureConfig/2.0';
+//modeltype PCM_FEATURE_MOD uses 'http://sdq.ipd.uka.de/FeatureModel/2.0';
+modeltype PCM_CORE uses 'http://palladiosimulator.org/PalladioComponentModel/Core/5.2';
+modeltype PCM_COMP uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2';
+modeltype PCM_ENTITY uses 'http://palladiosimulator.org/PalladioComponentModel/Core/Entity/5.2';
+//modeltype PCM_PARAM uses 'http://palladiosimulator.org/PalladioComponentModel/Parameter/5.2';
+//modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
+modeltype PCM_DIS_FACTOR uses 'http://palladiosimulator.org/reconfigurationparams/1.0';
+
+transformation adaptDistributionFactor(inout pcmRepository : PCM_REP, in reconfParamRepo : PCM_DIS_FACTOR) {
+
+	/**
+	 * The main transformation.
+	 * This is the entry point to the overall transformation.
+	 */
+	main() {
+	
+		distribute();
+						 								  
+	}
+	
+	/**
+	 * Distribution factor adjustement.
+	 */
+	helper distribute() {
+	
+		log('Start to adjust distribution factors');
+		
+		reconfParamRepo.rootObjects()[DeltaIoTReconfigurationParamRepository].allSubobjects()[DistributionFactor]->forEach(factor) {
+			pcmRepository.rootObjects()[Repository].allSubobjects()[BasicComponent]->forEach(component) {
+				if factor.appliedComponent.id = component.id then {
+					log('Found target component ' + component.entityName + ' for distribution factor adjustement.');
+					
+					factor.factorValues->forEach(value) {
+						var branchToAdjust : ProbabilisticBranchTransition := component.serviceEffectSpecifications__BasicComponent
+							.allSubobjects()[ProbabilisticBranchTransition]->any(entityName = value.appliedBranch.entityName);
+						
+						assert fatal(branchToAdjust != null) with log('The found component ' + component.entityName + ' does not include the branch to adjust; as specified in the reconfiguration params.');
+						
+						branchToAdjust.branchProbability := branchToAdjust.branchProbability + value.value;
+					};
+				} 
+				endif
+			};
+		};	
+	}
+	
+}

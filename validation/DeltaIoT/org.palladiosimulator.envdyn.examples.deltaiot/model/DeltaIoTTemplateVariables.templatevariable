@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templatevariable:TemplateVariableDefinitions xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_yT-0gMWiEemeD8HH3Gbl-Q" entityName="DeltaIoTTemplateVariables">
+  <variables id="_1rlpgMWiEemeD8HH3Gbl-Q" entityName="WirelessInterference">
+    <signature argument="_BPv0UMr1EemPmcCIsj28kQ"/>
+  </variables>
+  <variables id="_QCuf4MWkEemeD8HH3Gbl-Q" entityName="SignalToNoiseRatio">
+    <signature argument="_BPv0UMr1EemPmcCIsj28kQ"/>
+  </variables>
+  <variables id="_GZdDoMr2EemPmcCIsj28kQ" entityName="MoteActivation">
+    <signature argument="_e9Dxwcr1EemPmcCIsj28kQ"/>
+  </variables>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_1K4W4MWnEemx1KrwIzdqtQ" entityName="WIFactor" scope="_1rlpgMWiEemeD8HH3Gbl-Q">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_CV7b4cWoEemx1KrwIzdqtQ" entityName="WI_SNR_Factor" scope="_1rlpgMWiEemeD8HH3Gbl-Q _QCuf4MWkEemeD8HH3Gbl-Q">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_PCasccsVEem-osfd2_mNhw" entityName="MAFactor" scope="_GZdDoMr2EemPmcCIsj28kQ">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_4A_uARqOEeqUnKwnXyGFlw" entityName="DynamicalMAFactor" scope="_GZdDoMr2EemPmcCIsj28kQ" temporal="true">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_-c_hERqOEeqUnKwnXyGFlw" entityName="DynamicalWIFactor" scope="_1rlpgMWiEemeD8HH3Gbl-Q" temporal="true">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_FdUJMRqPEeqUnKwnXyGFlw" entityName="DynamicalSNRFactor" scope="_QCuf4MWkEemeD8HH3Gbl-Q" temporal="true">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <factors xsi:type="templatevariable:ProbabilisticTemplateFactor" id="_Moy4cRqPEeqUnKwnXyGFlw" entityName="DynamicalWItoSNRFactor" scope="_QCuf4MWkEemeD8HH3Gbl-Q _1rlpgMWiEemeD8HH3Gbl-Q" temporal="true">
+    <distributionFamily href="../../../plugin/tools.mdsd.probdist.model.basic/model/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </factors>
+  <arguments id="_BPv0UMr1EemPmcCIsj28kQ" entityName="WirelessLink"/>
+  <arguments id="_e9Dxwcr1EemPmcCIsj28kQ" entityName="IoTMote"/>
+  <relation xsi:type="templatevariable:DependenceRelation" target="_QCuf4MWkEemeD8HH3Gbl-Q" source="_1rlpgMWiEemeD8HH3Gbl-Q"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="MA_Presistence" interfaceVariable="_GZdDoMr2EemPmcCIsj28kQ"/>
+  <relation xsi:type="templatevariable:PersistenceRelation" entityName="WI_Persistence" interfaceVariable="_1rlpgMWiEemeD8HH3Gbl-Q"/>
+  <relation xsi:type="templatevariable:TimeSliceRelation" entityName="WItoSNR" source="_1rlpgMWiEemeD8HH3Gbl-Q" target="_QCuf4MWkEemeD8HH3Gbl-Q"/>
+  <templateGroups entityName="WirelessLinkGroup" groupedTemplates="_1rlpgMWiEemeD8HH3Gbl-Q _QCuf4MWkEemeD8HH3Gbl-Q"/>
+</templatevariable:TemplateVariableDefinitions>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reliability:NetworkInducedFailureType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:reliability="http://palladiosimulator.org/PalladioComponentModel/Reliability/5.2" id="_ZRVu4MWAEem8XvI7PKw-OA" entityName="WirelessNetworkInducedFailure">
+  <communicationLinkResourceType__NetworkInducedFailureType href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+</reliability:NetworkInducedFailureType>

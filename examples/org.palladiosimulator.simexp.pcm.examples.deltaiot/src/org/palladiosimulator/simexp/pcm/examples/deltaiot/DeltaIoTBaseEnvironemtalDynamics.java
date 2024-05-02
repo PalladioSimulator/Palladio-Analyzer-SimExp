@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvi
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator.NavigationContext;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.state.PcmArchitecturalConfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -126,7 +127,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
         };
     }
 
-    private PerceivedValue<List<InputValue<CategoricalValue>>> toPerceivedValue(
+    protected PerceivedValue<List<InputValue<CategoricalValue>>> toPerceivedValue(
             List<InputValue<CategoricalValue>> sample) {
         PerceivedInputValues perceivedValue = new PerceivedInputValues(sample);
         return perceivedValue;
