@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
@@ -27,9 +26,6 @@ import com.google.common.collect.Maps;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDynamics<R> {
-
-    private final static String SNR_TEMPLATE = "SignalToNoiseRatio";
-    private final static String MA_TEMPLATE = "MoteActivation";
 
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> partiallyEnvProcess;
 
@@ -237,29 +233,12 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
         };
     }
 
-    private static GroundRandomVariable findWirelessInterferenceVariable(LocalProbabilisticNetwork localNetwork) {
+    public static GroundRandomVariable findWirelessInterferenceVariable(LocalProbabilisticNetwork localNetwork) {
         return localNetwork.getGroundRandomVariables()
             .stream()
             .filter(isWITemplate())
             .findFirst()
             .orElseThrow(() -> new RuntimeException("There is no wireless interference template."));
-    }
-
-    private static Predicate<GroundRandomVariable> isWITemplate() {
-        return isMATemplate().or(v -> isSNRTemplate(v))
-            .negate();
-    }
-
-    private static Predicate<GroundRandomVariable> isMATemplate() {
-        return v -> v.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(MA_TEMPLATE);
-    }
-
-    public static boolean isSNRTemplate(GroundRandomVariable variable) {
-        return variable.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(SNR_TEMPLATE);
     }
 
 }

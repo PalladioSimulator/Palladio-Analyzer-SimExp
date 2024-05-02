@@ -8,7 +8,7 @@ import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNe
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.pcm.resourceenvironment.ResourceEnvironment;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
@@ -54,7 +54,7 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
                 InputValue<CategoricalValue> inputValue = snrValue.get();
                 var localNetwork = LocalProbabilisticNetwork.class.cast(inputValue.getVariable()
                     .eContainer());
-                var wiVariable = DeltaIoTEnvironemtalDynamics.findWirelessInterferenceVariable(localNetwork);
+                var wiVariable = DeltaIoTPartiallyEnvDynamics.findWirelessInterferenceVariable(localNetwork);
                 var wirelessInterference = modelAccess.retrieveWirelessInterference(wiVariable,
                         sasState.getPerceivedEnvironmentalState());
                 var newSnrValue = Double.valueOf(inputValue.getValue()

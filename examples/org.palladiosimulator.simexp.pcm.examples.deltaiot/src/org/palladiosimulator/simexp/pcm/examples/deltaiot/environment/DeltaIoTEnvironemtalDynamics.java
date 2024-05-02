@@ -3,12 +3,9 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.environment;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
-import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
-import org.palladiosimulator.envdyn.environment.staticmodel.LocalProbabilisticNetwork;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedInputValues;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivedValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics;
@@ -19,9 +16,6 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class DeltaIoTEnvironemtalDynamics<R> extends DeltaIoTBaseEnvironemtalDynamics<R> {
-    private final static String SNR_TEMPLATE = "SignalToNoiseRatio";
-    private final static String MA_TEMPLATE = "MoteActivation";
-
     public DeltaIoTEnvironemtalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
         super(dbn, modelAccess);
@@ -66,30 +60,5 @@ public class DeltaIoTEnvironemtalDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
             }
 
         };
-    }
-
-    public static GroundRandomVariable findWirelessInterferenceVariable(LocalProbabilisticNetwork localNetwork) {
-        return localNetwork.getGroundRandomVariables()
-            .stream()
-            .filter(isWITemplate())
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("There is no wireless interference template."));
-    }
-
-    public static Predicate<GroundRandomVariable> isWITemplate() {
-        return isMATemplate().or(v -> isSNRTemplate(v))
-            .negate();
-    }
-
-    public static Predicate<GroundRandomVariable> isMATemplate() {
-        return v -> v.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(MA_TEMPLATE);
-    }
-
-    public static boolean isSNRTemplate(GroundRandomVariable variable) {
-        return variable.getInstantiatedTemplate()
-            .getEntityName()
-            .equals(SNR_TEMPLATE);
     }
 }

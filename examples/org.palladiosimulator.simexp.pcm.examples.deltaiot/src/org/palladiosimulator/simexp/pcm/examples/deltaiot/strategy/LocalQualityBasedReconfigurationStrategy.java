@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.toInputs;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics.isSNRTemplate;
 
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -279,7 +279,7 @@ public class LocalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigur
         return toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
             .getValue()).stream()
-                .filter(each -> isSNRTemplate(each.getVariable()))
+                .filter(each -> DeltaIoTBaseEnvironemtalDynamics.isSNRTemplate(each.getVariable()))
                 .collect(toMap(k -> (LinkingResource) k.getVariable()
                     .getAppliedObjects()
                     .get(0), v -> getSNR(v)));
