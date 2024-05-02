@@ -29,27 +29,17 @@ public class SystemConfigurationTracker {
         .toString();
     private final static String FILE_SUFFIX = "Configurations.csv";
 
-    // TODO: remove singleton
-    private static SystemConfigurationTracker instance = null;
-
     private final String strategyId;
     private final List<String> configurations;
     private final SimulationParameters simulationParameters;
 
     private int run;
 
-    private SystemConfigurationTracker(String strategyId, SimulationParameters simulationParameters) {
+    public SystemConfigurationTracker(String strategyId, SimulationParameters simulationParameters) {
         this.strategyId = strategyId;
         this.simulationParameters = simulationParameters;
         this.configurations = Lists.newArrayList();
         this.run = 0;
-    }
-
-    public static SystemConfigurationTracker get(String strategyId, SimulationParameters simulationParameters) {
-        if (instance == null) {
-            instance = new SystemConfigurationTracker(strategyId, simulationParameters);
-        }
-        return instance;
     }
 
     public void registerAndPrintNetworkConfig(SharedKnowledge knowledge) {

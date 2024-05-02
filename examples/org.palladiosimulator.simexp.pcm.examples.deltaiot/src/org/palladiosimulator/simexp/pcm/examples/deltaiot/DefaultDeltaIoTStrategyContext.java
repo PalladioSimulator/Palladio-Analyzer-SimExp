@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -27,9 +28,10 @@ public class DefaultDeltaIoTStrategyContext
 
     public DefaultDeltaIoTStrategyContext(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             QVToReconfigurationManager qvtoReconfigurationManager,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationParameters simulationParameters) {
-        this.strategy = new DeltaIoTDefaultReconfigurationStrategy(reconfParamsRepo, modelAccess, simulationParameters);
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
+            SystemConfigurationTracker systemConfigurationTracker) {
+        this.strategy = new DeltaIoTDefaultReconfigurationStrategy(reconfParamsRepo, modelAccess, simulationParameters,
+                systemConfigurationTracker);
         this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.modelAccess = modelAccess;

@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationPlanner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -25,16 +26,17 @@ public class LocalQualityBasedMAPEKStrategyContext
             PrismSimulatedMeasurementSpec energyConsumptionSpec,
             DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             QVToReconfigurationManager qvtoReconfigurationManager,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationParameters simulationParameters) {
-        this.strategy = DeltaIoTReconfigurationStrategy2.newBuilder(modelAccess, simulationParameters)
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
+            SystemConfigurationTracker systemConfigurationTracker) {
+        this.strategy = DeltaIoTReconfigurationStrategy2
+            .newBuilder(modelAccess, simulationParameters, systemConfigurationTracker)
             .withID("LocalQualityBasedStrategy")
             .andPacketLossSpec(packetLossSpec)
             .andEnergyConsumptionSpec(energyConsumptionSpec)
             .andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo, modelAccess))
             .build();
         this.decoratedContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo, qvtoReconfigurationManager,
-                modelAccess, simulationParameters);
+                modelAccess, simulationParameters, systemConfigurationTracker);
     }
 
     @Override

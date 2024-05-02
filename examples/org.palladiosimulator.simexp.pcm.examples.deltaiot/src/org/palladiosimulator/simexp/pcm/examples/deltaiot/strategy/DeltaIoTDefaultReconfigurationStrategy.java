@@ -33,13 +33,15 @@ public class DeltaIoTDefaultReconfigurationStrategy
     private final ReconfigurationParameterCalculator paramCalculator;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SimulationParameters simulationParameters;
+    private final SystemConfigurationTracker systemConfigurationTracker;
 
     public DeltaIoTDefaultReconfigurationStrategy(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationParameters simulationParameters) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
+            SystemConfigurationTracker systemConfigurationTracker) {
         this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo, modelAccess);
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;
+        this.systemConfigurationTracker = systemConfigurationTracker;
     }
 
     @Override
@@ -57,11 +59,10 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
         addMonitoredEnvironmentValues(state, knowledge);
 
-        var tracker = SystemConfigurationTracker.get(getId(), simulationParameters);
-        tracker.registerAndPrintNetworkConfig(knowledge);
-        if (tracker.isLastRun()) {
-            tracker.saveNetworkConfigs();
-            tracker.resetTrackedValues();
+        systemConfigurationTracker.registerAndPrintNetworkConfig(knowledge);
+        if (systemConfigurationTracker.isLastRun()) {
+            systemConfigurationTracker.saveNetworkConfigs();
+            systemConfigurationTracker.resetTrackedValues();
         }
     }
 

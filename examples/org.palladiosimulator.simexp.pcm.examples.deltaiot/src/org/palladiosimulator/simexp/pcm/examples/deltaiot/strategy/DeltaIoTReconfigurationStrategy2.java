@@ -32,6 +32,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
     public static class DeltaIoTReconfigurationStrategy2Builder {
         private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
         private final SimulationParameters simulationParameters;
+        private final SystemConfigurationTracker systemConfigurationTracker;
 
         private String id;
         private QualityBasedReconfigurationPlanner planner;
@@ -39,9 +40,10 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         private PrismSimulatedMeasurementSpec energyConsumptionSpec;
 
         public DeltaIoTReconfigurationStrategy2Builder(DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-                SimulationParameters simulationParameters) {
+                SimulationParameters simulationParameters, SystemConfigurationTracker systemConfigurationTracker) {
             this.modelAccess = modelAccess;
             this.simulationParameters = simulationParameters;
+            this.systemConfigurationTracker = systemConfigurationTracker;
         }
 
         public DeltaIoTReconfigurationStrategy2Builder withID(String id) {
@@ -75,7 +77,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
             requireNonNull(planner, "Planner is missing.");
 
             return new DeltaIoTReconfigurationStrategy2(id, planner, packetLossSpec, energyConsumptionSpec, modelAccess,
-                    simulationParameters);
+                    simulationParameters, systemConfigurationTracker);
         }
 
     }
@@ -86,23 +88,26 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
     private final PrismSimulatedMeasurementSpec energyConsumptionSpec;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SimulationParameters simulationParameters;
+    private final SystemConfigurationTracker systemConfigurationTracker;
 
     private DeltaIoTReconfigurationStrategy2(String id, QualityBasedReconfigurationPlanner planner,
             PrismSimulatedMeasurementSpec packetLossSpec, PrismSimulatedMeasurementSpec energyConsumptionSpec,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationParameters simulationParameters) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
+            SystemConfigurationTracker systemConfigurationTracker) {
         this.id = id;
         this.planner = planner;
         this.packetLossSpec = packetLossSpec;
         this.energyConsumptionSpec = energyConsumptionSpec;
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;
+        this.systemConfigurationTracker = systemConfigurationTracker;
     }
 
     public static DeltaIoTReconfigurationStrategy2Builder newBuilder(
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-            SimulationParameters simulationParameters) {
-        return new DeltaIoTReconfigurationStrategy2Builder(modelAccess, simulationParameters);
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
+            SystemConfigurationTracker systemConfigurationTracker) {
+        return new DeltaIoTReconfigurationStrategy2Builder(modelAccess, simulationParameters,
+                systemConfigurationTracker);
     }
 
     @Override
@@ -121,11 +126,10 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         addMonitoredEnvironmentValues(state, knowledge);
         addMonitoredQualityValues(state, knowledge);
 
-        var tracker = SystemConfigurationTracker.get(id, simulationParameters);
-        tracker.registerAndPrintNetworkConfig(knowledge);
-        if (tracker.isLastRun()) {
-            tracker.saveNetworkConfigs();
-            tracker.resetTrackedValues();
+        systemConfigurationTracker.registerAndPrintNetworkConfig(knowledge);
+        if (systemConfigurationTracker.isLastRun()) {
+            systemConfigurationTracker.saveNetworkConfigs();
+            systemConfigurationTracker.resetTrackedValues();
         }
     }
 
