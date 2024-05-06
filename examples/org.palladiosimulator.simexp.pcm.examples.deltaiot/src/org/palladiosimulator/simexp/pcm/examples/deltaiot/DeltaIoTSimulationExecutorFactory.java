@@ -28,9 +28,19 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.GlobalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -91,7 +101,7 @@ public class DeltaIoTSimulationExecutorFactory extends
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
-                (PrismSimulatedMeasurementSpec) packetLossSpec);
+                (PrismSimulatedMeasurementSpec) packetLossSpec, modelAccess);
         prismFileUpdaters.add(packetLossUpdater);
         SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(
                 prismSimulatedMeasurementSpec, "EnergyConsumption.prism");
@@ -132,8 +142,9 @@ public class DeltaIoTSimulationExecutorFactory extends
         reconfigurationList.stream()
             .forEach(qvto -> {
                 if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    reconfigurations
-                        .add(new DistributionFactorReconfiguration(qvto, reconfParamsRepo.getDistributionFactors()));
+                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                    reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
+                            reconfParamsRepo.getDistributionFactors()));
                 } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
                     reconfigurations
                         .add(new TransmissionPowerReconfiguration(qvto, reconfParamsRepo.getTransmissionPower()));

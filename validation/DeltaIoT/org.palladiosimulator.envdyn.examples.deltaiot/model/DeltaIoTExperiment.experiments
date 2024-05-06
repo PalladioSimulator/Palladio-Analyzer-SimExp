@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExperimentAutomation.Experiments:ExperimentRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ExperimentAutomation.Experiments="http://palladiosimulator.org/ExperimentAutomation/Experiments/1.0">
+  <experiments id="DeltaIoT" name="DeltaIoT" description="Packet loss und energy analysis">
+    <experimentDesign xsi:type="ExperimentAutomation.Experiments:FullFactorialDesign"/>
+    <responseMeasurement xsi:type="ExperimentAutomation.Experiments:SimulationDurationMeasurement"/>
+    <initialModel>
+      <allocation href="DeltaIotAllocation.allocation#_QYEj8MWHEem8XvI7PKw-OA"/>
+      <eventMiddleWareRepository href="DeltaIoTRepository.repository#_nh3VoMS5Eem6vJHOl6M9XA"/>
+      <reconfigurationRules href="DeltaIoTReconfigurationRules.experiments#/"/>
+      <repository href="DeltaIoTRepository.repository#_nh3VoMS5Eem6vJHOl6M9XA"/>
+      <system href="DeltaIoTSystem.system#_pgtnIMTpEem6vJHOl6M9XA"/>
+      <resourceEnvironment href="DeltaIoTResources.resourceenvironment#/0"/>
+    </initialModel>
+  </experiments>
+</ExperimentAutomation.Experiments:ExperimentRepository>

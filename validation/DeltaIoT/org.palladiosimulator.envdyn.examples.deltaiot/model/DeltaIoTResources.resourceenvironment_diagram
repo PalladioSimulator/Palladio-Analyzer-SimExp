@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:resourceenvironment="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2" xsi:schemaLocation="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2 http://palladiosimulator.org/PalladioComponentModel/5.2#//resourceenvironment" xmi:id="_ECNcgMVxEem8XvI7PKw-OA" type="ResourceEnvironmentModel" measurementUnit="Pixel">
+  <children xmi:type="notation:Shape" xmi:id="_19oSAMVxEem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_19oSAsVxEem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_19oSA8VxEem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_bcVuMMV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcVuMsV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcVuM8V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcWVQMV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcWVQcV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcWVQsV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcWVQ8V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_bcWVRMV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_bcWVRcV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_bcWVRsV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_X1NPcMV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_bcVuMcV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_19oSBMVxEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_19oSBcVxEem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_19oSBsVxEem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_19nq8MVxEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_19oSAcVxEem8XvI7PKw-OA" x="65" y="20" width="141" height="121"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_dCYe8MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_dCYe8sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_dCYe88V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_3f770MV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f770sV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f7708V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f771MV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f771cV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f771sV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f7718V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_3f772MV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_3f772cV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_3f772sV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_1BWZgMV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3f770cV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_dCYe9MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_dCYe9cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_dCYe9sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_dCX34MV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_dCYe8cV9Eem8XvI7PKw-OA" x="335" y="15"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_dfEa8MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_dfEa8sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_dfEa88V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_47CA0MV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA0sV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA08V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA1MV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA1cV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA1sV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA18V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_47CA2MV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_47CA2cV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_47CA2sV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_4Fff8MV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_47CA0cV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_dfEa9MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_dfEa9cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_dfEa9sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_dfDz4MV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_dfEa8cV9Eem8XvI7PKw-OA" x="630" y="20"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_eyhm4MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_eyhm4sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_eyhm48V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_6JQHcMV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQugMV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQugcV9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQugsV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQug8V9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQuhMV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQuhcV9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_6JQuhsV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_6JQuh8V9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_6JQuiMV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_5UwvcMV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6JQHccV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_eyhm5MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_eyhm5cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_eyhm5sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_eyg_0MV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_eyhm4cV9Eem8XvI7PKw-OA" x="900" y="30"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_fE_P4MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_fE_P4sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_fE_P48V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_7arTEMV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTEsV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTE8V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTFMV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTFcV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTFsV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTF8V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_7arTGMV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_7arTGcV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_7arTGsV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_6jkr8MV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_7arTEcV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_fE_P5MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_fE_P5cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_fE_P5sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_fE-o0MV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fE_P4cV9Eem8XvI7PKw-OA" x="1170" y="30"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_fVPSYMV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_fVPSYsV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_fVPSY8V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_8kO8IMV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjMMV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjMcV9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjMsV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjM8V9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjNMV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjNcV9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_8kPjNsV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_8kPjN8V9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_8kPjOMV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_7yYBYMV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_8kO8IcV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_fVPSZMV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_fVPSZcV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_fVPSZsV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_fVOrUMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fVPSYcV9Eem8XvI7PKw-OA" x="65" y="285"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_hr6O0cV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_hr6O08V9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_hr6O1MV9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_9s0U0MV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U0sV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U08V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U1MV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U1cV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U1sV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s0U18V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_9s074MV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_9s074cV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_9s074sV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_87tA8MV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9s0U0cV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_hr6O1cV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_hr6O1sV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_hr614MV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_hr6O0MV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_hr6O0sV9Eem8XvI7PKw-OA" x="345" y="285"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_iScDUMV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_iScDUsV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_iScDU8V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_-1_jYMV9Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jYsV9Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jY8V9Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jZMV9Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jZcV9Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jZsV9Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jZ8V9Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_-1_jaMV9Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_-1_jacV9Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_-1_jasV9Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_-EoX4MV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-1_jYcV9Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_iScDVMV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_iScDVcV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_iScDVsV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_iSbcQMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_iScDUcV9Eem8XvI7PKw-OA" x="630" y="295"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_jheCQMV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_jheCQsV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_jheCQ8V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_Ac7sAMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sAsV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sA8V-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sBMV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sBcV-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sBsV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sB8V-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Ac7sCMV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_Ac7sCcV-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_Ac7sCsV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#__dg2YMV9Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Ac7sAcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_jheCRMV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_jheCRcV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_jheCRsV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_jhdbMMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_jheCQcV9Eem8XvI7PKw-OA" x="900" y="300"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_kNpy0MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_kNpy0sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_kNpy08V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_B7jmIMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmIsV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmI8V-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmJMV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmJcV-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmJsV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmJ8V-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_B7jmKMV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_B7jmKcV-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_B7jmKsV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_A-Kw0MV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_B7jmIcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_kNpy1MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_kNpy1cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_kNpy1sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_kNpLwMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kNpy0cV9Eem8XvI7PKw-OA" x="1180" y="300"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_k1AtwMV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_k1AtwsV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_k1Atw8V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_DU27YMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27YsV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27Y8V-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27ZMV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27ZcV-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27ZsV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27Z8V-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_DU27aMV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_DU27acV-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_DU27asV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_Ce6K0MV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DU27YcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_k1AtxMV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_k1AtxcV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_k1AtxsV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_k1AGsMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_k1AtwcV9Eem8XvI7PKw-OA" x="70" y="570"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_lddN0MV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_lddN0sV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_lddN08V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_Em7nQMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nQsV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nQ8V-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nRMV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nRcV-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nRsV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nR8V-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_Em7nSMV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_Em7nScV-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_Em7nSsV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_DxJ10MV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Em7nQcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_lddN1MV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_lddN1cV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_lddN1sV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_ldcmwMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_lddN0cV9Eem8XvI7PKw-OA" x="360" y="570"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_mHQYwcV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_mHQYw8V9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_mHQ_0MV9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_GIFQ8MV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4AMV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4AcV-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4AsV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4A8V-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4BMV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4BcV-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_GIF4BsV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_GIF4B8V-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_GIF4CMV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_FNxk0MV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GIFQ8cV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_mHQ_0cV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_mHQ_0sV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_mHQ_08V9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_mHQYwMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_mHQYwsV9Eem8XvI7PKw-OA" x="630" y="570"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_new-QcV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_new-Q8V9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_nexlUMV9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_HVkXwMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-0MV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-0cV-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-0sV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-08V-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-1MV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-1cV-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_HVk-1sV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_HVk-18V-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_HVk-2MV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_Gh2b0MV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_HVkXwcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_nexlUcV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_nexlUsV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_nexlU8V9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_new-QMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_new-QsV9Eem8XvI7PKw-OA" x="905" y="570"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_oJfWQMV9Eem8XvI7PKw-OA" type="2004" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_oJfWQsV9Eem8XvI7PKw-OA" type="5019"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_oJfWQ8V9Eem8XvI7PKw-OA" type="7004">
+      <children xmi:type="notation:Shape" xmi:id="_IuOMwMV-Eem8XvI7PKw-OA" type="3003" fontName="Segoe UI">
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMwsV-Eem8XvI7PKw-OA" type="5013"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMw8V-Eem8XvI7PKw-OA" type="5014"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMxMV-Eem8XvI7PKw-OA" type="5015"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMxcV-Eem8XvI7PKw-OA" type="5016"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMxsV-Eem8XvI7PKw-OA" type="5017"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMx8V-Eem8XvI7PKw-OA" type="5018"/>
+        <children xmi:type="notation:DecorationNode" xmi:id="_IuOMyMV-Eem8XvI7PKw-OA" type="7005">
+          <styles xmi:type="notation:SortingStyle" xmi:id="_IuOMycV-Eem8XvI7PKw-OA"/>
+          <styles xmi:type="notation:FilteringStyle" xmi:id="_IuOMysV-Eem8XvI7PKw-OA"/>
+        </children>
+        <element xmi:type="resourceenvironment:ProcessingResourceSpecification" href="DeltaIoTResources.resourceenvironment#_H8U1wMV-Eem8XvI7PKw-OA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_IuOMwcV-Eem8XvI7PKw-OA"/>
+      </children>
+      <styles xmi:type="notation:SortingStyle" xmi:id="_oJfWRMV9Eem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_oJfWRcV9Eem8XvI7PKw-OA"/>
+    </children>
+    <children xmi:type="notation:DecorationNode" xmi:id="_oJfWRsV9Eem8XvI7PKw-OA" type="7007"/>
+    <element xmi:type="resourceenvironment:ResourceContainer" href="DeltaIoTResources.resourceenvironment#_oJevMMV9Eem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_oJfWQcV9Eem8XvI7PKw-OA" x="1180" y="570"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_AHaRgMWKEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_AHa4kMWKEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_AHbfoMWKEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_AHbfocWKEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_AHbfosWKEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_-wdssMWJEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_AHaRgcWKEem8XvI7PKw-OA" x="85" y="835"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_6hoQkMWQEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_6ho3oMWQEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_6ho3ocWQEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_6ho3osWQEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_6ho3o8WQEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_55XWsMWQEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_6hoQkcWQEem8XvI7PKw-OA" x="250" y="840"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_I9YTAMWSEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_I9Y6EMWSEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_I9Y6EcWSEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_I9Y6EsWSEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_I9Y6E8WSEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_IXND0MWSEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_I9YTAcWSEem8XvI7PKw-OA" x="420" y="845"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_P571cMWSEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_P571csWSEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_P571c8WSEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_P571dMWSEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_P571dcWSEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_O51DUMWSEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_P571ccWSEem8XvI7PKw-OA" x="590" y="845"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_up-bMMWSEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_up-bMsWSEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_up-bM8WSEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_up-bNMWSEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_up-bNcWSEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_t4JVoMWSEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_up-bMcWSEem8XvI7PKw-OA" x="735" y="850"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_3bi-gMWSEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_3bi-gsWSEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_3bi-g8WSEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_3bi-hMWSEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_3bi-hcWSEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_2xD3EMWSEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3bi-gcWSEem8XvI7PKw-OA" x="875" y="855"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_-fMncMWSEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_-fMncsWSEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_-fMnc8WSEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_-fMndMWSEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_-fMndcWSEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_96v2kMWSEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_-fMnccWSEem8XvI7PKw-OA" x="1020" y="855"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_FuITUMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_FuITUsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_FuITU8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_FuITVMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_FuITVcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_FQkNkMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_FuITUcWTEem8XvI7PKw-OA" x="1170" y="855"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_NHvlMMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_NHvlMsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_NHwMQMWTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_NHwMQcWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_NHwMQsWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_MqV3gMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_NHvlMcWTEem8XvI7PKw-OA" x="85" y="1035"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_SCNUEMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_SCN7IMWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_SCN7IcWTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_SCN7IsWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_SCN7I8WTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_RkgrcMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_SCNUEcWTEem8XvI7PKw-OA" x="260" y="1035"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_ZDXCoMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_ZDXCosWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_ZDXCo8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_ZDXCpMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_ZDXCpcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_Yi0hYMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ZDXCocWTEem8XvI7PKw-OA" x="425" y="1040"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_fWU1gMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_fWU1gsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_fWU1g8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_fWU1hMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_fWU1hcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_e2HEYMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_fWU1gcWTEem8XvI7PKw-OA" x="590" y="1045"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_kqk9YMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_kqk9YsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_kqk9Y8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_kqk9ZMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_kqk9ZcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_kPLa0MWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_kqk9YcWTEem8XvI7PKw-OA" x="740" y="1045"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_ogKH0MWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_ogKH0sWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_ogKH08WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_ogKH1MWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_ogKH1cWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_oDy78MWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_ogKH0cWTEem8XvI7PKw-OA" x="885" y="1050"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_sul3IMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_sul3IsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_sul3I8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_sul3JMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_sul3JcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_sWqfUMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_sul3IcWTEem8XvI7PKw-OA" x="1035" y="1055"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_02J0IMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_02J0IsWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_02J0I8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_02J0JMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_02J0JcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_0QjzwMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_02J0IcWTEem8XvI7PKw-OA" x="1190" y="1055"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_9iRPsMWTEem8XvI7PKw-OA" type="2005" fontName="Segoe UI">
+    <children xmi:type="notation:DecorationNode" xmi:id="_9iRPssWTEem8XvI7PKw-OA" type="5024"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_9iRPs8WTEem8XvI7PKw-OA" type="7006">
+      <styles xmi:type="notation:SortingStyle" xmi:id="_9iRPtMWTEem8XvI7PKw-OA"/>
+      <styles xmi:type="notation:FilteringStyle" xmi:id="_9iRPtcWTEem8XvI7PKw-OA"/>
+    </children>
+    <element xmi:type="resourceenvironment:LinkingResource" href="DeltaIoTResources.resourceenvironment#_9BF1QMWTEem8XvI7PKw-OA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_9iRPscWTEem8XvI7PKw-OA" x="1320" y="865"/>
+  </children>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_ECNcgcVxEem8XvI7PKw-OA"/>
+  <element xmi:type="resourceenvironment:ResourceEnvironment" href="DeltaIoTResources.resourceenvironment#/"/>
+  <edges xmi:type="notation:Connector" xmi:id="_6hsiAMWQEem8XvI7PKw-OA" type="4003" source="_AHaRgMWKEem8XvI7PKw-OA" target="_k1AtwMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_6hsiAcWQEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6hsiAsWQEem8XvI7PKw-OA" points="[17, -89, -29, 140]$[20, -104, -26, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_6hsiA8WQEem8XvI7PKw-OA" type="4003" source="_AHaRgMWKEem8XvI7PKw-OA" target="_mHQYwcV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_6hsiBMWQEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_6hsiBcWQEem8XvI7PKw-OA" points="[64, -24, -542, 205]$[481, -182, -125, 47]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_I9bWUMWSEem8XvI7PKw-OA" type="4003" source="_6hoQkMWQEem8XvI7PKw-OA" target="_lddN0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_I9bWUcWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_I9bWUsWSEem8XvI7PKw-OA" points="[64, -88, -107, 146]$[79, -109, -92, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_I9bWU8WSEem8XvI7PKw-OA" type="4003" source="_6hoQkMWQEem8XvI7PKw-OA" target="_new-QcV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_I9bWVMWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_I9bWVcWSEem8XvI7PKw-OA" points="[64, -21, -652, 213]$[591, -194, -125, 40]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_P5-4wMWSEem8XvI7PKw-OA" type="4003" source="_I9YTAMWSEem8XvI7PKw-OA" target="_lddN0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_P5-4wcWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_P5-4wsWSEem8XvI7PKw-OA" points="[1, -89, 0, 150]$[0, -114, -1, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_P5-4w8WSEem8XvI7PKw-OA" type="4003" source="_I9YTAMWSEem8XvI7PKw-OA" target="_oJfWQMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_P5-4xMWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_P5-4xcWSEem8XvI7PKw-OA" points="[64, -19, -757, 220]$[696, -203, -125, 36]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_uqD6wMWSEem8XvI7PKw-OA" type="4003" source="_P571cMWSEem8XvI7PKw-OA" target="_k1AtwMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_uqD6wcWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_uqD6wsWSEem8XvI7PKw-OA" points="[-64, -33, 395, 206]$[-334, -174, 125, 65]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_uqD6w8WSEem8XvI7PKw-OA" type="4003" source="_P571cMWSEem8XvI7PKw-OA" target="_hr6O0cV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_uqD6xMWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_uqD6xcWSEem8XvI7PKw-OA" points="[-32, -89, 152, 435]$[-141, -399, 43, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_3bmo4MWSEem8XvI7PKw-OA" type="4003" source="_up-bMMWSEem8XvI7PKw-OA" target="_lddN0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_3bmo4cWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3bmo4sWSEem8XvI7PKw-OA" points="[-64, -50, 250, 194]$[-189, -147, 125, 97]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_3bnP8MWSEem8XvI7PKw-OA" type="4003" source="_up-bMMWSEem8XvI7PKw-OA" target="_hr6O0cV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_3bnP8cWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3bnP8sWSEem8XvI7PKw-OA" points="[-56, -89, 273, 440]$[-252, -404, 77, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_-fQ44MWSEem8XvI7PKw-OA" type="4003" source="_3bi-gMWSEem8XvI7PKw-OA" target="_lddN0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_-fQ44cWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_-fQ44sWSEem8XvI7PKw-OA" points="[-64, -35, 390, 214]$[-329, -181, 125, 68]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_-fQ448WSEem8XvI7PKw-OA" type="4003" source="_3bi-gMWSEem8XvI7PKw-OA" target="_dfEa8MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_-fQ45MWSEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_-fQ45cWSEem8XvI7PKw-OA" points="[-21, -89, 163, 710]$[-156, -674, 28, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_FuKvkMWTEem8XvI7PKw-OA" type="4003" source="_-fMncMWSEem8XvI7PKw-OA" target="_dfEa8MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_FuKvkcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_FuKvksWTEem8XvI7PKw-OA" points="[-37, -89, 292, 710]$[-278, -674, 51, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_FuLWoMWTEem8XvI7PKw-OA" type="4003" source="_-fMncMWSEem8XvI7PKw-OA" target="_hr6O0cV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_FuLWocWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_FuLWosWTEem8XvI7PKw-OA" points="[-64, -56, 550, 478]$[-489, -426, 125, 108]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_NHyogMWTEem8XvI7PKw-OA" type="4003" source="_FuITUMWTEem8XvI7PKw-OA" target="_dCYe8MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_NHyogcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_NHyogsWTEem8XvI7PKw-OA" points="[-64, -67, 710, 737]$[-654, -679, 120, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_NHz2oMWTEem8XvI7PKw-OA" type="4003" source="_FuITUMWTEem8XvI7PKw-OA" target="_hr6O0cV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_NHz2ocWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_NHz2osWTEem8XvI7PKw-OA" points="[-64, -45, 700, 489]$[-639, -447, 125, 87]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_SCQXYMWTEem8XvI7PKw-OA" type="4003" source="_NHvlMMWTEem8XvI7PKw-OA" target="_dCYe8MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_SCQXYcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_SCQXYsWTEem8XvI7PKw-OA" points="[28, -89, -283, 895]$[271, -859, -40, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_SCSMkMWTEem8XvI7PKw-OA" type="4003" source="_NHvlMMWTEem8XvI7PKw-OA" target="_eyhm4MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_SCSMkcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_SCSMksWTEem8XvI7PKw-OA" points="[64, -71, -812, 898]$[763, -844, -113, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_ZDZe4MWTEem8XvI7PKw-OA" type="4003" source="_SCNUEMWTEem8XvI7PKw-OA" target="_19oSAMVxEem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_ZDZe4cWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ZDZe4sWTEem8XvI7PKw-OA" points="[-13, -89, 121, 890]$[-117, -854, 17, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_ZDZe48WTEem8XvI7PKw-OA" type="4003" source="_SCNUEMWTEem8XvI7PKw-OA" target="_dfEa8MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_ZDZe5MWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ZDZe5cWTEem8XvI7PKw-OA" points="[39, -89, -392, 890]$[375, -854, -56, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_fWXRwMWTEem8XvI7PKw-OA" type="4003" source="_ZDXCoMWTEem8XvI7PKw-OA" target="_19oSAMVxEem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_fWXRwcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_fWXRwsWTEem8XvI7PKw-OA" points="[-28, -89, 271, 895]$[-262, -859, 37, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_fWX40MWTEem8XvI7PKw-OA" type="4003" source="_ZDXCoMWTEem8XvI7PKw-OA" target="_iScDUMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_fWX40cWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_fWX40sWTEem8XvI7PKw-OA" points="[33, -89, -233, 620]$[219, -584, -47, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_kqnZoMWTEem8XvI7PKw-OA" type="4003" source="_fWU1gMWTEem8XvI7PKw-OA" target="_19oSAMVxEem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_kqnZocWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_kqnZosWTEem8XvI7PKw-OA" points="[-42, -89, 422, 900]$[-406, -864, 58, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_kqoAsMWTEem8XvI7PKw-OA" type="4003" source="_fWU1gMWTEem8XvI7PKw-OA" target="_eyhm4MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_kqoAscWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_kqoAssWTEem8XvI7PKw-OA" points="[33, -89, -338, 890]$[323, -854, -48, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_ogMkEMWTEem8XvI7PKw-OA" type="4003" source="_kqk9YMWTEem8XvI7PKw-OA" target="_19oSAMVxEem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_ogMkEcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ogMkEsWTEem8XvI7PKw-OA" points="[-56, -89, 558, 900]$[-537, -864, 77, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_ogNLIMWTEem8XvI7PKw-OA" type="4003" source="_kqk9YMWTEem8XvI7PKw-OA" target="_jheCQMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_ogNLIcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_ogNLIsWTEem8XvI7PKw-OA" points="[27, -89, -194, 620]$[182, -584, -39, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_suoTYMWTEem8XvI7PKw-OA" type="4003" source="_ogKH0MWTEem8XvI7PKw-OA" target="_eyhm4MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_suoTYcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_suoTYsWTEem8XvI7PKw-OA" points="[6, -89, -70, 895]$[66, -859, -10, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_suo6cMWTEem8XvI7PKw-OA" type="4003" source="_ogKH0MWTEem8XvI7PKw-OA" target="_fVPSYMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_suo6ccWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_suo6csWTEem8XvI7PKw-OA" points="[-64, -62, 695, 667]$[-634, -609, 125, 120]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_02PTsMWTEem8XvI7PKw-OA" type="4003" source="_sul3IMWTEem8XvI7PKw-OA" target="_kNpy0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_02PTscWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_02PTssWTEem8XvI7PKw-OA" points="[25, -89, -181, 630]$[170, -594, -36, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_9iU6EMWTEem8XvI7PKw-OA" type="4003" source="_sul3IMWTEem8XvI7PKw-OA" target="_fVPSYMV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_9iU6EcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_9iU6EsWTEem8XvI7PKw-OA" points="[-64, -52, 845, 682]$[-784, -633, 125, 101]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_9iVhIMWTEem8XvI7PKw-OA" type="4003" source="_02J0IMWTEem8XvI7PKw-OA" target="_kNpy0MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_9iVhIcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_9iVhIsWTEem8XvI7PKw-OA" points="[6, -89, -45, 630]$[42, -594, -9, 125]"/>
+  </edges>
+  <edges xmi:type="notation:Connector" xmi:id="_9iWIMMWTEem8XvI7PKw-OA" type="4003" source="_02J0IMWTEem8XvI7PKw-OA" target="_fE_P4MV9Eem8XvI7PKw-OA">
+    <styles xmi:type="notation:FontStyle" xmi:id="_9iWIMcWTEem8XvI7PKw-OA" fontName="Segoe UI"/>
+    <element xsi:nil="true"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_9iWIMsWTEem8XvI7PKw-OA" points="[3, -89, -38, 900]$[35, -864, -6, 125]"/>
+  </edges>
+</notation:Diagram>
