@@ -40,16 +40,17 @@ import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrate
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTReconfigurationParamsLoader;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.EnergyConsumptionPrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.GlobalQualityBasedReconfigurationStrategy;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.PacketLossPrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.GlobalQualityBasedReconfigurationStrategy;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -108,7 +109,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(specs, "PacketLoss.prism");
         PacketLossPrismFileUpdater<QVTOReconfigurator> packetLossUpdater = new PacketLossPrismFileUpdater<>(
-                (PrismSimulatedMeasurementSpec) packetLossSpec);
+                (PrismSimulatedMeasurementSpec) packetLossSpec, modelAccess);
         prismFileUpdaters.add(packetLossUpdater);
         SimulatedMeasurementSpecification energyConsumptionSpec = findPrismMeasurementSpec(specs,
                 "EnergyConsumption.prism");
@@ -156,8 +157,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory extends
         reconfigurationList.stream()
             .forEach(qvto -> {
                 if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    reconfigurations
-                        .add(new DistributionFactorReconfiguration(qvto, reconfParamsRepo.getDistributionFactors()));
+                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                    reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
+                            reconfParamsRepo.getDistributionFactors()));
                 } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
                     reconfigurations
                         .add(new TransmissionPowerReconfiguration(qvto, reconfParamsRepo.getTransmissionPower()));

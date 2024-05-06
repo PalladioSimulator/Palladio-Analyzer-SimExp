@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:emfprofileapplication="http://www.modelversioning.org/emfprofile/application/1.1" xmlns:myprofile="InstantiationTag" xmlns:resourceenvironment="http://palladiosimulator.org/PalladioComponentModel/ResourceEnvironment/5.2">
+  <resourceenvironment:ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_-wdssMWJEem8XvI7PKw-OA" entityName="Unicast13to11" connectedResourceContainers_LinkingResource="_k1AGsMV9Eem8XvI7PKw-OA _mHQYwMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_-weTwMWJEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_55XWsMWQEem8XvI7PKw-OA" entityName="Unicast14to12" connectedResourceContainers_LinkingResource="_ldcmwMV9Eem8XvI7PKw-OA _new-QMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_55XWscWQEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_IXND0MWSEem8XvI7PKw-OA" entityName="Unicast15to12" connectedResourceContainers_LinkingResource="_ldcmwMV9Eem8XvI7PKw-OA _oJevMMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_IXNq4MWSEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_O51DUMWSEem8XvI7PKw-OA" entityName="Unicast11to7" connectedResourceContainers_LinkingResource="_k1AGsMV9Eem8XvI7PKw-OA _hr6O0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_O51qYMWSEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_t4JVoMWSEem8XvI7PKw-OA" entityName="Unicast12to7" connectedResourceContainers_LinkingResource="_ldcmwMV9Eem8XvI7PKw-OA _hr6O0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_t4JVocWSEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_2xD3EMWSEem8XvI7PKw-OA" entityName="Unicast12to3" connectedResourceContainers_LinkingResource="_ldcmwMV9Eem8XvI7PKw-OA _dfDz4MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_2xD3EcWSEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_96v2kMWSEem8XvI7PKw-OA" entityName="Unicast7to3" connectedResourceContainers_LinkingResource="_dfDz4MV9Eem8XvI7PKw-OA _hr6O0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_96v2kcWSEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_FQkNkMWTEem8XvI7PKw-OA" entityName="Unicast7to2" connectedResourceContainers_LinkingResource="_dCX34MV9Eem8XvI7PKw-OA _hr6O0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_FQkNkcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_MqV3gMWTEem8XvI7PKw-OA" entityName="Unicast2to4" connectedResourceContainers_LinkingResource="_dCX34MV9Eem8XvI7PKw-OA _eyg_0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_MqV3gcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_RkgrcMWTEem8XvI7PKw-OA" entityName="Unicast3to1" connectedResourceContainers_LinkingResource="_19nq8MVxEem8XvI7PKw-OA _dfDz4MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_RkgrccWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_Yi0hYMWTEem8XvI7PKw-OA" entityName="Unicast8to1" connectedResourceContainers_LinkingResource="_19nq8MVxEem8XvI7PKw-OA _iSbcQMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_Yi0hYcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_e2HEYMWTEem8XvI7PKw-OA" entityName="Unicast4to1" connectedResourceContainers_LinkingResource="_19nq8MVxEem8XvI7PKw-OA _eyg_0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_e2HEYcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_kPLa0MWTEem8XvI7PKw-OA" entityName="Unicast9to1" connectedResourceContainers_LinkingResource="_19nq8MVxEem8XvI7PKw-OA _jhdbMMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_kPLa0cWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_oDy78MWTEem8XvI7PKw-OA" entityName="Unicast6to4" connectedResourceContainers_LinkingResource="_eyg_0MV9Eem8XvI7PKw-OA _fVOrUMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_oDzjAMWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_sWqfUMWTEem8XvI7PKw-OA" entityName="Unicast10to6" connectedResourceContainers_LinkingResource="_kNpLwMV9Eem8XvI7PKw-OA _fVOrUMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_sWqfUcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_0QjzwMWTEem8XvI7PKw-OA" entityName="Unicast10to5" connectedResourceContainers_LinkingResource="_kNpLwMV9Eem8XvI7PKw-OA _fE-o0MV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_0Qka0MWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <linkingResources__ResourceEnvironment id="_9BF1QMWTEem8XvI7PKw-OA" entityName="Unicast5to9" connectedResourceContainers_LinkingResource="_fE-o0MV9Eem8XvI7PKw-OA _jhdbMMV9Eem8XvI7PKw-OA">
+      <communicationLinkResourceSpecifications_LinkingResource id="_9BF1QcWTEem8XvI7PKw-OA">
+        <communicationLinkResourceType_CommunicationLinkResourceSpecification href="DeltaIoTResourcetype.resourcetype#_3xODo8V-Eem8XvI7PKw-OA"/>
+        <latency_CommunicationLinkResourceSpecification specification="0"/>
+        <throughput_CommunicationLinkResourceSpecification specification="300 * 10^3&#xD;&#xA;"/>
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_19nq8MVxEem8XvI7PKw-OA" entityName="LoraNode1">
+      <activeResourceSpecifications_ResourceContainer id="_X1NPcMV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_dCX34MV9Eem8XvI7PKw-OA" entityName="LoraNode2">
+      <activeResourceSpecifications_ResourceContainer id="_1BWZgMV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_dfDz4MV9Eem8XvI7PKw-OA" entityName="LoraNode3">
+      <activeResourceSpecifications_ResourceContainer id="_4Fff8MV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_eyg_0MV9Eem8XvI7PKw-OA" entityName="LoraNode4">
+      <activeResourceSpecifications_ResourceContainer id="_5UwvcMV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_fE-o0MV9Eem8XvI7PKw-OA" entityName="LoraNode5">
+      <activeResourceSpecifications_ResourceContainer id="_6jkr8MV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_fVOrUMV9Eem8XvI7PKw-OA" entityName="LoraNode6">
+      <activeResourceSpecifications_ResourceContainer id="_7yYBYMV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_hr6O0MV9Eem8XvI7PKw-OA" entityName="LoraNode7">
+      <activeResourceSpecifications_ResourceContainer id="_87tA8MV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_iSbcQMV9Eem8XvI7PKw-OA" entityName="LoraNode8">
+      <activeResourceSpecifications_ResourceContainer id="_-EoX4MV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_jhdbMMV9Eem8XvI7PKw-OA" entityName="LoraNode9">
+      <activeResourceSpecifications_ResourceContainer id="__dg2YMV9Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_kNpLwMV9Eem8XvI7PKw-OA" entityName="LoraNode10">
+      <activeResourceSpecifications_ResourceContainer id="_A-Kw0MV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_k1AGsMV9Eem8XvI7PKw-OA" entityName="LoraNode11">
+      <activeResourceSpecifications_ResourceContainer id="_Ce6K0MV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_ldcmwMV9Eem8XvI7PKw-OA" entityName="LoraNode12">
+      <activeResourceSpecifications_ResourceContainer id="_DxJ10MV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_mHQYwMV9Eem8XvI7PKw-OA" entityName="LoraNode13">
+      <activeResourceSpecifications_ResourceContainer id="_FNxk0MV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_new-QMV9Eem8XvI7PKw-OA" entityName="LoraNode14">
+      <activeResourceSpecifications_ResourceContainer id="_Gh2b0MV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment id="_oJevMMV9Eem8XvI7PKw-OA" entityName="LoraNode15">
+      <activeResourceSpecifications_ResourceContainer id="_H8U1wMV-Eem8XvI7PKw-OA">
+        <schedulingPolicy href="pathmap://PCM_MODELS/Palladio.resourcetype#ProcessorSharing"/>
+        <activeResourceType_ActiveResourceSpecification href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        <processingRate_ProcessingResourceSpecification specification="32 * 10^6"/>
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+  </resourceenvironment:ResourceEnvironment>
+  <emfprofileapplication:ProfileApplication>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_kPLa0MWTEem8XvI7PKw-OA" taggedValue="9to1Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_9BF1QMWTEem8XvI7PKw-OA" taggedValue="5to9Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_RkgrcMWTEem8XvI7PKw-OA" taggedValue="3to1Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_Yi0hYMWTEem8XvI7PKw-OA" taggedValue="8to1Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_e2HEYMWTEem8XvI7PKw-OA" taggedValue="4to1Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_-wdssMWJEem8XvI7PKw-OA" taggedValue="13to11Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_55XWsMWQEem8XvI7PKw-OA" taggedValue="14to12Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_IXND0MWSEem8XvI7PKw-OA" taggedValue="15to12Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_O51DUMWSEem8XvI7PKw-OA" taggedValue="11to7Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_t4JVoMWSEem8XvI7PKw-OA" taggedValue="12to7Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_2xD3EMWSEem8XvI7PKw-OA" taggedValue="12to3Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_96v2kMWSEem8XvI7PKw-OA" taggedValue="7to3Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_FQkNkMWTEem8XvI7PKw-OA" taggedValue="7to2Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_MqV3gMWTEem8XvI7PKw-OA" taggedValue="2to4Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_oDy78MWTEem8XvI7PKw-OA" taggedValue="6to4Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_sWqfUMWTEem8XvI7PKw-OA" taggedValue="10to6Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_0QjzwMWTEem8XvI7PKw-OA" taggedValue="10to5Link">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_BPv0UMr1EemPmcCIsj28kQ"/>
+      <templateGroup href="DeltaIoTTemplateVariables.templatevariable#//@templateGroups.0"/>
+    </stereotypeApplications>
+    <importedProfiles nsURI="InstantiationTag" location="platform:/plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram"/>
+  </emfprofileapplication:ProfileApplication>
+</xmi:XMI>

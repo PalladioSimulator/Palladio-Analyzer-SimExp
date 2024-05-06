@@ -3,7 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Deltaiot
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot
+Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.process,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.util
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.apache.log4j;bundle-version="1.2.15",

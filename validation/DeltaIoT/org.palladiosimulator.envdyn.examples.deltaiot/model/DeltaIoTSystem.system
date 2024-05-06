@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:composition="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2" xmlns:emfprofileapplication="http://www.modelversioning.org/emfprofile/application/1.1" xmlns:myprofile="InstantiationTag" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/2.2" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2">
+  <system:System id="_pgtnIMTpEem6vJHOl6M9XA" entityName="DeltaIoTSystem">
+    <assemblyContexts__ComposedStructure id="_rh4NoMTpEem6vJHOl6M9XA" entityName="Gateway1Instance">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_Nj2okMTGEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_t_dDUMTpEem6vJHOl6M9XA" entityName="ST3to1">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_cd24AMTtEem6vJHOl6M9XA" entityName="TemperatureSensor3">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower3to1"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_9shcUMTtEem6vJHOl6M9XA" entityName="PassiveInfraredSensor8">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower8to1"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_BL_M0MTuEem6vJHOl6M9XA" entityName="ST8to1">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_KE9Q0MVrEem8XvI7PKw-OA" entityName="ST9to1">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_efL5UMVrEem8XvI7PKw-OA" entityName="TemperatureSensor9">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower9to1"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_shdhQMVrEem8XvI7PKw-OA" entityName="ST4to1">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_ys03UMVrEem8XvI7PKw-OA" entityName="PassiveInfraredSensor4">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower4to1"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_7iTqQMVrEem8XvI7PKw-OA" entityName="PassiveInfraredSensor10">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower10to6"/>
+      </configParameterUsages__AssemblyContext>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower10to5"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_ELpeoMVsEem8XvI7PKw-OA" entityName="DT10to6_5">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_sFgc8MTaEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_TzjAkMVsEem8XvI7PKw-OA" entityName="RFIDSensor5">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower5to9"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_ebvHQMVsEem8XvI7PKw-OA" entityName="ST5to9">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_uUhk4MVsEem8XvI7PKw-OA" entityName="TemperatureSensor6">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower6to4"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_1avZoMVsEem8XvI7PKw-OA" entityName="ST6to4">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_a37z4MVtEem8XvI7PKw-OA" entityName="RFIDSensor7">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower7to3"/>
+      </configParameterUsages__AssemblyContext>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower7to2"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_ymkMYMVtEem8XvI7PKw-OA" entityName="ST2to4">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_qjREUMVtEem8XvI7PKw-OA" entityName="PassiveInfraredSensor2">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower2to4"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_IHglUMVuEem8XvI7PKw-OA" entityName="DT7to3_2">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_gw6rMMooEem4ZN5Unn2ciQ"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_btcqIMVuEem8XvI7PKw-OA" entityName="RFIDSensor11">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower11to7"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_fnNxAMVuEem8XvI7PKw-OA" entityName="PassiveInfraredSensor13">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower13to11"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_oXbpcMVuEem8XvI7PKw-OA" entityName="RFIDSensor12">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower12to7"/>
+      </configParameterUsages__AssemblyContext>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower12to3"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_1qCH8MVuEem8XvI7PKw-OA" entityName="PassiveInfraredSensor14">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower14to12"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_5Y_F8MVuEem8XvI7PKw-OA" entityName="TemperatureSensor15">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_GlEvAMS6Eem6vJHOl6M9XA"/>
+      <configParameterUsages__AssemblyContext>
+        <variableCharacterisation_VariableUsage type="VALUE">
+          <specification_VariableCharacterisation specification="15"/>
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xsi:type="stoex:VariableReference" referenceName="TransmissionPower15to12"/>
+      </configParameterUsages__AssemblyContext>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_-WaCMMVuEem8XvI7PKw-OA" entityName="ST15to12">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_D5PYoMVvEem8XvI7PKw-OA" entityName="ST14to12">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_TBd8AMVvEem8XvI7PKw-OA" entityName="DT12to3_7">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_KS5BkMTbEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_dDR_MMVvEem8XvI7PKw-OA" entityName="ST11to7">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <assemblyContexts__ComposedStructure id="_jcTWwMVvEem8XvI7PKw-OA" entityName="ST13to11">
+      <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="DeltaIoTRepository.repository#_RS_YgMThEem6vJHOl6M9XA"/>
+    </assemblyContexts__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_2L8jpsTpEem6vJHOl6M9XA" entityName="SingleTransmitterToGateway1" requiringAssemblyContext_AssemblyConnector="_t_dDUMTpEem6vJHOl6M9XA" providingAssemblyContext_AssemblyConnector="_rh4NoMTpEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_2RdOMMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_hxkNVsTtEem6vJHOl6M9XA" entityName="Temparature3ToSingleTransmitter" requiringAssemblyContext_AssemblyConnector="_cd24AMTtEem6vJHOl6M9XA" providingAssemblyContext_AssemblyConnector="_t_dDUMTpEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_Oe-F1sTuEem6vJHOl6M9XA" entityName="SingleTransmitterToGateway1" requiringAssemblyContext_AssemblyConnector="_BL_M0MTuEem6vJHOl6M9XA" providingAssemblyContext_AssemblyConnector="_rh4NoMTpEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_2RdOMMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_ca-RNsTvEem6vJHOl6M9XA" entityName="Infrared8ToSingleTransmitter" requiringAssemblyContext_AssemblyConnector="_9shcUMTtEem6vJHOl6M9XA" providingAssemblyContext_AssemblyConnector="_BL_M0MTuEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_XurO0MVrEem8XvI7PKw-OA" entityName="Connector ST9to1 -> Gateway1Instance" requiringAssemblyContext_AssemblyConnector="_KE9Q0MVrEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_rh4NoMTpEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_2RdOMMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_l85BAMVrEem8XvI7PKw-OA" entityName="Connector TemperatureSensor9 -> ST9to1" requiringAssemblyContext_AssemblyConnector="_efL5UMVrEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_KE9Q0MVrEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_yGcMwMVrEem8XvI7PKw-OA" entityName="Connector ST4to1 -> Gateway1Instance" requiringAssemblyContext_AssemblyConnector="_shdhQMVrEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_rh4NoMTpEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_2RdOMMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_3VY94MVrEem8XvI7PKw-OA" entityName="Connector PassiveInfraredSensor4 -> ST4to1" requiringAssemblyContext_AssemblyConnector="_ys03UMVrEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_shdhQMVrEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_k5dYoMVsEem8XvI7PKw-OA" entityName="Connector RFIDSensor5 -> ST5to9" requiringAssemblyContext_AssemblyConnector="_TzjAkMVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_ebvHQMVsEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_mUnvEMVsEem8XvI7PKw-OA" entityName="Connector ST5to9 -> TemperatureSensor9" requiringAssemblyContext_AssemblyConnector="_ebvHQMVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_efL5UMVrEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_qMbHEMVsEem8XvI7PKw-OA" entityName="Connector DT10to6_5 -> RFIDSensor5" requiringAssemblyContext_AssemblyConnector="_ELpeoMVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_TzjAkMVsEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_ydncQMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_rXRwoMVsEem8XvI7PKw-OA" entityName="Connector PassiveInfraredSensor10 -> DT10to6_5" requiringAssemblyContext_AssemblyConnector="_7iTqQMVrEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_ELpeoMVsEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_azVfoMTcEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_0knC4MVsEem8XvI7PKw-OA" entityName="Connector DT10to6_5 -> TemperatureSensor6" requiringAssemblyContext_AssemblyConnector="_ELpeoMVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_uUhk4MVsEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_vdR3wMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_7mslkMVsEem8XvI7PKw-OA" entityName="Connector TemperatureSensor6 -> ST6to4" requiringAssemblyContext_AssemblyConnector="_uUhk4MVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_1avZoMVsEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_8J3kEMVsEem8XvI7PKw-OA" entityName="Connector ST6to4 -> PassiveInfraredSensor4" requiringAssemblyContext_AssemblyConnector="_1avZoMVsEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_ys03UMVrEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_2IYtUMVtEem8XvI7PKw-OA" entityName="Connector PassiveInfraredSensor2 -> ST2to4" requiringAssemblyContext_AssemblyConnector="_qjREUMVtEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_ymkMYMVtEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_2o4yUMVtEem8XvI7PKw-OA" entityName="Connector ST2to4 -> PassiveInfraredSensor4" requiringAssemblyContext_AssemblyConnector="_ymkMYMVtEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_ys03UMVrEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_Qf-sIMVuEem8XvI7PKw-OA" entityName="Connector RFIDSensor7 -> DT7to3_2" requiringAssemblyContext_AssemblyConnector="_a37z4MVtEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_IHglUMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_azVfoMTcEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_RDMt8MVuEem8XvI7PKw-OA" entityName="Connector DT7to3_2 -> TemperatureSensor3" requiringAssemblyContext_AssemblyConnector="_IHglUMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_cd24AMTtEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_vdR3wMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_R1u-IMVuEem8XvI7PKw-OA" entityName="Connector DT7to3_2 -> PassiveInfraredSensor2" requiringAssemblyContext_AssemblyConnector="_IHglUMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_qjREUMVtEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_ydncQMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_CvuL0MVvEem8XvI7PKw-OA" entityName="Connector TemperatureSensor15 -> ST15to12" requiringAssemblyContext_AssemblyConnector="_5Y_F8MVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_-WaCMMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_DVsmsMVvEem8XvI7PKw-OA" entityName="Connector ST15to12 -> RFIDSensor12" requiringAssemblyContext_AssemblyConnector="_-WaCMMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_oXbpcMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_Ii4dQMVvEem8XvI7PKw-OA" entityName="Connector PassiveInfraredSensor14 -> ST14to12" requiringAssemblyContext_AssemblyConnector="_1qCH8MVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_D5PYoMVvEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_JHK2EMVvEem8XvI7PKw-OA" entityName="Connector ST14to12 -> RFIDSensor12" requiringAssemblyContext_AssemblyConnector="_D5PYoMVvEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_oXbpcMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_XhB3kMVvEem8XvI7PKw-OA" entityName="Connector RFIDSensor12 -> DT12to3_7" requiringAssemblyContext_AssemblyConnector="_oXbpcMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_TBd8AMVvEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_azVfoMTcEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_Z86rMMVvEem8XvI7PKw-OA" entityName="Connector DT12to3_7 -> TemperatureSensor3" requiringAssemblyContext_AssemblyConnector="_TBd8AMVvEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_cd24AMTtEem6vJHOl6M9XA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_vdR3wMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_bWKWEMVvEem8XvI7PKw-OA" entityName="Connector DT12to3_7 -> RFIDSensor7" requiringAssemblyContext_AssemblyConnector="_TBd8AMVvEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_a37z4MVtEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_ydncQMTfEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_hg6oIMVvEem8XvI7PKw-OA" entityName="Connector ST11to7 -> RFIDSensor7" requiringAssemblyContext_AssemblyConnector="_dDR_MMVvEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_a37z4MVtEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_iHdDsMVvEem8XvI7PKw-OA" entityName="Connector RFIDSensor11 -> ST11to7" requiringAssemblyContext_AssemblyConnector="_btcqIMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_dDR_MMVvEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_obHaIMVvEem8XvI7PKw-OA" entityName="Connector PassiveInfraredSensor13 -> ST13to11" requiringAssemblyContext_AssemblyConnector="_fnNxAMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_jcTWwMVvEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_TzQV0MThEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_o7oGMMVvEem8XvI7PKw-OA" entityName="Connector ST13to11 -> RFIDSensor11" requiringAssemblyContext_AssemblyConnector="_jcTWwMVvEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_btcqIMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_oecxUMTHEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_aii4UMThEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_9HessMsbEem-osfd2_mNhw" entityName="Connector RFIDSensor12 -> DT12to3_7" requiringAssemblyContext_AssemblyConnector="_oXbpcMVuEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_TBd8AMVvEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_iTrroMTcEem6vJHOl6M9XA"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+    <connectors__ComposedStructure xsi:type="composition:AssemblyConnector" id="_DQ13oMscEem-osfd2_mNhw" entityName="Connector RFIDSensor7 -> DT7to3_2" requiringAssemblyContext_AssemblyConnector="_a37z4MVtEem8XvI7PKw-OA" providingAssemblyContext_AssemblyConnector="_IHglUMVuEem8XvI7PKw-OA">
+      <providedRole_AssemblyConnector href="DeltaIoTRepository.repository#_vAkn0MooEem4ZN5Unn2ciQ"/>
+      <requiredRole_AssemblyConnector href="DeltaIoTRepository.repository#_wdQOYMTcEem6vJHOl6M9XA"/>
+    </connectors__ComposedStructure>
+  </system:System>
+  <emfprofileapplication:ProfileApplication>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_rh4NoMTpEem6vJHOl6M9XA" taggedValue="GatewayMote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_efL5UMVrEem8XvI7PKw-OA" taggedValue="TS9Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_cd24AMTtEem6vJHOl6M9XA" taggedValue="TS3Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_9shcUMTtEem6vJHOl6M9XA" taggedValue="PS8Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_ys03UMVrEem8XvI7PKw-OA" taggedValue="PS4Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_7iTqQMVrEem8XvI7PKw-OA" taggedValue="PS10Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_TzjAkMVsEem8XvI7PKw-OA" taggedValue="RS5Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_uUhk4MVsEem8XvI7PKw-OA" taggedValue="TS6Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_a37z4MVtEem8XvI7PKw-OA" taggedValue="RS7Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_qjREUMVtEem8XvI7PKw-OA" taggedValue="PS2Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_btcqIMVuEem8XvI7PKw-OA" taggedValue="RS11Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_fnNxAMVuEem8XvI7PKw-OA" taggedValue="PS13Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_oXbpcMVuEem8XvI7PKw-OA" taggedValue="RS12Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_1qCH8MVuEem8XvI7PKw-OA" taggedValue="PS14Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <stereotypeApplications xsi:type="myprofile:InstantiationTag" appliedTo="_5Y_F8MVuEem8XvI7PKw-OA" taggedValue="TS15Mote">
+      <extension href="../../../plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram#_Nvp_wPYlEemiy9BKBSkU2g"/>
+      <argument href="DeltaIoTTemplateVariables.templatevariable#_e9Dxwcr1EemPmcCIsj28kQ"/>
+      <template href="DeltaIoTTemplateVariables.templatevariable#_GZdDoMr2EemPmcCIsj28kQ"/>
+    </stereotypeApplications>
+    <importedProfiles nsURI="InstantiationTag" location="platform:/plugin/org.palladiosimulator.envdyn.profile/profile.emfprofile_diagram"/>
+  </emfprofileapplication:ProfileApplication>
+</xmi:XMI>

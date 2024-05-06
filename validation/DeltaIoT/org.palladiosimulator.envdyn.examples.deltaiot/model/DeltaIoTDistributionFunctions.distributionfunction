@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<distributionfunction:ProbabilityDistributionFunctionRepository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:distributionfunction="http://www.mdsd.tools/probdist/distributionfunction/1.0" id="_5q3YsBHkEeql1bYozZsqEg" entityName="DeltaIoTDistributionRepo">
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_5q7qIBHkEeql1bYozZsqEg" entityName="WirelessInterference1" params="_5q_7kBHkEeql1bYozZsqEg">
+    <randomVariables id="_5q9fUBHkEeql1bYozZsqEg" entityName="WI1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_5q-tcBHkEeql1bYozZsqEg" entityName="WirelessInterference2" params="_5rBwwBHkEeql1bYozZsqEg">
+    <randomVariables id="_zpyKkBHlEeqap-evF1dF6w" entityName="WI2" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_iUMF0BHnEeqap-evF1dF6w" entityName="SignalToNoiseRatio4to1" params="_rXkf8RHpEeqoTZlPvrooWg">
+    <randomVariables id="_mYWXcBHqEeqoTZlPvrooWg" entityName="SNR_4to1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_7qyk4BHrEeqoTZlPvrooWg" entityName="SignalToNoiseRatio3to1" params="_4JFOIRHqEeqoTZlPvrooWg">
+    <randomVariables id="_FLrFQBHsEeqoTZlPvrooWg" entityName="SNR_3to1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_8H9pEBHrEeqoTZlPvrooWg" entityName="SignalToNoiseRatio8to1" params="_6u1vcRHqEeqoTZlPvrooWg">
+    <randomVariables id="_J3U8EBHsEeqoTZlPvrooWg" entityName="SNR_8to1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_8bisYBHrEeqoTZlPvrooWg" entityName="SignalToNoiseRatio9to1" params="_9AaJcRHqEeqoTZlPvrooWg">
+    <randomVariables id="_Q0Q5ABHsEeqoTZlPvrooWg" entityName="SNR_9to1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_QMq_YBKuEeqXWPQDIrbTtg" entityName="SignalToNoiseRatio5to9" params="_Yi31URKuEeqXWPQDIrbTtg">
+    <randomVariables id="_2ub1ABKuEeqXWPQDIrbTtg" entityName="SNR_5to9" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_QojYoEfsEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio2to4" params="_bm9FQUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_2ub1ABKuEeqXWPQDIrbTtg" entityName="SNR_2to4" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_KAYVUEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio6to4" params="_cTursUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_Tg6QYEftEeqXQ7PJJHW2Yg" entityName="SNR_6to4" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_KcS1QEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio7to2" params="_c2T0UUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_swhDsEf-EeqXQ7PJJHW2Yg" entityName="SNR_7to2" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_K5DpwEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio7to3" params="_djg4kUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_4MjCIEf-EeqXQ7PJJHW2Yg" entityName="SNR_7to3" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_LSuuAEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio10to5" params="_eGu6YUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_7QxoIEf-EeqXQ7PJJHW2Yg" entityName="SNR_10to5" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_Ls6IkEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio10to6" params="_elCnAUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_9ivDsEf-EeqXQ7PJJHW2Yg" entityName="SNR_10to6" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_MGGEoEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio11to7" params="_fKHqAUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="__j_w0Ef-EeqXQ7PJJHW2Yg" entityName="SNR_11to7" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_MhWdQEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio12to3" params="_frkKMUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_BXKXkEf_EeqXQ7PJJHW2Yg" entityName="SNR_12to3" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_M7kUEEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio12to7" params="_g0SFwUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_DG2zkEf_EeqXQ7PJJHW2Yg" entityName="SNR_12to7" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_NUtz4EftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio13to11" params="_gO3EgUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_FlFwkEf_EeqXQ7PJJHW2Yg" entityName="SNR_13to11" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_NsvSUEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio14to12" params="_haWAMUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_JOhVYEf_EeqXQ7PJJHW2Yg" entityName="SNR_14to12" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_OIs1kEftEeqXQ7PJJHW2Yg" entityName="SignalToNoiseRatio15to12" params="_iHzjIUf_EeqXQ7PJJHW2Yg">
+    <randomVariables id="_MnrpkEf_EeqXQ7PJJHW2Yg" entityName="SNR_15to12" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_Osu54BHuEeqoTZlPvrooWg" entityName="MoteActivationDefault" params="_JjBtwRHxEeqoTZlPvrooWg">
+    <randomVariables id="_Td40YBHxEeqoTZlPvrooWg" entityName="MA_Default" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_X3ZLQBHxEeqoTZlPvrooWg" entityName="MoteActivationMote5" params="_bO7u0RHxEeqoTZlPvrooWg">
+    <randomVariables id="_aD6tMBHxEeqoTZlPvrooWg" entityName="MA_Mote5" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_1ksmMEfqEeqXQ7PJJHW2Yg" entityName="MoteActivationMote7" params="_6oZwoUfqEeqXQ7PJJHW2Yg">
+    <randomVariables id="_4OXXIEfqEeqXQ7PJJHW2Yg" entityName="MA_Mote7" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_VNagYEfrEeqXQ7PJJHW2Yg" entityName="MoteActivationMote11" params="_bO7u0RHxEeqoTZlPvrooWg">
+    <randomVariables id="_a4EWEEfrEeqXQ7PJJHW2Yg" entityName="MA_Mote11" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_l_YBsEfrEeqXQ7PJJHW2Yg" entityName="MoteActivationMote12" params="_v2t6QUfrEeqXQ7PJJHW2Yg">
+    <randomVariables id="_phQNAEfrEeqXQ7PJJHW2Yg" entityName="MA_Mote12" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_ceNgAD3QEeq96PdyICzESw" entityName="WirelessInterference1_Temporal" params="_xfUiUT3QEeq96PdyICzESw">
+    <randomVariables id="_618TcD3QEeq96PdyICzESw" entityName="WI_T1" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_hyHpoD3QEeq96PdyICzESw" entityName="WirelessInterference2_Temporal" params="_Lu8Q4T3REeq96PdyICzESw">
+    <randomVariables id="_BKDV0D3REeq96PdyICzESw" entityName="WI_T2" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_nHDG8D3QEeq96PdyICzESw" entityName="MoteActivationDefault_Temporal" params="_TZwngT3REeq96PdyICzESw">
+    <randomVariables id="_ELo3gD3REeq96PdyICzESw" entityName="MA_Default_Temporal" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_qePsQD3QEeq96PdyICzESw" entityName="MoteActivationMote5_Temporal" params="_WzEssT3REeq96PdyICzESw">
+    <randomVariables id="_GzRoID3REeq96PdyICzESw" entityName="MA_Mote5_Temporal" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_14DKwEgQEeqXQ7PJJHW2Yg" entityName="MoteActivationMote7_Temporal" params="_C9o9cUgQEeqXQ7PJJHW2Yg">
+    <randomVariables id="_9GgVgEgQEeqXQ7PJJHW2Yg" entityName="MA_Mote7_Temporal" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_2QmNoEgQEeqXQ7PJJHW2Yg" entityName="MoteActivationMote11_Temporal" params="_WzEssT3REeq96PdyICzESw">
+    <randomVariables id="_KrSwMEgREeqXQ7PJJHW2Yg" entityName="MA_Mote11_Temporal" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <distributions xsi:type="distributionfunction:ProbabilityDistribution" id="_3CngcEgQEeqXQ7PJJHW2Yg" entityName="MoteActivationMote12_Temporal" params="_YkswAUgREeqXQ7PJJHW2Yg">
+    <randomVariables id="_N5ULYEgREeqXQ7PJJHW2Yg" entityName="MA_Mote12_Temporal" valueSpace="CATEGORY"/>
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_4B7EsNMJEemr7qd1LI_fyw"/>
+  </distributions>
+  <params id="_5q_7kBHkEeql1bYozZsqEg" entityName="WI1">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+  </params>
+  <params id="_5rBwwBHkEeql1bYozZsqEg" entityName="WI2">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+  </params>
+  <params id="_JjBtwRHxEeqoTZlPvrooWg" entityName="MA_Default">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{1,1}"/>
+  </params>
+  <params id="_bO7u0RHxEeqoTZlPvrooWg" entityName="MA_Mote5_Mote11">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.7,0.333};{0.8,0.333};{0.9,0.333}"/>
+  </params>
+  <params id="_6oZwoUfqEeqXQ7PJJHW2Yg" entityName="MA_Mote7">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+  </params>
+  <params id="_v2t6QUfrEeqXQ7PJJHW2Yg" entityName="MA_Mote12">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:SimpleParameter" type="SAMPLESPACE" value="{0.85,0.333};{0.9,0.333};{0.95,0.333}"/>
+  </params>
+  <params id="_rXkf8RHpEeqoTZlPvrooWg" entityName="SNR_4to1">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_4JFOIRHqEeqoTZlPvrooWg" entityName="SNR_3to1">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_6u1vcRHqEeqoTZlPvrooWg" entityName="SNR_8to1">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{9.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{10.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{11.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{12.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_9AaJcRHqEeqoTZlPvrooWg" entityName="SNR_9to1">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-8.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-7.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-6.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-5.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-4.8,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_Yi31URKuEeqXWPQDIrbTtg" entityName="SNR_5to9">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{1.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{2.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{3.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{4.6,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_bm9FQUf_EeqXQ7PJJHW2Yg" entityName="SNR_2to4">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{9.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{10.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{11.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{12.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{13.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_cTursUf_EeqXQ7PJJHW2Yg" entityName="SNR_6to4">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{5.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{6.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{7.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{8.6,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{9.6,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_c2T0UUf_EeqXQ7PJJHW2Yg" entityName="SNR_7to2">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{0.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{9.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{10.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_djg4kUf_EeqXQ7PJJHW2Yg" entityName="SNR_7to3">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{-11.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{-10.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{-9.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-8.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-7.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-6.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-5.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-4.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{-3.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{-2.8,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{-1.8,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_eGu6YUf_EeqXQ7PJJHW2Yg" entityName="SNR_10to5">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{9.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{10.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{11.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_elCnAUf_EeqXQ7PJJHW2Yg" entityName="SNR_10to6">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{-1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{0.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{1.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{2.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{3.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{9.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_fKHqAUf_EeqXQ7PJJHW2Yg" entityName="SNR_11to7">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-4.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{5.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{6.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{7.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{8.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_frkKMUf_EeqXQ7PJJHW2Yg" entityName="SNR_12to3">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{5.5,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{6.5,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{7.5,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{8.5,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{9.5,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_g0SFwUf_EeqXQ7PJJHW2Yg" entityName="SNR_12to7">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-15.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-14.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-13.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-12.0,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-11.0,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_gO3EgUf_EeqXQ7PJJHW2Yg" entityName="SNR_13to11">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{-1.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{0.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{1.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{2.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{3.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{4.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{5.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{6.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{7.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{8.7,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{9.7,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_haWAMUf_EeqXQ7PJJHW2Yg" entityName="SNR_14to12">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{-10.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{-9.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{-8.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-7.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-6.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-5.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-4.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-3.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{-2.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{-1.1,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{-0.1,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_iHzjIUf_EeqXQ7PJJHW2Yg" entityName="SNR_15to12">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-9.3,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-8.3,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-7.3,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-6.3,1.0}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-5.3,1.0}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_xfUiUT3QEeq96PdyICzESw" entityName="WI1_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-5</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-4</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-3</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>3</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>4</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>5</conditonals>
+        <entry type="SAMPLESPACE" value="{-5,0.0909};{-4,0.0909};{-3,0.0909};{-2,0.0909};{-1,0.0909};{0,0.0909};{1,0.0909};{2,0.0909};{3,0.0909};{4,0.0909};{5,0.0909}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_Lu8Q4T3REeq96PdyICzESw" entityName="WI2_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>-2</conditonals>
+        <entry type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>-1</conditonals>
+        <entry type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0</conditonals>
+        <entry type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>2</conditonals>
+        <entry type="SAMPLESPACE" value="{-2,0.2};{-1,0.2};{0,0.2};{1,0.2};{2,0.2}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_TZwngT3REeq96PdyICzESw" entityName="MA_Default_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>1</conditonals>
+        <entry type="SAMPLESPACE" value="{1,1}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_WzEssT3REeq96PdyICzESw" entityName="MA_Mote5_Mote11_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.7</conditonals>
+        <entry type="SAMPLESPACE" value="{0.7,0.333};{0.8,0.333};{0.9,0.333}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.8</conditonals>
+        <entry type="SAMPLESPACE" value="{0.7,0.333};{0.8,0.333};{0.9,0.333}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.9</conditonals>
+        <entry type="SAMPLESPACE" value="{0.7,0.333};{0.8,0.333};{0.9,0.333}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_C9o9cUgQEeqXQ7PJJHW2Yg" entityName="MA_Mote7_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.6</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.7</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.8</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.9</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>1.0</conditonals>
+        <entry type="SAMPLESPACE" value="{0.6,0.25};{0.7,0.25};{0.8,0.25};{0.9,0.25};{1.0,0.25}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+  <params id="_YkswAUgREeqXQ7PJJHW2Yg" entityName="MA_Mote12_Temporal">
+    <instantiated href="pathmap://PROBDIST_BASIC/BasicDistributionTypes.distributiontype#_8MFYAdMJEemr7qd1LI_fyw"/>
+    <representation xsi:type="distributionfunction:TabularCPD">
+      <cpdEntries>
+        <conditonals>0.85</conditonals>
+        <entry type="SAMPLESPACE" value="{0.85,0.333};{0.9,0.333};{0.95,0.333}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.9</conditonals>
+        <entry type="SAMPLESPACE" value="{0.85,0.333};{0.9,0.333};{0.95,0.333}"/>
+      </cpdEntries>
+      <cpdEntries>
+        <conditonals>0.95</conditonals>
+        <entry type="SAMPLESPACE" value="{0.85,0.333};{0.9,0.333};{0.95,0.333}"/>
+      </cpdEntries>
+    </representation>
+  </params>
+</distributionfunction:ProbabilityDistributionFunctionRepository>

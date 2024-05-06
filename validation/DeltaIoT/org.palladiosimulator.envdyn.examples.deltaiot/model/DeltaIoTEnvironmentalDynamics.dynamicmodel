@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="ASCII"?>
+<dynamicmodel:DynamicBehaviourExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dynamicmodel="http://palladiosimulator.org/Environment/DynamicModel/1.0" xmlns:templatevariable="http://palladiosimulator.org/Environment/TemplateVariable/1.0" id="_0N9t4EgYEeqmX4BX0ajhxA">
+  <model href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lfv4UdwEeq4nph5UDtc-g"/>
+  <behaviour xsi:type="dynamicmodel:InductiveDynamicBehaviour">
+    <localModels id="_0PtaUEgYEeqmX4BX0ajhxA" entityName="6to4Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Pzg8EgYEeqmX4BX0ajhxA" entityName="6to4Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_KAYVUEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0QBjYEgYEeqmX4BX0ajhxA" entityName="5to9Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_QMq_YBKuEeqXWPQDIrbTtg"/>
+    </localModels>
+    <localModels id="_0QHqAEgYEeqmX4BX0ajhxA" entityName="5to9Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0QSpIEgYEeqmX4BX0ajhxA" entityName="TS6Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0QdoQEgYEeqmX4BX0ajhxA" entityName="RS7Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_14DKwEgQEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0QonYEgYEeqmX4BX0ajhxA" entityName="PS8Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Q3Q4EgYEeqmX4BX0ajhxA" entityName="14to12Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Q8wcEgYEeqmX4BX0ajhxA" entityName="14to12Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_NsvSUEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0RKy4EgYEeqmX4BX0ajhxA" entityName="7to3Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0RQScEgYEeqmX4BX0ajhxA" entityName="7to3Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_K5DpwEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0Rdt0EgYEeqmX4BX0ajhxA" entityName="11to7Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_MGGEoEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0RkbgEgYEeqmX4BX0ajhxA" entityName="11to7Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0RvaoEgYEeqmX4BX0ajhxA" entityName="PS13Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0R82AEgYEeqmX4BX0ajhxA" entityName="15to12Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_OIs1kEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0SC8oEgYEeqmX4BX0ajhxA" entityName="15to12Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0SQ_EEgYEeqmX4BX0ajhxA" entityName="12to7Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_M7kUEEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0SWeoEgYEeqmX4BX0ajhxA" entityName="12to7Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0ShdwEgYEeqmX4BX0ajhxA" entityName="PS4Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Su5IEgYEeqmX4BX0ajhxA" entityName="13to11Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_NUtz4EftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0S0YsEgYEeqmX4BX0ajhxA" entityName="13to11Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0TB0EEgYEeqmX4BX0ajhxA" entityName="7to2Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0THToEgYEeqmX4BX0ajhxA" entityName="7to2Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_KcS1QEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0TSSwEgYEeqmX4BX0ajhxA" entityName="RS12Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_3CngcEgQEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0TgVMEgYEeqmX4BX0ajhxA" entityName="10to6Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_Ls6IkEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0Tl0wEgYEeqmX4BX0ajhxA" entityName="10to6Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0T1FUEgYEeqmX4BX0ajhxA" entityName="9to1Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0T6k4EgYEeqmX4BX0ajhxA" entityName="9to1Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_8bisYBHrEeqoTZlPvrooWg"/>
+    </localModels>
+    <localModels id="_0UE88EgYEeqmX4BX0ajhxA" entityName="TS15Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0UPVAEgYEeqmX4BX0ajhxA" entityName="GatewayMote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0UaUIEgYEeqmX4BX0ajhxA" entityName="TS3Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0UoWkEgYEeqmX4BX0ajhxA" entityName="10to5Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Ut2IEgYEeqmX4BX0ajhxA" entityName="10to5Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_LSuuAEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0U7RgEgYEeqmX4BX0ajhxA" entityName="4to1Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_iUMF0BHnEeqap-evF1dF6w"/>
+    </localModels>
+    <localModels id="_0VAxEEgYEeqmX4BX0ajhxA" entityName="4to1Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0VOMcEgYEeqmX4BX0ajhxA" entityName="8to1Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_8H9pEBHrEeqoTZlPvrooWg"/>
+    </localModels>
+    <localModels id="_0VUTEEgYEeqmX4BX0ajhxA" entityName="8to1Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0Vf5QEgYEeqmX4BX0ajhxA" entityName="RS11Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_2QmNoEgQEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0VtUoEgYEeqmX4BX0ajhxA" entityName="12to3Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0V0CUEgYEeqmX4BX0ajhxA" entityName="12to3Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_MhWdQEftEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0WCr0EgYEeqmX4BX0ajhxA" entityName="3to1Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_hyHpoD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0WILYEgYEeqmX4BX0ajhxA" entityName="3to1Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_7qyk4BHrEeqoTZlPvrooWg"/>
+    </localModels>
+    <localModels id="_0WTKgEgYEeqmX4BX0ajhxA" entityName="RS5Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_qePsQD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0WewsEgYEeqmX4BX0ajhxA" entityName="TS9Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0WpIwEgYEeqmX4BX0ajhxA" entityName="PS2Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0W2kIEgYEeqmX4BX0ajhxA" entityName="2to4Link_WirelessInterferenceInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_-c_hERqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_ceNgAD3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0W8qwEgYEeqmX4BX0ajhxA" entityName="2to4Link_SignalToNoiseRatioInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_Moy4cRqPEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_QojYoEfsEeqXQ7PJJHW2Yg"/>
+    </localModels>
+    <localModels id="_0XHp4EgYEeqmX4BX0ajhxA" entityName="PS14Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <localModels id="_0XSB8EgYEeqmX4BX0ajhxA" entityName="PS10Mote_MoteActivationInstantiation_Temporal">
+      <instantiatedFactor xsi:type="templatevariable:ProbabilisticTemplateFactor" href="DeltaIoTTemplateVariables.templatevariable#_4A_uARqOEeqUnKwnXyGFlw"/>
+      <distributionFunction href="DeltaIoTDistributionFunctions.distributionfunction#_nHDG8D3QEeq96PdyICzESw"/>
+    </localModels>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0PtaUEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lQfUEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Pzg8EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lRGYEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0QBjYEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lVX0kdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0QHqAEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lVX0UdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0QSpIEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lV-4UdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0QdoQEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lV-40dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0QonYEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lV-5UdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Q3Q4EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lWl8EdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Q8wcEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lWl8UdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0RKy4EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lWl9EdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0RQScEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lXNAEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Rdt0EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lXNBEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0RkbgEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lXNA0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0RvaoEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lX0EUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0R82AEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lX0FEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0SC8oEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lX0E0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0SQ_EEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lYbIEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0SWeoEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lX0F0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0ShdwEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lYbI0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Su5IEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lYbJkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0S0YsEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lYbJUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0TB0EEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZCMkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0THToEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZCM0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0TSSwEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZpQEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0TgVMEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZpQ0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Tl0wEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZpQkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0T1FUEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lZpRkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0T6k4EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8laQUEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0UE88EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8laQU0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0UPVAEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8la3YEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0UaUIEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8la3YkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0UoWkEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8la3ZEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Ut2IEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8la3ZUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0U7RgEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lbec0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0VAxEEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lbeckdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0VOMcEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lcFgkdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0VUTEEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lcFgUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0Vf5QEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lcFhUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0VtUoEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ldToUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0V0CUEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ldTokdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0WCr0EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ldTpUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0WILYEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ld6sEdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0WTKgEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ld6s0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0WewsEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8ld6tUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0WpIwEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lehwUdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0W2kIEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lehw0dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.2"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0W8qwEgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lfI0EdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:TimeSliceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.3"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0XHp4EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lfI00dwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+    <timeSliceInductions xsi:type="dynamicmodel:InterTimeSliceInduction" descriptiveModel="_0XSB8EgYEeqmX4BX0ajhxA">
+      <appliedGroundVariable href="DeltaIoTNonTemporalEnvironment.staticmodel#_8lfI1UdwEeq4nph5UDtc-g"/>
+      <temporalStructure xsi:type="templatevariable:PersistenceRelation" href="DeltaIoTTemplateVariables.templatevariable#//@relation.1"/>
+    </timeSliceInductions>
+  </behaviour>
+</dynamicmodel:DynamicBehaviourExtension>
