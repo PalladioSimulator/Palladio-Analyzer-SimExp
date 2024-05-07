@@ -16,19 +16,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Parameter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ParameterValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class ActionCallExecutorTest {
-
-    private final SmodelFactory smodelFactory = SmodelFactory.eINSTANCE;
 
     private ActionCallExecutor executor;
 
@@ -48,12 +42,8 @@ public class ActionCallExecutorTest {
 
     @Test
     public void testExecuteActionNoArguments() {
-        ActionCall actionCall = smodelFactory.createActionCall();
-        Action action = smodelFactory.createAction();
-        action.setName("a");
-        actionCall.setActionRef(action);
-        ActionArguments ActionArguments = smodelFactory.createActionArguments();
-        action.setArguments(ActionArguments);
+        Action action = smodelCreator.createAction("a");
+        ActionCall actionCall = smodelCreator.createActionCall(action);
 
         ResolvedAction actualResolvedAction = executor.execute(actionCall);
 
@@ -64,26 +54,19 @@ public class ActionCallExecutorTest {
 
     @Test
     public void testExecuteActionWithSingleParameterInt() {
-        ActionCall actionCall = smodelFactory.createActionCall();
-        Action action = smodelFactory.createAction();
-        action.setName("a");
-        ActionArguments ActionArguments = smodelFactory.createActionArguments();
-        Parameter parameter = smodelFactory.createParameter();
-        parameter.setName("p");
-        parameter.setDataType(DataType.INT);
-        ActionArguments.getParameters()
+        Action action = smodelCreator.createAction("a");
+        ActionCall actionCall = smodelCreator.createActionCall(action);
+        ActionArguments actionArguments = action.getArguments();
+        Parameter parameter = smodelCreator.createParameter("p", DataType.INT);
+        actionArguments.getParameters()
             .add(parameter);
-        action.setArguments(ActionArguments);
+        action.setArguments(actionArguments);
         actionCall.setActionRef(action);
-        ParameterValue argumentKeyValue = smodelFactory.createParameterValue();
-        argumentKeyValue.setParamRef(parameter);
-        Expression expression = smodelFactory.createExpression();
-        IntLiteral literal = smodelCreator.createIntLiteral(1);
-        expression.setLiteral(literal);
-        argumentKeyValue.setArgument(expression);
+        ParameterValue argumentKeyValue = smodelCreator.createParameterValue(parameter,
+                smodelCreator.createIntLiteral(1));
         actionCall.getArguments()
             .add(argumentKeyValue);
-        when(exprCalculator.calculateInteger(expression)).thenReturn(literal.getValue());
+        when(exprCalculator.calculateInteger(argumentKeyValue.getArgument())).thenReturn(1);
 
         ResolvedAction actualResolvedAction = executor.execute(actionCall);
 
@@ -96,26 +79,19 @@ public class ActionCallExecutorTest {
 
     @Test
     public void testExecuteActionWithSingleParameterString() {
-        ActionCall actionCall = smodelFactory.createActionCall();
-        Action action = smodelFactory.createAction();
-        action.setName("a");
-        ActionArguments ActionArguments = smodelFactory.createActionArguments();
-        Parameter parameter = smodelFactory.createParameter();
-        parameter.setName("p");
-        parameter.setDataType(DataType.STRING);
-        ActionArguments.getParameters()
+        Action action = smodelCreator.createAction("a");
+        ActionCall actionCall = smodelCreator.createActionCall(action);
+        ActionArguments actionArguments = action.getArguments();
+        Parameter parameter = smodelCreator.createParameter("p", DataType.STRING);
+        actionArguments.getParameters()
             .add(parameter);
-        action.setArguments(ActionArguments);
+        action.setArguments(actionArguments);
         actionCall.setActionRef(action);
-        ParameterValue argumentKeyValue = smodelFactory.createParameterValue();
-        argumentKeyValue.setParamRef(parameter);
-        Expression expression = smodelFactory.createExpression();
-        StringLiteral literal = smodelCreator.createStringLiteral("s");
-        expression.setLiteral(literal);
-        argumentKeyValue.setArgument(expression);
+        ParameterValue argumentKeyValue = smodelCreator.createParameterValue(parameter,
+                smodelCreator.createStringLiteral("s"));
         actionCall.getArguments()
             .add(argumentKeyValue);
-        when(exprCalculator.calculateString(expression)).thenReturn(literal.getValue());
+        when(exprCalculator.calculateString(argumentKeyValue.getArgument())).thenReturn("s");
 
         ResolvedAction actualResolvedAction = executor.execute(actionCall);
 
@@ -128,22 +104,15 @@ public class ActionCallExecutorTest {
 
     @Test
     public void testExecuteActionWithSingleOptimizableInt() {
-        ActionCall actionCall = smodelFactory.createActionCall();
-        Action action = smodelFactory.createAction();
-        action.setName("a");
-        ActionArguments ActionArguments = smodelFactory.createActionArguments();
-        Optimizable optimizable = smodelFactory.createOptimizable();
-        optimizable.setName("o");
-        optimizable.setDataType(DataType.INT);
-        RangeBounds bounds = smodelFactory.createRangeBounds();
-        IntLiteral startLiteral = smodelCreator.createIntLiteral(0);
-        bounds.setStartValue(startLiteral);
-        IntLiteral endLiteral = smodelCreator.createIntLiteral(1);
-        bounds.setEndValue(endLiteral);
-        optimizable.setValues(bounds);
-        ActionArguments.getOptimizables()
+        Action action = smodelCreator.createAction("a");
+        ActionCall actionCall = smodelCreator.createActionCall(action);
+        ActionArguments actionArguments = action.getArguments();
+        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(0),
+                smodelCreator.createIntLiteral(1), smodelCreator.createIntLiteral(1));
+        Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.INT, bounds);
+        actionArguments.getOptimizables()
             .add(optimizable);
-        action.setArguments(ActionArguments);
+        action.setArguments(actionArguments);
         actionCall.setActionRef(action);
         when(fieldValueProvider.getIntegerValue(optimizable)).thenReturn(1);
 
@@ -158,37 +127,25 @@ public class ActionCallExecutorTest {
 
     @Test
     public void testExecuteActionWithParamAndOptimizableInt() {
-        ActionCall actionCall = smodelFactory.createActionCall();
-        Action action = smodelFactory.createAction();
-        action.setName("a");
-        ActionArguments ActionArguments = smodelFactory.createActionArguments();
-        Parameter parameter = smodelFactory.createParameter();
-        parameter.setName("p");
-        parameter.setDataType(DataType.INT);
-        ActionArguments.getParameters()
+        Action action = smodelCreator.createAction("a");
+        ActionCall actionCall = smodelCreator.createActionCall(action);
+        ActionArguments actionArguments = action.getArguments();
+        Parameter parameter = smodelCreator.createParameter("p", DataType.INT);
+        actionArguments.getParameters()
             .add(parameter);
-        Optimizable optimizable = smodelFactory.createOptimizable();
-        optimizable.setName("o");
-        optimizable.setDataType(DataType.INT);
-        RangeBounds bounds = smodelFactory.createRangeBounds();
-        IntLiteral startLiteral = smodelCreator.createIntLiteral(0);
-        bounds.setStartValue(startLiteral);
-        IntLiteral endLiteral = smodelCreator.createIntLiteral(1);
-        bounds.setEndValue(endLiteral);
-        optimizable.setValues(bounds);
-        ActionArguments.getOptimizables()
+        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(0),
+                smodelCreator.createIntLiteral(1), smodelCreator.createIntLiteral(1));
+        Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.INT, bounds);
+        actionArguments.getOptimizables()
             .add(optimizable);
-        action.setArguments(ActionArguments);
+        action.setArguments(actionArguments);
         actionCall.setActionRef(action);
-        ParameterValue argumentKeyValue = smodelFactory.createParameterValue();
-        argumentKeyValue.setParamRef(parameter);
-        Expression expression = smodelFactory.createExpression();
-        IntLiteral literal = smodelCreator.createIntLiteral(1);
-        expression.setLiteral(literal);
-        argumentKeyValue.setArgument(expression);
+        ParameterValue argumentKeyValue = smodelCreator.createParameterValue(parameter,
+                smodelCreator.createIntLiteral(1));
+
         actionCall.getArguments()
             .add(argumentKeyValue);
-        when(exprCalculator.calculateInteger(expression)).thenReturn(literal.getValue());
+        when(exprCalculator.calculateInteger(argumentKeyValue.getArgument())).thenReturn(1);
         when(fieldValueProvider.getIntegerValue(optimizable)).thenReturn(2);
 
         ResolvedAction actualResolvedAction = executor.execute(actionCall);
