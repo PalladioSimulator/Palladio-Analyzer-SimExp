@@ -79,8 +79,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
             return (String) currentValue;
         }
         Expression value = variable.getValue();
-        StringLiteral literal = (StringLiteral) value.getLiteral();
-        String calculatedValue = literal.getValue();
+        String calculatedValue = expressionCalculator.calculateString(value);
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
     }

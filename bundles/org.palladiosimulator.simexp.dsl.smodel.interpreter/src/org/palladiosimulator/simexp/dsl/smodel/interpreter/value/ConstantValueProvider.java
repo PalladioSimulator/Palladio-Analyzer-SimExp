@@ -6,7 +6,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.IExpressionCalcu
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 
 public class ConstantValueProvider implements IFieldValueProvider {
     private final IExpressionCalculator expressionCalculator;
@@ -43,8 +42,7 @@ public class ConstantValueProvider implements IFieldValueProvider {
     public String getStringValue(Field field) {
         Constant constant = (Constant) field;
         Expression value = constant.getValue();
-        StringLiteral stringLiteral = (StringLiteral) value.getLiteral();
-        return stringLiteral.getValue();
+        String calculatedValue = expressionCalculator.calculateString(value);
+        return calculatedValue;
     }
-
 }
