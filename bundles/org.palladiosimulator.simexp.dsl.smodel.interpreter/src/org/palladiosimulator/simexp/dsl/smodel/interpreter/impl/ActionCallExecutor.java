@@ -71,8 +71,8 @@ public class ActionCallExecutor implements IActionCallExecutor {
     }
 
     private Object getOptimizableValue(Optimizable optimizable) {
-        DataType datatype = typeSwitch.doSwitch(optimizable);
-        switch (datatype) {
+        DataType dataType = typeSwitch.doSwitch(optimizable);
+        switch (dataType) {
         case BOOL:
             return fieldValueProvider.getBoolValue(optimizable);
         case DOUBLE:
@@ -82,7 +82,7 @@ public class ActionCallExecutor implements IActionCallExecutor {
         case STRING:
             return fieldValueProvider.getStringValue(optimizable);
         default:
-            throw new RuntimeException("");
+            throw new RuntimeException("unsupported optimization type: " + dataType);
         }
     }
 }
