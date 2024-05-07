@@ -65,6 +65,8 @@ public class ActionCallExecutor implements IActionCallExecutor {
             return expressionCalculator.calculateDouble(expression);
         case INT:
             return expressionCalculator.calculateInteger(expression);
+        case STRING:
+            return expressionCalculator.calculateString(expression);
         default:
             throw new RuntimeException("unsupported expression type: " + dataType);
         }
