@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.tests;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelPlaner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
