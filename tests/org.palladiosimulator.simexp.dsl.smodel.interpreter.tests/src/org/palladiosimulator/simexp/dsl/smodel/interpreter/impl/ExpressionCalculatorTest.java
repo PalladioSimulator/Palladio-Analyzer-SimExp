@@ -1267,6 +1267,20 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo(1.0);
     }
 
+    @Test
+    public void testStringExpression() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const string value = "s";
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        String actualCalculatedValue = calculator.calculateString(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo("s");
+    }
+
     private Constant getFirstConstant(Smodel model) {
         EList<Constant> constants = model.getConstants();
         Constant constant = constants.get(0);

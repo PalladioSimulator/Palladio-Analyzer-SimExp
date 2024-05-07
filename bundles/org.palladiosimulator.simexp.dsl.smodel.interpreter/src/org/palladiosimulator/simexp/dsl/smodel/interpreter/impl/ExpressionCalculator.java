@@ -39,6 +39,12 @@ public class ExpressionCalculator implements IExpressionCalculator {
         return numberValue.doubleValue();
     }
 
+    @Override
+    public String calculateString(Expression expression) {
+        StringLiteral stringLiteral = (StringLiteral) expression.getLiteral();
+        return stringLiteral.getValue();
+    }
+
     private Object caseExpression(Expression expression) {
         Field field = expression.getFieldRef();
         if (field != null) {
