@@ -41,6 +41,12 @@ public class ExpressionCalculator implements IExpressionCalculator {
 
     @Override
     public String calculateString(Expression expression) {
+        Field field = expression.getFieldRef();
+        if (field != null) {
+            String fieldValue = (String) getFieldValue(field);
+            return fieldValue;
+        }
+
         StringLiteral stringLiteral = (StringLiteral) expression.getLiteral();
         return stringLiteral.getValue();
     }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.offset;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.eclipse.emf.common.util.EList;
@@ -16,6 +17,8 @@ import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -1277,6 +1280,25 @@ public class ExpressionCalculatorTest {
         Constant constant = getFirstConstant(model);
 
         String actualCalculatedValue = calculator.calculateString(constant.getValue());
+
+        assertThat(actualCalculatedValue).isEqualTo("s");
+    }
+
+    @Test
+    public void testStringExpressionVarRef() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const string cvalue = "s";
+                var string value = cvalue;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+        Variable variable = model.getVariables()
+            .get(0);
+        when(fieldValueProvider.getStringValue(constant)).thenReturn(((StringLiteral) constant.getValue()
+            .getLiteral()).getValue());
+
+        String actualCalculatedValue = calculator.calculateString(variable.getValue());
 
         assertThat(actualCalculatedValue).isEqualTo("s");
     }
