@@ -65,14 +65,16 @@ public class ActionCallExecutor implements IActionCallExecutor {
             return expressionCalculator.calculateDouble(expression);
         case INT:
             return expressionCalculator.calculateInteger(expression);
+        case STRING:
+            return expressionCalculator.calculateString(expression);
         default:
             throw new RuntimeException("unsupported expression type: " + dataType);
         }
     }
 
     private Object getOptimizableValue(Optimizable optimizable) {
-        DataType datatype = typeSwitch.doSwitch(optimizable);
-        switch (datatype) {
+        DataType dataType = typeSwitch.doSwitch(optimizable);
+        switch (dataType) {
         case BOOL:
             return fieldValueProvider.getBoolValue(optimizable);
         case DOUBLE:
@@ -82,7 +84,7 @@ public class ActionCallExecutor implements IActionCallExecutor {
         case STRING:
             return fieldValueProvider.getStringValue(optimizable);
         default:
-            throw new RuntimeException("");
+            throw new RuntimeException("unsupported optimization type: " + dataType);
         }
     }
 }

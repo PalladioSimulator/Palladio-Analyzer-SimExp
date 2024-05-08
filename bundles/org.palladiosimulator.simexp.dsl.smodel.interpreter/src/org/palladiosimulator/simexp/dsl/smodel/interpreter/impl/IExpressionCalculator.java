@@ -10,4 +10,6 @@ public interface IExpressionCalculator {
 
     double calculateDouble(Expression expression);
 
+    String calculateString(Expression expression);
+
 }
