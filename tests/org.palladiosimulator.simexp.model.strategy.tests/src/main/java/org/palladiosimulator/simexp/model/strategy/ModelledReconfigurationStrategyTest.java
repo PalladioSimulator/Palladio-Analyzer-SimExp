@@ -110,10 +110,8 @@ public class ModelledReconfigurationStrategyTest {
         QvtoModelTransformation expectedTransformation2 = mock(QvtoModelTransformation.class,
                 "qvtoTransformationMock2");
         List<SingleQVToReconfiguration> expectedTransformations = new ArrayList<>();
-        expectedTransformations.add(SingleQVToReconfiguration
-            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"), qvtoReconfigurationManager));
-        expectedTransformations.add(SingleQVToReconfiguration
-            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"), qvtoReconfigurationManager));
+        expectedTransformations.add(SingleQVToReconfiguration.of(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"), qvtoReconfigurationManager));
+        expectedTransformations.add(SingleQVToReconfiguration.of(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"), qvtoReconfigurationManager));
         QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations);
         String expectedTransformationName1 = "testTransformation1";
         ResolvedAction expectedResolvedAction1 = createResolvedAction(expectedTransformationName1);
