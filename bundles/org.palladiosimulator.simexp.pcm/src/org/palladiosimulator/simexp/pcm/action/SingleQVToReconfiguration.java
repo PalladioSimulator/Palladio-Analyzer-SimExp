@@ -11,6 +11,7 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
     private static final Logger LOGGER = Logger.getLogger(SingleQVToReconfiguration.class);
 
     private final QvtoModelTransformation transformation;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     protected SingleQVToReconfiguration(SingleQVToReconfiguration transformation) {
         this(transformation.transformation, transformation.qvtoReconfigurationManager);
@@ -18,8 +19,8 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
 
     protected SingleQVToReconfiguration(QvtoModelTransformation transformation,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        super(qvtoReconfigurationManager);
         this.transformation = transformation;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     public static SingleQVToReconfiguration of(QvtoModelTransformation transformation,

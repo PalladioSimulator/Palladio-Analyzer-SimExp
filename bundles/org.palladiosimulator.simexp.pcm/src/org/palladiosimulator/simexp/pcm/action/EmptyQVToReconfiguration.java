@@ -6,10 +6,6 @@ import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public class EmptyQVToReconfiguration extends BaseQVToReconfiguration implements QVToReconfiguration {
 
-    private EmptyQVToReconfiguration() {
-        super(null);
-    }
-
     @Override
     public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
     }

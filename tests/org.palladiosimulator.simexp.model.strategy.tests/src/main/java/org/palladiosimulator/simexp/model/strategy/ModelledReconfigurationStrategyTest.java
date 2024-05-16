@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 public class ModelledReconfigurationStrategyTest {
@@ -84,10 +85,9 @@ public class ModelledReconfigurationStrategyTest {
     @Test
     public void testDelegateToPlannerWorksWithSingleReconfiguration() throws Exception {
         QvtoModelTransformation expectedTransformation = mock(QvtoModelTransformation.class, "qvtoTransformationMock");
-        List<QvtoModelTransformation> expectedTransformations = new ArrayList<>();
-        expectedTransformations.add(expectedTransformation);
-        QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations,
-                qvtoReconfigurationManager);
+        List<SingleQVToReconfiguration> expectedTransformations = new ArrayList<>();
+        expectedTransformations.add(SingleQVToReconfiguration.of(expectedTransformation, qvtoReconfigurationManager));
+        QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations);
         String expectedTransformationName = "testTransformation";
         Action expectedAction = SmodelFactory.eINSTANCE.createAction();
         expectedAction.setName(expectedTransformationName);
@@ -109,11 +109,12 @@ public class ModelledReconfigurationStrategyTest {
                 "qvtoTransformationMock1");
         QvtoModelTransformation expectedTransformation2 = mock(QvtoModelTransformation.class,
                 "qvtoTransformationMock2");
-        List<QvtoModelTransformation> expectedTransformations = new ArrayList<>();
-        expectedTransformations.add(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"));
-        expectedTransformations.add(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"));
-        QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations,
-                qvtoReconfigurationManager);
+        List<SingleQVToReconfiguration> expectedTransformations = new ArrayList<>();
+        expectedTransformations.add(SingleQVToReconfiguration
+            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"), qvtoReconfigurationManager));
+        expectedTransformations.add(SingleQVToReconfiguration
+            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"), qvtoReconfigurationManager));
+        QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations);
         String expectedTransformationName1 = "testTransformation1";
         ResolvedAction expectedResolvedAction1 = createResolvedAction(expectedTransformationName1);
         String expectedTransformationName2 = "testTransformation2";

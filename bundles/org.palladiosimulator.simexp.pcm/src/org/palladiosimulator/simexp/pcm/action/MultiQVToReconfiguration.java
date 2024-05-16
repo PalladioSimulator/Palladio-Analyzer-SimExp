@@ -3,63 +3,47 @@ package org.palladiosimulator.simexp.pcm.action;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements QVToReconfiguration {
     private static final Logger LOGGER = Logger.getLogger(MultiQVToReconfiguration.class);
 
-    private final List<QvtoModelTransformation> transformations;
+    private final List<SingleQVToReconfiguration> reconfigurations;
 
-    private MultiQVToReconfiguration(List<QvtoModelTransformation> transformations,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
-        super(qvtoReconfigurationManager);
-        this.transformations = Collections.unmodifiableList(transformations);
+    private MultiQVToReconfiguration(List<SingleQVToReconfiguration> reconfigurations) {
+        this.reconfigurations = Collections.unmodifiableList(reconfigurations);
     }
 
-    public static MultiQVToReconfiguration of(List<QvtoModelTransformation> transformations,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new MultiQVToReconfiguration(transformations, qvtoReconfigurationManager);
+    public static MultiQVToReconfiguration of(List<SingleQVToReconfiguration> reconfigurations) {
+        return new MultiQVToReconfiguration(reconfigurations);
     }
 
     @Override
     public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
-        LOGGER.info(String.format("'EXECUTE' applying %d reconfigurations", transformations.size()));
-        QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
-        ListIterator<QvtoModelTransformation> trafoIterator = transformations.listIterator();
-        while (trafoIterator.hasNext()) {
-            QvtoModelTransformation transformation = trafoIterator.next();
-            int index = trafoIterator.nextIndex();
-            String transformationName = transformation.getTransformationName();
-            boolean succeded = executeTransformation(qvtoReconf, transformation, resourceTableManager);
-            if (succeded) {
-                LOGGER.info(String.format("'EXECUTE' applied reconfiguration %d: '%s'", index, transformationName));
-            } else {
-                LOGGER.error(String.format(
-                        "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration %d: '%s'",
-                        index, transformationName));
-                break;
-            }
+        if (isEmptyReconfiguration()) {
+            return;
+        }
+        LOGGER.info(String.format("'EXECUTE' applying %d single reconfigurations", reconfigurations.size()));
+        for (SingleQVToReconfiguration reconf : this.reconfigurations) {
+            reconf.execute(experimentProvider, resourceTableManager);
         }
     }
 
     @Override
     protected boolean isEmptyReconfiguration() {
-        return transformations.isEmpty();
+        return reconfigurations.isEmpty();
     }
 
     @Override
     protected String getTransformationName() {
         List<String> names = new ArrayList<>();
-        for (QvtoModelTransformation trafo : transformations) {
-            names.add(trafo.getTransformationName());
+        for (SingleQVToReconfiguration reconf : reconfigurations) {
+            names.add(reconf.getTransformationName());
         }
         return StringUtils.join(names, ",");
     }

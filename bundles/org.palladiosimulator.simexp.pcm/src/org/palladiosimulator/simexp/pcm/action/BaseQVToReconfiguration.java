@@ -12,12 +12,6 @@ public abstract class BaseQVToReconfiguration extends ReconfigurationImpl<QVTORe
 
     protected static final String EMPTY_RECONFIGURATION_NAME = "EmptyReconf";
 
-    protected final IQVToReconfigurationManager qvtoReconfigurationManager;
-
-    public BaseQVToReconfiguration(IQVToReconfigurationManager qvtoReconfigurationManager) {
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
-    }
-
     protected boolean executeTransformation(QVTOReconfigurator qvtoReconf, QvtoModelTransformation transformation,
             IResourceTableManager resourceTableManager) {
         boolean succeded = qvtoReconf.runExecute(Collections.singletonList(transformation), null, resourceTableManager);

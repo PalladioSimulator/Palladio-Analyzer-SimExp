@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
@@ -64,18 +65,19 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
      * 
      */
     private QVToReconfiguration createReconfiguration(List<ResolvedAction> actions) {
-        List<QvtoModelTransformation> transformations = new ArrayList<>();
+        List<SingleQVToReconfiguration> reconfigurations = new ArrayList<>();
         for (ResolvedAction resolvedAction : actions) {
             String resolvedActionName = resolvedAction.getAction()
                 .getName();
             QvtoModelTransformation transformation = qvtoReconfigurationManager
                 .findQvtoModelTransformation(resolvedActionName);
-            transformations.add(transformation);
+
+            SingleQVToReconfiguration reconfiguration = SingleQVToReconfiguration.of(transformation,
+                    qvtoReconfigurationManager);
+            reconfigurations.add(reconfiguration);
         }
 
-        MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(transformations,
-                qvtoReconfigurationManager);
-
+        MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(reconfigurations);
         return reconfiguration;
     }
 
