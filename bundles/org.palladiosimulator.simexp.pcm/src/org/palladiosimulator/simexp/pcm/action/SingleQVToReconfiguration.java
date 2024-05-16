@@ -1,5 +1,8 @@
 package org.palladiosimulator.simexp.pcm.action;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -43,6 +46,13 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
                     "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration '%s'",
                     transformationName));
         }
+    }
+
+    protected boolean executeTransformation(QVTOReconfigurator qvtoReconf, QvtoModelTransformation transformation,
+            IResourceTableManager resourceTableManager) {
+        List<QvtoModelTransformation> actions = Collections.singletonList(transformation);
+        boolean succeded = qvtoReconf.runExecute(actions, null, resourceTableManager);
+        return succeded;
     }
 
     @Override
