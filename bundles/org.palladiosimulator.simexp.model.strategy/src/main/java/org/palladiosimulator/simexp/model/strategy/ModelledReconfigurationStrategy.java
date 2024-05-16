@@ -54,8 +54,8 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         List<ResolvedAction> resolvedActions = planner.plan();
-        QVToReconfiguration plannedAction = findReconfiguration(resolvedActions);
-        return plannedAction;
+        QVToReconfiguration plannedReconfiguration = createReconfiguration(resolvedActions);
+        return plannedReconfiguration;
     }
 
     /**
@@ -63,7 +63,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
      * implements lookup between QVToReconfiguration and actions retrieved from planning phase
      * 
      */
-    private QVToReconfiguration findReconfiguration(List<ResolvedAction> actions) {
+    private QVToReconfiguration createReconfiguration(List<ResolvedAction> actions) {
         List<QvtoModelTransformation> transformations = new ArrayList<>();
         for (ResolvedAction resolvedAction : actions) {
             String resolvedActionName = resolvedAction.getAction()
