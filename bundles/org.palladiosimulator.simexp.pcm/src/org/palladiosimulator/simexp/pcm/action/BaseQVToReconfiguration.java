@@ -1,7 +1,12 @@
 package org.palladiosimulator.simexp.pcm.action;
 
+import java.util.Collections;
+
 import org.palladiosimulator.simexp.core.action.ReconfigurationImpl;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
+
+import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 
 public abstract class BaseQVToReconfiguration extends ReconfigurationImpl<QVTOReconfigurator> {
 
@@ -11,6 +16,12 @@ public abstract class BaseQVToReconfiguration extends ReconfigurationImpl<QVTORe
 
     public BaseQVToReconfiguration(IQVToReconfigurationManager qvtoReconfigurationManager) {
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+    }
+
+    protected boolean executeTransformation(QVTOReconfigurator qvtoReconf, QvtoModelTransformation transformation,
+            IResourceTableManager resourceTableManager) {
+        boolean succeded = qvtoReconf.runExecute(Collections.singletonList(transformation), null, resourceTableManager);
+        return succeded;
     }
 
     protected abstract boolean isEmptyReconfiguration();

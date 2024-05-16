@@ -7,7 +7,6 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.ECollections;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
@@ -39,7 +38,7 @@ public class MultiQVToReconfiguration extends BaseQVToReconfiguration implements
             QvtoModelTransformation transformation = trafoIterator.next();
             int index = trafoIterator.nextIndex();
             String transformationName = transformation.getTransformationName();
-            boolean succeded = qvtoReconf.runExecute(ECollections.asEList(transformation), null, resourceTableManager);
+            boolean succeded = executeTransformation(qvtoReconf, transformation, resourceTableManager);
             if (succeded) {
                 LOGGER.info(String.format("'EXECUTE' applied reconfiguration %d: '%s'", index, transformationName));
             } else {

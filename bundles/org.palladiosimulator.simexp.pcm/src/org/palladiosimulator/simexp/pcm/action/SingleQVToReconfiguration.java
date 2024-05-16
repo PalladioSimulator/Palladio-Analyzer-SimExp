@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.pcm.action;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.ECollections;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
@@ -35,8 +34,7 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
         }
         QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
         String transformationName = transformation.getTransformationName();
-        final boolean succeded = qvtoReconf.runExecute(ECollections.asEList(transformation), null,
-                resourceTableManager);
+        boolean succeded = executeTransformation(qvtoReconf, transformation, resourceTableManager);
         if (succeded) {
             LOGGER.info(String.format("'EXECUTE' applied reconfiguration '%s'", transformationName));
         } else {
