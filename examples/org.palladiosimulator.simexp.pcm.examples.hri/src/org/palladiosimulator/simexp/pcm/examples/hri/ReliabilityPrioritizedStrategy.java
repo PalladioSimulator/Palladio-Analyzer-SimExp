@@ -12,8 +12,8 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.reliability.RobotCognitionEnvironmentalDynamics;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
@@ -120,12 +120,12 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             return managePerformance(options);
         }
 
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             return activateFilteringReconfiguration(options);
         }
 
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private QVToReconfiguration managePerformance(Set<QVToReconfiguration> options) {
@@ -154,7 +154,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
         } else if (isFilteringActivated) {
             return deactivateFilteringReconfiguration(options);
         } else {
-            return SingleQVToReconfiguration.empty();
+            return EmptyQVToReconfiguration.empty();
         }
     }
 

@@ -5,8 +5,8 @@ import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
@@ -55,7 +55,7 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
             return transPowerReconf;
         }
 
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class GlobalQualityBasedReconfigurationStrategy extends DeltaIoTReconfigu
             return disFactorReconf;
         }
 
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
 }

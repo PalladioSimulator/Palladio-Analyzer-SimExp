@@ -14,8 +14,8 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
@@ -149,7 +149,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
             return handleEnergyConsumption(state, energyConsumtption, options);
         }
 
-        return SingleQVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private boolean packetLossIsViolated(SimulatedMeasurement packetLoss) {

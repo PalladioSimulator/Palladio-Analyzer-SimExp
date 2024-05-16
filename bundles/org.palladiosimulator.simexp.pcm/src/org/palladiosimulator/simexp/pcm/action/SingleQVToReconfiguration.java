@@ -28,10 +28,6 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
         return new SingleQVToReconfiguration(transformation, qvtoReconfigurationManager);
     }
 
-    public static SingleQVToReconfiguration empty() {
-        return new SingleQVToReconfiguration((QvtoModelTransformation) null, null);
-    }
-
     @Override
     public void execute(IExperimentProvider experimentProvider, IResourceTableManager resourceTableManager) {
         if (isEmptyReconfiguration()) {

@@ -19,10 +19,10 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 public class ModelledReconfigurationStrategyTest {
@@ -74,7 +74,7 @@ public class ModelledReconfigurationStrategyTest {
 
     @Test
     public void testDelegateToPlannerWorksWithNoReconfigurations() throws Exception {
-        QVToReconfiguration expectedResult = SingleQVToReconfiguration.empty();
+        QVToReconfiguration expectedResult = EmptyQVToReconfiguration.empty();
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
 

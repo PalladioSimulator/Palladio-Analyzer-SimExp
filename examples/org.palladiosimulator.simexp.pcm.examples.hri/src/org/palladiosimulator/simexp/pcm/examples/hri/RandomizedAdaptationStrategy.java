@@ -7,8 +7,8 @@ import java.util.Set;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 
 import com.google.common.collect.Lists;
 
@@ -57,7 +57,7 @@ public class RandomizedAdaptationStrategy<C> extends ReliabilityPrioritizedStrat
         } else if (randomlySelect.equals("SwitchToRobustMLModel")) {
             return switchToRobustMLModel(options);
         } else {
-            return SingleQVToReconfiguration.empty();
+            return EmptyQVToReconfiguration.empty();
         }
     }
 
