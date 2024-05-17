@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +93,8 @@ public class ModelledReconfigurationStrategyTest {
         String expectedTransformationName = "testTransformation";
         Action expectedAction = SmodelFactory.eINSTANCE.createAction();
         expectedAction.setName(expectedTransformationName);
-        ResolvedAction expectedResolvedAction = new ResolvedAction(expectedAction, null);
+        Map<String, Object> arguments = new HashMap<>();
+        ResolvedAction expectedResolvedAction = new ResolvedAction(expectedAction, arguments);
         List<ResolvedAction> expectedResolvedActions = new ArrayList<>();
         expectedResolvedActions.add(expectedResolvedAction);
         when(planner.plan()).thenReturn(expectedResolvedActions);
@@ -110,8 +113,10 @@ public class ModelledReconfigurationStrategyTest {
         QvtoModelTransformation expectedTransformation2 = mock(QvtoModelTransformation.class,
                 "qvtoTransformationMock2");
         List<SingleQVToReconfiguration> expectedTransformations = new ArrayList<>();
-        expectedTransformations.add(SingleQVToReconfiguration.of(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"), qvtoReconfigurationManager));
-        expectedTransformations.add(SingleQVToReconfiguration.of(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"), qvtoReconfigurationManager));
+        expectedTransformations.add(SingleQVToReconfiguration
+            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock1"), qvtoReconfigurationManager));
+        expectedTransformations.add(SingleQVToReconfiguration
+            .of(mock(QvtoModelTransformation.class, "qvtoTransformationMock2"), qvtoReconfigurationManager));
         QVToReconfiguration expectedResult = MultiQVToReconfiguration.of(expectedTransformations);
         String expectedTransformationName1 = "testTransformation1";
         ResolvedAction expectedResolvedAction1 = createResolvedAction(expectedTransformationName1);
@@ -134,7 +139,8 @@ public class ModelledReconfigurationStrategyTest {
     private ResolvedAction createResolvedAction(String actionName) {
         Action action = SmodelFactory.eINSTANCE.createAction();
         action.setName(actionName);
-        ResolvedAction resolvedAction = new ResolvedAction(action, null);
+        Map<String, Object> arguments = new HashMap<>();
+        ResolvedAction resolvedAction = new ResolvedAction(action, arguments);
         return resolvedAction;
     }
 

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.model.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
@@ -14,6 +15,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.ParameterizedSingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -72,8 +74,9 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
             QvtoModelTransformation transformation = qvtoReconfigurationManager
                 .findQvtoModelTransformation(resolvedActionName);
 
-            SingleQVToReconfiguration reconfiguration = SingleQVToReconfiguration.of(transformation,
-                    qvtoReconfigurationManager);
+            Map<String, Object> arguments = resolvedAction.getArguments();
+            SingleQVToReconfiguration reconfiguration = new ParameterizedSingleQVToReconfiguration(transformation,
+                    qvtoReconfigurationManager, arguments);
             reconfigurations.add(reconfiguration);
         }
 
