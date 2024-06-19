@@ -4,9 +4,13 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
@@ -80,13 +84,33 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
     // Assuming that specification name is equal to property name.
     private void retrieveAndSetStateQuantities(StateQuantity quantity, PrismResult result) {
         for (SimulatedMeasurementSpecification each : quantity.getMeasurementSpecs()) {
-            Optional<Double> value = result.getResultOf(each.getName());
-            if (value.isPresent()) {
-                quantity.setMeasurement(value.get(), each);
-            } else {
-                // TODO logging
+            PrismSimulatedMeasurementSpec prismEach = (PrismSimulatedMeasurementSpec) each;
+            File propertyFile = prismEach.getPropertyFile();
+            try {
+                String prismProperty = readPrismProperty(propertyFile.toPath());
+                Optional<Double> value = result.getResultOf(prismProperty);
+//                Optional<Double> value = result.getResultOf(each.getName());
+                if (value.isPresent()) {
+                    quantity.setMeasurement(value.get(), each);
+                } else {
+                    // TODO logging
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+
         }
+    }
+
+    private String readPrismProperty(Path propertyFile) throws IOException {
+        List<String> lines = Files.readAllLines(propertyFile);
+        Predicate<String> empty = String::isEmpty;
+        Predicate<String> emptyRev = empty.negate();
+        List<String> nonEmptyLines = lines.stream()
+            .filter(emptyRev)
+            .collect(Collectors.toList());
+        return nonEmptyLines.get(0);
     }
 
 }
