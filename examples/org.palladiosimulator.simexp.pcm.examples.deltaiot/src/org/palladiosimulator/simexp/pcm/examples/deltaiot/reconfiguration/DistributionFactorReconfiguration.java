@@ -17,7 +17,8 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfiguration {
+public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfiguration
+        implements IDistributionFactorReconfiguration {
 
     public final static double DEFAULT_VALUE = 0.0;
     private final static String QVT_FILE_SUFFIX = "DistributionFactor";
@@ -36,6 +37,7 @@ public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfigurati
         this(reconfiguration, Sets.newHashSet(distFactors));
     }
 
+    @Override
     public void setDistributionFactorValuesToDefaults() {
         for (DistributionFactor each : distFactors) {
             each.getFactorValues()
@@ -49,8 +51,16 @@ public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfigurati
     }
 
     public void adjustDistributionFactors(Map<ProbabilisticBranchTransition, Double> factorAdjustements) {
-        for (ProbabilisticBranchTransition each : factorAdjustements.keySet()) {
-            findDistFactorValueWith(each).ifPresent(v -> v.setValue(factorAdjustements.get(each)));
+        adjustDistributionFactor(factorAdjustements);
+    }
+
+    @Override
+    public void adjustDistributionFactor(Map<ProbabilisticBranchTransition, Double> factors) {
+        for (Map.Entry<ProbabilisticBranchTransition, Double> entry : factors.entrySet()) {
+            ProbabilisticBranchTransition each = entry.getKey();
+            Double value = entry.getValue();
+            Optional<DistributionFactorValue> distFactorValue = findDistFactorValueWith(each);
+            distFactorValue.ifPresent(v -> v.setValue(value));
         }
     }
 

@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
@@ -18,9 +17,8 @@ import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
-public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration {
-
-    private final static double UNIFORM_DIST_VALUE = 0.5;
+public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
+        implements IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
 
     private final DeltaIoTReconfigurationParamRepository paramRepo;
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
@@ -39,6 +37,7 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration 
             .endsWith("DeltaIoTNetwork");
     }
 
+    @Override
     public void setDistributionFactorValuesToDefaults() {
         for (DistributionFactor each : paramRepo.getDistributionFactors()) {
             each.getFactorValues()
@@ -46,34 +45,38 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration 
         }
     }
 
-    public void setDistributionFactorsUniformally(AssemblyContext mote) {
-        modelAccess.retrieveCommunicatingBranches(mote)
-            .forEach(branch -> setDistributionFactorIfPresent(branch, UNIFORM_DIST_VALUE));
-    }
-
-    public void adjustDistributionFactor(DeltaIoTBaseReconfiguration deltaIoTBaseReconfiguration,
-            Map<ProbabilisticBranchTransition, Double> factors) {
-        if (deltaIoTBaseReconfiguration.isNotValid(factors)) {
+    @Override
+    public void adjustDistributionFactor(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (isNotValid(factors)) {
             throw new RuntimeException("The disrtribution factors are note valid.");
         }
 
-        factors.keySet()
-            .forEach(branch -> setDistributionFactorIfPresent(branch, factors.get(branch)));
+        for (Map.Entry<ProbabilisticBranchTransition, Double> entry : factors.entrySet()) {
+            ProbabilisticBranchTransition branch = entry.getKey();
+            Double value = entry.getValue();
+            setDistributionFactorIfPresent(branch, value);
+        }
     }
 
+    @Override
     public void adjustTransmissionPower(Map<VariableReference, Integer> powerSetting) {
-        for (VariableReference each : powerSetting.keySet()) {
+        for (Map.Entry<VariableReference, Integer> entry : powerSetting.entrySet()) {
+            VariableReference each = entry.getKey();
+            Integer adjustment = entry.getValue();
             var tp = findTransmissionPowerValueWith(each);
             if (tp.isEmpty()) {
                 throw new RuntimeException(
                         String.format("Power value for %s could not be found.", each.getReferenceName()));
             }
 
-            int newTpValue = tp.get()
-                .getPowerSetting() + powerSetting.get(each);
-            tp.get()
-                .setPowerSetting(newTpValue);
+            TransmissionPowerValue transmissionPowerValue = tp.get();
+            adjust(transmissionPowerValue, adjustment);
         }
+    }
+
+    private void adjust(TransmissionPowerValue value, int adjustement) {
+        int newPowerVal = value.getPowerSetting() + adjustement;
+        value.setPowerSetting(newPowerVal);
     }
 
     private Optional<DistributionFactorValue> findDistFactorValueWith(ProbabilisticBranchTransition branch) {

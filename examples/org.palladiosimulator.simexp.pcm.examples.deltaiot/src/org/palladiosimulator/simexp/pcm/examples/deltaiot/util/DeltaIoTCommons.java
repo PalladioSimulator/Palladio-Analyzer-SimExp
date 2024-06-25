@@ -3,14 +3,15 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toMap;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.isSNRTemplate;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.toInputs;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics.isSNRTemplate;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -19,6 +20,7 @@ import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
@@ -77,18 +79,17 @@ public class DeltaIoTCommons {
             .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
     }
 
-    public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(
-            Set<QVToReconfiguration> options) {
-        return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, options)
+    public static DeltaIoTBaseReconfiguration retrieveDeltaIoTNetworkReconfiguration(Set<QVToReconfiguration> options) {
+        return retrieveReconfiguration(DeltaIoTBaseReconfiguration.class, options)
             .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
     }
 
     private static <T extends QVToReconfiguration> Optional<T> retrieveReconfiguration(Class<T> reconfClass,
             Set<QVToReconfiguration> options) {
-        return options.stream()
+        Stream<T> map = options.stream()
             .filter(reconfClass::isInstance)
-            .map(reconfClass::cast)
-            .findFirst();
+            .map(reconfClass::cast);
+        return map.findFirst();
     }
 
     public static void requirePcmSelfAdaptiveSystemState(State source) {

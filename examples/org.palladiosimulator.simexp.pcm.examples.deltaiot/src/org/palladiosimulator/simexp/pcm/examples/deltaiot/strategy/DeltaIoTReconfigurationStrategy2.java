@@ -21,6 +21,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
@@ -147,7 +149,11 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        retrieveDeltaIoTNetworkReconfiguration(options).setDistributionFactorValuesToDefaults();
+        DeltaIoTBaseReconfiguration deltaIoTReconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
+        if (deltaIoTReconfiguration instanceof IDistributionFactorReconfiguration) {
+            IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) deltaIoTReconfiguration;
+            distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();
+        }
         knowledge.store(OPTIONS_KEY, options);
 
         double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY)

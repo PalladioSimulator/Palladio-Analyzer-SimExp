@@ -104,7 +104,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
     private void adjustDistributionFactor(WirelessLink linkToDecrease, MoteContext mote,
             DeltaIoTNetworkReconfiguration reconfiguration) {
         var adjustedParams = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, mote);
-        reconfiguration.adjustDistributionFactor(reconfiguration, adjustedParams);
+        reconfiguration.adjustDistributionFactor(adjustedParams);
     }
 
     private boolean isGreaterThanZero(double distributionFactor) {
