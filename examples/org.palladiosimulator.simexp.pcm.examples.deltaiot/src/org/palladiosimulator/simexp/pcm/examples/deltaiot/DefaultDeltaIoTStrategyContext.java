@@ -49,7 +49,7 @@ public class DefaultDeltaIoTStrategyContext
         QVToReconfiguration qvt = qvts.get(0);
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
             DeltaIoTBaseReconfiguration deltaIoTBaseReconfiguration = (DeltaIoTBaseReconfiguration) qvt;
-            reconfs.add(new DeltaIoTNetworkReconfiguration(deltaIoTBaseReconfiguration, reconfParamsRepo, modelAccess));
+            reconfs.add(new DeltaIoTNetworkReconfiguration(deltaIoTBaseReconfiguration, reconfParamsRepo));
         }
         return reconfs;
     }

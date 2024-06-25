@@ -11,9 +11,6 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
@@ -21,15 +18,11 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
         implements IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
 
     private final DeltaIoTReconfigurationParamRepository paramRepo;
-    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DeltaIoTNetworkReconfiguration(SingleQVToReconfiguration reconfiguration,
-            DeltaIoTReconfigurationParamRepository paramRepo,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+            DeltaIoTReconfigurationParamRepository paramRepo) {
         super(reconfiguration);
-
         this.paramRepo = paramRepo;
-        this.modelAccess = modelAccess;
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
