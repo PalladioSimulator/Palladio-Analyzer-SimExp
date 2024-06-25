@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -20,6 +21,8 @@ import com.google.common.collect.Lists;
  * This is a helper class for tracking the system configurations of deltaiot and thus only relevant for validation purposes.
  */
 public class SystemConfigurationTracker {
+
+    private static final Logger LOGGER = Logger.getLogger(SystemConfigurationTracker.class.getName());
 
     private final static String CSV_DELIMITER = ";";
     private final static String SIMULATED_EXPERIENCE_BASE_FOLDER = Paths.get(ResourcesPlugin.getWorkspace()
@@ -119,17 +122,16 @@ public class SystemConfigurationTracker {
     }
 
     private void printFinishTracking() {
-        System.out.println("******** END *******");
+        LOGGER.info("******** END *******");
     }
 
     private void printStartTracking() {
-        System.out.println("******** Network configuration of " + run + " *******");
+        LOGGER.info("******** Network configuration of " + run + " *******");
     }
 
     private void print(WirelessLink eachLink) {
-        System.out
-            .println(String.format("Link: %1s, Power: %2s, SNR:  %3s, Dist.: %4s", eachLink.pcmLink.getEntityName(),
-                    eachLink.transmissionPower, eachLink.SNR, eachLink.distributionFactor));
+        LOGGER.info(String.format("Link: %1s, Power: %2s, SNR:  %3s, Dist.: %4s", eachLink.pcmLink.getEntityName(),
+                eachLink.transmissionPower, eachLink.SNR, eachLink.distributionFactor));
     }
 
     private String getFileLocation(String strategyId) {
