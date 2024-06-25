@@ -4,9 +4,10 @@ Bundle-Name: Deltaiot
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot,
- org.palladiosimulator.simexp.pcm.examples.deltaiot.provider,
  org.palladiosimulator.simexp.pcm.examples.deltaiot.process,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.provider,
  org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.reward,
  org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy,
  org.palladiosimulator.simexp.pcm.examples.deltaiot.util
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot

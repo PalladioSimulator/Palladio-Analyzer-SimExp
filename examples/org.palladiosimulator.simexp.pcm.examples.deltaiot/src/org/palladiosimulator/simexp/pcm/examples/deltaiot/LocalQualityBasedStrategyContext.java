@@ -51,7 +51,9 @@ public class LocalQualityBasedStrategyContext
                 reconfs.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
                         reconfParamsRepo.getDistributionFactors()));
             } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
-                reconfs.add(new TransmissionPowerReconfiguration(each, reconfParamsRepo.getTransmissionPower()));
+                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
+                reconfs.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
+                        reconfParamsRepo.getTransmissionPower()));
             }
         }
 
