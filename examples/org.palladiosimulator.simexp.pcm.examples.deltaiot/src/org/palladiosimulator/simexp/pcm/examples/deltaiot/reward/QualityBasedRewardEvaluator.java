@@ -5,13 +5,14 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.UPPER_BOUND_ENERGY_CONSUMPTION;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.UPPER_BOUND_PACKET_LOSS;
 
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 
-public class QualityBasedRewardEvaluator implements RewardEvaluator {
+public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
 
     public static class RealValuedReward extends RewardImpl<Double> {
 
@@ -41,17 +42,19 @@ public class QualityBasedRewardEvaluator implements RewardEvaluator {
 
     @Override
     public Reward<Double> evaluate(StateQuantity quantifiedState) {
-        double value = 0;
-
-        var packetLoss = quantifiedState.findMeasurementWith(packetLossSpec)
+        double value = 0.0;
+        SimulatedMeasurement packetLoss = quantifiedState.findMeasurementWith(packetLossSpec)
             .orElseThrow();
-        value += normalizePacketLoss(packetLoss.getValue());
-
-        var energyConsumption = quantifiedState.findMeasurementWith(energyConsumptionSpec)
+        double normalizedPacketLoss = normalizePacketLoss(packetLoss.getValue());
+        value += normalizedPacketLoss;
+        SimulatedMeasurement energyConsumption = quantifiedState.findMeasurementWith(energyConsumptionSpec)
             .orElseThrow();
-        value += normalizeEnergyConsumption(energyConsumption.getValue());
+        double normalizedEnergyConsumption = normalizeEnergyConsumption(energyConsumption.getValue());
+        value += normalizedEnergyConsumption;
 
-        return RealValuedReward.of(value);
+        double normalizedValue = normalizedPacketLoss + normalizedEnergyConsumption;
+
+        return RealValuedReward.of(normalizedValue);
     }
 
     private double normalizeEnergyConsumption(double ec) {
