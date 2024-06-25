@@ -25,7 +25,6 @@ public class DefaultDeltaIoTStrategyContext
     private final DeltaIoTDefaultReconfigurationStrategy strategy;
     private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final QVToReconfigurationManager qvtoReconfigurationManager;
-    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
     public DefaultDeltaIoTStrategyContext(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             QVToReconfigurationManager qvtoReconfigurationManager,
@@ -35,7 +34,6 @@ public class DefaultDeltaIoTStrategyContext
                 systemConfigurationTracker);
         this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
-        this.modelAccess = modelAccess;
     }
 
     @Override
