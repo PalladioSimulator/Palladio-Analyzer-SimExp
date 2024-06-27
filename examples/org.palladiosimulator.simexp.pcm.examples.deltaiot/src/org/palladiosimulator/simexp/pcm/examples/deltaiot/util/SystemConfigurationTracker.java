@@ -30,6 +30,15 @@ public class SystemConfigurationTracker {
         configurationStatisticSinks.add(sink);
     }
 
+    public void prepareNetworkConfig() {
+        if (run > 0) {
+            return;
+        }
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
+            sink.initialize();
+        }
+    }
+
     public void processNetworkConfig(SharedKnowledge knowledge) {
         runStart();
 

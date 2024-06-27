@@ -22,6 +22,10 @@ public class DeltaIotCSVSystemConfigurationStatisticSink implements IConfigurati
     }
 
     @Override
+    public void initialize() {
+    }
+
+    @Override
     public void onEntry(int run, WirelessLink link) {
         DeltaIoTSystemStatisticEntry entry = new DeltaIoTSystemStatisticEntry(link, run);
         sysConfigurations.add(entry);

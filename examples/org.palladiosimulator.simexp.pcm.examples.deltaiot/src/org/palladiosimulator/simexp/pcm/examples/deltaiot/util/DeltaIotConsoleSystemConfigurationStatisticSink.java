@@ -6,7 +6,8 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.W
 public class DeltaIotConsoleSystemConfigurationStatisticSink implements IConfigurationStatisticSink {
     private static final Logger LOGGER = Logger.getLogger(DeltaIotConsoleSystemConfigurationStatisticSink.class);
 
-    public DeltaIotConsoleSystemConfigurationStatisticSink() {
+    @Override
+    public void initialize() {
     }
 
     @Override

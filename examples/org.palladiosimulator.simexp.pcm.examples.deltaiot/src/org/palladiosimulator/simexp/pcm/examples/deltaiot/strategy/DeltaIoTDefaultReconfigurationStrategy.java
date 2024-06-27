@@ -60,6 +60,8 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
+        systemConfigurationTracker.prepareNetworkConfig();
+
         requirePcmSelfAdaptiveSystemState(source);
 
         PcmSelfAdaptiveSystemState state = PcmSelfAdaptiveSystemState.class.cast(source);
