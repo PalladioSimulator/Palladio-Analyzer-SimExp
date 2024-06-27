@@ -125,10 +125,9 @@ public class DeltaIoTSimulationExecutorFactory extends
                 qvtoReconfigurationManager);
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
+        SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(getSimulationParameters());
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
-        SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(strategyId,
-                getSimulationParameters());
         Path csvPath = getCSVPath(strategyId);
         DeltaIotSystemConfigurationCSVWriter csvSink = new DeltaIotSystemConfigurationCSVWriter(csvPath);
         systemConfigTracker.addStatisticSink(csvSink);

@@ -23,7 +23,7 @@ public class SystemConfigurationTracker {
 
     private int run;
 
-    public SystemConfigurationTracker(String strategyId, SimulationParameters simulationParameters) {
+    public SystemConfigurationTracker(SimulationParameters simulationParameters) {
         this.simulationParameters = simulationParameters;
         this.statisticSinks = Lists.newArrayList();
         this.run = 0;
