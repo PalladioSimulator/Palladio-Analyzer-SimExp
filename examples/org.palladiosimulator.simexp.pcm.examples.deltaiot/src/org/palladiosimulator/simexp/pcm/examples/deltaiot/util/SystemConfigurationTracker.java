@@ -30,7 +30,7 @@ public class SystemConfigurationTracker {
         statisticSinks.add(sink);
     }
 
-    public void registerAndPrintNetworkConfig(SharedKnowledge knowledge) {
+    public void processNetworkConfig(SharedKnowledge knowledge) {
         runStart();
 
         var moteFiler = new MoteContextFilter(knowledge);
@@ -45,19 +45,20 @@ public class SystemConfigurationTracker {
         runFinish();
 
         run++;
+
+        if (isLastRun()) {
+            saveNetworkConfigs();
+            run = 0;
+        }
     }
 
-    public void saveNetworkConfigs() {
+    private void saveNetworkConfigs() {
         for (IStatisticSink sink : statisticSinks) {
             sink.finalize();
         }
     }
 
-    public void resetTrackedValues() {
-        run = 0;
-    }
-
-    public boolean isLastRun() {
+    private boolean isLastRun() {
         return run == (simulationParameters.getNumberOfSimulationsPerRun() - 1);
     }
 

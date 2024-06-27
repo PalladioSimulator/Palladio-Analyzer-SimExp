@@ -129,11 +129,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         addMonitoredEnvironmentValues(state, knowledge);
         addMonitoredQualityValues(state, knowledge);
 
-        systemConfigurationTracker.registerAndPrintNetworkConfig(knowledge);
-        if (systemConfigurationTracker.isLastRun()) {
-            systemConfigurationTracker.saveNetworkConfigs();
-            systemConfigurationTracker.resetTrackedValues();
-        }
+        systemConfigurationTracker.processNetworkConfig(knowledge);
     }
 
     @Override

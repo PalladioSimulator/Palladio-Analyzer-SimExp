@@ -68,11 +68,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
         addMonitoredEnvironmentValues(state, knowledge);
 
-        systemConfigurationTracker.registerAndPrintNetworkConfig(knowledge);
-        if (systemConfigurationTracker.isLastRun()) {
-            systemConfigurationTracker.saveNetworkConfigs();
-            systemConfigurationTracker.resetTrackedValues();
-        }
+        systemConfigurationTracker.processNetworkConfig(knowledge);
     }
 
     @Override
