@@ -1,18 +1,21 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -38,6 +41,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRew
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotSystemConfigurationCSVWriter;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -121,8 +125,14 @@ public class DeltaIoTSimulationExecutorFactory extends
                 qvtoReconfigurationManager);
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
-        SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker("DefaultDeltaIoTStrategy",
+        String strategyId = getWorkflowConfiguration().getSimulationParameters()
+            .getSimulationID();
+        SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(strategyId,
                 getSimulationParameters());
+        Path csvPath = getCSVPath(strategyId);
+        DeltaIotSystemConfigurationCSVWriter csvSink = new DeltaIotSystemConfigurationCSVWriter(csvPath);
+        systemConfigTracker.addStatisticSink(csvSink);
+
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(
                 reconfParamsRepo, modelAccess, getSimulationParameters(), systemConfigTracker);
         // Strategy: LocalQualityBasedReconfigurationStrategy
@@ -157,11 +167,24 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
-            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
+//        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
+//            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
+                getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+    }
+
+    private Path getCSVPath(String strategyId) {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString(), "resource", strategyId);
+
+        String csvFileName = strategyId + "Configurations.csv";
+        Path csvFilePath = Paths.get(outputBasePath.toString(), csvFileName);
+        return csvFilePath;
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,
