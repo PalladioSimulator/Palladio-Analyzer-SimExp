@@ -34,6 +34,7 @@ public class SystemConfigurationTracker {
 
     private final String strategyId;
     private final List<String> configurations;
+    private final List<DeltaIoTSystemConfigItem> sysConfigurations;
     private final SimulationParameters simulationParameters;
 
     private int run;
@@ -42,6 +43,7 @@ public class SystemConfigurationTracker {
         this.strategyId = strategyId;
         this.simulationParameters = simulationParameters;
         this.configurations = Lists.newArrayList();
+        this.sysConfigurations = Lists.newArrayList();
         this.run = 0;
     }
 
@@ -119,6 +121,9 @@ public class SystemConfigurationTracker {
             .append(link.distributionFactor)
             .toString();
         configurations.add(configuration);
+
+        DeltaIoTSystemConfigItem configItem = new DeltaIoTSystemConfigItem(link, run);
+        sysConfigurations.add(configItem);
     }
 
     private void printFinishTracking() {
