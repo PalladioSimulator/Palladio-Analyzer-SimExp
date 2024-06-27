@@ -38,7 +38,7 @@ public class SystemConfigurationTracker {
             for (WirelessLink eachLink : eachMote.links) {
                 DeltaIoTSystemStatisticEntry statEntry = new DeltaIoTSystemStatisticEntry(eachLink, run);
                 for (IStatisticSink sink : statisticSinks) {
-                    sink.onEntry(statEntry);
+                    sink.onEntry(run, statEntry);
                 }
             }
         }

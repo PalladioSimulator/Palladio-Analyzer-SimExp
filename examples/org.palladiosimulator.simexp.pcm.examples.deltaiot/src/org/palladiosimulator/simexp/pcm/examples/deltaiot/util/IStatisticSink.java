@@ -5,7 +5,7 @@ public interface IStatisticSink {
 
     void onRunFinish(int run);
 
-    void onEntry(DeltaIoTSystemStatisticEntry entry);
+    void onEntry(int run, DeltaIoTSystemStatisticEntry entry);
 
     void finalize();
 }
