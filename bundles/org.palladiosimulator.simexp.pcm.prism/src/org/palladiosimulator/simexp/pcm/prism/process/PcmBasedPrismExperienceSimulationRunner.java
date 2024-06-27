@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -16,6 +17,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
@@ -31,6 +33,7 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
 
     private final PrismService prismService;
     private final PrismGenerator<A, V> prismGenerator;
+    private final List<IPrismObserver> prismObservers;
 
     public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, File prismFolder) {
         // TODO exception handling
@@ -38,8 +41,12 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
             .findService(PrismService.class)
             .orElseThrow(() -> new RuntimeException("There is no prism service."));
         this.prismGenerator = prismGenerator;
-
         this.prismService.initialise(createLogFile(prismFolder));
+        this.prismObservers = new ArrayList<>();
+    }
+
+    public void addPrismObserver(IPrismObserver prismObserver) {
+        prismObservers.add(prismObserver);
     }
 
     private File createLogFile(File prismFolder) {
@@ -66,10 +73,18 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
     private PrismResult modelCheck(PcmSelfAdaptiveSystemState<A, V> sasState) {
         PrismResult result = new PrismResult();
         for (PrismSimulatedMeasurementSpec each : filterPrismSpecs(sasState)) {
-            PrismResult resultToMerge = prismService.modelCheck(prismGenerator.generate(sasState, each));
+            PrismContext context = prismGenerator.generate(sasState, each);
+            preProcessContext(context);
+            PrismResult resultToMerge = prismService.modelCheck(context);
             result.mergeWith(resultToMerge);
         }
         return result;
+    }
+
+    private void preProcessContext(PrismContext context) {
+        for (IPrismObserver prismObserver : prismObservers) {
+            prismObserver.onContext(context);
+        }
     }
 
     private List<PrismSimulatedMeasurementSpec> filterPrismSpecs(PcmSelfAdaptiveSystemState<A, V> sasState) {
