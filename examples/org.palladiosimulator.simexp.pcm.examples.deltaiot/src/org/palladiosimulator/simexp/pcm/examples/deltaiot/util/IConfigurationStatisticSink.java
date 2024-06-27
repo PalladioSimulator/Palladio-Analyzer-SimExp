@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 
-public interface IStatisticSink {
+public interface IConfigurationStatisticSink {
     void onRunStart(int run);
 
     void onRunFinish(int run);

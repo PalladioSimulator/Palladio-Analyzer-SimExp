@@ -15,19 +15,19 @@ import com.google.common.collect.Lists;
  */
 public class SystemConfigurationTracker {
 
-    private final List<IStatisticSink> statisticSinks;
+    private final List<IConfigurationStatisticSink> configurationStatisticSinks;
     private final SimulationParameters simulationParameters;
 
     private int run;
 
     public SystemConfigurationTracker(SimulationParameters simulationParameters) {
         this.simulationParameters = simulationParameters;
-        this.statisticSinks = Lists.newArrayList();
+        this.configurationStatisticSinks = Lists.newArrayList();
         this.run = 0;
     }
 
-    public void addStatisticSink(IStatisticSink sink) {
-        statisticSinks.add(sink);
+    public void addStatisticSink(IConfigurationStatisticSink sink) {
+        configurationStatisticSinks.add(sink);
     }
 
     public void processNetworkConfig(SharedKnowledge knowledge) {
@@ -36,7 +36,7 @@ public class SystemConfigurationTracker {
         var moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
-                for (IStatisticSink sink : statisticSinks) {
+                for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
                     sink.onEntry(run, eachLink);
                 }
             }
@@ -53,7 +53,7 @@ public class SystemConfigurationTracker {
     }
 
     private void saveNetworkConfigs() {
-        for (IStatisticSink sink : statisticSinks) {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
             sink.finalize();
         }
     }
@@ -63,13 +63,13 @@ public class SystemConfigurationTracker {
     }
 
     private void runStart() {
-        for (IStatisticSink sink : statisticSinks) {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
             sink.onRunStart(run);
         }
     }
 
     private void runFinish() {
-        for (IStatisticSink sink : statisticSinks) {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
             sink.onRunFinish(run);
         }
     }

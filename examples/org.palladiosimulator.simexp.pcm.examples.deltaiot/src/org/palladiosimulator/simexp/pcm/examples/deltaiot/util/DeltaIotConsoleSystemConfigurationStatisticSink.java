@@ -3,10 +3,10 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 
-public class DeltaIotSystemStatisticConsoleSink implements IStatisticSink {
-    private static final Logger LOGGER = Logger.getLogger(DeltaIotSystemStatisticConsoleSink.class);
+public class DeltaIotConsoleSystemConfigurationStatisticSink implements IConfigurationStatisticSink {
+    private static final Logger LOGGER = Logger.getLogger(DeltaIotConsoleSystemConfigurationStatisticSink.class);
 
-    public DeltaIotSystemStatisticConsoleSink() {
+    public DeltaIotConsoleSystemConfigurationStatisticSink() {
     }
 
     @Override

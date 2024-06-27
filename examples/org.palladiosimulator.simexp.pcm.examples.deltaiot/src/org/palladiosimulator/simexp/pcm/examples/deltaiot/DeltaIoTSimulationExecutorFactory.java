@@ -41,8 +41,8 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRew
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotSystemConfigurationCSVWriter;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotSystemStatisticConsoleSink;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotCSVSystemConfigurationStatisticSink;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotConsoleSystemConfigurationStatisticSink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -127,12 +127,12 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
         SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(getSimulationParameters());
-        DeltaIotSystemStatisticConsoleSink consoleSink = new DeltaIotSystemStatisticConsoleSink();
+        DeltaIotConsoleSystemConfigurationStatisticSink consoleSink = new DeltaIotConsoleSystemConfigurationStatisticSink();
         systemConfigTracker.addStatisticSink(consoleSink);
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
         Path csvPath = getCSVPath(strategyId);
-        DeltaIotSystemConfigurationCSVWriter csvSink = new DeltaIotSystemConfigurationCSVWriter(csvPath);
+        DeltaIotCSVSystemConfigurationStatisticSink csvSink = new DeltaIotCSVSystemConfigurationStatisticSink(csvPath);
         systemConfigTracker.addStatisticSink(csvSink);
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(

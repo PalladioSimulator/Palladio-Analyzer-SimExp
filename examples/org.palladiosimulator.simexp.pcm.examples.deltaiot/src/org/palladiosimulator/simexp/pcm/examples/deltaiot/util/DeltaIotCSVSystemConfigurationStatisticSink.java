@@ -12,11 +12,11 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.W
 
 import com.google.common.collect.Lists;
 
-public class DeltaIotSystemConfigurationCSVWriter implements IStatisticSink {
+public class DeltaIotCSVSystemConfigurationStatisticSink implements IConfigurationStatisticSink {
     private final Path outputPath;
     private final List<DeltaIoTSystemStatisticEntry> sysConfigurations;
 
-    public DeltaIotSystemConfigurationCSVWriter(Path outputPath) {
+    public DeltaIotCSVSystemConfigurationStatisticSink(Path outputPath) {
         this.outputPath = outputPath;
         this.sysConfigurations = Lists.newArrayList();
     }
