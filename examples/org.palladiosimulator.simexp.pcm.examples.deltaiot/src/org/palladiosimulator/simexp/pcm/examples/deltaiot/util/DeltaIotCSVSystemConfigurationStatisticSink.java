@@ -4,59 +4,53 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 
-import com.google.common.collect.Lists;
-
 public class DeltaIotCSVSystemConfigurationStatisticSink implements IConfigurationStatisticSink {
     private final Path outputPath;
-    private final List<DeltaIoTSystemStatisticEntry> sysConfigurations;
+
+    private CSVPrinter printer;
 
     public DeltaIotCSVSystemConfigurationStatisticSink(Path outputPath) {
         this.outputPath = outputPath;
-        this.sysConfigurations = Lists.newArrayList();
     }
 
     @Override
     public void initialize() {
-    }
-
-    @Override
-    public void onEntry(int run, WirelessLink link) {
-        DeltaIoTSystemStatisticEntry entry = new DeltaIoTSystemStatisticEntry(link, run);
-        sysConfigurations.add(entry);
-    }
-
-    @Override
-    public void finalize() {
-        try {
-            writeOut(sysConfigurations);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            sysConfigurations.clear();
-        }
-    }
-
-    private void writeOut(List<DeltaIoTSystemStatisticEntry> entries) throws IOException {
         String[] HEADERS = { "Run", "Link", "Power", "Distribution" };
 
         CSVFormat csvFormat = CSVFormat.newFormat(';')
             .withHeader(HEADERS)
             .withRecordSeparator("\r\n");
 
-        try (Writer writer = Files.newBufferedWriter(outputPath)) {
-            try (CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
-                for (DeltaIoTSystemStatisticEntry entry : entries) {
-                    WirelessLink link = entry.getLink();
-                    printer.printRecord(entry.getSimulationRun(), link.pcmLink.getEntityName(), link.transmissionPower,
-                            link.distributionFactor);
-                }
-            }
+        try {
+            Writer writer = Files.newBufferedWriter(outputPath);
+            printer = new CSVPrinter(writer, csvFormat);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onEntry(int run, WirelessLink link) {
+        try {
+            printer.printRecord(run, link.pcmLink.getEntityName(), link.transmissionPower, link.distributionFactor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void finalize() {
+        try {
+            printer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            printer = null;
         }
     }
 
