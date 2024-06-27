@@ -36,9 +36,8 @@ public class SystemConfigurationTracker {
         var moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
-                DeltaIoTSystemStatisticEntry statEntry = new DeltaIoTSystemStatisticEntry(eachLink, run);
                 for (IStatisticSink sink : statisticSinks) {
-                    sink.onEntry(run, statEntry);
+                    sink.onEntry(run, eachLink);
                 }
             }
         }

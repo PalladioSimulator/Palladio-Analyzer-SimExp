@@ -20,8 +20,7 @@ public class DeltaIotSystemStatisticConsoleSink implements IStatisticSink {
     }
 
     @Override
-    public void onEntry(int run, DeltaIoTSystemStatisticEntry entry) {
-        WirelessLink link = entry.getLink();
+    public void onEntry(int run, WirelessLink link) {
         LOGGER.info(String.format("Link: %1s, Power: %2s, SNR:  %3s, Dist.: %4s", link.pcmLink.getEntityName(),
                 link.transmissionPower, link.SNR, link.distributionFactor));
     }

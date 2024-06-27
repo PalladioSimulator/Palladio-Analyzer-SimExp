@@ -22,7 +22,8 @@ public class DeltaIotSystemConfigurationCSVWriter implements IStatisticSink {
     }
 
     @Override
-    public void onEntry(int run, DeltaIoTSystemStatisticEntry entry) {
+    public void onEntry(int run, WirelessLink link) {
+        DeltaIoTSystemStatisticEntry entry = new DeltaIoTSystemStatisticEntry(link, run);
         sysConfigurations.add(entry);
     }
 
