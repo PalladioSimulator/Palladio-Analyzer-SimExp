@@ -54,4 +54,12 @@ public class DeltaIotSystemConfigurationCSVWriter implements IStatisticSink {
             }
         }
     }
+
+    @Override
+    public void onRunStart(int run) {
+    }
+
+    @Override
+    public void onRunFinish(int run) {
+    }
 }

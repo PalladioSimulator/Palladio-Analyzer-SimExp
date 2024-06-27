@@ -42,6 +42,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefau
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotSystemConfigurationCSVWriter;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotSystemStatisticConsoleSink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -126,6 +127,8 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
         SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(getSimulationParameters());
+        DeltaIotSystemStatisticConsoleSink consoleSink = new DeltaIotSystemStatisticConsoleSink();
+        systemConfigTracker.addStatisticSink(consoleSink);
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
         Path csvPath = getCSVPath(strategyId);
