@@ -31,7 +31,7 @@ public class SystemConfigurationTracker {
     }
 
     public void registerAndPrintNetworkConfig(SharedKnowledge knowledge) {
-        printStartTracking();
+        runStart();
 
         var moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
@@ -42,7 +42,7 @@ public class SystemConfigurationTracker {
             }
         }
 
-        printFinishTracking();
+        runFinish();
 
         run++;
     }
@@ -61,13 +61,13 @@ public class SystemConfigurationTracker {
         return run == (simulationParameters.getNumberOfSimulationsPerRun() - 1);
     }
 
-    private void printStartTracking() {
+    private void runStart() {
         for (IStatisticSink sink : statisticSinks) {
             sink.onRunStart(run);
         }
     }
 
-    private void printFinishTracking() {
+    private void runFinish() {
         for (IStatisticSink sink : statisticSinks) {
             sink.onRunFinish(run);
         }
