@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext;
@@ -14,6 +16,7 @@ import com.google.common.collect.Lists;
  * This is a helper class for tracking the system configurations of deltaiot and thus only relevant for validation purposes.
  */
 public class SystemConfigurationTracker {
+    private static final Logger LOGGER = Logger.getLogger(SystemConfigurationTracker.class);
 
     private final List<IConfigurationStatisticSink> configurationStatisticSinks;
     private final SimulationParameters simulationParameters;
@@ -35,7 +38,11 @@ public class SystemConfigurationTracker {
             return;
         }
         for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
-            sink.initialize();
+            try {
+                sink.initialize();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -46,7 +53,11 @@ public class SystemConfigurationTracker {
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
                 for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
-                    sink.onEntry(run, eachLink);
+                    try {
+                        sink.onEntry(run, eachLink);
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
                 }
             }
         }
@@ -63,7 +74,11 @@ public class SystemConfigurationTracker {
 
     private void saveNetworkConfigs() {
         for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
-            sink.finalize();
+            try {
+                sink.finalize();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -73,13 +88,21 @@ public class SystemConfigurationTracker {
 
     private void runStart() {
         for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
-            sink.onRunStart(run);
+            try {
+                sink.onRunStart(run);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
     private void runFinish() {
         for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
-            sink.onRunFinish(run);
+            try {
+                sink.onRunFinish(run);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 }

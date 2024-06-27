@@ -19,36 +19,26 @@ public class DeltaIotCSVSystemConfigurationStatisticSink implements IConfigurati
     }
 
     @Override
-    public void initialize() {
+    public void initialize() throws IOException {
         String[] HEADERS = { "Run", "Link", "Power", "Distribution" };
 
         CSVFormat csvFormat = CSVFormat.newFormat(';')
             .withHeader(HEADERS)
             .withRecordSeparator("\r\n");
 
-        try {
-            Writer writer = Files.newBufferedWriter(outputPath);
-            printer = new CSVPrinter(writer, csvFormat);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Writer writer = Files.newBufferedWriter(outputPath);
+        printer = new CSVPrinter(writer, csvFormat);
     }
 
     @Override
-    public void onEntry(int run, WirelessLink link) {
-        try {
-            printer.printRecord(run, link.pcmLink.getEntityName(), link.transmissionPower, link.distributionFactor);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void onEntry(int run, WirelessLink link) throws IOException {
+        printer.printRecord(run, link.pcmLink.getEntityName(), link.transmissionPower, link.distributionFactor);
     }
 
     @Override
-    public void finalize() {
+    public void finalize() throws IOException {
         try {
             printer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             printer = null;
         }
