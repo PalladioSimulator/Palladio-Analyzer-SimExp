@@ -11,7 +11,8 @@ public class FileDumperPrismObserver implements IPrismObserver {
     }
 
     @Override
-    public void onContext(PrismContext context) {
+    public void onContext(PrismContext context, String sasName) {
+        LOGGER.info("sasName:" + sasName);
         LOGGER.info("Prism module:");
         LOGGER.info("Prism property: " + context.propertyFileContent);
         LOGGER.info(context.moduleFileContent);

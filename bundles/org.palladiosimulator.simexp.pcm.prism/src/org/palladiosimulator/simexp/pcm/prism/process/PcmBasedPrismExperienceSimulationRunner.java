@@ -74,16 +74,16 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
         PrismResult result = new PrismResult();
         for (PrismSimulatedMeasurementSpec each : filterPrismSpecs(sasState)) {
             PrismContext context = prismGenerator.generate(sasState, each);
-            preProcessContext(context);
+            preProcessContext(context, sasState);
             PrismResult resultToMerge = prismService.modelCheck(context);
             result.mergeWith(resultToMerge);
         }
         return result;
     }
 
-    private void preProcessContext(PrismContext context) {
+    private void preProcessContext(PrismContext context, PcmSelfAdaptiveSystemState<A, V> sasState) {
         for (IPrismObserver prismObserver : prismObservers) {
-            prismObserver.onContext(context);
+            prismObserver.onContext(context, sasState.getName());
         }
     }
 
