@@ -1,12 +1,15 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.CommonPlugin;
@@ -60,6 +63,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class DeltaIoTSimulationExecutorFactory extends
         PcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PrismSimulatedMeasurementSpec> {
+    private static final Logger LOGGER = Logger.getLogger(DeltaIoTSimulationExecutorFactory.class);
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
@@ -132,6 +136,11 @@ public class DeltaIoTSimulationExecutorFactory extends
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
         Path csvPath = getCSVPath(strategyId);
+        try {
+            Files.createDirectories(csvPath.getParent());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
         DeltaIotCSVSystemConfigurationStatisticSink csvSink = new DeltaIotCSVSystemConfigurationStatisticSink(csvPath);
         systemConfigTracker.addStatisticSink(csvSink);
 
