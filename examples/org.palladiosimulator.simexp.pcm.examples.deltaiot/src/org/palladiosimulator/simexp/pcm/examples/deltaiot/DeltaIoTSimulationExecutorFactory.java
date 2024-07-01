@@ -125,7 +125,13 @@ public class DeltaIoTSimulationExecutorFactory extends
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
                 prismGenerator, prismLogFile, reconfParamsRepo, experimentProvider);
-        FileDumperPrismObserver observer = new FileDumperPrismObserver();
+        Path prismLogFolder = getPrismLogFolder();
+        try {
+            Files.createDirectories(prismLogFolder);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
         runner.addPrismObserver(observer);
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
@@ -186,6 +192,16 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+    }
+
+    private Path getPrismLogFolder() {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString());
+        Path resourcePath = outputBasePath.resolve("resource");
+        Path prismPath = resourcePath.resolve("prism");
+        return prismPath;
     }
 
     private Path getCSVPath(String strategyId) {
