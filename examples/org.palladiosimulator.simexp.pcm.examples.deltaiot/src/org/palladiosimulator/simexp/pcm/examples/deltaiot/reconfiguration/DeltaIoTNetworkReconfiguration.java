@@ -17,6 +17,8 @@ import de.uka.ipd.sdq.stoex.VariableReference;
 public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
         implements IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
 
+    private final static String QVT_FILE_SUFFIX = "DeltaIoTNetwork";
+
     private final DeltaIoTReconfigurationParamRepository paramRepo;
 
     public DeltaIoTNetworkReconfiguration(SingleQVToReconfiguration reconfiguration,
@@ -27,7 +29,7 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
         return qvt.getStringRepresentation()
-            .endsWith("DeltaIoTNetwork");
+            .endsWith(QVT_FILE_SUFFIX);
     }
 
     @Override
