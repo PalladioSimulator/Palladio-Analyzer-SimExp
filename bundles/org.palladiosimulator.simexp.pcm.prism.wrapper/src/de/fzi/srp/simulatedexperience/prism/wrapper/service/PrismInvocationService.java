@@ -36,8 +36,8 @@ public class PrismInvocationService implements PrismService {
     public PrismResult modelCheck(PrismContext context) {
         PropertiesFile propertyFile = null;
         try {
-
-            LOGGER.info("Start prism invocation: " + context.propertyFileContent);
+            String trimmedPropertyFileContent = context.propertyFileContent.trim();
+            LOGGER.info("Start prism invocation: " + trimmedPropertyFileContent);
             long start = System.currentTimeMillis();
             propertyFile = setUpPrism(context);
 
@@ -50,7 +50,8 @@ public class PrismInvocationService implements PrismService {
             }
             long end = System.currentTimeMillis();
 
-            LOGGER.info("Stop prism invocation, Elapsed time in seconds: " + ((end - start) / 1000));
+            LOGGER.info("Stop prism invocation: " + trimmedPropertyFileContent + ", Elapsed time in seconds: "
+                    + ((end - start) / 1000));
             return prismResult;
         } catch (FileNotFoundException | PrismException e) {
             throw new RuntimeException("Something went wrong during prism model checking.", e);
