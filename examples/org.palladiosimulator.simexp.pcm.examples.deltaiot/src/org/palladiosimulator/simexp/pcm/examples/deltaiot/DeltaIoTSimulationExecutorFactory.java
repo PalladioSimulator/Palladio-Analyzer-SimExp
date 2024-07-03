@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBas
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
@@ -175,6 +176,10 @@ public class DeltaIoTSimulationExecutorFactory extends
                     SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
                     reconfigurations.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
                             reconfParamsRepo.getTransmissionPower()));
+                } else if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvto)) {
+                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                    reconfigurations
+                        .add(new DeltaIoTNetworkReconfiguration(singleQVToReconfiguration, reconfParamsRepo));
                 }
             });
 
