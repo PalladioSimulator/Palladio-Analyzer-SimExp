@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.process;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +35,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A> extends
     private final IExperimentProvider experimentProvider;
 
     public DeltaIoTPcmBasedPrismExperienceSimulationRunner(
-            PrismGenerator<A, List<InputValue<CategoricalValue>>> prismGenerator, File prismFolder,
+            PrismGenerator<A, List<InputValue<CategoricalValue>>> prismGenerator, Path prismLogPath,
             DeltaIoTReconfigurationParamRepository reconfParamsRepo, IExperimentProvider experimentProvider) {
-        super(prismGenerator, prismFolder);
+        super(prismGenerator, prismLogPath);
 
         this.reconfParamsRepo = reconfParamsRepo;
         this.experimentProvider = experimentProvider;

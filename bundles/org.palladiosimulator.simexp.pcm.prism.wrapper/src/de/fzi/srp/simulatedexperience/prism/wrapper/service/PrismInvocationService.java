@@ -1,7 +1,7 @@
 package de.fzi.srp.simulatedexperience.prism.wrapper.service;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
@@ -22,8 +22,8 @@ public class PrismInvocationService implements PrismService {
     private Prism prism;
 
     @Override
-    public void initialise(File logFile) {
-        prism = new Prism(new PrismFileLog(logFile.toString()));
+    public void initialise(Path logFilePath) {
+        prism = new Prism(new PrismFileLog(logFilePath.toString()));
         try {
             prism.initialise();
         } catch (PrismException e) {
