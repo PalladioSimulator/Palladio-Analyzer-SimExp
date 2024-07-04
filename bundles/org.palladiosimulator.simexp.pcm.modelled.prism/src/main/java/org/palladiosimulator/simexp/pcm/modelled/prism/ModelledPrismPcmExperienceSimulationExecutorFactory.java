@@ -1,14 +1,17 @@
 package org.palladiosimulator.simexp.pcm.modelled.prism;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.common.CommonPlugin;
-import org.eclipse.emf.common.util.URI;
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -64,11 +67,10 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
 
 public class ModelledPrismPcmExperienceSimulationExecutorFactory
         extends ModelledPrismExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
-
+    private static final Logger LOGGER = Logger.getLogger(ModelledPrismPcmExperienceSimulationExecutorFactory.class);
     public final static String DELTAIOT_PATH = "/org.palladiosimulator.envdyn.examples.deltaiot";
     public final static String DISTRIBUTION_FACTORS = DELTAIOT_PATH
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
-    public final static String PRISM_FOLDER = "prism";
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
@@ -103,16 +105,21 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         PrismGenerator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> prismGenerator = new PrismFileUpdateGenerator<>(
                 prismFileUpdaters);
 
-        URI uri = URI.createPlatformResourceURI(Paths.get(DELTAIOT_PATH, PRISM_FOLDER)
-            .toString(), true);
-        File prismLogFile = new File(CommonPlugin.resolve(uri)
-            .toFileString());
+        String reconfigurationStrategyId = smodel.getModelName();
+        Path prismLogFolder = getPrismLogFolder(reconfigurationStrategyId);
+        try {
+            Files.createDirectories(prismLogFolder);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        Path prismLogPath = getPrismLogPath(reconfigurationStrategyId);
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         ExperienceSimulationRunner runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(prismGenerator,
-                prismLogFile, reconfParamsRepo, experimentProvider);
+                prismLogPath, reconfParamsRepo, experimentProvider);
 
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
@@ -127,7 +134,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
-        String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
@@ -161,6 +167,23 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
                 qvtoReconfigurationManager);
         return executor;
+    }
+
+    private Path getPrismLogFolder(String strategyId) {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString());
+        Path resourcePath = outputBasePath.resolve("resource");
+        Path prismPath = resourcePath.resolve("prism");
+        Path prismStrategyPath = prismPath.resolve(strategyId);
+        return prismStrategyPath;
+    }
+
+    private Path getPrismLogPath(String strategyId) {
+        Path basePath = getPrismLogFolder(strategyId);
+        Path prismLogPath = Paths.get(basePath.toString(), "prism.log");
+        return prismLogPath;
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,
