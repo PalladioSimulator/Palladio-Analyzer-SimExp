@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,40 +26,22 @@ import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class PcmBasedPrismExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
 
-    private final static String LOG_FILE_EXT = ".txt";
-    private final static String LOG_FILE_NAME = "PrismLog";
-    private final static String LOG_FILE = LOG_FILE_NAME + LOG_FILE_EXT;
-
     private final PrismService prismService;
     private final PrismGenerator<A, V> prismGenerator;
     private final List<IPrismObserver> prismObservers;
 
-    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, File prismFolder) {
+    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, Path prismLogPath) {
         // TODO exception handling
         this.prismService = ServiceRegistry.get()
             .findService(PrismService.class)
             .orElseThrow(() -> new RuntimeException("There is no prism service."));
         this.prismGenerator = prismGenerator;
-        this.prismService.initialise(createLogFile(prismFolder));
+        this.prismService.initialise(prismLogPath);
         this.prismObservers = new ArrayList<>();
     }
 
     public void addPrismObserver(IPrismObserver prismObserver) {
         prismObservers.add(prismObserver);
-    }
-
-    private File createLogFile(File prismFolder) {
-        File prismLog = Paths.get(prismFolder.toString(), LOG_FILE)
-            .toFile();
-        if (prismLog.exists() == false) {
-            try {
-                prismLog.createNewFile();
-            } catch (IOException e) {
-                // TODO Exception handling
-                throw new RuntimeException("Prism log file cannot be created.", e);
-            }
-        }
-        return prismLog;
     }
 
     @Override
