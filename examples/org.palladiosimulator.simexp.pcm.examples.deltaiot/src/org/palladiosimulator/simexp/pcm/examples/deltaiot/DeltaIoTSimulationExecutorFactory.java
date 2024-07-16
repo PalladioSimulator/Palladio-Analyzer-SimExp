@@ -158,7 +158,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
-        Set<QVToReconfiguration> reconfigurations = buildreconfigurations(reconfParamsRepo, qvtoReconfigurationManager);
+        Set<QVToReconfiguration> reconfigurations = buildReconfigurations(reconfParamsRepo, qvtoReconfigurationManager);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
@@ -176,7 +176,7 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 
-    private Set<QVToReconfiguration> buildreconfigurations(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
+    private Set<QVToReconfiguration> buildReconfigurations(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
         Set<QVToReconfiguration> reconfigurations = new HashSet<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
