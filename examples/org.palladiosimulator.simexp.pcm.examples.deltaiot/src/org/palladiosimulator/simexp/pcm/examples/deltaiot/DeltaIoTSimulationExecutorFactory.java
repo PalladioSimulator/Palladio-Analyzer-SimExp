@@ -158,24 +158,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>();
-        List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
-        reconfigurationList.stream()
-            .forEach(qvto -> {
-                if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                    reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
-                            reconfParamsRepo.getDistributionFactors()));
-                } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                    reconfigurations.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
-                            reconfParamsRepo.getTransmissionPower()));
-                } else if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                    reconfigurations
-                        .add(new DeltaIoTNetworkReconfiguration(singleQVToReconfiguration, reconfParamsRepo));
-                }
-            });
+        Set<QVToReconfiguration> reconfigurations = buildreconfigurations(reconfParamsRepo, qvtoReconfigurationManager);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
@@ -191,6 +174,27 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+    }
+
+    private Set<QVToReconfiguration> buildreconfigurations(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
+        Set<QVToReconfiguration> reconfigurations = new HashSet<>();
+        List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
+        for (QVToReconfiguration qvto : reconfigurationList) {
+            if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
+                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
+                        reconfParamsRepo.getDistributionFactors()));
+            } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
+                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                reconfigurations.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
+                        reconfParamsRepo.getTransmissionPower()));
+            } else if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvto)) {
+                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                reconfigurations.add(new DeltaIoTNetworkReconfiguration(singleQVToReconfiguration, reconfParamsRepo));
+            }
+        }
+        return reconfigurations;
     }
 
     private Path getPrismLogFolder(String strategyId) {
