@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPris
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
@@ -158,7 +160,8 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
-        Set<QVToReconfiguration> reconfigurations = buildReconfigurations(reconfParamsRepo, qvtoReconfigurationManager);
+        Set<QVToReconfiguration> reconfigurations = new HashSet<>(
+                buildReconfigurations(reconfParamsRepo, qvtoReconfigurationManager));
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
@@ -176,9 +179,10 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
     }
 
-    private Set<QVToReconfiguration> buildReconfigurations(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
+    private List<IDeltaIoToReconfiguration> buildReconfigurations(
+            DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>();
+        List<IDeltaIoToReconfiguration> reconfigurations = new ArrayList<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
         for (QVToReconfiguration qvto : reconfigurationList) {
             if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {

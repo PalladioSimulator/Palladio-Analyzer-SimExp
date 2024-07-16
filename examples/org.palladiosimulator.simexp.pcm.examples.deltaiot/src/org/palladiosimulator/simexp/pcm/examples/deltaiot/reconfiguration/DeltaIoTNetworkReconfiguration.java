@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import de.uka.ipd.sdq.stoex.VariableReference;
 
 public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
-        implements IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
+        implements IDeltaIoToReconfiguration, IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
 
     private final static String QVT_FILE_SUFFIX = "DeltaIoTNetwork";
 

@@ -16,7 +16,7 @@ import com.google.common.collect.Sets;
 import de.uka.ipd.sdq.stoex.VariableReference;
 
 public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguration
-        implements ITransmissionPowerReconfiguration // extends
+        implements IDeltaIoToReconfiguration, ITransmissionPowerReconfiguration // extends
 // ReconfigurationImpl<QVTOReconfigurator>
 {
 
