@@ -50,7 +50,7 @@ public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguratio
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-        return qvt.getStringRepresentation()
+        return qvt.getReconfigurationName()
             .endsWith(QVT_FILE_SUFFIX);
     }
 

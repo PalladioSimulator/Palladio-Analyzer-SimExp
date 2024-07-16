@@ -81,7 +81,7 @@ public class ModelledReconfigurationStrategyTest {
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
 
-        assertThat(actualResult.getStringRepresentation()).isEqualTo(expectedResult.getStringRepresentation());
+        assertThat(actualResult.getReconfigurationName()).isEqualTo(expectedResult.getReconfigurationName());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ModelledReconfigurationStrategyTest {
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
 
-        assertThat(actualResult.getStringRepresentation()).isEqualTo(expectedResult.getStringRepresentation());
+        assertThat(actualResult.getReconfigurationName()).isEqualTo(expectedResult.getReconfigurationName());
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ModelledReconfigurationStrategyTest {
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
 
-        assertThat(actualResult.getStringRepresentation()).isEqualTo(expectedResult.getStringRepresentation());
+        assertThat(actualResult.getReconfigurationName()).isEqualTo(expectedResult.getReconfigurationName());
     }
 
     private ResolvedAction createResolvedAction(String actionName) {

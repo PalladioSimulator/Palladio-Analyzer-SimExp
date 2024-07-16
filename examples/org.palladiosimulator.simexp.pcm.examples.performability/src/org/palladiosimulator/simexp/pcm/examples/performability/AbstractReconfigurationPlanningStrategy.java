@@ -105,7 +105,7 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
             .collect(toList());
 
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return Optional.of(each);
             }

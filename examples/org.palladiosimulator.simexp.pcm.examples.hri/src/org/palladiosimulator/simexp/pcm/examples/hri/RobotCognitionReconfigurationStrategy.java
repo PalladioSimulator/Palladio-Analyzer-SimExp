@@ -121,7 +121,7 @@ public class RobotCognitionReconfigurationStrategy<C>
 
     private Action<QVTOReconfigurator> selectOptionWith(String queriedName, List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(queriedName)) {
                 return each;
             }

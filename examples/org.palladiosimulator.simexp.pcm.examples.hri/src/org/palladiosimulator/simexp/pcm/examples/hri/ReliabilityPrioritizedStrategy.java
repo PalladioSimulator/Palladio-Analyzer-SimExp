@@ -184,7 +184,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
 
     private QVToReconfiguration selectOptionWith(String queriedName, Set<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(queriedName)) {
                 return each;
             }

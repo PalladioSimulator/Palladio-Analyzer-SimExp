@@ -184,7 +184,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
 
     private QVToReconfiguration findReconfiguration(String name, List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return each;
             }

@@ -12,7 +12,7 @@ public abstract class BaseQVToReconfiguration extends ReconfigurationImpl<QVTORe
     protected abstract String getTransformationName();
 
     @Override
-    public String getStringRepresentation() {
+    public String getReconfigurationName() {
         if (isEmptyReconfiguration()) {
             return EMPTY_RECONFIGURATION_NAME;
         }

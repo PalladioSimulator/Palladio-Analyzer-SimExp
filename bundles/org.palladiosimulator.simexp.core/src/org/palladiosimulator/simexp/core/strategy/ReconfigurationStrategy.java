@@ -37,7 +37,7 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
         if (isAnalyzable) {
             LOGGER.info("'PLANNING' step start");
             reconfiguration = plan(source, options, knowledge);
-            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
+            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration));
             LOGGER.info("'PLANNING' step done");
         }
         LOGGER.info("'EXECUTE' step start");

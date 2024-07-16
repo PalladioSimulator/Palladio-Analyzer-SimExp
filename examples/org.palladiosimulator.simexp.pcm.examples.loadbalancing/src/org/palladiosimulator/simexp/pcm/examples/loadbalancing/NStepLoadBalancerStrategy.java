@@ -65,7 +65,7 @@ public class NStepLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurato
 
     private QVToReconfiguration outSource(List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(outsource())) {
                 return each;
             }
@@ -76,7 +76,7 @@ public class NStepLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurato
 
     private QVToReconfiguration scaleIn(List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(scaleIn())) {
                 return each;
             }

@@ -6,7 +6,6 @@ public abstract class ReconfigurationImpl<A> extends ActionImpl<A> implements Re
 
     @Override
     public String toString() {
-        return getStringRepresentation();
+        return getReconfigurationName();
     }
-
 }

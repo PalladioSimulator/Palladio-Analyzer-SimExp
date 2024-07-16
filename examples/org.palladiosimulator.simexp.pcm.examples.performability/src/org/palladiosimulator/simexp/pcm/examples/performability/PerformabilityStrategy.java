@@ -295,7 +295,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
             .collect(toList());
 
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return Optional.of(each);
             }

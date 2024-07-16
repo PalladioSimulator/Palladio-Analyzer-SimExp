@@ -28,7 +28,7 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-        return qvt.getStringRepresentation()
+        return qvt.getReconfigurationName()
             .endsWith(QVT_FILE_SUFFIX);
     }
 

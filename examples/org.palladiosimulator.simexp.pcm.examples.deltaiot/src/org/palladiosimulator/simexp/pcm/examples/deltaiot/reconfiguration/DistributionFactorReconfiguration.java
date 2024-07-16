@@ -46,8 +46,8 @@ public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfigurati
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-        return qvt.getStringRepresentation()
-            .endsWith(QVT_FILE_SUFFIX);
+        String stringRepresentation = qvt.getReconfigurationName();
+        return stringRepresentation.endsWith(QVT_FILE_SUFFIX);
     }
 
     public void adjustDistributionFactors(Map<ProbabilisticBranchTransition, Double> factorAdjustements) {
