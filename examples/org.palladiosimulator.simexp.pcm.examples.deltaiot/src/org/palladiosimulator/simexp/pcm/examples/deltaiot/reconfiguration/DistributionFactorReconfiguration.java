@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfiguration
-        implements IDeltaIoToReconfiguration, IDistributionFactorReconfiguration {
+        implements IDistributionFactorReconfiguration {
 
     public final static double DEFAULT_VALUE = 0.0;
     private final static String QVT_FILE_SUFFIX = "DistributionFactor";

@@ -3,9 +3,8 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration;
 import java.util.Map;
 
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 
-public interface IDistributionFactorReconfiguration extends QVToReconfiguration {
+public interface IDistributionFactorReconfiguration extends IDeltaIoToReconfiguration {
     void setDistributionFactorValuesToDefaults();
 
     void adjustDistributionFactor(Map<ProbabilisticBranchTransition, Double> factors);
