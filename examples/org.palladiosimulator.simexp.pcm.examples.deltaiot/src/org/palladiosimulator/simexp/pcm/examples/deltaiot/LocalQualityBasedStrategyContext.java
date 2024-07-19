@@ -9,8 +9,9 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfLocalQualityCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
@@ -45,16 +46,12 @@ public class LocalQualityBasedStrategyContext
         Set<QVToReconfiguration> reconfs = Sets.newHashSet();
 
         List<QVToReconfiguration> qvts = qvtoReconfigurationManager.loadReconfigurations();
+        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory();
         for (QVToReconfiguration each : qvts) {
-            if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(each)) {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
-                reconfs.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
-                        reconfParamsRepo.getDistributionFactors()));
-            } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(each)) {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
-                reconfs.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
-                        reconfParamsRepo.getTransmissionPower()));
-            }
+            SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
+            IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration,
+                    reconfParamsRepo);
+            reconfs.add(customizer);
         }
 
         if (reconfs.isEmpty()) {
