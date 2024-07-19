@@ -28,17 +28,15 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -183,20 +181,11 @@ public class DeltaIoTSimulationExecutorFactory extends
             DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
         List<IDeltaIoToReconfiguration> reconfigurations = new ArrayList<>();
+        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfCustomizerFactory();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
         for (QVToReconfiguration qvto : reconfigurationList) {
-            if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
-                        reconfParamsRepo.getDistributionFactors()));
-            } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                reconfigurations.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
-                        reconfParamsRepo.getTransmissionPower()));
-            } else if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                reconfigurations.add(new DeltaIoTNetworkReconfiguration(singleQVToReconfiguration, reconfParamsRepo));
-            }
+            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto, reconfParamsRepo);
+            reconfigurations.add(customizer);
         }
         return reconfigurations;
     }
