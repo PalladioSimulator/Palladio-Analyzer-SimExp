@@ -46,8 +46,9 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfLocalQualityCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
@@ -141,17 +142,13 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
+        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory();
         reconfigurationList.stream()
             .forEach(qvto -> {
-                if (DistributionFactorReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                    reconfigurations.add(new DistributionFactorReconfiguration(singleQVToReconfiguration,
-                            reconfParamsRepo.getDistributionFactors()));
-                } else if (TransmissionPowerReconfiguration.isCorrectQvtReconfguration(qvto)) {
-                    SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                    reconfigurations.add(new TransmissionPowerReconfiguration(singleQVToReconfiguration,
-                            reconfParamsRepo.getTransmissionPower()));
-                }
+                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
+                IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration,
+                        reconfParamsRepo);
+                reconfigurations.add(customizer);
             });
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
