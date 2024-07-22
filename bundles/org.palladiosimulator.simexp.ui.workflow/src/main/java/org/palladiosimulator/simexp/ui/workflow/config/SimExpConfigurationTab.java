@@ -15,6 +15,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -66,29 +67,54 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         setControl(container);
         container.setLayout(new GridLayout());
 
-        createSimulation(container, modifyListener);
+        Composite simContainer = new Composite(container, SWT.NONE);
+        simContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        GridLayout simContainerLayout = new GridLayout(2, false);
+        simContainerLayout.marginWidth = 0;
+        simContainer.setLayout(simContainerLayout);
+
+        createSimulation(simContainer, modifyListener);
+        createTransformation(simContainer, modifyListener);
         createSimulatorType(container, modifyListener);
         simulatorConfiguration.createControl(container, ctx, modifyListener);
     }
 
     private void createSimulation(Composite parent, ModifyListener modifyListener) {
-        final Label simulationIDLabel = new Label(parent, SWT.NONE);
+        Group container = new Group(parent, SWT.NONE);
+        container.setText("Basics");
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        container.setLayout(new GridLayout());
+
+        final Label simulationIDLabel = new Label(container, SWT.NONE);
         simulationIDLabel.setText("Simulation-ID:");
-        textSimulationID = new Text(parent, SWT.BORDER);
+        textSimulationID = new Text(container, SWT.BORDER);
         textSimulationID.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textSimulationID.addModifyListener(modifyListener);
 
-        final Label numberOfRunsLabel = new Label(parent, SWT.NONE);
+        final Label numberOfRunsLabel = new Label(container, SWT.NONE);
         numberOfRunsLabel.setText("Number of runs:");
-        textNumberOfRuns = new Text(parent, SWT.BORDER);
+        textNumberOfRuns = new Text(container, SWT.BORDER);
         textNumberOfRuns.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumberOfRuns.addModifyListener(modifyListener);
 
-        final Label numberOfSimulationsPerRunLabel = new Label(parent, SWT.NONE);
+        final Label numberOfSimulationsPerRunLabel = new Label(container, SWT.NONE);
         numberOfSimulationsPerRunLabel.setText("Number of simulations per run:");
-        textNumerOfSimulationsPerRun = new Text(parent, SWT.BORDER);
+        textNumerOfSimulationsPerRun = new Text(container, SWT.BORDER);
         textNumerOfSimulationsPerRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
+    }
+
+    private void createTransformation(Composite parent, ModifyListener modifyListener) {
+        Group container = new Group(parent, SWT.NONE);
+        container.setText("Transformations");
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        container.setLayout(new GridLayout());
+
+        Label simulationIDLabel = new Label(container, SWT.NONE);
+        simulationIDLabel.setText("Active transformations:");
+        ListViewer listViewer = new ListViewer(container, SWT.MULTI | SWT.BORDER);
+        listViewer.getControl()
+            .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
     private void createSimulatorType(Composite parent, ModifyListener modifyListener) {
@@ -166,6 +192,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
     @Override
     protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
         initializeSimulationFrom(configuration, ctx);
+        initializeTransformationFrom(configuration, ctx);
         initializeSimulatorTypeFrom(configuration, ctx);
         simulatorConfiguration.initializeFrom(configuration, ctx);
     }
@@ -206,6 +233,10 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         Binding numberOfSimulationsPerRunBindValue = ctx.bindValue(numberOfSimulationsPerRunTarget,
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
+    }
+
+    private void initializeTransformationFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
+
     }
 
     private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
