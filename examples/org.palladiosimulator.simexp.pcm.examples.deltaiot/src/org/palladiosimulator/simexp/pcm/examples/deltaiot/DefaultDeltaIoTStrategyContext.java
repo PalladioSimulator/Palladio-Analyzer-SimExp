@@ -1,12 +1,12 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
@@ -24,30 +24,28 @@ public class DefaultDeltaIoTStrategyContext
         implements ReconfigurationStrategyContext<QVTOReconfigurator, QVToReconfiguration> {
 
     private final DeltaIoTDefaultReconfigurationStrategy strategy;
-    private final QVToReconfigurationManager qvtoReconfigurationManager;
+    private final List<QVToReconfiguration> reconfigurations;
     private final IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory;
 
     public DefaultDeltaIoTStrategyContext(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            QVToReconfigurationManager qvtoReconfigurationManager,
-            IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
+            List<QVToReconfiguration> reconfigurations, IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker) {
         DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
         this.strategy = new DeltaIoTDefaultReconfigurationStrategy(reconfParamsRepo, modelAccess, simulationParameters,
                 systemConfigurationTracker, reconfCustomizerResolver);
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.reconfigurations = Collections.unmodifiableList(reconfigurations);
         this.reconfCustomizerFactory = reconfCustomizerFactory;
     }
 
     @Override
     public Set<QVToReconfiguration> getReconfigurationSpace() {
-        List<QVToReconfiguration> qvts = qvtoReconfigurationManager.loadReconfigurations();
-        if (qvts.size() != 1) {
+        if (reconfigurations.size() != 1) {
             throw new RuntimeException("No DeltaIoT network reconfigutation could be found.");
         }
 
         Set<QVToReconfiguration> reconfs = Sets.newHashSet();
-        QVToReconfiguration qvt = qvts.get(0);
+        QVToReconfiguration qvt = reconfigurations.get(0);
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
             IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt);
             if (customizer != null) {
