@@ -9,8 +9,10 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfNetworkCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
@@ -45,9 +47,10 @@ public class DefaultDeltaIoTStrategyContext
 
         Set<QVToReconfiguration> reconfs = Sets.newHashSet();
         QVToReconfiguration qvt = qvts.get(0);
+        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfNetworkCustomizerFactory();
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
-            DeltaIoTBaseReconfiguration deltaIoTBaseReconfiguration = (DeltaIoTBaseReconfiguration) qvt;
-            reconfs.add(new DeltaIoTNetworkReconfiguration(deltaIoTBaseReconfiguration, reconfParamsRepo));
+            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt, reconfParamsRepo);
+            reconfs.add(customizer);
         }
         return reconfs;
     }
