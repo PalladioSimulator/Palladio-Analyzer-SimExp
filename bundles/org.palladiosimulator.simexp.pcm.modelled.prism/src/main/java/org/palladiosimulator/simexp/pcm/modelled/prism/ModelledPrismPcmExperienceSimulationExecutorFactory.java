@@ -142,12 +142,12 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
-        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory();
+        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory(
+                reconfParamsRepo);
         reconfigurationList.stream()
             .forEach(qvto -> {
                 SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration,
-                        reconfParamsRepo);
+                IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration);
                 reconfigurations.add(customizer);
             });
 
