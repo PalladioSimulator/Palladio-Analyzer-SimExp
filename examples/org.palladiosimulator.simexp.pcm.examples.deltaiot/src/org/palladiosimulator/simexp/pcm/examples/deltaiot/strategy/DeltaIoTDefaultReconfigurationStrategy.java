@@ -97,7 +97,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
         IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
-            .retrieveDeltaIoTNetworkReconfiguration(options);
+            .resolveDeltaIoTReconfCustomizer(options);
         if (reconfiguration instanceof IDistributionFactorReconfiguration) {
             IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) reconfiguration;
             distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();

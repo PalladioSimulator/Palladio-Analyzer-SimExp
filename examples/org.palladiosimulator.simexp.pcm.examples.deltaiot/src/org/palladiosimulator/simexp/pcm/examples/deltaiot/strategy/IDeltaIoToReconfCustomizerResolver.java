@@ -9,5 +9,5 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDelta
 public interface IDeltaIoToReconfCustomizerResolver {
     IDeltaIoToReconfiguration resolveDeltaIoTReconfCustomizer(SharedKnowledge knowledge);
 
-    IDeltaIoToReconfiguration retrieveDeltaIoTNetworkReconfiguration(Set<QVToReconfiguration> options);
+    IDeltaIoToReconfiguration resolveDeltaIoTReconfCustomizer(Set<QVToReconfiguration> options);
 }

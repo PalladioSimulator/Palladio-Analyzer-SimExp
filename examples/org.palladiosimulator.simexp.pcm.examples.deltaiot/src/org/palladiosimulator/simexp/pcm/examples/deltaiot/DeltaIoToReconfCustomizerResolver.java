@@ -35,7 +35,7 @@ public class DeltaIoToReconfCustomizerResolver implements IDeltaIoToReconfCustom
     }
 
     @Override
-    public IDeltaIoToReconfiguration retrieveDeltaIoTNetworkReconfiguration(Set<QVToReconfiguration> options) {
+    public IDeltaIoToReconfiguration resolveDeltaIoTReconfCustomizer(Set<QVToReconfiguration> options) {
         DeltaIoTBaseReconfiguration customizer = retrieveReconfiguration(DeltaIoTBaseReconfiguration.class, options)
             .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
         return customizer;
