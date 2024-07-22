@@ -20,7 +20,7 @@ import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.ITransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.MoteContextFilter;
@@ -94,7 +94,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        DeltaIoTBaseReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
+        IDeltaIoToReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
         if (reconfiguration instanceof IDistributionFactorReconfiguration) {
             IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) reconfiguration;
             distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();

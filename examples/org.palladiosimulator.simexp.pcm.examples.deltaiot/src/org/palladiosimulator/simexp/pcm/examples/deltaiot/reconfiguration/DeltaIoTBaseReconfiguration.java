@@ -9,7 +9,8 @@ import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 
-public abstract class DeltaIoTBaseReconfiguration extends SingleQVToReconfiguration {
+public abstract class DeltaIoTBaseReconfiguration extends SingleQVToReconfiguration
+        implements IDeltaIoToReconfiguration {
     private final static double TOLERANCE = 0.001;
 
     public DeltaIoTBaseReconfiguration(SingleQVToReconfiguration reconfiguration) {
