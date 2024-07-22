@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -34,36 +35,38 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
     private QVTOReconfigurator reconfigurator;
 
-    private final List<ModelTransformation<? extends Object>> transformations = Lists.newArrayList();
+    private final List<QvtoModelTransformation> transformations;
     private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
     public QVToReconfigurationManager(String qvtoFilePath) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
-        this.loadTransformations(qvtoFilePath);
+        this.transformations = loadTransformations(qvtoFilePath);
     }
 
-    private void loadTransformations(String qvtoFilePath) {
+    private List<QvtoModelTransformation> loadTransformations(String qvtoFilePath) {
         URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
         if (qvtoFiles.length == 0) {
             // TODO exception handling
             throw new RuntimeException("There are no qvto transformation specified.");
         }
         ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles);
+        List<QvtoModelTransformation> trafos = new ArrayList<>();
         transformationCache.getAll()
-            .forEach(t -> this.transformations.add(t));
+            .forEach(trafos::add);
+        return trafos;
     }
 
     @Override
     public List<QVToReconfiguration> loadReconfigurations() {
         return transformations.stream()
             .filter(each -> each instanceof QvtoModelTransformation)
-            .map(each -> SingleQVToReconfiguration.of((QvtoModelTransformation) each, this))
+            .map(each -> SingleQVToReconfiguration.of(each, this))
             .collect(Collectors.toList());
     }
 
     @Override
     public QvtoModelTransformation findQvtoModelTransformation(String transformationName) {
-        Stream<ModelTransformation<?>> stream = transformations.stream();
+        Stream<QvtoModelTransformation> stream = transformations.stream();
         ModelTransformation<?> result = stream.filter(new TransformationNamePredicate(transformationName))
             .findFirst()
             .orElse(null);
