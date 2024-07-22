@@ -8,6 +8,7 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTReconfigurationStrategy2;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationPlanner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -26,6 +27,7 @@ public class LocalQualityBasedMAPEKStrategyContext
             PrismSimulatedMeasurementSpec energyConsumptionSpec,
             DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             QVToReconfigurationManager qvtoReconfigurationManager,
+            IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker) {
         this.strategy = DeltaIoTReconfigurationStrategy2
@@ -36,7 +38,7 @@ public class LocalQualityBasedMAPEKStrategyContext
             .andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo, modelAccess))
             .build();
         this.decoratedContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo, qvtoReconfigurationManager,
-                modelAccess, simulationParameters, systemConfigurationTracker);
+                reconfCustomizerFactory, modelAccess, simulationParameters, systemConfigurationTracker);
     }
 
     @Override

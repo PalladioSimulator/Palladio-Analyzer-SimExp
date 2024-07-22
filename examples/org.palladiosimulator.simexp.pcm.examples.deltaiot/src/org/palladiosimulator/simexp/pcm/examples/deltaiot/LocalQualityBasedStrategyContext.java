@@ -9,7 +9,6 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfLocalQualityCustomizerFactory;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.LocalQualityBasedReconfigurationStrategy;
@@ -26,11 +25,12 @@ public class LocalQualityBasedStrategyContext
     private final Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy;
     private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final QVToReconfigurationManager qvtoReconfigurationManager;
+    private final IDeltaIoToReconfCustomizerFactory customizerFactory;
 
     public LocalQualityBasedStrategyContext(PrismSimulatedMeasurementSpec packetLossSpec,
             PrismSimulatedMeasurementSpec energyConsumptionSpec,
             DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            QVToReconfigurationManager qvtoReconfigurationManager,
+            QVToReconfigurationManager qvtoReconfigurationManager, IDeltaIoToReconfCustomizerFactory customizerFactory,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
         this.reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy.newBuilder(modelAccess)
             .withReconfigurationParams(reconfParamsRepo)
@@ -39,6 +39,7 @@ public class LocalQualityBasedStrategyContext
             .build();
         this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+        this.customizerFactory = customizerFactory;
     }
 
     @Override
@@ -46,7 +47,6 @@ public class LocalQualityBasedStrategyContext
         Set<QVToReconfiguration> reconfs = Sets.newHashSet();
 
         List<QVToReconfiguration> qvts = qvtoReconfigurationManager.loadReconfigurations();
-        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory();
         for (QVToReconfiguration each : qvts) {
             SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
             IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration,
