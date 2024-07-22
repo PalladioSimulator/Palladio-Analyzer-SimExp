@@ -27,12 +27,14 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
     private QVTOReconfigurator reconfigurator;
 
     private final IQVTOModelTransformationLoader qvtoModelTransformationLoader;
+    private final IQVTOModelTransformationSearch qvtoModelTransformationSearch;
     private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
     public QVToReconfigurationManager(String qvtoFilePath) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
         this.qvtoModelTransformationLoader = new QVTOModelTransformationCache(
                 new QVTOModelTransformationLoader(qvtoFilePath));
+        this.qvtoModelTransformationSearch = new QvtoModelTransformationSearch(qvtoModelTransformationLoader);
     }
 
     @Override
@@ -46,8 +48,8 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
     }
 
     @Override
-    public QvtoModelTransformation findQvtoModelTransformation(String transformationName) {
-        return qvtoModelTransformationLoader.findQvtoModelTransformation(transformationName);
+    public IQVTOModelTransformationSearch getQVTOModelTransformationSearch() {
+        return qvtoModelTransformationSearch;
     }
 
     @Override

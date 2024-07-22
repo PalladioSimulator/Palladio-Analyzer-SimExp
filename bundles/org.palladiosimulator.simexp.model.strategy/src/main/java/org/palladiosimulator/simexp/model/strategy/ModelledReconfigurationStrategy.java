@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.IQVTOModelTransformationSearch;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.ParameterizedSingleQVToReconfiguration;
@@ -71,7 +72,9 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
         for (ResolvedAction resolvedAction : actions) {
             String resolvedActionName = resolvedAction.getAction()
                 .getName();
-            QvtoModelTransformation transformation = qvtoReconfigurationManager
+            IQVTOModelTransformationSearch qvtoModelTransformationSearch = qvtoReconfigurationManager
+                .getQVTOModelTransformationSearch();
+            QvtoModelTransformation transformation = qvtoModelTransformationSearch
                 .findQvtoModelTransformation(resolvedActionName);
 
             Map<String, Object> arguments = resolvedAction.getArguments();

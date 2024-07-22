@@ -20,10 +20,4 @@ public class QVTOModelTransformationCache implements IQVTOModelTransformationLoa
         }
         return cachedTransformations;
     }
-
-    @Override
-    public QvtoModelTransformation findQvtoModelTransformation(String transformationName) {
-        return qvtoModelTransformationLoader.findQvtoModelTransformation(transformationName);
-    }
-
 }

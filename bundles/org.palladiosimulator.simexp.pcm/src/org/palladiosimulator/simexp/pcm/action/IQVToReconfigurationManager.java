@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 public interface IQVToReconfigurationManager {
 
@@ -17,6 +16,6 @@ public interface IQVToReconfigurationManager {
 
     List<QVToReconfiguration> loadReconfigurations();
 
-    QvtoModelTransformation findQvtoModelTransformation(String transformationName);
+    IQVTOModelTransformationSearch getQVTOModelTransformationSearch();
 
 }

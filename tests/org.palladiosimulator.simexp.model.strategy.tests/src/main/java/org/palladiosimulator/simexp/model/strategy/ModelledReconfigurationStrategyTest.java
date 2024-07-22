@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.IQVTOModelTransformationSearch;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -41,11 +42,16 @@ public class ModelledReconfigurationStrategyTest {
     @Mock
     private IQVToReconfigurationManager qvtoReconfigurationManager;
     @Mock
+    private IQVTOModelTransformationSearch qvtoModelTransformationSearch;
+    @Mock
     private State source;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+
+        when(qvtoReconfigurationManager.getQVTOModelTransformationSearch()).thenReturn(qvtoModelTransformationSearch);
+
         strategy = new ModelledReconfigurationStrategy("testStrategy", monitor, analyzer, planner,
                 qvtoReconfigurationManager);
     }
@@ -98,7 +104,7 @@ public class ModelledReconfigurationStrategyTest {
         List<ResolvedAction> expectedResolvedActions = new ArrayList<>();
         expectedResolvedActions.add(expectedResolvedAction);
         when(planner.plan()).thenReturn(expectedResolvedActions);
-        when(qvtoReconfigurationManager.findQvtoModelTransformation(expectedTransformationName))
+        when(qvtoModelTransformationSearch.findQvtoModelTransformation(expectedTransformationName))
             .thenReturn(expectedTransformation);
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
@@ -126,9 +132,9 @@ public class ModelledReconfigurationStrategyTest {
         expectedResolvedActions.add(expectedResolvedAction1);
         expectedResolvedActions.add(expectedResolvedAction2);
         when(planner.plan()).thenReturn(expectedResolvedActions);
-        when(qvtoReconfigurationManager.findQvtoModelTransformation(expectedTransformationName1))
+        when(qvtoModelTransformationSearch.findQvtoModelTransformation(expectedTransformationName1))
             .thenReturn(expectedTransformation1);
-        when(qvtoReconfigurationManager.findQvtoModelTransformation(expectedTransformationName2))
+        when(qvtoModelTransformationSearch.findQvtoModelTransformation(expectedTransformationName2))
             .thenReturn(expectedTransformation2);
 
         QVToReconfiguration actualResult = strategy.plan(source, null, null);
