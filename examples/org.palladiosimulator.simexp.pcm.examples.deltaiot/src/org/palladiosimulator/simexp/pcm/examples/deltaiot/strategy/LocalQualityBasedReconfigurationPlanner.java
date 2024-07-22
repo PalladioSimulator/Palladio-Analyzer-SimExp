@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
-
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -22,15 +20,19 @@ import com.google.common.math.DoubleMath;
 public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReconfigurationPlanner {
 
     private final ReconfigurationParameterCalculator paramCalculator;
+    private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
     public LocalQualityBasedReconfigurationPlanner(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo, modelAccess);
+        this.reconfCustomizerResolver = reconfCustomizerResolver;
     }
 
     @Override
     public QVToReconfiguration planEnergyConsumption(SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
+            .resolveDeltaIoTReconfCustomizer(knowledge);
         decreaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
         decreaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;
@@ -38,7 +40,8 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
 
     @Override
     public QVToReconfiguration planPacketLoss(SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
+            .resolveDeltaIoTReconfCustomizer(knowledge);
         increaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
         increaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;

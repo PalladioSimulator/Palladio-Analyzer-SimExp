@@ -35,7 +35,8 @@ public class LocalQualityBasedMAPEKStrategyContext
             .withID("LocalQualityBasedStrategy")
             .andPacketLossSpec(packetLossSpec)
             .andEnergyConsumptionSpec(energyConsumptionSpec)
-            .andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo, modelAccess))
+            .andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo, modelAccess,
+                    new DeltaIoToReconfCustomizerResolver()))
             .build();
         this.decoratedContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo, qvtoReconfigurationManager,
                 reconfCustomizerFactory, modelAccess, simulationParameters, systemConfigurationTracker);

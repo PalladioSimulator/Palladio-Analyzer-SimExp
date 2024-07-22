@@ -21,7 +21,6 @@ import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -60,11 +59,6 @@ public class DeltaIoTCommons {
             .filter(QVToReconfiguration.class::isInstance)
             .map(QVToReconfiguration.class::cast)
             .collect(Collectors.toSet());
-    }
-
-    public static IDeltaIoToReconfiguration retrieveDeltaIoTNetworkReconfiguration(SharedKnowledge knowledge) {
-        return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
     }
 
     public static IDeltaIoToReconfiguration retrieveDeltaIoTNetworkReconfiguration(Set<QVToReconfiguration> options) {
