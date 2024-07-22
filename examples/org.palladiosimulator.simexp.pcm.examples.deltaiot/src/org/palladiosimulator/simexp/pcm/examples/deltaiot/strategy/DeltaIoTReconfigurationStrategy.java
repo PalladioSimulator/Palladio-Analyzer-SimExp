@@ -297,7 +297,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<VariableReference, Integer> powerSettings = Maps.newHashMap();
         powerSettings.put(findVariableReferenceWith(varRef), TRANSMISSION_POWER_INCREMENT);
         if (reconf.canBeAdjusted(powerSettings)) {
-            reconf.adjustPowerSetting(powerSettings);
+            reconf.adjustTransmissionPower(powerSettings);
             return true;
         }
         return false;
@@ -307,7 +307,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<VariableReference, Integer> powerSettings = Maps.newHashMap();
         powerSettings.put(findVariableReferenceWith(varRef), TRANSMISSION_POWER_INCREMENT * (-1));
         if (reconf.canBeAdjusted(powerSettings)) {
-            reconf.adjustPowerSetting(powerSettings);
+            reconf.adjustTransmissionPower(powerSettings);
             return true;
         }
         return false;

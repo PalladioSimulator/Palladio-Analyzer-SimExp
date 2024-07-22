@@ -54,10 +54,6 @@ public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguratio
             .endsWith(QVT_FILE_SUFFIX);
     }
 
-    public void adjustPowerSetting(Map<VariableReference, Integer> powerAdjustements) {
-        adjustTransmissionPower(powerAdjustements);
-    }
-
     @Override
     public void adjustTransmissionPower(Map<VariableReference, Integer> powerSetting) {
         for (Map.Entry<VariableReference, Integer> entry : powerSetting.entrySet()) {
