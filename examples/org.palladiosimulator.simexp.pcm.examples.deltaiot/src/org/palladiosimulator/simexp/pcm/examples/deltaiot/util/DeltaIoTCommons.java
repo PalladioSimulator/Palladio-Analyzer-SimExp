@@ -22,8 +22,6 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTBaseReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -61,17 +59,6 @@ public class DeltaIoTCommons {
             .filter(QVToReconfiguration.class::isInstance)
             .map(QVToReconfiguration.class::cast)
             .collect(Collectors.toSet());
-    }
-
-    public static DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(
-            SharedKnowledge knowledge) {
-        return retrieveReconfiguration(DistributionFactorReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
-    }
-
-    public static TransmissionPowerReconfiguration retrieveTransmissionPowerReconfiguration(SharedKnowledge knowledge) {
-        return retrieveReconfiguration(TransmissionPowerReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
     }
 
     public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(SharedKnowledge knowledge) {
