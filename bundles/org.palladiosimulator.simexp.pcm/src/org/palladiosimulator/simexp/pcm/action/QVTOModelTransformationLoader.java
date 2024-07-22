@@ -16,18 +16,8 @@ public class QVTOModelTransformationLoader implements IQVTOModelTransformationLo
 
     private final String qvtoFilePath;
 
-    private List<QvtoModelTransformation> transformations;
-
     public QVTOModelTransformationLoader(String qvtoFilePath) {
         this.qvtoFilePath = qvtoFilePath;
-    }
-
-    @Override
-    public List<QvtoModelTransformation> loadQVTOReconfigurations() {
-        if (transformations == null) {
-            transformations = loadTransformations(qvtoFilePath);
-        }
-        return transformations;
     }
 
     @Override
@@ -60,7 +50,8 @@ public class QVTOModelTransformationLoader implements IQVTOModelTransformationLo
         }
     }
 
-    private List<QvtoModelTransformation> loadTransformations(String qvtoFilePath) {
+    @Override
+    public List<QvtoModelTransformation> loadQVTOReconfigurations() {
         URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
         if (qvtoFiles.length == 0) {
             // TODO exception handling

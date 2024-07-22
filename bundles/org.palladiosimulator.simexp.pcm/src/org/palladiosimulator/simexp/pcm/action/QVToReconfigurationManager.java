@@ -31,7 +31,8 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
     public QVToReconfigurationManager(String qvtoFilePath) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
-        this.qvtoModelTransformationLoader = new QVTOModelTransformationLoader(qvtoFilePath);
+        this.qvtoModelTransformationLoader = new QVTOModelTransformationCache(
+                new QVTOModelTransformationLoader(qvtoFilePath));
     }
 
     @Override
