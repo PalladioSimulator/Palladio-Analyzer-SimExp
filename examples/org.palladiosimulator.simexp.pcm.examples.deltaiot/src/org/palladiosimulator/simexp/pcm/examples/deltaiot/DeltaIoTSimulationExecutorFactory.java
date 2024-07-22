@@ -146,8 +146,12 @@ public class DeltaIoTSimulationExecutorFactory extends
         DeltaIotCSVSystemConfigurationStatisticSink csvSink = new DeltaIotCSVSystemConfigurationStatisticSink(csvPath);
         systemConfigTracker.addStatisticSink(csvSink);
 
+        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfCustomizerFactory();
+        DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
+
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(
-                reconfParamsRepo, modelAccess, getSimulationParameters(), systemConfigTracker);
+                reconfParamsRepo, modelAccess, getSimulationParameters(), systemConfigTracker,
+                reconfCustomizerResolver);
         // Strategy: LocalQualityBasedReconfigurationStrategy
 //        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
 //            .newBuilder(modelAccess)
@@ -158,7 +162,6 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
-        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfCustomizerFactory();
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(
                 buildReconfigurations(reconfParamsRepo, reconfCustomizerFactory, qvtoReconfigurationManager));
 

@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -43,14 +42,17 @@ public class DeltaIoTDefaultReconfigurationStrategy
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SimulationParameters simulationParameters;
     private final SystemConfigurationTracker systemConfigurationTracker;
+    private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
     public DeltaIoTDefaultReconfigurationStrategy(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
-            SystemConfigurationTracker systemConfigurationTracker) {
+            SystemConfigurationTracker systemConfigurationTracker,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo, modelAccess);
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;
         this.systemConfigurationTracker = systemConfigurationTracker;
+        this.reconfCustomizerResolver = reconfCustomizerResolver;
     }
 
     @Override
@@ -94,7 +96,8 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
+            .retrieveDeltaIoTNetworkReconfiguration(options);
         if (reconfiguration instanceof IDistributionFactorReconfiguration) {
             IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) reconfiguration;
             distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();

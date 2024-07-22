@@ -9,7 +9,6 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 
 import java.util.Set;
 
@@ -36,6 +35,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
         private final SimulationParameters simulationParameters;
         private final SystemConfigurationTracker systemConfigurationTracker;
+        private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
         private String id;
         private QualityBasedReconfigurationPlanner planner;
@@ -43,10 +43,12 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         private PrismSimulatedMeasurementSpec energyConsumptionSpec;
 
         public DeltaIoTReconfigurationStrategy2Builder(DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-                SimulationParameters simulationParameters, SystemConfigurationTracker systemConfigurationTracker) {
+                SimulationParameters simulationParameters, SystemConfigurationTracker systemConfigurationTracker,
+                IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
             this.modelAccess = modelAccess;
             this.simulationParameters = simulationParameters;
             this.systemConfigurationTracker = systemConfigurationTracker;
+            this.reconfCustomizerResolver = reconfCustomizerResolver;
         }
 
         public DeltaIoTReconfigurationStrategy2Builder withID(String id) {
@@ -80,7 +82,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
             requireNonNull(planner, "Planner is missing.");
 
             return new DeltaIoTReconfigurationStrategy2(id, planner, packetLossSpec, energyConsumptionSpec, modelAccess,
-                    simulationParameters, systemConfigurationTracker);
+                    simulationParameters, systemConfigurationTracker, reconfCustomizerResolver);
         }
 
     }
@@ -92,11 +94,13 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SimulationParameters simulationParameters;
     private final SystemConfigurationTracker systemConfigurationTracker;
+    private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
     private DeltaIoTReconfigurationStrategy2(String id, QualityBasedReconfigurationPlanner planner,
             PrismSimulatedMeasurementSpec packetLossSpec, PrismSimulatedMeasurementSpec energyConsumptionSpec,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
-            SystemConfigurationTracker systemConfigurationTracker) {
+            SystemConfigurationTracker systemConfigurationTracker,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         this.id = id;
         this.planner = planner;
         this.packetLossSpec = packetLossSpec;
@@ -104,13 +108,15 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;
         this.systemConfigurationTracker = systemConfigurationTracker;
+        this.reconfCustomizerResolver = reconfCustomizerResolver;
     }
 
     public static DeltaIoTReconfigurationStrategy2Builder newBuilder(
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
-            SystemConfigurationTracker systemConfigurationTracker) {
+            SystemConfigurationTracker systemConfigurationTracker,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         return new DeltaIoTReconfigurationStrategy2Builder(modelAccess, simulationParameters,
-                systemConfigurationTracker);
+                systemConfigurationTracker, reconfCustomizerResolver);
     }
 
     @Override
@@ -147,7 +153,8 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration deltaIoTReconfiguration = retrieveDeltaIoTNetworkReconfiguration(options);
+        IDeltaIoToReconfiguration deltaIoTReconfiguration = reconfCustomizerResolver
+            .retrieveDeltaIoTNetworkReconfiguration(options);
         if (deltaIoTReconfiguration instanceof IDistributionFactorReconfiguration) {
             IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) deltaIoTReconfiguration;
             distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();

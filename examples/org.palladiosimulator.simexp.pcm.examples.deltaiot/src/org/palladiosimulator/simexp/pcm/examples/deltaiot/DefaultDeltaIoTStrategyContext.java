@@ -33,8 +33,9 @@ public class DefaultDeltaIoTStrategyContext
             IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker) {
+        DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
         this.strategy = new DeltaIoTDefaultReconfigurationStrategy(reconfParamsRepo, modelAccess, simulationParameters,
-                systemConfigurationTracker);
+                systemConfigurationTracker, reconfCustomizerResolver);
         this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.reconfCustomizerFactory = reconfCustomizerFactory;

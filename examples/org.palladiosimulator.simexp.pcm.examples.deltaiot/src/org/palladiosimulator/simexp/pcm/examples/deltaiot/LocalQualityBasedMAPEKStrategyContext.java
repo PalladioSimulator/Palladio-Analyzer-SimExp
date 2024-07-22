@@ -30,13 +30,14 @@ public class LocalQualityBasedMAPEKStrategyContext
             IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker) {
+        DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
         this.strategy = DeltaIoTReconfigurationStrategy2
-            .newBuilder(modelAccess, simulationParameters, systemConfigurationTracker)
+            .newBuilder(modelAccess, simulationParameters, systemConfigurationTracker, reconfCustomizerResolver)
             .withID("LocalQualityBasedStrategy")
             .andPacketLossSpec(packetLossSpec)
             .andEnergyConsumptionSpec(energyConsumptionSpec)
             .andPlanner(new LocalQualityBasedReconfigurationPlanner(reconfParamsRepo, modelAccess,
-                    new DeltaIoToReconfCustomizerResolver()))
+                    reconfCustomizerResolver))
             .build();
         this.decoratedContext = new DefaultDeltaIoTStrategyContext(reconfParamsRepo, qvtoReconfigurationManager,
                 reconfCustomizerFactory, modelAccess, simulationParameters, systemConfigurationTracker);
