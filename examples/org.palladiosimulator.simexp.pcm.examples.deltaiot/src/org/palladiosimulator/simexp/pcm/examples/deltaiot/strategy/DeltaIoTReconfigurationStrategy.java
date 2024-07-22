@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
+import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
@@ -204,7 +205,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
@@ -215,7 +216,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
@@ -226,7 +227,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
@@ -237,7 +238,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
@@ -248,7 +249,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
@@ -259,11 +260,37 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
             reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
+    }
+
+    private boolean canBeIncreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
+
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability();
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability();
+        return (branchProb1 == branchProb2) == false;
+    }
+
+    private boolean canBeDecreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
+
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability() + factors.get(transitions.get(0));
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability() + factors.get(transitions.get(1));
+        return max(branchProb1, branchProb2) <= 1.0;
     }
 
     protected boolean increaseTransmissionPower(String varRef, TransmissionPowerReconfiguration reconf) {
