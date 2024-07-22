@@ -194,7 +194,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(branchToDecrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(branchToIncrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT);
         if (reconf.isValid(factors)) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -205,7 +205,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT);
         if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -216,7 +216,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -227,7 +227,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT);
         if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -238,7 +238,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -249,7 +249,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT);
         if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -260,7 +260,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;

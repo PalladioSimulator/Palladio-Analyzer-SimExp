@@ -50,10 +50,6 @@ public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfigurati
         return stringRepresentation.endsWith(QVT_FILE_SUFFIX);
     }
 
-    public void adjustDistributionFactors(Map<ProbabilisticBranchTransition, Double> factorAdjustements) {
-        adjustDistributionFactor(factorAdjustements);
-    }
-
     @Override
     public void adjustDistributionFactor(Map<ProbabilisticBranchTransition, Double> factors) {
         for (Map.Entry<ProbabilisticBranchTransition, Double> entry : factors.entrySet()) {
