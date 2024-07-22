@@ -50,7 +50,9 @@ public class DefaultDeltaIoTStrategyContext
         QVToReconfiguration qvt = qvts.get(0);
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
             IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt);
-            reconfs.add(customizer);
+            if (customizer != null) {
+                reconfs.add(customizer);
+            }
         }
         return reconfs;
     }

@@ -48,7 +48,9 @@ public class LocalQualityBasedStrategyContext
         for (QVToReconfiguration each : qvts) {
             SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
             IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration);
-            reconfs.add(customizer);
+            if (customizer != null) {
+                reconfs.add(customizer);
+            }
         }
 
         if (reconfs.isEmpty()) {

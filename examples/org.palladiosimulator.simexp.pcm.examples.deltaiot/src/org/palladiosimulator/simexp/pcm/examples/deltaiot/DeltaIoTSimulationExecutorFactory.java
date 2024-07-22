@@ -189,7 +189,9 @@ public class DeltaIoTSimulationExecutorFactory extends
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
         for (QVToReconfiguration qvto : reconfigurationList) {
             IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto);
-            reconfigurations.add(customizer);
+            if (customizer != null) {
+                reconfigurations.add(customizer);
+            }
         }
         return reconfigurations;
     }
