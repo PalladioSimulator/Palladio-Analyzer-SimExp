@@ -4,6 +4,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,9 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
@@ -96,18 +99,17 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
-            .resolveDeltaIoTReconfCustomizer(options);
-        if (reconfiguration instanceof IDistributionFactorReconfiguration) {
-            IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) reconfiguration;
+        IDeltaIoToReconfiguration customizer = reconfCustomizerResolver.resolveDeltaIoTReconfCustomizer(options);
+        if (customizer instanceof IDistributionFactorReconfiguration) {
+            IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) customizer;
             distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();
         }
 
         MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
-                if (reconfiguration instanceof ITransmissionPowerReconfiguration) {
-                    ITransmissionPowerReconfiguration transmissionPowerReconfiguration = (ITransmissionPowerReconfiguration) reconfiguration;
+                if (customizer instanceof ITransmissionPowerReconfiguration) {
+                    ITransmissionPowerReconfiguration transmissionPowerReconfiguration = (ITransmissionPowerReconfiguration) customizer;
                     if (eachLink.SNR > 0 && eachLink.transmissionPower > 0) {
                         decreaseTransmissionPower(eachMote.mote, eachLink, transmissionPowerReconfiguration);
                     } else if (eachLink.SNR < 0 && eachLink.transmissionPower < 15) {
@@ -117,8 +119,8 @@ public class DeltaIoTDefaultReconfigurationStrategy
             }
 
             if (eachMote.hasTwoLinks()) {
-                if (reconfiguration instanceof IDistributionFactorReconfiguration) {
-                    IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) reconfiguration;
+                if (customizer instanceof IDistributionFactorReconfiguration) {
+                    IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) customizer;
 
                     if (eachMote.hasUnequalTransmissionPower()) {
                         Iterator<WirelessLink> iterator = eachMote.links.iterator();
@@ -144,6 +146,11 @@ public class DeltaIoTDefaultReconfigurationStrategy
             }
         }
 
+        List<SingleQVToReconfiguration> singleReconfigurations = new ArrayList<>();
+        for (QVToReconfiguration qvto : options) {
+            singleReconfigurations.add((SingleQVToReconfiguration) qvto);
+        }
+        MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(singleReconfigurations);
         return reconfiguration;
     }
 
