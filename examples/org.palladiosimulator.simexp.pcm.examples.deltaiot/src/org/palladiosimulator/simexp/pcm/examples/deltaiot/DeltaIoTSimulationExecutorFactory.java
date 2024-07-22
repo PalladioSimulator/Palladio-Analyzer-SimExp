@@ -146,7 +146,8 @@ public class DeltaIoTSimulationExecutorFactory extends
         DeltaIotCSVSystemConfigurationStatisticSink csvSink = new DeltaIotCSVSystemConfigurationStatisticSink(csvPath);
         systemConfigTracker.addStatisticSink(csvSink);
 
-        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfCustomizerFactory();
+        IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory = new DeltaIoToReconfCustomizerFactory(
+                reconfParamsRepo);
         DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
 
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(
@@ -163,7 +164,7 @@ public class DeltaIoTSimulationExecutorFactory extends
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(
-                buildReconfigurations(reconfParamsRepo, reconfCustomizerFactory, qvtoReconfigurationManager));
+                buildReconfigurations(reconfCustomizerFactory, qvtoReconfigurationManager));
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
@@ -182,13 +183,12 @@ public class DeltaIoTSimulationExecutorFactory extends
     }
 
     private List<IDeltaIoToReconfiguration> buildReconfigurations(
-            DeltaIoTReconfigurationParamRepository reconfParamsRepo,
             IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory,
             IQVToReconfigurationManager qvtoReconfigurationManager) {
         List<IDeltaIoToReconfiguration> reconfigurations = new ArrayList<>();
         List<QVToReconfiguration> reconfigurationList = qvtoReconfigurationManager.loadReconfigurations();
         for (QVToReconfiguration qvto : reconfigurationList) {
-            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto, reconfParamsRepo);
+            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto);
             reconfigurations.add(customizer);
         }
         return reconfigurations;

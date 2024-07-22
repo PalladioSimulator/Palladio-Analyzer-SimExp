@@ -24,7 +24,6 @@ public class DefaultDeltaIoTStrategyContext
         implements ReconfigurationStrategyContext<QVTOReconfigurator, QVToReconfiguration> {
 
     private final DeltaIoTDefaultReconfigurationStrategy strategy;
-    private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final QVToReconfigurationManager qvtoReconfigurationManager;
     private final IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory;
 
@@ -36,7 +35,6 @@ public class DefaultDeltaIoTStrategyContext
         DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
         this.strategy = new DeltaIoTDefaultReconfigurationStrategy(reconfParamsRepo, modelAccess, simulationParameters,
                 systemConfigurationTracker, reconfCustomizerResolver);
-        this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.reconfCustomizerFactory = reconfCustomizerFactory;
     }
@@ -51,7 +49,7 @@ public class DefaultDeltaIoTStrategyContext
         Set<QVToReconfiguration> reconfs = Sets.newHashSet();
         QVToReconfiguration qvt = qvts.get(0);
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
-            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt, reconfParamsRepo);
+            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt);
             reconfs.add(customizer);
         }
         return reconfs;

@@ -23,7 +23,6 @@ public class LocalQualityBasedStrategyContext
         implements ReconfigurationStrategyContext<QVTOReconfigurator, QVToReconfiguration> {
 
     private final Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy;
-    private final DeltaIoTReconfigurationParamRepository reconfParamsRepo;
     private final QVToReconfigurationManager qvtoReconfigurationManager;
     private final IDeltaIoToReconfCustomizerFactory customizerFactory;
 
@@ -37,7 +36,6 @@ public class LocalQualityBasedStrategyContext
             .andPacketLossSpec(packetLossSpec)
             .andEnergyConsumptionSpec(energyConsumptionSpec)
             .build();
-        this.reconfParamsRepo = reconfParamsRepo;
         this.qvtoReconfigurationManager = qvtoReconfigurationManager;
         this.customizerFactory = customizerFactory;
     }
@@ -49,8 +47,7 @@ public class LocalQualityBasedStrategyContext
         List<QVToReconfiguration> qvts = qvtoReconfigurationManager.loadReconfigurations();
         for (QVToReconfiguration each : qvts) {
             SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
-            IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration,
-                    reconfParamsRepo);
+            IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration);
             reconfs.add(customizer);
         }
 
