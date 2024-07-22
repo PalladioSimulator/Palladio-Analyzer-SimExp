@@ -1,25 +1,18 @@
 package org.palladiosimulator.simexp.pcm.action;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
-import org.palladiosimulator.commons.eclipseutils.FileHelper;
 import org.palladiosimulator.monitorrepository.MonitorRepository;
 import org.palladiosimulator.monitorrepository.MonitorRepositoryPackage;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.util.ModelTransformationCache;
-import org.palladiosimulator.simulizar.reconfigurationrule.ModelTransformation;
 import org.palladiosimulator.simulizar.runconfig.SimuLizarWorkflowConfiguration;
 import org.palladiosimulator.simulizar.utils.PCMPartitionManager;
 
@@ -31,66 +24,29 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 //TODO Refactor to QVTOTransformationJob
 public class QVToReconfigurationManager implements IQVToReconfigurationManager {
 
-    private static final String SUPPORTED_TRANSFORMATION_FILE_EXTENSION = ".qvto";
-
     private QVTOReconfigurator reconfigurator;
 
-    private final List<QvtoModelTransformation> transformations;
+    private final IQVTOModelTransformationLoader qvtoModelTransformationLoader;
     private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
     public QVToReconfigurationManager(String qvtoFilePath) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
-        this.transformations = loadTransformations(qvtoFilePath);
-    }
-
-    private List<QvtoModelTransformation> loadTransformations(String qvtoFilePath) {
-        URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
-        if (qvtoFiles.length == 0) {
-            // TODO exception handling
-            throw new RuntimeException("There are no qvto transformation specified.");
-        }
-        ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles);
-        List<QvtoModelTransformation> trafos = new ArrayList<>();
-        transformationCache.getAll()
-            .forEach(trafos::add);
-        return trafos;
+        this.qvtoModelTransformationLoader = new QVTOModelTransformationLoader(qvtoFilePath);
     }
 
     @Override
     public List<QVToReconfiguration> loadReconfigurations() {
-        return transformations.stream()
+        List<QvtoModelTransformation> transformations = qvtoModelTransformationLoader.loadQVTOReconfigurations();
+        List<QVToReconfiguration> qvtoReconfigurations = transformations.stream()
             .filter(each -> each instanceof QvtoModelTransformation)
             .map(each -> SingleQVToReconfiguration.of(each, this))
             .collect(Collectors.toList());
+        return qvtoReconfigurations;
     }
 
     @Override
     public QvtoModelTransformation findQvtoModelTransformation(String transformationName) {
-        Stream<QvtoModelTransformation> stream = transformations.stream();
-        ModelTransformation<?> result = stream.filter(new TransformationNamePredicate(transformationName))
-            .findFirst()
-            .orElse(null);
-        return (QvtoModelTransformation) result;
-    }
-
-    private static class TransformationNamePredicate implements Predicate<ModelTransformation<?>> {
-        private final String name;
-
-        public TransformationNamePredicate(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public boolean test(ModelTransformation<?> each) {
-            if (!(each instanceof QvtoModelTransformation)) {
-                return false;
-            }
-            QvtoModelTransformation qvtoModelTransformation = (QvtoModelTransformation) each;
-            if (!name.equals(qvtoModelTransformation.getTransformationName())) {
-                return false;
-            }
-            return true;
-        }
+        return qvtoModelTransformationLoader.findQvtoModelTransformation(transformationName);
     }
 
     @Override
