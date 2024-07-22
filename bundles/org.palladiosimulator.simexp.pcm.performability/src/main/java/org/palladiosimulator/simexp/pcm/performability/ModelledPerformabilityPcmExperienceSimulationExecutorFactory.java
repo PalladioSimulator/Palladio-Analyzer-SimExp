@@ -117,8 +117,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
-                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider,
-                qvtoReconfigurationManager);
+                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
         return executor;
     }
 

@@ -4,7 +4,6 @@ import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
@@ -18,9 +17,8 @@ public class ModelledSimulationExecutor<R>
     public ModelledSimulationExecutor(ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> experienceSimulator,
             Experiment experiment, SimulationParameters simulationParameters,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy,
-            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider) {
         super(experienceSimulator, experiment, simulationParameters, reconfSelectionPolicy, rewardCalculation,
-                experimentProvider, qvtoReconfigurationManager);
+                experimentProvider);
     }
 }

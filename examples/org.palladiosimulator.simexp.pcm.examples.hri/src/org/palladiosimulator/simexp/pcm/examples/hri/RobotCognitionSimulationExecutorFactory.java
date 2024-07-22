@@ -123,7 +123,7 @@ public class RobotCognitionSimulationExecutorFactory
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 
     private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

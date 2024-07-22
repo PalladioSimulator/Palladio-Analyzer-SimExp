@@ -89,6 +89,6 @@ public class LoadBalancingSimulationExecutorFactory
             .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 }

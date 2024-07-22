@@ -179,7 +179,7 @@ public class DeltaIoTSimulationExecutorFactory extends
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, experimentProvider, qvtoReconfigurationManager);
+                reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 
     private List<IDeltaIoToReconfiguration> buildReconfigurations(
