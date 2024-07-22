@@ -66,26 +66,29 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         setControl(container);
         container.setLayout(new GridLayout());
 
-        final Label simulationIDLabel = new Label(container, SWT.NONE);
+        createSimulation(container, modifyListener);
+        createSimulatorType(container, modifyListener);
+        simulatorConfiguration.createControl(container, ctx, modifyListener);
+    }
+
+    private void createSimulation(Composite parent, ModifyListener modifyListener) {
+        final Label simulationIDLabel = new Label(parent, SWT.NONE);
         simulationIDLabel.setText("Simulation-ID:");
-        textSimulationID = new Text(container, SWT.BORDER);
+        textSimulationID = new Text(parent, SWT.BORDER);
         textSimulationID.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textSimulationID.addModifyListener(modifyListener);
 
-        final Label numberOfRunsLabel = new Label(container, SWT.NONE);
+        final Label numberOfRunsLabel = new Label(parent, SWT.NONE);
         numberOfRunsLabel.setText("Number of runs:");
-        textNumberOfRuns = new Text(container, SWT.BORDER);
+        textNumberOfRuns = new Text(parent, SWT.BORDER);
         textNumberOfRuns.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumberOfRuns.addModifyListener(modifyListener);
 
-        final Label numberOfSimulationsPerRunLabel = new Label(container, SWT.NONE);
+        final Label numberOfSimulationsPerRunLabel = new Label(parent, SWT.NONE);
         numberOfSimulationsPerRunLabel.setText("Number of simulations per run:");
-        textNumerOfSimulationsPerRun = new Text(container, SWT.BORDER);
+        textNumerOfSimulationsPerRun = new Text(parent, SWT.BORDER);
         textNumerOfSimulationsPerRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
-
-        createSimulatorType(container, modifyListener);
-        simulatorConfiguration.createControl(container, ctx, modifyListener);
     }
 
     private void createSimulatorType(Composite parent, ModifyListener modifyListener) {
@@ -162,6 +165,12 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
 
     @Override
     protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
+        initializeSimulationFrom(configuration, ctx);
+        initializeSimulatorTypeFrom(configuration, ctx);
+        simulatorConfiguration.initializeFrom(configuration, ctx);
+    }
+
+    private void initializeSimulationFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
         IObservableValue<String> simulationIdTarget = WidgetProperties.text(SWT.Modify)
             .observe(textSimulationID);
         IObservableValue<String> simulationIdModel = ConfigurationProperties.string(SimulationConstants.SIMULATION_ID)
@@ -197,9 +206,6 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         Binding numberOfSimulationsPerRunBindValue = ctx.bindValue(numberOfSimulationsPerRunTarget,
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
-
-        initializeSimulatorTypeFrom(configuration, ctx);
-        simulatorConfiguration.initializeFrom(configuration, ctx);
     }
 
     private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
