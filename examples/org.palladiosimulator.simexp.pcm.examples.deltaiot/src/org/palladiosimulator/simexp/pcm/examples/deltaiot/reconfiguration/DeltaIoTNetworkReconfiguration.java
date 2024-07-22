@@ -100,6 +100,25 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
         }
     }
 
+    @Override
+    public boolean canBeAdjusted(Map<VariableReference, Integer> powerValues) {
+        for (VariableReference each : powerValues.keySet()) {
+            Optional<TransmissionPowerValue> powerVal = findTransmissionPowerValueWith(each);
+            if (powerVal.isEmpty()) {
+                // TODO logging
+                return false;
+            }
+
+            int adjustedPowerSetting = powerVal.get()
+                .getPowerSetting() + powerValues.get(each);
+            if (Boolean.logicalOr(adjustedPowerSetting < TransmissionPowerReconfiguration.MIN_POWER,
+                    adjustedPowerSetting > TransmissionPowerReconfiguration.MAX_POWER)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private Optional<TransmissionPowerValue> findTransmissionPowerValueWith(VariableReference varRef) {
         return paramRepo.getTransmissionPower()
             .stream()

@@ -21,8 +21,8 @@ public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguratio
 {
 
     private final static String QVT_FILE_SUFFIX = "TransmissionPower";
-    private final static int MAX_POWER = 15;
-    private final static int MIN_POWER = 0;
+    final static int MAX_POWER = 15;
+    final static int MIN_POWER = 0;
 
 //    private final QVToReconfiguration reconfiguration;
     private final Set<TransmissionPower> powerSettings;
@@ -69,6 +69,7 @@ public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguratio
         value.setPowerSetting(newPowerVal);
     }
 
+    @Override
     public boolean canBeAdjusted(Map<VariableReference, Integer> powerValues) {
         for (VariableReference each : powerValues.keySet()) {
             Optional<TransmissionPowerValue> powerVal = findTransmissionPowerValueWith(each);
