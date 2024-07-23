@@ -1,6 +1,9 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateSetStrategy;
@@ -9,6 +12,7 @@ import org.eclipse.core.databinding.observable.list.ComputedList;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.list.WritableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
+import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.common.util.URI;
@@ -62,6 +66,19 @@ public class TransformationConfiguration {
             return availableTransformationsList;
         });
         viewer.setInput(transformations);
+
+        ISideEffect.create(() -> {
+            IObservableSet<String> observe = ViewerProperties
+                .<CheckboxTableViewer, String> checkedElements(String.class)
+                .observe(viewer);
+            return new HashSet<>(observe);
+        }, new Consumer<Set<String>>() {
+
+            @Override
+            public void accept(Set<String> checked) {
+                modifyListener.modifyText(null);
+            }
+        });
     }
 
     public void initializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
