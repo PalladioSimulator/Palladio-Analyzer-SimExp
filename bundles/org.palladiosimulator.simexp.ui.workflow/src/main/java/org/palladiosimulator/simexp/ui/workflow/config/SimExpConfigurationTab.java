@@ -55,9 +55,9 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
     private SelectObservableValue<SimulatorType> simulatorTypeTarget;
     private Text textSModel;
 
-    public SimExpConfigurationTab(DataBindingContext ctx) {
+    public SimExpConfigurationTab(DataBindingContext ctx, ITrafoNameProvider trafoNameProvider) {
         super(ctx);
-        this.transformationConfiguration = new TransformationConfiguration();
+        this.transformationConfiguration = new TransformationConfiguration(trafoNameProvider);
         this.simulatorConfiguration = new SimulatorConfiguration();
     }
 
@@ -76,7 +76,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         simContainer.setLayout(simContainerLayout);
 
         createSimulation(simContainer, modifyListener);
-        transformationConfiguration.createControl(simContainer, modifyListener);
+        transformationConfiguration.createControl(simContainer, ctx, modifyListener);
         createSimulatorType(container, modifyListener);
         simulatorConfiguration.createControl(container, ctx, modifyListener);
     }
