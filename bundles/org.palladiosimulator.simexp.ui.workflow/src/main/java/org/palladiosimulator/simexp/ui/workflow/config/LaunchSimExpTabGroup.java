@@ -9,6 +9,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 import org.palladiosimulator.simexp.workflow.trafo.TrafoNameProvider;
+import org.palladiosimulator.simexp.workflow.trafo.TrafoNameProviderCache;
 
 public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
     private final DataBindingContext ctx;
@@ -22,7 +23,7 @@ public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
     @Override
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
         SimExpModelsTab modelsTab = new SimExpModelsTab(ctx);
-        ITrafoNameProvider trafoNameProvider = new TrafoNameProvider();
+        ITrafoNameProvider trafoNameProvider = new TrafoNameProviderCache(new TrafoNameProvider());
         ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { //
                 modelsTab, //
                 new SimExpConfigurationTab(ctx, modelsTab, trafoNameProvider), //
