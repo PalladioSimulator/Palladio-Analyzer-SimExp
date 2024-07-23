@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.ui.workflow.config.databinding;
 
 import org.eclipse.core.databinding.property.list.IListProperty;
+import org.eclipse.core.databinding.property.set.ISetProperty;
 import org.eclipse.core.databinding.property.value.IValueProperty;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
@@ -24,5 +25,9 @@ public class ConfigurationProperties {
 
     public static IListProperty<ILaunchConfiguration, String> list(String key) {
         return new ConfigurationListProperty(key);
+    }
+
+    public static ISetProperty<ILaunchConfiguration, String> set(String key) {
+        return new ConfigurationSetProperty(key);
     }
 }
