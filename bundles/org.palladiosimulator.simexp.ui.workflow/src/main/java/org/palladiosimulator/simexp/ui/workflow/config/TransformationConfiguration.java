@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
+import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 
 public class TransformationConfiguration {
     private final IModelValueProvider modelValueProvider;

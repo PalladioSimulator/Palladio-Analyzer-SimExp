@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.ui.workflow.config;
+package org.palladiosimulator.simexp.workflow.trafo;
 
 import java.util.ArrayList;
 import java.util.Collections;

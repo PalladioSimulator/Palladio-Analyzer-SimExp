@@ -38,6 +38,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotEmptyValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
+import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
