@@ -27,7 +27,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigura
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class SimExpModelsTab extends BaseLaunchConfigurationTab {
+public class SimExpModelsTab extends BaseLaunchConfigurationTab implements IModelValueProvider {
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     /** The path to the image file for the tab icon. */
@@ -38,9 +38,15 @@ public class SimExpModelsTab extends BaseLaunchConfigurationTab {
     private Text textExperiments;
     private Text textStaticModel;
     private Text textDynamicModel;
+    private IObservableValue<String> experimentsTarget;
 
     public SimExpModelsTab(DataBindingContext ctx) {
         super(ctx);
+    }
+
+    @Override
+    public IObservableValue<String> getExperimentsModel() {
+        return experimentsTarget;
     }
 
     @Override
@@ -70,6 +76,8 @@ public class SimExpModelsTab extends BaseLaunchConfigurationTab {
         TabHelper.createFileInputSection(architecturalModelsGroup, modifyListener, "Experiments File",
                 ModelFileTypeConstants.EXPERIMENTS_FILE_EXTENSION, textExperiments, "Select Experiments File",
                 getShell(), ModelFileTypeConstants.EMPTY_STRING);
+        experimentsTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textExperiments);
 
         Group environmentalModelsGroup = new Group(container, SWT.NONE);
         environmentalModelsGroup.setText("Environmental Models");
@@ -112,8 +120,6 @@ public class SimExpModelsTab extends BaseLaunchConfigurationTab {
         Binding usageBindValue = ctx.bindValue(usageTarget, usageModel, usageUpdateStrategy, null);
         ControlDecorationSupport.create(usageBindValue, SWT.TOP | SWT.RIGHT);
 
-        IObservableValue<String> experimentsTarget = WidgetProperties.text(SWT.Modify)
-            .observe(textExperiments);
         IObservableValue<String> experimentsModel = ConfigurationProperties
             .string(ModelFileTypeConstants.EXPERIMENTS_FILE)
             .observe(configuration);
