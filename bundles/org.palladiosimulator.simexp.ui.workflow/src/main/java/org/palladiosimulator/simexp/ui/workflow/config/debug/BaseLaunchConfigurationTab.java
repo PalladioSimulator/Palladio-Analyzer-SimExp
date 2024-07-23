@@ -11,20 +11,17 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.palladiosimulator.simexp.ui.workflow.config.IResetLaunchConfigurationTab;
 
-public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
+public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigurationTab
+        implements IResetLaunchConfigurationTab {
     private final DataBindingContext ctx;
 
     private LaunchConfigurationDispatcher dispatcher;
     private boolean isReset = false;
 
-    public BaseLaunchConfigurationTab() {
-        this.ctx = new DataBindingContext();
-    }
-
-    @Override
-    public void dispose() {
-        ctx.dispose();
+    public BaseLaunchConfigurationTab(DataBindingContext ctx) {
+        this.ctx = ctx;
     }
 
     protected class SimExpModifyListener implements ModifyListener {
@@ -62,7 +59,6 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
                 ILaunchConfigurationWorkingCopy launchConfigurationWorkingCopy = (ILaunchConfigurationWorkingCopy) configuration;
                 dispatcher = new LaunchConfigurationDispatcher(launchConfigurationWorkingCopy);
                 doInitializeFrom(dispatcher, ctx);
-                ctx.updateTargets();
                 return;
             }
         }
@@ -74,12 +70,11 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
         } catch (CoreException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-        isReset = true;
-        try {
-            ctx.updateTargets();
-        } finally {
-            isReset = false;
-        }
+    }
+
+    @Override
+    public void setReset(boolean reset) {
+        this.isReset = reset;
     }
 
     protected abstract void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx);

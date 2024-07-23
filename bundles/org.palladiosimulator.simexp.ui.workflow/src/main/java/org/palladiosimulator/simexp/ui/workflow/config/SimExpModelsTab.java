@@ -28,7 +28,6 @@ import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
 public class SimExpModelsTab extends BaseLaunchConfigurationTab {
-
     /** The id of this plug-in. */
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     /** The path to the image file for the tab icon. */
@@ -39,6 +38,10 @@ public class SimExpModelsTab extends BaseLaunchConfigurationTab {
     private Text textExperiments;
     private Text textStaticModel;
     private Text textDynamicModel;
+
+    public SimExpModelsTab(DataBindingContext ctx) {
+        super(ctx);
+    }
 
     @Override
     public void doCreateControl(Composite parent, DataBindingContext ctx) {
