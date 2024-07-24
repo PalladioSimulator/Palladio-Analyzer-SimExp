@@ -22,7 +22,7 @@ import com.google.common.collect.Maps;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 
 //TODO Refactor to QVTOTransformationJob
-public class QVToReconfigurationManager implements IQVToReconfigurationManager {
+public class QVToReconfigurationManager implements IQVToReconfigurationManager, IQVToReconfigurationProvider {
 
     private QVTOReconfigurator reconfigurator;
 
