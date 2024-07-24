@@ -40,16 +40,12 @@ import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.FileDumperPrismObserver;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPrismFileUpdater;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfLocalQualityCustomizerFactory;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
@@ -141,18 +137,11 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>();
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
-        Set<QVToReconfiguration> reconfigurationList = qvToReconfigurationProvider.getReconfigurations();
-        IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory(
-                reconfParamsRepo);
-        reconfigurationList.stream()
-            .forEach(qvto -> {
-                SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) qvto;
-                IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration);
-                reconfigurations.add(customizer);
-            });
+        PrismQVToReconfigurationProvider prismQVToReconfigurationProvider = new PrismQVToReconfigurationProvider(
+                qvToReconfigurationProvider, reconfParamsRepo);
+        Set<QVToReconfiguration> reconfigurations = prismQVToReconfigurationProvider.getReconfigurations();
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 

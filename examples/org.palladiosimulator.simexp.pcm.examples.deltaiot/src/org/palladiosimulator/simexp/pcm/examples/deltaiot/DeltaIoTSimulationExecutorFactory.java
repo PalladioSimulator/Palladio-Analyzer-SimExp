@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +36,6 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPris
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoToReconfCustomizerFactory;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfCustomizerFactory;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.DeltaIoTDefaultReconfigurationStrategy;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -166,9 +164,9 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
-        Set<QVToReconfiguration> qvtoReconfigurations = qvToReconfigurationProvider.getReconfigurations();
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>(
-                buildReconfigurations(reconfCustomizerFactory, qvtoReconfigurations));
+        DeltaIoTQVToReconfigurationProvider deltaIoTQVTOReconfigurationProvider = new DeltaIoTQVToReconfigurationProvider(
+                qvToReconfigurationProvider, reconfCustomizerFactory);
+        Set<QVToReconfiguration> reconfigurations = deltaIoTQVTOReconfigurationProvider.getReconfigurations();
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
@@ -184,18 +182,6 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
-    }
-
-    private List<IDeltaIoToReconfiguration> buildReconfigurations(
-            IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory, Set<QVToReconfiguration> qvtoReconfigurations) {
-        List<IDeltaIoToReconfiguration> reconfigurations = new ArrayList<>();
-        for (QVToReconfiguration qvto : qvtoReconfigurations) {
-            IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto);
-            if (customizer != null) {
-                reconfigurations.add(customizer);
-            }
-        }
-        return reconfigurations;
     }
 
     private Path getPrismLogFolder(String strategyId) {
