@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
-public interface IQVToReconfigurationManager {
+public interface IQVToReconfigurationManager extends IQVToReconfigurationProvider {
 
     QVTOReconfigurator getReconfigurator(IExperimentProvider experimentProvider);
 
