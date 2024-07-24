@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
@@ -163,7 +164,9 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
-        List<QVToReconfiguration> qvtoReconfigurations = qvtoReconfigurationManager.loadReconfigurations();
+        IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
+            .getQVToReconfigurationProvider();
+        Set<QVToReconfiguration> qvtoReconfigurations = qvToReconfigurationProvider.getReconfigurations();
         Set<QVToReconfiguration> reconfigurations = new HashSet<>(
                 buildReconfigurations(reconfCustomizerFactory, qvtoReconfigurations));
 
@@ -184,7 +187,7 @@ public class DeltaIoTSimulationExecutorFactory extends
     }
 
     private List<IDeltaIoToReconfiguration> buildReconfigurations(
-            IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory, List<QVToReconfiguration> qvtoReconfigurations) {
+            IDeltaIoToReconfCustomizerFactory reconfCustomizerFactory, Set<QVToReconfiguration> qvtoReconfigurations) {
         List<IDeltaIoToReconfiguration> reconfigurations = new ArrayList<>();
         for (QVToReconfiguration qvto : qvtoReconfigurations) {
             IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvto);

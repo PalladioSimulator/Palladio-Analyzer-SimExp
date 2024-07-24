@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -12,7 +11,6 @@ import org.palladiosimulator.monitorrepository.MonitorRepository;
 import org.palladiosimulator.monitorrepository.MonitorRepositoryPackage;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 import org.palladiosimulator.simulizar.runconfig.SimuLizarWorkflowConfiguration;
 import org.palladiosimulator.simulizar.utils.PCMPartitionManager;
 
@@ -27,22 +25,19 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
     private QVTOReconfigurator reconfigurator;
 
     private final IQVTOModelTransformationLoader qvtoModelTransformationLoader;
+    private final QVToReconfigurationProvider qvtoReconfigurationProvider;
     private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
     public QVToReconfigurationManager(String qvtoFilePath) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
         this.qvtoModelTransformationLoader = new QVTOModelTransformationCache(
                 new QVTOModelTransformationLoader(qvtoFilePath));
+        this.qvtoReconfigurationProvider = new QVToReconfigurationProvider(this, qvtoModelTransformationLoader);
     }
 
     @Override
-    public List<QVToReconfiguration> loadReconfigurations() {
-        List<QvtoModelTransformation> transformations = qvtoModelTransformationLoader.loadQVTOReconfigurations();
-        List<QVToReconfiguration> qvtoReconfigurations = transformations.stream()
-            .filter(each -> each instanceof QvtoModelTransformation)
-            .map(each -> SingleQVToReconfiguration.of(each, this))
-            .collect(Collectors.toList());
-        return qvtoReconfigurations;
+    public IQVToReconfigurationProvider getQVToReconfigurationProvider() {
+        return qvtoReconfigurationProvider;
     }
 
     @Override

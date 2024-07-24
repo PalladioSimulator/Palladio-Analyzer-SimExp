@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.pcm.action;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IQVToReconfigurationProvider {
-    List<QVToReconfiguration> loadReconfigurations();
+    Set<QVToReconfiguration> getReconfigurations();
 }
