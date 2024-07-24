@@ -1,9 +1,14 @@
-package org.palladiosimulator.simexp.pcm.action;
+package org.palladiosimulator.simexp.pcm.action.impl;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.pcm.action.IQVTOModelTransformationLoader;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
+import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 public class QVToReconfigurationProvider implements IQVToReconfigurationProvider {
