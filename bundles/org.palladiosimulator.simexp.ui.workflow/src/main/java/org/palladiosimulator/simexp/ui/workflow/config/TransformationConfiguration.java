@@ -26,7 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
 import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 
@@ -84,7 +84,7 @@ public class TransformationConfiguration {
     public void initializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
         IObservableSet<String> target = ViewerProperties.<CheckboxTableViewer, String> checkedElements(String.class)
             .observe(viewer);
-        IObservableSet<String> model = ConfigurationProperties.set(ModelFileTypeConstants.TRANSFORMATIONS_ACTIVE)
+        IObservableSet<String> model = ConfigurationProperties.set(SimulationConstants.TRANSFORMATIONS_ACTIVE)
             .observe(configuration);
         UpdateSetStrategy<String, String> updateStrategy = new UpdateSetStrategy<>(UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindSet(target, model, updateStrategy, null);

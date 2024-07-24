@@ -2,9 +2,11 @@ package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
@@ -113,6 +115,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulatorType simulatorType = SimulatorType.valueOf(simulatorTypeStr);
             String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
             SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
+            Set<String> transformationNames = configuration.getAttribute(SimulationConstants.TRANSFORMATIONS_ACTIVE,
+                    Collections.emptySet());
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -159,8 +163,9 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, qualityObjective,
-                    architecturalModels, monitors, prismConfig, environmentalModels, simulationParameters);
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
+                    transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
+                    environmentalModels, simulationParameters);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",

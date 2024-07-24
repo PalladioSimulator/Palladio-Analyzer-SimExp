@@ -13,6 +13,7 @@ public interface SimulationConstants {
     public static final String SIMULATOR_TYPE = "Simulator Type";
     public static final String SIMULATION_ENGINE = "Simulation Engine";
     public static final String QUALITY_OBJECTIVE = "Quality Objective";
+    public static final String TRANSFORMATIONS_ACTIVE = "TransformationsActive";
 
     public static final SimulatorType DEFAULT_SIMULATOR_TYPE = SimulatorType.MODELLED;
     public static final SimulationEngine DEFAULT_SIMULATION_ENGINE = SimulationEngine.PCM;

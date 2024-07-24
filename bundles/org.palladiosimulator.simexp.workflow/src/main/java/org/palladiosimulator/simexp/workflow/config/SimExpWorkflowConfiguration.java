@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.workflow.config;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
@@ -26,6 +27,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final URI smodelFile;
     private final SimulatorType simulatorType;
     private final SimulationEngine simulationEngine;
+    private final Set<String> transformationNames;
     private final QualityObjective qualityObjective;
     private final URI experimentsFile;
     private final URI staticModelFile;
@@ -37,9 +39,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final SimulationParameters simulationParameters;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
-            QualityObjective qualityObjective, ArchitecturalModelsWorkflowConfiguration architecturalModels,
-            MonitorConfiguration monitors, PrismConfiguration prismConfiguration,
-            EnvironmentalModelsWorkflowConfiguration environmentalModels, SimulationParameters simulationParameters) {
+            Set<String> transformationNames, QualityObjective qualityObjective,
+            ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
+            PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
+            SimulationParameters simulationParameters) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -50,6 +53,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          */
         this.simulatorType = simulatorType;
         this.simulationEngine = simulationEngine;
+        this.transformationNames = transformationNames;
         this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
@@ -97,6 +101,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public SimulationEngine getSimulationEngine() {
         return simulationEngine;
+    }
+
+    @Override
+    public Set<String> getTransformationNames() {
+        return transformationNames;
     }
 
     @Override

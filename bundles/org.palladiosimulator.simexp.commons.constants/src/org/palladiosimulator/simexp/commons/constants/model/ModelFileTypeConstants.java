@@ -14,7 +14,6 @@ public class ModelFileTypeConstants {
     public static final String MONITORS = "monitors";
     public static final String PRISM_MODULE_FILE = "prismModuleFile";
     public static final String PRISM_PROPERTY_FILE = "prismPropertyFile";
-    public static final String TRANSFORMATIONS_ACTIVE = "TransformationsActive";
 
     public static final String[] ALLOCATION_FILE_EXTENSION = new String[] {
             "*." + ModelTypeConstants.ALLOCATION_EXTENSION };
