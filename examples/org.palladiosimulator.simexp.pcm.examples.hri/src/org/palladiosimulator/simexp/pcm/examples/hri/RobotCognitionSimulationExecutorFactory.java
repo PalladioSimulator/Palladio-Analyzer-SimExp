@@ -96,7 +96,8 @@ public class RobotCognitionSimulationExecutorFactory
             );
 
         ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new StaticSystemSimulation();
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
+                getWorkflowConfiguration());
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(
                 reconfSelectionPolicy, experimentProvider, qvtoReconfigurationManager);

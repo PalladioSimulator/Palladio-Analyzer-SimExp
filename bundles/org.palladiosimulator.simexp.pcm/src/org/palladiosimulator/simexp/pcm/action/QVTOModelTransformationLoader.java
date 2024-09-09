@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -19,16 +20,21 @@ public class QVTOModelTransformationLoader implements IQVTOModelTransformationLo
 
     @Override
     public List<QvtoModelTransformation> loadQVTOReconfigurations() {
-        URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
-        if (qvtoFiles.length == 0) {
+        List<URI> qvtoFiles = getQvtoFiles();
+        if (qvtoFiles.isEmpty()) {
             // TODO exception handling
             throw new RuntimeException("There are no qvto transformation specified.");
         }
-        ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles);
+        ModelTransformationCache transformationCache = new ModelTransformationCache(qvtoFiles.toArray(new URI[0]));
         List<QvtoModelTransformation> trafos = new ArrayList<>();
         transformationCache.getAll()
             .forEach(trafos::add);
         return trafos;
+    }
+
+    protected List<URI> getQvtoFiles() {
+        URI[] qvtoFiles = FileHelper.getURIs(qvtoFilePath, SUPPORTED_TRANSFORMATION_FILE_EXTENSION);
+        return Arrays.asList(qvtoFiles);
     }
 
 }

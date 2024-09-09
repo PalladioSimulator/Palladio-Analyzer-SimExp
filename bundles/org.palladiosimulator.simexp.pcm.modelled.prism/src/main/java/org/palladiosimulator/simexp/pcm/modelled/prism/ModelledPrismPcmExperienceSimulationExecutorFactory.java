@@ -121,7 +121,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
         runner.addPrismObserver(observer);
 
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
+                getWorkflowConfiguration());
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);

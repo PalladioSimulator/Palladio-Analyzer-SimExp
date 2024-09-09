@@ -79,7 +79,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
 
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
+                getWorkflowConfiguration());
         Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
 

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.action;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -11,6 +12,7 @@ import org.palladiosimulator.monitorrepository.MonitorRepository;
 import org.palladiosimulator.monitorrepository.MonitorRepositoryPackage;
 import org.palladiosimulator.simexp.pcm.action.impl.QVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.impl.QvtoModelTransformationSearch;
+import org.palladiosimulator.simexp.pcm.config.ITransformationConfiguration;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.runconfig.SimuLizarWorkflowConfiguration;
@@ -30,10 +32,11 @@ public class QVToReconfigurationManager implements IQVToReconfigurationManager {
     private final QVToReconfigurationProvider qvtoReconfigurationProvider;
     private final List<Resource> additonalModelsToTransform = Lists.newArrayList();
 
-    public QVToReconfigurationManager(String qvtoFilePath) {
+    public QVToReconfigurationManager(String qvtoFilePath, ITransformationConfiguration transformationConfiguration) {
         this.reconfigurator = new QVTOReconfigurator(null, null);
+        Set<String> transformationNames = transformationConfiguration.getTransformationNames();
         this.qvtoModelTransformationLoader = new QVTOModelTransformationCache(
-                new QVTOModelTransformationLoader(qvtoFilePath));
+                new FilteredQVTOModelTransformationLoader(qvtoFilePath, transformationNames));
         this.qvtoReconfigurationProvider = new QVToReconfigurationProvider(this, qvtoModelTransformationLoader);
     }
 

@@ -89,7 +89,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
             );
 
         // FIXME: check if reconfigurationStrategy must be initialized
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
+                getWorkflowConfiguration());
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 experimentProvider, qvtoReconfigurationManager);

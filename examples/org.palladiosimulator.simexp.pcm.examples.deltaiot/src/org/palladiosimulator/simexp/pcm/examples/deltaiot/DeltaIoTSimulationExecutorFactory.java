@@ -121,7 +121,8 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
-        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment);
+        IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
+                getWorkflowConfiguration());
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
 
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);

@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.builder.PcmExperienceSimulationBuilder;
+import org.palladiosimulator.simexp.pcm.config.ITransformationConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.util.ExperimentProvider;
@@ -191,10 +192,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .build();
     }
 
-    protected IQVToReconfigurationManager createQvtoReconfigurationManager(Experiment experiment) {
+    protected IQVToReconfigurationManager createQvtoReconfigurationManager(Experiment experiment,
+            ITransformationConfiguration transformationConfiguration) {
         String reconfigurationRulesLocation = getReconfigurationRulesLocation(experiment);
         IQVToReconfigurationManager qvtoReconfigurationManager = new QVToReconfigurationManager(
-                reconfigurationRulesLocation);
+                reconfigurationRulesLocation, transformationConfiguration);
         return qvtoReconfigurationManager;
     }
 
