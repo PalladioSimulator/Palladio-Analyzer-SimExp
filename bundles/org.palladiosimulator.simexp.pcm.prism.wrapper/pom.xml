@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.palladiosimulator.simexp</groupId>
+    <artifactId>bundles</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.palladiosimulator.simexp.pcm.prism.wrapper</artifactId>
+  <packaging>eclipse-plugin</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>Wrapper</name>
+
+	<profiles>
+		<profile>
+			<id>copy-prism-libs</id>
+			<activation>
+				<property>
+	                <name>env.PRISM</name>
+	            </property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+            			<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+						  <execution>
+						    <id>copy-prism-jars</id>
+						    <phase>validate</phase>
+						    <goals>
+						      <goal>copy-resources</goal>
+						    </goals>
+						    <configuration>
+						      <outputDirectory>${basedir}/lib</outputDirectory>
+						      <resources>          
+						        <resource>
+									<directory>${env.PRISM}/lib</directory>
+	                                <includes>
+	                                    <include>*.jar</include>
+	                                </includes>						        
+						          <filtering>false</filtering>
+						        </resource>
+						      </resources>              
+						    </configuration>            
+						  </execution>
+						</executions>
+            		</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
