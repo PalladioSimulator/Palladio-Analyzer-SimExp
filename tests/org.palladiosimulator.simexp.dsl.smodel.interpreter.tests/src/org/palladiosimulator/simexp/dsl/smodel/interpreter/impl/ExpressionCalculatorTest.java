@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
@@ -34,12 +35,15 @@ public class ExpressionCalculatorTest {
     private ValidationTestHelper validationTestHelper;
 
     @Mock
+    private ISmodelConfig smodelConfig;
+    @Mock
     private IFieldValueProvider fieldValueProvider;
 
     @Before
     public void setUp() {
         initMocks(this);
-        calculator = new ExpressionCalculator(fieldValueProvider);
+        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        calculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
 
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
         parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {

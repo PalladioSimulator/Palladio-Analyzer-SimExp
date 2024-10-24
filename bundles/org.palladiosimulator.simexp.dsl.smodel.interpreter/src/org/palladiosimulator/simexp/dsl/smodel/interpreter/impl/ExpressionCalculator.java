@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import org.apache.commons.math3.util.Precision;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
@@ -13,11 +14,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 public class ExpressionCalculator implements IExpressionCalculator {
-    private final double epsilon;
+    private final ISmodelConfig smodelConfig;
     private final IFieldValueProvider fieldValueProvider;
 
-    public ExpressionCalculator(IFieldValueProvider fieldValueProvider) {
-        this.epsilon = Precision.EPSILON;
+    public ExpressionCalculator(ISmodelConfig smodelConfig, IFieldValueProvider fieldValueProvider) {
+        this.smodelConfig = smodelConfig;
         this.fieldValueProvider = fieldValueProvider;
     }
 
@@ -138,6 +139,7 @@ public class ExpressionCalculator implements IExpressionCalculator {
         if ((left instanceof Double) || (right instanceof Double)) {
             Number leftDouble = (Number) left;
             Number rightDouble = (Number) right;
+            double epsilon = smodelConfig.getEpsilon();
             return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), epsilon) == 0;
         }
         return left.equals(right);

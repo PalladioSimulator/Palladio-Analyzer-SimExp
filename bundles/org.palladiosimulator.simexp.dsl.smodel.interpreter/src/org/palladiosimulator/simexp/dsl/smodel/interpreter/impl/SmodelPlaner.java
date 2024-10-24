@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
@@ -25,9 +26,10 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
     private final IActionCallExecutor actionCallExecutor;
     private final IVariableAssigner variableAssigner;
 
-    public SmodelPlaner(Smodel model, IFieldValueProvider fieldValueProvider, IVariableAssigner variableAssigner) {
+    public SmodelPlaner(Smodel model, ISmodelConfig smodelConfig, IFieldValueProvider fieldValueProvider,
+            IVariableAssigner variableAssigner) {
         this.model = model;
-        this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
         this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, fieldValueProvider);
         this.variableAssigner = variableAssigner;
     }

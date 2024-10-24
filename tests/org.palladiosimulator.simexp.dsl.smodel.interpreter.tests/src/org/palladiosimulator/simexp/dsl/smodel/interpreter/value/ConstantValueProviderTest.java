@@ -2,9 +2,12 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Test;
+import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -18,11 +21,14 @@ public class ConstantValueProviderTest {
     private ConstantValueProvider provider;
 
     private SmodelCreator smodelCreator;
+    @Mock
+    private ISmodelConfig smodelConfig;
 
     public ConstantValueProviderTest() {
         initMocks(this);
+        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
         smodelCreator = new SmodelCreator();
-        provider = new ConstantValueProvider();
+        provider = new ConstantValueProvider(smodelConfig);
     }
 
     @Test
