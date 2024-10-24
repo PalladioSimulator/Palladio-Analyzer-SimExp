@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter;
 
 import java.util.List;
 
-import org.apache.commons.math3.util.Precision;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelAnalyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelPlaner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
@@ -26,7 +25,7 @@ public class SmodelInterpreter implements Analyzer, Planner {
 
             @Override
             public double getEpsilon() {
-                return Precision.EPSILON;
+                return 0.0001;
             }
         };
         IFieldValueProvider constantValueProvider = new ConstantValueProvider(smodelConfig);
