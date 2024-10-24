@@ -13,9 +13,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 public class ExpressionCalculator implements IExpressionCalculator {
+    private final double epsilon;
     private final IFieldValueProvider fieldValueProvider;
 
     public ExpressionCalculator(IFieldValueProvider fieldValueProvider) {
+        this.epsilon = Precision.EPSILON;
         this.fieldValueProvider = fieldValueProvider;
     }
 
@@ -136,7 +138,7 @@ public class ExpressionCalculator implements IExpressionCalculator {
         if ((left instanceof Double) || (right instanceof Double)) {
             Number leftDouble = (Number) left;
             Number rightDouble = (Number) right;
-            return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), Precision.EPSILON) == 0;
+            return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), epsilon) == 0;
         }
         return left.equals(right);
     }
