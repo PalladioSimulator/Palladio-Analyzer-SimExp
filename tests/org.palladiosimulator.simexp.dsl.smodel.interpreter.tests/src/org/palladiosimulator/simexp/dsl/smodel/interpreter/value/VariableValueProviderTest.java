@@ -10,6 +10,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -24,12 +25,13 @@ public class VariableValueProviderTest {
     private VariableValueProvider provider;
 
     @Mock
+    private ISmodelConfig smodelConfig;
+    @Mock
     private IFieldValueProvider constantValueProvider;
     @Mock
     private IFieldValueProvider probeValueProvider;
     @Mock
     private IFieldValueProvider optimizableValueProvider;
-
     @Mock
     private IFieldValueProvider envVariableValueProvider;
 
@@ -37,9 +39,10 @@ public class VariableValueProviderTest {
 
     public VariableValueProviderTest() {
         initMocks(this);
+        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
         smodelCreator = new SmodelCreator();
-        provider = new VariableValueProvider(constantValueProvider, probeValueProvider, optimizableValueProvider,
-                envVariableValueProvider);
+        provider = new VariableValueProvider(smodelConfig, constantValueProvider, probeValueProvider,
+                optimizableValueProvider, envVariableValueProvider);
     }
 
     @Test

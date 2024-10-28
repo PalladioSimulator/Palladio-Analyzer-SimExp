@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
@@ -10,9 +11,9 @@ public class SmodelAnalyzer implements Analyzer {
     private final Smodel model;
     private final IExpressionCalculator expressionCalculator;
 
-    public SmodelAnalyzer(Smodel model, IFieldValueProvider fieldValueProvider) {
+    public SmodelAnalyzer(Smodel model, ISmodelConfig smodelConfig, IFieldValueProvider fieldValueProvider) {
         this.model = model;
-        this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.IExpressionCalculator;
@@ -22,11 +23,12 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
     private final SmodelDataTypeSwitch dataTypeSwitch;
     private final Map<Variable, Object> variableValueMap;
 
-    public VariableValueProvider(IFieldValueProvider constantValueProvider, IFieldValueProvider probeValueProvider,
-            IFieldValueProvider optimizableValueProvider, IFieldValueProvider envVariableValueProvider) {
+    public VariableValueProvider(ISmodelConfig smodelConfig, IFieldValueProvider constantValueProvider,
+            IFieldValueProvider probeValueProvider, IFieldValueProvider optimizableValueProvider,
+            IFieldValueProvider envVariableValueProvider) {
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, this, probeValueProvider,
                 optimizableValueProvider, envVariableValueProvider);
-        this.expressionCalculator = new ExpressionCalculator(fieldValueProvider);
+        this.expressionCalculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
         this.dataTypeSwitch = new SmodelDataTypeSwitch();
         Comparator<Variable> comparator = Comparator.comparing(Variable::getName);
         this.variableValueMap = new TreeMap<>(comparator);

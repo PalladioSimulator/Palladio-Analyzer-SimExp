@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Constant;
@@ -10,8 +11,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 public class ConstantValueProvider implements IFieldValueProvider {
     private final IExpressionCalculator expressionCalculator;
 
-    public ConstantValueProvider() {
-        this.expressionCalculator = new ExpressionCalculator(this);
+    public ConstantValueProvider(ISmodelConfig smodelConfig) {
+        this.expressionCalculator = new ExpressionCalculator(smodelConfig, this);
     }
 
     @Override

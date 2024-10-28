@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionArguments;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
@@ -27,8 +28,11 @@ public class SmodelAnalyzerTest {
 
     private SmodelCreator smodelCreator;
     private Smodel smodel;
+
     @Mock
-    IFieldValueProvider fvp;
+    private IFieldValueProvider fvp;
+    @Mock
+    private ISmodelConfig smodelConfig;
 
     @Before
     public void setUp() {
@@ -40,7 +44,7 @@ public class SmodelAnalyzerTest {
     @Test
     public void testAnalyzeWithEmptyModel() throws Exception {
         Smodel smodel = smodelFactory.createSmodel();
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -64,7 +68,7 @@ public class SmodelAnalyzerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -89,7 +93,7 @@ public class SmodelAnalyzerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -116,7 +120,7 @@ public class SmodelAnalyzerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(ifStmt);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -145,7 +149,7 @@ public class SmodelAnalyzerTest {
             .add(nestedIfStmt);
         smodel.getStatements()
             .add(nestedIfStmt);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -177,7 +181,7 @@ public class SmodelAnalyzerTest {
             .add(nestedIfStmt);
         smodel.getStatements()
             .add(nestedIfStmt);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -208,7 +212,7 @@ public class SmodelAnalyzerTest {
         smodel.getStatements()
             .add(exptectedStatement);
 
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
@@ -235,7 +239,7 @@ public class SmodelAnalyzerTest {
             .add(expectedActionCall);
         smodel.getStatements()
             .add(exptectedStatement);
-        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, fvp);
+        SmodelAnalyzer smodelAnalyzer = new SmodelAnalyzer(smodel, smodelConfig, fvp);
 
         boolean actualResult = smodelAnalyzer.analyze();
 
