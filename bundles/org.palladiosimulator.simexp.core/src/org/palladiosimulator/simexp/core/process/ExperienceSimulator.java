@@ -12,7 +12,7 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 public class ExperienceSimulator<C, A, R> {
 
-    private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class);
 
     private final MarkovSampling<A, R> markovSampler;
     private final List<ExperienceSimulationRunner> simulationRunners;
