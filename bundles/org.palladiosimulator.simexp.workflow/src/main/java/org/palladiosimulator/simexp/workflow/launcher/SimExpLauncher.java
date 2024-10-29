@@ -208,7 +208,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         FileAppender fa = new FileAppender();
         fa.setName("SimulationLogger");
         fa.setFile(simulationLogFile.toString());
-        fa.setLayout(new PatternLayout("%d %-5p [%F:%L]: %m%n"));
+        fa.setLayout(new PatternLayout("%d %-5p [%-10t] [%F:%L]: %m%n"));
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
         Level logLevel = getLogLevel(configuration);
