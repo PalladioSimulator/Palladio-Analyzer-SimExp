@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
+import java.util.Objects;
+
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -105,13 +107,13 @@ public class SmodelDumper extends SmodelSwitch<String> {
         DataType dataType = smodelDataTypeSwitch.doSwitch(literal);
         switch (dataType) {
         case BOOL:
-            return Boolean.toString(((BoolLiteral) literal).isTrue());
+            return formatValue(((BoolLiteral) literal).isTrue());
         case DOUBLE:
-            return formatDouble(((DoubleLiteral) literal).getValue());
+            return formatValue(((DoubleLiteral) literal).getValue());
         case INT:
-            return Integer.toString(((IntLiteral) literal).getValue());
+            return formatValue(((IntLiteral) literal).getValue());
         case STRING:
-            return String.format("\"%s\"", ((StringLiteral) literal).getValue());
+            return formatValue(((StringLiteral) literal).getValue());
         }
         throw new RuntimeException("unknown data type: " + dataType);
     }
@@ -130,15 +132,25 @@ public class SmodelDumper extends SmodelSwitch<String> {
         DataType dataType = smodelDataTypeSwitch.doSwitch(field);
         switch (dataType) {
         case BOOL:
-            return Boolean.toString(fieldValueProvider.getBoolValue(field));
+            return formatValue(fieldValueProvider.getBoolValue(field));
         case DOUBLE:
-            return formatDouble(fieldValueProvider.getDoubleValue(field));
+            return formatValue(fieldValueProvider.getDoubleValue(field));
         case INT:
-            return Integer.toString(fieldValueProvider.getIntegerValue(field));
+            return formatValue(fieldValueProvider.getIntegerValue(field));
         case STRING:
-            return String.format("\"%s\"", fieldValueProvider.getStringValue(field));
+            return formatValue(fieldValueProvider.getStringValue(field));
         }
         throw new RuntimeException("unknown data type: " + dataType);
+    }
+
+    public String formatValue(Object value) {
+        if (value instanceof Double) {
+            return formatDouble((Double) value);
+        }
+        if (value instanceof String) {
+            return String.format("\"%s\"", value);
+        }
+        return Objects.toString(value);
     }
 
     private String formatDouble(double value) {
