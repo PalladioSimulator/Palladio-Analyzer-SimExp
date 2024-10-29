@@ -39,12 +39,7 @@ public class ExperienceSimulator<C, A, R> {
     public void run() {
         for (int run = 0; run < numberOfRuns; ++run) {
             initExperienceSimulator();
-
-            Trajectory<A, R> traj = markovSampler.sampleTrajectory();
-            for (Sample<A, R> each : traj.getSamplePath()) {
-                simulatedExperienceStore.store(each);
-            }
-            simulatedExperienceStore.store(traj);
+            runExperienceSimulator();
         }
     }
 
@@ -55,5 +50,13 @@ public class ExperienceSimulator<C, A, R> {
             .filter(Initializable.class::isInstance)
             .map(Initializable.class::cast)
             .forEach(Initializable::initialize);
+    }
+
+    private void runExperienceSimulator() {
+        Trajectory<A, R> traj = markovSampler.sampleTrajectory();
+        for (Sample<A, R> each : traj.getSamplePath()) {
+            simulatedExperienceStore.store(each);
+        }
+        simulatedExperienceStore.store(traj);
     }
 }
