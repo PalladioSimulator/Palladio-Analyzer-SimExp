@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.markovian.sampling;
 
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.markovian.access.SampleModelAccessor;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
 import org.palladiosimulator.simexp.markovian.exploration.EpsilonGreedyStrategy;
@@ -10,6 +11,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class MarkovSampling<A, R> {
+    private static final Logger LOGGER = Logger.getLogger(MarkovSampling.class);
+
     private static class SampleLoop {
 
         private final int horizon;
@@ -53,6 +56,8 @@ public class MarkovSampling<A, R> {
     public Trajectory<A, R> sampleTrajectory() {
         SampleLoop sampleLoop = new SampleLoop(horizon);
         while (sampleLoop.stillSamplesToIterate()) {
+            LOGGER.info(String.format("Markov sample: %d/%d", sampleLoop.getIterationIndex() + 1, horizon));
+
             if (sampleLoop.isInitial()) {
                 sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
             } else {
