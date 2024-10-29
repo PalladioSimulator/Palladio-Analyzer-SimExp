@@ -10,10 +10,15 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class MarkovSampling<A, R> {
+    private static class SampleLoop {
 
-    private class SampleLoop {
+        private final int horizon;
 
         private int sampleIndex = 0;
+
+        public SampleLoop(int horizon) {
+            this.horizon = horizon;
+        }
 
         public boolean stillSamplesToIterate() {
             return sampleIndex != horizon;
@@ -46,7 +51,7 @@ public class MarkovSampling<A, R> {
     }
 
     public Trajectory<A, R> sampleTrajectory() {
-        SampleLoop sampleLoop = new SampleLoop();
+        SampleLoop sampleLoop = new SampleLoop(horizon);
         while (sampleLoop.stillSamplesToIterate()) {
             if (sampleLoop.isInitial()) {
                 sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
