@@ -38,8 +38,10 @@ public class ExperienceSimulator<C, A, R> {
 
     public void run() {
         for (int run = 0; run < numberOfRuns; ++run) {
+            LOGGER.info(String.format("Start simulator run: %d/%d", run + 1, numberOfRuns));
             initExperienceSimulator();
             runExperienceSimulator();
+            LOGGER.info(String.format("End simulator run: %d/%d", run + 1, numberOfRuns));
         }
     }
 
