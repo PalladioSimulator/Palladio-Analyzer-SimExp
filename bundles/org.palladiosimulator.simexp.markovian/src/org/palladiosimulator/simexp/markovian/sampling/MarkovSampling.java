@@ -76,8 +76,4 @@ public class MarkovSampling<A, R> {
     public Sample<A, R> drawInitialSample() {
         return markovian.determineInitialState();
     }
-
-    public int getHorizon() {
-        return horizon;
-    }
 }
