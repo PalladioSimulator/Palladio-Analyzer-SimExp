@@ -18,8 +18,7 @@ public class ExperienceSimulator<C, A, R> {
     private final List<ExperienceSimulationRunner> simulationRunners;
     private final Optional<Initializable> beforeExecutionInitialization;
     private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
-
-    private int numberOfRuns;
+    private final int numberOfRuns;
 
     private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
             SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
@@ -38,7 +37,7 @@ public class ExperienceSimulator<C, A, R> {
     }
 
     public void run() {
-        do {
+        for (int run = 0; run < numberOfRuns; ++run) {
             initExperienceSimulator();
 
             Trajectory<A, R> traj = markovSampler.sampleTrajectory();
@@ -46,7 +45,7 @@ public class ExperienceSimulator<C, A, R> {
                 simulatedExperienceStore.store(each);
             }
             simulatedExperienceStore.store(traj);
-        } while (stillRunsToExecute());
+        }
     }
 
     private void initExperienceSimulator() {
@@ -57,9 +56,4 @@ public class ExperienceSimulator<C, A, R> {
             .map(Initializable.class::cast)
             .forEach(Initializable::initialize);
     }
-
-    private boolean stillRunsToExecute() {
-        return 0 != (--numberOfRuns);
-    }
-
 }
