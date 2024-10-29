@@ -87,7 +87,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
     }
 
     @Override
-    public void assign(VariableAssignment variableAssignment) {
+    public Object assign(VariableAssignment variableAssignment) {
         Variable variableRef = variableAssignment.getVariableRef();
         Expression value = variableAssignment.getValue();
         DataType dataType = dataTypeSwitch.doSwitch(variableRef);
@@ -110,5 +110,6 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
             throw new RuntimeException("unsupported DataType: " + dataType);
         }
         variableValueMap.put(variableRef, calculatedValue);
+        return calculatedValue;
     }
 }
