@@ -154,6 +154,6 @@ public class SmodelDumper extends SmodelSwitch<String> {
     }
 
     private String formatDouble(double value) {
-        return String.format("%3.18f", value);
+        return String.format("%3.20f", value);
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
@@ -16,14 +17,17 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.GlobalStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IfStatement;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Statement;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.util.SmodelSwitch;
 
 public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements Planner {
+    private static final Logger LOGGER = Logger.getLogger(SmodelPlaner.class);
 
     private final Smodel model;
     private final IExpressionCalculator expressionCalculator;
     private final IActionCallExecutor actionCallExecutor;
+    private final IFieldValueProvider fieldValueProvider;
     private final IVariableAssigner variableAssigner;
 
     public SmodelPlaner(Smodel model, ISmodelConfig smodelConfig, IFieldValueProvider fieldValueProvider,
@@ -31,6 +35,7 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
         this.model = model;
         this.expressionCalculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
         this.actionCallExecutor = new ActionCallExecutor(expressionCalculator, fieldValueProvider);
+        this.fieldValueProvider = fieldValueProvider;
         this.variableAssigner = variableAssigner;
     }
 
@@ -94,7 +99,22 @@ public class SmodelPlaner extends SmodelSwitch<List<ResolvedAction>> implements 
 
     @Override
     public List<ResolvedAction> caseVariableAssignment(VariableAssignment variableAssignment) {
-        variableAssigner.assign(variableAssignment);
+        SmodelDumper dumper = new SmodelDumper(fieldValueProvider);
+        StringBuilder sb = new StringBuilder();
+        if (LOGGER.isDebugEnabled()) {
+            sb.append("assign ");
+            Variable variableRef = variableAssignment.getVariableRef();
+            sb.append(variableRef.getName());
+            sb.append(" = ");
+            Expression value = variableAssignment.getValue();
+            sb.append(dumper.doSwitch(value));
+        }
+        Object assignedValue = variableAssigner.assign(variableAssignment);
+        if (LOGGER.isDebugEnabled()) {
+            sb.append(" := ");
+            sb.append(dumper.formatValue(assignedValue));
+            LOGGER.debug(sb.toString());
+        }
         return Collections.emptyList();
     }
 }
