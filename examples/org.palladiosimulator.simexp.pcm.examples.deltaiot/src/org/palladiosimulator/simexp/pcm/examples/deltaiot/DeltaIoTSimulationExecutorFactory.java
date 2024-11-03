@@ -169,10 +169,11 @@ public class DeltaIoTSimulationExecutorFactory extends
                 qvToReconfigurationProvider, reconfCustomizerFactory);
         Set<QVToReconfiguration> reconfigurations = deltaIoTQVTOReconfigurationProvider.getReconfigurations();
 
+        DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
                 null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder);
+                false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

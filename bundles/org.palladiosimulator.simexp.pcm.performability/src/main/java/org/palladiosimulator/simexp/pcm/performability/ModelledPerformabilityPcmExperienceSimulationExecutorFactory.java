@@ -95,7 +95,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
         String reconfigurationStrategyId = smodel.getModelName();
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(null,
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
@@ -113,7 +113,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder, null);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

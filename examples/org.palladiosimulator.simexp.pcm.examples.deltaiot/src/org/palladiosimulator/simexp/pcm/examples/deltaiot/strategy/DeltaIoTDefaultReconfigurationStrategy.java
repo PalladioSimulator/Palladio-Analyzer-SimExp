@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.pcm.action.MultiQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
@@ -51,6 +52,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker,
             IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
+        super(new DeltaIoTSampleLogger(modelAccess));
         this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo, modelAccess);
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;

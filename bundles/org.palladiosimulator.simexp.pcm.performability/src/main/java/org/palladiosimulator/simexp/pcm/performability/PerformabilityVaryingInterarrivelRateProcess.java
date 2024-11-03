@@ -30,6 +30,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.environmentaldynamics.process.ObservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.binding.api.PcmModelChangeFactory;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmAttributeChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmEnvironmentalState;
@@ -85,6 +86,8 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
     private final ProbabilityMassFunction<State> initialDist;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
+    private SampleDumper sampleDumper = null;
+
     public PerformabilityVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
             IExperimentProvider experimentProvider) {
         PerceivedValueConverter<List<InputValue<CategoricalValue>>> perceivedValueConverter = new PerceivedValueConverter<>() {
@@ -132,7 +135,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
 
     private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
             DynamicBayesianNetwork<CategoricalValue> dbn) {
-        return new ObservableEnvironmentProcess<>(createDerivableProcess(dbn), initialDist);
+        return new ObservableEnvironmentProcess<>(createDerivableProcess(dbn), sampleDumper, initialDist);
     }
 
     private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork<CategoricalValue> dbn) {

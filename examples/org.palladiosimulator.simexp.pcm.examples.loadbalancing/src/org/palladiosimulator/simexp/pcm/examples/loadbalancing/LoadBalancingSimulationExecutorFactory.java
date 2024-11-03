@@ -85,7 +85,7 @@ public class LoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializable,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder);
+                false, experimentProvider, simulationRunnerHolder, null);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

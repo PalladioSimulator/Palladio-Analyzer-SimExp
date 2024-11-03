@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
@@ -20,15 +21,15 @@ public abstract class EnvironmentProcess<A, R, V> {
 
     protected final MarkovSampling<A, R> sampler;
 
-    public EnvironmentProcess(Markovian<A, R> markovian, MarkovModel<A, R> model,
+    public EnvironmentProcess(Markovian<A, R> markovian, SampleDumper sampleDumper, MarkovModel<A, R> model,
             ProbabilityMassFunction<State> initialDistribution) {
-        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
+        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian), sampleDumper);
         this.isHiddenProcess = isHiddenProcess(model);
     }
 
-    public EnvironmentProcess(Markovian<A, R> markovian, DerivableEnvironmentalDynamic<A> dynamics,
-            ProbabilityMassFunction<State> initialDistribution) {
-        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian));
+    public EnvironmentProcess(Markovian<A, R> markovian, SampleDumper sampleDumper,
+            DerivableEnvironmentalDynamic<A> dynamics, ProbabilityMassFunction<State> initialDistribution) {
+        this.sampler = new MarkovSampling<>(MarkovianConfig.with(markovian), sampleDumper);
         this.isHiddenProcess = dynamics.isHiddenProcess();
     }
 

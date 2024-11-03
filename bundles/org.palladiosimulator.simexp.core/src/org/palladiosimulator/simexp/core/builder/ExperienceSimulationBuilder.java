@@ -35,6 +35,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Mar
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
@@ -54,6 +55,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> navigator = null;
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
     private Initializable beforeExecutionInitialization = null;
+    private SampleDumper sampleDumper = null;
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
@@ -84,7 +86,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .withNumberOfRuns(numberOfRuns)
             .executeBeforeEachRun(beforeExecutionInitialization)
             .addSimulationRunner(getSimulationRunner())
-            .sampleWith(buildMarkovSampler())
+            .sampleWith(buildMarkovSampler(sampleDumper))
             .build();
         return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
     }
@@ -100,8 +102,8 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
     }
 
-    private MarkovSampling<A, R> buildMarkovSampler() {
-        return new MarkovSampling<>(buildMarkovianConfig());
+    private MarkovSampling<A, R> buildMarkovSampler(SampleDumper sampleDumper) {
+        return new MarkovSampling<>(buildMarkovianConfig(), sampleDumper);
     }
 
     private MarkovianConfig<A, R> buildMarkovianConfig() {
@@ -200,6 +202,11 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(
                 Initializable beforeExecutionInitialization) {
             ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
+            return this;
+        }
+
+        public SimulationConfigurationBuilder usingSampleDumper(SampleDumper sampleDumper) {
+            ExperienceSimulationBuilder.this.sampleDumper = sampleDumper;
             return this;
         }
 

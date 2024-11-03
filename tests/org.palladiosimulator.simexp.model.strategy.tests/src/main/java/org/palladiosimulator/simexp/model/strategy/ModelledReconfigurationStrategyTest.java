@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVTOModelTransformationSearch;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -45,6 +46,8 @@ public class ModelledReconfigurationStrategyTest {
     private IQVTOModelTransformationSearch qvtoModelTransformationSearch;
     @Mock
     private State source;
+    @Mock
+    private SampleDumper sampleDumper;
 
     @Before
     public void setUp() throws Exception {
@@ -52,7 +55,7 @@ public class ModelledReconfigurationStrategyTest {
 
         when(qvtoReconfigurationManager.getQVTOModelTransformationSearch()).thenReturn(qvtoModelTransformationSearch);
 
-        strategy = new ModelledReconfigurationStrategy("testStrategy", monitor, analyzer, planner,
+        strategy = new ModelledReconfigurationStrategy(sampleDumper, "testStrategy", monitor, analyzer, planner,
                 qvtoReconfigurationManager);
     }
 

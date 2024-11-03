@@ -31,6 +31,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
     protected boolean isFilteringActivated = false;
 
     public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
+        super(null);
         this.responseTimeSpec = responseTimeSpec;
         this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
     }

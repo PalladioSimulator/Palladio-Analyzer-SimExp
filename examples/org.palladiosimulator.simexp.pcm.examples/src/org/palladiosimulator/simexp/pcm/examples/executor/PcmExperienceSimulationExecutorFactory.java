@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfigurationManager;
@@ -162,7 +163,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
             RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper) {
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
@@ -174,6 +175,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .createSimulationConfiguration()
             .withSimulationID(params.getSimulationID())
             .withNumberOfRuns(params.getNumberOfRuns())
+            .usingSampleDumper(sampleDumper)
             .andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
             .andOptionalExecutionBeforeEachRun(beforeExecution)
             .done()

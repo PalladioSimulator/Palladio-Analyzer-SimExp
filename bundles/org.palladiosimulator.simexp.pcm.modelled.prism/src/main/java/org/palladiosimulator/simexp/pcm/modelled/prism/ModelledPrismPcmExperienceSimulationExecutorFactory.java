@@ -35,12 +35,14 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeVal
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.FileDumperPrismObserver;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
@@ -136,8 +138,10 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         monitor = new NetworkDumper(monitor, modelAccess);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
+        SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
-                reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
+                sampleDumper, reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter,
+                qvtoReconfigurationManager);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
@@ -147,10 +151,11 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
 
+        DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
                 beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfStrategy,
-                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder);
+                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.IQVTOModelTransformationSearch;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -30,8 +31,9 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
     private final String strategyId;
     private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    public ModelledReconfigurationStrategy(String strategyId, Monitor monitor, Analyzer analyzer, Planner planner,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+    public ModelledReconfigurationStrategy(SampleDumper sampleDumper, String strategyId, Monitor monitor,
+            Analyzer analyzer, Planner planner, IQVToReconfigurationManager qvtoReconfigurationManager) {
+        super(sampleDumper);
         this.strategyId = strategyId;
         this.monitor = monitor;
         this.analyzer = analyzer;

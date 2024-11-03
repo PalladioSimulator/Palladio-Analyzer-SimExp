@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Sta
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -101,6 +102,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
             SystemConfigurationTracker systemConfigurationTracker,
             IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
+        super(new DeltaIoTSampleLogger(modelAccess));
         this.id = id;
         this.planner = planner;
         this.packetLossSpec = packetLossSpec;

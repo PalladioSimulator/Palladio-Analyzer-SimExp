@@ -118,7 +118,7 @@ public class RobotCognitionSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
-                experimentProvider, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder, null);
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

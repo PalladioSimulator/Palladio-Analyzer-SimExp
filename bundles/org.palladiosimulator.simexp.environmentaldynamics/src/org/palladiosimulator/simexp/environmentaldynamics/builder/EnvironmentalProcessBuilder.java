@@ -12,10 +12,12 @@ import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 
 public class EnvironmentalProcessBuilder<A, Aa extends Action<A>, R, V> {
 
     private ProbabilityMassFunction<State> initialDist = null;
+    private SampleDumper sampleDumper = null;
     private ObservationProducer obsProducer = null;
     private Optional<MarkovModel<A, R>> model = Optional.empty();
     private boolean isHidden = false;
@@ -32,6 +34,11 @@ public class EnvironmentalProcessBuilder<A, Aa extends Action<A>, R, V> {
     public EnvironmentalProcessBuilder<A, Aa, R, V> andInitiallyDistributedWith(
             ProbabilityMassFunction<State> initialDist) {
         this.initialDist = initialDist;
+        return this;
+    }
+
+    public EnvironmentalProcessBuilder<A, Aa, R, V> usingSampleDumper(SampleDumper sampleDumper) {
+        this.sampleDumper = sampleDumper;
         return this;
     }
 
@@ -57,9 +64,9 @@ public class EnvironmentalProcessBuilder<A, Aa extends Action<A>, R, V> {
 
     private EnvironmentProcess<A, R, V> buildAsDescribableProcess() {
         if (isHidden) {
-            return new UnobservableEnvironmentProcess<A, Aa, R, V>(model.get(), initialDist, obsProducer);
+            return new UnobservableEnvironmentProcess<A, Aa, R, V>(model.get(), sampleDumper, initialDist, obsProducer);
         }
-        return new ObservableEnvironmentProcess<A, Aa, R, V>(model.get(), initialDist);
+        return new ObservableEnvironmentProcess<A, Aa, R, V>(model.get(), sampleDumper, initialDist);
     }
 
 }

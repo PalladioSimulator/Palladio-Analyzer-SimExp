@@ -120,7 +120,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder);
+                experimentProvider, simulationRunnerHolder, null);
 
         // TODO: use from store
         String sampleSpaceId = SimulatedExperienceConstants

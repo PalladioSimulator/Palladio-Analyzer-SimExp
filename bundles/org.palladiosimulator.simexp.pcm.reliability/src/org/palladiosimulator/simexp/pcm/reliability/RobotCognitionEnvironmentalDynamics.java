@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEn
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Observation;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 
 import com.google.common.collect.Lists;
 
@@ -31,6 +32,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
 
     private final EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> envProcess;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
+    private SampleDumper sampleDumper = null;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn) {
         this.envProcess = createEnvironmentalProcess(dbn);
@@ -65,7 +67,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
 
     private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
             DynamicBayesianNetwork<CategoricalValue> dbn) {
-        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), createInitialDist(),
+        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), sampleDumper, createInitialDist(),
                 createObsProducer(dbn));
     }
 

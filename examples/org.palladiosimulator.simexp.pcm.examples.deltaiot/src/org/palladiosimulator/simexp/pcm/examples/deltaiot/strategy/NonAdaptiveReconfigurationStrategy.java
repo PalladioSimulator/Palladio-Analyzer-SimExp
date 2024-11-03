@@ -7,10 +7,17 @@ import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.solver.models.PCMInstance;
 
 public class NonAdaptiveReconfigurationStrategy
         extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
+
+    public NonAdaptiveReconfigurationStrategy(DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+        super(new DeltaIoTSampleLogger(modelAccess));
+    }
 
     @Override
     public String getId() {

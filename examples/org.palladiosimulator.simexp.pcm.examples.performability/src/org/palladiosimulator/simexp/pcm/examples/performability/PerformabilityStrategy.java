@@ -55,6 +55,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
             ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
+        super(null);
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;

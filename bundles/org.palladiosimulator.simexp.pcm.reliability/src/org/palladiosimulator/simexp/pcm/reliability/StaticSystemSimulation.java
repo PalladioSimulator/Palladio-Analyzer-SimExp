@@ -11,6 +11,10 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 public class StaticSystemSimulation extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
+    public StaticSystemSimulation() {
+        super(null);
+    }
+
     @Override
     public String getId() {
         return "StaticSystemSimulation";
