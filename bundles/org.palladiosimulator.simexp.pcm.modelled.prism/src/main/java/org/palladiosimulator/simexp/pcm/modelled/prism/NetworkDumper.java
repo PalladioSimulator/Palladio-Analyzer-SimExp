@@ -5,6 +5,7 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -60,8 +61,14 @@ public class NetworkDumper implements Monitor {
                 .compareTo(l2.pcmLink.getEntityName()))
             .collect(Collectors.toList());
 
+        Integer maxName = links.stream()
+            .mapToInt(v -> v.pcmLink.getEntityName()
+                .length())
+            .max()
+            .orElseThrow(NoSuchElementException::new);
+
         for (WirelessLink eachLink : sortedLinks) {
-            onEntry(eachLink);
+            onEntry(eachLink, maxName);
         }
         onRunFinish();
     }
@@ -74,8 +81,8 @@ public class NetworkDumper implements Monitor {
         LOGGER.info("******** END *******");
     }
 
-    private void onEntry(WirelessLink link) {
-        LOGGER.info(String.format("Link: %1s, Power: %2s, SNR:  %3s, Dist.: %4s", link.pcmLink.getEntityName(),
-                link.transmissionPower, link.SNR, link.distributionFactor));
+    private void onEntry(WirelessLink link, int maxName) {
+        LOGGER.info(String.format("Link %-" + String.format("%d", maxName) + "s Power: %2s, SNR: % 22.18f, Dist.: %4s",
+                link.pcmLink.getEntityName(), link.transmissionPower, link.SNR, link.distributionFactor));
     }
 }
