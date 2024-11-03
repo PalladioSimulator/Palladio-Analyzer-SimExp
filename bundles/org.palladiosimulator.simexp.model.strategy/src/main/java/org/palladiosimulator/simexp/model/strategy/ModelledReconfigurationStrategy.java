@@ -46,8 +46,7 @@ public class ModelledReconfigurationStrategy extends ReconfigurationStrategy<QVT
 
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
-        monitor.monitor(source);
-
+        monitor.monitor(source, knowledge);
     }
 
     @Override
