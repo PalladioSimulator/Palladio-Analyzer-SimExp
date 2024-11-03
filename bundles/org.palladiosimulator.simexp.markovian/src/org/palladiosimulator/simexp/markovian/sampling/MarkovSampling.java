@@ -59,7 +59,8 @@ public class MarkovSampling<A, R> {
             LOGGER.info(String.format("Markov sample: %d/%d", sampleLoop.getIterationIndex() + 1, horizon));
 
             if (sampleLoop.isInitial()) {
-                sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
+                Sample<A, R> initialSample = drawInitialSample();
+                sampleModelAccessor.addNewTrajectory(initialSample);
             } else {
                 drawSample();
             }
@@ -79,7 +80,8 @@ public class MarkovSampling<A, R> {
     }
 
     private void drawSample() {
-        Sample<A, R> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
+        Sample<A, R> currentSample = sampleModelAccessor.getCurrentSample();
+        Sample<A, R> result = drawSampleGiven(currentSample);
         sampleModelAccessor.addSample(result);
     }
 
