@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.pcm.modelled.prism;
 
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,14 +45,9 @@ public class NetworkDumper implements Monitor {
             .cast(source);
         Map<AssemblyContext, Map<LinkingResource, Double>> motesToLinks = filterMotesWithWirelessLinks(modelAccess,
                 state);
-        List<MoteContext> moteContexts = new ArrayList<>();
         for (AssemblyContext each : motesToLinks.keySet()) {
-            var moteContext = new MoteContext(modelAccess, each, motesToLinks.get(each));
-            moteContexts.add(moteContext);
-        }
-
-        for (MoteContext eachMote : moteContexts) {
-            for (WirelessLink eachLink : eachMote.links) {
+            MoteContext moteContext = new MoteContext(modelAccess, each, motesToLinks.get(each));
+            for (WirelessLink eachLink : moteContext.links) {
                 onEntry(eachLink);
             }
         }
