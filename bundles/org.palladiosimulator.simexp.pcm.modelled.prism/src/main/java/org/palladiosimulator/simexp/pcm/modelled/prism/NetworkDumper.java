@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
-import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext;
@@ -36,12 +35,12 @@ public class NetworkDumper implements Monitor {
     }
 
     @Override
-    public void monitor(State source, SharedKnowledge knowledge) {
-        delegate.monitor(source, knowledge);
-        dump(source, knowledge);
+    public void monitor(State source) {
+        delegate.monitor(source);
+        dump(source);
     }
 
-    private void dump(State source, SharedKnowledge knowledge) {
+    private void dump(State source) {
         onRunStart();
 
         PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state = PcmSelfAdaptiveSystemState.class

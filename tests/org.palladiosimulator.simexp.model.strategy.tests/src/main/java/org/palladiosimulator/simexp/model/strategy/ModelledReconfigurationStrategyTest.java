@@ -14,7 +14,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ResolvedAction;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
@@ -46,8 +45,6 @@ public class ModelledReconfigurationStrategyTest {
     private IQVTOModelTransformationSearch qvtoModelTransformationSearch;
     @Mock
     private State source;
-    @Mock
-    private SharedKnowledge knowledge;
 
     @Before
     public void setUp() throws Exception {
@@ -63,7 +60,7 @@ public class ModelledReconfigurationStrategyTest {
     public void testDelegateToMonitorWorks() {
         strategy.monitor(source, null);
 
-        verify(monitor).monitor(source, knowledge);
+        verify(monitor).monitor(source);
     }
 
     @Test

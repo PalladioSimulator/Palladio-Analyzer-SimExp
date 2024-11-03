@@ -6,7 +6,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ProbeValueProviderMeasurementInjector;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.PerceivedEnvironmentalStateValueInjector;
@@ -33,7 +32,7 @@ public class PcmMonitor implements Monitor {
     }
 
     @Override
-    public void monitor(State source, SharedKnowledge knowledge) {
+    public void monitor(State source) {
         SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator, List<InputValue<CategoricalValue>>> sasState = (SelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator, List<InputValue<CategoricalValue>>>) source;
 
         for (SimulatedMeasurementSpecification measurementSpec : measurementSpecs) {
