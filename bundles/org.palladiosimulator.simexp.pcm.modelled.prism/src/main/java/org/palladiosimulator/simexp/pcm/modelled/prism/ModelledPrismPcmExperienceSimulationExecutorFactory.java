@@ -135,7 +135,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 probabilisticModelRepository);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
-        monitor = new NetworkDumper(monitor, modelAccess);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
         SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
