@@ -62,7 +62,9 @@ public class MarkovSampling<A, R> {
                 Sample<A, R> initialSample = drawInitialSample();
                 sampleModelAccessor.addNewTrajectory(initialSample);
             } else {
-                drawSample();
+                Sample<A, R> currentSample = sampleModelAccessor.getCurrentSample();
+                Sample<A, R> result = drawSampleGiven(currentSample);
+                sampleModelAccessor.addSample(result);
             }
 
             sampleLoop.incrementSampleIndex();
@@ -77,12 +79,6 @@ public class MarkovSampling<A, R> {
         Sample<A, R> newSample = sampleModelAccessor.createTemplateSampleBy(last);
         markovian.drawSample(newSample);
         return newSample;
-    }
-
-    private void drawSample() {
-        Sample<A, R> currentSample = sampleModelAccessor.getCurrentSample();
-        Sample<A, R> result = drawSampleGiven(currentSample);
-        sampleModelAccessor.addSample(result);
     }
 
     public Sample<A, R> drawInitialSample() {
