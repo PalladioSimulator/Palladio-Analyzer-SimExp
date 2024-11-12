@@ -99,7 +99,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             DynamicBehaviourRepository dynamicBehaviourRepository) {
         DynamicBayesianNetwork<CategoricalValue> dbn = createDBN(probabilisticModelRepository,
                 dynamicBehaviourRepository);
-        dbn.init(0);
         return doCreate(experiment, dbn);
     }
 
@@ -112,6 +111,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
             .get(0);
         DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
+        dbn.init(0);
         return dbn;
     }
 
