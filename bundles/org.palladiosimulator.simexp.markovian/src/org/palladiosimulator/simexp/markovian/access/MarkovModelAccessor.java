@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.markovian.access;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -31,7 +31,7 @@ public class MarkovModelAccessor<A, R> {
     }
 
     public Set<State> getStates() {
-        return new HashSet<State>(model.getStateSpace());
+        return new LinkedHashSet<State>(model.getStateSpace());
     }
 
     public Set<Transition<A>> filterTransitions(Predicate<Transition<A>> criterion) {

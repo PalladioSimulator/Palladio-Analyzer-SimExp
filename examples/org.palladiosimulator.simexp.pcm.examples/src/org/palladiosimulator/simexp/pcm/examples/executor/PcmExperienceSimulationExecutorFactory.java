@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -170,8 +170,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
-            .andSimulatedMeasurementSpecs(new HashSet<>(specs))
-            .addExperienceSimulationRunners(new HashSet<>(runners))
+            .andSimulatedMeasurementSpecs(new LinkedHashSet<>(specs))
+            .addExperienceSimulationRunners(new LinkedHashSet<>(runners))
             .done()
             .createSimulationConfiguration()
             .withSimulationID(params.getSimulationID())
