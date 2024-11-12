@@ -44,9 +44,18 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
 
     private ProbabilityMassFunction<State> createInitialDist() {
         return new ProbabilityMassFunction<>() {
+            private boolean initialized = false;
+
+            @Override
+            public void init(int seed) {
+                initialized = true;
+            }
 
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 EnvironmentalStateBuilder<String> builder = EnvironmentalState.newBuilder();
                 EnvironmentalState<String> initial = builder
                     .withValue(new PerceivedCategoricalValue("MLPrediction", "Unknown"))

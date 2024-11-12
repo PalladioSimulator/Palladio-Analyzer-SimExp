@@ -40,9 +40,18 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     public ProbabilityMassFunction<State> createInitialDistribution(
             InitialSelfAdaptiveSystemStateCreator<C, A, V> sassCreator) {
         return new ProbabilityMassFunction<>() {
+            private boolean initialized = false;
+
+            @Override
+            public void init(int seed) {
+                initialized = true;
+            }
 
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 ArchitecturalConfiguration<C, A> initialArch = sassCreator.getInitialArchitecturalConfiguration();
                 PerceivableEnvironmentalState<V> initialEnv = determineInitial(initialArch);
                 SelfAdaptiveSystemState<C, A, V> create = sassCreator.create(initialArch, initialEnv);

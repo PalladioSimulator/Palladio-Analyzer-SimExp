@@ -14,6 +14,7 @@ public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction
     private final static double DEFAULT_VALUE = 0;
 
     EnumeratedDistribution<ProbabilityMassFunction.Sample<S>> enumDistribution;
+    private boolean initialized = false;
 
     public SimpleProbabilityMassFunction(Set<ProbabilityMassFunction.Sample<S>> samples) {
         this.enumDistribution = new EnumeratedDistribution<>(asPairs(samples));
@@ -26,7 +27,16 @@ public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction
     }
 
     @Override
+    public void init(int seed) {
+        initialized = true;
+        enumDistribution.reseedRandomGenerator(seed);
+    }
+
+    @Override
     public ProbabilityMassFunction.Sample<S> drawSample() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return enumDistribution.sample();
     }
 

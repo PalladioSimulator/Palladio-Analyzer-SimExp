@@ -143,8 +143,19 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
 
             private final BayesianNetwork<CategoricalValue> bn = dbn.getBayesianNetwork();
 
+            private boolean initialized = false;
+
+            @Override
+            public void init(int seed) {
+                initialized = true;
+                bn.init(seed);
+            }
+
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 List<InputValue<CategoricalValue>> sample = bn.sample();
                 return Sample.of(asPcmEnvironmentalState(sample), bn.probability(sample));
             }

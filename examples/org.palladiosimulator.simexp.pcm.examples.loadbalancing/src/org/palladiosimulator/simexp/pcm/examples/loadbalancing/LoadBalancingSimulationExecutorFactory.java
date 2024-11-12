@@ -58,6 +58,7 @@ public class LoadBalancingSimulationExecutorFactory
                 dbn, experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
+        p.init(0);
 
         List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);

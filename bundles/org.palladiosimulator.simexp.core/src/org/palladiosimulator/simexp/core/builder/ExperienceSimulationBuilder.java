@@ -117,6 +117,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Markovian<A, R> buildMarkovian() {
         StateSpaceNavigator<A> navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<State> initial = initialDistribution.orElse(getInitialDistribution(navigator));
+        initial.init(0);
         if (isHiddenProcess) {
             return buildPOMDP(initial, navigator);
         }
