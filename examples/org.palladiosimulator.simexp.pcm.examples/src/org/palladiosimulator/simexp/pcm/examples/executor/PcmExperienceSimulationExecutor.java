@@ -7,9 +7,8 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
+import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> implements SimulationExecutor {
 
@@ -21,19 +20,16 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     protected final IExperimentProvider experimentProvider;
     protected final Policy<A, Aa> reconfSelectionPolicy;
     protected final TotalRewardCalculation rewardCalculation;
-    protected final IQVToReconfigurationManager qvtoReconfigurationManager;
 
     public PcmExperienceSimulationExecutor(ExperienceSimulator<C, A, R> experienceSimulator, Experiment experiment,
             SimulationParameters simulationParameters, Policy<A, Aa> reconfSelectionPolicy,
-            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+            TotalRewardCalculation rewardCalculation, IExperimentProvider experimentProvider) {
         this.experienceSimulator = experienceSimulator;
         this.experiment = experiment;
         this.simulationParameters = simulationParameters;
         this.reconfSelectionPolicy = reconfSelectionPolicy;
         this.rewardCalculation = rewardCalculation;
         this.experimentProvider = experimentProvider;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     @Override

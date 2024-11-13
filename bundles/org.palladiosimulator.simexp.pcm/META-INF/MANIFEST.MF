@@ -31,13 +31,16 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.failuremodel;bundle-version="5.0.0",
  org.palladiosimulator.envdyn.api,
  tools.mdsd.probdist.api,
- org.palladiosimulator.envdyn.model
+ org.palladiosimulator.envdyn.model,
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm
 Bundle-ActivationPolicy: lazy
 Export-Package: org.palladiosimulator.core.simulation,
  org.palladiosimulator.simexp.pcm.action,
  org.palladiosimulator.simexp.pcm.builder,
+ org.palladiosimulator.simexp.pcm.config,
  org.palladiosimulator.simexp.pcm.datasource,
  org.palladiosimulator.simexp.pcm.init,
  org.palladiosimulator.simexp.pcm.perceiption,

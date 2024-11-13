@@ -3,7 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Deltaiot
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot
+Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.process,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.provider,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.reward,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy,
+ org.palladiosimulator.simexp.pcm.examples.deltaiot.util
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.deltaiot
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.apache.log4j;bundle-version="1.2.15",
@@ -28,5 +34,5 @@ Require-Bundle: org.apache.log4j;bundle-version="1.2.15",
  org.palladiosimulator.experimentautomation;bundle-version="4.3.0",
  org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="4.3.0",
  de.uka.ipd.sdq.workflow.mdsd;bundle-version="4.3.0",
- de.uka.ipd.sdq.scheduler;bundle-version="4.3.0"
-Export-Package: org.palladiosimulator.simexp.pcm.examples.deltaiot
+ de.uka.ipd.sdq.scheduler;bundle-version="5.2.0",
+ org.apache.commons.csv;bundle-version="1.8.0"

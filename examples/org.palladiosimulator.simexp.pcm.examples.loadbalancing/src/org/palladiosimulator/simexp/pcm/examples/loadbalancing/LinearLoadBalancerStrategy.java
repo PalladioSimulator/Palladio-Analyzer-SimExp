@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -125,7 +126,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
 
     private QVToReconfiguration linearOutSource(int outSourceFactor, List<QVToReconfiguration> options) {
         if (outSourceFactor == 0) {
-            return QVToReconfiguration.empty();
+            return EmptyQVToReconfiguration.empty();
         }
         String reconf = OUT_SOURCE + Integer.toString(outSourceFactor);
         return findReconfiguration(reconf, options);
@@ -151,7 +152,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
 
     private QVToReconfiguration linearScaleIn(int scaleInFactor, List<QVToReconfiguration> options) {
         if (scaleInFactor == 0) {
-            return QVToReconfiguration.empty();
+            return EmptyQVToReconfiguration.empty();
         }
         String reconf = SCALE_IN + Integer.toString(scaleInFactor);
         return findReconfiguration(reconf, options);
@@ -183,7 +184,7 @@ public class LinearLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurat
 
     private QVToReconfiguration findReconfiguration(String name, List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return each;
             }

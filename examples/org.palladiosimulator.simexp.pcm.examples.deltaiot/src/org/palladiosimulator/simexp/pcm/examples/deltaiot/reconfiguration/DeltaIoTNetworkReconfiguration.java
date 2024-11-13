@@ -4,40 +4,35 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactor;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.TransmissionPowerValue;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
 
 import de.uka.ipd.sdq.stoex.VariableReference;
 
-public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration {
+public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration
+        implements IDistributionFactorReconfiguration, ITransmissionPowerReconfiguration {
 
-    private final static double UNIFORM_DIST_VALUE = 0.5;
+    private final static String QVT_FILE_SUFFIX = "DeltaIoTNetwork";
 
     private final DeltaIoTReconfigurationParamRepository paramRepo;
-    private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
 
-    public DeltaIoTNetworkReconfiguration(QVToReconfiguration reconfiguration,
-            DeltaIoTReconfigurationParamRepository paramRepo,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
-        super(reconfiguration.getTransformation());
-
+    public DeltaIoTNetworkReconfiguration(SingleQVToReconfiguration reconfiguration,
+            DeltaIoTReconfigurationParamRepository paramRepo) {
+        super(reconfiguration);
         this.paramRepo = paramRepo;
-        this.modelAccess = modelAccess;
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {
-        return qvt.getStringRepresentation()
-            .endsWith("DeltaIoTNetwork");
+        return qvt.getReconfigurationName()
+            .endsWith(QVT_FILE_SUFFIX);
     }
 
+    @Override
     public void setDistributionFactorValuesToDefaults() {
         for (DistributionFactor each : paramRepo.getDistributionFactors()) {
             each.getFactorValues()
@@ -45,34 +40,38 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration 
         }
     }
 
-    public void setDistributionFactorsUniformally(AssemblyContext mote) {
-        modelAccess.retrieveCommunicatingBranches(mote)
-            .forEach(branch -> setDistributionFactorIfPresent(branch, UNIFORM_DIST_VALUE));
-    }
-
-    public void adjustDistributionFactor(DeltaIoTBaseReconfiguration deltaIoTBaseReconfiguration,
-            Map<ProbabilisticBranchTransition, Double> factors) {
-        if (deltaIoTBaseReconfiguration.isNotValid(factors)) {
+    @Override
+    public void adjustDistributionFactor(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (isNotValid(factors)) {
             throw new RuntimeException("The disrtribution factors are note valid.");
         }
 
-        factors.keySet()
-            .forEach(branch -> setDistributionFactorIfPresent(branch, factors.get(branch)));
+        for (Map.Entry<ProbabilisticBranchTransition, Double> entry : factors.entrySet()) {
+            ProbabilisticBranchTransition branch = entry.getKey();
+            Double value = entry.getValue();
+            setDistributionFactorIfPresent(branch, value);
+        }
     }
 
+    @Override
     public void adjustTransmissionPower(Map<VariableReference, Integer> powerSetting) {
-        for (VariableReference each : powerSetting.keySet()) {
+        for (Map.Entry<VariableReference, Integer> entry : powerSetting.entrySet()) {
+            VariableReference each = entry.getKey();
+            Integer adjustment = entry.getValue();
             var tp = findTransmissionPowerValueWith(each);
             if (tp.isEmpty()) {
                 throw new RuntimeException(
                         String.format("Power value for %s could not be found.", each.getReferenceName()));
             }
 
-            int newTpValue = tp.get()
-                .getPowerSetting() + powerSetting.get(each);
-            tp.get()
-                .setPowerSetting(newTpValue);
+            TransmissionPowerValue transmissionPowerValue = tp.get();
+            adjust(transmissionPowerValue, adjustment);
         }
+    }
+
+    private void adjust(TransmissionPowerValue value, int adjustement) {
+        int newPowerVal = value.getPowerSetting() + adjustement;
+        value.setPowerSetting(newPowerVal);
     }
 
     private Optional<DistributionFactorValue> findDistFactorValueWith(ProbabilisticBranchTransition branch) {
@@ -99,6 +98,25 @@ public class DeltaIoTNetworkReconfiguration extends DeltaIoTBaseReconfiguration 
             throw new RuntimeException(
                     String.format("Distribution factor for branch %s could not be found.", branch.getEntityName()));
         }
+    }
+
+    @Override
+    public boolean canBeAdjusted(Map<VariableReference, Integer> powerValues) {
+        for (VariableReference each : powerValues.keySet()) {
+            Optional<TransmissionPowerValue> powerVal = findTransmissionPowerValueWith(each);
+            if (powerVal.isEmpty()) {
+                // TODO logging
+                return false;
+            }
+
+            int adjustedPowerSetting = powerVal.get()
+                .getPowerSetting() + powerValues.get(each);
+            if (Boolean.logicalOr(adjustedPowerSetting < TransmissionPowerReconfiguration.MIN_POWER,
+                    adjustedPowerSetting > TransmissionPowerReconfiguration.MAX_POWER)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Optional<TransmissionPowerValue> findTransmissionPowerValueWith(VariableReference varRef) {

@@ -9,7 +9,6 @@
 	</parent>
 	<artifactId>bundles</artifactId>	
 	<packaging>pom</packaging>
-	
 
 	<modules>
 		<!-- insert bundle folders here -->
@@ -24,11 +23,16 @@
 		<module>org.palladiosimulator.simexp.core.store.csv</module>
 		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
 		<module>org.palladiosimulator.simexp.model.io</module>
+		<module>org.palladiosimulator.simexp.model.strategy</module>
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
 		<module>org.palladiosimulator.simexp.pcm</module>
+		<module>org.palladiosimulator.simexp.pcm.simulator</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.simulator</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.prism</module>
 		
 		<module>org.palladiosimulator.pcm.query</module>
-	
+		
 		
 		<module>org.palladiosimulator.simexp.ui.workflow</module>
 		<!-- has reference to org.palladiosimulator.simexp.pcm.examples -->
@@ -39,6 +43,16 @@
 		<module>org.palladiosimulator.simexp.pcm.prism.wrapper</module>
 	
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
+		
+		<module>org.palladiosimulator.simexp.dsl.smodel</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.ide</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.ui</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
+
+		<module>org.palladiosimulator.simexp.pcm.performability</module>		
+		<module>org.palladiosimulator.simexp.pcm.performance</module>
+
 
 	</modules>
 	

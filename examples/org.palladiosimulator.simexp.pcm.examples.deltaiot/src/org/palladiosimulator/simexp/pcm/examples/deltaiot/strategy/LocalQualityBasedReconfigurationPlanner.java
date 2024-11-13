@@ -1,13 +1,13 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
-
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.ITransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.MoteContextFilter;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -20,29 +20,34 @@ import com.google.common.math.DoubleMath;
 public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReconfigurationPlanner {
 
     private final ReconfigurationParameterCalculator paramCalculator;
+    private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
     public LocalQualityBasedReconfigurationPlanner(DeltaIoTReconfigurationParamRepository reconfParamsRepo,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         this.paramCalculator = new ReconfigurationParameterCalculator(reconfParamsRepo, modelAccess);
+        this.reconfCustomizerResolver = reconfCustomizerResolver;
     }
 
     @Override
     public QVToReconfiguration planEnergyConsumption(SharedKnowledge knowledge) {
-        var reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
-        decreaseTransmissionPowerLocally(reconfiguration, knowledge);
-        decreaseDistributionLocally(reconfiguration, knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
+            .resolveDeltaIoTReconfCustomizer(knowledge);
+        decreaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
+        decreaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;
     }
 
     @Override
     public QVToReconfiguration planPacketLoss(SharedKnowledge knowledge) {
-        var reconfiguration = retrieveDeltaIoTNetworkReconfiguration(knowledge);
-        increaseTransmissionPowerLocally(reconfiguration, knowledge);
-        increaseDistributionLocally(reconfiguration, knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
+            .resolveDeltaIoTReconfCustomizer(knowledge);
+        increaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
+        increaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;
     }
 
-    private void increaseDistributionLocally(DeltaIoTNetworkReconfiguration reconfiguration,
+    private void increaseDistributionLocally(IDistributionFactorReconfiguration reconfiguration,
             SharedKnowledge knowledge) {
         var motesFilter = new MoteContextFilter(knowledge);
         for (MoteContext each : motesFilter.motesWithTwoLinks()) {
@@ -53,7 +58,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
         }
     }
 
-    private void decreaseDistributionLocally(DeltaIoTNetworkReconfiguration reconfiguration,
+    private void decreaseDistributionLocally(IDistributionFactorReconfiguration reconfiguration,
             SharedKnowledge knowledge) {
         var motesFilter = new MoteContextFilter(knowledge);
         for (MoteContext each : motesFilter.motesWithTwoLinks()) {
@@ -66,7 +71,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
         }
     }
 
-    private void increaseTransmissionPowerLocally(DeltaIoTNetworkReconfiguration reconfiguration,
+    private void increaseTransmissionPowerLocally(ITransmissionPowerReconfiguration reconfiguration,
             SharedKnowledge knowledge) {
         var motesWithLowSNRLinks = new MoteContextFilter(knowledge).motesWithSNRLowerThan(Threshold.lessThan(0));
         for (MoteContext each : motesWithLowSNRLinks.keySet()) {
@@ -77,7 +82,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
         }
     }
 
-    private void decreaseTransmissionPowerLocally(DeltaIoTNetworkReconfiguration reconfiguration,
+    private void decreaseTransmissionPowerLocally(ITransmissionPowerReconfiguration reconfiguration,
             SharedKnowledge knowledge) {
         var motesWithHighSNRLinks = new MoteContextFilter(knowledge)
             .motesWithSNRHigherThan(Threshold.greaterThanOrEqualTo(0));
@@ -90,21 +95,21 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
     }
 
     private void decreaseTransmissionPower(AssemblyContext mote, WirelessLink link,
-            DeltaIoTNetworkReconfiguration reconfiguration) {
+            ITransmissionPowerReconfiguration reconfiguration) {
         var adjustedParams = paramCalculator.computeDecreasedTransmissionPower(mote, link);
         reconfiguration.adjustTransmissionPower(adjustedParams);
     }
 
     private void increaseTransmissionPower(AssemblyContext mote, WirelessLink link,
-            DeltaIoTNetworkReconfiguration reconfiguration) {
+            ITransmissionPowerReconfiguration reconfiguration) {
         var adjustedParams = paramCalculator.computeIncreasedTransmissionPower(mote, link);
         reconfiguration.adjustTransmissionPower(adjustedParams);
     }
 
     private void adjustDistributionFactor(WirelessLink linkToDecrease, MoteContext mote,
-            DeltaIoTNetworkReconfiguration reconfiguration) {
+            IDistributionFactorReconfiguration reconfiguration) {
         var adjustedParams = paramCalculator.computeAdjustedDistributionFactors(linkToDecrease, mote);
-        reconfiguration.adjustDistributionFactor(reconfiguration, adjustedParams);
+        reconfiguration.adjustDistributionFactor(adjustedParams);
     }
 
     private boolean isGreaterThanZero(double distributionFactor) {

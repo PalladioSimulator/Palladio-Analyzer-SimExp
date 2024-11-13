@@ -2,18 +2,27 @@ package org.palladiosimulator.simexp.markovian.sampling;
 
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.markovian.access.SampleModelAccessor;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
 import org.palladiosimulator.simexp.markovian.exploration.EpsilonGreedyStrategy;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class MarkovSampling<A, R> {
+    private static final Logger LOGGER = Logger.getLogger(MarkovSampling.class);
 
-    private class SampleLoop {
+    private static class SampleLoop {
+
+        private final int horizon;
 
         private int sampleIndex = 0;
+
+        public SampleLoop(int horizon) {
+            this.horizon = horizon;
+        }
 
         public boolean stillSamplesToIterate() {
             return sampleIndex != horizon;
@@ -37,21 +46,29 @@ public class MarkovSampling<A, R> {
     private final Markovian<A, R> markovian;
     private final SampleModelAccessor<A, R> sampleModelAccessor;
     private final Optional<EpsilonGreedyStrategy<A>> eGreedy;
+    private final SampleDumper sampleDumper;
 
-    public MarkovSampling(MarkovianConfig<A, R> config) {
+    public MarkovSampling(MarkovianConfig<A, R> config, SampleDumper sampleDumper) {
         this.horizon = config.horizon;
         this.sampleModelAccessor = new SampleModelAccessor<>(Optional.empty());
         this.markovian = config.markovian;
         this.eGreedy = config.eGreedyStrategy;
+        this.sampleDumper = sampleDumper;
     }
 
     public Trajectory<A, R> sampleTrajectory() {
-        SampleLoop sampleLoop = new SampleLoop();
+        SampleLoop sampleLoop = new SampleLoop(horizon);
         while (sampleLoop.stillSamplesToIterate()) {
+            LOGGER.info(String.format("Markov sample: %d/%d", sampleLoop.getIterationIndex() + 1, horizon));
+
             if (sampleLoop.isInitial()) {
-                sampleModelAccessor.addNewTrajectory(markovian.determineInitialState());
+                Sample<A, R> initialSample = drawInitialSample();
+                onSample(initialSample);
+                sampleModelAccessor.addNewTrajectory(initialSample);
             } else {
-                drawSample();
+                Sample<A, R> currentSample = sampleModelAccessor.getCurrentSample();
+                Sample<A, R> result = drawSampleGiven(currentSample);
+                sampleModelAccessor.addSample(result);
             }
 
             sampleLoop.incrementSampleIndex();
@@ -62,22 +79,20 @@ public class MarkovSampling<A, R> {
         return sampleModelAccessor.getCurrentTrajectory();
     }
 
+    private void onSample(Sample<A, R> sample) {
+        if (sampleDumper != null) {
+            State currentState = sample.getCurrent();
+            sampleDumper.dump(currentState);
+        }
+    }
+
     public Sample<A, R> drawSampleGiven(Sample<A, R> last) {
         Sample<A, R> newSample = sampleModelAccessor.createTemplateSampleBy(last);
         markovian.drawSample(newSample);
         return newSample;
     }
 
-    private void drawSample() {
-        Sample<A, R> result = drawSampleGiven(sampleModelAccessor.getCurrentSample());
-        sampleModelAccessor.addSample(result);
-    }
-
     public Sample<A, R> drawInitialSample() {
         return markovian.determineInitialState();
-    }
-
-    public int getHorizon() {
-        return horizon;
     }
 }

@@ -12,14 +12,13 @@ import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
 
 public class ExperienceSimulator<C, A, R> {
 
-    private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ExperienceSimulator.class);
 
     private final MarkovSampling<A, R> markovSampler;
     private final List<ExperienceSimulationRunner> simulationRunners;
     private final Optional<Initializable> beforeExecutionInitialization;
     private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
-
-    private int numberOfRuns;
+    private final int numberOfRuns;
 
     private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
             SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
@@ -38,15 +37,12 @@ public class ExperienceSimulator<C, A, R> {
     }
 
     public void run() {
-        do {
+        for (int run = 0; run < numberOfRuns; ++run) {
+            LOGGER.info(String.format("Start simulator run: %d/%d", run + 1, numberOfRuns));
             initExperienceSimulator();
-
-            Trajectory<A, R> traj = markovSampler.sampleTrajectory();
-            for (Sample<A, R> each : traj.getSamplePath()) {
-                simulatedExperienceStore.store(each);
-            }
-            simulatedExperienceStore.store(traj);
-        } while (stillRunsToExecute());
+            runExperienceSimulator();
+            LOGGER.info(String.format("End simulator run: %d/%d", run + 1, numberOfRuns));
+        }
     }
 
     private void initExperienceSimulator() {
@@ -58,8 +54,11 @@ public class ExperienceSimulator<C, A, R> {
             .forEach(Initializable::initialize);
     }
 
-    private boolean stillRunsToExecute() {
-        return 0 != (--numberOfRuns);
+    private void runExperienceSimulator() {
+        Trajectory<A, R> traj = markovSampler.sampleTrajectory();
+        for (Sample<A, R> each : traj.getSamplePath()) {
+            simulatedExperienceStore.store(each);
+        }
+        simulatedExperienceStore.store(traj);
     }
-
 }
