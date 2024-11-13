@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
@@ -59,12 +60,12 @@ public class NStepLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurato
             return scaleIn(asReconfigurations(options));
         }
 
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private QVToReconfiguration outSource(List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(outsource())) {
                 return each;
             }
@@ -75,7 +76,7 @@ public class NStepLoadBalancerStrategy<C, A> implements Policy<QVTOReconfigurato
 
     private QVToReconfiguration scaleIn(List<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(scaleIn())) {
                 return each;
             }

@@ -1,0 +1,191 @@
+grammar org.palladiosimulator.simexp.dsl.smodel.Smodel with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate smodel "http://www.palladiosimulator.org/simexp/dsl/smodel/smodel"
+
+Smodel:
+	'modelName' '=' modelName=STRING ';'
+	(constants+=Constant |
+	 variables+=Variable |
+	optimizables+=Optimizable  ';' |
+	envVariables+=EnvVariable |
+	probes+=Probe)*
+	actions+=Action*
+	statements+=IfStatement*
+	;
+	
+Field:
+	InternalField | ExternalField
+	;
+	
+InternalField:
+	Constant | Variable
+;
+
+ExternalField:
+	Optimizable | EnvVariable | Probe
+;
+
+Constant:
+	'const' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
+	;
+
+Variable:
+	'var' dataType=PrimitiveType name=ID '=' value=DisjunctiveExpr ';'
+	;
+
+Optimizable:
+	'optimizable' dataType=PrimitiveType values=Bounds name=ID
+	;
+
+EnvVariable:	
+	'envvar' dataType=PrimitiveType name=ID ':' 'variableId' '=' variableId=STRING  ';'
+	;
+
+Probe:
+	'probe' dataType=PrimitiveType name=ID ':' kind=ProbeAdressingKind '=' identifier=STRING ';'
+	;
+
+enum ProbeAdressingKind:
+    MONITORID='monitorId' | ID='id'
+    ;
+
+Bounds:
+	SetBounds | RangeBounds
+	;
+	
+SetBounds:
+	'{' (values+=Literal (',' values+=Literal)*) '}'
+	;
+
+RangeBounds:
+	'[' startValue=Literal ',' endValue=Literal ',' stepSize=Literal ']'
+	;
+
+Action: 
+	'action' name=ID '(' arguments=ActionArguments ')' ';'
+	;
+
+ActionArguments: 
+	{ActionArguments}
+	(((parameters+=Parameter (',' parameters+=Parameter)* (',' optimizables+=Optimizable)*)) |
+	(optimizables+=Optimizable (',' optimizables+=Optimizable)*))?
+	;
+	
+Parameter:
+	'param' dataType=PrimitiveType name=ID
+	;
+
+Statement:
+	ActionCall | IfStatement | VariableAssignment
+	;
+
+VariableAssignment:
+	variableRef=[Variable] '=' value=DisjunctiveExpr ';'
+;
+
+ActionCall returns GlobalStatement:
+	{ActionCall} 
+	actionRef=[Action] '(' (arguments+=ParameterValue (',' arguments+=ParameterValue)*)? ')' ';'
+	;
+
+ParameterValue:
+	paramRef=[Parameter] '=' argument=DisjunctiveExpr
+	;
+
+IfStatement returns GlobalStatement: 
+	{IfStatement}
+	'if' '(' condition=DisjunctiveExpr ')' '{' (thenStatements+=Statement)* '}'
+	('else' '{' (elseStatements+=Statement)* '}')?
+	;
+
+// Rule 'Operation' is not used, but is necessary to provide a default value for operations.
+enum Operation: UNDEFINED;
+
+DisjunctiveExpr returns Expression:
+    ConjunctiveExpr ({Expression.left=current} op=DisjunctiveOp right=ConjunctiveExpr)*
+    ;
+
+enum DisjunctiveOp returns Operation: OR = '||';
+
+ConjunctiveExpr returns Expression:
+	EquativeExpr ({Expression.left=current} op=ConjunctiveOp right=EquativeExpr)*
+	;
+
+enum ConjunctiveOp returns Operation: AND = '&&';
+
+EquativeExpr returns Expression:
+	RelationalExpr ({Expression.left=current} op=EquativeOp right=RelationalExpr)*
+	;
+
+enum EquativeOp returns Operation: EQUAL = '==' | UNEQUAL = '!=';
+
+RelationalExpr returns Expression:
+	AdditiveExpr ({Expression.left=current} op=RelativeOp right=AdditiveExpr)?
+	;
+
+enum RelativeOp returns Operation: SMALLER = '<' | SMALLER_OR_EQUAL = '<=' | GREATER_OR_EQUAL = '>=' | GREATER = '>';
+
+AdditiveExpr returns Expression:
+	MultiplicativeExpr ({Expression.left=current} op=AdditiveOp right=MultiplicativeExpr)*
+	;
+
+enum AdditiveOp returns Operation: PLUS = '+' | MINUS = '-';
+
+MultiplicativeExpr returns Expression:
+	UnaryExpr ({Expression.left=current} op=MultiplicativeOp right=UnaryExpr)*
+	;
+
+enum MultiplicativeOp returns Operation: MULTIPLY = '*' | DIVIDE = '/' | MODULO = '%';
+
+UnaryExpr returns Expression:
+	{UnaryExpr}
+	op=UnaryOp left=UnaryExpr | Term
+	;
+
+enum UnaryOp returns Operation: PLUS = '+' | MINUS = '-' | NOT = '!';
+
+Term returns Expression:
+	fieldRef=[Field] | literal=Literal | ParenthesizedExpr
+	;
+	
+ParenthesizedExpr returns Expression:
+	'(' DisjunctiveExpr ')'
+	;
+
+Literal returns Expression:
+	BoolLiteral |
+	IntLiteral |
+	DoubleLiteral |
+	StringLiteral
+	;
+	
+BoolLiteral returns Literal:
+	{BoolLiteral}
+	true=BOOL
+	;
+	
+IntLiteral returns Literal:
+	{IntLiteral}
+	 value=INT
+	;
+
+DoubleLiteral returns Literal:
+	{DoubleLiteral}
+	value=DOUBLE
+	;
+
+StringLiteral returns Literal:
+	{StringLiteral}
+	value=STRING
+	;
+
+enum PrimitiveType returns DataType: 
+	BOOL = 'bool' | INT = 'int' | DOUBLE = 'double' | STRING = 'string'
+	;
+
+terminal BOOL returns ecore::EBoolean: 'true' | 'false';
+terminal DOUBLE returns ecore::EDouble: 
+	((INT)? '.' INT (('e' | 'E') ('-')? INT)?) | (INT ('e' | 'E') ('-')? INT)
+	;

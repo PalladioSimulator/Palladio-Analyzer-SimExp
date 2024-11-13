@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 
 // This class is not yet integrated in the simulated experience process. This is rather a reminder for future work. 
 // The idea is to introduce a dedicated concept for reconfiguration strategies following the MAPE-K principles.
@@ -14,9 +15,11 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
     protected static final Logger LOGGER = Logger.getLogger(ReconfigurationStrategy.class);
 
     private final SharedKnowledge knowledge;
+    private final SampleDumper sampleDumper;
 
-    public ReconfigurationStrategy() {
+    public ReconfigurationStrategy(SampleDumper sampleDumper) {
         this.knowledge = new SharedKnowledge();
+        this.sampleDumper = sampleDumper;
     }
 
     @Override
@@ -25,6 +28,9 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
 
         LOGGER.info("==== Start MAPE-K loop ====");
         LOGGER.info("'MONITOR' step start");
+        if (sampleDumper != null) {
+            sampleDumper.dump(source);
+        }
         monitor(source, knowledge);
         LOGGER.debug(String.format("'MONITOR' knowledge snapshot: %s", knowledge.toString()));
         LOGGER.info("'MONITOR' step done");
@@ -33,10 +39,11 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
         boolean isAnalyzable = analyse(source, knowledge);
         LOGGER.info(String.format("'ANALYZE' found constraint violations: '%s'", isAnalyzable));
         LOGGER.info("'ANALYZE' step done");
+
         if (isAnalyzable) {
             LOGGER.info("'PLANNING' step start");
             reconfiguration = plan(source, options, knowledge);
-            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration.getStringRepresentation()));
+            LOGGER.info(String.format("'PLANNING' selected action '%s'", reconfiguration));
             LOGGER.info("'PLANNING' step done");
         }
         LOGGER.info("'EXECUTE' step start");
@@ -50,4 +57,5 @@ public abstract class ReconfigurationStrategy<A, Aa extends Reconfiguration<A>> 
     protected abstract Aa plan(State source, Set<Aa> options, SharedKnowledge knowledge);
 
     protected abstract Aa emptyReconfiguration();
+
 }

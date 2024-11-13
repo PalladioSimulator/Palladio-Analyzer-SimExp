@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -54,6 +55,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
     public PerformabilityStrategy(PcmMeasurementSpecification responseTimeSpec,
             PerformabilityStrategyConfiguration strategyConfiguration,
             ReconfigurationPlanningStrategy reconfigurationPlanningStrategy) {
+        super(null);
         this.responseTimeSpec = responseTimeSpec;
         this.strategyConfiguration = strategyConfiguration;
 //        this.recoveryStrategy = recoveryStrategy;
@@ -201,7 +203,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private Double retrieveResponseTime(
@@ -294,7 +296,7 @@ public class PerformabilityStrategy<C> extends ReconfigurationStrategy<QVTORecon
             .collect(toList());
 
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return Optional.of(each);
             }

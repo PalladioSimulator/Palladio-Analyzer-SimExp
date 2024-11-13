@@ -3,14 +3,11 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toMap;
+import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.isSNRTemplate;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.toInputs;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.environment.DeltaIoTEnvironemtalDynamics.isSNRTemplate;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
@@ -18,10 +15,6 @@ import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DeltaIoTNetworkReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.DistributionFactorReconfiguration;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.TransmissionPowerReconfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
@@ -50,45 +43,6 @@ public class DeltaIoTCommons {
     public static PcmSelfAdaptiveSystemState findPcmState(SharedKnowledge knowledge) {
         return (PcmSelfAdaptiveSystemState) knowledge.getValue(STATE_KEY)
             .orElseThrow();
-    }
-
-    public static Set<QVToReconfiguration> findOptions(SharedKnowledge knowledge) {
-        Set<?> options = (Set<?>) knowledge.getValue(OPTIONS_KEY)
-            .orElseThrow();
-        return options.stream()
-            .filter(QVToReconfiguration.class::isInstance)
-            .map(QVToReconfiguration.class::cast)
-            .collect(Collectors.toSet());
-    }
-
-    public static DistributionFactorReconfiguration retrieveDistributionFactorReconfiguration(
-            SharedKnowledge knowledge) {
-        return retrieveReconfiguration(DistributionFactorReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
-    }
-
-    public static TransmissionPowerReconfiguration retrieveTransmissionPowerReconfiguration(SharedKnowledge knowledge) {
-        return retrieveReconfiguration(TransmissionPowerReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
-    }
-
-    public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(SharedKnowledge knowledge) {
-        return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, findOptions(knowledge))
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
-    }
-
-    public static DeltaIoTNetworkReconfiguration retrieveDeltaIoTNetworkReconfiguration(
-            Set<QVToReconfiguration> options) {
-        return retrieveReconfiguration(DeltaIoTNetworkReconfiguration.class, options)
-            .orElseThrow(() -> new RuntimeException("There is no distribution factor reconfiguration registered."));
-    }
-
-    private static <T extends QVToReconfiguration> Optional<T> retrieveReconfiguration(Class<T> reconfClass,
-            Set<QVToReconfiguration> options) {
-        return options.stream()
-            .filter(reconfClass::isInstance)
-            .map(reconfClass::cast)
-            .findFirst();
     }
 
     public static void requirePcmSelfAdaptiveSystemState(State source) {

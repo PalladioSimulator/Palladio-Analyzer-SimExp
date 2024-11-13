@@ -6,36 +6,28 @@ import java.io.OutputStream;
 import java.util.Collections;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
-import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.compare.PcmModelComparison;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
-import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
 import de.uka.ipd.sdq.scheduler.resources.active.ResourceTableManager;
 
 public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration<PCMInstance, A> {
 
     private static final Logger LOGGER = Logger.getLogger(PcmArchitecturalConfiguration.class.getName());
     private final IExperimentProvider experimentProvider;
-    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
-    private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
+    private PcmArchitecturalConfiguration(PCMInstance configuration, IExperimentProvider experimentProvider) {
         super(configuration);
         this.experimentProvider = experimentProvider;
-        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
     }
 
     public static <A> PcmArchitecturalConfiguration<A> of(PCMInstance configuration,
-            IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-        return new PcmArchitecturalConfiguration<>(configuration, experimentProvider, qvtoReconfigurationManager);
+            IExperimentProvider experimentProvider) {
+        return new PcmArchitecturalConfiguration<>(configuration, experimentProvider);
     }
 
     @Override
@@ -72,57 +64,28 @@ public class PcmArchitecturalConfiguration<A> extends ArchitecturalConfiguration
         return difference((PcmArchitecturalConfiguration<A>) other);
     }
 
+    private boolean isNotValid(ArchitecturalConfiguration<PCMInstance, A> other) {
+        return other == null || !(other instanceof PcmArchitecturalConfiguration);
+    }
+
     @Override
     public ArchitecturalConfiguration<PCMInstance, A> apply(Reconfiguration<A> reconf) {
-        if (isNotValid(reconf)) {
+        if (!(reconf instanceof IPCMReconfigurationExecutor)) {
             throw new RuntimeException(
-                    "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of QVToReconfiguration");
+                    "'EXECUTE' failed to apply reconfiguration: Found invalid reconfiguration; expected an instance of IPCMReconfigurationExecutor");
         }
-        QVToReconfiguration qvtoReconf = (QVToReconfiguration) reconf;
-        if (qvtoReconf.isEmptyReconfiguration() == false) {
-            String transformationName = qvtoReconf.getTransformation()
-                .getTransformationName();
-            LOGGER.info(String.format("'EXECUTE' apply reconfiguration '%s'", transformationName));
-            doApply(qvtoReconf, new ResourceTableManager(), qvtoReconfigurationManager);
-        }
+        IPCMReconfigurationExecutor qvtoReconf = (IPCMReconfigurationExecutor) reconf;
+        qvtoReconf.execute(experimentProvider, new ResourceTableManager());
 
         LOGGER.info("'EXECUTE' step done");
         PcmArchitecturalConfiguration<A> updatedArchitecturalConfiguration = new PcmArchitecturalConfiguration<>(
-                makeSnapshot(experimentProvider), experimentProvider, qvtoReconfigurationManager);
+                makeSnapshot(experimentProvider), experimentProvider);
         return updatedArchitecturalConfiguration;
     }
 
     private PCMInstance makeSnapshot(IExperimentProvider experimentProvider) {
         return experimentProvider.getExperimentRunner()
             .makeSnapshotOfPCM();
-    }
-
-    private void doApply(QVToReconfiguration reconf, IResourceTableManager resourceTableManager,
-            IQVToReconfigurationManager qvtoReconfigurationManager) {
-        boolean succeded = false;
-        QVTOReconfigurator qvtoReconf = qvtoReconfigurationManager.getReconfigurator(experimentProvider);
-        succeded = qvtoReconf.runExecute(ECollections.asEList(reconf.getTransformation()), null, resourceTableManager);
-        String transformationName = reconf.getTransformation()
-            .getTransformationName();
-        if (succeded) {
-            LOGGER.info(String.format("'EXECUTE' applied reconfiguration '%s'", transformationName));
-        } else {
-            LOGGER.error(String.format(
-                    "'EXECUTE' failed to apply reconfiguration: reconfiguration engine could not execute reconfiguration '%s'",
-                    transformationName));
-        }
-    }
-
-    private boolean isNotValid(Reconfiguration<A> action) {
-        return !isValid(action);
-    }
-
-    private boolean isValid(Reconfiguration<A> action) {
-        return action instanceof QVToReconfiguration;
-    }
-
-    private boolean isNotValid(ArchitecturalConfiguration<PCMInstance, A> other) {
-        return other == null || !(other instanceof PcmArchitecturalConfiguration);
     }
 
     private String difference(PcmArchitecturalConfiguration<A> other) {

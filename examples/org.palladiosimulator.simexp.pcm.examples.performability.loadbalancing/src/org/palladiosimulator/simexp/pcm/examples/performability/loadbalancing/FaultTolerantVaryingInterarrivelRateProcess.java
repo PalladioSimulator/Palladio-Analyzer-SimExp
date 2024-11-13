@@ -132,7 +132,7 @@ public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action
 
     private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
             DynamicBayesianNetwork<CategoricalValue> dbn) {
-        return new ObservableEnvironmentProcess<>(createDerivableProcess(dbn), initialDist);
+        return new ObservableEnvironmentProcess<>(createDerivableProcess(dbn), null, initialDist);
     }
 
     private ProbabilityMassFunction<State> createInitialDist(DynamicBayesianNetwork<CategoricalValue> dbn) {

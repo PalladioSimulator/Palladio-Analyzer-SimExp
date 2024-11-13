@@ -8,18 +8,21 @@ import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovModel;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
 public class ObservableEnvironmentProcess<A, Aa extends Action<A>, R, V> extends EnvironmentProcess<A, R, V> {
 
-    public ObservableEnvironmentProcess(MarkovModel<A, R> model, ProbabilityMassFunction<State> initialDistribution) {
-        super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), model, initialDistribution);
+    public ObservableEnvironmentProcess(MarkovModel<A, R> model, SampleDumper sampleDumper,
+            ProbabilityMassFunction<State> initialDistribution) {
+        super(buildMarkovian(buildEnvironmentalDynamics(model), initialDistribution), sampleDumper, model,
+                initialDistribution);
     }
 
-    public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics,
+    public ObservableEnvironmentProcess(DerivableEnvironmentalDynamic<A> dynamics, SampleDumper sampleDumper,
             ProbabilityMassFunction<State> initialDistribution) {
-        super(buildMarkovian(dynamics, initialDistribution), dynamics, initialDistribution);
+        super(buildMarkovian(dynamics, initialDistribution), sampleDumper, dynamics, initialDistribution);
     }
 
     private static <A, Aa extends Action<A>, R> Markovian<A, R> buildMarkovian(

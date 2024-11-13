@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
+import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DistributionFactorValue;
@@ -148,7 +150,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
             return handleEnergyConsumption(state, energyConsumtption, options);
         }
 
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private boolean packetLossIsViolated(SimulatedMeasurement packetLoss) {
@@ -193,7 +195,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         factors.put(findBranchWith(branchToDecrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(branchToIncrease.getEntityName()), DISTRIBUTION_FACTOR_INCREMENT);
         if (reconf.isValid(factors)) {
-            reconf.adjustDistributionFactors(factors);
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -203,8 +205,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -214,8 +216,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_7_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_7_TO_2), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -225,8 +227,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -236,8 +238,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_10_TO_6), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_10_TO_5), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -247,8 +249,8 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT * (-1));
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT);
-        if (Boolean.logicalAnd(reconf.canBeIncreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeIncreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
@@ -258,18 +260,44 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<ProbabilisticBranchTransition, Double> factors = Maps.newHashMap();
         factors.put(findBranchWith(BRANCH_12_TO_3), DISTRIBUTION_FACTOR_INCREMENT);
         factors.put(findBranchWith(BRANCH_12_TO_7), DISTRIBUTION_FACTOR_INCREMENT * (-1));
-        if (Boolean.logicalAnd(reconf.canBeDecreased(factors), reconf.isValid(factors))) {
-            reconf.adjustDistributionFactors(factors);
+        if (Boolean.logicalAnd(canBeDecreased(factors), reconf.isValid(factors))) {
+            reconf.adjustDistributionFactor(factors);
             return true;
         }
         return false;
+    }
+
+    private boolean canBeIncreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
+
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability();
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability();
+        return (branchProb1 == branchProb2) == false;
+    }
+
+    private boolean canBeDecreased(Map<ProbabilisticBranchTransition, Double> factors) {
+        if (factors.size() != 2) {
+            return false;
+        }
+
+        List<ProbabilisticBranchTransition> transitions = Lists.newArrayList(factors.keySet());
+        double branchProb1 = transitions.get(0)
+            .getBranchProbability() + factors.get(transitions.get(0));
+        double branchProb2 = transitions.get(1)
+            .getBranchProbability() + factors.get(transitions.get(1));
+        return max(branchProb1, branchProb2) <= 1.0;
     }
 
     protected boolean increaseTransmissionPower(String varRef, TransmissionPowerReconfiguration reconf) {
         Map<VariableReference, Integer> powerSettings = Maps.newHashMap();
         powerSettings.put(findVariableReferenceWith(varRef), TRANSMISSION_POWER_INCREMENT);
         if (reconf.canBeAdjusted(powerSettings)) {
-            reconf.adjustPowerSetting(powerSettings);
+            reconf.adjustTransmissionPower(powerSettings);
             return true;
         }
         return false;
@@ -279,7 +307,7 @@ public abstract class DeltaIoTReconfigurationStrategy implements Policy<QVTOReco
         Map<VariableReference, Integer> powerSettings = Maps.newHashMap();
         powerSettings.put(findVariableReferenceWith(varRef), TRANSMISSION_POWER_INCREMENT * (-1));
         if (reconf.canBeAdjusted(powerSettings)) {
-            reconf.adjustPowerSetting(powerSettings);
+            reconf.adjustTransmissionPower(powerSettings);
             return true;
         }
         return false;

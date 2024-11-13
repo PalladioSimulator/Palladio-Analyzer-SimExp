@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.utils.EnvironmentalDynamicsUtils;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
@@ -104,7 +105,7 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
             .collect(toList());
 
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(name)) {
                 return Optional.of(each);
             }
@@ -119,6 +120,6 @@ public abstract class AbstractReconfigurationPlanningStrategy<C, A> implements R
     }
 
     protected QVToReconfiguration emptyReconfiguration() {
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 }

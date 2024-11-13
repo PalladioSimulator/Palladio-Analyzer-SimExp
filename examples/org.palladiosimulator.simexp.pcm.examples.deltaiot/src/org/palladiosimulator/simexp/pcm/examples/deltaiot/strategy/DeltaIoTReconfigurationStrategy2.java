@@ -9,7 +9,6 @@ import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCo
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.filterMotesWithWirelessLinks;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.requirePcmSelfAdaptiveSystemState;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.retrieveDeltaIoTNetworkReconfiguration;
 
 import java.util.Set;
 
@@ -18,12 +17,16 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -33,6 +36,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
         private final SimulationParameters simulationParameters;
         private final SystemConfigurationTracker systemConfigurationTracker;
+        private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
         private String id;
         private QualityBasedReconfigurationPlanner planner;
@@ -40,10 +44,12 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         private PrismSimulatedMeasurementSpec energyConsumptionSpec;
 
         public DeltaIoTReconfigurationStrategy2Builder(DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
-                SimulationParameters simulationParameters, SystemConfigurationTracker systemConfigurationTracker) {
+                SimulationParameters simulationParameters, SystemConfigurationTracker systemConfigurationTracker,
+                IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
             this.modelAccess = modelAccess;
             this.simulationParameters = simulationParameters;
             this.systemConfigurationTracker = systemConfigurationTracker;
+            this.reconfCustomizerResolver = reconfCustomizerResolver;
         }
 
         public DeltaIoTReconfigurationStrategy2Builder withID(String id) {
@@ -77,7 +83,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
             requireNonNull(planner, "Planner is missing.");
 
             return new DeltaIoTReconfigurationStrategy2(id, planner, packetLossSpec, energyConsumptionSpec, modelAccess,
-                    simulationParameters, systemConfigurationTracker);
+                    simulationParameters, systemConfigurationTracker, reconfCustomizerResolver);
         }
 
     }
@@ -89,11 +95,14 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
     private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;
     private final SimulationParameters simulationParameters;
     private final SystemConfigurationTracker systemConfigurationTracker;
+    private final IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver;
 
     private DeltaIoTReconfigurationStrategy2(String id, QualityBasedReconfigurationPlanner planner,
             PrismSimulatedMeasurementSpec packetLossSpec, PrismSimulatedMeasurementSpec energyConsumptionSpec,
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
-            SystemConfigurationTracker systemConfigurationTracker) {
+            SystemConfigurationTracker systemConfigurationTracker,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
+        super(new DeltaIoTSampleLogger(modelAccess));
         this.id = id;
         this.planner = planner;
         this.packetLossSpec = packetLossSpec;
@@ -101,13 +110,15 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         this.modelAccess = modelAccess;
         this.simulationParameters = simulationParameters;
         this.systemConfigurationTracker = systemConfigurationTracker;
+        this.reconfCustomizerResolver = reconfCustomizerResolver;
     }
 
     public static DeltaIoTReconfigurationStrategy2Builder newBuilder(
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, SimulationParameters simulationParameters,
-            SystemConfigurationTracker systemConfigurationTracker) {
+            SystemConfigurationTracker systemConfigurationTracker,
+            IDeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
         return new DeltaIoTReconfigurationStrategy2Builder(modelAccess, simulationParameters,
-                systemConfigurationTracker);
+                systemConfigurationTracker, reconfCustomizerResolver);
     }
 
     @Override
@@ -117,6 +128,8 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
 
     @Override
     protected void monitor(State source, SharedKnowledge knowledge) {
+        systemConfigurationTracker.prepareNetworkConfig();
+
         requirePcmSelfAdaptiveSystemState(source);
 
         PcmSelfAdaptiveSystemState state = PcmSelfAdaptiveSystemState.class.cast(source);
@@ -126,11 +139,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
         addMonitoredEnvironmentValues(state, knowledge);
         addMonitoredQualityValues(state, knowledge);
 
-        systemConfigurationTracker.registerAndPrintNetworkConfig(knowledge);
-        if (systemConfigurationTracker.isLastRun()) {
-            systemConfigurationTracker.saveNetworkConfigs();
-            systemConfigurationTracker.resetTrackedValues();
-        }
+        systemConfigurationTracker.processNetworkConfig(knowledge);
     }
 
     @Override
@@ -146,7 +155,12 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
 
     @Override
     protected QVToReconfiguration plan(State source, Set<QVToReconfiguration> options, SharedKnowledge knowledge) {
-        retrieveDeltaIoTNetworkReconfiguration(options).setDistributionFactorValuesToDefaults();
+        IDeltaIoToReconfiguration deltaIoTReconfiguration = reconfCustomizerResolver
+            .resolveDeltaIoTReconfCustomizer(options);
+        if (deltaIoTReconfiguration instanceof IDistributionFactorReconfiguration) {
+            IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) deltaIoTReconfiguration;
+            distributionFactorReconfiguration.setDistributionFactorValuesToDefaults();
+        }
         knowledge.store(OPTIONS_KEY, options);
 
         double energyConsumption = knowledge.getValue(ENERGY_CONSUMPTION_KEY)
@@ -160,7 +174,7 @@ public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QV
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private void addMonitoredEnvironmentValues(PcmSelfAdaptiveSystemState state, SharedKnowledge knowledge) {

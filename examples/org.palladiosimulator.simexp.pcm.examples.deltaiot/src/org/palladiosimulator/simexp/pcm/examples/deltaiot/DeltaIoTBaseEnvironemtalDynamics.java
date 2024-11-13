@@ -55,8 +55,9 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
     private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
             DynamicBayesianNetwork<CategoricalValue> dbn) {
+        DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R, List<InputValue<CategoricalValue>>>(
-                createDerivableProcess(dbn), createInitialDist(dbn));
+                createDerivableProcess(dbn), deltaIoTSampleLogger, createInitialDist(dbn));
     }
 
     private DerivableEnvironmentalDynamic<QVTOReconfigurator> createDerivableProcess(

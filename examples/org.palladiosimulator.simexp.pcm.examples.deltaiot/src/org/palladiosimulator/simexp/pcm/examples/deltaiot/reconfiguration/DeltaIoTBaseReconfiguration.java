@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.palladiosimulator.pcm.seff.ProbabilisticBranchTransition;
-import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
+import org.palladiosimulator.simexp.pcm.action.SingleQVToReconfiguration;
 
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 
-public abstract class DeltaIoTBaseReconfiguration extends QVToReconfiguration {
+public abstract class DeltaIoTBaseReconfiguration extends SingleQVToReconfiguration
+        implements IDeltaIoToReconfiguration {
     private final static double TOLERANCE = 0.001;
 
-    public DeltaIoTBaseReconfiguration(QvtoModelTransformation transformation) {
-        super(transformation);
+    public DeltaIoTBaseReconfiguration(SingleQVToReconfiguration reconfiguration) {
+        super(reconfiguration);
     }
 
     public boolean isValid(Map<ProbabilisticBranchTransition, Double> factors) {

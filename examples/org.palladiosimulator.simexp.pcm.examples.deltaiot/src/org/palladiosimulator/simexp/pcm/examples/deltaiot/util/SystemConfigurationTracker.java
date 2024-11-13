@@ -1,18 +1,14 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Paths;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
+import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.MoteContextFilter;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
-import org.palladiosimulator.simexp.pcm.util.SimulationParameters;
 
 import com.google.common.collect.Lists;
 
@@ -20,122 +16,93 @@ import com.google.common.collect.Lists;
  * This is a helper class for tracking the system configurations of deltaiot and thus only relevant for validation purposes.
  */
 public class SystemConfigurationTracker {
+    private static final Logger LOGGER = Logger.getLogger(SystemConfigurationTracker.class);
 
-    private final static String CSV_DELIMITER = ";";
-    private final static String SIMULATED_EXPERIENCE_BASE_FOLDER = Paths.get(ResourcesPlugin.getWorkspace()
-        .getRoot()
-        .getLocation()
-        .toString(), "resource", "DeltaIoT")
-        .toString();
-    private final static String FILE_SUFFIX = "Configurations.csv";
-
-    private final String strategyId;
-    private final List<String> configurations;
+    private final List<IConfigurationStatisticSink> configurationStatisticSinks;
     private final SimulationParameters simulationParameters;
 
     private int run;
 
-    public SystemConfigurationTracker(String strategyId, SimulationParameters simulationParameters) {
-        this.strategyId = strategyId;
+    public SystemConfigurationTracker(SimulationParameters simulationParameters) {
         this.simulationParameters = simulationParameters;
-        this.configurations = Lists.newArrayList();
+        this.configurationStatisticSinks = Lists.newArrayList();
         this.run = 0;
     }
 
-    public void registerAndPrintNetworkConfig(SharedKnowledge knowledge) {
-        if (configurations.isEmpty()) {
-            registerHeader();
-        }
+    public void addStatisticSink(IConfigurationStatisticSink sink) {
+        configurationStatisticSinks.add(sink);
+    }
 
-        printStartTracking();
+    public void prepareNetworkConfig() {
+        if (run > 0) {
+            return;
+        }
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
+            try {
+                sink.initialize();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    public void processNetworkConfig(SharedKnowledge knowledge) {
+        runStart();
 
         var moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
-                print(eachLink);
-                register(eachLink);
+                for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
+                    try {
+                        sink.onEntry(run, eachLink);
+                    } catch (IOException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                }
             }
         }
 
-        printFinishTracking();
+        runFinish();
 
         run++;
+
+        if (isLastRun()) {
+            saveNetworkConfigs();
+            run = 0;
+        }
     }
 
-    public void saveNetworkConfigs() {
-        var location = getFileLocation(strategyId);
-        var csvOutputFile = new File(location);
-
-        var csvFileExists = csvOutputFile.exists();
-        if (csvFileExists == false) {
+    private void saveNetworkConfigs() {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
             try {
-                csvOutputFile.createNewFile();
+                sink.finalize();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                LOGGER.error(e.getMessage(), e);
             }
-        }
-
-        try (PrintWriter pw = new PrintWriter(new FileWriter(location, csvFileExists))) {
-            if (csvFileExists) {
-                configurations.remove(0);
-            }
-            configurations.forEach(pw::println);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public void resetTrackedValues() {
-        configurations.clear();
-        run = 0;
-    }
-
-    public boolean isLastRun() {
+    private boolean isLastRun() {
         return run == (simulationParameters.getNumberOfSimulationsPerRun() - 1);
     }
 
-    private void registerHeader() {
-        var header = new StringBuilder().append("Run")
-            .append(CSV_DELIMITER)
-            .append("Link")
-            .append(CSV_DELIMITER)
-            .append("Power")
-            .append(CSV_DELIMITER)
-            .append("Distribution")
-            .toString();
-        configurations.add(header);
+    private void runStart() {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
+            try {
+                sink.onRunStart(run);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
     }
 
-    private void register(WirelessLink link) {
-        String configuration = new StringBuilder().append(run)
-            .append(CSV_DELIMITER)
-            .append(link.pcmLink.getEntityName())
-            .append(CSV_DELIMITER)
-            .append(link.transmissionPower)
-            .append(CSV_DELIMITER)
-            .append(link.distributionFactor)
-            .toString();
-        configurations.add(configuration);
+    private void runFinish() {
+        for (IConfigurationStatisticSink sink : configurationStatisticSinks) {
+            try {
+                sink.onRunFinish(run);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
     }
-
-    private void printFinishTracking() {
-        System.out.println("******** END *******");
-    }
-
-    private void printStartTracking() {
-        System.out.println("******** Network configuration of " + run + " *******");
-    }
-
-    private void print(WirelessLink eachLink) {
-        System.out
-            .println(String.format("Link: %1s, Power: %2s, SNR:  %3s, Dist.: %4s", eachLink.pcmLink.getEntityName(),
-                    eachLink.transmissionPower, eachLink.SNR, eachLink.distributionFactor));
-    }
-
-    private String getFileLocation(String strategyId) {
-        var csvFileName = strategyId + FILE_SUFFIX;
-        return Paths.get(SIMULATED_EXPERIENCE_BASE_FOLDER, csvFileName)
-            .toString();
-    }
-
 }

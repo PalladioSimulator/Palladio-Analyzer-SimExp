@@ -12,7 +12,9 @@ import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
+import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.reliability.RobotCognitionEnvironmentalDynamics;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
@@ -29,6 +31,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
     protected boolean isFilteringActivated = false;
 
     public ReliabilityPrioritizedStrategy(SimulatedMeasurementSpecification responseTimeSpec, double thresholdRt) {
+        super(null);
         this.responseTimeSpec = responseTimeSpec;
         this.thresholdRt = Threshold.lessThanOrEqualTo(thresholdRt);
     }
@@ -118,12 +121,12 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             return managePerformance(options);
         }
 
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     @Override
     protected QVToReconfiguration emptyReconfiguration() {
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     @Override
@@ -143,7 +146,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
             return activateFilteringReconfiguration(options);
         }
 
-        return QVToReconfiguration.empty();
+        return EmptyQVToReconfiguration.empty();
     }
 
     private QVToReconfiguration managePerformance(Set<QVToReconfiguration> options) {
@@ -152,7 +155,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
         } else if (isFilteringActivated) {
             return deactivateFilteringReconfiguration(options);
         } else {
-            return QVToReconfiguration.empty();
+            return EmptyQVToReconfiguration.empty();
         }
     }
 
@@ -182,7 +185,7 @@ public class ReliabilityPrioritizedStrategy<C> extends ReconfigurationStrategy<Q
 
     private QVToReconfiguration selectOptionWith(String queriedName, Set<QVToReconfiguration> options) {
         for (QVToReconfiguration each : options) {
-            String reconfName = each.getStringRepresentation();
+            String reconfName = each.getReconfigurationName();
             if (reconfName.equals(queriedName)) {
                 return each;
             }

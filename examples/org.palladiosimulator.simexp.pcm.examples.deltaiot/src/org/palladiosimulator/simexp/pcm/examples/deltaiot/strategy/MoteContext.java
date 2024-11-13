@@ -115,10 +115,10 @@ public class MoteContext {
 
         public final LinkingResource pcmLink;
         public final double SNR;
-        public final double transmissionPower;
+        public final int transmissionPower;
         public final double distributionFactor;
 
-        private WirelessLink(LinkingResource pcmLink, double SNR, double transmissionPower, double distributionFactor) {
+        private WirelessLink(LinkingResource pcmLink, double SNR, int transmissionPower, double distributionFactor) {
             this.pcmLink = pcmLink;
             this.SNR = SNR;
             this.transmissionPower = transmissionPower;
@@ -141,7 +141,7 @@ public class MoteContext {
         Set<WirelessLink> links = Sets.newHashSet();
         for (LinkingResource each : linkToSNR.keySet()) {
             var SNR = linkToSNR.get(each);
-            var transmissionPower = modelAccess.retrieveTransmissionPower(mote, each);
+            int transmissionPower = modelAccess.retrieveTransmissionPower(mote, each);
             var distFactor = modelAccess.retrieveCommunicatingBranch(mote, each)
                 .map(ProbabilisticBranchTransition::getBranchProbability)
                 .orElse(1.0);
@@ -162,6 +162,7 @@ public class MoteContext {
         var linkQuantityIterator = links.iterator();
         var tp1 = linkQuantityIterator.next().transmissionPower;
         var tp2 = linkQuantityIterator.next().transmissionPower;
+
         return tp1 == tp2;
     }
 
