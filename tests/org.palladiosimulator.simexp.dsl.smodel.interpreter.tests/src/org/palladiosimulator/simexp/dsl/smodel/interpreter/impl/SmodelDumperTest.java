@@ -103,7 +103,7 @@ public class SmodelDumperTest {
 
         String actualDump = dumper.doSwitch(constant.getValue());
 
-        assertThat(actualDump).isEqualTo("1.000000000000000000 == 1.000000000000000000");
+        assertThat(actualDump).isEqualTo("1.00000000000000000000 == 1.00000000000000000000");
     }
 
     @Test
