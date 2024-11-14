@@ -15,7 +15,54 @@
 
 	<profiles>
 		<profile>
-			<id>copy-prism-libs</id>
+			<id>disable-build-if-no-prism</id>
+			<activation>
+				<property>
+	                <name>!env.PRISM</name>
+	            </property>
+			</activation>
+			<build>
+			    <plugins>
+			        <plugin>
+			            <groupId>org.eclipse.tycho</groupId>
+			            <artifactId>tycho-compiler-plugin</artifactId>
+			            <executions>
+			                <execution>
+			                    <id>default-compile</id>
+			                    <phase>none</phase>
+			                </execution>
+			            </executions>
+			        </plugin>
+			        <plugin>
+			            <groupId>org.eclipse.tycho</groupId>
+			            <artifactId>tycho-packaging-plugin</artifactId>
+			            <executions>
+			                <execution>
+			                    <id>default-package-plugin</id>
+			                    <phase>none</phase>
+			                </execution>
+			            </executions>
+			        </plugin>
+			        <plugin>
+			            <groupId>org.eclipse.tycho</groupId>
+			            <artifactId>tycho-p2-plugin</artifactId>
+			            <executions>
+			                <execution>
+			                    <id>default-p2-metadata-default</id>
+			                    <phase>none</phase>
+			                </execution>
+			                <execution>
+			                    <id>attached-p2-metadata</id>
+			                    <phase>none</phase>
+			                </execution>
+			            </executions>
+			        </plugin>
+			    </plugins>
+			</build>
+		</profile>
+	
+		<profile>
+			<id>copy-libs-prism</id>
 			<activation>
 				<property>
 	                <name>env.PRISM</name>
