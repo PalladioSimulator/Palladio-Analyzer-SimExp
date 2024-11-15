@@ -1,13 +1,13 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.api.IOptimizer;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 
-public class EAOptimizer implements IOptimizer {
+public class EAOptimizer implements IEAOptimizer {
 
     @Override
-    public void optimize(IOptimizableProvider optimizableProvider, IFitnessEvaluator fitnessEvaluator) {
+    public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator) {
         // TODO Auto-generated method stub
 
     }

@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 /**
  * Interface to calculate the fitness of of {@link Optimizable} values.
  */
-public interface IFitnessEvaluator {
+public interface IEAFitnessEvaluator {
     class OptimizableValue<V> {
         private final Optimizable optimizable;
         private final V value;
