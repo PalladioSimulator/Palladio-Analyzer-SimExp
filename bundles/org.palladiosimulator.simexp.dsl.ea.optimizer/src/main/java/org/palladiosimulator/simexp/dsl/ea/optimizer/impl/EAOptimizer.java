@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
