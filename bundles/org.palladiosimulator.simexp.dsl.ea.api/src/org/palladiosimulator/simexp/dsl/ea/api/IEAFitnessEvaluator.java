@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
@@ -31,8 +32,8 @@ public interface IEAFitnessEvaluator {
      * 
      * @param optimizableValues
      *            the optimizables to evaluate
-     * @return the fitness of the provided {@link Optimizable} values
+     * @return a future receiving the fitness of the provided {@link Optimizable} values
      */
-    double calcFitness(List<OptimizableValue<?>> optimizableValues);
+    Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues);
 
 }
