@@ -12,6 +12,9 @@ public interface IEAOptimizer {
      *            provides the available {@link Optimizable}s
      * @param fitnessEvaluator
      *            calculates the fitness of an concrete set of optimizable values
+     * @param evolutionStatusReceiver
+     *            receives the current status of the EA
      */
-    void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator);
+    void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver);
 }
