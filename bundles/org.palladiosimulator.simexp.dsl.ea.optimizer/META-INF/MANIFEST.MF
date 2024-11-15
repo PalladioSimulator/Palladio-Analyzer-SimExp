@@ -6,7 +6,8 @@ Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Export-Package: org.palladiosimulator.simexp.dsl.ea.optimizer
 Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
- org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
+ org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0",
+ org.apache.log4j;bundle-version="1.2.19"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
