@@ -4,6 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.palladiosimulator.simexp.dsl.ea.optimizer
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.dsl.ea.optimizer
 Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer
