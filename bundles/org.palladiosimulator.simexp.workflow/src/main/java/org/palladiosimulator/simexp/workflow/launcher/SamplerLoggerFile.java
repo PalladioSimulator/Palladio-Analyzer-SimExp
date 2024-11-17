@@ -39,9 +39,10 @@ public class SamplerLoggerFile implements SamplerLogger {
     }
 
     @Override
-    public synchronized void onSample(GroundRandomVariable variable, Object value) {
+    public synchronized void onSample(String context, GroundRandomVariable variable, Object value) {
         try {
-            writer.write(String.format("% 8d sample of %-50s: %s\n", ++counter, variable.getEntityName(), value));
+            writer.write(String.format("% 8d [%s] sample of %-50s: %s\n", ++counter, context, variable.getEntityName(),
+                    value));
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
