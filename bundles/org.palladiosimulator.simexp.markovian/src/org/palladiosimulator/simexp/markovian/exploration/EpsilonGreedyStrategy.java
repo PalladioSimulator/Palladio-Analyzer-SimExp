@@ -36,7 +36,7 @@ public class EpsilonGreedyStrategy<A> implements BasePolicy<Transition<A>> {
         public Set<Transition<A>> filterAllExcept(Transition<A> transition) {
             return transitions.stream()
                 .filter(t -> t.equals(transition) == false)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         }
     }
 

@@ -31,12 +31,12 @@ public class MarkovModelAccessor<A, R> {
     }
 
     public Set<State> getStates() {
-        return new LinkedHashSet<State>(model.getStateSpace());
+        return new LinkedHashSet<>(model.getStateSpace());
     }
 
     public Set<Transition<A>> filterTransitions(Predicate<Transition<A>> criterion) {
         return getTransitionStream().filter(criterion)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Optional<Transition<A>> findTransition(State source, Action<A> label) {

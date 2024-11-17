@@ -138,7 +138,7 @@ public class MoteContext {
     }
 
     private Set<WirelessLink> initLinks(AssemblyContext mote, Map<LinkingResource, Double> linkToSNR) {
-        Set<WirelessLink> links = Sets.newHashSet();
+        Set<WirelessLink> links = Sets.newLinkedHashSet();
         for (LinkingResource each : linkToSNR.keySet()) {
             var SNR = linkToSNR.get(each);
             int transmissionPower = modelAccess.retrieveTransmissionPower(mote, each);

@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.core.builder;
 
 import static org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants.constructSampleSpaceId;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -163,7 +163,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Set<Aa> getReconfigurationSpace() {
         return reconfigurationSpace.stream()
             .map(each -> each)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private StateSpaceNavigator<A> buildStateSpaceNavigator() {
@@ -272,7 +272,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             public Aa select(State source, Set<Aa> options) {
                 Set<Aa> reconfigurationOptions = options.stream()
                     .map(each -> each)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
                 // FIXME: simplify: execution of action should be part of MAPE-K -> no return type
                 // of Action required
                 return adaptedStrategy.select(source, reconfigurationOptions);
@@ -282,7 +282,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         public ReconfigurationSpaceBuilder addReconfiguration(Aa reconf) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new LinkedHashSet<>();
             }
             ExperienceSimulationBuilder.this.reconfigurationSpace.add(reconf);
             return this;
@@ -290,7 +290,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         public ReconfigurationSpaceBuilder addReconfigurations(Set<Aa> reconfs) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new LinkedHashSet<>();
             }
             ExperienceSimulationBuilder.this.reconfigurationSpace.addAll(reconfs);
             return this;

@@ -38,7 +38,7 @@ public class ProbabilityDistributionFactoryAdapter<S> implements ProbabilityDist
         int spaceSize = values.size();
         return values.stream()
             .map(each -> ProbabilityMassFunction.Sample.of(each, (1 / spaceSize)))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 }

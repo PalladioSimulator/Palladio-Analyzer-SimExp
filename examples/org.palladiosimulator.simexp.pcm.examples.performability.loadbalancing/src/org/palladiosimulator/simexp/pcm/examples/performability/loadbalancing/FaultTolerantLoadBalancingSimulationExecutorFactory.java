@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
             .getEnvironmentProcess();
 
         List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
-        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new HashSet<>(pcmMeasurementSpecs);
+        Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new LinkedHashSet<>(pcmMeasurementSpecs);
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         InitialPcmStateCreator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> initialStateCreator = new InitialPcmStateCreator<>(
                 simulatedMeasurementSpecs, experimentProvider, simulationRunnerHolder);

@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.ui.workflow.config.databinding;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.databinding.observable.set.AbstractObservableSet;
@@ -39,7 +39,7 @@ class ConfigurationObservableSetValue extends AbstractObservableSet<String> {
     }
 
     private Set<String> getModifyableSet() {
-        return new HashSet<>(getConfigSet());
+        return new LinkedHashSet<>(getConfigSet());
     }
 
     @Override

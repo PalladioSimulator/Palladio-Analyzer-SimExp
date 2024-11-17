@@ -23,7 +23,7 @@ public class NonAdaptiveStrategyContext
 
     @Override
     public Set<QVToReconfiguration> getReconfigurationSpace() {
-        return Sets.newHashSet();
+        return Sets.newLinkedHashSet();
     }
 
     @Override
