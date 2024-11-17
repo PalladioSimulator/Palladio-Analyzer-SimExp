@@ -28,6 +28,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.envdyn.api.entity.bn.SamplerLoggerDispatcher;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
@@ -60,6 +61,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
 
+            SamplerLoggerFile samplerLogger = new SamplerLoggerFile(simulationParameters.getSimulationID());
+            SamplerLoggerDispatcher.INSTANCE.setSamplerLogger(samplerLogger);
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
@@ -72,7 +75,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             };
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
-            return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
+            return new SimExpAnalyzerRootJob(config, simulationExecutor, launch, samplerLogger);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
@@ -241,6 +244,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
         loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel,
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
+        loggerList.add(setupLogger("org.palladiosimulator.envdyn.api.entity", logLevel, SHORT_LOG_PATTERN));
         return loggerList;
     }
 
