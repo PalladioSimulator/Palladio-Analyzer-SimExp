@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
@@ -25,6 +26,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class PcmBasedPrismExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
+    private static final Logger LOGGER = Logger.getLogger(PcmBasedPrismExperienceSimulationRunner.class);
 
     private final PrismService prismService;
     private final PrismGenerator<A, V> prismGenerator;
@@ -87,7 +89,9 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
                 Optional<Double> value = result.getResultOf(prismProperty);
 //                Optional<Double> value = result.getResultOf(each.getName());
                 if (value.isPresent()) {
-                    quantity.setMeasurement(value.get(), each);
+                    Double measuredValue = value.get();
+                    LOGGER.debug(String.format("PRISM measurement %s = %s", each.getName(), measuredValue));
+                    quantity.setMeasurement(measuredValue, each);
                 } else {
                     // TODO logging
                 }
