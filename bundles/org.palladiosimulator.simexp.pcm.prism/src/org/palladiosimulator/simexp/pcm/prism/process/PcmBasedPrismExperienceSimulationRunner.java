@@ -88,18 +88,15 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
                 String prismProperty = readPrismProperty(propertyFile.toPath());
                 Optional<Double> value = result.getResultOf(prismProperty);
 //                Optional<Double> value = result.getResultOf(each.getName());
-                if (value.isPresent()) {
-                    Double measuredValue = value.get();
-                    LOGGER.debug(String.format("PRISM measurement %s = %s", each.getName(), measuredValue));
-                    quantity.setMeasurement(measuredValue, each);
-                } else {
-                    // TODO logging
+                if (!value.isPresent()) {
+                    throw new RuntimeException(String.format("property not found: %s", each.getName()));
                 }
+                Double measuredValue = value.get();
+                LOGGER.debug(String.format("PRISM measurement %s = %s", each.getName(), measuredValue));
+                quantity.setMeasurement(measuredValue, each);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
-
         }
     }
 
