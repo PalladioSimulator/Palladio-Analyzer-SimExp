@@ -50,6 +50,7 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
+		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
