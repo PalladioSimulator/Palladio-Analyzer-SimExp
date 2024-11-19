@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
@@ -154,6 +155,6 @@ public class SmodelDumper extends SmodelSwitch<String> {
     }
 
     private String formatDouble(double value) {
-        return String.format("%3.20f", value);
+        return String.format(Locale.US, "%3.20f", value);
     }
 }
