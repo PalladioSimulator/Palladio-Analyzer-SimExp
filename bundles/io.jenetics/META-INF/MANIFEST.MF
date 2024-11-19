@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: io.jenetics
+Bundle-SymbolicName: io.jenetics
+Bundle-Version: 8.1.0.qualifier
+Export-Package: io.jenetics,
+ io.jenetics.engine,
+ io.jenetics.internal.collection,
+ io.jenetics.internal.engine,
+ io.jenetics.internal.math,
+ io.jenetics.internal.util,
+ io.jenetics.stat,
+ io.jenetics.util
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-ClassPath: lib/jenetics.jar
