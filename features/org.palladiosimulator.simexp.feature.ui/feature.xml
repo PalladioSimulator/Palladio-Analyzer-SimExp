@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.palladiosimulator.simexp.ui.feature"
+      id="org.palladiosimulator.simexp.feature.ui"
       label="SimExp UI feature"
       version="1.0.0.qualifier">
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.palladiosimulator.simexp.rcp.ui.feature"
+      id="org.palladiosimulator.simexp.feature.rcp.ui"
       label="SimExp RCP UI feature"
       version="1.0.0.qualifier">
 
