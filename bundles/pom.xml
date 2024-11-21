@@ -45,6 +45,7 @@
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
 		
 		<module>org.palladiosimulator.simexp.dsl.smodel</module>
+		<module>org.palladiosimulator.simexp.dsl.smodel.api</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.ide</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
