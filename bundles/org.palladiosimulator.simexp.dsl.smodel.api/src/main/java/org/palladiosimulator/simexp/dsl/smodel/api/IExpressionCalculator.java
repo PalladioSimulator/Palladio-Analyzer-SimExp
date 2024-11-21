@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
+package org.palladiosimulator.simexp.dsl.smodel.api;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 
