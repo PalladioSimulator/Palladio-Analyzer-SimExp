@@ -12,8 +12,8 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
 import io.jenetics.BitChromosome;
+import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.DoubleChromosome;
 import io.jenetics.Genotype;
@@ -33,7 +34,9 @@ import io.jenetics.engine.Codecs;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
+import io.jenetics.engine.InvertibleCodec;
 import io.jenetics.util.DoubleRange;
+import io.jenetics.util.ISeq;
 
 public class EAOptimizer implements IEAOptimizer {
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
@@ -42,12 +45,12 @@ public class EAOptimizer implements IEAOptimizer {
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
-        List<Codec> parsedCodecs = new ArrayList();
+        List<Codec> parsedCodecs = new ArrayList<>();
 
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         for (Optimizable currentOpt : optimizables) {
             Bounds optValue = currentOpt.getValues();
-            parsedCodecs.add(parseBounds(optValue));
+            parsedCodecs.add(parseBounds(optValue, optimizableProvider.getExpressionCalculator()));
         }
 
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
@@ -100,22 +103,10 @@ public class EAOptimizer implements IEAOptimizer {
 
     }
 
-    private Codec parseBounds(Bounds bounds) {
+    private Codec parseBounds(Bounds bounds, IExpressionCalculator expressionCalculator) {
         if (bounds instanceof RangeBounds rangeBound) {
-            Expression startValue = rangeBound.getStartValue();
-//            ExpressionCalculator expressionCalculator = new ExpressionCalculator(new ISmodelConfig() {
-//
-//                @Override
-//                public double getEpsilon() {
-//                    // TODO Auto-generated method stub
-//                    return 0.00001;
-//                }
-//            }, null);
-//            Smodel sModel = SmodelFactory.eINSTANCE.createSmodel();
-//
-//            expressionCalculator.calculateDouble(startValue);
 
-            return Codecs.ofScalar(DoubleRange.of(-10.0, 10.0));
+            return parseOptimizableRangeDouble(expressionCalculator, rangeBound);
 
         } else if (bounds instanceof SetBounds) {
             // TODO implement
@@ -126,20 +117,25 @@ public class EAOptimizer implements IEAOptimizer {
         }
     }
 
-//    private Codec parseOptimizableRange(OptimizableRange range) {
-//        assert (range.getMin() < range.getMax());
-//        double currentNum = range.getMin();
-//        List<Double> numbersInRange = new ArrayList();
-//
-//        while (currentNum < range.getMax()) {
-//            numbersInRange.add(currentNum);
-//            currentNum += range.getStepsize();
-//        }
-//
-//        ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
-//
-//        return Codecs.ofSubSet(seqOfNumbersInRange);
-//
-//    }
+    private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableRangeDouble(
+            IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
+        double startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
+        double endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
+        double stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
+
+        assert (startValue < endValue);
+
+        double currentNum = startValue;
+        List<Double> numbersInRange = new ArrayList<>();
+
+        while (currentNum < endValue) {
+            numbersInRange.add(currentNum);
+            currentNum += stepSize;
+        }
+
+        ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
+
+        return Codecs.ofSubSet(seqOfNumbersInRange);
+    }
 
 }

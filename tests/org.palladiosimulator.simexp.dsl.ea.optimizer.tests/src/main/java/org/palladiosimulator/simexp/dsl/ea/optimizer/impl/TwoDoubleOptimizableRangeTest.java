@@ -4,8 +4,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
@@ -33,7 +32,6 @@ public class TwoDoubleOptimizableRangeTest {
     @Mock
     private IOptimizableProvider optimizableProvider;
 
-    @Inject
     private SmodelCreator smodelCreator;
 
 //    @Mock
@@ -45,6 +43,13 @@ public class TwoDoubleOptimizableRangeTest {
 //    public void setUp() {
 //        new ExpressionCalculator();
 //    }
+
+    @Before
+    public void setUp() {
+//        initMocks(this);
+        smodelCreator = new SmodelCreator();
+
+    }
 
     @Test
     public void optimizeTest() {
@@ -62,4 +67,4 @@ public class TwoDoubleOptimizableRangeTest {
 
     }
 
-}
+};
