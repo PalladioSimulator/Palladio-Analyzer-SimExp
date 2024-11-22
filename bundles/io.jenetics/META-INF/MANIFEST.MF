@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: io.jenetics
 Bundle-SymbolicName: io.jenetics
-Bundle-Version: 8.1.0.qualifier
+Bundle-Version: 6.3.0.qualifier
 Export-Package: io.jenetics,
  io.jenetics.engine,
  io.jenetics.internal.collection,
