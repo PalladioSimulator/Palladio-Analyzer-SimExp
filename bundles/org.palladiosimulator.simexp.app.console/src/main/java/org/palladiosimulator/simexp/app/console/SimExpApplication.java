@@ -8,6 +8,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -27,6 +28,10 @@ public class SimExpApplication implements IApplication {
         if (!lockInstanceLocation()) {
             return IApplication.EXIT_OK;
         }
+
+        IPath instanceLocation = Platform.getLocation();
+        String instancePath = instanceLocation.toOSString();
+        logger.info(String.format("instance path: %s", instancePath));
 
         // TODO:
 
@@ -56,11 +61,11 @@ public class SimExpApplication implements IApplication {
     }
 
     private boolean lockInstanceLocation() throws IOException {
-        Location instanceLocation = Platform.getConfigurationLocation();
-        String instancePath = instanceLocation.getURL()
+        Location configLocation = Platform.getConfigurationLocation();
+        String instancePath = configLocation.getURL()
             .getPath();
-        logger.info(String.format("instance path: %s", instancePath));
-        if (!instanceLocation.lock()) {
+        logger.debug(String.format("configuration path: %s", instancePath));
+        if (!configLocation.lock()) {
             logger.error("application is already running");
             return false;
         }
