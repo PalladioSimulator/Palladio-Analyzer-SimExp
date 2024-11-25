@@ -26,6 +26,7 @@
    <features>
       <feature id="org.palladiosimulator.simexp.feature.console"/>
       <feature id="org.eclipse.core.runtime.feature"/>
+      <feature id="org.palladiosimulator.simexp.feature.rcp"/>
    </features>
 
    <configurations>

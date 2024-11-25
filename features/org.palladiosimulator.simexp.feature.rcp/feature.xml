@@ -20,4 +20,11 @@
       <import feature="org.palladiosimulator.license.epl2" version="1.0.0"/>
    </requires>
 
+   <plugin
+         id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
