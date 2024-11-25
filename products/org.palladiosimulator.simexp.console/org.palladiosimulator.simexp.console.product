@@ -12,7 +12,7 @@
    </launcherArgs>
 
 
-   <launcher>
+   <launcher name="simexp">
       <win useIco="false">
          <bmp/>
       </win>
