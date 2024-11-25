@@ -32,9 +32,13 @@ public class SimExpApplication implements IApplication {
         IPath instanceLocation = Platform.getLocation();
         String instancePath = instanceLocation.toOSString();
         logger.info(String.format("instance path: %s", instancePath));
-
-        // TODO:
-
+        try {
+            // TODO:
+        } catch (Exception e) {
+            logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
+        } finally {
+            logger.info("SimExp finished");
+        }
         return IApplication.EXIT_OK;
     }
 
