@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.palladiosimulator.simexp.feature"
-      label="SimExp feature"
+      id="org.palladiosimulator.simexp.feature.palladio"
+      label="SimExp palladio feature"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
