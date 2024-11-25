@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?><target name="org.palladiosimulator.simexp Target Platform" sequenceNumber="2">
 <locations>
+    <!--location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <repository location="https://download.eclipse.org/releases/2023-03/202303151000/"/>
+		<unit id="org.eclipse.sdk.ide" version="4.27.0.I20230302-0300"/>
+    </location-->
 
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20200529191137/repository"/>
@@ -14,15 +18,16 @@
 			<unit id="org.assertj" version="3.20.2.v20210706-1104"/>
 			<unit id="org.assertj.source" version="3.20.2.v20210706-1104"/>
 			<unit id="org.apache.commons.csv" version="1.8.0.v20221112-0806"/>
+			<unit id="org.apache.commons.io" version="2.8.0.v20210415-0900"/>
+			<unit id="org.bouncycastle.bcpg" version="1.72.0.v20221013-1810"/>
+			<unit id="org.bouncycastle.bcprov" version="1.72.0.v20221013-1810"/>
 	</location>
-	
 
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" refresh="true">
 		<repository location="https://updatesite.palladio-simulator.com/palladio-p2mirror-dlim/releases/latest/"/>
 		<unit id="LIMBO_DLIM.feature.group" version="0.0.0"/>
 	</location>	
-	
-	
+
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 		<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-wrapper/nightly/"/>
 		<unit id="org.apache.commons.math3" version="3.6.1"/>
@@ -31,7 +36,6 @@
 		<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-wrapper/releases/latest"/>
 		<unit id="org.apache.commons.math3" version="3.6.1"/>
 	</location>
-	
 	
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 		<repository location="https://updatesite.mdsd.tools/thirdparty-library/nightly"/>
@@ -48,13 +52,23 @@
 		<unit id="net.bytebuddy.byte-buddy.feature.feature.group" version="1.10.9"/>		
 	</location>
 	
-	
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-qual-experimentanalysis/releases/latest/"/>
+		<unit id="org.palladiosimulator.experimentanalysis.tests.feature.feature.group" version="0.0.0"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly">
+		<repository location="https://updatesite.palladio-simulator.com/palladio-qual-experimentanalysis/nightly/"/>
+		<unit id="org.palladiosimulator.experimentanalysis.tests.feature.feature.group" version="0.0.0"/>
+	</location>
+
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="release" refresh="true">
 		<repository location="https://updatesite.palladio-simulator.com/palladio-analyzer-simulizar/releases/latest/"/>
-		<unit id="org.palladiosimulator.simulizar.reconfiguration.qvto.feature.feature.group" version="0.0.0"/>	
+		<unit id="org.palladiosimulator.simulizar.feature.feature.group" version="0.0.0"/>
+		<unit id="org.palladiosimulator.simulizar.reconfiguration.qvto.feature.feature.group" version="0.0.0"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit" filter="nightly" refresh="true">
 		<repository location="https://updatesite.palladio-simulator.com/palladio-analyzer-simulizar/nightly/"/>
+		<unit id="org.palladiosimulator.simulizar.feature.feature.group" version="0.0.0"/>
 		<unit id="org.palladiosimulator.simulizar.reconfiguration.qvto.feature.feature.group" version="0.0.0"/>
 	</location>	
 
