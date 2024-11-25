@@ -59,7 +59,7 @@
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
 
-
+		<module>org.palladiosimulator.simexp.app.console</module>
 	</modules>
 	
 </project>
