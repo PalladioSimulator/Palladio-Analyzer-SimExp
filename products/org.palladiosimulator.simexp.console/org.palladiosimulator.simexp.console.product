@@ -32,6 +32,8 @@
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <property name="eclipse.ignoreApp" value="true" />
+      <property name="osgi.noShutdown" value="true" />
    </configurations>
 
    <preferencesInfo>
