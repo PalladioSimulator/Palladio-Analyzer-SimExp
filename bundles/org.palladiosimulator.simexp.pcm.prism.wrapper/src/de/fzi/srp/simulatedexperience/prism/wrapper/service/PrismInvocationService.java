@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 
+import de.fzi.srp.simulatedexperience.prism.wrapper.service.impl.PrismLoader;
 import parser.ast.ModulesFile;
 import parser.ast.PropertiesFile;
 import parser.ast.Property;
@@ -23,6 +24,9 @@ public class PrismInvocationService implements PrismService {
 
     @Override
     public void initialise(Path logFilePath) {
+        PrismLoader pl = PrismLoader.INSTANCE;
+        pl.load();
+
         prism = new Prism(new PrismFileLog(logFilePath.toString()));
         try {
             prism.initialise();
