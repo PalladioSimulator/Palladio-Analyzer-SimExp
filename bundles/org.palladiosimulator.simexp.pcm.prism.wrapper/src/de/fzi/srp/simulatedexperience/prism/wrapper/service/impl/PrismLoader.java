@@ -10,7 +10,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.Bundle;
 
 import com.google.gson.Gson;
@@ -40,23 +43,43 @@ public enum PrismLoader {
             return;
         }
         initialized = true;
+        preloadLibraries();
+    }
+
+    private void preloadLibraries() {
+        LOGGER.debug("preloading PRISM libraries");
         Bundle bundle = Platform.getBundle("org.palladiosimulator.simexp.pcm.prism.wrapper");
         try {
             LibraryList libraryList = loadLibraryList(bundle);
             List<URL> resolved = resolveLibraries(bundle, libraryList);
+            Path workspaceLibPath = getWorkspaceLibPath();
             for (URL url : resolved) {
                 URL resolvedLibrary = FileLocator.resolve(url);
                 // Force escaping of invalid characters
                 URI prismFileUri = new URI(resolvedLibrary.getProtocol(), resolvedLibrary.getPath(), null);
                 // LOGGER.debug(String.format("URI: %s", prismFileUri));
-                Path libraryPath = new File(prismFileUri).toPath();
-                LOGGER.debug(String.format("load library: %s", libraryPath));
-                System.load(libraryPath.toAbsolutePath()
-                    .toString());
+                Path sourceLibraryPath = new File(prismFileUri).toPath();
+                Path targetLibraryPath = workspaceLibPath.resolve(sourceLibraryPath.getFileName());
+                if (!Files.exists(targetLibraryPath)) {
+                    Files.copy(sourceLibraryPath, targetLibraryPath);
+                }
+            }
+            for (String name : libraryList.libraries) {
+                // LOGGER.debug(String.format("load library: %s", System.mapLibraryName(name)));
+                System.loadLibrary(name);
             }
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private Path getWorkspaceLibPath() throws URISyntaxException {
+        Location instanceLocation = Platform.getInstanceLocation();
+        URL instanceUrl = instanceLocation.getURL();
+        URI instanceUri = new URI(instanceUrl.getProtocol(), instanceUrl.getPath(), null);
+        Path workspacePath = Paths.get(instanceUri);
+        Path libFolder = workspacePath.resolve("lib");
+        return libFolder;
     }
 
     private LibraryList loadLibraryList(Bundle bundle) throws UnsupportedEncodingException, IOException {
