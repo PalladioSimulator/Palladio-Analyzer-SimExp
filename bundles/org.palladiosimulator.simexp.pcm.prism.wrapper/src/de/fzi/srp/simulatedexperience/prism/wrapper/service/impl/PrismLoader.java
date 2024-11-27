@@ -48,9 +48,9 @@ public enum PrismLoader {
                 URL resolvedLibrary = FileLocator.resolve(url);
                 // Force escaping of invalid characters
                 URI prismFileUri = new URI(resolvedLibrary.getProtocol(), resolvedLibrary.getPath(), null);
-                LOGGER.debug(String.format("URI: %s", prismFileUri));
+                // LOGGER.debug(String.format("URI: %s", prismFileUri));
                 Path libraryPath = new File(prismFileUri).toPath();
-                LOGGER.debug(String.format("library path: %s", libraryPath));
+                LOGGER.debug(String.format("load library: %s", libraryPath));
                 System.load(libraryPath.toAbsolutePath()
                     .toString());
             }
@@ -81,7 +81,7 @@ public enum PrismLoader {
             if (locatedBinary == null) {
                 throw new RuntimeException("unable to resolve: " + libName);
             }
-            LOGGER.debug(String.format("resolved URL: %s", locatedBinary));
+            // LOGGER.debug(String.format("resolved URL: %s", locatedBinary));
             URL fileURL = FileLocator.toFileURL(locatedBinary);
             entries.add(fileURL);
         }
