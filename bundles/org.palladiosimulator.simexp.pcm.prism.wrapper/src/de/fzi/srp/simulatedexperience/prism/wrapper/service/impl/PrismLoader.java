@@ -13,9 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -51,10 +52,12 @@ public enum PrismLoader {
         Bundle bundle = Platform.getBundle("org.palladiosimulator.simexp.pcm.prism.wrapper");
         try {
             LibraryList libraryList = loadLibraryList(bundle);
-            List<URL> resolved = resolveLibraries(bundle, libraryList);
+            Map<String, URL> resolved = resolveLibraries(bundle, libraryList);
             Path workspaceLibPath = getWorkspaceLibPath();
             Files.createDirectories(workspaceLibPath);
-            for (URL url : resolved) {
+            Map<String, Path> libraryPaths = new HashMap<>();
+            for (Map.Entry<String, URL> entry : resolved.entrySet()) {
+                URL url = entry.getValue();
                 URL resolvedLibrary = FileLocator.resolve(url);
                 // Force escaping of invalid characters
                 URI prismFileUri = new URI(resolvedLibrary.getProtocol(), resolvedLibrary.getPath(), null);
@@ -64,10 +67,12 @@ public enum PrismLoader {
                 if (!Files.exists(targetLibraryPath)) {
                     Files.copy(sourceLibraryPath, targetLibraryPath);
                 }
+                libraryPaths.put(entry.getKey(), targetLibraryPath);
             }
             for (String name : libraryList.libraries) {
                 // LOGGER.debug(String.format("load library: %s", System.mapLibraryName(name)));
-                System.loadLibrary(name);
+                Path libraryPath = libraryPaths.get(name);
+                System.load(libraryPath.toString());
             }
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -96,8 +101,8 @@ public enum PrismLoader {
         }
     }
 
-    private List<URL> resolveLibraries(Bundle bundle, LibraryList libraryList) throws IOException {
-        List<URL> entries = new ArrayList<>();
+    private Map<String, URL> resolveLibraries(Bundle bundle, LibraryList libraryList) throws IOException {
+        Map<String, URL> entries = new HashMap<>();
         for (String name : libraryList.libraries) {
             String libName = String.format("$os$/%s%s%s", libraryList.prefix, name, libraryList.extension);
             org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(libName);
@@ -107,7 +112,7 @@ public enum PrismLoader {
             }
             // LOGGER.debug(String.format("resolved URL: %s", locatedBinary));
             URL fileURL = FileLocator.toFileURL(locatedBinary);
-            entries.add(fileURL);
+            entries.put(name, fileURL);
         }
         return entries;
     }
