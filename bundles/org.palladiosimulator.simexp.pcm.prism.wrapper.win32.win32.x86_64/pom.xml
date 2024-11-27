@@ -58,7 +58,7 @@
 				              <goal>copy-resources</goal>
 				            </goals>
 				            <configuration>
-				              <outputDirectory>${project.basedir}</outputDirectory>
+				              <outputDirectory>${project.basedir}/os/win32/x86_64</outputDirectory>
 				              <resources>
 				                <resource>
 				                  <directory>${env.PRISM}/lib</directory>
