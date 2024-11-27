@@ -14,6 +14,5 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: org.eclipse.emf.ecore;version="2.33.0",
- org.mockito;version="3.3.3",
  org.palladiosimulator.simexp.dsl.smodel.api,
  org.palladiosimulator.simexp.dsl.smodel.interpreter

@@ -14,6 +14,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -35,7 +36,6 @@ import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.InvertibleCodec;
-import io.jenetics.util.DoubleRange;
 import io.jenetics.util.ISeq;
 
 public class EAOptimizer implements IEAOptimizer {
@@ -80,6 +80,9 @@ public class EAOptimizer implements IEAOptimizer {
 
         System.out.println(phenotype);
 
+        System.out.println("PhenoChromo: " + phenoChromo.chromosomes.get(0)
+            .second() + " " + OptimizableChromosome.eval(phenoChromo));
+
         System.out.println(statistics);
 
         for (Pair geno : phenoChromo.chromosomes) {
@@ -110,7 +113,8 @@ public class EAOptimizer implements IEAOptimizer {
 
         } else if (bounds instanceof SetBounds) {
             // TODO implement
-            return Codecs.ofScalar(DoubleRange.of(-10.0, 10.0));
+            throw new RuntimeException("not implemented yet");
+//            return Codecs.ofScalar(DoubleRange.of(-10.0, 10.0));
 
         } else {
             throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
@@ -119,9 +123,26 @@ public class EAOptimizer implements IEAOptimizer {
 
     private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableRangeDouble(
             IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
-        double startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
-        double endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
-        double stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
+        double startValue;
+        if (rangeBound.getStartValue() instanceof DoubleLiteral literal) {
+            startValue = literal.getValue();
+        } else {
+            startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
+        }
+
+        double endValue;
+        if (rangeBound.getEndValue() instanceof DoubleLiteral literal) {
+            endValue = literal.getValue();
+        } else {
+            endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
+        }
+
+        double stepSize;
+        if (rangeBound.getStepSize() instanceof DoubleLiteral literal) {
+            stepSize = literal.getValue();
+        } else {
+            stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
+        }
 
         assert (startValue < endValue);
 

@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import io.jenetics.BitChromosome;
 import io.jenetics.Chromosome;
-import io.jenetics.DoubleChromosome;
 import io.jenetics.Genotype;
 import io.jenetics.engine.Codec;
+import io.jenetics.internal.collection.ArrayISeq;
+import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class OptimizableChromosome {
 
@@ -34,7 +34,7 @@ public class OptimizableChromosome {
             localChromosomes.add(new Pair(c.decoder(), c.encoding()
                 .newInstance()));
 
-            new OptimizableChromosome(mapClass2Chromo, localChromosomes);
+//            new OptimizableChromosome(mapClass2Chromo, localChromosomes);
 //          if (c == BitChromosome.class) {
 //              localChromosomes.add(new Pair<>(BitChromosome.class, BitChromosome.of(20, 0.5)));
 //              mapClass2Chromo.put(BitChromosome.class, BitChromosome.of(20, 0.5));
@@ -55,15 +55,29 @@ public class OptimizableChromosome {
     public static double eval(final OptimizableChromosome c) {
         double value = 0;
 
-        for (Pair geno : c.chromosomes) {
-            Chromosome chromosome = ((Genotype) geno.second()).chromosome();
+        // TODO refactor to one method for single values and a method for sequences which uses the
+        // single value method
+        for (Pair chromoPair : c.chromosomes) {
+            Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
 
-            if (chromosome instanceof BitChromosome) {
-                if (((Boolean) ((Function) geno.first()).apply(geno.second()))) {
-                    value += 50;
+            Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
+
+            if (apply instanceof ArrayISeq arraySeq) {
+                if (arraySeq.size() == 1) {
+                    for (Object element : arraySeq.array) {
+                        if (element instanceof Double doubleValue) {
+                            value += doubleValue;
+                        }
+                    }
                 }
-            } else if (chromosome instanceof DoubleChromosome doubleChromo) {
-                value += (Double) ((Function) geno.first()).apply(geno.second());
+            } else if (apply instanceof EmptyISeq emptySeq) {
+                System.out.println("empty seq");
+                // do nothing
+
+            } else if (apply instanceof Boolean booleanValue) {
+                value += 50;
+            } else if (apply instanceof Double doubleValue) {
+                value += doubleValue;
             } else {
                 throw new RuntimeException("Unknown chromosome type specified: " + chromosome.getClass());
             }

@@ -1,16 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
+Bundle-Name: Tests
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
 Bundle-Version: 0.1.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Fragment-Host: org.palladiosimulator.simexp.dsl.ea.optimizer;bundle-version="0.1.0"
 Require-Bundle: org.junit;bundle-version="4.13.0",
- org.mockito.mockito-merged;bundle-version="3.3.3",
+ org.eclipse.xtext.testing,
  net.bytebuddy.byte-buddy;bundle-version="1.10.9",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
- org.palladiosimulator.simexp.dsl.smodel.interpreter,
- org.palladiosimulator.simexp.dsl.smodel.test.util
-Import-Package: javax.inject
+ org.apache.commons.math3;bundle-version="3.6.1",
+ org.palladiosimulator.simexp.dsl.smodel.test.util,
+ org.mockito.mockito-merged;bundle-version="3.3.3"
