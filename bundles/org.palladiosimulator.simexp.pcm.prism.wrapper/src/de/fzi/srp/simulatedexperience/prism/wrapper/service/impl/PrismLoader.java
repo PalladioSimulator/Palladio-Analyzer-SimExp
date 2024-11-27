@@ -75,7 +75,7 @@ public enum PrismLoader {
     private List<URL> resolveLibraries(Bundle bundle, LibraryList libraryList) throws IOException {
         List<URL> entries = new ArrayList<>();
         for (String name : libraryList.libraries) {
-            String libName = String.format("%s%s%s", libraryList.prefix, name, libraryList.extension);
+            String libName = String.format("$os$/%s%s%s", libraryList.prefix, name, libraryList.extension);
             org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(libName);
             URL locatedBinary = FileLocator.find(bundle, path, Collections.<String, String> emptyMap());
             if (locatedBinary == null) {
