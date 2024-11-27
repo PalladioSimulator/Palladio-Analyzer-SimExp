@@ -53,6 +53,7 @@ public enum PrismLoader {
             LibraryList libraryList = loadLibraryList(bundle);
             List<URL> resolved = resolveLibraries(bundle, libraryList);
             Path workspaceLibPath = getWorkspaceLibPath();
+            Files.createDirectories(workspaceLibPath);
             for (URL url : resolved) {
                 URL resolvedLibrary = FileLocator.resolve(url);
                 // Force escaping of invalid characters
