@@ -1,15 +1,24 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import org.eclipse.xtext.testing.util.ParseHelper;
 import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -17,9 +26,11 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -28,6 +39,9 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
+
+import io.jenetics.internal.collection.ArrayISeq;
+import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class TwoDoubleOptimizableRangeTest {
 
@@ -52,11 +66,14 @@ public class TwoDoubleOptimizableRangeTest {
 
     private SmodelCreator smodelCreator;
 
-    private ExpressionCalculator calculator;
+    @Mock
+    private IExpressionCalculator calculator;
 
     private ParseHelper<Smodel> parserHelper;
 
     private ValidationTestHelper validationTestHelper;
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 //    @Mock
 //    private ISmodelConfig smodelConfig;
@@ -73,7 +90,7 @@ public class TwoDoubleOptimizableRangeTest {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
-        calculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
+
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
 
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
@@ -83,19 +100,74 @@ public class TwoDoubleOptimizableRangeTest {
     }
 
     @Test
-    public void optimizeTest() {
+    public void simpleDoubleOptimizableRangeTest() {
         EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
         IEAOptimizer optimizer = eaOptimizer.create(eaConfig);
 
-        RangeBounds rangeBound = smodelCreator.createRangeBounds(smodelCreator.createDoubleLiteral(0.0),
-                smodelCreator.createDoubleLiteral(10.0), smodelCreator.createDoubleLiteral(1.0));
+        RangeBounds rangeBound = initializeDoubleRangeBound(0.0, 10.0, 1.0);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
-
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+
+            @Override
+            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+
+                return executor.submit(() -> {
+                    List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
+
+                    double value = 0;
+
+                    for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
+                        Pair chromoPair = (Pair) singleOptimizableValue.getValue();
+
+                        Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
+
+                        if (apply instanceof ArrayISeq arraySeq) {
+                            if (arraySeq.size() == 1) {
+                                for (Object element : arraySeq.array) {
+                                    if (element instanceof Double doubleValue) {
+                                        value += doubleValue;
+                                    }
+                                }
+                            }
+                        } else if (apply instanceof EmptyISeq emptySeq) {
+                            System.out.println("empty seq");
+                            // do nothing
+
+                        } else if (apply instanceof Boolean booleanValue) {
+                            value += 50;
+                        } else if (apply instanceof Double doubleValue) {
+                            value += doubleValue;
+                        } else {
+                            throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
+                                .getClass());
+                        }
+                    }
+
+                    // TODO hier auch echten Wert zurückgeben
+                    return value;
+                });
+            }
+        });
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
+        verify(statusReceiver).reportStatus(any(List.class), eq(9.0));
+    }
+
+    private RangeBounds initializeDoubleRangeBound(double lowerBound, double upperBound, double stepSize) {
+        DoubleLiteral lowerBoundLiteral = smodelCreator.createDoubleLiteral(lowerBound);
+        DoubleLiteral upperBoundLiteral = smodelCreator.createDoubleLiteral(upperBound);
+        DoubleLiteral stepSizeLiteral = smodelCreator.createDoubleLiteral(stepSize);
+
+        RangeBounds rangeBound = smodelCreator.createRangeBounds(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
+
+        when(calculator.calculateDouble(lowerBoundLiteral)).thenReturn(lowerBound);
+        when(calculator.calculateDouble(upperBoundLiteral)).thenReturn(upperBound);
+        when(calculator.calculateDouble(stepSizeLiteral)).thenReturn(stepSize);
+        return rangeBound;
     }
 
 };

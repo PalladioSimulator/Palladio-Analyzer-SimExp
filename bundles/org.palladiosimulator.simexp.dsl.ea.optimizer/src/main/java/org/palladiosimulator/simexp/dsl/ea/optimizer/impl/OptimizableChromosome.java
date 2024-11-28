@@ -4,88 +4,73 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+
 import io.jenetics.Chromosome;
-import io.jenetics.Genotype;
 import io.jenetics.engine.Codec;
-import io.jenetics.internal.collection.ArrayISeq;
-import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class OptimizableChromosome {
 
-    public Map<Class, Chromosome> mapClass2Chromo;
+    public List<Triple> chromosomes;
 
-    public List<Pair> chromosomes;
+    private static final List<Pair<Codec, Optimizable>> declaredChromoSubTypes = new ArrayList();
 
-    private static List<Codec> declaredChromoSubTypes = new ArrayList();
+    private static IEAFitnessEvaluator fitnessEvaluator;
 
-    public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<Pair> chromosomes) {
-        this.mapClass2Chromo = mapClass2Chromo;
+    public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<Triple> chromosomes) {
         this.chromosomes = chromosomes;
     }
 
     public static OptimizableChromosome nextChromosome() {
         Map<Class, Chromosome> mapClass2Chromo = new HashMap();
-        List<Pair> localChromosomes = new ArrayList();
-        for (Codec c : declaredChromoSubTypes) {
+        List<Triple> localChromosomes = new ArrayList();
+        for (Pair<Codec, Optimizable> c : declaredChromoSubTypes) {
 
-            localChromosomes.add(new Pair(c.decoder(), c.encoding()
-                .newInstance()));
-
-//            new OptimizableChromosome(mapClass2Chromo, localChromosomes);
-//          if (c == BitChromosome.class) {
-//              localChromosomes.add(new Pair<>(BitChromosome.class, BitChromosome.of(20, 0.5)));
-//              mapClass2Chromo.put(BitChromosome.class, BitChromosome.of(20, 0.5));
-//          }
-//          
+            localChromosomes.add(
+                    new Triple(
+                            c.first().decoder(),
+                    c.first().encoding().newInstance(),
+                    c.second()));
         }
 
-        // TODO implement
         return new OptimizableChromosome(mapClass2Chromo, localChromosomes);
     }
 
-    public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<Codec> classes) {
+    public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<Pair<Codec, Optimizable>> classes,
+            IEAFitnessEvaluator fitnessEvaluator) {
         declaredChromoSubTypes.addAll(classes);
+        OptimizableChromosome.fitnessEvaluator = fitnessEvaluator;
 
         return () -> nextChromosome();
     }
 
     public static double eval(final OptimizableChromosome c) {
+
         double value = 0;
+        List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
-        // TODO refactor to one method for single values and a method for sequences which uses the
-        // single value method
-        for (Pair chromoPair : c.chromosomes) {
-            Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
-
-            Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
-
-            if (apply instanceof ArrayISeq arraySeq) {
-                if (arraySeq.size() == 1) {
-                    for (Object element : arraySeq.array) {
-                        if (element instanceof Double doubleValue) {
-                            value += doubleValue;
-                        }
-                    }
-                }
-            } else if (apply instanceof EmptyISeq emptySeq) {
-                System.out.println("empty seq");
-                // do nothing
-
-            } else if (apply instanceof Boolean booleanValue) {
-                value += 50;
-            } else if (apply instanceof Double doubleValue) {
-                value += doubleValue;
-            } else {
-                throw new RuntimeException("Unknown chromosome type specified: " + chromosome.getClass());
-            }
-
+        for (Triple currentChromo : c.chromosomes) {
+            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.third(),
+                    new Pair(currentChromo.first(), currentChromo.second())));
         }
 
-        // TODO implement
-        return value;
+        Future<Double> calcFitness = fitnessEvaluator.calcFitness(optimizableValues);
+
+        try {
+            return calcFitness.get(600000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
     }
 
 }

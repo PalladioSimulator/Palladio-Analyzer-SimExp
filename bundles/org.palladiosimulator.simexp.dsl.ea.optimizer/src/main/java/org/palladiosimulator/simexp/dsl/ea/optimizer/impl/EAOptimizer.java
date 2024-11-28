@@ -10,6 +10,7 @@ import java.util.function.Function;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -21,10 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
-import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
-import io.jenetics.Chromosome;
-import io.jenetics.DoubleChromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -45,16 +43,18 @@ public class EAOptimizer implements IEAOptimizer {
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
-        List<Codec> parsedCodecs = new ArrayList<>();
+        List<Pair<Codec, Optimizable>> parsedCodecs = new ArrayList<>();
 
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         for (Optimizable currentOpt : optimizables) {
             Bounds optValue = currentOpt.getValues();
-            parsedCodecs.add(parseBounds(optValue, optimizableProvider.getExpressionCalculator()));
+            parsedCodecs
+                .add(new Pair(parseBounds(optValue, optimizableProvider.getExpressionCalculator()), currentOpt));
         }
 
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
-                Genotype.of(AnyChromosome.of(OptimizableChromosome.getNextChromosomeSupplier(parsedCodecs))),
+                Genotype.of(AnyChromosome
+                    .of(OptimizableChromosome.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
                 gt -> gt.gene()
                     .allele());
 
@@ -83,27 +83,20 @@ public class EAOptimizer implements IEAOptimizer {
         System.out.println("PhenoChromo: " + phenoChromo.chromosomes.get(0)
             .second() + " " + OptimizableChromosome.eval(phenoChromo));
 
-        System.out.println(statistics);
+        List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
-        for (Pair geno : phenoChromo.chromosomes) {
-            Chromosome chromosome = ((Genotype) geno.second()).chromosome();
-
-            if (chromosome instanceof BitChromosome) {
-                System.out.println((((Function) geno.first()).apply(geno.second())));
-
-            } else if (chromosome instanceof DoubleChromosome doubleChromo) {
-                System.out.println(((Function) geno.first()).apply(geno.second()));
-            } else {
-                throw new RuntimeException("Unknown chromosome type specified: " + chromosome.getClass());
-            }
-
+        for (Triple singleChromo : phenoChromo.chromosomes) {
+            System.out.println(((Function) singleChromo.first()).apply(singleChromo.second()));
+            finalOptimizableValues.add(
+                    new IEAFitnessEvaluator.OptimizableValue(
+                        (Optimizable) singleChromo.third(),
+                        new Pair(singleChromo.first(),
+                        singleChromo.second())));
         }
-//      for(phenoChromo.chromosomes)
-//      System.out.println("Chromosome: " + phenoChromo.intValue + " " + phenoChromo.boolValue);
-//      
 
-        // TODO Auto-generated method stub
+        evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
 
+        System.out.println(statistics);
     }
 
     private Codec parseBounds(Bounds bounds, IExpressionCalculator expressionCalculator) {
@@ -114,7 +107,6 @@ public class EAOptimizer implements IEAOptimizer {
         } else if (bounds instanceof SetBounds) {
             // TODO implement
             throw new RuntimeException("not implemented yet");
-//            return Codecs.ofScalar(DoubleRange.of(-10.0, 10.0));
 
         } else {
             throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);

@@ -21,7 +21,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
-        for (Pair chromoPair : allele.chromosomes) {
+        for (Triple chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
 
             if (chromosome instanceof BitChromosome bitChromo) {
@@ -41,7 +41,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
-        for (Pair chromoPair : allele.chromosomes) {
+        for (Triple chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
 
             if (chromosome instanceof BitChromosome bitChromo) {
