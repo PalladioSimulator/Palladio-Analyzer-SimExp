@@ -32,11 +32,13 @@ public class SimExpApplication implements IApplication {
         }
 
         IPath instanceLocation = Platform.getLocation();
-        String instancePath = instanceLocation.toOSString();
+        Path instancePath = Paths.get(instanceLocation.toOSString());
         logger.info(String.format("instance path: %s", instancePath));
         try {
             Arguments arguments = parseCommandLine();
             validateCommandLine(arguments);
+
+            prepareSimulation(instancePath, arguments);
 
             // processing ....
         } catch (Exception e) {
@@ -45,6 +47,12 @@ public class SimExpApplication implements IApplication {
             logger.info("SimExp finished");
         }
         return IApplication.EXIT_OK;
+    }
+
+    private void prepareSimulation(Path instancePath, Arguments arguments) {
+        Path projectPath = instancePath.resolve(arguments.getProjectName());
+        logger.info(String.format("importing: %s", projectPath));
+        // TODO:
     }
 
     private void validateCommandLine(Arguments arguments) {
