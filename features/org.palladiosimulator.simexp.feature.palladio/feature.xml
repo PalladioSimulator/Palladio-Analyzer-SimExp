@@ -70,13 +70,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.palladiosimulator.analyzer.workflow"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="de.uka.ipd.sdq.identifier"
          download-size="0"
          install-size="0"
@@ -351,6 +344,27 @@
 
    <plugin
          id="org.palladiosimulator.pcm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.pcm.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="tools.mdsd.library.emfeditutils"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.commons.stoex"
          download-size="0"
          install-size="0"
          version="0.0.0"
