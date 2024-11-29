@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -26,7 +27,6 @@ import io.jenetics.Phenotype;
 import io.jenetics.SinglePointCrossover;
 import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Codec;
-import io.jenetics.engine.Codecs;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
@@ -98,9 +98,8 @@ public class EAOptimizer implements IEAOptimizer {
 
             return parseOptimizableRangeDouble(expressionCalculator, rangeBound);
 
-        } else if (bounds instanceof SetBounds) {
-            // TODO implement
-            throw new RuntimeException("not implemented yet");
+        } else if (bounds instanceof SetBounds setBound) {
+            return parseOptimizableSetDouble(expressionCalculator, setBound);
 
         } else {
             throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
@@ -125,7 +124,18 @@ public class EAOptimizer implements IEAOptimizer {
 
         ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
 
-        return Codecs.ofSubSet(seqOfNumbersInRange);
+        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInRange, 0.1);
+
+    }
+
+    private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableSetDouble(IExpressionCalculator expressionCalculator,
+            SetBounds setBound) {
+        List<Double> elementSet = new ArrayList<>();
+        for (Expression expression : setBound.getValues()) {
+            elementSet.add(expressionCalculator.calculateDouble(expression));
+        }
+        ISeq<Double> seqOfNumbersInSet = ISeq.of(elementSet);
+        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
     }
 
 }
