@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.app.console;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -10,6 +12,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
@@ -49,10 +57,64 @@ public class SimExpApplication implements IApplication {
         return IApplication.EXIT_OK;
     }
 
-    private void prepareSimulation(Path instancePath, Arguments arguments) {
+    private void prepareSimulation(Path instancePath, Arguments arguments)
+            throws InvocationTargetException, InterruptedException, CoreException {
         Path projectPath = instancePath.resolve(arguments.getProjectName());
-        logger.info(String.format("importing: %s", projectPath));
-        // TODO:
+
+        logger.info(String.format("open: %s", projectPath));
+        IProject project = openProject(projectPath);
+
+        logger.info(String.format("import: %s", project.getName()));
+        importProject(project);
+    }
+
+    private void importProject(IProject project) {
+        /*
+         * IPath containerPath = project.getFullPath(); FileSystemStructureProvider provider =
+         * FileSystemStructureProvider.INSTANCE; String baseDir = projectPath.getParent()
+         * .toString(); Object source = new File(baseDir);
+         * 
+         * IOverwriteQuery query = new IOverwriteQuery() {
+         * 
+         * @Override public String queryOverwrite(String path) { return IOverwriteQuery.ALL; }; };
+         * ImportOperation operation = new ImportOperation(containerPath, source, provider, query);
+         * operation.setCreateContainerStructure(true); operation.run(null);
+         */
+    }
+
+    private IProject openProject(Path projectPath) throws CoreException {
+        // it is acceptable to use the ResourcesPlugin class
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject project = workspace.getRoot()
+            .getProject(projectPath.getFileName()
+                .toString());
+
+        if (project.exists()) {
+            return project;
+        }
+
+        // URI projectLocation = getProjectUri(workspace, projectPath);
+        IProjectDescription desc = project.getWorkspace()
+            .newProjectDescription(project.getName());
+        // desc.setLocationURI(projectLocation);
+        if (!project.isOpen()) {
+            project.create(desc, null);
+            project.open(null);
+        } else {
+            project.refreshLocal(IResource.DEPTH_INFINITE, null);
+        }
+
+        return project;
+    }
+
+    private URI getProjectUri(IWorkspace workspace, Path projectPath) {
+        URI locationURI = projectPath.toUri();
+        URI workspaceURI = workspace.getRoot()
+            .getLocationURI();
+        if (workspaceURI.equals(locationURI)) {
+            return null;
+        }
+        return locationURI;
     }
 
     private void validateCommandLine(Arguments arguments) {
