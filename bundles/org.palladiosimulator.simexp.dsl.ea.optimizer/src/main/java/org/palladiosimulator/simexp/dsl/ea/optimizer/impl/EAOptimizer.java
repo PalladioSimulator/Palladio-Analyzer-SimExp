@@ -3,9 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -15,7 +13,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -43,13 +40,12 @@ public class EAOptimizer implements IEAOptimizer {
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
-        List<Pair<Codec, Optimizable>> parsedCodecs = new ArrayList<>();
+        List<CodecOptimizablePair> parsedCodecs = new ArrayList<>();
 
-        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
-        for (Optimizable currentOpt : optimizables) {
+        for (Optimizable currentOpt : optimizableProvider.getOptimizables()) {
             Bounds optValue = currentOpt.getValues();
-            parsedCodecs
-                .add(new Pair(parseBounds(optValue, optimizableProvider.getExpressionCalculator()), currentOpt));
+            parsedCodecs.add(new CodecOptimizablePair(
+                    parseBounds(optValue, optimizableProvider.getExpressionCalculator()), currentOpt));
         }
 
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
@@ -62,7 +58,7 @@ public class EAOptimizer implements IEAOptimizer {
             .populationSize(500)
             .selector(new TournamentSelector<>(5))
             .offspringSelector(new TournamentSelector<>(5))
-            .alterers(new Mutator<>(0.4), new SinglePointCrossover<>(0.8))
+            .alterers(new Mutator<>(0.2), new SinglePointCrossover<>(0.6))
             .build();
 
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
@@ -85,13 +81,11 @@ public class EAOptimizer implements IEAOptimizer {
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
-        for (Triple singleChromo : phenoChromo.chromosomes) {
-            System.out.println(((Function) singleChromo.first()).apply(singleChromo.second()));
-            finalOptimizableValues.add(
-                    new IEAFitnessEvaluator.OptimizableValue(
-                        (Optimizable) singleChromo.third(),
-                        new Pair(singleChromo.first(),
-                        singleChromo.second())));
+        for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
+            System.out.println(singleChromo.first()
+                .apply(singleChromo.second()));
+            finalOptimizableValues.add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.third(),
+                    new DecoderEncodingPair(singleChromo.first(), singleChromo.second())));
         }
 
         evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
@@ -115,26 +109,9 @@ public class EAOptimizer implements IEAOptimizer {
 
     private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableRangeDouble(
             IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
-        double startValue;
-        if (rangeBound.getStartValue() instanceof DoubleLiteral literal) {
-            startValue = literal.getValue();
-        } else {
-            startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
-        }
-
-        double endValue;
-        if (rangeBound.getEndValue() instanceof DoubleLiteral literal) {
-            endValue = literal.getValue();
-        } else {
-            endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
-        }
-
-        double stepSize;
-        if (rangeBound.getStepSize() instanceof DoubleLiteral literal) {
-            stepSize = literal.getValue();
-        } else {
-            stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
-        }
+        double startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
+        double endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
+        double stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
 
         assert (startValue < endValue);
 

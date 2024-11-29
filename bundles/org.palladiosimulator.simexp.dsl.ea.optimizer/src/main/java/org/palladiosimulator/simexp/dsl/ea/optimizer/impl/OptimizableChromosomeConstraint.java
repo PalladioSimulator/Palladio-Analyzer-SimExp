@@ -21,7 +21,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
-        for (Triple chromoPair : allele.chromosomes) {
+        for (SingleChromosome chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
 
             if (chromosome instanceof BitChromosome bitChromo) {
@@ -41,7 +41,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
-        for (Triple chromoPair : allele.chromosomes) {
+        for (SingleChromosome chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
 
             if (chromosome instanceof BitChromosome bitChromo) {
@@ -64,7 +64,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
                 chromoPair.setSecond(Genotype.of(bitChromo));
 
             } else {
-                localChromosomes.add(new Pair(chromoPair.first(), chromoPair.second()));
+                localChromosomes.add(new DecoderEncodingPair(chromoPair.first(), chromoPair.second()));
             }
         }
         if (!test(individual)) {

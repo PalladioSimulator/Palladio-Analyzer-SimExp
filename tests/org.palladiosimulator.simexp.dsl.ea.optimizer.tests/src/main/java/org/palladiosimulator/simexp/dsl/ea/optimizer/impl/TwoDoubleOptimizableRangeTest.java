@@ -12,8 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import org.eclipse.xtext.testing.util.ParseHelper;
-import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -27,18 +25,14 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 
 import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
@@ -62,28 +56,12 @@ public class TwoDoubleOptimizableRangeTest {
     @Mock
     private ISmodelConfig smodelConfig;
 
-    private IFieldValueProvider fieldValueProvider;
-
     private SmodelCreator smodelCreator;
 
     @Mock
     private IExpressionCalculator calculator;
 
-    private ParseHelper<Smodel> parserHelper;
-
-    private ValidationTestHelper validationTestHelper;
-
     private ExecutorService executor = Executors.newSingleThreadExecutor();
-
-//    @Mock
-//    private ISmodelConfig smodelConfig;
-//    
-//    @Mock
-//    private IFieldValueProvider fieldValueProvider;
-//    
-//    public void setUp() {
-//        new ExpressionCalculator();
-//    }
 
     @Before
     public void setUp() {
@@ -94,9 +72,6 @@ public class TwoDoubleOptimizableRangeTest {
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
 
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
-        parserHelper = injector.getInstance(Key.get(new TypeLiteral<ParseHelper<Smodel>>() {
-        }));
-        validationTestHelper = injector.getInstance(ValidationTestHelper.class);
     }
 
     @Test
@@ -114,42 +89,9 @@ public class TwoDoubleOptimizableRangeTest {
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
 
-                return executor.submit(() -> {
-                    List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
-
-                    double value = 0;
-
-                    for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
-                        Pair chromoPair = (Pair) singleOptimizableValue.getValue();
-
-                        Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
-
-                        if (apply instanceof ArrayISeq arraySeq) {
-                            if (arraySeq.size() == 1) {
-                                for (Object element : arraySeq.array) {
-                                    if (element instanceof Double doubleValue) {
-                                        value += doubleValue;
-                                    }
-                                }
-                            }
-                        } else if (apply instanceof EmptyISeq emptySeq) {
-                            System.out.println("empty seq");
-                            // do nothing
-
-                        } else if (apply instanceof Boolean booleanValue) {
-                            value += 50;
-                        } else if (apply instanceof Double doubleValue) {
-                            value += doubleValue;
-                        } else {
-                            throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
-                                .getClass());
-                        }
-                    }
-
-                    // TODO hier auch echten Wert zurückgeben
-                    return value;
-                });
+                return getFitnessFunctionAsFuture(invocation);
             }
+
         });
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
@@ -168,6 +110,44 @@ public class TwoDoubleOptimizableRangeTest {
         when(calculator.calculateDouble(upperBoundLiteral)).thenReturn(upperBound);
         when(calculator.calculateDouble(stepSizeLiteral)).thenReturn(stepSize);
         return rangeBound;
+    }
+
+    private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
+        return executor.submit(() -> {
+            List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
+
+            double value = 0;
+
+            for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
+                Pair chromoPair = (Pair) singleOptimizableValue.getValue();
+
+                Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
+
+                if (apply instanceof ArrayISeq arraySeq) {
+                    if (arraySeq.size() == 1) {
+                        for (Object element : arraySeq.array) {
+                            if (element instanceof Double doubleValue) {
+                                value += doubleValue;
+                            }
+                        }
+                    }
+                } else if (apply instanceof EmptyISeq emptySeq) {
+                    System.out.println("empty seq");
+                    // do nothing
+
+                } else if (apply instanceof Boolean booleanValue) {
+                    value += 50;
+                } else if (apply instanceof Double doubleValue) {
+                    value += doubleValue;
+                } else {
+                    throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
+                        .getClass());
+                }
+            }
+
+            // TODO hier auch echten Wert zurückgeben
+            return value;
+        });
     }
 
 };

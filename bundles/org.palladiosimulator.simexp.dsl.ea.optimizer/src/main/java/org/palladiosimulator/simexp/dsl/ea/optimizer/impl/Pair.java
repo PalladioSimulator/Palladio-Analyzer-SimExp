@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-//public record Pair<A, B>(A first, B second) {
-public class Pair<A, B> {
+public abstract class Pair<A, B> {
 
     private A first;
     private B second;
@@ -23,5 +22,4 @@ public class Pair<A, B> {
     public void setSecond(B newValue) {
         second = newValue;
     }
-
 }

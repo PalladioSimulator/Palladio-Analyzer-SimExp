@@ -15,36 +15,37 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableVa
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.Chromosome;
-import io.jenetics.engine.Codec;
 
 public class OptimizableChromosome {
 
-    public List<Triple> chromosomes;
+    public List<SingleChromosome> chromosomes;
 
-    private static final List<Pair<Codec, Optimizable>> declaredChromoSubTypes = new ArrayList();
+    private static final List<CodecOptimizablePair> declaredChromoSubTypes = new ArrayList();
 
     private static IEAFitnessEvaluator fitnessEvaluator;
 
-    public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<Triple> chromosomes) {
+    public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<SingleChromosome> chromosomes) {
         this.chromosomes = chromosomes;
     }
 
+    @SuppressWarnings("unchecked")
     public static OptimizableChromosome nextChromosome() {
         Map<Class, Chromosome> mapClass2Chromo = new HashMap();
-        List<Triple> localChromosomes = new ArrayList();
-        for (Pair<Codec, Optimizable> c : declaredChromoSubTypes) {
+        List<SingleChromosome> localChromosomes = new ArrayList();
+        for (CodecOptimizablePair c : declaredChromoSubTypes) {
 
-            localChromosomes.add(
-                    new Triple(
-                            c.first().decoder(),
-                    c.first().encoding().newInstance(),
+            localChromosomes.add(new SingleChromosome(c.first()
+                .decoder(),
+                    c.first()
+                        .encoding()
+                        .newInstance(),
                     c.second()));
         }
 
         return new OptimizableChromosome(mapClass2Chromo, localChromosomes);
     }
 
-    public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<Pair<Codec, Optimizable>> classes,
+    public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<CodecOptimizablePair> classes,
             IEAFitnessEvaluator fitnessEvaluator) {
         declaredChromoSubTypes.addAll(classes);
         OptimizableChromosome.fitnessEvaluator = fitnessEvaluator;
@@ -57,9 +58,9 @@ public class OptimizableChromosome {
         double value = 0;
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
-        for (Triple currentChromo : c.chromosomes) {
+        for (SingleChromosome currentChromo : c.chromosomes) {
             optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.third(),
-                    new Pair(currentChromo.first(), currentChromo.second())));
+                    new DecoderEncodingPair(currentChromo.first(), currentChromo.second())));
         }
 
         Future<Double> calcFitness = fitnessEvaluator.calcFitness(optimizableValues);
