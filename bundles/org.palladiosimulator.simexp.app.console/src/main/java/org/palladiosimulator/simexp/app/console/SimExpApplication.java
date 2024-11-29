@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.app.console;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
@@ -33,13 +35,46 @@ public class SimExpApplication implements IApplication {
         String instancePath = instanceLocation.toOSString();
         logger.info(String.format("instance path: %s", instancePath));
         try {
-            // TODO:
+            Arguments arguments = parseCommandLine();
+            validateCommandLine(arguments);
+
+            // processing ....
         } catch (Exception e) {
             logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
         } finally {
             logger.info("SimExp finished");
         }
         return IApplication.EXIT_OK;
+    }
+
+    private void validateCommandLine(Arguments arguments) {
+        // TODO: validate command line
+
+    }
+
+    private Arguments parseCommandLine() {
+        Path resultFile = null;
+        String projectName = null;
+        String launchConfig = null;
+
+        String[] args = Platform.getCommandLineArgs();
+        int i = 0;
+        while (i < args.length) {
+            if (args[i].equals("-resultFile")) {
+                i++;
+                resultFile = Paths.get(args[i]);
+            }
+            if (args[i].equals("-projectName")) {
+                i++;
+                projectName = args[i];
+            }
+            if (args[i].equals("-launchConfig")) {
+                i++;
+                launchConfig = args[i];
+            }
+            i++;
+        }
+        return new Arguments(projectName, launchConfig, resultFile);
     }
 
     private void initLogging() {
