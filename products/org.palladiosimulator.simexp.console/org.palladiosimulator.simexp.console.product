@@ -7,6 +7,12 @@
    </configIni>
 
    <launcherArgs>
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog
+      </programArgs>
+      <vmArgs>-XX:+UseG1GC
+-XX:+UseStringDeduplication
+-Xmx12g
+      </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
@@ -27,6 +33,9 @@
       <feature id="org.palladiosimulator.simexp.feature.console"/>
       <feature id="org.eclipse.core.runtime.feature"/>
       <feature id="org.palladiosimulator.simexp.feature.rcp"/>
+      <feature id="org.palladiosimulator.simexp.feature"/>
+      <feature id="org.palladiosimulator.simexp.feature.palladio"/>
+      <feature id="org.eclipse.net4j.util"/>
    </features>
 
    <configurations>
