@@ -12,7 +12,9 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableVa
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
@@ -20,6 +22,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
+import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
@@ -99,7 +102,15 @@ public class EAOptimizer implements IEAOptimizer {
             return parseOptimizableRangeDouble(expressionCalculator, rangeBound);
 
         } else if (bounds instanceof SetBounds setBound) {
-            return parseOptimizableSetDouble(expressionCalculator, setBound);
+            Expression firstExpression = setBound.getValues()
+                .get(0);
+            if (firstExpression instanceof DoubleLiteral) {
+                return parseOptimizableSetDouble(expressionCalculator, setBound);
+            } else if (firstExpression instanceof BoolLiteral) {
+                return parseOptimizableSetBoolean(expressionCalculator, setBound);
+            } else {
+                throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
+            }
 
         } else {
             throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
@@ -131,11 +142,32 @@ public class EAOptimizer implements IEAOptimizer {
     private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableSetDouble(IExpressionCalculator expressionCalculator,
             SetBounds setBound) {
         List<Double> elementSet = new ArrayList<>();
+        // TODO Hier sollte am besten schon zuvor klar sein, welcher datentyp; oder es sollte
+        // ausgeschlossen werden
+        // können, dass es mehrere verschiedene Datentypen in der Ergebnisliste gibt
         for (Expression expression : setBound.getValues()) {
             elementSet.add(expressionCalculator.calculateDouble(expression));
         }
         ISeq<Double> seqOfNumbersInSet = ISeq.of(elementSet);
         return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
+    }
+
+    private InvertibleCodec<Boolean, BitGene> parseOptimizableSetBoolean(IExpressionCalculator expressionCalculator,
+            SetBounds setBound) {
+        if (setBound.getValues()
+            .size() != 2) {
+            throw new RuntimeException("Found a boolean optimization point with less or more than two possible states");
+        }
+
+        return InvertibleCodec.of(Genotype.of(BitChromosome.of(1, 0.5)), gt -> gt.chromosome()
+            .gene()
+            .allele(), val -> {
+                if (val) {
+                    return Genotype.of(BitChromosome.of(1, 1));
+                } else {
+                    return Genotype.of(BitChromosome.of(1, 0));
+                }
+            });
     }
 
 }
