@@ -11,21 +11,12 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
-import io.jenetics.BitChromosome;
-import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -35,11 +26,11 @@ import io.jenetics.engine.Codec;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
-import io.jenetics.engine.InvertibleCodec;
-import io.jenetics.util.ISeq;
 
 public class EAOptimizer implements IEAOptimizer {
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+
+    private BoundsParser parser = new BoundsParser();
 
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
@@ -51,7 +42,7 @@ public class EAOptimizer implements IEAOptimizer {
             DataType dataType = currentOpt.getDataType();
             Bounds optValue = currentOpt.getValues();
             parsedCodecs.add(new CodecOptimizablePair(
-                    parseBounds(optValue, optimizableProvider.getExpressionCalculator(), dataType), currentOpt));
+                    parser.parseBounds(optValue, optimizableProvider.getExpressionCalculator(), dataType), currentOpt));
         }
 
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
@@ -75,145 +66,29 @@ public class EAOptimizer implements IEAOptimizer {
             .peek(statistics)
             .collect(EvolutionResult.toBestPhenotype());
 
+        LOGGER.info("EA finished...");
+
         OptimizableChromosome phenoChromo = phenotype.genotype()
             .chromosome()
             .gene()
             .allele();
 
-        System.out.println(phenotype);
-
-        System.out.println("PhenoChromo: " + phenoChromo.chromosomes.get(0)
+        LOGGER.info("PhenoChromo: " + phenoChromo.chromosomes.get(0)
             .second() + " " + OptimizableChromosome.eval(phenoChromo));
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
         for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
-            System.out.println(singleChromo.first()
+            LOGGER.info(singleChromo.first()
                 .apply(singleChromo.second()));
-            finalOptimizableValues.add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.third(),
-                    new DecoderEncodingPair(singleChromo.first(), singleChromo.second())));
+            finalOptimizableValues
+                .add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.third(), singleChromo.first()
+                    .apply(singleChromo.second())));
         }
 
         evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
 
-        System.out.println(statistics);
-    }
-
-    private Codec parseBounds(Bounds bounds, IExpressionCalculator expressionCalculator, DataType dataType) {
-        if (bounds instanceof RangeBounds rangeBound) {
-            switch (dataType) {
-            case DOUBLE:
-                return parseOptimizableRangeDouble(expressionCalculator, rangeBound);
-            case INT:
-                return parseOptimizableRangeInteger(expressionCalculator, rangeBound);
-            default:
-                throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
-            }
-
-        } else if (bounds instanceof SetBounds setBound) {
-            Expression firstExpression = setBound.getValues()
-                .get(0);
-            if (firstExpression instanceof DoubleLiteral) {
-                return parseOptimizableSetDouble(expressionCalculator, setBound);
-            } else if (firstExpression instanceof IntLiteral) {
-                return parseOptimizableSetInteger(expressionCalculator, setBound);
-            } else if (firstExpression instanceof BoolLiteral) {
-                return parseOptimizableSetBoolean(expressionCalculator, setBound);
-            } else {
-                throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
-            }
-
-        } else {
-            throw new OptimizableProcessingException("Couldn't parse the given optimizable: " + bounds);
-        }
-    }
-
-    private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableRangeDouble(
-            IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
-        double startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
-        double endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
-        double stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
-
-        assert (startValue < endValue);
-
-        double currentNum = startValue;
-        List<Double> numbersInRange = new ArrayList<>();
-
-        while (currentNum < endValue) {
-            numbersInRange.add(currentNum);
-            currentNum += stepSize;
-        }
-
-        ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
-
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInRange, 0.1);
-
-    }
-
-    private InvertibleCodec<ISeq<Integer>, BitGene> parseOptimizableRangeInteger(
-            IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
-        int startValue = expressionCalculator.calculateInteger(rangeBound.getStartValue());
-        int endValue = expressionCalculator.calculateInteger(rangeBound.getEndValue());
-        int stepSize = expressionCalculator.calculateInteger(rangeBound.getStepSize());
-
-        assert (startValue < endValue);
-
-        int currentNum = startValue;
-        List<Integer> numbersInRange = new ArrayList<>();
-
-        while (currentNum < endValue) {
-            numbersInRange.add(currentNum);
-            currentNum += stepSize;
-        }
-
-        ISeq<Integer> seqOfNumbersInRange = ISeq.of(numbersInRange);
-
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInRange, 0.1);
-
-    }
-
-    private InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableSetDouble(IExpressionCalculator expressionCalculator,
-            SetBounds setBound) {
-        List<Double> elementSet = new ArrayList<>();
-        // TODO Hier sollte am besten schon zuvor klar sein, welcher datentyp; oder es sollte
-        // ausgeschlossen werden
-        // können, dass es mehrere verschiedene Datentypen in der Ergebnisliste gibt
-        for (Expression expression : setBound.getValues()) {
-            elementSet.add(expressionCalculator.calculateDouble(expression));
-        }
-        ISeq<Double> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
-    }
-
-    private InvertibleCodec<Boolean, BitGene> parseOptimizableSetBoolean(IExpressionCalculator expressionCalculator,
-            SetBounds setBound) {
-        if (setBound.getValues()
-            .size() != 2) {
-            throw new RuntimeException("Found a boolean optimization point with less or more than two possible states");
-        }
-
-        return InvertibleCodec.of(Genotype.of(BitChromosome.of(1, 0.5)), gt -> gt.chromosome()
-            .gene()
-            .allele(), val -> {
-                if (val) {
-                    return Genotype.of(BitChromosome.of(1, 1));
-                } else {
-                    return Genotype.of(BitChromosome.of(1, 0));
-                }
-            });
-    }
-
-    private InvertibleCodec<ISeq<Integer>, BitGene> parseOptimizableSetInteger(
-            IExpressionCalculator expressionCalculator, SetBounds setBound) {
-        List<Integer> elementSet = new ArrayList<>();
-        // TODO Hier sollte am besten schon zuvor klar sein, welcher datentyp; oder es sollte
-        // ausgeschlossen werden
-        // können, dass es mehrere verschiedene Datentypen in der Ergebnisliste gibt
-        for (Expression expression : setBound.getValues()) {
-            elementSet.add(expressionCalculator.calculateInteger(expression));
-        }
-        ISeq<Integer> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
+        LOGGER.info(statistics);
     }
 
 }

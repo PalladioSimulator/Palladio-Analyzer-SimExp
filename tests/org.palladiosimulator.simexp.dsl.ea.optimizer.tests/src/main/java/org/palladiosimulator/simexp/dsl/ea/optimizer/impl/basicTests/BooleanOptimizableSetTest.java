@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.basicTests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -7,23 +9,24 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.Pair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -54,9 +57,10 @@ public class BooleanOptimizableSetTest {
     @Mock
     private IExpressionCalculator calculator;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-
     private IEAOptimizer optimizer;
+
+    @Captor
+    private ArgumentCaptor<List<IEAFitnessEvaluator.OptimizableValue<?>>> optimizableListCaptor;
 
     @Before
     public void setUp() {
@@ -71,7 +75,7 @@ public class BooleanOptimizableSetTest {
     }
 
     @Test
-    public void simpleDoubleOptimizableSetTest() {
+    public void simpleBooleanOptimizableSetTest() {
         SetBounds setBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
@@ -86,32 +90,44 @@ public class BooleanOptimizableSetTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(50.0));
+        verify(statusReceiver).reportStatus(optimizableListCaptor.capture(), eq(50.0));
+
+        List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
+        assertEquals(1, allValues.size());
+        assertEquals(1, allValues.get(0)
+            .size());
+        OptimizableValue<?> optimizableValue = allValues.get(0)
+            .get(0);
+        assertTrue((Boolean) optimizableValue.getValue());
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
-        return executor.submit(() -> {
-            List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
+        return Executors.newSingleThreadExecutor()
+            .submit(() -> {
+                List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
 
-            double value = 0;
+                double value = 0;
 
-            for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
-                Pair chromoPair = (Pair) singleOptimizableValue.getValue();
+                for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
+                    DecoderEncodingPair chromoPair = (DecoderEncodingPair) singleOptimizableValue.getValue();
+                    DataType optimizableDataType = singleOptimizableValue.getOptimizable()
+                        .getDataType();
 
-                Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
+                    Object apply = chromoPair.first()
+                        .apply(chromoPair.second());
 
-                if (apply instanceof Boolean booleanValue) {
-                    if (booleanValue) {
-                        value += 50;
+                    if (optimizableDataType == DataType.BOOL) {
+                        if ((Boolean) apply) {
+                            value += 50;
+                        }
+                    } else {
+                        throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
+                            .getClass());
                     }
-                } else {
-                    throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
-                        .getClass());
                 }
-            }
 
-            return value;
-        });
+                return value;
+            });
     }
 
 }

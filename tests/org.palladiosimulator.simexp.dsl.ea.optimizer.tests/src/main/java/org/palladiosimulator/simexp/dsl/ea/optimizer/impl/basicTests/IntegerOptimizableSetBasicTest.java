@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.Pair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -165,15 +164,18 @@ public class IntegerOptimizableSetBasicTest {
             double value = 0;
 
             for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
-                Pair chromoPair = (Pair) singleOptimizableValue.getValue();
+                DecoderEncodingPair chromoPair = (DecoderEncodingPair) singleOptimizableValue.getValue();
+                DataType optimizableDataType = singleOptimizableValue.getOptimizable()
+                    .getDataType();
 
-                Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
+                Object apply = chromoPair.first()
+                    .apply(chromoPair.second());
 
                 if (apply instanceof ArrayISeq arraySeq) {
                     if (arraySeq.size() == 1) {
                         for (Object element : arraySeq.array) {
-                            if (element instanceof Integer integerValue) {
-                                value += integerValue;
+                            if (optimizableDataType == DataType.INT) {
+                                value += (Integer) apply;
                             }
                         }
                     }
