@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.basicTests;
+package combinedChromosomeTests;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,7 +38,7 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 import utility.RangeBoundsHelper;
 
-public class IntegerOptimizableRangeBasicTest {
+public class CombinedRangeChromosomeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
 
@@ -80,69 +80,25 @@ public class IntegerOptimizableRangeBasicTest {
     }
 
     @Test
-    public void simpleDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+    public void integerDoubleOptimizableRangeTest() {
+        RangeBounds intRangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+        Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, intRangeBound);
+        RangeBounds doubleRangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
+                20.0, 1.0);
+        Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
 
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
 
                 return getFitnessFunctionAsFuture(invocation);
             }
-
         });
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(19.0));
-    }
-
-    @Test
-    public void mediumDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 100, 1);
-
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
-            @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
-
-                return getFitnessFunctionAsFuture(invocation);
-            }
-
-        });
-
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
-
-        verify(statusReceiver).reportStatus(any(List.class), eq(99.0));
-    }
-
-    @Test
-    public void largeDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 1000, 1);
-
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
-            @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
-
-                return getFitnessFunctionAsFuture(invocation);
-            }
-
-        });
-
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
-
-        verify(statusReceiver).reportStatus(any(List.class), eq(999.0));
+        verify(statusReceiver).reportStatus(any(List.class), eq(38));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
@@ -159,12 +115,15 @@ public class IntegerOptimizableRangeBasicTest {
                 if (apply instanceof ArrayISeq arraySeq) {
                     if (arraySeq.size() == 1) {
                         for (Object element : arraySeq.array) {
-                            if (element instanceof Integer integerValue) {
+                            if (element instanceof Double doubleValue) {
+                                value += doubleValue;
+                            } else if (element instanceof Integer integerValue) {
                                 value += integerValue;
                             }
                         }
                     }
                 } else if (apply instanceof EmptyISeq emptySeq) {
+                    System.out.println("empty seq");
                     // do nothing
                 } else {
                     throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()

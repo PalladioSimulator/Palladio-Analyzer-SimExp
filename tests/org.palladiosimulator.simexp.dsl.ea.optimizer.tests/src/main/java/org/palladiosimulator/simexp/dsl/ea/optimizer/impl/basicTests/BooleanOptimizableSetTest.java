@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,7 +26,6 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.Pair;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -35,8 +33,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import com.google.inject.Injector;
 
-import io.jenetics.internal.collection.ArrayISeq;
-import io.jenetics.internal.collection.Empty.EmptyISeq;
+import utility.SetBoundsHelper;
 
 public class BooleanOptimizableSetTest {
 
@@ -75,7 +72,7 @@ public class BooleanOptimizableSetTest {
 
     @Test
     public void simpleDoubleOptimizableSetTest() {
-        SetBounds setBound = initializeBooleanSetBound(List.of(true, false), calculator);
+        SetBounds setBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -89,18 +86,7 @@ public class BooleanOptimizableSetTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(9.0));
-    }
-
-    private SetBounds initializeBooleanSetBound(List<Boolean> elementsInSet, IExpressionCalculator calculator) {
-        List<BoolLiteral> boolLiterals = new ArrayList();
-        for (Boolean element : elementsInSet) {
-            BoolLiteral elementLiteral = smodelCreator.createBoolLiteral(element);
-            boolLiterals.add(elementLiteral);
-            when(calculator.calculateBoolean(elementLiteral)).thenReturn(element);
-        }
-        BoolLiteral[] boolLiteralsAsArray = boolLiterals.toArray(new BoolLiteral[boolLiterals.size()]);
-        return smodelCreator.createSetBounds(boolLiteralsAsArray);
+        verify(statusReceiver).reportStatus(any(List.class), eq(50.0));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
@@ -114,13 +100,10 @@ public class BooleanOptimizableSetTest {
 
                 Object apply = ((Function) chromoPair.first()).apply(chromoPair.second());
 
-                if (apply instanceof ArrayISeq arraySeq) {
-                    System.out.println("Found a sequence");
-                } else if (apply instanceof EmptyISeq emptySeq) {
-                    System.out.println("empty seq");
-                    // do nothing
-                } else if (apply instanceof Boolean booleanValue) {
-                    value += 50;
+                if (apply instanceof Boolean booleanValue) {
+                    if (booleanValue) {
+                        value += 50;
+                    }
                 } else {
                     throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
                         .getClass());

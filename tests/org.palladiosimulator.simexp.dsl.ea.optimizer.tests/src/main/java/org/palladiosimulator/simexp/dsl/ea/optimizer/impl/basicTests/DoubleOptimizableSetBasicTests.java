@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +27,6 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.Pair;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
@@ -37,6 +35,7 @@ import com.google.inject.Injector;
 
 import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
+import utility.SetBoundsHelper;
 
 public class DoubleOptimizableSetBasicTests {
 
@@ -75,7 +74,8 @@ public class DoubleOptimizableSetBasicTests {
 
     @Test
     public void simpleDoubleOptimizableSetTest() {
-        SetBounds setBound = initializeDoubleSetBound(List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
+        SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator,
+                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -96,7 +96,7 @@ public class DoubleOptimizableSetBasicTests {
     public void mediumDoubleOptimizableSetTest() {
         List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
                 64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5);
-        SetBounds setBound = initializeDoubleSetBound(listOfDoubles, calculator);
+        SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -126,7 +126,7 @@ public class DoubleOptimizableSetBasicTests {
                 58.9597, 12.3699, 22.6720, 13.3816, 18.1779, 76.0132, 68.7411, 53.7471, 25.1162, 49.0425, 56.1356,
                 48.7245, 57.4270, 34.4016, 66.3356, 11.9550, 69.6338, 60.0229, 93.9973, 43.7552, 30.0767, 55.4601,
                 24.8844, 7.9797, 35.4908, 77.2986, 80.9350, 1.8039);
-        SetBounds setBound = initializeDoubleSetBound(listOfDoubles, calculator);
+        SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -141,17 +141,6 @@ public class DoubleOptimizableSetBasicTests {
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
         verify(statusReceiver).reportStatus(any(List.class), eq(99.999));
-    }
-
-    private SetBounds initializeDoubleSetBound(List<Double> elementsInSet, IExpressionCalculator calculator) {
-        List<DoubleLiteral> doubleLiterals = new ArrayList();
-        for (Double element : elementsInSet) {
-            DoubleLiteral elementLiteral = smodelCreator.createDoubleLiteral(element);
-            doubleLiterals.add(elementLiteral);
-            when(calculator.calculateDouble(elementLiteral)).thenReturn(element);
-        }
-        DoubleLiteral[] doubleLiteralsAsArray = doubleLiterals.toArray(new DoubleLiteral[doubleLiterals.size()]);
-        return smodelCreator.createSetBounds(doubleLiteralsAsArray);
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {

@@ -28,7 +28,6 @@ import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
@@ -37,6 +36,7 @@ import com.google.inject.Injector;
 
 import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
+import utility.RangeBoundsHelper;
 
 public class TwoDoubleOptimizableRangeTest {
 
@@ -81,7 +81,8 @@ public class TwoDoubleOptimizableRangeTest {
 
     @Test
     public void simpleDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = initializeDoubleRangeBound(0.0, 20.0, 1.0);
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
+                1.0);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -103,7 +104,8 @@ public class TwoDoubleOptimizableRangeTest {
 
     @Test
     public void mediumDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = initializeDoubleRangeBound(0.0, 100.0, 1.0);
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 100.0,
+                1.0);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -125,7 +127,8 @@ public class TwoDoubleOptimizableRangeTest {
 
     @Test
     public void largeDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = initializeDoubleRangeBound(0.0, 1000.0, 1.0);
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 1000.0,
+                1.0);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -147,7 +150,8 @@ public class TwoDoubleOptimizableRangeTest {
 
     @Test
     public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
-        RangeBounds rangeBound = initializeDoubleRangeBound(0.15, 10.0, 0.5);
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.15, 10.0,
+                0.5);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -165,19 +169,6 @@ public class TwoDoubleOptimizableRangeTest {
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
         verify(statusReceiver).reportStatus(any(List.class), eq(9.0));
-    }
-
-    private RangeBounds initializeDoubleRangeBound(double lowerBound, double upperBound, double stepSize) {
-        DoubleLiteral lowerBoundLiteral = smodelCreator.createDoubleLiteral(lowerBound);
-        DoubleLiteral upperBoundLiteral = smodelCreator.createDoubleLiteral(upperBound);
-        DoubleLiteral stepSizeLiteral = smodelCreator.createDoubleLiteral(stepSize);
-
-        RangeBounds rangeBound = smodelCreator.createRangeBounds(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
-
-        when(calculator.calculateDouble(lowerBoundLiteral)).thenReturn(lowerBound);
-        when(calculator.calculateDouble(upperBoundLiteral)).thenReturn(upperBound);
-        when(calculator.calculateDouble(stepSizeLiteral)).thenReturn(stepSize);
-        return rangeBound;
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
