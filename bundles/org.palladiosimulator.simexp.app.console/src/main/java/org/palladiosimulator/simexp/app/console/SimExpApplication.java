@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.app.console;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -93,10 +92,8 @@ public class SimExpApplication implements IApplication {
             return project;
         }
 
-        // URI projectLocation = getProjectUri(workspace, projectPath);
         IProjectDescription desc = project.getWorkspace()
             .newProjectDescription(project.getName());
-        // desc.setLocationURI(projectLocation);
         if (!project.isOpen()) {
             project.create(desc, null);
             project.open(null);
@@ -105,16 +102,6 @@ public class SimExpApplication implements IApplication {
         }
 
         return project;
-    }
-
-    private URI getProjectUri(IWorkspace workspace, Path projectPath) {
-        URI locationURI = projectPath.toUri();
-        URI workspaceURI = workspace.getRoot()
-            .getLocationURI();
-        if (workspaceURI.equals(locationURI)) {
-            return null;
-        }
-        return locationURI;
     }
 
     private void validateCommandLine(Arguments arguments) {
@@ -184,7 +171,5 @@ public class SimExpApplication implements IApplication {
     @Override
     public void stop() {
         logger.info("stopped");
-        // TODO Auto-generated method stub
-
     }
 }
