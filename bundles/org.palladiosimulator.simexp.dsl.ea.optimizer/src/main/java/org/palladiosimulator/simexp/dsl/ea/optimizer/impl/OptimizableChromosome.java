@@ -59,8 +59,8 @@ public class OptimizableChromosome {
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
         for (SingleChromosome currentChromo : c.chromosomes) {
-            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.third(),
-                    new DecoderEncodingPair(currentChromo.first(), currentChromo.second())));
+            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.optimizable(),
+                    new DecoderEncodingPair(currentChromo.function(), currentChromo.genotype())));
         }
 
         Future<Double> calcFitness = fitnessEvaluator.calcFitness(optimizableValues);

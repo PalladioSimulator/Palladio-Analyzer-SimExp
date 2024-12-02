@@ -4,31 +4,33 @@ import java.util.function.Function;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
+import io.jenetics.Genotype;
+
 public class SingleChromosome {
 
-    private Function first;
-    private Object second;
-    private Optimizable third;
+    private Function function;
+    private Genotype<?> genotype;
+    private Optimizable optimizable;
 
-    public SingleChromosome(Function first, Object second, Optimizable third) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
+    public SingleChromosome(Function function, Genotype<?> genotype, Optimizable optimizable) {
+        this.function = function;
+        this.genotype = genotype;
+        this.optimizable = optimizable;
     }
 
-    public Function first() {
-        return first;
+    public Function function() {
+        return function;
     }
 
-    public Object second() {
-        return second;
+    public Genotype<?> genotype() {
+        return genotype;
     }
 
-    public void setSecond(Object second) {
-        this.second = second;
+    public void setGenotype(Genotype<?> second) {
+        this.genotype = second;
     }
 
-    public Optimizable third() {
-        return third;
+    public Optimizable optimizable() {
+        return optimizable;
     }
 }

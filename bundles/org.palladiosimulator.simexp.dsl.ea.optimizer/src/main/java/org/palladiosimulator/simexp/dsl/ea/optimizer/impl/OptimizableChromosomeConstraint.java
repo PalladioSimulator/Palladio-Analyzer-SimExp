@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+
 import io.jenetics.AnyGene;
 import io.jenetics.BitChromosome;
 import io.jenetics.Chromosome;
@@ -21,16 +23,23 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
+        boolean result = true;
         for (SingleChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
+            Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
 
-            if (chromosome instanceof BitChromosome bitChromo) {
-                return bitChromosomeValid(bitChromo);
+            if (chromoPair.optimizable()
+                .getDataType() == DataType.BOOL) {
+                // TODO handle this case implicitly
+                // do nothing
+            } else if (chromosome instanceof BitChromosome bitChromo) {
+                if (!bitChromosomeValid(bitChromo)) {
+                    result = false;
+                }
             } else {
-                return true;
+                throw new RuntimeException("Not implemented yet");
             }
         }
-        return true;
+        return result;
     }
 
     @Override
@@ -41,30 +50,24 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .chromosome()
             .gene()
             .allele();
-        for (SingleChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = ((Genotype) chromoPair.second()).chromosome();
+        Random random = new Random();
 
-            if (chromosome instanceof BitChromosome bitChromo) {
+        for (SingleChromosome chromoPair : allele.chromosomes) {
+            Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
+
+            if ((chromoPair.optimizable()
+                .getDataType() != DataType.BOOL) && (chromosome instanceof BitChromosome bitChromo)) {
                 while (!bitChromosomeValid(bitChromo)) {
                     BitSet bitSet = bitChromo.toBitSet();
-                    Random random = new Random();
-
                     List<Integer> array = extracted(bitSet);
 
-                    while (array.size() > 1) {
-                        int nextInt = random.nextInt(array.size());
-
-                        Integer bitToFlip = array.get(nextInt);
-                        array.remove(nextInt);
-                        bitSet.flip(bitToFlip);
-                    }
-                    bitChromo = BitChromosome.of(bitSet, bitSet.length());
+                    bitSet = handleMissingBit(random, bitChromo, bitSet, array);
+                    handleToManySetBits(random, bitSet, array);
+                    bitChromo = BitChromosome.of(bitSet, bitChromo.length());
 
                 }
-                chromoPair.setSecond(Genotype.of(bitChromo));
+                chromoPair.setGenotype(Genotype.of(bitChromo));
 
-            } else {
-                localChromosomes.add(new DecoderEncodingPair(chromoPair.first(), chromoPair.second()));
             }
         }
         if (!test(individual)) {
@@ -74,21 +77,29 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
         return individual;
     }
 
+    private void handleToManySetBits(Random random, BitSet bitSet, List<Integer> array) {
+        while (array.size() > 1) {
+            int nextInt = random.nextInt(array.size());
+
+            Integer bitToFlip = array.get(nextInt);
+            array.remove(nextInt);
+            bitSet.flip(bitToFlip);
+        }
+    }
+
+    private BitSet handleMissingBit(Random random, BitChromosome bitChromo, BitSet bitSet, List<Integer> array) {
+        if (array.size() == 0) {
+            int idx = random.nextInt(bitChromo.length());
+            bitSet = new BitSet(bitChromo.length());
+            bitSet.set(idx);
+        }
+        return bitSet;
+    }
+
     private List<Integer> extracted(BitSet bitSet) {
         return bitSet.stream()
             .boxed()
             .collect(Collectors.toList());
-
-//        int i = 0;
-//        List<Integer> setBits = new ArrayList();
-//        bitSet.stream().toArray();
-//        int setIdx = bitSet.nextSetBit(i);
-//        while (setIdx != -1) {
-//            setBits.add(setIdx);
-//            i = setIdx + 1;
-//            setIdx = bitSet.nextSetBit(i);
-//        }
-//        return setBits;
     }
 
     private boolean bitChromosomeValid(BitChromosome bitChromo) {

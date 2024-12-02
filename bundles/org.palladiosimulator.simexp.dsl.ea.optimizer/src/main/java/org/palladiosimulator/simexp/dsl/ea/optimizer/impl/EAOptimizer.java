@@ -18,9 +18,9 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
 import io.jenetics.Genotype;
-import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
 import io.jenetics.SinglePointCrossover;
+import io.jenetics.SwapMutator;
 import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Codec;
 import io.jenetics.engine.Engine;
@@ -53,16 +53,17 @@ public class EAOptimizer implements IEAOptimizer {
 
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(OptimizableChromosome::eval, codec)
             .populationSize(500)
+            .constraint(new OptimizableChromosomeConstraint())
             .selector(new TournamentSelector<>(5))
             .offspringSelector(new TournamentSelector<>(5))
-            .alterers(new Mutator<>(0.2), new SinglePointCrossover<>(0.6))
+            .alterers(new SwapMutator<>(0.2), new SinglePointCrossover<>(0.6))
             .build();
 
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
 
         final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
-            .limit(bySteadyFitness(20))
-            .limit(100)
+            .limit(bySteadyFitness(200))
+            .limit(500)
             .peek(statistics)
             .collect(EvolutionResult.toBestPhenotype());
 
@@ -74,16 +75,16 @@ public class EAOptimizer implements IEAOptimizer {
             .allele();
 
         LOGGER.info("PhenoChromo: " + phenoChromo.chromosomes.get(0)
-            .second() + " " + OptimizableChromosome.eval(phenoChromo));
+            .genotype() + " " + OptimizableChromosome.eval(phenoChromo));
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
         for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
-            LOGGER.info(singleChromo.first()
-                .apply(singleChromo.second()));
+            LOGGER.info(singleChromo.function()
+                .apply(singleChromo.genotype()));
             finalOptimizableValues
-                .add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.third(), singleChromo.first()
-                    .apply(singleChromo.second())));
+                .add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.optimizable(), singleChromo.function()
+                    .apply(singleChromo.genotype())));
         }
 
         evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
