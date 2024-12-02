@@ -5,6 +5,8 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
@@ -18,7 +20,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -45,9 +53,13 @@ public class SimExpApplication implements IApplication {
             Arguments arguments = parseCommandLine();
             validateCommandLine(arguments);
 
-            prepareSimulation(instancePath, arguments);
+            // Also registers for open project events.
+            ILaunchManager launchManager = DebugPlugin.getDefault()
+                .getLaunchManager();
 
-            // processing ....
+            IProject project = prepareSimulation(instancePath, arguments);
+            launchSimulation(launchManager, project, arguments);
+
         } catch (Exception e) {
             logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
         } finally {
@@ -56,7 +68,34 @@ public class SimExpApplication implements IApplication {
         return IApplication.EXIT_OK;
     }
 
-    private void prepareSimulation(Path instancePath, Arguments arguments)
+    private void launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
+            throws CoreException {
+        ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, arguments.getLaunchConfig());
+        if (launchConfiguration == null) {
+            throw new RuntimeException(String.format("launch config %s not found in: %s", arguments.getLaunchConfig(),
+                    arguments.getProjectName()));
+        }
+
+        ILaunchConfigurationWorkingCopy launchConfigWorkingCopy = launchConfiguration.getWorkingCopy();
+        Map<String, ? extends Object> launchAttributes = launchConfiguration.getAttributes();
+        launchConfigWorkingCopy.setAttributes(launchAttributes); // launchAttributes is a
+                                                                 // Map<String,String>
+        ILaunchConfiguration newLaunchConfig = launchConfigWorkingCopy.doSave();
+        String launchMode = null;
+        ILaunch launch = newLaunchConfig.launch(launchMode, new NullProgressMonitor(), true);
+    }
+
+    private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)
+            throws CoreException {
+        for (ILaunchConfiguration lc : launchManager.getLaunchConfigurations()) {
+            if (Objects.equals(launchConfigName, lc.getName())) {
+                return lc;
+            }
+        }
+        return null;
+    }
+
+    private IProject prepareSimulation(Path instancePath, Arguments arguments)
             throws InvocationTargetException, InterruptedException, CoreException {
         Path projectPath = instancePath.resolve(arguments.getProjectName());
 
@@ -65,6 +104,7 @@ public class SimExpApplication implements IApplication {
 
         logger.info(String.format("import: %s", project.getName()));
         importProject(project);
+        return project;
     }
 
     private void importProject(IProject project) {
@@ -92,9 +132,9 @@ public class SimExpApplication implements IApplication {
             return project;
         }
 
-        IProjectDescription desc = project.getWorkspace()
-            .newProjectDescription(project.getName());
         if (!project.isOpen()) {
+            IProjectDescription desc = project.getWorkspace()
+                .newProjectDescription(project.getName());
             project.create(desc, null);
             project.open(null);
         } else {
