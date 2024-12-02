@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
@@ -47,10 +48,8 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
-import de.uka.ipd.sdq.workflow.mdsd.core.AbstractWorkflowBasedMDSDBlackboardLaunchConfigurationDelegate;
 
-public class SimExpLauncher
-        extends AbstractWorkflowBasedMDSDBlackboardLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
+public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(SimExpLauncher.class.getName());
 
@@ -213,7 +212,7 @@ public class SimExpLauncher
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
         Level logLevel = getLogLevel(configuration);
-        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
+        ArrayList<LoggerAppenderStruct> appenders = setupLogging(logLevel);
         for (LoggerAppenderStruct entry : appenders) {
             Logger entryLogger = entry.getLogger();
             entryLogger.addAppender(fa);
@@ -231,9 +230,9 @@ public class SimExpLauncher
     }
 
     @Override
-    protected List<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
+    protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
         // FIXME: during development set debug level hard-coded to DEBUG
-        List<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
+        ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
         loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel,
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
         loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel,
