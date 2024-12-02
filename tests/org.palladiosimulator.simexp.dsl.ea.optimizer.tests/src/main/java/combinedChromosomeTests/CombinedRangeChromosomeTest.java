@@ -118,9 +118,9 @@ public class CombinedRangeChromosomeTest {
                     if (arraySeq.size() == 1) {
                         for (Object element : arraySeq.array) {
                             if (optimizableDataType == DataType.DOUBLE) {
-                                value += (Double) apply;
+                                value += (Double) element;
                             } else if (optimizableDataType == DataType.INT) {
-                                value += (Integer) apply;
+                                value += (Integer) element;
                             }
                         }
                     }

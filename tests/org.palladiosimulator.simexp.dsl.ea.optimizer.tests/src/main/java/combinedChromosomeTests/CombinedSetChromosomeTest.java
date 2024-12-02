@@ -6,11 +6,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,6 +28,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
@@ -40,6 +46,8 @@ import utility.SetBoundsHelper;
 public class CombinedSetChromosomeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
+
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     @Mock
     private IEAConfig eaConfig;
@@ -151,6 +159,73 @@ public class CombinedSetChromosomeTest {
         verify(statusReceiver).reportStatus(any(List.class), eq(68.0));
     }
 
+    @Test
+    public void manySuboptimizablesOptimizableSetTest() {
+        Random r = new Random();
+        Map<Optimizable, Object> optimizables = new HashMap();
+        for (int i = 0; i < 15; i++) {
+            double randDouble = r.nextDouble();
+            if (randDouble < 0.33) {
+                // Integer
+                List<Integer> numbers = new ArrayList();
+                int max = 0;
+                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
+                    int nextInt = r.nextInt(100);
+                    numbers.add(nextInt);
+                    if (nextInt > max)
+                        max = nextInt;
+                }
+                SetBounds integerSetBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator, numbers,
+                        calculator);
+                optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), max);
+            } else if (randDouble < 0.66) {
+                // Double
+                List<Double> numbers = new ArrayList();
+                double max = 0;
+                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
+                    double nextDouble = r.nextDouble(100);
+                    numbers.add(nextDouble);
+                    if (nextDouble > max)
+                        max = nextDouble;
+                }
+                SetBounds doubleSetBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator, numbers, calculator);
+                optimizables.put(smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound), max);
+            } else {
+                // Bool
+                SetBounds boolSetBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
+                        calculator);
+                optimizables.put(smodelCreator.createOptimizable("test", DataType.BOOL, boolSetBound), true);
+            }
+
+        }
+
+        when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+            @Override
+            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+
+                return getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+
+        double maximumFitness = 0;
+        for (Object obj : optimizables.values()) {
+            if (obj instanceof Boolean) {
+                maximumFitness += 50;
+            } else if (obj instanceof Double doubleVal) {
+                maximumFitness += doubleVal;
+            } else {
+                maximumFitness += (Integer) obj;
+            }
+        }
+
+        LOGGER.info("Maximum Fitness: " + maximumFitness);
+
+        verify(statusReceiver).reportStatus(any(List.class), eq(maximumFitness));
+    }
+
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
         return executor.submit(() -> {
             List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
@@ -167,11 +242,13 @@ public class CombinedSetChromosomeTest {
 
                 if (apply instanceof ArrayISeq arraySeq) {
                     if (arraySeq.size() == 1) {
-                        for (Object element : arraySeq.array) {
-                            if (optimizableDataType == DataType.DOUBLE) {
-                                value += (Double) apply;
-                            } else if (optimizableDataType == DataType.INT) {
-                                value += (Integer) apply;
+                        if (optimizableDataType == DataType.DOUBLE) {
+                            for (Object element : arraySeq.array) {
+                                value += (Double) element;
+                            }
+                        } else if (optimizableDataType == DataType.INT) {
+                            for (Object element : arraySeq.array) {
+                                value += (Integer) element;
                             }
                         }
                     }

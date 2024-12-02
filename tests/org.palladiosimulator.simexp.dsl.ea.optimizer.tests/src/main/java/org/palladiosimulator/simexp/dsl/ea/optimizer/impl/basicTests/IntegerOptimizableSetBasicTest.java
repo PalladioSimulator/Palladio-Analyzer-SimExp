@@ -175,7 +175,7 @@ public class IntegerOptimizableSetBasicTest {
                     if (arraySeq.size() == 1) {
                         for (Object element : arraySeq.array) {
                             if (optimizableDataType == DataType.INT) {
-                                value += (Integer) apply;
+                                value += (Integer) element;
                             }
                         }
                     }
