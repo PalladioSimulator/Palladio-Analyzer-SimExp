@@ -139,6 +139,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
+        beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
         SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 sampleDumper, reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter,
