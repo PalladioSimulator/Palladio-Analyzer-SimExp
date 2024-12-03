@@ -81,8 +81,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecution = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(beforeExecution);
 
         // Monitor PcmMonitor
         // Analyzer SmodelInterpreter
@@ -114,8 +116,8 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         boolean isHidden = false;
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
-                experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecution, envProcess,
-                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, isHidden,
+                experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables,
+                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, isHidden,
                 experimentProvider, simulationRunnerHolder, null);
 
         String sampleSpaceId = SimulatedExperienceConstants

@@ -54,7 +54,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Optional<MarkovModel<A, R>> markovModel = Optional.empty();
     private SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> navigator = null;
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
-    private Initializable beforeExecutionInitialization = null;
+    private List<Initializable> beforeExecutionInitializables = null;
     private SampleDumper sampleDumper = null;
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
@@ -84,7 +84,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .withSimulationID(simulationID)
             .withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
             .withNumberOfRuns(numberOfRuns)
-            .executeBeforeEachRun(beforeExecutionInitialization)
+            .executeBeforeEachRun(beforeExecutionInitializables)
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler(sampleDumper))
             .build();
@@ -201,8 +201,8 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
 
         public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(
-                Initializable beforeExecutionInitialization) {
-            ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
+                List<Initializable> beforeExecutionInitializables) {
+            ExperienceSimulationBuilder.this.beforeExecutionInitializables = beforeExecutionInitializables;
             return this;
         }
 

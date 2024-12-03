@@ -92,8 +92,10 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 experimentProvider, qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(beforeExecutionInitializable);
 
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -137,7 +139,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
+                experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
                 experimentProvider, simulationRunnerHolder, null);
 

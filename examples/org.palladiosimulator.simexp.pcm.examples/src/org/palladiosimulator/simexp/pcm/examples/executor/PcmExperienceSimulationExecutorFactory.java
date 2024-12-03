@@ -158,7 +158,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
-            SimulationParameters params, Initializable beforeExecution,
+            SimulationParameters params, List<Initializable> beforeExecutionInitializables,
             EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
@@ -178,7 +178,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .withNumberOfRuns(params.getNumberOfRuns())
             .usingSampleDumper(sampleDumper)
             .andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
-            .andOptionalExecutionBeforeEachRun(beforeExecution)
+            .andOptionalExecutionBeforeEachRun(beforeExecutionInitializables)
             .done()
             .specifySelfAdaptiveSystemState()
             .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)

@@ -126,8 +126,10 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
         qvtoReconfigurationManager.addModelsToTransform(reconfParamsRepo.eResource());
-        Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
-                qvtoReconfigurationManager);
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
+        Initializable globalPcmBeforeExecutionInitialization = new GlobalPcmBeforeExecutionInitialization(
+                experimentProvider, qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(globalPcmBeforeExecutionInitialization);
 
         List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(prismSimulatedMeasurementSpec);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
@@ -153,7 +155,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
-                beforeExecutionInitializable, null, getSimulatedExperienceStore(), envProcess, reconfStrategy,
+                beforeExecutionInitializables, null, getSimulatedExperienceStore(), envProcess, reconfStrategy,
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger);
 
         String sampleSpaceId = SimulatedExperienceConstants

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,8 +71,10 @@ public class LoadBalancingSimulationExecutorFactory
             .of(new PcmExperienceSimulationRunner<>(experimentProvider, initialStateCreator));
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(beforeExecutionInitializable);
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new NStepLoadBalancerStrategy<PCMInstance, QVTOReconfigurator>(
                 1, pcmMeasurementSpecs.get(0), UPPER_THRESHOLD_RT, LOWER_THRESHOLD_RT);
 
@@ -84,7 +87,7 @@ public class LoadBalancingSimulationExecutorFactory
         Set<QVToReconfiguration> reconfigurations = qvToReconfigurationProvider.getReconfigurations();
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
-                pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializable,
+                pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializables,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
                 false, experimentProvider, simulationRunnerHolder, null);
 
