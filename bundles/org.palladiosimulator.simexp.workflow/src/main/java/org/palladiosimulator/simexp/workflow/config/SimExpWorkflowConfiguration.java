@@ -15,6 +15,8 @@ import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWork
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration
         implements IPCMWorkflowConfiguration, IPrismWorkflowConfiguration, IModelledWorkflowConfiguration,
         IModelledPcmWorkflowConfiguration, IModelledPrismWorkflowConfiguration {
@@ -37,12 +39,13 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<URI> moduleFiles;
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
+    private final ISeedProvider seedProvider;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters) {
+            SimulationParameters simulationParameters, ISeedProvider seedProvider) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -74,6 +77,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
             .toList();
 
         this.simulationParameters = simulationParameters;
+        this.seedProvider = seedProvider;
     }
 
     @Override
@@ -150,5 +154,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public SimulationParameters getSimulationParameters() {
         return simulationParameters;
+    }
+
+    @Override
+    public ISeedProvider getSeedProvider() {
+        return seedProvider;
     }
 }

@@ -53,6 +53,7 @@ import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.parser.ParameterParser;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
@@ -65,8 +66,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -142,7 +143,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
-                experimentProvider, simulationRunnerHolder, null);
+                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

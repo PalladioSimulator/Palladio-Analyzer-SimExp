@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import com.google.common.collect.Lists;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class RobotCognitionEnvironmentalDynamics<A, R> {
 
@@ -47,7 +48,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             private boolean initialized = false;
 
             @Override
-            public void init(int seed) {
+            public void init(ISeedProvider seedProvider) {
                 initialized = true;
             }
 

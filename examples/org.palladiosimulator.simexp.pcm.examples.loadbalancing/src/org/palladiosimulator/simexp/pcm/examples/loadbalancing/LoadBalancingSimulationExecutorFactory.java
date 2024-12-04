@@ -39,6 +39,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class LoadBalancingSimulationExecutorFactory
         extends SimulatorPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>> {
@@ -47,8 +48,9 @@ public class LoadBalancingSimulationExecutorFactory
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+            ISeedProvider seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class LoadBalancingSimulationExecutorFactory
                 dbn, experimentProvider);
         EnvironmentProcess<QVTOReconfigurator, Integer, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
-        p.init(0);
+        p.init(getSeedProvider());
 
         List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
         Set<SimulatedMeasurementSpecification> simulatedMeasurementSpecs = new LinkedHashSet<>(pcmMeasurementSpecs);
@@ -89,7 +91,7 @@ public class LoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializables,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder, null);
+                false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());

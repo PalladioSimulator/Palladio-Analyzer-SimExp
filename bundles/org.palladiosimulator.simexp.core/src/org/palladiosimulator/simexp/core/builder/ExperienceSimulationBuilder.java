@@ -39,6 +39,8 @@ import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfiguration<A>, R, V> {
 
     private String simulationID = "";
@@ -56,6 +58,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
     private List<Initializable> beforeExecutionInitializables = null;
     private SampleDumper sampleDumper = null;
+    private ISeedProvider seedProvider = null;
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
@@ -86,7 +89,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .withNumberOfRuns(numberOfRuns)
             .executeBeforeEachRun(beforeExecutionInitializables)
             .addSimulationRunner(getSimulationRunner())
-            .sampleWith(buildMarkovSampler(sampleDumper))
+            .sampleWith(buildMarkovSampler(seedProvider, sampleDumper))
             .build();
         return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
     }
@@ -102,22 +105,24 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
     }
 
-    private MarkovSampling<A, R> buildMarkovSampler(SampleDumper sampleDumper) {
-        return new MarkovSampling<>(buildMarkovianConfig(), sampleDumper);
+    private MarkovSampling<A, R> buildMarkovSampler(ISeedProvider seedProvider, SampleDumper sampleDumper) {
+        MarkovianConfig<A, R> markovianConfig = buildMarkovianConfig(seedProvider);
+        return new MarkovSampling<>(markovianConfig, sampleDumper);
     }
 
-    private MarkovianConfig<A, R> buildMarkovianConfig() {
-        return new MarkovianConfig<>(numberOfSamplesPerRun, buildMarkovian(), null); // TODO bring
-                                                                                     // in
-                                                                                     // accordance
-                                                                                     // with
-                                                                                     // ReconfigurationFilter...
+    private MarkovianConfig<A, R> buildMarkovianConfig(ISeedProvider seedProvider) {
+        Markovian<A, R> markovian = buildMarkovian(seedProvider);
+        return new MarkovianConfig<>(numberOfSamplesPerRun, markovian, null); // TODO bring
+                                                                              // in
+                                                                              // accordance
+                                                                              // with
+                                                                              // ReconfigurationFilter...
     }
 
-    private Markovian<A, R> buildMarkovian() {
+    private Markovian<A, R> buildMarkovian(ISeedProvider seedProvider) {
         StateSpaceNavigator<A> navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<State> initial = initialDistribution.orElse(getInitialDistribution(navigator));
-        initial.init(0);
+        initial.init(seedProvider);
         if (isHiddenProcess) {
             return buildPOMDP(initial, navigator);
         }
@@ -192,6 +197,11 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         public SimulationConfigurationBuilder withNumberOfRuns(int numberOfRuns) {
             ExperienceSimulationBuilder.this.numberOfRuns = numberOfRuns;
+            return this;
+        }
+
+        public SimulationConfigurationBuilder withSeedProvider(ISeedProvider seedProvider) {
+            ExperienceSimulationBuilder.this.seedProvider = seedProvider;
             return this;
         }
 

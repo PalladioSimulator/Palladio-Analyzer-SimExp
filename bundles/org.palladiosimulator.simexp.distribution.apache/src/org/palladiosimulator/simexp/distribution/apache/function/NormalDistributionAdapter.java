@@ -3,6 +3,8 @@ package org.palladiosimulator.simexp.distribution.apache.function;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityDensityFunction;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class NormalDistributionAdapter implements ProbabilityDensityFunction {
 
     private final NormalDistribution normalDistribution;
@@ -13,9 +15,9 @@ public class NormalDistributionAdapter implements ProbabilityDensityFunction {
     }
 
     @Override
-    public void init(int seed) {
+    public void init(ISeedProvider seedProvider) {
         initialized = true;
-        normalDistribution.reseedRandomGenerator(seed);
+        normalDistribution.reseedRandomGenerator(seedProvider.getLong());
     }
 
     @Override

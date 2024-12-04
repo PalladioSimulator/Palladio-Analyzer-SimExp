@@ -47,6 +47,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class FaultTolerantLoadBalancingSimulationExecutorFactory
         extends SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
@@ -58,8 +59,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder, null);
+                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         // TODO: use from store
         String sampleSpaceId = SimulatedExperienceConstants

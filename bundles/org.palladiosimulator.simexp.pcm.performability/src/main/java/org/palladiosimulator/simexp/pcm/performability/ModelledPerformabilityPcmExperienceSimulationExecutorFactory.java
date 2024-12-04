@@ -48,6 +48,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
@@ -60,8 +61,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -116,7 +117,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables,
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder, null);
+                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);

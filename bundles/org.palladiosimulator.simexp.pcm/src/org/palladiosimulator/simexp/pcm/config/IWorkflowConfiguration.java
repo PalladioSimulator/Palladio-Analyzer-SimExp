@@ -4,6 +4,8 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public interface IWorkflowConfiguration extends ITransformationConfiguration {
     SimulatorType getSimulatorType();
 
@@ -16,5 +18,7 @@ public interface IWorkflowConfiguration extends ITransformationConfiguration {
     URI getDynamicModelURI();
 
     SimulationParameters getSimulationParameters();
+
+    ISeedProvider getSeedProvider();
 
 }

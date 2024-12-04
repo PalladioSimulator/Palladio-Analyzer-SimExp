@@ -9,6 +9,8 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction<S> {
 
     private final static double DEFAULT_VALUE = 0;
@@ -27,9 +29,9 @@ public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction
     }
 
     @Override
-    public void init(int seed) {
+    public void init(ISeedProvider seedProvider) {
         initialized = true;
-        enumDistribution.reseedRandomGenerator(seed);
+        enumDistribution.reseedRandomGenerator(seedProvider.getLong());
     }
 
     @Override

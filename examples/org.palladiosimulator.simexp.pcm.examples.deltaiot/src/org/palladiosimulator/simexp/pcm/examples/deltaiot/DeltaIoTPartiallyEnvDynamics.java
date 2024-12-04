@@ -24,6 +24,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Maps;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDynamics<R> {
 
@@ -31,9 +32,9 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, ISeedProvider seedProvider,
             SimulationRunnerHolder simulationRunnerHolder) {
-        super(dbn, modelAccess);
+        super(dbn, modelAccess, seedProvider);
         this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore,
                 simulationRunnerHolder);
     }

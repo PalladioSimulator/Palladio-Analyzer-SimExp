@@ -45,6 +45,7 @@ import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
 import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
 
@@ -132,9 +133,9 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
             private boolean initialized = false;
 
             @Override
-            public void init(int seed) {
+            public void init(ISeedProvider seedProvider) {
                 initialized = true;
-                bn.init(seed);
+                bn.init(seedProvider);
             }
 
             @Override

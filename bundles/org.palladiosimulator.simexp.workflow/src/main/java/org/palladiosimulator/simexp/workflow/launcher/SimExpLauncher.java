@@ -48,6 +48,9 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import tools.mdsd.probdist.api.random.FixedSeedProvider;
+import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.NoSeedProvider;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
@@ -59,14 +62,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
+            ISeedProvider seedProvider = config.getSeedProvider();
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, launchDescriptionProvider);
+                yield createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, launchDescriptionProvider);
+                yield createModelledSimulationExecutor(config, launchDescriptionProvider, seedProvider);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -87,25 +91,26 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider, ISeedProvider seedProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
+                    seedProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            LaunchDescriptionProvider launchDescriptionProvider) {
+            LaunchDescriptionProvider launchDescriptionProvider, ISeedProvider seedProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, launchDescriptionProvider);
+        return factory.create(workflowConfiguration, launchDescriptionProvider, seedProvider);
     }
 
     @SuppressWarnings("unchecked")
@@ -172,10 +177,19 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
 
+            boolean useCustomSeed = (boolean) launchConfigurationParams.getOrDefault(SimulationConstants.CUSTOM_SEED,
+                    true);
+            final ISeedProvider seedProvider;
+            if (useCustomSeed) {
+                seedProvider = new FixedSeedProvider(0L);
+            } else {
+                seedProvider = new NoSeedProvider();
+            }
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
                     transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
-                    environmentalModels, simulationParameters);
+                    environmentalModels, simulationParameters, seedProvider);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",

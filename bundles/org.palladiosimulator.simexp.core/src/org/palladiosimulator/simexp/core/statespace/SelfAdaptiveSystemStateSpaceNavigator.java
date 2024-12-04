@@ -16,6 +16,8 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends InductiveStateSpaceNavigator<A> {
 
     public interface InitialSelfAdaptiveSystemStateCreator<C, A, V> {
@@ -43,7 +45,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
             private boolean initialized = false;
 
             @Override
-            public void init(int seed) {
+            public void init(ISeedProvider seedProvider) {
                 initialized = true;
             }
 

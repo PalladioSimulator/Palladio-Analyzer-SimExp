@@ -36,6 +36,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Lists;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
@@ -48,16 +49,16 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
-        this.envProcess = createEnvironmentalProcess(dbn);
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, ISeedProvider seedProvider) {
+        this.envProcess = createEnvironmentalProcess(dbn, seedProvider);
         this.modelAccess = modelAccess;
     }
 
     private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
-            DynamicBayesianNetwork<CategoricalValue> dbn) {
+            DynamicBayesianNetwork<CategoricalValue> dbn, ISeedProvider seedProvider) {
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ProbabilityMassFunction<State> initialDist = createInitialDist(dbn);
-        initialDist.init(0);
+        initialDist.init(seedProvider);
         return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R, List<InputValue<CategoricalValue>>>(
                 createDerivableProcess(dbn), deltaIoTSampleLogger, initialDist);
     }
@@ -116,9 +117,9 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             private boolean initialized = false;
 
             @Override
-            public void init(int seed) {
+            public void init(ISeedProvider seedProvider) {
                 initialized = true;
-                bn.init(seed);
+                bn.init(seedProvider);
             }
 
             @Override
