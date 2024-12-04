@@ -153,6 +153,7 @@ public class SimExpApplication implements IApplication {
         Path resultFile = null;
         String projectName = null;
         String launchConfig = null;
+        Path optimizablesFile = null;
 
         String[] args = Platform.getCommandLineArgs();
         int i = 0;
@@ -169,9 +170,13 @@ public class SimExpApplication implements IApplication {
                 i++;
                 launchConfig = args[i];
             }
+            if (args[i].equals("-optimizablesFile")) {
+                i++;
+                optimizablesFile = Paths.get(args[i]);
+            }
             i++;
         }
-        return new Arguments(projectName, launchConfig, resultFile);
+        return new Arguments(projectName, launchConfig, resultFile, optimizablesFile);
     }
 
     private void initLogging() {
