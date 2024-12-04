@@ -34,20 +34,12 @@ public class ModelledSimulatorConfiguration {
     private Text textSModel;
 
     public Composite createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
-        // Composite modelledContainer = new Composite(comp, SWT.NONE);
-        // Composite modelledContainer = new Composite(parent, SWT.BORDER);
         Group modelledContainer = new Group(parent, SWT.NONE);
         modelledContainer.setText(SimulatorType.MODELLED.getName());
         modelledContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         modelledContainer.setLayout(new GridLayout(4, false));
         textSModel = new Text(modelledContainer, SWT.SINGLE | SWT.BORDER);
         textSModel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        /*
-         * TabHelper.createFileInputParts(modelledContainer, modifyListener,
-         * ModelFileTypeConstants.SMODEL_FILE_EXTENSION, textSModel, "Select SModel File",
-         * ModelFileTypeConstants.EMPTY_STRING);
-         */
-
         TabHelper.createFileInputSection(modelledContainer, modifyListener, "SModel File",
                 ModelFileTypeConstants.SMODEL_FILE_EXTENSION, textSModel, "Select SModel File", parent.getShell(),
                 ModelFileTypeConstants.EMPTY_STRING);
