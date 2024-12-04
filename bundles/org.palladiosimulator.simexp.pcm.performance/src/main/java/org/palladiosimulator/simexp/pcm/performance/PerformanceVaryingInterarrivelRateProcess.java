@@ -133,7 +133,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
             private boolean initialized = false;
 
             @Override
-            public void init(ISeedProvider seedProvider) {
+            public void init(Optional<ISeedProvider> seedProvider) {
                 initialized = true;
                 bn.init(seedProvider);
             }

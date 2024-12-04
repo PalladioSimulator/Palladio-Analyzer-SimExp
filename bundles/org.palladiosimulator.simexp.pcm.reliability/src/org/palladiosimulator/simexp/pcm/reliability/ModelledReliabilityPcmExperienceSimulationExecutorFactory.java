@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.reliability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -66,7 +67,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 

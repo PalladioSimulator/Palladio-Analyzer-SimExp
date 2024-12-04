@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.hri;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -58,7 +59,8 @@ public class RobotCognitionSimulationExecutorFactory
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 

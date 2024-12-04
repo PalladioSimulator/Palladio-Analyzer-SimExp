@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.performability;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -61,7 +62,8 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 

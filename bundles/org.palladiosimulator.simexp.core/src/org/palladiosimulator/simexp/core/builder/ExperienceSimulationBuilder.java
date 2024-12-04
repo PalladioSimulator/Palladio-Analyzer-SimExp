@@ -58,7 +58,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
     private List<Initializable> beforeExecutionInitializables = null;
     private SampleDumper sampleDumper = null;
-    private ISeedProvider seedProvider = null;
+    private Optional<ISeedProvider> seedProvider = Optional.empty();
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
@@ -105,12 +105,12 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
     }
 
-    private MarkovSampling<A, R> buildMarkovSampler(ISeedProvider seedProvider, SampleDumper sampleDumper) {
+    private MarkovSampling<A, R> buildMarkovSampler(Optional<ISeedProvider> seedProvider, SampleDumper sampleDumper) {
         MarkovianConfig<A, R> markovianConfig = buildMarkovianConfig(seedProvider);
         return new MarkovSampling<>(markovianConfig, sampleDumper);
     }
 
-    private MarkovianConfig<A, R> buildMarkovianConfig(ISeedProvider seedProvider) {
+    private MarkovianConfig<A, R> buildMarkovianConfig(Optional<ISeedProvider> seedProvider) {
         Markovian<A, R> markovian = buildMarkovian(seedProvider);
         return new MarkovianConfig<>(numberOfSamplesPerRun, markovian, null); // TODO bring
                                                                               // in
@@ -119,7 +119,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
                                                                               // ReconfigurationFilter...
     }
 
-    private Markovian<A, R> buildMarkovian(ISeedProvider seedProvider) {
+    private Markovian<A, R> buildMarkovian(Optional<ISeedProvider> seedProvider) {
         StateSpaceNavigator<A> navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<State> initial = initialDistribution.orElse(getInitialDistribution(navigator));
         initial.init(seedProvider);
@@ -200,7 +200,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
-        public SimulationConfigurationBuilder withSeedProvider(ISeedProvider seedProvider) {
+        public SimulationConfigurationBuilder withSeedProvider(Optional<ISeedProvider> seedProvider) {
             ExperienceSimulationBuilder.this.seedProvider = seedProvider;
             return this;
         }

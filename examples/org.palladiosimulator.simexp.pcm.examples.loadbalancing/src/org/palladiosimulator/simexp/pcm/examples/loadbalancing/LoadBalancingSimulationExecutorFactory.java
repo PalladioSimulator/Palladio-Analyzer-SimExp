@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -49,7 +50,7 @@ public class LoadBalancingSimulationExecutorFactory
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
-            ISeedProvider seedProvider) {
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 

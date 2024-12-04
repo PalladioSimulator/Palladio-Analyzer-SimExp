@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.workflow.config;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -39,13 +40,13 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<URI> moduleFiles;
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
-    private final ISeedProvider seedProvider;
+    private final Optional<ISeedProvider> seedProvider;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, ISeedProvider seedProvider) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -157,7 +158,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
-    public ISeedProvider getSeedProvider() {
+    public Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
     }
 }

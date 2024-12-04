@@ -29,9 +29,9 @@ public class SimpleProbabilityMassFunction<S> implements ProbabilityMassFunction
     }
 
     @Override
-    public void init(ISeedProvider seedProvider) {
+    public void init(Optional<ISeedProvider> seedProvider) {
         initialized = true;
-        enumDistribution.reseedRandomGenerator(seedProvider.getLong());
+        seedProvider.ifPresent(sp -> enumDistribution.reseedRandomGenerator(sp.getLong()));
     }
 
     @Override

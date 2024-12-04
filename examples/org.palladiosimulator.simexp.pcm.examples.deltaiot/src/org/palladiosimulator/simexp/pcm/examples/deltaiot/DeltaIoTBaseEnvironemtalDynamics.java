@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.naming.OperationNotSupportedException;
@@ -49,13 +50,13 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, ISeedProvider seedProvider) {
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, Optional<ISeedProvider> seedProvider) {
         this.envProcess = createEnvironmentalProcess(dbn, seedProvider);
         this.modelAccess = modelAccess;
     }
 
     private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
-            DynamicBayesianNetwork<CategoricalValue> dbn, ISeedProvider seedProvider) {
+            DynamicBayesianNetwork<CategoricalValue> dbn, Optional<ISeedProvider> seedProvider) {
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ProbabilityMassFunction<State> initialDist = createInitialDist(dbn);
         initialDist.init(seedProvider);
@@ -117,7 +118,7 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
             private boolean initialized = false;
 
             @Override
-            public void init(ISeedProvider seedProvider) {
+            public void init(Optional<ISeedProvider> seedProvider) {
                 initialized = true;
                 bn.init(seedProvider);
             }

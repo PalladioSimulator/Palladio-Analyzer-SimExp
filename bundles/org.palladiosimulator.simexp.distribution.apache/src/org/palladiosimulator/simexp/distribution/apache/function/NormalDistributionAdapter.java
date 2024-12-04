@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.distribution.apache.function;
 
+import java.util.Optional;
+
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityDensityFunction;
 
@@ -15,9 +17,9 @@ public class NormalDistributionAdapter implements ProbabilityDensityFunction {
     }
 
     @Override
-    public void init(ISeedProvider seedProvider) {
+    public void init(Optional<ISeedProvider> seedProvider) {
         initialized = true;
-        normalDistribution.reseedRandomGenerator(seedProvider.getLong());
+        seedProvider.ifPresent(sp -> normalDistribution.reseedRandomGenerator(sp.getLong()));
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.examples.executor;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -57,11 +58,12 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
-    private final ISeedProvider seedProvider;
+    private final Optional<ISeedProvider> seedProvider;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
@@ -78,7 +80,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
     }
 
-    protected ISeedProvider getSeedProvider() {
+    protected Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
     }
 
@@ -172,7 +174,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
             RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
-            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper, ISeedProvider seedProvider) {
+            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper,
+            Optional<ISeedProvider> seedProvider) {
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)

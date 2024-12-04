@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
+import java.util.Optional;
+
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -25,7 +27,8 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
             ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 

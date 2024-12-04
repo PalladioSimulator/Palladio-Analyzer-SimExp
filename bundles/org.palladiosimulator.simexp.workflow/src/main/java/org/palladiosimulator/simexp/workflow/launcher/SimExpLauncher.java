@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,6 @@ import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
-import tools.mdsd.probdist.api.random.NoSeedProvider;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
@@ -62,7 +62,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
-            ISeedProvider seedProvider = config.getSeedProvider();
+            Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
@@ -91,7 +91,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider, ISeedProvider seedProvider) {
+            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
@@ -108,7 +108,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            LaunchDescriptionProvider launchDescriptionProvider, ISeedProvider seedProvider) {
+            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
         return factory.create(workflowConfiguration, launchDescriptionProvider, seedProvider);
     }
@@ -179,11 +179,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             boolean useCustomSeed = (boolean) launchConfigurationParams.getOrDefault(SimulationConstants.CUSTOM_SEED,
                     true);
-            final ISeedProvider seedProvider;
+            Optional<ISeedProvider> seedProvider = Optional.empty();
             if (useCustomSeed) {
-                seedProvider = new FixedSeedProvider(0L);
-            } else {
-                seedProvider = new NoSeedProvider();
+                // TODO:
+                seedProvider = Optional.of(new FixedSeedProvider(0L));
             }
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */

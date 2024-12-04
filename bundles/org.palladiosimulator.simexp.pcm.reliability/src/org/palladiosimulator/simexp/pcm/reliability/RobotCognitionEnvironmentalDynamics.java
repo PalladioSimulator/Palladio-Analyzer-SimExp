@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.reliability;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.ConditionalInputValueUtil;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -48,7 +49,7 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
             private boolean initialized = false;
 
             @Override
-            public void init(ISeedProvider seedProvider) {
+            public void init(Optional<ISeedProvider> seedProvider) {
                 initialized = true;
             }
 

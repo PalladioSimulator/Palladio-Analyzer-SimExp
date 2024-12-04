@@ -105,7 +105,7 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> implemen
     }
 
     @Override
-    public void init(ISeedProvider seedProvider) {
+    public void init(Optional<ISeedProvider> seedProvider) {
         initialDist.init(seedProvider);
     }
 
@@ -139,7 +139,7 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> implemen
             private boolean initialized = false;
 
             @Override
-            public void init(ISeedProvider seedProvider) {
+            public void init(Optional<ISeedProvider> seedProvider) {
                 initialized = true;
                 bn.init(seedProvider);
             }

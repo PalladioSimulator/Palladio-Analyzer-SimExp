@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.util.Optional;
+
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
@@ -16,7 +18,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory {
 
     public SimulationExecutor create(IPCMWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider, ISeedProvider seedProvider) {
+            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
         PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {

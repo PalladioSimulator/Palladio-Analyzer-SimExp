@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.simulator;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
@@ -17,7 +18,8 @@ public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends 
         extends PcmExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
     public SimulatorPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore, ISeedProvider seedProvider) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
