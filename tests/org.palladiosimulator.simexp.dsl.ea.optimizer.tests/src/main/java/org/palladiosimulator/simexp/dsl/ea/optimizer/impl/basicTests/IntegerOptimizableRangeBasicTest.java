@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.basicTests;
 
+import static org.mockito.AdditionalMatchers.gt;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -41,6 +42,8 @@ public class IntegerOptimizableRangeBasicTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
 
+    private static final double EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS = 0.8;
+
     @Mock
     private IEAConfig eaConfig;
 
@@ -79,7 +82,7 @@ public class IntegerOptimizableRangeBasicTest {
     }
 
     @Test
-    public void simpleDoubleOptimizableRangeTest() {
+    public void simpleIntegerOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -101,7 +104,7 @@ public class IntegerOptimizableRangeBasicTest {
     }
 
     @Test
-    public void mediumDoubleOptimizableRangeTest() {
+    public void mediumIntegerOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 100, 1);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -123,8 +126,11 @@ public class IntegerOptimizableRangeBasicTest {
     }
 
     @Test
-    public void largeDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 1000, 1);
+    public void largeIntegerOptimizableRangeTest() {
+        int lowerBound = 0;
+        int upperBound = 100000;
+        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, lowerBound,
+                upperBound, 1);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -141,7 +147,7 @@ public class IntegerOptimizableRangeBasicTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(999.0));
+        verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {

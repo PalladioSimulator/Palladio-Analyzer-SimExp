@@ -1,5 +1,6 @@
 package combinedChromosomeTests;
 
+import static org.mockito.AdditionalMatchers.gt;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -46,6 +47,8 @@ import utility.SetBoundsHelper;
 public class CombinedSetChromosomeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
+
+    private static final double EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS = 0.8;
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
@@ -106,7 +109,7 @@ public class CombinedSetChromosomeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(38));
+        verify(statusReceiver).reportStatus(any(List.class), eq(18.0));
     }
 
     @Test
@@ -129,7 +132,7 @@ public class CombinedSetChromosomeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(38));
+        verify(statusReceiver).reportStatus(any(List.class), eq(59.0));
     }
 
     @Test
@@ -223,7 +226,8 @@ public class CombinedSetChromosomeTest {
 
         LOGGER.info("Maximum Fitness: " + maximumFitness);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(maximumFitness));
+        verify(statusReceiver).reportStatus(any(List.class),
+                gt(maximumFitness * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {

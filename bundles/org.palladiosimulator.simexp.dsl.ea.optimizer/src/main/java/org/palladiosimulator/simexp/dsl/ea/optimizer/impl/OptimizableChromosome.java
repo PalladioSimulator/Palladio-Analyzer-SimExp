@@ -1,9 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -12,25 +10,22 @@ import java.util.function.Supplier;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-
-import io.jenetics.Chromosome;
 
 public class OptimizableChromosome {
 
     public List<SingleChromosome> chromosomes;
 
-    private static final List<CodecOptimizablePair> declaredChromoSubTypes = new ArrayList();
+    private IEAFitnessEvaluator fitnessEvaluator;
 
-    private static IEAFitnessEvaluator fitnessEvaluator;
-
-    public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<SingleChromosome> chromosomes) {
+    public OptimizableChromosome(List<SingleChromosome> chromosomes, List<CodecOptimizablePair> declaredChromoSubTypes,
+            IEAFitnessEvaluator fitnessEvaluator) {
         this.chromosomes = chromosomes;
+        this.fitnessEvaluator = fitnessEvaluator;
     }
 
     @SuppressWarnings("unchecked")
-    public static OptimizableChromosome nextChromosome() {
-        Map<Class, Chromosome> mapClass2Chromo = new HashMap();
+    public static OptimizableChromosome nextChromosome(List<CodecOptimizablePair> declaredChromoSubTypes,
+            IEAFitnessEvaluator fitnessEvaluator) {
         List<SingleChromosome> localChromosomes = new ArrayList();
         for (CodecOptimizablePair c : declaredChromoSubTypes) {
 
@@ -42,28 +37,27 @@ public class OptimizableChromosome {
                     c.second()));
         }
 
-        return new OptimizableChromosome(mapClass2Chromo, localChromosomes);
+        return new OptimizableChromosome(localChromosomes, declaredChromoSubTypes, fitnessEvaluator);
     }
 
     public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<CodecOptimizablePair> classes,
             IEAFitnessEvaluator fitnessEvaluator) {
+        List<CodecOptimizablePair> declaredChromoSubTypes = new ArrayList<>();
         declaredChromoSubTypes.addAll(classes);
-        OptimizableChromosome.fitnessEvaluator = fitnessEvaluator;
 
-        return () -> nextChromosome();
+        return () -> nextChromosome(declaredChromoSubTypes, fitnessEvaluator);
     }
 
     public static double eval(final OptimizableChromosome c) {
 
-        double value = 0;
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
         for (SingleChromosome currentChromo : c.chromosomes) {
-            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.optimizable(),
+            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>(currentChromo.optimizable(),
                     new DecoderEncodingPair(currentChromo.function(), currentChromo.genotype())));
         }
 
-        Future<Double> calcFitness = fitnessEvaluator.calcFitness(optimizableValues);
+        Future<Double> calcFitness = c.fitnessEvaluator.calcFitness(optimizableValues);
 
         try {
             return calcFitness.get(600000, TimeUnit.MILLISECONDS);

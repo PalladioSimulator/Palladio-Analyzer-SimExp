@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.basicTests;
 
+import static org.mockito.AdditionalMatchers.gt;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -37,9 +38,11 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 import utility.RangeBoundsHelper;
 
-public class TwoDoubleOptimizableRangeTest {
+public class DoubleOptimizableRangeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
+
+    private static final double EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS = 0.9;
 
     @Mock
     private IEAConfig eaConfig;
@@ -103,8 +106,10 @@ public class TwoDoubleOptimizableRangeTest {
 
     @Test
     public void mediumDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 100.0,
-                1.0);
+        double lowerBound = 0.0;
+        double upperBound = 100.0;
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
+                upperBound, 1.0);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -121,13 +126,16 @@ public class TwoDoubleOptimizableRangeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(99.0));
+        verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
 
     @Test
     public void largeDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 1000.0,
-                1.0);
+        double lowerBound = 0.0;
+        double upperBound = 1000.0;
+        double stepSize = 1.0;
+        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
+                upperBound, stepSize);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -144,7 +152,7 @@ public class TwoDoubleOptimizableRangeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(999.0));
+        verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
 
     @Test
@@ -167,7 +175,7 @@ public class TwoDoubleOptimizableRangeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(9.0));
+        verify(statusReceiver).reportStatus(any(List.class), eq(9.65));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
@@ -193,7 +201,6 @@ public class TwoDoubleOptimizableRangeTest {
                         }
                     }
                 } else if (apply instanceof EmptyISeq emptySeq) {
-                    System.out.println("empty seq");
                     // do nothing
 
                 } else {

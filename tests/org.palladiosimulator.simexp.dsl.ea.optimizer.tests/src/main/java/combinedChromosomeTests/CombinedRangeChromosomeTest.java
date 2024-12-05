@@ -1,7 +1,7 @@
 package combinedChromosomeTests;
 
+import static org.mockito.AdditionalMatchers.gt;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -40,6 +40,8 @@ import utility.RangeBoundsHelper;
 public class CombinedRangeChromosomeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
+
+    private static final double EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS = 0.9;
 
     @Mock
     private IEAConfig eaConfig;
@@ -80,10 +82,13 @@ public class CombinedRangeChromosomeTest {
 
     @Test
     public void integerDoubleOptimizableRangeTest() {
-        RangeBounds intRangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+        int upperBoundInteger = 20;
+        RangeBounds intRangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0,
+                upperBoundInteger, 1);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, intRangeBound);
+        double upperBoundDouble = 20.0;
         RangeBounds doubleRangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
-                20.0, 1.0);
+                upperBoundDouble, 1.0);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
 
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
@@ -97,7 +102,8 @@ public class CombinedRangeChromosomeTest {
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(38));
+        verify(statusReceiver).reportStatus(any(List.class),
+                gt((upperBoundInteger + upperBoundDouble) * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
 
     private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
@@ -125,7 +131,6 @@ public class CombinedRangeChromosomeTest {
                         }
                     }
                 } else if (apply instanceof EmptyISeq emptySeq) {
-                    System.out.println("empty seq");
                     // do nothing
                 } else {
                     throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()

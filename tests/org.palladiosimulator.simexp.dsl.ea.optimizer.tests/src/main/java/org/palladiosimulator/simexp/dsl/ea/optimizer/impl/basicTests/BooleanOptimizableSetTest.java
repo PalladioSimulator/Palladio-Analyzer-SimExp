@@ -121,8 +121,7 @@ public class BooleanOptimizableSetTest {
                             value += 50;
                         }
                     } else {
-                        throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
-                            .getClass());
+                        throw new RuntimeException("Expected Bool, but got: " + optimizableDataType);
                     }
                 }
 

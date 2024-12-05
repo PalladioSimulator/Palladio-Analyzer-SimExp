@@ -56,7 +56,7 @@ public class EAOptimizer implements IEAOptimizer {
             .constraint(new OptimizableChromosomeConstraint())
             .selector(new TournamentSelector<>(5))
             .offspringSelector(new TournamentSelector<>(5))
-            .alterers(new SwapMutator<>(0.2), new SinglePointCrossover<>(0.6))
+            .alterers(new SwapMutator<>(0.2), new SinglePointCrossover<>(0.1))
             .build();
 
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
