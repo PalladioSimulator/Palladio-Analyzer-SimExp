@@ -72,10 +72,6 @@ public class ModelledSimulatorConfiguration {
         optimizationTypeGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
         optimizationTypeGroup.setLayout(new GridLayout());
 
-        Composite comp = new Composite(optimizationTypeGroup, SWT.NONE);
-        comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-        comp.setLayout(new GridLayout(2, false));
-
         modelledOptimizationTypeTarget = new SelectObservableValue<>();
         Map<ModelledOptimizationType, Composite> optimizationTypeMap = new HashMap<>();
         Composite optimizationTypeDetails = new Composite(optimizeParent, SWT.NONE);
