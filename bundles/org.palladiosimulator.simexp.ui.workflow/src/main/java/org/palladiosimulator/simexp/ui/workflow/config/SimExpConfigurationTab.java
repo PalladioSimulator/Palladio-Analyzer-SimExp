@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
@@ -180,7 +181,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, SimulationConstants.DEFAULT_NUMBER_OF_RUNS);
         configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
                 SimulationConstants.DEFAULT_NUMBER_OF_SIMULATIONS_PER_RUN);
-        configuration.setAttribute(SimulationConstants.CUSTOM_SEED, SimulationConstants.DEFAULT_CUSTOM_SEED);
+        // configuration.setAttribute(SimulationConstants.CUSTOM_SEED, "");
 
         configuration.setAttribute(SimulationConstants.SIMULATOR_TYPE,
                 SimulationConstants.DEFAULT_SIMULATOR_TYPE.name());
@@ -235,11 +236,12 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
 
         IObservableValue<String> customSeedTarget = WidgetProperties.text(SWT.Modify)
             .observe(textCustomSeed);
-        IObservableValue<Integer> customSeedModel = ConfigurationProperties.integer(SimulationConstants.CUSTOM_SEED)
+        IObservableValue<Integer> customSeedModel = ConfigurationProperties
+            .integer(SimulationConstants.CUSTOM_SEED, false)
             .observe(configuration);
         UpdateValueStrategy<String, Integer> customSeedUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        customSeedUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("CustomSeed", -1));
+        customSeedUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
         Binding customSeedBindValue = ctx.bindValue(customSeedTarget, customSeedModel, customSeedUpdateStrategy, null);
         ControlDecorationSupport.create(customSeedBindValue, SWT.TOP | SWT.RIGHT);
     }
