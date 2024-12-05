@@ -181,7 +181,6 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         configuration.setAttribute(SimulationConstants.NUMBER_OF_RUNS, SimulationConstants.DEFAULT_NUMBER_OF_RUNS);
         configuration.setAttribute(SimulationConstants.NUMBER_OF_SIMULATIONS_PER_RUN,
                 SimulationConstants.DEFAULT_NUMBER_OF_SIMULATIONS_PER_RUN);
-        // configuration.setAttribute(SimulationConstants.CUSTOM_SEED, "");
 
         configuration.setAttribute(SimulationConstants.SIMULATOR_TYPE,
                 SimulationConstants.DEFAULT_SIMULATOR_TYPE.name());
