@@ -41,6 +41,7 @@
 		
 		<module>org.palladiosimulator.simexp.pcm.prism</module>
 		<module>org.palladiosimulator.simexp.pcm.prism.wrapper</module>
+		<module>org.palladiosimulator.simexp.pcm.prism.replay</module>
 	
 		<module>org.palladiosimulator.simexp.pcm.reliability</module>  
 		
