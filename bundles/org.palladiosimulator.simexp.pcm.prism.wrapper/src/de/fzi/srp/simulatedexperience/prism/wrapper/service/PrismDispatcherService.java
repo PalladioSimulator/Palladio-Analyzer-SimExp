@@ -11,6 +11,7 @@ public class PrismDispatcherService implements PrismService {
 
     public PrismDispatcherService() {
         this.delegate = new PrismServiceRecorder(new PrismInvocationService());
+        // this.delegate = new PrismServiceReplay(new PrismInvocationService());
     }
 
     @Override
