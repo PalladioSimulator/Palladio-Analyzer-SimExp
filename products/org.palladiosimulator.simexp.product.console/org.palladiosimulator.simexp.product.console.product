@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SimExp" uid="org.palladiosimulator.simexp.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="true">
+<product name="SimExp" uid="org.palladiosimulator.simexp.product.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
