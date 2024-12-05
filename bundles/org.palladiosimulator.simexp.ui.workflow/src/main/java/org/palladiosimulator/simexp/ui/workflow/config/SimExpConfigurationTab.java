@@ -111,29 +111,17 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         simulatorTypeGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
         simulatorTypeGroup.setLayout(new GridLayout());
 
-        Composite comp = new Composite(simulatorTypeGroup, SWT.NONE);
-        comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        comp.setLayout(new GridLayout(2, false));
-
         simulatorTypeTarget = new SelectObservableValue<>();
-        Button buttonCustom = new Button(comp, SWT.RADIO);
-        buttonCustom.setText(SimulatorType.CUSTOM.getName());
-        GridData gd = new GridData();
-        gd.horizontalSpan = 2;
-        buttonCustom.setLayoutData(gd);
-        ISWTObservableValue<Boolean> customObserveable = WidgetProperties.buttonSelection()
-            .observe(buttonCustom);
-        simulatorTypeTarget.addOption(SimulatorType.CUSTOM, customObserveable);
-
-        Button buttonModelled = new Button(comp, SWT.RADIO);
-        buttonModelled.setText(SimulatorType.MODELLED.getName());
+        for (SimulatorType type : SimulatorType.values()) {
+            Button button = new Button(simulatorTypeGroup, SWT.RADIO);
+            button.setText(type.getName());
+            ISWTObservableValue<Boolean> observeable = WidgetProperties.buttonSelection()
+                .observe(button);
+            simulatorTypeTarget.addOption(type, observeable);
+        }
 
         Composite modelledContainer = modelledSimulatorConfiguration.createControl(simulatorTypeParent, ctx,
                 modifyListener);
-
-        ISWTObservableValue<Boolean> modelledObserveable = WidgetProperties.buttonSelection()
-            .observe(buttonModelled);
-        simulatorTypeTarget.addOption(SimulatorType.MODELLED, modelledObserveable);
 
         ISideEffect.create(() -> {
             return simulatorTypeTarget.getValue();
