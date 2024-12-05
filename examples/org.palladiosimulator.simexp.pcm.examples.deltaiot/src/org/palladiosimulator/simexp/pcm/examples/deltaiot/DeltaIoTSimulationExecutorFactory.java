@@ -104,8 +104,7 @@ public class DeltaIoTSimulationExecutorFactory extends
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
-        Path prismLogPath = getPrismLogPath(strategyId);
+        Path prismLogPath = prismLogFolder.resolve("prism.log");
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new LinkedHashSet<>();
         List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
@@ -199,12 +198,6 @@ public class DeltaIoTSimulationExecutorFactory extends
         Path prismPath = resourcePath.resolve("prism");
         Path prismStrategyPath = prismPath.resolve(strategyId);
         return prismStrategyPath;
-    }
-
-    private Path getPrismLogPath(String strategyId) {
-        Path basePath = getPrismLogFolder(strategyId);
-        Path prismLogPath = Paths.get(basePath.toString(), "prism.log");
-        return prismLogPath;
     }
 
     private Path getCSVPath(String strategyId) {

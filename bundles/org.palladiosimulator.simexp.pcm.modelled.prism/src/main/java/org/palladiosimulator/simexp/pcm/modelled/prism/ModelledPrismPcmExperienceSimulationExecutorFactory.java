@@ -116,8 +116,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
-        Path prismLogPath = getPrismLogPath(reconfigurationStrategyId);
+        Path prismLogPath = prismLogFolder.resolve("prism.log");
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
@@ -184,12 +183,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         Path prismPath = resourcePath.resolve("prism");
         Path prismStrategyPath = prismPath.resolve(strategyId);
         return prismStrategyPath;
-    }
-
-    private Path getPrismLogPath(String strategyId) {
-        Path basePath = getPrismLogFolder(strategyId);
-        Path prismLogPath = Paths.get(basePath.toString(), "prism.log");
-        return prismLogPath;
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,
