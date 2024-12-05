@@ -14,8 +14,8 @@ public class PrismDispatcherService implements PrismService {
     }
 
     @Override
-    public void initialise(Path logFilePath, String strategyId) {
-        delegate.initialise(logFilePath, strategyId);
+    public void initialise(Path prismFolder, String strategyId) {
+        delegate.initialise(prismFolder, strategyId);
     }
 
     @Override

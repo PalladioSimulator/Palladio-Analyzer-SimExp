@@ -22,8 +22,9 @@ public class PrismInvocationService implements PrismService {
     private Prism prism;
 
     @Override
-    public void initialise(Path logFilePath, String strategyId) {
-        prism = new Prism(new PrismFileLog(logFilePath.toString()));
+    public void initialise(Path prismFolder, String strategyId) {
+        Path prismLogPath = prismFolder.resolve("prism.log");
+        prism = new Prism(new PrismFileLog(prismLogPath.toString()));
         try {
             prism.initialise();
         } catch (PrismException e) {

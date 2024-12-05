@@ -32,14 +32,14 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
     private final PrismGenerator<A, V> prismGenerator;
     private final List<IPrismObserver> prismObservers;
 
-    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, Path prismLogPath,
+    public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, Path prismFolder,
             String strategyId) {
         // TODO exception handling
         this.prismService = ServiceRegistry.get()
             .findService(PrismService.class)
             .orElseThrow(() -> new RuntimeException("There is no prism service."));
         this.prismGenerator = prismGenerator;
-        this.prismService.initialise(prismLogPath, strategyId);
+        this.prismService.initialise(prismFolder, strategyId);
         this.prismObservers = new ArrayList<>();
     }
 

@@ -109,21 +109,19 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 prismFileUpdaters);
 
         String strategyId = getSimulationParameters().getSimulationID();
-        String reconfigurationStrategyId = smodel.getModelName();
-        Path prismLogFolder = getPrismLogFolder(reconfigurationStrategyId);
+        Path prismFolder = getPrismFolder(strategyId);
         try {
-            Files.createDirectories(prismLogFolder);
+            Files.createDirectories(prismFolder);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        Path prismLogPath = prismLogFolder.resolve("prism.log");
 
         DeltaIoTReconfigurationParamRepository reconfParamsRepo = new DeltaIoTReconfigurationParamsLoader()
             .load(DISTRIBUTION_FACTORS);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogPath, strategyId, reconfParamsRepo, experimentProvider);
-        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
+                prismGenerator, prismFolder, strategyId, reconfParamsRepo, experimentProvider);
+        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismFolder);
         runner.addPrismObserver(observer);
 
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
@@ -144,6 +142,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 environmentVariableValueProvider);
         beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
         SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
+        String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
                 sampleDumper, reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter,
                 qvtoReconfigurationManager);
@@ -174,7 +173,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         return executor;
     }
 
-    private Path getPrismLogFolder(String strategyId) {
+    private Path getPrismFolder(String strategyId) {
         IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
             .getRoot()
             .getLocation();

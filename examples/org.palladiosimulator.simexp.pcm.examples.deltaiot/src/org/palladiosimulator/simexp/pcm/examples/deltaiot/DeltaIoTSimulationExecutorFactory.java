@@ -98,13 +98,12 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
-        Path prismLogFolder = getPrismLogFolder(strategyId);
+        Path prismFolder = getPrismFolder(strategyId);
         try {
-            Files.createDirectories(prismLogFolder);
+            Files.createDirectories(prismFolder);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        Path prismLogPath = prismLogFolder.resolve("prism.log");
 
         Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new LinkedHashSet<>();
         List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
@@ -129,8 +128,8 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogPath, strategyId, reconfParamsRepo, experimentProvider);
-        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
+                prismGenerator, prismFolder, strategyId, reconfParamsRepo, experimentProvider);
+        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismFolder);
         runner.addPrismObserver(observer);
         List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
@@ -189,7 +188,7 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 
-    private Path getPrismLogFolder(String strategyId) {
+    private Path getPrismFolder(String strategyId) {
         IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
             .getRoot()
             .getLocation();
