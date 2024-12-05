@@ -1,8 +1,12 @@
 package org.palladiosimulator.simexp.app.console;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -31,6 +35,8 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
 
+import com.google.gson.Gson;
+
 public class SimExpApplication implements IApplication {
     private Logger logger;
 
@@ -53,6 +59,19 @@ public class SimExpApplication implements IApplication {
             Arguments arguments = parseCommandLine();
             validateCommandLine(arguments);
 
+            OptimizableValues inValues = new OptimizableValues();
+            OptimizableValues.StringEntry se = new OptimizableValues.StringEntry();
+            se.name = "str";
+            se.value = "s";
+            inValues.stringValues.add(se);
+            OptimizableValues.IntEntry ie = new OptimizableValues.IntEntry();
+            ie.name = "int";
+            ie.value = 1;
+            inValues.intValues.add(ie);
+
+            // writeOptimizeableValues(inValues, arguments.getOptimizables());
+            OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
+
             // Also registers for open project events.
             ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -66,6 +85,21 @@ public class SimExpApplication implements IApplication {
             logger.info("SimExp finished");
         }
         return IApplication.EXIT_OK;
+    }
+
+    private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
+        try (Reader reader = Files.newBufferedReader(optimizablesPath, StandardCharsets.UTF_8)) {
+            Gson gson = new Gson();
+            OptimizableValues value = gson.fromJson(reader, OptimizableValues.class);
+            return value;
+        }
+    }
+
+    private void writeOptimizeableValues(OptimizableValues values, Path optimizablesPath) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(optimizablesPath, StandardCharsets.UTF_8)) {
+            Gson gson = new Gson();
+            gson.toJson(values, writer);
+        }
     }
 
     private void launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
