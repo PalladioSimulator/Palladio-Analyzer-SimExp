@@ -31,11 +31,7 @@
 
    <features>
       <feature id="org.palladiosimulator.simexp.feature.console"/>
-      <feature id="org.eclipse.core.runtime.feature"/>
       <feature id="org.palladiosimulator.simexp.feature.rcp"/>
-      <feature id="org.palladiosimulator.simexp.feature"/>
-      <feature id="org.palladiosimulator.simexp.feature.palladio"/>
-      <feature id="org.eclipse.net4j.util"/>
    </features>
 
    <configurations>
