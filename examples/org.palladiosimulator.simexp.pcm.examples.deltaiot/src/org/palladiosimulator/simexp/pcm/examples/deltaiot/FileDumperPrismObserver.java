@@ -48,6 +48,6 @@ public class FileDumperPrismObserver implements IPrismObserver {
     }
 
     private Path createDumpPath(int count) {
-        return prismLogFolder.resolve(String.format("prism_%d.dump", count));
+        return prismLogFolder.resolve(String.format("prism_%04d.dump", count));
     }
 }
