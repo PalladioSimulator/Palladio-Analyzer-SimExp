@@ -108,6 +108,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         PrismGenerator<QVTOReconfigurator, List<InputValue<CategoricalValue>>> prismGenerator = new PrismFileUpdateGenerator<>(
                 prismFileUpdaters);
 
+        String strategyId = getSimulationParameters().getSimulationID();
         String reconfigurationStrategyId = smodel.getModelName();
         Path prismLogFolder = getPrismLogFolder(reconfigurationStrategyId);
         try {
@@ -122,7 +123,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .load(DISTRIBUTION_FACTORS);
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogPath, reconfParamsRepo, experimentProvider);
+                prismGenerator, prismLogPath, strategyId, reconfParamsRepo, experimentProvider);
         FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
         runner.addPrismObserver(observer);
 

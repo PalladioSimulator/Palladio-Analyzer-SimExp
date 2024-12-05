@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.pcm.prism;bundle-version="1.0.0",
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
- org.apache.log4j;bundle-version="1.2.19"
+ org.apache.log4j;bundle-version="1.2.19",
+ org.palladiosimulator.simexp.pcm.prism.replay;bundle-version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.prism.wrapper
 Bundle-ActivationPolicy: lazy

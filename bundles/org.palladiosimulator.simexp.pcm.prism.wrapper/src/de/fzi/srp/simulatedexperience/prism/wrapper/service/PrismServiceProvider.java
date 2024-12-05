@@ -20,7 +20,7 @@ public class PrismServiceProvider implements ServiceProvider {
             LOGGER.error("environment variable 'PRISM' not found -> unable to register PrismService");
         } else {
             serviceRegistration.registerService(ServiceEntry.service(PrismService.class)
-                .isProvidedBy(PrismInvocationService.class));
+                .isProvidedBy(PrismDispatcherService.class));
         }
     }
 }

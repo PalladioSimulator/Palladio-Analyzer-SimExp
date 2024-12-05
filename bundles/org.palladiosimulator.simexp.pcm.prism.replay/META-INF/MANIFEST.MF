@@ -3,6 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Prism replay
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.prism.replay
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.pcm.prism.replay
+Require-Bundle: org.palladiosimulator.simexp.pcm.prism;bundle-version="1.0.0"
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.prism.replay
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 

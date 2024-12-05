@@ -35,9 +35,9 @@ public class DeltaIoTPcmBasedPrismExperienceSimulationRunner<A> extends
     private final IExperimentProvider experimentProvider;
 
     public DeltaIoTPcmBasedPrismExperienceSimulationRunner(
-            PrismGenerator<A, List<InputValue<CategoricalValue>>> prismGenerator, Path prismLogPath,
+            PrismGenerator<A, List<InputValue<CategoricalValue>>> prismGenerator, Path prismLogPath, String strategyId,
             DeltaIoTReconfigurationParamRepository reconfParamsRepo, IExperimentProvider experimentProvider) {
-        super(prismGenerator, prismLogPath);
+        super(prismGenerator, prismLogPath, strategyId);
 
         this.reconfParamsRepo = reconfParamsRepo;
         this.experimentProvider = experimentProvider;

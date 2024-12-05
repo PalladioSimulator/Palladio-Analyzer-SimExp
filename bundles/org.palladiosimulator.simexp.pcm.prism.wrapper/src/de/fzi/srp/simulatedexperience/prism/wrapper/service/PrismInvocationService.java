@@ -22,7 +22,7 @@ public class PrismInvocationService implements PrismService {
     private Prism prism;
 
     @Override
-    public void initialise(Path logFilePath) {
+    public void initialise(Path logFilePath, String strategyId) {
         prism = new Prism(new PrismFileLog(logFilePath.toString()));
         try {
             prism.initialise();

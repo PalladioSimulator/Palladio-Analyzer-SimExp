@@ -130,7 +130,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogPath, reconfParamsRepo, experimentProvider);
+                prismGenerator, prismLogPath, strategyId, reconfParamsRepo, experimentProvider);
         FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
         runner.addPrismObserver(observer);
         List<Initializable> beforeExecutionInitializables = new ArrayList<>();
