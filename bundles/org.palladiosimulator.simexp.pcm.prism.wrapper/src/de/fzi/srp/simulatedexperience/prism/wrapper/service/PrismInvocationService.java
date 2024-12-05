@@ -37,7 +37,7 @@ public class PrismInvocationService implements PrismService {
     public PrismResult modelCheck(PrismContext context) {
         PropertiesFile propertyFile = null;
         try {
-            String trimmedPropertyFileContent = context.propertyFileContent.trim();
+            String trimmedPropertyFileContent = context.getPropertyFileContent().trim();
             LOGGER.info("Start prism invocation: " + trimmedPropertyFileContent);
             long start = System.currentTimeMillis();
             propertyFile = setUpPrism(context);
@@ -60,9 +60,9 @@ public class PrismInvocationService implements PrismService {
     }
 
     private PropertiesFile setUpPrism(PrismContext context) throws FileNotFoundException, PrismException {
-        ModulesFile moduleFile = prism.parseModelString(context.moduleFileContent);
+        ModulesFile moduleFile = prism.parseModelString(context.getModuleFileContent());
         prism.loadPRISMModel(moduleFile);
-        PropertiesFile propertyFile = prism.parsePropertiesString(moduleFile, context.propertyFileContent);
+        PropertiesFile propertyFile = prism.parsePropertiesString(moduleFile, context.getPropertyFileContent());
         // prism.buildModelExplicit(moduleFile);
         return propertyFile;
     }

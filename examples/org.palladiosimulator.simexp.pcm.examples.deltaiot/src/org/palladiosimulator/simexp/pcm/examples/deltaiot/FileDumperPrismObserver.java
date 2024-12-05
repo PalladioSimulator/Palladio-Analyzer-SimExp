@@ -42,9 +42,9 @@ public class FileDumperPrismObserver implements IPrismObserver {
                 .format(LocalDateTime.now());
             pw.println(String.format("time: %s", timeStamp));
             pw.println("Prism property:");
-            pw.print(context.propertyFileContent);
+            pw.print(context.getPropertyFileContent());
             pw.println("Prism module:");
-            pw.println(context.moduleFileContent);
+            pw.println(context.getModuleFileContent());
         }
     }
 
