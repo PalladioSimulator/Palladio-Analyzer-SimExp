@@ -177,12 +177,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
 
-            boolean useCustomSeed = (boolean) launchConfigurationParams.getOrDefault(SimulationConstants.CUSTOM_SEED,
-                    true);
+            Integer customSeed = (Integer) launchConfigurationParams.get(SimulationConstants.CUSTOM_SEED);
             Optional<ISeedProvider> seedProvider = Optional.empty();
-            if (useCustomSeed) {
-                // TODO:
-                seedProvider = Optional.of(new FixedSeedProvider(0L));
+            if (customSeed != null) {
+                seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
