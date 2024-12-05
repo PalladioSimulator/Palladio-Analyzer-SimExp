@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
