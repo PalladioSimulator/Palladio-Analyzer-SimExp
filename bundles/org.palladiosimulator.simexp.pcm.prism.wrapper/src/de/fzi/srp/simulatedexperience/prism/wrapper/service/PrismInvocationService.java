@@ -37,8 +37,8 @@ public class PrismInvocationService implements PrismService {
     public PrismResult modelCheck(PrismContext context) {
         PropertiesFile propertyFile = null;
         try {
-            String trimmedPropertyFileContent = context.getPropertyFileContent().trim();
-            LOGGER.info("Start prism invocation: " + trimmedPropertyFileContent);
+            String contentKind = context.getKind();
+            LOGGER.info("Start prism invocation: " + contentKind);
             long start = System.currentTimeMillis();
             propertyFile = setUpPrism(context);
 
@@ -51,7 +51,7 @@ public class PrismInvocationService implements PrismService {
             }
             long end = System.currentTimeMillis();
 
-            LOGGER.info("Stop prism invocation: " + trimmedPropertyFileContent + ", Elapsed time in seconds: "
+            LOGGER.info("Stop prism invocation: " + contentKind + ", Elapsed time in seconds: "
                     + ((end - start) / 1000));
             return prismResult;
         } catch (FileNotFoundException | PrismException e) {

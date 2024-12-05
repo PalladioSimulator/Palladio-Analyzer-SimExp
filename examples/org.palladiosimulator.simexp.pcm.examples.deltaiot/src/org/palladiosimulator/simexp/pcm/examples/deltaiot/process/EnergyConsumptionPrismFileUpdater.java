@@ -20,7 +20,7 @@ public class EnergyConsumptionPrismFileUpdater<A> extends DeltaIoTPrismFileUpdat
 
     @Override
     public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
-        PrismContext prismContext = new PrismContext(stringify(prismSpec.getModuleFile()),
+        PrismContext prismContext = new PrismContext("EnergyConsumption", stringify(prismSpec.getModuleFile()),
                 stringify(prismSpec.getPropertyFile()));
         substituteMoteActivations(prismContext, sasState);
         substituteTransmissionPower(prismContext, sasState);
