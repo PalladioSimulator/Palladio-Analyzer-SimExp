@@ -30,12 +30,12 @@ public class PrismServiceReplay extends BasePrismService {
 
     private final Map<Pair<String, Integer>, Entry> entryMap = new HashMap<>();
     private final Map<String, Integer> counterMap = new HashMap<>();
-    private final PrismService delegate;
+    // private final PrismService delegate;
 
     private Path dbPath;
 
     public PrismServiceReplay(PrismService delegate) {
-        this.delegate = delegate;
+        // this.delegate = delegate;
     }
 
     @Override
@@ -75,6 +75,10 @@ public class PrismServiceReplay extends BasePrismService {
         Entry entry = entryMap.get(key);
         if (entry == null) {
             throw new RuntimeException("cannot find entry: " + key);
+        }
+        String hash = calculateHash(context);
+        if (!hash.equals(entry.hash)) {
+            throw new RuntimeException("hash mismatch on: " + key);
         }
         /*
          * if (!currentEntries.get(0) .equals(key.getKey())) { throw new

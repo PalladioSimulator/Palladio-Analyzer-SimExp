@@ -21,10 +21,15 @@ abstract class BasePrismService implements PrismService {
         double resultValue = extractResult(context, result);
         entries.add(String.format("%.25f", resultValue));
 
-        String sha256hex = DigestUtils.sha256Hex(context.getModuleFileContent());
-        entries.add(sha256hex);
+        String hash = calculateHash(context);
+        entries.add(hash);
 
         return entries;
+    }
+
+    protected String calculateHash(PrismContext context) {
+        String sha256hex = DigestUtils.sha256Hex(context.getModuleFileContent());
+        return sha256hex;
     }
 
     private double extractResult(PrismContext context, PrismResult result) {
