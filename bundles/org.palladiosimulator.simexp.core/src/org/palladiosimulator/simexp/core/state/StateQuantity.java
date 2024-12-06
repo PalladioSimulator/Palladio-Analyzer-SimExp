@@ -17,6 +17,10 @@ public class StateQuantity {
 
     private final LinkedHashSet<SimulatedMeasurement> measuredQuantities;
 
+    protected StateQuantity(LinkedHashSet<SimulatedMeasurement> measuredQuantities) {
+        this.measuredQuantities = measuredQuantities;
+    }
+
     public static StateQuantity of(List<SimulatedMeasurement> measuredQuantities) {
         return new StateQuantity(new LinkedHashSet<>(measuredQuantities));
     }
@@ -26,10 +30,6 @@ public class StateQuantity {
             .map(SimulatedMeasurement::with)
             .collect(Collectors.toList());
         return of(quantities);
-    }
-
-    protected StateQuantity(LinkedHashSet<SimulatedMeasurement> measuredQuantities) {
-        this.measuredQuantities = measuredQuantities;
     }
 
     public Set<SimulatedMeasurementSpecification> getMeasurementSpecs() {
