@@ -11,6 +11,9 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 
 public class StateQuantityTest {
+    private static final String SPEC_NAME = "spec";
+    private static final String SPEC_ID = "tspec";
+
     private StateQuantity quantity;
 
     private SimulatedMeasurementSpecification specification;
@@ -24,7 +27,7 @@ public class StateQuantityTest {
 
     @Before
     public void setUp() throws Exception {
-        specification = new TestSimulatedMeasurementSpecification("tspec", "spec");
+        specification = new TestSimulatedMeasurementSpecification(SPEC_ID, SPEC_NAME);
         simulatedMeasurement = SimulatedMeasurement.of(1.0, specification);
 
         quantity = StateQuantity.of(Collections.singletonList(simulatedMeasurement));
@@ -32,7 +35,7 @@ public class StateQuantityTest {
 
     @Test
     public void findMeasurementWith() {
-        SimulatedMeasurementSpecification spec = specification;
+        SimulatedMeasurementSpecification spec = new TestSimulatedMeasurementSpecification(SPEC_ID, SPEC_NAME);
 
         Optional<SimulatedMeasurement> actualMeasurement = quantity.findMeasurementWith(spec);
 
