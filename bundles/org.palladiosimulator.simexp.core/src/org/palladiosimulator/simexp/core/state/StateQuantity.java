@@ -6,10 +6,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 
 public class StateQuantity {
+    private static final Logger LOGGER = Logger.getLogger(StateQuantity.class);
 
     protected final static String DELIMITER = "|";
 
@@ -48,12 +50,12 @@ public class StateQuantity {
 
     public void setMeasurement(double newValue, SimulatedMeasurementSpecification spec) {
         Optional<SimulatedMeasurement> result = findMeasurementWith(spec);
-        if (result.isPresent()) {
-            result.get()
-                .setValue(newValue);
-        } else {
-            // Logging in case that nothing has been updated
+        if (result.isEmpty()) {
+            LOGGER.warn(String.format("No measurement found for spec: %s", spec.getId()));
+            return;
         }
+        result.get()
+            .setValue(newValue);
     }
 
     private boolean haveSameSpecification(SimulatedMeasurement simMeasurement, SimulatedMeasurementSpecification spec) {
