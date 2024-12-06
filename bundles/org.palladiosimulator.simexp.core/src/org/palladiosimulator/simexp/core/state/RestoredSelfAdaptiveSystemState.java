@@ -34,8 +34,8 @@ public class RestoredSelfAdaptiveSystemState<C, A, V> extends SelfAdaptiveSystem
 
         private SimulatedMeasurement restoreSimulatedMeasurement(String quantity,
                 SimulatedMeasurementSpecification spec) {
-            SimulatedMeasurement measurement = SimulatedMeasurement.with(spec);
-            measurement.setValue(restoreValue(quantity));
+            Double restoredValue = restoreValue(quantity);
+            SimulatedMeasurement measurement = SimulatedMeasurement.of(restoredValue, spec);
             return measurement;
         }
 
