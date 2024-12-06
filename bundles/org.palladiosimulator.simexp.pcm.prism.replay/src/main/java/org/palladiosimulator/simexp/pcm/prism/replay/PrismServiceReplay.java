@@ -13,9 +13,9 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
-import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
+import org.palladiosimulator.simexp.pcm.prism.service.PrismReplayService;
 
-public class PrismServiceReplay extends BasePrismService {
+public class PrismServiceReplay extends BasePrismService implements PrismReplayService {
     private static final Logger LOGGER = Logger.getLogger(PrismServiceReplay.class);
 
     private static class Entry {
@@ -30,13 +30,8 @@ public class PrismServiceReplay extends BasePrismService {
 
     private final Map<Pair<String, Integer>, Entry> entryMap = new HashMap<>();
     private final Map<String, Integer> counterMap = new HashMap<>();
-    // private final PrismService delegate;
 
     private Path dbPath;
-
-    public PrismServiceReplay(PrismService delegate) {
-        // this.delegate = delegate;
-    }
 
     @Override
     public void initialise(Path prismFolder, String strategyId) {

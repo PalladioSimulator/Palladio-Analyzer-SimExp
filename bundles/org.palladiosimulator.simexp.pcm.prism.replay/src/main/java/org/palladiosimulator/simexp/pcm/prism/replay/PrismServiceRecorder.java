@@ -14,19 +14,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
-import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
+import org.palladiosimulator.simexp.pcm.prism.service.PrismRecorderService;
 
-public class PrismServiceRecorder extends BasePrismService {
+public class PrismServiceRecorder extends BasePrismService implements PrismRecorderService {
     private static final Logger LOGGER = Logger.getLogger(PrismServiceRecorder.class);
 
-    private final PrismService delegate;
     private final Map<String, Integer> counterMap = new HashMap<>();
 
     private Path dbPath;
-
-    public PrismServiceRecorder(PrismService delegate) {
-        this.delegate = delegate;
-    }
 
     @Override
     public void initialise(Path prismFolder, String strategyId) {

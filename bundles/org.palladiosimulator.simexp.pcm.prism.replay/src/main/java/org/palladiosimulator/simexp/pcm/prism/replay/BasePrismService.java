@@ -9,9 +9,18 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 abstract class BasePrismService implements PrismService {
     protected static final CSVFormat CSV_FORMAT = CSVFormat.EXCEL;
+
+    protected final PrismService delegate;
+
+    BasePrismService() {
+        this.delegate = ServiceRegistry.get()
+            .findService(PrismService.class)
+            .orElseThrow(() -> new RuntimeException("Prism service not found"));
+    }
 
     protected List<String> getEntries(int counter, PrismContext context, PrismResult result) {
         List<String> entries = new ArrayList<>();
