@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.core.statespace;
 
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
@@ -19,6 +20,7 @@ import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavi
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends InductiveStateSpaceNavigator<A> {
+    private final static Logger LOGGER = Logger.getLogger(SelfAdaptiveSystemStateSpaceNavigator.class);
 
     public interface InitialSelfAdaptiveSystemStateCreator<C, A, V> {
 
@@ -116,6 +118,8 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
         Optional<SimulatedExperience> result = simulatedExperienceStore
             .findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
+            LOGGER.info(
+                    String.format("cache hit for state: %s -> re-use existing measuremnt", structuralState.toString()));
             return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder, result.get(), structuralState);
         }
         structuralState.determineQuantifiedState();
