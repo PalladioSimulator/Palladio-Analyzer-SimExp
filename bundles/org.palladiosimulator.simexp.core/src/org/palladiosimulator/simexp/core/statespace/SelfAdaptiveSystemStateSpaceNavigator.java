@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
-import org.palladiosimulator.simexp.core.state.RestoredSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
@@ -120,7 +119,10 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
         if (result.isPresent()) {
             LOGGER.info(
                     String.format("cache hit for state: %s -> re-use existing measuremnt", structuralState.toString()));
-            return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder, result.get(), structuralState);
+            // return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder,
+            // result.get(), structuralState);
+            // ToDo: should be
+            // structuralState.restoreQuantifiedState(result.get());
         }
         structuralState.determineQuantifiedState();
         return structuralState;
