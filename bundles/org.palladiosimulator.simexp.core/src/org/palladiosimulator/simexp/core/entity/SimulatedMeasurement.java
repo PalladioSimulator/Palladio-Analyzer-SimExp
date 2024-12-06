@@ -1,5 +1,8 @@
 package org.palladiosimulator.simexp.core.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class SimulatedMeasurement {
 
     protected final static String VALUE_TAG = "value";
@@ -32,6 +35,30 @@ public class SimulatedMeasurement {
 
     public SimulatedMeasurementSpecification getSpecification() {
         return specification;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        SimulatedMeasurement rhs = (SimulatedMeasurement) obj;
+        return new EqualsBuilder().append(specification, rhs.specification)
+            .append(value, rhs.value)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(15, 37).append(specification)
+            .append(value)
+            .toHashCode();
     }
 
     @Override

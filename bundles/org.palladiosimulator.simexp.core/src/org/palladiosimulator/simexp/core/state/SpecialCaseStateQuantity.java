@@ -20,8 +20,9 @@ public class SpecialCaseStateQuantity extends StateQuantity {
 
     @Override
     public Optional<SimulatedMeasurement> findMeasurementWith(SimulatedMeasurementSpecification spec) {
-        Stream<String> quantities = Stream.of(quantifiedState.split(withDelimiter()));
-        return quantities.filter(quantity -> quantity.contains(spec.getId()))
+        String[] tokens = quantifiedState.split(withDelimiter());
+        Stream<String> quantities = Stream.of(tokens);
+        return quantities.filter(quantity -> quantity.contains(spec.getName()))
             .map(quantity -> restoreSimulatedMeasurement(quantity, spec))
             .findFirst();
     }
