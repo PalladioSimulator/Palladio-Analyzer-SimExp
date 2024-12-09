@@ -37,6 +37,10 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 import utility.RangeBoundsHelper;
 
+//review-finding-2024-12-09: 
+//- class under test is 'EAOptimizer' thus rename test class to EAOptimizerTest; 
+//- package naming convention violated; CUT should be placed in a package of same name as in 'impl' -> org.palladiosimulator.simexp.dsl.ea.optimizer.impl
+//- chromosome tests should be realized as several test methods within this test class  
 public class CombinedRangeChromosomeTest {
 
     private static final double DOUBLE_EPSILON = 1e-15;
@@ -65,6 +69,8 @@ public class CombinedRangeChromosomeTest {
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    // review-finding-2024-12-09: parameter order violated: (1) class under test, (2) mocks and
+    // others
     private IEAOptimizer optimizer;
 
     @Before

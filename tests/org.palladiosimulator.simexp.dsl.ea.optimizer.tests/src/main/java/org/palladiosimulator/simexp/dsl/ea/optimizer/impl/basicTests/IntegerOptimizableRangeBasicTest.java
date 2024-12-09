@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
@@ -23,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
@@ -34,8 +32,6 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import com.google.inject.Injector;
 
-import io.jenetics.internal.collection.ArrayISeq;
-import io.jenetics.internal.collection.Empty.EmptyISeq;
 import utility.RangeBoundsHelper;
 
 public class IntegerOptimizableRangeBasicTest {
@@ -64,14 +60,16 @@ public class IntegerOptimizableRangeBasicTest {
     @Mock
     private IExpressionCalculator calculator;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-
     private IEAOptimizer optimizer;
+
+    private FitnessHelper fitnessHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
+
         smodelCreator = new SmodelCreator();
+        fitnessHelper = new FitnessHelper();
         when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
 
@@ -93,7 +91,7 @@ public class IntegerOptimizableRangeBasicTest {
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
 
-                return getFitnessFunctionAsFuture(invocation);
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
@@ -115,7 +113,7 @@ public class IntegerOptimizableRangeBasicTest {
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
 
-                return getFitnessFunctionAsFuture(invocation);
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
@@ -140,7 +138,7 @@ public class IntegerOptimizableRangeBasicTest {
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
 
-                return getFitnessFunctionAsFuture(invocation);
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
@@ -148,40 +146,6 @@ public class IntegerOptimizableRangeBasicTest {
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
         verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
-    }
-
-    private Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
-        return executor.submit(() -> {
-            List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
-
-            double value = 0;
-
-            for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
-                DecoderEncodingPair chromoPair = (DecoderEncodingPair) singleOptimizableValue.getValue();
-                DataType optimizableDataType = singleOptimizableValue.getOptimizable()
-                    .getDataType();
-
-                Object apply = chromoPair.first()
-                    .apply(chromoPair.second());
-
-                if (apply instanceof ArrayISeq arraySeq) {
-                    if (arraySeq.size() == 1) {
-                        for (Object element : arraySeq.array) {
-                            if (optimizableDataType == DataType.INT) {
-                                value += (Integer) element;
-                            }
-                        }
-                    }
-                } else if (apply instanceof EmptyISeq emptySeq) {
-                    // do nothing
-                } else {
-                    throw new RuntimeException("Unknown chromosome type specified: " + chromoPair.second()
-                        .getClass());
-                }
-            }
-
-            return value;
-        });
     }
 
 }

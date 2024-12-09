@@ -15,8 +15,12 @@ public interface SimulationConstants {
     public static final String QUALITY_OBJECTIVE = "Quality Objective";
     public static final String TRANSFORMATIONS_ACTIVE = "TransformationsActive";
 
+    public static final String MODELLED_OPTIMIZATION_TYPE = "ModelledOptimizationType";
+
     public static final SimulatorType DEFAULT_SIMULATOR_TYPE = SimulatorType.MODELLED;
     public static final SimulationEngine DEFAULT_SIMULATION_ENGINE = SimulationEngine.PCM;
     public static final QualityObjective DEFAULT_QUALITY_OBJECTIVE = QualityObjective.PERFORMANCE;
+
+    public static final ModelledOptimizationType DEFAULT_MODELLED_OPTIMIZATION_TYPE = ModelledOptimizationType.SIMPLE;
 
 }

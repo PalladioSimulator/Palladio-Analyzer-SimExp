@@ -23,6 +23,7 @@ public class OptimizableChromosome {
         this.fitnessEvaluator = fitnessEvaluator;
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     @SuppressWarnings("unchecked")
     public static OptimizableChromosome nextChromosome(List<CodecOptimizablePair> declaredChromoSubTypes,
             IEAFitnessEvaluator fitnessEvaluator) {
@@ -40,6 +41,7 @@ public class OptimizableChromosome {
         return new OptimizableChromosome(localChromosomes, declaredChromoSubTypes, fitnessEvaluator);
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<CodecOptimizablePair> classes,
             IEAFitnessEvaluator fitnessEvaluator) {
         List<CodecOptimizablePair> declaredChromoSubTypes = new ArrayList<>();
@@ -48,6 +50,7 @@ public class OptimizableChromosome {
         return () -> nextChromosome(declaredChromoSubTypes, fitnessEvaluator);
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     public static double eval(final OptimizableChromosome c) {
 
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
@@ -62,8 +65,12 @@ public class OptimizableChromosome {
         try {
             return calcFitness.get(600000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // review-finding-2024-12-09: wrong exception handling; return new
+            // RuntimeException/custom OptimizableException instead of 0;
+            // do not print stacktrace;
             e.printStackTrace();
             return 0;
+            // TODO Throw a runtime exception
         }
 
     }
