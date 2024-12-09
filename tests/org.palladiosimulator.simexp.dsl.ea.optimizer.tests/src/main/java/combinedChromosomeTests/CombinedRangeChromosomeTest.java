@@ -67,6 +67,8 @@ public class CombinedRangeChromosomeTest {
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    // review-finding-2024-12-09: parameter order violated: (1) class under test, (2) mocks and
+    // others
     private IEAOptimizer optimizer;
 
     @Before
