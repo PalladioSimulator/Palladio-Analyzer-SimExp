@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.Chromosome;
 
@@ -20,14 +19,17 @@ public class OptimizableChromosome {
 
     public List<SingleChromosome> chromosomes;
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     private static final List<CodecOptimizablePair> declaredChromoSubTypes = new ArrayList();
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     private static IEAFitnessEvaluator fitnessEvaluator;
 
     public OptimizableChromosome(Map<Class, Chromosome> mapClass2Chromo, List<SingleChromosome> chromosomes) {
         this.chromosomes = chromosomes;
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     @SuppressWarnings("unchecked")
     public static OptimizableChromosome nextChromosome() {
         Map<Class, Chromosome> mapClass2Chromo = new HashMap();
@@ -45,6 +47,7 @@ public class OptimizableChromosome {
         return new OptimizableChromosome(mapClass2Chromo, localChromosomes);
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     public static Supplier<OptimizableChromosome> getNextChromosomeSupplier(List<CodecOptimizablePair> classes,
             IEAFitnessEvaluator fitnessEvaluator) {
         declaredChromoSubTypes.addAll(classes);
@@ -53,13 +56,14 @@ public class OptimizableChromosome {
         return () -> nextChromosome();
     }
 
+    // review-finding-2024-12-09: remove 'static'; not thread-safe
     public static double eval(final OptimizableChromosome c) {
 
         double value = 0;
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
         for (SingleChromosome currentChromo : c.chromosomes) {
-            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>((Optimizable) currentChromo.optimizable(),
+            optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>(currentChromo.optimizable(),
                     new DecoderEncodingPair(currentChromo.function(), currentChromo.genotype())));
         }
 
@@ -68,6 +72,9 @@ public class OptimizableChromosome {
         try {
             return calcFitness.get(600000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // review-finding-2024-12-09: wrong exception handling; return new
+            // RuntimeException/custom OptimizableException instead of 0;
+            // do not print stacktrace;
             e.printStackTrace();
             return 0;
         }
