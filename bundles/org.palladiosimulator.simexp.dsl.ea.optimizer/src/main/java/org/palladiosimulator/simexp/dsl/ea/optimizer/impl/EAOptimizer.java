@@ -45,13 +45,13 @@ public class EAOptimizer implements IEAOptimizer {
                     parser.parseBounds(optValue, optimizableProvider.getExpressionCalculator(), dataType), currentOpt));
         }
 
+        OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
-                Genotype.of(AnyChromosome
-                    .of(OptimizableChromosome.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
+                Genotype.of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
                 gt -> gt.gene()
                     .allele());
 
-        final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(OptimizableChromosome::eval, codec)
+        final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(500)
             .constraint(new OptimizableChromosomeConstraint())
             .selector(new TournamentSelector<>(5))
@@ -75,7 +75,7 @@ public class EAOptimizer implements IEAOptimizer {
             .allele();
 
         LOGGER.info("PhenoChromo: " + phenoChromo.chromosomes.get(0)
-            .genotype() + " " + OptimizableChromosome.eval(phenoChromo));
+            .genotype() + " " + chromoCreator.eval(phenoChromo));
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 

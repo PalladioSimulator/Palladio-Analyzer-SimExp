@@ -64,13 +64,20 @@ public class FitnessHelper {
                     for (Object element : arraySeq.array) {
                         if (optimizableDataType == DataType.INT) {
                             value += (Integer) element;
+                        } else if (optimizableDataType == DataType.DOUBLE) {
+                            value += (Double) element;
                         }
+
                     }
                 }
             } else if (apply instanceof EmptyISeq emptySeq) {
                 // do nothing
+            } else if (optimizableDataType == DataType.BOOL) {
+                if ((Boolean) apply) {
+                    value += 50;
+                }
             } else {
-                return null;
+                throw new RuntimeException("Received unexpected data type: " + optimizableDataType);
             }
         }
 

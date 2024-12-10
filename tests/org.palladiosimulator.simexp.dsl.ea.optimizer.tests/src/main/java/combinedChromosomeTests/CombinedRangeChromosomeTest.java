@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
@@ -35,7 +36,6 @@ import com.google.inject.Injector;
 
 import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
-import utility.RangeBoundsHelper;
 
 //review-finding-2024-12-09: 
 //- class under test is 'EAOptimizer' thus rename test class to EAOptimizerTest; 
@@ -46,6 +46,10 @@ public class CombinedRangeChromosomeTest {
     private static final double DOUBLE_EPSILON = 1e-15;
 
     private static final double EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS = 0.9;
+
+    // review-finding-2024-12-09: parameter order violated: (1) class under test, (2) mocks and
+    // others
+    private IEAOptimizer optimizer;
 
     @Mock
     private IEAConfig eaConfig;
@@ -68,10 +72,6 @@ public class CombinedRangeChromosomeTest {
     private IExpressionCalculator calculator;
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    // review-finding-2024-12-09: parameter order violated: (1) class under test, (2) mocks and
-    // others
-    private IEAOptimizer optimizer;
 
     @Before
     public void setUp() {
@@ -96,7 +96,6 @@ public class CombinedRangeChromosomeTest {
         RangeBounds doubleRangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
                 upperBoundDouble, 1.0);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
-
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
             @Override

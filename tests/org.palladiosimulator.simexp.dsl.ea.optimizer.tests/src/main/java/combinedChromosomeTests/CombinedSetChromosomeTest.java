@@ -30,6 +30,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.SmodelStandaloneSetup;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
@@ -42,7 +43,6 @@ import com.google.inject.Injector;
 
 import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
-import utility.SetBoundsHelper;
 
 //review-finding-2024-12-09: 
 //  - class under test is 'EAOptimizer' thus rename test class to EAOptimizerTest; 
