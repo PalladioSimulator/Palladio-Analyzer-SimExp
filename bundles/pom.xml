@@ -59,6 +59,7 @@
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
+		<module>io.kubernetes</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
