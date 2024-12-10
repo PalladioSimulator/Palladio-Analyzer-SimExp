@@ -47,7 +47,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <includeArtifactIds>client-java</includeArtifactIds>
+              <includeArtifactIds>client-java,client-java-api,okhttp,okio,okio-jvm,gson-fire,kotlin-stdlib</includeArtifactIds>
               <outputDirectory>${basedir}/lib</outputDirectory>
               <stripVersion>true</stripVersion>
               <overWriteReleases>true</overWriteReleases>

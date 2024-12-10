@@ -7,5 +7,11 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="lib/client-java.jar" sourcepath="lib/client-java-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/client-java-api.jar"/>
+	<classpathentry kind="lib" path="lib/okhttp.jar"/>
+	<classpathentry kind="lib" path="lib/okio.jar"/>
+	<classpathentry kind="lib" path="lib/okio-jvm.jar"/>
+	<classpathentry kind="lib" path="lib/gson-fire.jar"/>
+	<classpathentry kind="lib" path="lib/kotlin-stdlib.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
