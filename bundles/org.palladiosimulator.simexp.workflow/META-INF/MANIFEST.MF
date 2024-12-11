@@ -43,6 +43,8 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
  org.palladiosimulator.simexp.model.io;bundle-version="1.0.0",
  org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
- org.apache.commons.lang3;bundle-version="3.1.0"
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ io.kubernetes;bundle-version="22.0.0"
 Export-Package: org.palladiosimulator.simexp.workflow.launcher,
+ org.palladiosimulator.simexp.workflow.preferences,
  org.palladiosimulator.simexp.workflow.trafo
