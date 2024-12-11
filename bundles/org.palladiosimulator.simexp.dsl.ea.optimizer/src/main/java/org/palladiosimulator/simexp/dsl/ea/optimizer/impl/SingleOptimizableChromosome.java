@@ -6,13 +6,13 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.Genotype;
 
-public class SingleChromosome {
+public class SingleOptimizableChromosome {
 
     private Function function;
     private Genotype<?> genotype;
     private Optimizable optimizable;
 
-    public SingleChromosome(Function function, Genotype<?> genotype, Optimizable optimizable) {
+    public SingleOptimizableChromosome(Function function, Genotype<?> genotype, Optimizable optimizable) {
         this.function = function;
         this.genotype = genotype;
         this.optimizable = optimizable;

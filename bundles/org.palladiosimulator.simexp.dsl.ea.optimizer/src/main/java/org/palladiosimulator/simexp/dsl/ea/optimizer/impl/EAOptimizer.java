@@ -18,10 +18,10 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
 import io.jenetics.Genotype;
+import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
-import io.jenetics.SinglePointCrossover;
-import io.jenetics.SwapMutator;
 import io.jenetics.TournamentSelector;
+import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Codec;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
@@ -46,23 +46,23 @@ public class EAOptimizer implements IEAOptimizer {
         }
 
         OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
+
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
                 Genotype.of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
                 gt -> gt.gene()
                     .allele());
 
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
-            .populationSize(500)
-            .constraint(new OptimizableChromosomeConstraint())
-            .selector(new TournamentSelector<>(5))
-            .offspringSelector(new TournamentSelector<>(5))
-            .alterers(new SwapMutator<>(0.2), new SinglePointCrossover<>(0.1))
+            .populationSize(100)
+            .selector(new TournamentSelector<>((int) (1000 * 0.05)))
+            .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
+            .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
             .build();
 
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
 
         final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
-            .limit(bySteadyFitness(200))
+            .limit(bySteadyFitness(7))
             .limit(500)
             .peek(statistics)
             .collect(EvolutionResult.toBestPhenotype());
@@ -79,7 +79,7 @@ public class EAOptimizer implements IEAOptimizer {
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
-        for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
+        for (SingleOptimizableChromosome singleChromo : phenoChromo.chromosomes) {
             LOGGER.info(singleChromo.function()
                 .apply(singleChromo.genotype()));
             finalOptimizableValues

@@ -16,10 +16,10 @@ public class OptimizableChromosomeFactory {
     @SuppressWarnings("unchecked")
     private OptimizableChromosome nextChromosome(List<CodecOptimizablePair> declaredChromoSubTypes,
             IEAFitnessEvaluator fitnessEvaluator) {
-        List<SingleChromosome> localChromosomes = new ArrayList();
+        List<SingleOptimizableChromosome> localChromosomes = new ArrayList();
         for (CodecOptimizablePair c : declaredChromoSubTypes) {
 
-            localChromosomes.add(new SingleChromosome(c.first()
+            localChromosomes.add(new SingleOptimizableChromosome(c.first()
                 .decoder(),
                     c.first()
                         .encoding()
@@ -42,7 +42,7 @@ public class OptimizableChromosomeFactory {
 
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
-        for (SingleChromosome currentChromo : c.chromosomes) {
+        for (SingleOptimizableChromosome currentChromo : c.chromosomes) {
             optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>(currentChromo.optimizable(),
                     new DecoderEncodingPair(currentChromo.function(), currentChromo.genotype())));
         }

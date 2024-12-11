@@ -49,8 +49,8 @@ public class BoundsParser {
         }
     }
 
-    public InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableRangeDouble(
-            IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
+    public InvertibleCodec<Double, BitGene> parseOptimizableRangeDouble(IExpressionCalculator expressionCalculator,
+            RangeBounds rangeBound) {
         double startValue = expressionCalculator.calculateDouble(rangeBound.getStartValue());
         double endValue = expressionCalculator.calculateDouble(rangeBound.getEndValue());
         double stepSize = expressionCalculator.calculateDouble(rangeBound.getStepSize());
@@ -67,12 +67,12 @@ public class BoundsParser {
 
         ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
 
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInRange, 0.1);
+        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
 
     }
 
-    public InvertibleCodec<ISeq<Integer>, BitGene> parseOptimizableRangeInteger(
-            IExpressionCalculator expressionCalculator, RangeBounds rangeBound) {
+    public InvertibleCodec<Integer, BitGene> parseOptimizableRangeInteger(IExpressionCalculator expressionCalculator,
+            RangeBounds rangeBound) {
         int startValue = expressionCalculator.calculateInteger(rangeBound.getStartValue());
         int endValue = expressionCalculator.calculateInteger(rangeBound.getEndValue());
         int stepSize = expressionCalculator.calculateInteger(rangeBound.getStepSize());
@@ -89,18 +89,18 @@ public class BoundsParser {
 
         ISeq<Integer> seqOfNumbersInRange = ISeq.of(numbersInRange);
 
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInRange, 0.1);
+        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
 
     }
 
-    public InvertibleCodec<ISeq<Double>, BitGene> parseOptimizableSetDouble(IExpressionCalculator expressionCalculator,
+    public InvertibleCodec<Double, BitGene> parseOptimizableSetDouble(IExpressionCalculator expressionCalculator,
             SetBounds setBound) {
         List<Double> elementSet = new ArrayList<>();
         for (Expression expression : setBound.getValues()) {
             elementSet.add(expressionCalculator.calculateDouble(expression));
         }
         ISeq<Double> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
+        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
     }
 
     private InvertibleCodec<Boolean, BitGene> parseOptimizableSetBoolean(IExpressionCalculator expressionCalculator,

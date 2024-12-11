@@ -72,8 +72,14 @@ public class FitnessHelper {
                 }
             } else if (apply instanceof EmptyISeq emptySeq) {
                 // do nothing
+            } else if (optimizableDataType == DataType.DOUBLE) {
+                if (apply != null)
+                    value += (Double) apply;
+            } else if (optimizableDataType == DataType.INT) {
+                if (apply != null)
+                    value += (Integer) apply;
             } else if (optimizableDataType == DataType.BOOL) {
-                if ((Boolean) apply) {
+                if ((apply != null) && ((Boolean) apply)) {
                     value += 50;
                 }
             } else {

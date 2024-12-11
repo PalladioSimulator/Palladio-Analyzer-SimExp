@@ -6,11 +6,11 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 
 public class OptimizableChromosome {
 
-    public List<SingleChromosome> chromosomes;
+    public List<SingleOptimizableChromosome> chromosomes;
 
     private IEAFitnessEvaluator fitnessEvaluator;
 
-    public OptimizableChromosome(List<SingleChromosome> chromosomes, List<CodecOptimizablePair> declaredChromoSubTypes,
+    public OptimizableChromosome(List<SingleOptimizableChromosome> chromosomes, List<CodecOptimizablePair> declaredChromoSubTypes,
             IEAFitnessEvaluator fitnessEvaluator) {
         this.chromosomes = chromosomes;
         this.fitnessEvaluator = fitnessEvaluator;

@@ -24,7 +24,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .gene()
             .allele();
         boolean result = true;
-        for (SingleChromosome chromoPair : allele.chromosomes) {
+        for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
 
             if (chromoPair.optimizable()
@@ -52,7 +52,7 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .allele();
         Random random = new Random();
 
-        for (SingleChromosome chromoPair : allele.chromosomes) {
+        for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
             Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
 
             if ((chromoPair.optimizable()
