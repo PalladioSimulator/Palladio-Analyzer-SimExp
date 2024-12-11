@@ -37,6 +37,7 @@ Bundle-Version: 7.0.0.qualifier
 Export-Package: io.fabric8.kubernetes.api,
  io.fabric8.kubernetes.api.builder,
  io.fabric8.kubernetes.api.model,
+ io.fabric8.kubernetes.api.model.batch.v1,
  io.fabric8.kubernetes.api.model.clusterapi.v1beta1,
  io.fabric8.kubernetes.api.model.runtime,
  io.fabric8.kubernetes.api.model.version,

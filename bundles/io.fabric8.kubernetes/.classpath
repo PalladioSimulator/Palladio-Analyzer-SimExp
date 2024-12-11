@@ -10,7 +10,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/kubernetes-client-api.jar" sourcepath="lib/kubernetes-client-api-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-core.jar" sourcepath="lib/kubernetes-model-core-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-common.jar" sourcepath="lib/kubernetes-model-common-sources.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-batch.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-batch.jar"/>
 	<classpathentry kind="lib" path="lib/kubernetes-model-apps.jar"/>
 	<classpathentry kind="lib" path="lib/kubernetes-model-extensions.jar"/>
 	<classpathentry kind="lib" path="lib/kubernetes-model-certificates.jar"/>
