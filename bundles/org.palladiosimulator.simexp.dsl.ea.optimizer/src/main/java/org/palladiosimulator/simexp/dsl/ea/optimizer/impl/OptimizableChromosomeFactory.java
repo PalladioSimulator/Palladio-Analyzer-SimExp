@@ -42,12 +42,14 @@ public class OptimizableChromosomeFactory {
 
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
+        // review-finding: genotype-to-phenotype-conversion -> Representation
         for (SingleChromosome currentChromo : c.chromosomes) {
             optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<Pair>(currentChromo.optimizable(),
                     new DecoderEncodingPair(currentChromo.function(), currentChromo.genotype())));
         }
 
-        Future<Double> calcFitness = c.getFitnessEvaluator().calcFitness(optimizableValues);
+        Future<Double> calcFitness = c.getFitnessEvaluator()
+            .calcFitness(optimizableValues);
 
         try {
             return calcFitness.get(600000, TimeUnit.MILLISECONDS);

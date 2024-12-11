@@ -38,6 +38,9 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("EA running...");
         List<CodecOptimizablePair> parsedCodecs = new ArrayList<>();
 
+        ////// to phenotype
+
+        // review-finding: phenotype-to-genotype-conversion -> Representation
         for (Optimizable currentOpt : optimizableProvider.getOptimizables()) {
             DataType dataType = currentOpt.getDataType();
             Bounds optValue = currentOpt.getValues();
@@ -51,6 +54,9 @@ public class EAOptimizer implements IEAOptimizer {
                 gt -> gt.gene()
                     .allele());
 
+        ////// to phenotype end
+
+        //// setup EA
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(500)
             .constraint(new OptimizableChromosomeConstraint())
@@ -69,6 +75,8 @@ public class EAOptimizer implements IEAOptimizer {
 
         LOGGER.info("EA finished...");
 
+        // review-finding: to genotype value
+
         OptimizableChromosome phenoChromo = phenotype.genotype()
             .chromosome()
             .gene()
@@ -79,6 +87,8 @@ public class EAOptimizer implements IEAOptimizer {
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
+        // review-finding: SingleChromosom violates OO; only data, no methods; should have a
+        // getValue()-method and not expose its data
         for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
             LOGGER.info(singleChromo.function()
                 .apply(singleChromo.genotype()));
@@ -86,6 +96,8 @@ public class EAOptimizer implements IEAOptimizer {
                 .add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.optimizable(), singleChromo.function()
                     .apply(singleChromo.genotype())));
         }
+
+        // to genotype value end
 
         evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
 
