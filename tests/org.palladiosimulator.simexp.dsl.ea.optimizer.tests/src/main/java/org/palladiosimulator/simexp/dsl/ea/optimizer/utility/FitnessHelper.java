@@ -8,7 +8,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.DecoderEncodingPair;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.internal.collection.ArrayISeq;
@@ -52,12 +51,9 @@ public class FitnessHelper {
         double value = 0;
 
         for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
-            DecoderEncodingPair chromoPair = (DecoderEncodingPair) singleOptimizableValue.getValue();
+            Object apply = singleOptimizableValue.getValue();
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
-
-            Object apply = chromoPair.first()
-                .apply(chromoPair.second());
 
             if (apply instanceof ArrayISeq arraySeq) {
                 if (arraySeq.size() == 1) {

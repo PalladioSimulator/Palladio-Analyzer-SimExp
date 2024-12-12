@@ -2,18 +2,13 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
@@ -30,30 +25,19 @@ import io.jenetics.engine.EvolutionStatistics;
 public class EAOptimizer implements IEAOptimizer {
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-    private BoundsParser parser = new BoundsParser();
-
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
-        List<CodecOptimizablePair> parsedCodecs = new ArrayList<>();
-
         ////// to phenotype
-
-        // review-finding: phenotype-to-genotype-conversion -> Representation
-        for (Optimizable currentOpt : optimizableProvider.getOptimizables()) {
-            DataType dataType = currentOpt.getDataType();
-            Bounds optValue = currentOpt.getValues();
-            parsedCodecs.add(new CodecOptimizablePair(
-                    parser.parseBounds(optValue, optimizableProvider.getExpressionCalculator(), dataType), currentOpt));
-        }
+        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
 
         OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
         Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
                 Genotype.of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
                 gt -> gt.gene()
                     .allele());
-
         ////// to phenotype end
 
         //// setup EA
@@ -75,31 +59,7 @@ public class EAOptimizer implements IEAOptimizer {
 
         LOGGER.info("EA finished...");
 
-        // review-finding: to genotype value
-
-        OptimizableChromosome phenoChromo = phenotype.genotype()
-            .chromosome()
-            .gene()
-            .allele();
-
-        LOGGER.info("PhenoChromo: " + phenoChromo.chromosomes.get(0)
-            .genotype() + " " + chromoCreator.eval(phenoChromo));
-
-        List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
-
-        // review-finding: SingleChromosom violates OO; only data, no methods; should have a
-        // getValue()-method and not expose its data
-        for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
-            LOGGER.info(singleChromo.function()
-                .apply(singleChromo.genotype()));
-            finalOptimizableValues
-                .add(new IEAFitnessEvaluator.OptimizableValue(singleChromo.optimizable(), singleChromo.function()
-                    .apply(singleChromo.genotype())));
-        }
-
-        // to genotype value end
-
-        evolutionStatusReceiver.reportStatus(finalOptimizableValues, phenotype.fitness());
+        evolutionStatusReceiver.reportStatus(converter.toPhenoValue(phenotype), phenotype.fitness());
 
         LOGGER.info(statistics);
     }
