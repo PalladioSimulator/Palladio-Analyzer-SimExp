@@ -27,5 +27,13 @@
             type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
       </launchConfigurationTabGroup>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.palladiosimulator.simexp.ui.workflow.preferences.KubernetesPreferencesPage"
+            id="org.palladiosimulator.simexp.ui.workflow.page1"
+            name="SimExp">
+      </page>
+   </extension>
 
 </plugin>
