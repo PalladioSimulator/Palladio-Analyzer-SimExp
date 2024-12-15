@@ -10,16 +10,17 @@ import java.util.function.Supplier;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleChromosome.SingleOptimizableChromosome;
 
 public class OptimizableChromosomeFactory {
 
     @SuppressWarnings("unchecked")
     private OptimizableChromosome nextChromosome(List<CodecOptimizablePair> declaredChromoSubTypes,
             IEAFitnessEvaluator fitnessEvaluator) {
-        List<SingleChromosome> localChromosomes = new ArrayList();
+        List<SingleOptimizableChromosome> localChromosomes = new ArrayList();
         for (CodecOptimizablePair c : declaredChromoSubTypes) {
 
-            localChromosomes.add(new SingleChromosome(c.first()
+            localChromosomes.add(new SingleOptimizableChromosome(c.first()
                 .decoder(),
                     c.first()
                         .encoding()

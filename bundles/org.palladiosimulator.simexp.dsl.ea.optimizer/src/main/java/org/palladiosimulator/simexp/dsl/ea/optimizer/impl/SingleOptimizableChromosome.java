@@ -9,13 +9,14 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import io.jenetics.Gene;
 import io.jenetics.Genotype;
 
-public class SingleChromosome<T extends Gene<?, T>> {
+public class SingleOptimizableChromosome<T extends Gene<?, T>> {
 
     private Function<Genotype<T>, ?> function;
     private Genotype<T> genotype;
     private Optimizable optimizable;
 
-    public SingleChromosome(Function<Genotype<T>, ?> function, Genotype<T> genotype, Optimizable optimizable) {
+    public SingleOptimizableChromosome(Function<Genotype<T>, ?> function, Genotype<T> genotype,
+            Optimizable optimizable) {
         this.function = function;
         this.genotype = genotype;
         this.optimizable = optimizable;
