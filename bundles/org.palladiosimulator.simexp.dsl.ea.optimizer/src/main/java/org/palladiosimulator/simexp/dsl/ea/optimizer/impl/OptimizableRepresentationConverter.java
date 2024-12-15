@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -58,19 +57,12 @@ public class OptimizableRepresentationConverter {
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
-        // review-finding: SingleChromosom violates OO; only data, no methods; should have a
-        // getValue()-method and not expose its data
         for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
             LOGGER.info(singleChromo.getPhenotype());
-            finalOptimizableValues.add(chromoToValue(singleChromo));
+            finalOptimizableValues.add(singleChromo.toOptimizableValue());
         }
 
         return finalOptimizableValues;
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public OptimizableValue<?> chromoToValue(SingleChromosome singleChromo) {
-        return new IEAFitnessEvaluator.OptimizableValue(singleChromo.optimizable(), singleChromo.getPhenotype());
     }
 
 }

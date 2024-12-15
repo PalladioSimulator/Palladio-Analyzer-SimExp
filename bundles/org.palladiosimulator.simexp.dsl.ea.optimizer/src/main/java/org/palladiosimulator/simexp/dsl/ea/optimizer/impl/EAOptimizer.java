@@ -3,8 +3,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -43,11 +41,8 @@ public class EAOptimizer implements IEAOptimizer {
         ////// to phenotype end
 
         //// setup EA
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(500)
-            .executor(executorService)
             .constraint(new OptimizableChromosomeConstraint())
             .selector(new TournamentSelector<>(5))
             .offspringSelector(new TournamentSelector<>(5))

@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.function.Function;
 
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.Gene;
@@ -33,5 +35,10 @@ public class SingleChromosome<T extends Gene<?, T>> {
 
     public Optimizable optimizable() {
         return optimizable;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public OptimizableValue<?> toOptimizableValue() {
+        return new IEAFitnessEvaluator.OptimizableValue(optimizable(), getPhenotype());
     }
 }
