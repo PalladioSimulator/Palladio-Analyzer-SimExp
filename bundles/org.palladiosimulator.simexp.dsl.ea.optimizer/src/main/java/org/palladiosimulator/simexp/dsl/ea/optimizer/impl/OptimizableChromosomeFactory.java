@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleChromosome.SingleOptimizableChromosome;
 
 public class OptimizableChromosomeFactory {
 
@@ -43,7 +42,7 @@ public class OptimizableChromosomeFactory {
 
         List<OptimizableValue<?>> optimizableValues = new ArrayList();
 
-        for (SingleChromosome currentChromo : c.chromosomes) {
+        for (SingleOptimizableChromosome currentChromo : c.chromosomes) {
             optimizableValues.add(new IEAFitnessEvaluator.OptimizableValue<>(currentChromo.optimizable(),
                     currentChromo.getPhenotype()));
         }

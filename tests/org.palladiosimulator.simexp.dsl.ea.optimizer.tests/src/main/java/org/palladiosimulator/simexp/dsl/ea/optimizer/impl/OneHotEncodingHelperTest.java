@@ -34,15 +34,12 @@ public class OneHotEncodingHelperTest {
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
         int[] expectedSetBits = { 0, 1 };
-
         InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
-
         BitSet bitSet = codecOfSubSet.encoding()
             .newInstance()
             .chromosome()
             .as(BitChromosome.class)
             .toBitSet();
-
         bitSet.size();
 
         Genotype<BitGene> firstEncoded = codecOfSubSet.encode(5.0);
@@ -54,7 +51,6 @@ public class OneHotEncodingHelperTest {
         String secondEncodedAsString = secondEncoded.chromosome()
             .as(BitChromosome.class)
             .toString();
-
         assertEquals("00000011", firstEncodedAsString);
         assertEquals("00000100", secondEncodedAsString);
 
@@ -73,7 +69,6 @@ public class OneHotEncodingHelperTest {
             .chromosome()
             .as(BitChromosome.class)
             .toBitSet();
-
         codecOfSubSet.encode(1.5);
     }
 
@@ -108,7 +103,6 @@ public class OneHotEncodingHelperTest {
         InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
 
         double decodedValue = codecOfSubSet.decode(gt);
-
     }
 
 }

@@ -57,7 +57,7 @@ public class OptimizableRepresentationConverter {
 
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
-        for (SingleChromosome singleChromo : phenoChromo.chromosomes) {
+        for (SingleOptimizableChromosome singleChromo : phenoChromo.chromosomes) {
             LOGGER.info(singleChromo.getPhenotype());
             finalOptimizableValues.add(singleChromo.toOptimizableValue());
         }

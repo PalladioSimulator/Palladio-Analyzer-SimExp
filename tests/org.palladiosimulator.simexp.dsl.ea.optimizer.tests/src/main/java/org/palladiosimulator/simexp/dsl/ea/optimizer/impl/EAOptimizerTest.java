@@ -94,6 +94,7 @@ public class EAOptimizerTest {
             optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
             return "";
         };
+        // TODO nbruening remove asap
 //        ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
 //        RandomRegistry.random(threadLocalRandom.get());
 
@@ -117,6 +118,25 @@ public class EAOptimizerTest {
 
         EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
         optimizer = eaOptimizer.create(eaConfig);
+    }
+
+    @Test
+    public void randomSeedTest() {
+
+        Function<? super Random, String> optFunction = r -> {
+            Random r1 = new Random();
+            Random r2 = new Random();
+            for (int i = 0; i < 100; i++) {
+                int next1 = r1.nextInt();
+                int next2 = r2.nextInt();
+                System.out.println("r1: " + next1 + "   next2: " + next2);
+                assertEquals(next1, next2);
+            }
+            return "";
+        };
+
+        RandomRegistry.with(new Random(42), optFunction);
+
     }
 
     @Test
@@ -214,12 +234,9 @@ public class EAOptimizerTest {
     public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.15, 10.0,
                 0.5);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -259,7 +276,6 @@ public class EAOptimizerTest {
         List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
                 64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5);
         SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -276,7 +292,7 @@ public class EAOptimizerTest {
     }
 
     // TODO This test should run green
-    @Ignore("EA doesn't provide the necessary accuracy yet")
+//    @Ignore("EA doesn't provide the necessary accuracy yet")
     @Test
     public void largeDoubleOptimizableSetTest() {
         List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
@@ -291,7 +307,6 @@ public class EAOptimizerTest {
                 48.7245, 57.4270, 34.4016, 66.3356, 11.9550, 69.6338, 60.0229, 93.9973, 43.7552, 30.0767, 55.4601,
                 24.8844, 7.9797, 35.4908, 77.2986, 80.9350, 1.8039);
         SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -310,12 +325,9 @@ public class EAOptimizerTest {
     @Test
     public void simpleIntegerOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -332,18 +344,14 @@ public class EAOptimizerTest {
     @Test
     public void mediumIntegerOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 100, 1);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
-
         });
 
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
@@ -357,12 +365,9 @@ public class EAOptimizerTest {
         int upperBound = 100000;
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, lowerBound,
                 upperBound, 1);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -380,7 +385,6 @@ public class EAOptimizerTest {
     public void simpleIntegerOptimizableSetTest() {
         SetBounds setBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9),
                 calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -400,7 +404,6 @@ public class EAOptimizerTest {
     public void mediumIntegerOptimizableSetTest() {
         SetBounds setBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(4, 31, 84, 90, 40, 80, 28, 69, 74, 69, 29, 83, 31, 53, 35, 42, 80, 52, 85, 16), calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -421,7 +424,6 @@ public class EAOptimizerTest {
         SetBounds setBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(4, -31, 84, -90, 40, -80, 28, 69, 74, 69, 29, 83, -31, 53, 35, -42, 80, 52, 85, -16),
                 calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -448,7 +450,6 @@ public class EAOptimizerTest {
                         76, 53, 54, 17, 30, 28, 94, 22, 68, 14, 59, 24, 6, 35, 38, 89, 66, 41, 12, 15, 86, 82, 51, 83,
                         20, 0),
                 calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -497,7 +498,6 @@ public class EAOptimizerTest {
         SetBounds doubleSetBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator,
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
-
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
             @Override
@@ -520,7 +520,6 @@ public class EAOptimizerTest {
         SetBounds boolSetBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
                 calculator);
         Optimizable boolOptimizable = smodelCreator.createOptimizable("test", DataType.BOOL, boolSetBound);
-
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, boolOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
             @Override
@@ -546,7 +545,6 @@ public class EAOptimizerTest {
         SetBounds doubleSetBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator,
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
-
         when(optimizableProvider.getOptimizables())
             .thenReturn(List.of(intOptimizable, boolOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -601,7 +599,6 @@ public class EAOptimizerTest {
             }
 
         }
-
         when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
             @Override
@@ -623,9 +620,7 @@ public class EAOptimizerTest {
                 maximumFitness += (Integer) obj;
             }
         }
-
         LOGGER.info("Maximum Fitness: " + maximumFitness);
-
         verify(statusReceiver).reportStatus(any(List.class),
                 gt(maximumFitness * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
