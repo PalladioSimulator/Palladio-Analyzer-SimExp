@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -32,7 +33,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableVa
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
@@ -45,6 +45,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import com.google.inject.Injector;
+
+import io.jenetics.util.RandomRegistry;
 
 public class EAOptimizerTest {
 
@@ -74,6 +76,10 @@ public class EAOptimizerTest {
 
     private SmodelCreator smodelCreator;
 
+    private ThreadLocal<Random> threadLocalRandom;
+
+    private Function<? super Random, String> optFunction;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -81,6 +87,33 @@ public class EAOptimizerTest {
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
 
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
+
+        threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
+
+        optFunction = r -> {
+            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+            return "";
+        };
+//        ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
+//        RandomRegistry.random(threadLocalRandom.get());
+
+//        final var rgf = RandomGeneratorFactory.getDefault();
+//        Random seededRandom = new Random(42);
+//
+//        Function<? super Random, ? extends Number> fct = r -> r.nextInt();
+//        Function<? super Random, ? extends List<Genotype<DoubleGene>>> fct2 = r -> Genotype
+//            .of(DoubleChromosome.of(0.0, 100.0, 10))
+//            .instances()
+//            .limit(100)
+//            .toList();
+//        Function<? super Random, ? extends List<Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>>>> fct3 = r -> Codec.of(
+//                Genotype
+//                .of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
+//            gt -> gt.gene()
+//                .allele());
+//
+////        final List<Genotype<DoubleGene>> genotypes = 
+//        List<Genotype<DoubleGene>> with = RandomRegistry.with(seededRandom, fct2);
 
         EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
         optimizer = eaOptimizer.create(eaConfig);
@@ -99,7 +132,7 @@ public class EAOptimizerTest {
             }
         });
 
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+        RandomRegistry.with(threadLocalRandom, optFunction);
 
         verify(statusReceiver).reportStatus(optimizableListCaptor.capture(), eq(50.0));
         List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
@@ -115,12 +148,9 @@ public class EAOptimizerTest {
     public void simpleDoubleOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
                 1.0);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -129,7 +159,7 @@ public class EAOptimizerTest {
 
         });
 
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+        RandomRegistry.with(threadLocalRandom, optFunction);
 
         verify(statusReceiver).reportStatus(any(List.class), eq(19.0));
     }
@@ -140,12 +170,9 @@ public class EAOptimizerTest {
         double upperBound = 100.0;
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
                 upperBound, 1.0);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -154,7 +181,7 @@ public class EAOptimizerTest {
 
         });
 
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+        RandomRegistry.with(threadLocalRandom, optFunction);
 
         verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
@@ -166,10 +193,8 @@ public class EAOptimizerTest {
         double stepSize = 1.0;
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
                 upperBound, stepSize);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
 
             @Override
@@ -180,7 +205,7 @@ public class EAOptimizerTest {
 
         });
 
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+        RandomRegistry.with(threadLocalRandom, optFunction);
 
         verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
     }
@@ -203,6 +228,7 @@ public class EAOptimizerTest {
 
         });
 
+        // TODO Ab hier bei allen folgenden Tests noch RandomRegistry verwenden
         optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
 
         verify(statusReceiver).reportStatus(any(List.class), eq(9.65));
