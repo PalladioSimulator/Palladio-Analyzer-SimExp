@@ -54,15 +54,14 @@ public abstract class OneHotEncodingCodecHelper {
                 return basicSet.get(idx);
             } else {
                 return null;
-//                throw new RuntimeException("given index is to high for underlying sequence: idx = " + idx
-//                        + ", while set has size: " + basicSet.size());
             }
         }, values -> {
             BitSet bitSet = null;
 
-            for (int i = 0; i < basicSet.size(); i++) {
+            for (int i = 0; (i < basicSet.size()) && (bitSet == null); i++) {
                 if (Objects.equals(values, basicSet.get(i))) {
                     bitSet = idxToGray(i, lengthOfGrayCode);
+
                 }
             }
             if (bitSet != null) {

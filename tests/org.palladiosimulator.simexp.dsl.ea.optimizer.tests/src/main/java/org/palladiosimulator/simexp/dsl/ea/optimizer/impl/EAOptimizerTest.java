@@ -86,12 +86,16 @@ public class EAOptimizerTest {
         smodelCreator = new SmodelCreator();
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
 
+        // TODO nbruening: Remove
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
 
-        threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
+        threadLocalRandom = ThreadLocal.withInitial(() -> {
+            RandomRegistry.random(new Random(42));
+            return new Random(42);
+        });
 
         optFunction = r -> {
-            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver, 1);
             return "";
         };
         // TODO nbruening remove asap

@@ -4,6 +4,8 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -51,23 +53,24 @@ public class EAOptimizer implements IEAOptimizer {
                     .allele());
         ////// to phenotype end
 
-        //// setup EA
-        final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
+        final Engine<AnyGene<OptimizableChromosome>, Double> engine;
+
+        engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(100)
-            .executor(Runnable::run)
             .selector(new TournamentSelector<>((int) (1000 * 0.05)))
             .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
             .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
             .build();
 
+        //// setup EA
+
+        runOptimization(evolutionStatusReceiver, converter, engine);
+    }
+
+    private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
+            OptimizableRepresentationConverter converter, final Engine<AnyGene<OptimizableChromosome>, Double> engine) {
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
 
-//        final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = RandomRegistry.with(new Random(42),
-//                r -> engine.stream()
-//                    .limit(bySteadyFitness(7))
-//                    .limit(500)
-//                    .peek(statistics)
-//                    .collect(EvolutionResult.toBestPhenotype()));
         final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
             .limit(bySteadyFitness(7))
             .limit(500)
@@ -79,6 +82,49 @@ public class EAOptimizer implements IEAOptimizer {
         evolutionStatusReceiver.reportStatus(converter.toPhenoValue(phenotype), phenotype.fitness());
 
         LOGGER.info(statistics);
+    }
+
+    @Override
+    public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, int numThreads) {
+        assert (numThreads > 0);
+        LOGGER.info("EA running...");
+        ////// to phenotype
+        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
+
+        OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
+
+        Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
+                Genotype.of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
+                gt -> gt.gene()
+                    .allele());
+        ////// to phenotype end
+
+        final Engine<AnyGene<OptimizableChromosome>, Double> engine;
+
+        ForkJoinPool commonPool = ForkJoinPool.commonPool();
+
+        if (numThreads == 2) {
+            engine = Engine.builder(chromoCreator::eval, codec)
+                .populationSize(100)
+                .executor(Runnable::run)
+                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+                .build();
+        } else {
+            engine = Engine.builder(chromoCreator::eval, codec)
+                .populationSize(100)
+                .executor(Executors.newFixedThreadPool(numThreads))
+                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+                .build();
+        }
+
+        //// setup EA
+        runOptimization(evolutionStatusReceiver, converter, engine);
     }
 
     public void optimize3(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
@@ -143,19 +189,7 @@ public class EAOptimizer implements IEAOptimizer {
             .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
             .build();
 
-        final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
-
-        final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
-            .limit(bySteadyFitness(7))
-            .limit(500)
-            .peek(statistics)
-            .collect(EvolutionResult.toBestPhenotype());
-
-        LOGGER.info("EA finished...");
-
-        evolutionStatusReceiver.reportStatus(converter.toPhenoValue(phenotype), phenotype.fitness());
-
-        LOGGER.info(statistics);
+        runOptimization(evolutionStatusReceiver, converter, engine);
     }
 
 }

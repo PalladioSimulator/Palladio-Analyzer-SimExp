@@ -121,13 +121,13 @@ public class BoundsParser {
             });
     }
 
-    public InvertibleCodec<ISeq<Integer>, BitGene> parseOptimizableSetInteger(
-            IExpressionCalculator expressionCalculator, SetBounds setBound) {
+    public InvertibleCodec<Integer, BitGene> parseOptimizableSetInteger(IExpressionCalculator expressionCalculator,
+            SetBounds setBound) {
         List<Integer> elementSet = new ArrayList<>();
         for (Expression expression : setBound.getValues()) {
             elementSet.add(expressionCalculator.calculateInteger(expression));
         }
         ISeq<Integer> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createCodecOfSubSet(seqOfNumbersInSet, 0.1);
+        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
     }
 }

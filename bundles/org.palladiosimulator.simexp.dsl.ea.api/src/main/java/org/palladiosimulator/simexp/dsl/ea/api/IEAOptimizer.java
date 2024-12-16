@@ -17,4 +17,18 @@ public interface IEAOptimizer {
      */
     void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver);
+
+    /**
+     * 
+     * @param optimizableProvider
+     *            provides the available {@link Optimizable}s
+     * @param fitnessEvaluator
+     *            calculates the fitness of an concrete set of optimizable values
+     * @param evolutionStatusReceiver
+     *            receives the current status of the EA
+     * @param numThreads
+     *            the number of threads used for the evolutionary algorithm
+     */
+    void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, int numThreads);
 }
