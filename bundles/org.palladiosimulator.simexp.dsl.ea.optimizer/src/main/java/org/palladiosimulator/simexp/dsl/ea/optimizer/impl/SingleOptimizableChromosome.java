@@ -11,19 +11,19 @@ import io.jenetics.Genotype;
 
 public class SingleOptimizableChromosome<T extends Gene<?, T>> {
 
-    private Function<Genotype<T>, ?> function;
+    private Function<Genotype<T>, ?> decoder;
     private Genotype<T> genotype;
     private Optimizable optimizable;
 
-    public SingleOptimizableChromosome(Function<Genotype<T>, ?> function, Genotype<T> genotype,
+    public SingleOptimizableChromosome(Function<Genotype<T>, ?> decoder, Genotype<T> genotype,
             Optimizable optimizable) {
-        this.function = function;
+        this.decoder = decoder;
         this.genotype = genotype;
         this.optimizable = optimizable;
     }
 
     public Object getPhenotype() {
-        return function.apply(genotype);
+        return decoder.apply(genotype);
     }
 
     public Genotype<?> genotype() {

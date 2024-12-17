@@ -12,6 +12,8 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeGrayConstraint;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
@@ -105,10 +107,11 @@ public class EAOptimizer implements IEAOptimizer {
 
         ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
-        if (numThreads == 2) {
+        if (numThreads == 1) {
             engine = Engine.builder(chromoCreator::eval, codec)
                 .populationSize(100)
                 .executor(Runnable::run)
+                .constraint(new OptimizableChromosomeGrayConstraint())
                 .selector(new TournamentSelector<>((int) (1000 * 0.05)))
                 .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
                 .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))

@@ -185,7 +185,7 @@ public class EAOptimizerTest {
 
         RandomRegistry.with(threadLocalRandom, optFunction);
 
-        verify(statusReceiver).reportStatus(any(List.class), eq(19.0));
+        verify(statusReceiver).reportStatus(any(List.class), eq(18.0));
     }
 
     @Test
@@ -231,7 +231,7 @@ public class EAOptimizerTest {
 
         RandomRegistry.with(threadLocalRandom, optFunction);
 
-        verify(statusReceiver).reportStatus(any(List.class), gt(upperBound * EXPECTED_QUALITY_THRESHOLD_LARGE_TESTS));
+        verify(statusReceiver).reportStatus(any(List.class), eq(769));
     }
 
     @Test

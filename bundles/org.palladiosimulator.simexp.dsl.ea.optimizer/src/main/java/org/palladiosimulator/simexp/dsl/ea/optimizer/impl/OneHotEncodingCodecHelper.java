@@ -5,6 +5,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.BitSet;
 import java.util.Objects;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
+
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
@@ -47,7 +49,7 @@ public abstract class OneHotEncodingCodecHelper {
         int lengthOfGrayCode = (int) Math.ceil(Math.log(basicSet.length()) / Math.log(2));
 
         return InvertibleCodec.of(Genotype.of(BitChromosome.of(lengthOfGrayCode, p)), gt -> {
-            int idx = grayToIdx(gt.chromosome()
+            int idx = GrayConverterHelper.grayToIdx(gt.chromosome()
                 .as(BitChromosome.class)
                 .toBitSet());
             if (idx < basicSet.size()) {
@@ -60,7 +62,7 @@ public abstract class OneHotEncodingCodecHelper {
 
             for (int i = 0; (i < basicSet.size()) && (bitSet == null); i++) {
                 if (Objects.equals(values, basicSet.get(i))) {
-                    bitSet = idxToGray(i, lengthOfGrayCode);
+                    bitSet = GrayConverterHelper.idxToGray(i, lengthOfGrayCode);
 
                 }
             }
@@ -70,32 +72,6 @@ public abstract class OneHotEncodingCodecHelper {
                 throw new RuntimeException("Tried to encode a number which is not in the underlying set");
             }
         });
-    }
-
-    private static int grayToIdx(BitSet bitSet) {
-        int idx = 0;
-        for (int i = 0; i < bitSet.length(); i++) {
-            if (bitSet.get(i)) {
-                idx |= (1 << i);
-            }
-        }
-        return idx;
-    }
-
-    private static BitSet idxToGray(int idx, int lengthBitSet) {
-        int gray = idx ^ (idx >> 1);
-        BitSet bitSet = new BitSet(lengthBitSet);
-        int i = 0;
-
-        while (gray != 0) {
-            if ((gray & 1) == 1) {
-                bitSet.set(i);
-            }
-            gray >>= 1;
-            i++;
-        }
-
-        return bitSet;
     }
 
 }
