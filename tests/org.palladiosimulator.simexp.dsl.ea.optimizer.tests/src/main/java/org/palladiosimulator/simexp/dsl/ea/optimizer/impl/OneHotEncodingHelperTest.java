@@ -9,6 +9,7 @@ import java.util.BitSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.GrayCodecCreator;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -24,9 +25,12 @@ public class OneHotEncodingHelperTest {
     @Mock
     private BitSet bitSet;
 
+    private GrayCodecCreator codecCreator;
+
     @Before
     public void setUp() {
         initMocks(this);
+        codecCreator = new GrayCodecCreator();
     }
 
     @Test
@@ -34,7 +38,7 @@ public class OneHotEncodingHelperTest {
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
         int[] expectedSetBits = { 0, 1 };
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<ISeq<Double>, BitGene> codecOfSubSet = codecCreator.createCodecOfSubSet(seq, 0.5);
         BitSet bitSet = codecOfSubSet.encoding()
             .newInstance()
             .chromosome()
@@ -42,8 +46,8 @@ public class OneHotEncodingHelperTest {
             .toBitSet();
         bitSet.size();
 
-        Genotype<BitGene> firstEncoded = codecOfSubSet.encode(5.0);
-        Genotype<BitGene> secondEncoded = codecOfSubSet.encode(13.573);
+        Genotype<BitGene> firstEncoded = codecOfSubSet.encode(ISeq.of(5.0));
+        Genotype<BitGene> secondEncoded = codecOfSubSet.encode(ISeq.of(13.573));
 
         String firstEncodedAsString = firstEncoded.chromosome()
             .as(BitChromosome.class)
@@ -62,14 +66,14 @@ public class OneHotEncodingHelperTest {
         ISeq<Double> seq = ISeq.of(doubleArray);
         int[] expectedSetBits = { 0, 1 };
 
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<ISeq<Double>, BitGene> codecOfSubSet = codecCreator.createCodecOfSubSet(seq, 0.5);
 
         BitSet bitSet = codecOfSubSet.encoding()
             .newInstance()
             .chromosome()
             .as(BitChromosome.class)
             .toBitSet();
-        codecOfSubSet.encode(1.5);
+        codecOfSubSet.encode(ISeq.of(1.5));
     }
 
     @Test
@@ -82,10 +86,11 @@ public class OneHotEncodingHelperTest {
         when(bitChromo.toBitSet()).thenReturn(bitSet);
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<ISeq<Double>, BitGene> codecOfSubSet = codecCreator.createCodecOfSubSet(seq, 0.5);
 
-        double decodedValue = codecOfSubSet.decode(gt);
-
+        ISeq<Double> decoded = codecOfSubSet.decode(gt);
+        assertEquals(1, decoded.size());
+        Double decodedValue = decoded.get(0);
         assertEquals(doubleArray[6], decodedValue, 0.0001);
     }
 
@@ -100,9 +105,9 @@ public class OneHotEncodingHelperTest {
         when(bitChromo.toBitSet()).thenReturn(bitSet);
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<ISeq<Double>, BitGene> codecOfSubSet = codecCreator.createCodecOfSubSet(seq, 0.5);
 
-        double decodedValue = codecOfSubSet.decode(gt);
+        ISeq<Double> decoded = codecOfSubSet.decode(gt);
     }
 
 }

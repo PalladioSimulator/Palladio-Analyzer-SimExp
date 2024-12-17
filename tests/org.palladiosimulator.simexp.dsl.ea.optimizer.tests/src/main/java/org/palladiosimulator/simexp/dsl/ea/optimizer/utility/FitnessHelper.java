@@ -59,9 +59,13 @@ public class FitnessHelper {
                 if (arraySeq.size() == 1) {
                     for (Object element : arraySeq.array) {
                         if (optimizableDataType == DataType.INT) {
-                            value += (Integer) element;
+                            if (element != null) {
+                                value += (Integer) element;
+                            }
                         } else if (optimizableDataType == DataType.DOUBLE) {
-                            value += (Double) element;
+                            if (element != null) {
+                                value += (Double) element;
+                            }
                         }
 
                     }

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.CodecOptimizablePair;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosomeFactory;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -15,11 +20,15 @@ import io.jenetics.AnyGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Codec;
 
-public class OptimizableRepresentationConverter {
+public abstract class AbstractConverter {
 
-    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+    protected static final Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-    private BoundsParser parser = new BoundsParser();
+    protected BoundsParser parser;
+
+    protected AbstractConverter(CodecCreator codecCreator) {
+        this.parser = new BoundsParser(codecCreator);
+    }
 
     public List<CodecOptimizablePair> parseOptimizables(IOptimizableProvider optimizableProvider) {
         List<CodecOptimizablePair> parsedCodecs = new ArrayList<>();
@@ -31,7 +40,6 @@ public class OptimizableRepresentationConverter {
         return parsedCodecs;
     }
 
-    // Type to Type
     public Codec<?, ?> toGenotype(Optimizable optimizable, IExpressionCalculator expressionCalculator) {
         DataType dataType = optimizable.getDataType();
         Bounds optValue = optimizable.getValues();
@@ -42,7 +50,6 @@ public class OptimizableRepresentationConverter {
         return toPhenoValue(phenotype, null);
     }
 
-    // Value to Value
     public List<OptimizableValue<?>> toPhenoValue(Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype,
             OptimizableChromosomeFactory chromoCreator) {
         OptimizableChromosome phenoChromo = phenotype.genotype()

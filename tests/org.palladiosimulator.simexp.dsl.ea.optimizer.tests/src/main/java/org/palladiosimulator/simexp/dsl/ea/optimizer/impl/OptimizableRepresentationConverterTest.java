@@ -16,6 +16,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.AbstractConverter;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.GrayRepresentationConverter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -33,7 +35,7 @@ import io.jenetics.engine.InvertibleCodec;
 
 public class OptimizableRepresentationConverterTest {
 
-    private OptimizableRepresentationConverter converter;
+    private AbstractConverter converter;
 
     @Mock
     public Optimizable optimizable;
@@ -55,7 +57,7 @@ public class OptimizableRepresentationConverterTest {
     public void setUp() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
-        converter = new OptimizableRepresentationConverter();
+        converter = new GrayRepresentationConverter();
 
     }
 

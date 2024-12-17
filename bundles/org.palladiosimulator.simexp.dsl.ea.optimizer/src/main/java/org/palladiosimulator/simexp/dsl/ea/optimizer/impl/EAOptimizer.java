@@ -14,6 +14,8 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeGrayConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.AbstractConverter;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.GrayRepresentationConverter;
 
 import io.jenetics.AnyChromosome;
 import io.jenetics.AnyGene;
@@ -44,7 +46,7 @@ public class EAOptimizer implements IEAOptimizer {
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
         ////// to phenotype
-        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        AbstractConverter converter = new GrayRepresentationConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
 
         OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
@@ -70,7 +72,7 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableRepresentationConverter converter, final Engine<AnyGene<OptimizableChromosome>, Double> engine) {
+            AbstractConverter converter, final Engine<AnyGene<OptimizableChromosome>, Double> engine) {
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
 
         final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
@@ -92,7 +94,7 @@ public class EAOptimizer implements IEAOptimizer {
         assert (numThreads > 0);
         LOGGER.info("EA running...");
         ////// to phenotype
-        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        AbstractConverter converter = new GrayRepresentationConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
 
         OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
@@ -134,7 +136,7 @@ public class EAOptimizer implements IEAOptimizer {
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
         ////// to phenotype
-        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        AbstractConverter converter = new GrayRepresentationConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
         Genotype<IntegerGene> genotype = Genotype.of(IntegerChromosome.of(0, 1000));
 
@@ -172,7 +174,7 @@ public class EAOptimizer implements IEAOptimizer {
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         LOGGER.info("EA running...");
         ////// to phenotype
-        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
+        AbstractConverter converter = new GrayRepresentationConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
 
         OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
