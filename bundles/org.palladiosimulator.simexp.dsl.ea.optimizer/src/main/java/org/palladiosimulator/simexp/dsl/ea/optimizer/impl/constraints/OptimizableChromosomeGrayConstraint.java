@@ -17,8 +17,10 @@ import io.jenetics.util.RandomRegistry;
 
 public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
 
+    private GrayConverterHelper grayConverterHelper;
+
     public OptimizableChromosomeGrayConstraint() {
-        // TODO nbruening remove parameter
+        grayConverterHelper = new GrayConverterHelper();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<O
                 while (!bitChromosomeValid(bitChromo)) {
                     int newIdx = RandomRegistry.random()
                         .nextInt(0, (int) Math.pow(2, bitChromo.length()));
-                    BitSet newBitSet = GrayConverterHelper.idxToGray(newIdx, bitChromo.length());
+                    BitSet newBitSet = grayConverterHelper.idxToGray(newIdx, bitChromo.length());
                     bitChromo = BitChromosome.of(newBitSet, bitChromo.length());
                 }
                 chromoPair.setGenotype(Genotype.of(bitChromo));
@@ -84,7 +86,7 @@ public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<O
     }
 
     private boolean bitChromosomeValid(BitChromosome bitChromo) {
-        int idx = GrayConverterHelper.grayToIdx(bitChromo.toBitSet());
+        int idx = grayConverterHelper.grayToIdx(bitChromo.toBitSet());
         return (idx < Math.pow(2, bitChromo.length())) && (idx >= 0);
     }
 

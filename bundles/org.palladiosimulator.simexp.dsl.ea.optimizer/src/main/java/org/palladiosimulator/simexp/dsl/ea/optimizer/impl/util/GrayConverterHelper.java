@@ -4,17 +4,24 @@ import java.util.BitSet;
 
 public class GrayConverterHelper {
 
-    public static int grayToIdx(BitSet bitSet) {
+    public int grayToIdx(BitSet bitSet) {
         int idx = 0;
-        for (int i = 0; i < bitSet.length(); i++) {
-            if (bitSet.get(i)) {
-                idx |= (1 << i);
+        if (bitSet.length() > 0) {
+            if (bitSet.get(bitSet.length() - 1)) {
+                idx |= (1 << (bitSet.length() - 1));
+            }
+
+            for (int i = bitSet.length() - 2; i >= 0; i--) {
+                boolean previousBinary = ((1 << (i + 1)) & idx) != 0;
+                if (bitSet.get(i) ^ previousBinary) {
+                    idx |= (1 << i);
+                }
             }
         }
         return idx;
     }
 
-    public static BitSet idxToGray(int idx, int lengthBitSet) {
+    public BitSet idxToGray(int idx, int lengthBitSet) {
         int gray = idx ^ (idx >> 1);
         BitSet bitSet = new BitSet(lengthBitSet);
         int i = 0;

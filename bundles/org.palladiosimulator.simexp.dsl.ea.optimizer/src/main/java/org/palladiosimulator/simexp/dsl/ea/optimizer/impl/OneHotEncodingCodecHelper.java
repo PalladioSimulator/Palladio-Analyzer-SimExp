@@ -15,10 +15,11 @@ import io.jenetics.internal.util.Bits;
 import io.jenetics.internal.util.Requires;
 import io.jenetics.util.ISeq;
 
-public abstract class OneHotEncodingCodecHelper {
+public class OneHotEncodingCodecHelper {
 
-    public static <T> InvertibleCodec<ISeq<T>, BitGene> createCodecOfSubSet(final ISeq<? extends T> basicSet,
-            double p) {
+    private GrayConverterHelper grayConverterHelper = new GrayConverterHelper();
+
+    public <T> InvertibleCodec<ISeq<T>, BitGene> createCodecOfSubSet(final ISeq<? extends T> basicSet, double p) {
         requireNonNull(basicSet);
         Requires.positive(basicSet.length());
 
@@ -41,15 +42,14 @@ public abstract class OneHotEncodingCodecHelper {
             });
     }
 
-    public synchronized static <T> InvertibleCodec<T, BitGene> createGrayCodecOfSubSet(final ISeq<? extends T> basicSet,
-            double p) {
+    public <T> InvertibleCodec<T, BitGene> createGrayCodecOfSubSet(final ISeq<? extends T> basicSet, double p) {
         requireNonNull(basicSet);
         Requires.positive(basicSet.length());
 
         int lengthOfGrayCode = (int) Math.ceil(Math.log(basicSet.length()) / Math.log(2));
 
         return InvertibleCodec.of(Genotype.of(BitChromosome.of(lengthOfGrayCode, p)), gt -> {
-            int idx = GrayConverterHelper.grayToIdx(gt.chromosome()
+            int idx = grayConverterHelper.grayToIdx(gt.chromosome()
                 .as(BitChromosome.class)
                 .toBitSet());
             if (idx < basicSet.size()) {
@@ -62,7 +62,7 @@ public abstract class OneHotEncodingCodecHelper {
 
             for (int i = 0; (i < basicSet.size()) && (bitSet == null); i++) {
                 if (Objects.equals(values, basicSet.get(i))) {
-                    bitSet = GrayConverterHelper.idxToGray(i, lengthOfGrayCode);
+                    bitSet = grayConverterHelper.idxToGray(i, lengthOfGrayCode);
 
                 }
             }

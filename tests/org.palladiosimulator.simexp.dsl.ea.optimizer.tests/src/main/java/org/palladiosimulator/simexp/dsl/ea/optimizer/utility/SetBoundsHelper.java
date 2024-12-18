@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class SetBoundsHelper {
 
-    public static SetBounds initializeIntegerSetBound(SmodelCreator smodelCreator, List<Integer> elementsInSet,
+    public SetBounds initializeIntegerSetBound(SmodelCreator smodelCreator, List<Integer> elementsInSet,
             IExpressionCalculator calculator) {
         List<IntLiteral> intLiterals = new ArrayList();
         for (Integer element : elementsInSet) {
@@ -26,7 +26,7 @@ public class SetBoundsHelper {
         return smodelCreator.createSetBounds(doubleLiteralsAsArray);
     }
 
-    public static SetBounds initializeDoubleSetBound(SmodelCreator smodelCreator, List<Double> elementsInSet,
+    public SetBounds initializeDoubleSetBound(SmodelCreator smodelCreator, List<Double> elementsInSet,
             IExpressionCalculator calculator) {
         List<DoubleLiteral> doubleLiterals = new ArrayList();
         for (Double element : elementsInSet) {
@@ -38,7 +38,7 @@ public class SetBoundsHelper {
         return smodelCreator.createSetBounds(doubleLiteralsAsArray);
     }
 
-    public static SetBounds initializeBooleanSetBound(SmodelCreator smodelCreator, List<Boolean> elementsInSet,
+    public SetBounds initializeBooleanSetBound(SmodelCreator smodelCreator, List<Boolean> elementsInSet,
             IExpressionCalculator calculator) {
         List<BoolLiteral> boolLiterals = new ArrayList();
         for (Boolean element : elementsInSet) {

@@ -19,6 +19,8 @@ import io.jenetics.util.ISeq;
 
 public class BoundsParser {
 
+    private OneHotEncodingCodecHelper oneHotEncodingCodecHelper = new OneHotEncodingCodecHelper();
+
     public Codec parseBounds(Bounds bounds, IExpressionCalculator expressionCalculator, DataType dataType) {
         if (bounds instanceof RangeBounds rangeBound) {
             switch (dataType) {
@@ -67,7 +69,7 @@ public class BoundsParser {
 
         ISeq<Double> seqOfNumbersInRange = ISeq.of(numbersInRange);
 
-        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
+        return oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
 
     }
 
@@ -89,7 +91,7 @@ public class BoundsParser {
 
         ISeq<Integer> seqOfNumbersInRange = ISeq.of(numbersInRange);
 
-        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
+        return oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInRange, 0.1);
 
     }
 
@@ -100,7 +102,7 @@ public class BoundsParser {
             elementSet.add(expressionCalculator.calculateDouble(expression));
         }
         ISeq<Double> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
+        return oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
     }
 
     private InvertibleCodec<Boolean, BitGene> parseOptimizableSetBoolean(IExpressionCalculator expressionCalculator,
@@ -128,6 +130,6 @@ public class BoundsParser {
             elementSet.add(expressionCalculator.calculateInteger(expression));
         }
         ISeq<Integer> seqOfNumbersInSet = ISeq.of(elementSet);
-        return OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
+        return oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seqOfNumbersInSet, 0.1);
     }
 }

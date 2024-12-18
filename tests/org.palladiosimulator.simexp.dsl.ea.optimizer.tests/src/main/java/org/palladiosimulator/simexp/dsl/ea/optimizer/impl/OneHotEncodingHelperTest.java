@@ -24,9 +24,12 @@ public class OneHotEncodingHelperTest {
     @Mock
     private BitSet bitSet;
 
+    private OneHotEncodingCodecHelper oneHotEncodingCodecHelper;
+
     @Before
     public void setUp() {
         initMocks(this);
+        oneHotEncodingCodecHelper = new OneHotEncodingCodecHelper();
     }
 
     @Test
@@ -34,7 +37,7 @@ public class OneHotEncodingHelperTest {
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
         int[] expectedSetBits = { 0, 1 };
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<Double, BitGene> codecOfSubSet = oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
         BitSet bitSet = codecOfSubSet.encoding()
             .newInstance()
             .chromosome()
@@ -62,7 +65,7 @@ public class OneHotEncodingHelperTest {
         ISeq<Double> seq = ISeq.of(doubleArray);
         int[] expectedSetBits = { 0, 1 };
 
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<Double, BitGene> codecOfSubSet = oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
 
         BitSet bitSet = codecOfSubSet.encoding()
             .newInstance()
@@ -82,7 +85,7 @@ public class OneHotEncodingHelperTest {
         when(bitChromo.toBitSet()).thenReturn(bitSet);
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<Double, BitGene> codecOfSubSet = oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
 
         double decodedValue = codecOfSubSet.decode(gt);
 
@@ -100,7 +103,7 @@ public class OneHotEncodingHelperTest {
         when(bitChromo.toBitSet()).thenReturn(bitSet);
         Double[] doubleArray = { 1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999 };
         ISeq<Double> seq = ISeq.of(doubleArray);
-        InvertibleCodec<Double, BitGene> codecOfSubSet = OneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
+        InvertibleCodec<Double, BitGene> codecOfSubSet = oneHotEncodingCodecHelper.createGrayCodecOfSubSet(seq, 0.5);
 
         double decodedValue = codecOfSubSet.decode(gt);
     }

@@ -51,22 +51,24 @@ public class OptimizableRepresentationConverterTest {
 
     private List<Integer> smallIntList = List.of(1, 3, 7, 3, 8, 2, 9);
 
+    private SetBoundsHelper setBoundsHelper;
+
     @Before
     public void setUp() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         converter = new OptimizableRepresentationConverter();
-
+        setBoundsHelper = new SetBoundsHelper();
     }
 
     @Test
     public void parseOptimizablesTest() {
         IOptimizableProvider provider = mock(IOptimizableProvider.class);
-        SetBounds boolBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
+        SetBounds boolBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
                 calculator);
         when(boolOptimizable.getValues()).thenReturn(boolBound);
         when(boolOptimizable.getDataType()).thenReturn(DataType.BOOL);
-        SetBounds intBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator, smallIntList, calculator);
+        SetBounds intBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, smallIntList, calculator);
         when(intOptimizable.getValues()).thenReturn(intBound);
         when(intOptimizable.getDataType()).thenReturn(DataType.INT);
         Collection<Optimizable> optimizables = new ArrayList<>();
@@ -89,7 +91,7 @@ public class OptimizableRepresentationConverterTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeBoolean() {
-        SetBounds setBound = SetBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
+        SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
         when(optimizable.getDataType()).thenReturn(DataType.BOOL);
         when(optimizable.getValues()).thenReturn(setBound);
 
@@ -116,7 +118,7 @@ public class OptimizableRepresentationConverterTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeIntegerSet() {
-        SetBounds setBound = SetBoundsHelper.initializeIntegerSetBound(smodelCreator, smallIntList, calculator);
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, smallIntList, calculator);
         when(optimizable.getDataType()).thenReturn(DataType.INT);
         when(optimizable.getValues()).thenReturn(setBound);
 
@@ -178,7 +180,7 @@ public class OptimizableRepresentationConverterTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeDoubleSet() {
-        SetBounds setBound = SetBoundsHelper.initializeDoubleSetBound(smodelCreator,
+        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 2.0, 9.0), calculator);
         when(optimizable.getDataType()).thenReturn(DataType.DOUBLE);
         when(optimizable.getValues()).thenReturn(setBound);
