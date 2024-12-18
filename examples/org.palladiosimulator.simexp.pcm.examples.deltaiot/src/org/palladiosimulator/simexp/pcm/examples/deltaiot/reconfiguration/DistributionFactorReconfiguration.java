@@ -31,7 +31,7 @@ public class DistributionFactorReconfiguration extends DeltaIoTBaseReconfigurati
 
     public DistributionFactorReconfiguration(SingleQVToReconfiguration reconfiguration,
             List<DistributionFactor> distFactors) {
-        this(reconfiguration, Sets.newHashSet(distFactors));
+        this(reconfiguration, Sets.newLinkedHashSet(distFactors));
     }
 
     @Override

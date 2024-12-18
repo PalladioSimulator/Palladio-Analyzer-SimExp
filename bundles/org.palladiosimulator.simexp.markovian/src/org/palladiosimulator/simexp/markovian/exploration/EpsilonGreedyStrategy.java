@@ -4,7 +4,7 @@ import static java.lang.Math.exp;
 import static org.palladiosimulator.simexp.markovian.util.MarkovianUtil.maxTransition;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class EpsilonGreedyStrategy<A> implements BasePolicy<Transition<A>> {
         public Set<Transition<A>> filterAllExcept(Transition<A> transition) {
             return transitions.stream()
                 .filter(t -> t.equals(transition) == false)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         }
     }
 
@@ -73,7 +73,7 @@ public class EpsilonGreedyStrategy<A> implements BasePolicy<Transition<A>> {
         ProbabilityMassFunction.Sample<Transition<A>> maxSample = ProbabilityMassFunction.Sample.of(max, epsilon);
         ProbabilityMassFunction.Sample<Transition<A>> otherSamples = ProbabilityMassFunction.Sample.of(null,
                 1 - epsilon);
-        Set<ProbabilityMassFunction.Sample<Transition<A>>> samples = new HashSet<>(
+        Set<ProbabilityMassFunction.Sample<Transition<A>>> samples = new LinkedHashSet<>(
                 Arrays.asList(maxSample, otherSamples));
         ProbabilityMassFunction<Transition<A>> pmfOver = ProbabilityDistributionFactory.INSTANCE.pmfOver(samples);
         ProbabilityMassFunction.Sample<Transition<A>> result = pmfOver.drawSample();
@@ -89,7 +89,7 @@ public class EpsilonGreedyStrategy<A> implements BasePolicy<Transition<A>> {
     }
 
     private Transition<A> selectRandomly(Set<Transition<A>> transitions) {
-        RandomizedStrategy<Transition<A>> randomizedStrategy = new RandomizedStrategy<Transition<A>>();
+        RandomizedStrategy<Transition<A>> randomizedStrategy = new RandomizedStrategy<>();
         Transition<A> transition = randomizedStrategy.select(null, transitions);
         return transition;
     }

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.core.statespace;
 
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
@@ -13,6 +14,7 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 
 public class EnvironmentDrivenStateSpaceNavigator<C, A, R, V>
         extends SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> {
+    private final static Logger LOGGER = Logger.getLogger(EnvironmentDrivenStateSpaceNavigator.class);
 
     private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
             SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {

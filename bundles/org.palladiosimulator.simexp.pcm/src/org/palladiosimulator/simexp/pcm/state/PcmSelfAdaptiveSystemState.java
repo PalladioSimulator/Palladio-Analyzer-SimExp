@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.state;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class PcmSelfAdaptiveSystemState<A, V> extends SelfAdaptiveSystemState<PC
         private final InitialPcmStateCreator<A, V> initialPcmStateCreator;
         private final SimulationRunnerHolder simulationRunnerHolder;
 
-        private Set<SimulatedMeasurementSpecification> specs = new HashSet<>();
+        private Set<SimulatedMeasurementSpecification> specs = new LinkedHashSet<>();
         private PcmArchitecturalConfiguration<A> initialArch = null;
         private PerceivableEnvironmentalState<V> initialEnv = null;
         private boolean isInitial = false;

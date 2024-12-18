@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,6 +49,8 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import tools.mdsd.probdist.api.random.FixedSeedProvider;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
@@ -59,14 +62,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         try {
             SimulationParameters simulationParameters = config.getSimulationParameters();
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
+            Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulatorType simulatorType = config.getSimulatorType();
             SimulationExecutor simulationExecutor = switch (simulatorType) {
             case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, launchDescriptionProvider);
+                yield createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider);
             }
             case MODELLED -> {
-                yield createModelledSimulationExecutor(config, launchDescriptionProvider);
+                yield createModelledSimulationExecutor(config, launchDescriptionProvider, seedProvider);
             }
             default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
             };
@@ -87,25 +91,26 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider);
+            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
         }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider);
+            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
+                    seedProvider);
         }
         default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
         };
     }
 
     private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            LaunchDescriptionProvider launchDescriptionProvider) {
+            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider) {
         ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, launchDescriptionProvider);
+        return factory.create(workflowConfiguration, launchDescriptionProvider, seedProvider);
     }
 
     @SuppressWarnings("unchecked")
@@ -172,10 +177,16 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             }
             PrismConfiguration prismConfig = new PrismConfiguration(prismProperties, prismModules);
 
+            Integer customSeed = (Integer) launchConfigurationParams.get(SimulationConstants.CUSTOM_SEED);
+            Optional<ISeedProvider> seedProvider = Optional.empty();
+            if (customSeed != null) {
+                seedProvider = Optional.of(new FixedSeedProvider(customSeed));
+            }
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
                     transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
-                    environmentalModels, simulationParameters);
+                    environmentalModels, simulationParameters, seedProvider);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
@@ -241,6 +252,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
         loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel,
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
+        loggerList.add(setupLogger("org.palladiosimulator.envdyn.api.entity", logLevel, SHORT_LOG_PATTERN));
         return loggerList;
     }
 

@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -55,6 +57,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class DeltaIoTSimulationExecutorFactory extends
         PcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>, PrismSimulatedMeasurementSpec> {
@@ -65,8 +68,9 @@ public class DeltaIoTSimulationExecutorFactory extends
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -88,22 +92,20 @@ public class DeltaIoTSimulationExecutorFactory extends
         DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         DeltaIoTPartiallyEnvDynamics<Double> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, getSimulatedExperienceStore(),
-                modelAccess, simulationRunnerHolder);
+                modelAccess, getSeedProvider(), simulationRunnerHolder);
         SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
-        Path prismLogFolder = getPrismLogFolder(strategyId);
+        Path prismFolder = getPrismFolder(strategyId);
         try {
-            Files.createDirectories(prismLogFolder);
+            Files.createDirectories(prismFolder);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
 
-        Path prismLogPath = getPrismLogPath(strategyId);
-
-        Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new HashSet<>();
+        Set<PrismFileUpdater<QVTOReconfigurator, List<InputValue<CategoricalValue>>>> prismFileUpdaters = new LinkedHashSet<>();
         List<PrismSimulatedMeasurementSpec> prismSimulatedMeasurementSpec = createSpecs(experiment);
         SimulatedMeasurementSpecification packetLossSpec = findPrismMeasurementSpec(prismSimulatedMeasurementSpec,
                 "PacketLoss.prism");
@@ -126,11 +128,13 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
-                prismGenerator, prismLogPath, reconfParamsRepo, experimentProvider);
-        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismLogFolder);
+                prismGenerator, prismFolder, strategyId, reconfParamsRepo, experimentProvider);
+        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismFolder);
         runner.addPrismObserver(observer);
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecutionInitializable = new GlobalPcmBeforeExecutionInitialization(experimentProvider,
                 qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(beforeExecutionInitializable);
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
         SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(getSimulationParameters());
@@ -168,9 +172,10 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
-                prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(), beforeExecutionInitializable,
-                null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger);
+                prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
+                beforeExecutionInitializables, null, getSimulatedExperienceStore(), envProcess, reconfSelectionPolicy,
+                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
+                getSeedProvider());
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
@@ -183,7 +188,7 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 
-    private Path getPrismLogFolder(String strategyId) {
+    private Path getPrismFolder(String strategyId) {
         IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
             .getRoot()
             .getLocation();
@@ -192,12 +197,6 @@ public class DeltaIoTSimulationExecutorFactory extends
         Path prismPath = resourcePath.resolve("prism");
         Path prismStrategyPath = prismPath.resolve(strategyId);
         return prismStrategyPath;
-    }
-
-    private Path getPrismLogPath(String strategyId) {
-        Path basePath = getPrismLogFolder(strategyId);
-        Path prismLogPath = Paths.get(basePath.toString(), "prism.log");
-        return prismLogPath;
     }
 
     private Path getCSVPath(String strategyId) {

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.markovian.util;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class MarkovianUtil {
         public Set<T> apply(Function<U, T> mapping) {
             return transitions.stream()
                 .map(mapping)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         }
     }
 
