@@ -42,7 +42,7 @@ public class LocalQualityBasedStrategyContext
 
     @Override
     public Set<QVToReconfiguration> getReconfigurationSpace() {
-        Set<QVToReconfiguration> reconfs = Sets.newHashSet();
+        Set<QVToReconfiguration> reconfs = Sets.newLinkedHashSet();
         for (QVToReconfiguration each : reconfigurations) {
             SingleQVToReconfiguration singleQVToReconfiguration = (SingleQVToReconfiguration) each;
             IDeltaIoToReconfiguration customizer = customizerFactory.create(singleQVToReconfiguration);

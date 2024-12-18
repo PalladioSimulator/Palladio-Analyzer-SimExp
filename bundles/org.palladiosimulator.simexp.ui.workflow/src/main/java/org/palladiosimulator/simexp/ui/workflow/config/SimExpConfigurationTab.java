@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
@@ -53,6 +54,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
     private Text textSimulationID;
     private Text textNumberOfRuns;
     private Text textNumerOfSimulationsPerRun;
+    private Text textCustomSeed;
     private SelectObservableValue<SimulatorType> simulatorTypeTarget;
     private Text textSModel;
 
@@ -106,6 +108,12 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         textNumerOfSimulationsPerRun = new Text(container, SWT.BORDER);
         textNumerOfSimulationsPerRun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textNumerOfSimulationsPerRun.addModifyListener(modifyListener);
+
+        Label customSeedLabel = new Label(container, SWT.NONE);
+        customSeedLabel.setText("Custom seed:");
+        textCustomSeed = new Text(container, SWT.BORDER);
+        textCustomSeed.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textCustomSeed.addModifyListener(modifyListener);
     }
 
     private void createSimulatorType(Composite parent, ModifyListener modifyListener) {
@@ -224,6 +232,17 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         Binding numberOfSimulationsPerRunBindValue = ctx.bindValue(numberOfSimulationsPerRunTarget,
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> customSeedTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textCustomSeed);
+        IObservableValue<Integer> customSeedModel = ConfigurationProperties
+            .integer(SimulationConstants.CUSTOM_SEED, false)
+            .observe(configuration);
+        UpdateValueStrategy<String, Integer> customSeedUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        customSeedUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
+        Binding customSeedBindValue = ctx.bindValue(customSeedTarget, customSeedModel, customSeedUpdateStrategy, null);
+        ControlDecorationSupport.create(customSeedBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeSimulatorTypeFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {

@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.environment;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
@@ -14,11 +15,12 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class DeltaIoTEnvironemtalDynamics<R> extends DeltaIoTBaseEnvironemtalDynamics<R> {
     public DeltaIoTEnvironemtalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
-        super(dbn, modelAccess);
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, Optional<ISeedProvider> seedProvider) {
+        super(dbn, modelAccess, seedProvider);
     }
 
     @Override

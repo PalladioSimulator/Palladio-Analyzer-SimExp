@@ -44,7 +44,7 @@ public class DefaultDeltaIoTStrategyContext
             throw new RuntimeException("No DeltaIoT network reconfigutation could be found.");
         }
 
-        Set<QVToReconfiguration> reconfs = Sets.newHashSet();
+        Set<QVToReconfiguration> reconfs = Sets.newLinkedHashSet();
         QVToReconfiguration qvt = reconfigurations.get(0);
         if (DeltaIoTNetworkReconfiguration.isCorrectQvtReconfguration(qvt)) {
             IDeltaIoToReconfiguration customizer = reconfCustomizerFactory.create(qvt);

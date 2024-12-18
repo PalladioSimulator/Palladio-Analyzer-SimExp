@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.process;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -73,7 +74,7 @@ public class PcmExperienceSimulationRunner<A, V> extends AbstractExperienceSimul
             .stream()
             .filter(PcmMeasurementSpecification.class::isInstance)
             .map(PcmMeasurementSpecification.class::cast)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 }

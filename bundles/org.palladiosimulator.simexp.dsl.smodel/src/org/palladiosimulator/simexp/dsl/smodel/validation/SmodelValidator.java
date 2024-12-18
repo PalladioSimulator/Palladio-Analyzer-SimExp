@@ -5,7 +5,6 @@ package org.palladiosimulator.simexp.dsl.smodel.validation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -202,7 +201,7 @@ public class SmodelValidator extends AbstractSmodelValidator {
             return Collections.emptySet();
         }
 
-        Set<Field> fieldReferences = new HashSet<>();
+        Set<Field> fieldReferences = new TreeSet<>(Comparator.comparing(Field::getName));
         Field field = expression.getFieldRef();
         if (field != null) {
             fieldReferences.add(field);

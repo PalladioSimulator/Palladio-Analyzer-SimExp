@@ -10,6 +10,8 @@ public interface SimulationConstants {
     public static final String NUMBER_OF_RUNS = "NumberOfRuns";
     public static final String NUMBER_OF_SIMULATIONS_PER_RUN = "NumberOfSimulationsPerRun";
 
+    public static final String CUSTOM_SEED = "CustomSeed";
+
     public static final String SIMULATOR_TYPE = "Simulator Type";
     public static final String SIMULATION_ENGINE = "Simulation Engine";
     public static final String QUALITY_OBJECTIVE = "Quality Objective";

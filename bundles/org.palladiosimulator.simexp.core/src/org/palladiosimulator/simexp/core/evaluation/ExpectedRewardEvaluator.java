@@ -12,70 +12,72 @@ import com.google.common.collect.Sets;
 
 public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
-	private class InitialStateEstimator {
+    private class InitialStateEstimator {
 
-		private final List<String> sampledInitials;
+        private final List<String> sampledInitials;
 
-		public InitialStateEstimator() {
-			this.sampledInitials = filterSampledInitials();
-		}
+        public InitialStateEstimator() {
+            this.sampledInitials = filterSampledInitials();
+        }
 
-		private List<String> filterSampledInitials() {
-			List<String> sampledInitials = Lists.newArrayList();
+        private List<String> filterSampledInitials() {
+            List<String> sampledInitials = Lists.newArrayList();
 
-			SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
-			while (iterator.hasNext()) {
-				String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next().get(0));
-				sampledInitials.add(initial);
-			}
+            SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
+            while (iterator.hasNext()) {
+                String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next()
+                    .get(0));
+                sampledInitials.add(initial);
+            }
 
-			return sampledInitials;
-		}
+            return sampledInitials;
+        }
 
-		public Set<String> filterInitialStates() {
-			Set<String> initials = Sets.newHashSet();
+        public Set<String> filterInitialStates() {
+            Set<String> initials = Sets.newLinkedHashSet();
 
-			for (String each : sampledInitials) {
-				if (initials.contains(each) == false) {
-					initials.add(each);
-				}
-			}
+            for (String each : sampledInitials) {
+                if (initials.contains(each) == false) {
+                    initials.add(each);
+                }
+            }
 
-			return initials;
-		}
+            return initials;
+        }
 
-		public double estimateProbability(String initial) {
-			double relativeCount = sampledInitials.stream()
-					.filter(each -> each.equals(initial))
-					.count();
-			return relativeCount / sampledInitials.size();
-		}
+        public double estimateProbability(String initial) {
+            double relativeCount = sampledInitials.stream()
+                .filter(each -> each.equals(initial))
+                .count();
+            return relativeCount / sampledInitials.size();
+        }
 
-	}
+    }
 
-	private final String simulationId;
-	private final String sampleSpaceId;
+    private final String simulationId;
+    private final String sampleSpaceId;
 
-	public ExpectedRewardEvaluator(String simulationId, String sampleSpaceId) {
-		this.simulationId = simulationId;
-		this.sampleSpaceId = sampleSpaceId;
-	}
+    public ExpectedRewardEvaluator(String simulationId, String sampleSpaceId) {
+        this.simulationId = simulationId;
+        this.sampleSpaceId = sampleSpaceId;
+    }
 
-	@Override
-	public double computeTotalReward() {
-		SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
-		ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation().estimate(iterator);
+    @Override
+    public double computeTotalReward() {
+        SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
+        ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation()
+            .estimate(iterator);
 
-		InitialStateEstimator initialStateEstimator = new InitialStateEstimator();
-		
-		double totalReward = 0;
-		for (String each : initialStateEstimator.filterInitialStates()) {
-			double reward = valueFunction.getExpectedRewardFor(each);
-			double probability = initialStateEstimator.estimateProbability(each);
-			totalReward += probability * reward;
-		}
+        InitialStateEstimator initialStateEstimator = new InitialStateEstimator();
 
-		return totalReward;
-	}
+        double totalReward = 0;
+        for (String each : initialStateEstimator.filterInitialStates()) {
+            double reward = valueFunction.getExpectedRewardFor(each);
+            double probability = initialStateEstimator.estimateProbability(each);
+            totalReward += probability * reward;
+        }
+
+        return totalReward;
+    }
 
 }
