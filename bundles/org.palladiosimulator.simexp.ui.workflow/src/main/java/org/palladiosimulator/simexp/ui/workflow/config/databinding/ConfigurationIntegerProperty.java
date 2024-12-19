@@ -7,9 +7,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 
 class ConfigurationIntegerProperty extends ValueProperty<ILaunchConfiguration, Integer> {
     private final String key;
+    private final boolean isPrimitive;
 
-    public ConfigurationIntegerProperty(String key) {
+    public ConfigurationIntegerProperty(String key, boolean isPrimitive) {
         this.key = key;
+        this.isPrimitive = isPrimitive;
     }
 
     @Override
@@ -19,6 +21,6 @@ class ConfigurationIntegerProperty extends ValueProperty<ILaunchConfiguration, I
 
     @Override
     public IObservableValue<Integer> observe(Realm realm, ILaunchConfiguration source) {
-        return new ConfigurationObservableIntegerValue(source, key);
+        return new ConfigurationObservableIntegerValue(source, key, isPrimitive);
     }
 }

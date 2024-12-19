@@ -31,8 +31,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
 
     @Override
     public QVToReconfiguration planEnergyConsumption(SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
-            .resolveDeltaIoTReconfCustomizer(knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver.resolveDeltaIoTReconfCustomizer(knowledge);
         decreaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
         decreaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;
@@ -40,8 +39,7 @@ public class LocalQualityBasedReconfigurationPlanner implements QualityBasedReco
 
     @Override
     public QVToReconfiguration planPacketLoss(SharedKnowledge knowledge) {
-        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver
-            .resolveDeltaIoTReconfCustomizer(knowledge);
+        IDeltaIoToReconfiguration reconfiguration = reconfCustomizerResolver.resolveDeltaIoTReconfCustomizer(knowledge);
         increaseTransmissionPowerLocally((ITransmissionPowerReconfiguration) reconfiguration, knowledge);
         increaseDistributionLocally((IDistributionFactorReconfiguration) reconfiguration, knowledge);
         return reconfiguration;

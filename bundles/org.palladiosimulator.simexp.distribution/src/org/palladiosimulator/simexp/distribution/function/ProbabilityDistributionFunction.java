@@ -1,7 +1,8 @@
 package org.palladiosimulator.simexp.distribution.function;
 
-public interface ProbabilityDistributionFunction<T> {
+import tools.mdsd.probdist.api.random.ISeedable;
 
-	public T drawSample();
+public interface ProbabilityDistributionFunction<T> extends ISeedable {
+    public T drawSample();
 
 }

@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.distribution.apache.factory;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,7 +16,7 @@ public class ProbabilityDistributionFactoryAdapter<S> implements ProbabilityDist
 
     @Override
     public ProbabilityMassFunction<S> pmfOver(Sample<S>... samples) {
-        return pmfOver(new HashSet<>(Arrays.asList(samples)));
+        return pmfOver(new LinkedHashSet<>(Arrays.asList(samples)));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ProbabilityDistributionFactoryAdapter<S> implements ProbabilityDist
         int spaceSize = values.size();
         return values.stream()
             .map(each -> ProbabilityMassFunction.Sample.of(each, (1 / spaceSize)))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 }

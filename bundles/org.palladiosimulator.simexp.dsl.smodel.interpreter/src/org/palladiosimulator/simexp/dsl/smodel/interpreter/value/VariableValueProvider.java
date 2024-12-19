@@ -1,11 +1,14 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IResettable;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IVariableAssigner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.ExpressionCalculator;
@@ -17,10 +20,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
-public class VariableValueProvider implements IFieldValueProvider, IVariableAssigner {
+public class VariableValueProvider implements IFieldValueProvider, IVariableAssigner, IResettable {
 
     private final IExpressionCalculator expressionCalculator;
     private final SmodelDataTypeSwitch dataTypeSwitch;
+    private final Map<Variable, Object> initialValueMap;
     private final Map<Variable, Object> variableValueMap;
 
     public VariableValueProvider(ISmodelConfig smodelConfig, IFieldValueProvider constantValueProvider,
@@ -32,6 +36,16 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
         this.dataTypeSwitch = new SmodelDataTypeSwitch();
         Comparator<Variable> comparator = Comparator.comparing(Variable::getName);
         this.variableValueMap = new TreeMap<>(comparator);
+        this.initialValueMap = new TreeMap<>(comparator);
+    }
+
+    @Override
+    public void reset() {
+        Set<Variable> variables = Collections.unmodifiableSet(variableValueMap.keySet());
+        for (Variable var : variables) {
+            Object value = initialValueMap.get(var);
+            variableValueMap.put(var, value);
+        }
     }
 
     @Override
@@ -43,6 +57,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
         }
         Expression value = variable.getValue();
         Boolean calculatedValue = expressionCalculator.calculateBoolean(value);
+        initialValueMap.put(variable, calculatedValue);
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
     }
@@ -56,6 +71,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
         }
         Expression value = variable.getValue();
         Double calculatedValue = expressionCalculator.calculateDouble(value);
+        initialValueMap.put(variable, calculatedValue);
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
     }
@@ -69,6 +85,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
         }
         Expression value = variable.getValue();
         Integer calculatedValue = expressionCalculator.calculateInteger(value);
+        initialValueMap.put(variable, calculatedValue);
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
     }
@@ -82,6 +99,7 @@ public class VariableValueProvider implements IFieldValueProvider, IVariableAssi
         }
         Expression value = variable.getValue();
         String calculatedValue = expressionCalculator.calculateString(value);
+        initialValueMap.put(variable, calculatedValue);
         variableValueMap.put(variable, calculatedValue);
         return calculatedValue;
     }

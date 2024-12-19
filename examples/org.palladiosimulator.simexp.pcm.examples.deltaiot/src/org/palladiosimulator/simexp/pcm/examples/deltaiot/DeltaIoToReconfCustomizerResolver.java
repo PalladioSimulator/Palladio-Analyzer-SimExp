@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class DeltaIoToReconfCustomizerResolver implements IDeltaIoToReconfCustom
         return options.stream()
             .filter(QVToReconfiguration.class::isInstance)
             .map(QVToReconfiguration.class::cast)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override

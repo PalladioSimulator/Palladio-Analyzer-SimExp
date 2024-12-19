@@ -33,7 +33,7 @@ public class PacketLossPrismFileUpdater<A> extends DeltaIoTPrismFileUpdater<A> {
 
     @Override
     public PrismContext apply(PcmSelfAdaptiveSystemState<A, List<InputValue<CategoricalValue>>> sasState) {
-        PrismContext prismContext = new PrismContext(stringify(prismSpec.getModuleFile()),
+        PrismContext prismContext = new PrismContext("PacketLoss", stringify(prismSpec.getModuleFile()),
                 stringify(prismSpec.getPropertyFile()));
         substituteMoteActivations(prismContext, sasState);
         substituteSNR(prismContext, sasState);

@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.core.process;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
@@ -16,7 +15,7 @@ public class ExperienceSimulator<C, A, R> {
 
     private final MarkovSampling<A, R> markovSampler;
     private final List<ExperienceSimulationRunner> simulationRunners;
-    private final Optional<Initializable> beforeExecutionInitialization;
+    private final List<Initializable> beforeExecutionInitializations;
     private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
     private final int numberOfRuns;
 
@@ -25,7 +24,7 @@ public class ExperienceSimulator<C, A, R> {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunners = config.getSimulationRunners();
-        this.beforeExecutionInitialization = Optional.ofNullable(config.getBeforeExecutionInitialization());
+        this.beforeExecutionInitializations = config.getBeforeExecutionInitialization();
         simulationRunnerHolder.registerSimulationRunners(simulationRunners);
         this.simulatedExperienceStore = simulatedExperienceStore;
     }
@@ -46,7 +45,8 @@ public class ExperienceSimulator<C, A, R> {
     }
 
     private void initExperienceSimulator() {
-        beforeExecutionInitialization.ifPresent(Initializable::initialize);
+        beforeExecutionInitializations.stream()
+            .forEach(Initializable::initialize);
 
         simulationRunners.stream()
             .filter(Initializable.class::isInstance)

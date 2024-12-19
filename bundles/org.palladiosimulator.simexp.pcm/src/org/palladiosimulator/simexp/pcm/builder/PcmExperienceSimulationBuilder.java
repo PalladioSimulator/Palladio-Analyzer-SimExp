@@ -25,7 +25,7 @@ public class PcmExperienceSimulationBuilder<A, Aa extends Reconfiguration<A>, R,
     private final IExperimentProvider experimentProvider;
     private final SimulationRunnerHolder simulationRunnerHolder;
     private List<ExperienceSimulationRunner> simRunner = Lists.newArrayList();
-    private Set<SimulatedMeasurementSpecification> specs = Sets.newHashSet();
+    private Set<SimulatedMeasurementSpecification> specs = Sets.newLinkedHashSet();
     private Experiment initial = null;
 
     public class GlobalPcmSettingsBuilder {

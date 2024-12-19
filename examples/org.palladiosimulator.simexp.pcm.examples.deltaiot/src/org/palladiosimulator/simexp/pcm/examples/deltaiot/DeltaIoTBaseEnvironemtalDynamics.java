@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.naming.OperationNotSupportedException;
@@ -36,6 +37,7 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Lists;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
@@ -48,16 +50,18 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
     public DeltaIoTBaseEnvironemtalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess) {
-        this.envProcess = createEnvironmentalProcess(dbn);
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, Optional<ISeedProvider> seedProvider) {
+        this.envProcess = createEnvironmentalProcess(dbn, seedProvider);
         this.modelAccess = modelAccess;
     }
 
     private EnvironmentProcess<QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
-            DynamicBayesianNetwork<CategoricalValue> dbn) {
+            DynamicBayesianNetwork<CategoricalValue> dbn, Optional<ISeedProvider> seedProvider) {
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
+        ProbabilityMassFunction<State> initialDist = createInitialDist(dbn);
+        initialDist.init(seedProvider);
         return new ObservableEnvironmentProcess<QVTOReconfigurator, QVToReconfiguration, R, List<InputValue<CategoricalValue>>>(
-                createDerivableProcess(dbn), deltaIoTSampleLogger, createInitialDist(dbn));
+                createDerivableProcess(dbn), deltaIoTSampleLogger, initialDist);
     }
 
     private DerivableEnvironmentalDynamic<QVTOReconfigurator> createDerivableProcess(
@@ -111,8 +115,19 @@ public abstract class DeltaIoTBaseEnvironemtalDynamics<R> {
 
             private final BayesianNetwork<CategoricalValue> bn = dbn.getBayesianNetwork();
 
+            private boolean initialized = false;
+
+            @Override
+            public void init(Optional<ISeedProvider> seedProvider) {
+                initialized = true;
+                bn.init(seedProvider);
+            }
+
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 var sample = bn.sample();
                 EnvironmentalStateBuilder<List<InputValue<CategoricalValue>>> builder = EnvironmentalState.newBuilder();
                 State newState = builder.withValue(toPerceivedValue(sample))
