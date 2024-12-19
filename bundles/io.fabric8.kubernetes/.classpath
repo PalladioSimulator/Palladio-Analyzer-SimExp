@@ -21,11 +21,11 @@
 	<classpathentry kind="lib" path="lib/jackson-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-datatype-jsr310.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-httpclient-vertx.jar"/>
-	<classpathentry kind="lib" path="lib/vertx-core.jar"/>
-	<classpathentry kind="lib" path="lib/vertx-auth-common.jar"/>
-	<classpathentry kind="lib" path="lib/vertx-web-client.jar"/>
-	<classpathentry kind="lib" path="lib/vertx-web-common.jar"/>
+	<classpathentry kind="lib" path="lib/kubernetes-httpclient-okhttp.jar"/>
+	<classpathentry kind="lib" path="lib/okhttp.jar"/>
+	<classpathentry kind="lib" path="lib/kotlin-stdlib.jar"/>
+	<classpathentry kind="lib" path="lib/okio.jar"/>
+	<classpathentry kind="lib" path="lib/okio-jvm.jar"/>
 	<classpathentry kind="lib" path="lib/netty-buffer.jar"/>
 	<classpathentry kind="lib" path="lib/netty-codec.jar"/>
 	<classpathentry kind="lib" path="lib/netty-codec-dns.jar"/>

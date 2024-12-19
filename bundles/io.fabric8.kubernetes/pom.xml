@@ -15,22 +15,28 @@
   <packaging>eclipse-plugin</packaging>
 
   <properties>
-    <kubernetes-client-version>7.0.0</kubernetes-client-version>
+    <fabric8-kubernetes-version>7.0.0</fabric8-kubernetes-version>
   </properties>
 	
   <dependencies>
     <dependency>
 		<groupId>io.fabric8</groupId>
 		<artifactId>kubernetes-client</artifactId>
-        <version>${kubernetes-client-version}</version>
+        <version>${fabric8-kubernetes-version}</version>
 		<scope>provided</scope>
     </dependency>
     <dependency>
 		<groupId>io.fabric8</groupId>
 		<artifactId>kubernetes-client</artifactId>
-        <version>${kubernetes-client-version}</version>
+        <version>${fabric8-kubernetes-version}</version>
         <classifier>sources</classifier>
-	<scope>provided</scope>
+		<scope>provided</scope>
+    </dependency>
+	<dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-httpclient-okhttp</artifactId>
+      <version>${fabric8-kubernetes-version}</version>
+  	  <scope>provided</scope>
     </dependency>
   </dependencies>
   
