@@ -60,44 +60,44 @@ public class GrayConverterTest {
     public void testIdxToGray0() {
         int value = 0;
         int bitSetLength = getBitSetLength(value);
-        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        String actualGrayString = bitSetToString(thirdBitSet);
+        BitSet actualBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        assertEquals("0", actualGrayString);
+        String grayString = bitSetToString(actualBitSet);
+        assertEquals("0", grayString);
     }
 
     @Test
     public void testIdxToGray1() {
         int value = 1;
         int bitSetLength = getBitSetLength(value);
-        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        String actualGrayString = bitSetToString(thirdBitSet);
+        BitSet actualBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        assertEquals("1", actualGrayString);
+        String grayString = bitSetToString(actualBitSet);
+        assertEquals("1", grayString);
     }
 
     @Test
     public void testIdxToGray5() {
         int value = 5;
         int bitSetLength = getBitSetLength(value);
-        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        String actualGrayString = bitSetToString(thirdBitSet);
+        BitSet actualBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        assertEquals("111", actualGrayString);
+        String grayString = bitSetToString(actualBitSet);
+        assertEquals("111", grayString);
     }
 
     @Test
     public void testIdxToGray99() {
         int value = 99;
         int bitSetLength = getBitSetLength(value);
-        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        String actualGrayString = bitSetToString(thirdBitSet);
+        BitSet actualBitSet = grayConverter.idxToGray(value, bitSetLength);
 
-        assertEquals("1010010", actualGrayString);
+        String grayString = bitSetToString(actualBitSet);
+        assertEquals("1010010", grayString);
     }
 
     private String bitSetToString(BitSet firstBitSet) {
