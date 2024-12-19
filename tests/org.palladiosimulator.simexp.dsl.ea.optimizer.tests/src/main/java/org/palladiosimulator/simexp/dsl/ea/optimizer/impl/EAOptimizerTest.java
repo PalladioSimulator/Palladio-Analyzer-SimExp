@@ -169,6 +169,10 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
+        assertEquals(96.0, capturedValues.get(0), DELTA);
+        assertEquals(96.0, capturedValues.get(1), DELTA);
+        assertEquals(96.0, capturedValues.get(2), DELTA);
+        assertEquals(98.0, capturedValues.get(4), DELTA);
         assertEquals(98.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
