@@ -15,7 +15,11 @@ public class ConfigurationProperties {
     }
 
     public static IValueProperty<ILaunchConfiguration, Integer> integer(String key) {
-        return new ConfigurationIntegerProperty(key);
+        return integer(key, true);
+    }
+
+    public static IValueProperty<ILaunchConfiguration, Integer> integer(String key, boolean isPrimitive) {
+        return new ConfigurationIntegerProperty(key, isPrimitive);
     }
 
     public static <E extends Enum<E>> IValueProperty<ILaunchConfiguration, E> enummeration(String key,

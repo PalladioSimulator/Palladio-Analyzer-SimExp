@@ -128,4 +128,46 @@ public class VariableValueProviderTest {
         Boolean actualValue = provider.getBoolValue(variable);
         assertThat(actualValue).isTrue();
     }
+
+    @Test
+    public void resetBoolLiteral() {
+        Variable variable = smodelCreator.createVariable("variable", DataType.BOOL,
+                smodelCreator.createBoolLiteral(true));
+        provider.getBoolValue(variable);
+        VariableAssignment variableAssignment = smodelCreator.createVariableAssignment(variable,
+                smodelCreator.createLiteralBoolExpression(false));
+        provider.assign(variableAssignment);
+
+        provider.reset();
+
+        Boolean actualValue = provider.getBoolValue(variable);
+        assertThat(actualValue).isTrue();
+    }
+
+    @Test
+    public void resetIntLiteral() {
+        Variable variable = smodelCreator.createVariable("variable", DataType.INT, smodelCreator.createIntLiteral(1));
+        provider.getIntegerValue(variable);
+        VariableAssignment variableAssignment = smodelCreator.createVariableAssignment(variable,
+                smodelCreator.createLiteralIntExpression(2));
+        provider.assign(variableAssignment);
+
+        provider.reset();
+
+        Integer actualValue = provider.getIntegerValue(variable);
+        assertThat(actualValue).isEqualTo(1);
+    }
+
+    @Test
+    public void resetNoGetIntLiteral() {
+        Variable variable = smodelCreator.createVariable("variable", DataType.INT, smodelCreator.createIntLiteral(1));
+        VariableAssignment variableAssignment = smodelCreator.createVariableAssignment(variable,
+                smodelCreator.createLiteralIntExpression(2));
+        provider.assign(variableAssignment);
+
+        provider.reset();
+
+        Integer actualValue = provider.getIntegerValue(variable);
+        assertThat(actualValue).isEqualTo(1);
+    }
 }

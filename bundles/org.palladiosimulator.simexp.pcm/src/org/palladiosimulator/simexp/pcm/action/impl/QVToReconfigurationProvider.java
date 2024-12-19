@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.action.impl;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class QVToReconfigurationProvider implements IQVToReconfigurationProvider
         Set<QVToReconfiguration> qvtoReconfigurations = transformations.stream()
             .filter(each -> each instanceof QvtoModelTransformation)
             .map(each -> SingleQVToReconfiguration.of(each, qvtoReconfigurationManager))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
         return qvtoReconfigurations;
     }
 }

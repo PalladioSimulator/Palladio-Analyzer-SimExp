@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.pcm.resourceenvironment.LinkingResource;
+import org.palladiosimulator.simexp.core.state.RestoredSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext;
@@ -36,31 +37,38 @@ public class DeltaIoTSampleLogger implements SampleDumper {
     public void dump(State source) {
         onRunStart();
 
-        PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state = PcmSelfAdaptiveSystemState.class
-            .cast(source);
-        Map<AssemblyContext, Map<LinkingResource, Double>> motesToLinks = filterMotesWithWirelessLinks(modelAccess,
-                state);
-        List<WirelessLink> links = new ArrayList<>();
-        for (AssemblyContext each : motesToLinks.keySet()) {
-            MoteContext moteContext = new MoteContext(modelAccess, each, motesToLinks.get(each));
-            for (WirelessLink eachLink : moteContext.links) {
-                links.add(eachLink);
+        if (source instanceof RestoredSelfAdaptiveSystemState) {
+            RestoredSelfAdaptiveSystemState<PCMInstance, QVTOReconfigurator, List<InputValue<CategoricalValue>>> state = RestoredSelfAdaptiveSystemState.class
+                .cast(source);
+            LOGGER.info(String.format("Restored state: %s", state.toString()));
+        } else {
+            PcmSelfAdaptiveSystemState<QVTOReconfigurator, List<InputValue<CategoricalValue>>> state = PcmSelfAdaptiveSystemState.class
+                .cast(source);
+
+            Map<AssemblyContext, Map<LinkingResource, Double>> motesToLinks = filterMotesWithWirelessLinks(modelAccess,
+                    state);
+            List<WirelessLink> links = new ArrayList<>();
+            for (AssemblyContext each : motesToLinks.keySet()) {
+                MoteContext moteContext = new MoteContext(modelAccess, each, motesToLinks.get(each));
+                for (WirelessLink eachLink : moteContext.links) {
+                    links.add(eachLink);
+                }
             }
-        }
 
-        List<WirelessLink> sortedLinks = links.stream()
-            .sorted((l1, l2) -> l1.pcmLink.getEntityName()
-                .compareTo(l2.pcmLink.getEntityName()))
-            .collect(Collectors.toList());
+            List<WirelessLink> sortedLinks = links.stream()
+                .sorted((l1, l2) -> l1.pcmLink.getEntityName()
+                    .compareTo(l2.pcmLink.getEntityName()))
+                .collect(Collectors.toList());
 
-        Integer maxName = links.stream()
-            .mapToInt(v -> v.pcmLink.getEntityName()
-                .length())
-            .max()
-            .orElseThrow(NoSuchElementException::new);
+            Integer maxName = links.stream()
+                .mapToInt(v -> v.pcmLink.getEntityName()
+                    .length())
+                .max()
+                .orElseThrow(NoSuchElementException::new);
 
-        for (WirelessLink eachLink : sortedLinks) {
-            onEntry(eachLink, maxName);
+            for (WirelessLink eachLink : sortedLinks) {
+                onEntry(eachLink, maxName);
+            }
         }
         onRunFinish();
     }

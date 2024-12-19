@@ -26,8 +26,11 @@ public class ExperienceSimulationConfiguration<C, A, R> {
             return this;
         }
 
-        public ExperienceSimulationConfigBuilder executeBeforeEachRun(Initializable beforeExecutionInitialization) {
-            ExperienceSimulationConfiguration.this.beforeExecutionInitialization = beforeExecutionInitialization;
+        public ExperienceSimulationConfigBuilder executeBeforeEachRun(
+                List<Initializable> beforeExecutionInitializables) {
+            if (beforeExecutionInitializables != null) {
+                ExperienceSimulationConfiguration.this.beforeExecutionInitializables = beforeExecutionInitializables;
+            }
             return this;
         }
 
@@ -79,7 +82,7 @@ public class ExperienceSimulationConfiguration<C, A, R> {
     private String sampleSpaceID = "";
     private List<ExperienceSimulationRunner> runners = Lists.newArrayList();
     private MarkovSampling<A, R> markovSampler = null;
-    private Initializable beforeExecutionInitialization = null;
+    private List<Initializable> beforeExecutionInitializables = Lists.newArrayList();
 
     private ExperienceSimulationConfiguration() {
 
@@ -114,8 +117,8 @@ public class ExperienceSimulationConfiguration<C, A, R> {
         return experienceSimulationConfiguration.new ExperienceSimulationConfigBuilder();
     }
 
-    public Initializable getBeforeExecutionInitialization() {
-        return beforeExecutionInitialization;
+    public List<Initializable> getBeforeExecutionInitialization() {
+        return beforeExecutionInitializables;
     }
 
 }

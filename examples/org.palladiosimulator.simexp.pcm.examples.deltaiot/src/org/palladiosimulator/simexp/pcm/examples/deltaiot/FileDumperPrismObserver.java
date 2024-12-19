@@ -41,13 +41,14 @@ public class FileDumperPrismObserver implements IPrismObserver {
             String timeStamp = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 .format(LocalDateTime.now());
             pw.println(String.format("time: %s", timeStamp));
+            pw.println("Prism property:");
+            pw.print(context.getPropertyFileContent());
             pw.println("Prism module:");
-            pw.println("Prism property: " + context.propertyFileContent);
-            pw.println(context.moduleFileContent);
+            pw.println(context.getModuleFileContent());
         }
     }
 
     private Path createDumpPath(int count) {
-        return prismLogFolder.resolve(String.format("prism_%d.dump", count));
+        return prismLogFolder.resolve(String.format("prism_%04d.dump", count));
     }
 }

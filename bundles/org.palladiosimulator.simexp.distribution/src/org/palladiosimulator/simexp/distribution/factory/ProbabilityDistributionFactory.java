@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.distribution.factory;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,7 @@ public interface ProbabilityDistributionFactory<S> {
     public static <S> Set<Object> toValueSpace(Set<S> values) {
         return values.stream()
             .map(each -> (Object) each)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public final static ProbabilityDistributionFactory INSTANCE = new ProbabilityDistributionFactoryDelegator<>();

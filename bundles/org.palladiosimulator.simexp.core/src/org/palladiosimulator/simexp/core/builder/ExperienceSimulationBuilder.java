@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.core.builder;
 
 import static org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants.constructSampleSpaceId;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,6 +39,8 @@ import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
 import org.palladiosimulator.simexp.markovian.type.Markovian;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfiguration<A>, R, V> {
 
     private String simulationID = "";
@@ -54,8 +56,9 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Optional<MarkovModel<A, R>> markovModel = Optional.empty();
     private SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> navigator = null;
     private Optional<ProbabilityMassFunction<State>> initialDistribution = Optional.empty();
-    private Initializable beforeExecutionInitialization = null;
+    private List<Initializable> beforeExecutionInitializables = null;
     private SampleDumper sampleDumper = null;
+    private Optional<ISeedProvider> seedProvider = Optional.empty();
 
     protected abstract List<ExperienceSimulationRunner> getSimulationRunner();
 
@@ -84,9 +87,9 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .withSimulationID(simulationID)
             .withSampleSpaceID(constructSampleSpaceId(simulationID, policy.getId()))
             .withNumberOfRuns(numberOfRuns)
-            .executeBeforeEachRun(beforeExecutionInitialization)
+            .executeBeforeEachRun(beforeExecutionInitializables)
             .addSimulationRunner(getSimulationRunner())
-            .sampleWith(buildMarkovSampler(sampleDumper))
+            .sampleWith(buildMarkovSampler(seedProvider, sampleDumper))
             .build();
         return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
     }
@@ -102,21 +105,24 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         }
     }
 
-    private MarkovSampling<A, R> buildMarkovSampler(SampleDumper sampleDumper) {
-        return new MarkovSampling<>(buildMarkovianConfig(), sampleDumper);
+    private MarkovSampling<A, R> buildMarkovSampler(Optional<ISeedProvider> seedProvider, SampleDumper sampleDumper) {
+        MarkovianConfig<A, R> markovianConfig = buildMarkovianConfig(seedProvider);
+        return new MarkovSampling<>(markovianConfig, sampleDumper);
     }
 
-    private MarkovianConfig<A, R> buildMarkovianConfig() {
-        return new MarkovianConfig<>(numberOfSamplesPerRun, buildMarkovian(), null); // TODO bring
-                                                                                     // in
-                                                                                     // accordance
-                                                                                     // with
-                                                                                     // ReconfigurationFilter...
+    private MarkovianConfig<A, R> buildMarkovianConfig(Optional<ISeedProvider> seedProvider) {
+        Markovian<A, R> markovian = buildMarkovian(seedProvider);
+        return new MarkovianConfig<>(numberOfSamplesPerRun, markovian, null); // TODO bring
+                                                                              // in
+                                                                              // accordance
+                                                                              // with
+                                                                              // ReconfigurationFilter...
     }
 
-    private Markovian<A, R> buildMarkovian() {
+    private Markovian<A, R> buildMarkovian(Optional<ISeedProvider> seedProvider) {
         StateSpaceNavigator<A> navigator = buildStateSpaceNavigator();
         ProbabilityMassFunction<State> initial = initialDistribution.orElse(getInitialDistribution(navigator));
+        initial.init(seedProvider);
         if (isHiddenProcess) {
             return buildPOMDP(initial, navigator);
         }
@@ -162,7 +168,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private Set<Aa> getReconfigurationSpace() {
         return reconfigurationSpace.stream()
             .map(each -> each)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private StateSpaceNavigator<A> buildStateSpaceNavigator() {
@@ -194,14 +200,19 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             return this;
         }
 
+        public SimulationConfigurationBuilder withSeedProvider(Optional<ISeedProvider> seedProvider) {
+            ExperienceSimulationBuilder.this.seedProvider = seedProvider;
+            return this;
+        }
+
         public SimulationConfigurationBuilder andNumberOfSimulationsPerRun(int numberOfSamplesPerRun) {
             ExperienceSimulationBuilder.this.numberOfSamplesPerRun = numberOfSamplesPerRun;
             return this;
         }
 
         public SimulationConfigurationBuilder andOptionalExecutionBeforeEachRun(
-                Initializable beforeExecutionInitialization) {
-            ExperienceSimulationBuilder.this.beforeExecutionInitialization = beforeExecutionInitialization;
+                List<Initializable> beforeExecutionInitializables) {
+            ExperienceSimulationBuilder.this.beforeExecutionInitializables = beforeExecutionInitializables;
             return this;
         }
 
@@ -271,7 +282,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             public Aa select(State source, Set<Aa> options) {
                 Set<Aa> reconfigurationOptions = options.stream()
                     .map(each -> each)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
                 // FIXME: simplify: execution of action should be part of MAPE-K -> no return type
                 // of Action required
                 return adaptedStrategy.select(source, reconfigurationOptions);
@@ -281,7 +292,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         public ReconfigurationSpaceBuilder addReconfiguration(Aa reconf) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new LinkedHashSet<>();
             }
             ExperienceSimulationBuilder.this.reconfigurationSpace.add(reconf);
             return this;
@@ -289,7 +300,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
         public ReconfigurationSpaceBuilder addReconfigurations(Set<Aa> reconfs) {
             if (ExperienceSimulationBuilder.this.reconfigurationSpace == null) {
-                ExperienceSimulationBuilder.this.reconfigurationSpace = new HashSet<>();
+                ExperienceSimulationBuilder.this.reconfigurationSpace = new LinkedHashSet<>();
             }
             ExperienceSimulationBuilder.this.reconfigurationSpace.addAll(reconfs);
             return this;

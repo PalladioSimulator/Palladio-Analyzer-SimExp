@@ -9,10 +9,12 @@ class ConfigurationObservableIntegerValue extends AbstractObservableValue<Intege
 
     private final ILaunchConfiguration configuration;
     private final String key;
+    private final boolean isPrimitive;
 
-    public ConfigurationObservableIntegerValue(ILaunchConfiguration configuration, String key) {
+    public ConfigurationObservableIntegerValue(ILaunchConfiguration configuration, String key, boolean isPrimitive) {
         this.configuration = configuration;
         this.key = key;
+        this.isPrimitive = isPrimitive;
     }
 
     @Override
@@ -23,6 +25,11 @@ class ConfigurationObservableIntegerValue extends AbstractObservableValue<Intege
     @Override
     protected Integer doGetValue() {
         try {
+            if (!configuration.hasAttribute(key)) {
+                if (!isPrimitive) {
+                    return null;
+                }
+            }
             return configuration.getAttribute(key, 0);
         } catch (CoreException e) {
             throw new RuntimeException(e);

@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.util.Optional;
+
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
@@ -16,39 +18,42 @@ import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcm
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperienceSimulationExecutorFactory;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFactory {
     public SimulationExecutor create(IModelledWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider) {
+            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
         PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
         case PCM -> {
             yield createPCM((IModelledPcmWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
-                    descriptionProvider);
+                    descriptionProvider, seedProvider);
         }
         case PRISM -> {
             yield createPRISM((IModelledPrismWorkflowConfiguration) workflowConfiguration, modelLoaderFactory,
-                    descriptionProvider);
+                    descriptionProvider, seedProvider);
         }
         default -> throw new IllegalArgumentException("Unexpected value: " + simulationEngine);
         };
     }
 
     private SimulationExecutor createPCM(IModelledPcmWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider,
+            Optional<ISeedProvider> seedProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
         case PERFORMANCE -> {
             yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration,
-                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
         }
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration,
-                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
         }
         case PERFORMABILITY -> {
             yield new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration,
-                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
+                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
         }
         default -> throw new IllegalArgumentException("QualityObjective not supported: " + qualityObjective);
         };
@@ -57,9 +62,11 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
     }
 
     private SimulationExecutor createPRISM(IModelledPrismWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider) {
+            ModelledModelLoader.Factory modelLoaderFactory, DescriptionProvider descriptionProvider,
+            Optional<ISeedProvider> seedProvider) {
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
-                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider));
+                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider),
+                seedProvider);
         return factory.create();
     }
 

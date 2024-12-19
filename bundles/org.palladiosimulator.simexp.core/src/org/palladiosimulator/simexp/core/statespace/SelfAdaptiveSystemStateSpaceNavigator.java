@@ -2,10 +2,10 @@ package org.palladiosimulator.simexp.core.statespace;
 
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
-import org.palladiosimulator.simexp.core.state.RestoredSelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
@@ -16,7 +16,10 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Act
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.InductiveStateSpaceNavigator;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends InductiveStateSpaceNavigator<A> {
+    private final static Logger LOGGER = Logger.getLogger(SelfAdaptiveSystemStateSpaceNavigator.class);
 
     public interface InitialSelfAdaptiveSystemStateCreator<C, A, V> {
 
@@ -40,9 +43,18 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     public ProbabilityMassFunction<State> createInitialDistribution(
             InitialSelfAdaptiveSystemStateCreator<C, A, V> sassCreator) {
         return new ProbabilityMassFunction<>() {
+            private boolean initialized = false;
+
+            @Override
+            public void init(Optional<ISeedProvider> seedProvider) {
+                initialized = true;
+            }
 
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 ArchitecturalConfiguration<C, A> initialArch = sassCreator.getInitialArchitecturalConfiguration();
                 PerceivableEnvironmentalState<V> initialEnv = determineInitial(initialArch);
                 SelfAdaptiveSystemState<C, A, V> create = sassCreator.create(initialArch, initialEnv);
@@ -105,7 +117,12 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
         Optional<SimulatedExperience> result = simulatedExperienceStore
             .findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
-            return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder, result.get(), structuralState);
+            LOGGER.info(
+                    String.format("cache hit for state: %s -> re-use existing measuremnt", structuralState.toString()));
+            // return RestoredSelfAdaptiveSystemState.restoreFrom(simulationRunnerHolder,
+            // result.get(), structuralState);
+            // ToDo: should be
+            // structuralState.restoreQuantifiedState(result.get());
         }
         structuralState.determineQuantifiedState();
         return structuralState;
