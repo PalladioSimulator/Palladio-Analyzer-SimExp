@@ -4,56 +4,100 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.BitSet;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class GrayConverterTest {
 
-    private GrayConverter grayConverter = new GrayConverter();
+    private GrayConverter grayConverter;
 
-    @Test
-    public void testGrayToIdx() {
-        String first = "0111";
-        String second = "1010010";
-        String third = "0";
-        String fourth = "1";
-        BitSet firstBitSet = idxToBitSet(first);
-        BitSet secondBitSet = idxToBitSet(second);
-        BitSet thirdBitSet = idxToBitSet(third);
-        BitSet fourthBitSet = idxToBitSet(fourth);
-
-        int firstIdx = grayConverter.grayToIdx(firstBitSet);
-        int secondIdx = grayConverter.grayToIdx(secondBitSet);
-        int thirdIdx = grayConverter.grayToIdx(thirdBitSet);
-        int fourthIdx = grayConverter.grayToIdx(fourthBitSet);
-
-        assertEquals(5, firstIdx);
-        assertEquals(99, secondIdx);
-        assertEquals(0, thirdIdx);
-        assertEquals(1, fourthIdx);
-
+    @Before
+    public void setUp() {
+        grayConverter = new GrayConverter();
     }
 
     @Test
-    public void testIdxToGray() {
-        int first = 5;
-        int second = 99;
-        int third = 0;
-        int fourth = 1;
+    public void testGrayToIdx0() {
+        String bitString = "0";
+        BitSet bitSet = idxToBitSet(bitString);
 
-        BitSet firstBitSet = grayConverter.idxToGray(first, getBitSetLength(first));
-        BitSet secondBitSet = grayConverter.idxToGray(second, getBitSetLength(second));
-        BitSet thirdBitSet = grayConverter.idxToGray(third, getBitSetLength(third));
-        BitSet fourthBitSet = grayConverter.idxToGray(fourth, getBitSetLength(fourth));
+        int actualIdx = grayConverter.grayToIdx(bitSet);
 
-        String firstGrayAsString = bitSetToString(firstBitSet);
-        String secondGrayAsString = bitSetToString(secondBitSet);
-        String thirdGrayAsString = bitSetToString(thirdBitSet);
-        String fourthGrayAsString = bitSetToString(fourthBitSet);
+        assertEquals(0, actualIdx);
+    }
 
-        assertEquals("111", firstGrayAsString);
-        assertEquals("1010010", secondGrayAsString);
-        assertEquals("0", thirdGrayAsString);
-        assertEquals("1", fourthGrayAsString);
+    @Test
+    public void testGrayToIdx1() {
+        String bitString = "1";
+        BitSet bitSet = idxToBitSet(bitString);
+
+        int actualIdx = grayConverter.grayToIdx(bitSet);
+
+        assertEquals(1, actualIdx);
+    }
+
+    @Test
+    public void testGrayToIdx5() {
+        String bitString = "0111";
+        BitSet bitSet = idxToBitSet(bitString);
+
+        int actualIdx = grayConverter.grayToIdx(bitSet);
+
+        assertEquals(5, actualIdx);
+    }
+
+    @Test
+    public void testGrayToIdx99() {
+        String bitString = "1010010";
+        BitSet bitSet = idxToBitSet(bitString);
+
+        int actualIdx = grayConverter.grayToIdx(bitSet);
+
+        assertEquals(99, actualIdx);
+    }
+
+    @Test
+    public void testIdxToGray0() {
+        int value = 0;
+        int bitSetLength = getBitSetLength(value);
+        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
+
+        String actualGrayString = bitSetToString(thirdBitSet);
+
+        assertEquals("0", actualGrayString);
+    }
+
+    @Test
+    public void testIdxToGray1() {
+        int value = 1;
+        int bitSetLength = getBitSetLength(value);
+        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
+
+        String actualGrayString = bitSetToString(thirdBitSet);
+
+        assertEquals("1", actualGrayString);
+    }
+
+    @Test
+    public void testIdxToGray5() {
+        int value = 5;
+        int bitSetLength = getBitSetLength(value);
+        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
+
+        String actualGrayString = bitSetToString(thirdBitSet);
+
+        assertEquals("111", actualGrayString);
+    }
+
+    @Test
+    public void testIdxToGray99() {
+        int value = 99;
+        int bitSetLength = getBitSetLength(value);
+        BitSet thirdBitSet = grayConverter.idxToGray(value, bitSetLength);
+
+        String actualGrayString = bitSetToString(thirdBitSet);
+
+        assertEquals("1010010", actualGrayString);
     }
 
     private String bitSetToString(BitSet firstBitSet) {
