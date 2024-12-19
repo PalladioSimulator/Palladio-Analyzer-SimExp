@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.GrayConverterHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.GrayConverter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.AnyGene;
@@ -17,10 +17,10 @@ import io.jenetics.util.RandomRegistry;
 
 public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
 
-    private GrayConverterHelper grayConverterHelper;
+    private GrayConverter grayConverterHelper;
 
     public OptimizableChromosomeGrayConstraint() {
-        grayConverterHelper = new GrayConverterHelper();
+        grayConverterHelper = new GrayConverter();
     }
 
     @Override

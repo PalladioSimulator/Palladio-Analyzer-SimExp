@@ -6,9 +6,9 @@ import java.util.BitSet;
 
 import org.junit.Test;
 
-public class GrayConverterHelperTest {
+public class GrayConverterTest {
 
-    private GrayConverterHelper grayConverterHelper = new GrayConverterHelper();
+    private GrayConverter grayConverter = new GrayConverter();
 
     @Test
     public void testGrayToIdx() {
@@ -21,10 +21,10 @@ public class GrayConverterHelperTest {
         BitSet thirdBitSet = idxToBitSet(third);
         BitSet fourthBitSet = idxToBitSet(fourth);
 
-        int firstIdx = grayConverterHelper.grayToIdx(firstBitSet);
-        int secondIdx = grayConverterHelper.grayToIdx(secondBitSet);
-        int thirdIdx = grayConverterHelper.grayToIdx(thirdBitSet);
-        int fourthIdx = grayConverterHelper.grayToIdx(fourthBitSet);
+        int firstIdx = grayConverter.grayToIdx(firstBitSet);
+        int secondIdx = grayConverter.grayToIdx(secondBitSet);
+        int thirdIdx = grayConverter.grayToIdx(thirdBitSet);
+        int fourthIdx = grayConverter.grayToIdx(fourthBitSet);
 
         assertEquals(5, firstIdx);
         assertEquals(99, secondIdx);
@@ -40,10 +40,10 @@ public class GrayConverterHelperTest {
         int third = 0;
         int fourth = 1;
 
-        BitSet firstBitSet = grayConverterHelper.idxToGray(first, getBitSetLength(first));
-        BitSet secondBitSet = grayConverterHelper.idxToGray(second, getBitSetLength(second));
-        BitSet thirdBitSet = grayConverterHelper.idxToGray(third, getBitSetLength(third));
-        BitSet fourthBitSet = grayConverterHelper.idxToGray(fourth, getBitSetLength(fourth));
+        BitSet firstBitSet = grayConverter.idxToGray(first, getBitSetLength(first));
+        BitSet secondBitSet = grayConverter.idxToGray(second, getBitSetLength(second));
+        BitSet thirdBitSet = grayConverter.idxToGray(third, getBitSetLength(third));
+        BitSet fourthBitSet = grayConverter.idxToGray(fourth, getBitSetLength(fourth));
 
         String firstGrayAsString = bitSetToString(firstBitSet);
         String secondGrayAsString = bitSetToString(secondBitSet);
