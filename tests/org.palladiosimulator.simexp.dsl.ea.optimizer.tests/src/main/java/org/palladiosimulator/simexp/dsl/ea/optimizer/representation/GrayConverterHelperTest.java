@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,11 +1,9 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.BitSet;
 import java.util.Objects;
-
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
