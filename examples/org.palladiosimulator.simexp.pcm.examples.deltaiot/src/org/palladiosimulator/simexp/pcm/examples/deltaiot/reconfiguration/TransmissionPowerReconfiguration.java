@@ -46,7 +46,7 @@ public class TransmissionPowerReconfiguration extends DeltaIoTBaseReconfiguratio
 
     public TransmissionPowerReconfiguration(SingleQVToReconfiguration reconfiguration,
             List<TransmissionPower> powerSettings) {
-        this(reconfiguration, Sets.newHashSet(powerSettings));
+        this(reconfiguration, Sets.newLinkedHashSet(powerSettings));
     }
 
     public static boolean isCorrectQvtReconfguration(QVToReconfiguration qvt) {

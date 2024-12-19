@@ -1,4 +1,4 @@
-package utility;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.utility;
 
 import static org.mockito.Mockito.when;
 

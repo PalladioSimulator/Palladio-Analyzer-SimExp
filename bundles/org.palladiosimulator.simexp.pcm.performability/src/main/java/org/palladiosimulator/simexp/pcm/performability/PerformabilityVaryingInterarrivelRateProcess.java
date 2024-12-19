@@ -44,6 +44,7 @@ import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> {
 
@@ -143,8 +144,19 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
 
             private final BayesianNetwork<CategoricalValue> bn = dbn.getBayesianNetwork();
 
+            private boolean initialized = false;
+
+            @Override
+            public void init(Optional<ISeedProvider> seedProvider) {
+                initialized = true;
+                bn.init(seedProvider);
+            }
+
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 List<InputValue<CategoricalValue>> sample = bn.sample();
                 return Sample.of(asPcmEnvironmentalState(sample), bn.probability(sample));
             }

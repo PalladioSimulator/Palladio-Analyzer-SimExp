@@ -18,11 +18,12 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.SaveFieldValueP
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
-public class SmodelInterpreter implements Analyzer, Planner {
+public class SmodelInterpreter implements Analyzer, Planner, IResettable {
     private static final Logger LOGGER = Logger.getLogger(SmodelInterpreter.class);
 
     private final SmodelAnalyzer smodelAnalyzer;
     private final SmodelPlaner smodelPlaner;
+    private final VariableValueProvider variableValueProvider;
 
     public SmodelInterpreter(Smodel model, IFieldValueProvider probeValueProvider,
             IFieldValueProvider envVariableValueProvider) {
@@ -35,13 +36,19 @@ public class SmodelInterpreter implements Analyzer, Planner {
             }
         };
         IFieldValueProvider constantValueProvider = new ConstantValueProvider(smodelConfig);
-        VariableValueProvider variableValueProvider = new VariableValueProvider(smodelConfig, constantValueProvider,
-                probeValueProvider, optimizableValueProvider, envVariableValueProvider);
+        variableValueProvider = new VariableValueProvider(smodelConfig, constantValueProvider, probeValueProvider,
+                optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider fieldValueProvider = new FieldValueProvider(constantValueProvider, variableValueProvider,
                 probeValueProvider, optimizableValueProvider, envVariableValueProvider);
         IFieldValueProvider saveFieldValueProvider = new SaveFieldValueProvider(fieldValueProvider);
         this.smodelAnalyzer = new SmodelAnalyzer(model, smodelConfig, saveFieldValueProvider);
         this.smodelPlaner = new SmodelPlaner(model, smodelConfig, saveFieldValueProvider, variableValueProvider);
+    }
+
+    @Override
+    public void reset() {
+        LOGGER.info("reset strategy variables");
+        variableValueProvider.reset();
     }
 
     @Override

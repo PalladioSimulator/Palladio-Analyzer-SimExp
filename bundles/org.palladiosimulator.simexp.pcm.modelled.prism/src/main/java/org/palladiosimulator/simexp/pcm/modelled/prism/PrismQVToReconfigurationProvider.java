@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.modelled.prism;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
@@ -23,7 +23,7 @@ public class PrismQVToReconfigurationProvider implements IQVToReconfigurationPro
 
     @Override
     public Set<QVToReconfiguration> getReconfigurations() {
-        Set<QVToReconfiguration> reconfigurations = new HashSet<>();
+        Set<QVToReconfiguration> reconfigurations = new LinkedHashSet<>();
 
         Set<QVToReconfiguration> reconfigurationList = qvtoReconfigurationProvider.getReconfigurations();
         IDeltaIoToReconfCustomizerFactory customizerFactory = new DeltaIoToReconfLocalQualityCustomizerFactory(

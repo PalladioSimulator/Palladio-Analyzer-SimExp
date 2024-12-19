@@ -1,7 +1,8 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -45,6 +46,7 @@ import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.factory.ProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.parser.DefaultParameterParser;
 import tools.mdsd.probdist.api.parser.ParameterParser;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 import tools.mdsd.probdist.distributiontype.ProbabilityDistributionRepository;
 import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 
@@ -56,22 +58,30 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
+    private final Optional<ISeedProvider> seedProvider;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
+        this.seedProvider = seedProvider;
 
-        ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory();
+        ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(
+                seedProvider);
         this.probabilityDistributionRegistry = defaultProbabilityDistributionFactory;
         this.distributionFactory = defaultProbabilityDistributionFactory;
 
         ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
             .loadRepository();
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+    }
+
+    protected Optional<ISeedProvider> getSeedProvider() {
+        return seedProvider;
     }
 
     public SimulationExecutor create() {
@@ -111,6 +121,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         DynamicBehaviourExtension dbe = dynamicBehaviourRepository.getExtensions()
             .get(0);
         DynamicBayesianNetwork<CategoricalValue> dbn = new DynamicBayesianNetwork<>(null, bn, dbe, distributionFactory);
+        dbn.init(seedProvider);
         return dbn;
     }
 
@@ -157,27 +168,29 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected ExperienceSimulator<PCMInstance, QVTOReconfigurator, R> createExperienceSimulator(Experiment experiment,
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
-            SimulationParameters params, Initializable beforeExecution,
+            SimulationParameters params, List<Initializable> beforeExecutionInitializables,
             EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
             RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
-            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper) {
+            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper,
+            Optional<ISeedProvider> seedProvider) {
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
             .makeGlobalPcmSettings()
             .withInitialExperiment(experiment)
-            .andSimulatedMeasurementSpecs(new HashSet<>(specs))
-            .addExperienceSimulationRunners(new HashSet<>(runners))
+            .andSimulatedMeasurementSpecs(new LinkedHashSet<>(specs))
+            .addExperienceSimulationRunners(new LinkedHashSet<>(runners))
             .done()
             .createSimulationConfiguration()
             .withSimulationID(params.getSimulationID())
             .withNumberOfRuns(params.getNumberOfRuns())
+            .withSeedProvider(seedProvider)
             .usingSampleDumper(sampleDumper)
             .andNumberOfSimulationsPerRun(params.getNumberOfSimulationsPerRun())
-            .andOptionalExecutionBeforeEachRun(beforeExecution)
+            .andOptionalExecutionBeforeEachRun(beforeExecutionInitializables)
             .done()
             .specifySelfAdaptiveSystemState()
             .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)

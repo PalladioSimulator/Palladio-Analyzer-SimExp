@@ -45,8 +45,10 @@ import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
 import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
+public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(VaryingInterarrivelRateProcess.class.getName());
 
@@ -102,6 +104,11 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialDist.init(seedProvider);
+    }
+
     private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
         return expRunner -> {
             // TODO exception handling
@@ -129,8 +136,19 @@ public class VaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
 
             private final BayesianNetwork<CategoricalValue> bn = dbn.getBayesianNetwork();
 
+            private boolean initialized = false;
+
+            @Override
+            public void init(Optional<ISeedProvider> seedProvider) {
+                initialized = true;
+                bn.init(seedProvider);
+            }
+
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 List<InputValue<CategoricalValue>> sample = bn.sample();
                 return Sample.of(asPcmEnvironmentalState(sample), bn.probability(sample));
             }
