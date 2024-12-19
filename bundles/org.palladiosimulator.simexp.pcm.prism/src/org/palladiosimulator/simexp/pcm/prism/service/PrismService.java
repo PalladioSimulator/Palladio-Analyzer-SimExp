@@ -30,7 +30,7 @@ public interface PrismService {
 
     }
 
-    public void initialise(Path logFilePath);
+    public void initialise(Path logFilePath, String strategyId);
 
     public PrismResult modelCheck(PrismContext context);
 

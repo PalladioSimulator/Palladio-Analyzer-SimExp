@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -71,7 +71,7 @@ public class TransformationConfiguration {
             IObservableSet<String> observe = ViewerProperties
                 .<CheckboxTableViewer, String> checkedElements(String.class)
                 .observe(viewer);
-            return new HashSet<>(observe);
+            return new LinkedHashSet<>(observe);
         }, new Consumer<Set<String>>() {
 
             @Override

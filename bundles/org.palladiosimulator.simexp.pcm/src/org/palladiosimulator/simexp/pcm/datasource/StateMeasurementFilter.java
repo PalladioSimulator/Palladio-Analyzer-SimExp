@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.datasource;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,6 +76,6 @@ public class StateMeasurementFilter<A, V> {
         return measurementSpecs.stream()
             .filter(PcmMeasurementSpecification.class::isInstance)
             .map(PcmMeasurementSpecification.class::cast)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

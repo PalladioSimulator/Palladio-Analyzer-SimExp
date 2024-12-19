@@ -22,8 +22,9 @@ public class PrismInvocationService implements PrismService {
     private Prism prism;
 
     @Override
-    public void initialise(Path logFilePath) {
-        prism = new Prism(new PrismFileLog(logFilePath.toString()));
+    public void initialise(Path prismFolder, String strategyId) {
+        Path prismLogPath = prismFolder.resolve("prism.log");
+        prism = new Prism(new PrismFileLog(prismLogPath.toString()));
         try {
             prism.initialise();
         } catch (PrismException e) {
@@ -34,12 +35,11 @@ public class PrismInvocationService implements PrismService {
 
     @Override
     public PrismResult modelCheck(PrismContext context) {
-        PropertiesFile propertyFile = null;
         try {
-            String trimmedPropertyFileContent = context.propertyFileContent.trim();
-            LOGGER.info("Start prism invocation: " + trimmedPropertyFileContent);
+            String contentKind = context.getKind();
+            LOGGER.info("Start prism invocation: " + contentKind);
             long start = System.currentTimeMillis();
-            propertyFile = setUpPrism(context);
+            PropertiesFile propertyFile = setUpPrism(context);
 
             PrismResult prismResult = new PrismResult();
             for (int i = 0; i < propertyFile.getNumProperties(); i++) {
@@ -50,8 +50,8 @@ public class PrismInvocationService implements PrismService {
             }
             long end = System.currentTimeMillis();
 
-            LOGGER.info("Stop prism invocation: " + trimmedPropertyFileContent + ", Elapsed time in seconds: "
-                    + ((end - start) / 1000));
+            LOGGER
+                .info("Stop prism invocation: " + contentKind + ", Elapsed time in seconds: " + ((end - start) / 1000));
             return prismResult;
         } catch (FileNotFoundException | PrismException e) {
             throw new RuntimeException("Something went wrong during prism model checking.", e);
@@ -59,9 +59,9 @@ public class PrismInvocationService implements PrismService {
     }
 
     private PropertiesFile setUpPrism(PrismContext context) throws FileNotFoundException, PrismException {
-        ModulesFile moduleFile = prism.parseModelString(context.moduleFileContent);
+        ModulesFile moduleFile = prism.parseModelString(context.getModuleFileContent());
         prism.loadPRISMModel(moduleFile);
-        PropertiesFile propertyFile = prism.parsePropertiesString(moduleFile, context.propertyFileContent);
+        PropertiesFile propertyFile = prism.parsePropertiesString(moduleFile, context.getPropertyFileContent());
         // prism.buildModelExplicit(moduleFile);
         return propertyFile;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundRandomVariable;
@@ -24,16 +25,18 @@ import org.palladiosimulator.solver.models.PCMInstance;
 import com.google.common.collect.Maps;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDynamics<R> {
+    private final static Logger LOGGER = Logger.getLogger(DeltaIoTPartiallyEnvDynamics.class);
 
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, Optional<ISeedProvider> seedProvider,
             SimulationRunnerHolder simulationRunnerHolder) {
-        super(dbn, modelAccess);
+        super(dbn, modelAccess, seedProvider);
         this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore,
                 simulationRunnerHolder);
     }
