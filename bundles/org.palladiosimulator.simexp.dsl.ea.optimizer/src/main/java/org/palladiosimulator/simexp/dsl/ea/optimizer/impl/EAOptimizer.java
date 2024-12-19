@@ -76,11 +76,11 @@ public class EAOptimizer implements IEAOptimizer {
             .limit(bySteadyFitness(7))
             .limit(500)
             .peek(statistics)
+            .peek(result -> evolutionStatusReceiver.reportStatus(converter.toPhenoValue(result.bestPhenotype()),
+                    result.bestFitness()))
             .collect(EvolutionResult.toBestPhenotype());
 
         LOGGER.info("EA finished...");
-
-        evolutionStatusReceiver.reportStatus(converter.toPhenoValue(phenotype), phenotype.fitness());
 
         LOGGER.info(statistics);
     }
