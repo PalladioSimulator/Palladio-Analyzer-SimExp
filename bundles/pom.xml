@@ -61,6 +61,7 @@
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
 		<module>io.fabric8.kubernetes</module>
+		<module>com.rabbitmq.client</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
