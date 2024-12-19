@@ -89,7 +89,7 @@ public class OneHotEncodingHelperTest {
 
         double decodedValue = codecOfSubSet.decode(gt);
 
-        assertEquals(doubleArray[6], decodedValue, 0.0001);
+        assertEquals(doubleArray[4], decodedValue, 0.0001);
     }
 
     @Test(expected = RuntimeException.class)
