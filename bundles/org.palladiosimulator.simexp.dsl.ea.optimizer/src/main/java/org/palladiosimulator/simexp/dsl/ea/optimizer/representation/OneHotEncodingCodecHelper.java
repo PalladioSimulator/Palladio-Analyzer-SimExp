@@ -1,11 +1,9 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.BitSet;
 import java.util.Objects;
-
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -17,7 +15,7 @@ import io.jenetics.util.ISeq;
 
 public class OneHotEncodingCodecHelper {
 
-    private GrayConverterHelper grayConverterHelper = new GrayConverterHelper();
+    private GrayConverter grayConverterHelper = new GrayConverter();
 
     public <T> InvertibleCodec<ISeq<T>, BitGene> createCodecOfSubSet(final ISeq<? extends T> basicSet, double p) {
         requireNonNull(basicSet);

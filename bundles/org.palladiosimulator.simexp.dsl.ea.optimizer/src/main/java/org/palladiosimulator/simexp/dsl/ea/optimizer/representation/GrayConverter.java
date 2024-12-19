@@ -1,8 +1,8 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
-public class GrayConverterHelper {
+public class GrayConverter {
 
     public int grayToIdx(BitSet bitSet) {
         int idx = 0;
