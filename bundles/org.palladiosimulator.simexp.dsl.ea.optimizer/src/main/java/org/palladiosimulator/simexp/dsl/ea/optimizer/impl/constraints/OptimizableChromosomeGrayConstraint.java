@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.GrayConverter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.AnyGene;
@@ -17,8 +17,10 @@ import io.jenetics.util.RandomRegistry;
 
 public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
 
+    private GrayConverter grayConverterHelper;
+
     public OptimizableChromosomeGrayConstraint() {
-        // TODO nbruening remove parameter
+        grayConverterHelper = new GrayConverter();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<O
                 while (!bitChromosomeValid(bitChromo)) {
                     int newIdx = RandomRegistry.random()
                         .nextInt(0, (int) Math.pow(2, bitChromo.length()));
-                    BitSet newBitSet = GrayConverterHelper.idxToGray(newIdx, bitChromo.length());
+                    BitSet newBitSet = grayConverterHelper.idxToGray(newIdx, bitChromo.length());
                     bitChromo = BitChromosome.of(newBitSet, bitChromo.length());
                 }
                 chromoPair.setGenotype(Genotype.of(bitChromo));
@@ -84,7 +86,7 @@ public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<O
     }
 
     private boolean bitChromosomeValid(BitChromosome bitChromo) {
-        int idx = GrayConverterHelper.grayToIdx(bitChromo.toBitSet());
+        int idx = grayConverterHelper.grayToIdx(bitChromo.toBitSet());
         return (idx < Math.pow(2, bitChromo.length())) && (idx >= 0);
     }
 

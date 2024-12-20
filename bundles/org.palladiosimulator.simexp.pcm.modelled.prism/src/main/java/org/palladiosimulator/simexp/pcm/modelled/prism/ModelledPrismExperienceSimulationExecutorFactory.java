@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.modelled.prism;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
@@ -11,13 +12,16 @@ import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWork
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends Number, V>
         extends ModelledExperienceSimulationExecutorFactory<R, V, PrismSimulatedMeasurementSpec> {
 
     public ModelledPrismExperienceSimulationExecutorFactory(IModelledPrismWorkflowConfiguration workflowConfiguration,
             ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override

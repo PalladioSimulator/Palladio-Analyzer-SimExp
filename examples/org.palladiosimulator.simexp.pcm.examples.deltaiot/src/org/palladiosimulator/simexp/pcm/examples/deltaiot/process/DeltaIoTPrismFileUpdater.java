@@ -251,7 +251,7 @@ public abstract class DeltaIoTPrismFileUpdater<A>
             // TODO exception handling
             throw new RuntimeException("");
         }
-        prismContext.moduleFileContent = prismContext.moduleFileContent.replaceAll(symbolToReplace, value);
+        prismContext.resolveAndSubstitute(symbolToReplace, value);
     }
 
 }

@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.reliability;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.palladiosimulator.envdyn.api.entity.bn.ConditionalInputValueUtil;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -27,6 +28,7 @@ import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import com.google.common.collect.Lists;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class RobotCognitionEnvironmentalDynamics<A, R> {
 
@@ -44,9 +46,18 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
 
     private ProbabilityMassFunction<State> createInitialDist() {
         return new ProbabilityMassFunction<>() {
+            private boolean initialized = false;
+
+            @Override
+            public void init(Optional<ISeedProvider> seedProvider) {
+                initialized = true;
+            }
 
             @Override
             public Sample<State> drawSample() {
+                if (!initialized) {
+                    throw new RuntimeException("not initialized");
+                }
                 EnvironmentalStateBuilder<String> builder = EnvironmentalState.newBuilder();
                 EnvironmentalState<String> initial = builder
                     .withValue(new PerceivedCategoricalValue("MLPrediction", "Unknown"))

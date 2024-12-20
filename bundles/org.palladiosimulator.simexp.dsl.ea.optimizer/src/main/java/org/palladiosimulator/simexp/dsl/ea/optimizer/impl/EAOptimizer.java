@@ -5,7 +5,6 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -79,11 +78,11 @@ public class EAOptimizer implements IEAOptimizer {
             .limit(bySteadyFitness(7))
             .limit(500)
             .peek(statistics)
+            .peek(result -> evolutionStatusReceiver.reportStatus(converter.toPhenoValue(result.bestPhenotype()),
+                    result.bestFitness()))
             .collect(EvolutionResult.toBestPhenotype());
 
         LOGGER.info("EA finished...");
-
-        evolutionStatusReceiver.reportStatus(converter.toPhenoValue(phenotype), phenotype.fitness());
 
         LOGGER.info(statistics);
     }
@@ -106,8 +105,6 @@ public class EAOptimizer implements IEAOptimizer {
         ////// to phenotype end
 
         final Engine<AnyGene<OptimizableChromosome>, Double> engine;
-
-        ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
         if (numThreads == 1) {
             engine = Engine.builder(chromoCreator::eval, codec)

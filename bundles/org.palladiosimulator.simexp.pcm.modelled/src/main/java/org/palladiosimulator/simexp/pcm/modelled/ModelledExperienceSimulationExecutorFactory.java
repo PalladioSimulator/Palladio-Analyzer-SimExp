@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
+import java.util.Optional;
+
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
@@ -18,14 +20,16 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public abstract class ModelledExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification>
         extends PcmExperienceSimulationExecutorFactory<R, V, T> {
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
             ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override

@@ -1,12 +1,12 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot.util;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toMap;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.isSNRTemplate;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTBaseEnvironemtalDynamics.toInputs;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
@@ -53,20 +53,40 @@ public class DeltaIoTCommons {
 
     public static Map<AssemblyContext, Map<LinkingResource, Double>> filterMotesWithWirelessLinks(
             DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, PcmSelfAdaptiveSystemState state) {
-        return filterLinksWithSNR(state).entrySet()
-            .stream()
-            .collect(groupingBy(equalSourceMote(modelAccess, state),
-                    mapping(Function.identity(), toMap(Map.Entry::getKey, Map.Entry::getValue))));
+        Comparator<AssemblyContext> comparator = Comparator.comparing(AssemblyContext::getId);
+        Map<AssemblyContext, Map<LinkingResource, Double>> result = new TreeMap<>(comparator);
+        Function<Map.Entry<LinkingResource, Double>, AssemblyContext> classifier = equalSourceMote(modelAccess, state);
+        Map<LinkingResource, Double> linksWithSNRMap = filterLinksWithSNR(state);
+        for (Map.Entry<LinkingResource, Double> entry : linksWithSNRMap.entrySet()) {
+            AssemblyContext context = classifier.apply(entry);
+            Map<LinkingResource, Double> linkResourceMap = result.get(context);
+            if (linkResourceMap == null) {
+                Comparator<LinkingResource> lrComparator = Comparator.comparing(LinkingResource::getId);
+                linkResourceMap = new TreeMap<>(lrComparator);
+            }
+            linkResourceMap.put(entry.getKey(), entry.getValue());
+            result.put(context, linkResourceMap);
+        }
+
+        return result;
     }
 
     private static Map<LinkingResource, Double> filterLinksWithSNR(PcmSelfAdaptiveSystemState state) {
-        return toInputs(state.getPerceivedEnvironmentalState()
+        List<InputValue<CategoricalValue>> inputList = toInputs(state.getPerceivedEnvironmentalState()
             .getValue()
-            .getValue()).stream()
-                .filter(each -> isSNRTemplate(each.getVariable()))
-                .collect(toMap(k -> (LinkingResource) k.getVariable()
-                    .getAppliedObjects()
-                    .get(0), v -> getSNR(v)));
+            .getValue());
+        Comparator<LinkingResource> comparator = Comparator.comparing(LinkingResource::getId);
+        Map<LinkingResource, Double> result = new TreeMap<>(comparator);
+        for (InputValue<CategoricalValue> inputValue : inputList) {
+            if (!isSNRTemplate(inputValue.getVariable())) {
+                continue;
+            }
+            LinkingResource lr = (LinkingResource) inputValue.getVariable()
+                .getAppliedObjects()
+                .get(0);
+            result.put(lr, getSNR(inputValue));
+        }
+        return result;
     }
 
     private static Double getSNR(InputValue input) {

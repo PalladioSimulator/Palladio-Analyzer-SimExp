@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;

@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.pcm.reliability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
@@ -53,6 +54,7 @@ import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.parser.ParameterParser;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
@@ -65,8 +67,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
     public ModelledReliabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore);
+            SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            Optional<ISeedProvider> seedProvider) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
     }
 
     @Override
@@ -92,8 +95,10 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
+        List<Initializable> beforeExecutionInitializables = new ArrayList<>();
         Initializable beforeExecutionInitializable = new RobotCognitionBeforeExecutionInitialization<>(null,
                 experimentProvider, qvtoReconfigurationManager);
+        beforeExecutionInitializables.add(beforeExecutionInitializable);
 
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
@@ -125,6 +130,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider);
+        beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(null,
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
@@ -137,9 +143,9 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
-                experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializable, envProcess,
+                experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
-                experimentProvider, simulationRunnerHolder, null);
+                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
