@@ -9,11 +9,11 @@ import org.junit.Test;
 
 public class GrayConverterTest {
 
-    private GrayConverter grayConverter;
+    private IntToGrayConverter grayConverter;
 
     @Before
     public void setUp() {
-        grayConverter = new GrayConverter();
+        grayConverter = new IntToGrayConverter();
     }
 
     @Test

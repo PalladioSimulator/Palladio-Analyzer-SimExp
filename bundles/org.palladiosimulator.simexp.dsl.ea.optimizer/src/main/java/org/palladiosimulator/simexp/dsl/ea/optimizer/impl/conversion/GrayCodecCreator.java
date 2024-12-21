@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.BitSet;
 import java.util.Objects;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.IntToGrayConverter;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -16,7 +16,13 @@ import io.jenetics.util.ISeq;
 
 public class GrayCodecCreator implements CodecCreator {
 
-    //TODO delete
+    private IntToGrayConverter grayConverter;
+
+    public GrayCodecCreator() {
+        grayConverter = new IntToGrayConverter();
+    }
+
+    // TODO delete
 //    public <T> InvertibleCodec<T, BitGene> createGrayCodecOfSubSet(final ISeq<? extends T> basicSet, double p) {
 //        requireNonNull(basicSet);
 //        Requires.positive(basicSet.length());
@@ -58,7 +64,7 @@ public class GrayCodecCreator implements CodecCreator {
         int lengthOfGrayCode = (int) Math.ceil(Math.log(basicSet.length()) / Math.log(2));
 
         return InvertibleCodec.of(Genotype.of(BitChromosome.of(lengthOfGrayCode, p)), gt -> {
-            int idx = GrayConverterHelper.grayToIdx(gt.chromosome()
+            int idx = grayConverter.grayToIdx(gt.chromosome()
                 .as(BitChromosome.class)
                 .toBitSet());
             if (idx < basicSet.size()) {
@@ -75,7 +81,7 @@ public class GrayCodecCreator implements CodecCreator {
 
             for (int i = 0; (i < basicSet.size()) && (bitSet == null); i++) {
                 if (Objects.equals(element, basicSet.get(i))) {
-                    bitSet = GrayConverterHelper.idxToGray(i, lengthOfGrayCode);
+                    bitSet = grayConverter.idxToGray(i, lengthOfGrayCode);
 
                 }
             }

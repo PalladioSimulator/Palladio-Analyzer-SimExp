@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -91,10 +92,10 @@ public class OneHotEncodingHelperTest {
         ISeq<Double> decoded = codecOfSubSet.decode(gt);
         assertEquals(1, decoded.size());
         Double decodedValue = decoded.get(0);
-        assertEquals(doubleArray[6], decodedValue, 0.0001);
+        assertEquals(doubleArray[4], decodedValue, 0.0001);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void decodeInvalidSetTest() {
         BitSet bitSet = new BitSet();
         bitSet.set(1);
@@ -108,6 +109,7 @@ public class OneHotEncodingHelperTest {
         InvertibleCodec<ISeq<Double>, BitGene> codecOfSubSet = codecCreator.createCodecOfSubSet(seq, 0.5);
 
         ISeq<Double> decoded = codecOfSubSet.decode(gt);
+        assertNull(decoded);
     }
 
 }

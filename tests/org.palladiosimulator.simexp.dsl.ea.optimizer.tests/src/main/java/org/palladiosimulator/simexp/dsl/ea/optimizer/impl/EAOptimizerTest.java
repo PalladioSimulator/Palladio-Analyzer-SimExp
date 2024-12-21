@@ -18,7 +18,6 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -574,7 +573,6 @@ public class EAOptimizerTest {
     }
 
     @Test
-    @Ignore
     public void manySuboptimizablesOptimizableSetTest() {
         Random r = new Random(42);
 

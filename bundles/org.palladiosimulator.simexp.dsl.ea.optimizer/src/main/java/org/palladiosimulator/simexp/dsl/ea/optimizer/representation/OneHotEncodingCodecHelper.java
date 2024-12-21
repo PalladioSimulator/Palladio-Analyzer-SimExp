@@ -15,7 +15,7 @@ import io.jenetics.util.ISeq;
 
 public class OneHotEncodingCodecHelper {
 
-    private GrayConverter grayConverterHelper = new GrayConverter();
+    private IntToGrayConverter grayConverterHelper = new IntToGrayConverter();
 
     public <T> InvertibleCodec<ISeq<T>, BitGene> createCodecOfSubSet(final ISeq<? extends T> basicSet, double p) {
         requireNonNull(basicSet);

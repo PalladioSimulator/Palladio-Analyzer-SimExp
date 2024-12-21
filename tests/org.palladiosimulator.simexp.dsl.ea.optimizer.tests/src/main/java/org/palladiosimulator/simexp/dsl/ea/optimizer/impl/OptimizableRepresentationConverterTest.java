@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.AbstractConverter;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.GrayRepresentationConverter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -31,6 +32,7 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.engine.Codec;
 import io.jenetics.engine.InvertibleCodec;
+import io.jenetics.util.ISeq;
 
 public class OptimizableRepresentationConverterTest {
 
@@ -58,7 +60,7 @@ public class OptimizableRepresentationConverterTest {
     public void setUp() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
-        converter = new OptimizableRepresentationConverter();
+        converter = new GrayRepresentationConverter();
         setBoundsHelper = new SetBoundsHelper();
     }
 
@@ -103,17 +105,18 @@ public class OptimizableRepresentationConverterTest {
 
     private void checkBooleanGenotype(Codec<?, ?> genotype) {
         assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Boolean, BitGene> castedGenotype = (InvertibleCodec<Boolean, BitGene>) genotype;
+        InvertibleCodec<ISeq<Boolean>, BitGene> castedGenotype = (InvertibleCodec<ISeq<Boolean>, BitGene>) genotype;
         // Encoding
         assertNotNull(castedGenotype.encoding());
         // Encoder
         Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(true);
+            .apply(ISeq.of(true));
         assertTrue(encodedValue.gene()
             .allele());
         // Decoder
         Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(1, 1.0));
-        assertTrue(castedGenotype.decode(genoToDecode));
+        assertTrue(castedGenotype.decode(genoToDecode)
+            .get(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -130,23 +133,24 @@ public class OptimizableRepresentationConverterTest {
 
     private void checkSmallIntListGenotype(Codec<?, ?> genotype) {
         assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Integer, BitGene> castedGenotype = (InvertibleCodec<Integer, BitGene>) genotype;
+        InvertibleCodec<ISeq<Integer>, BitGene> castedGenotype = (InvertibleCodec<ISeq<Integer>, BitGene>) genotype;
         // Encoding
         assertNotNull(castedGenotype.encoding());
         // Encoder
         Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(7);
+            .apply(ISeq.of(7));
         assertEquals("00000011", encodedValue.chromosome()
             .toString());
         Genotype<BitGene> ambiguousEncodedValue = castedGenotype.encoder()
-            .apply(3);
+            .apply(ISeq.of(3));
         assertEquals("00000001", ambiguousEncodedValue.chromosome()
             .toString());
         // Decoder
         Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(new BitSet(0), castedGenotype.encoding()
             .newInstance()
             .length()));
-        assertEquals((Integer) 1, castedGenotype.decode(genoToDecode));
+        assertEquals((Integer) 1, castedGenotype.decode(genoToDecode)
+            .get(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -159,23 +163,24 @@ public class OptimizableRepresentationConverterTest {
         Codec<?, ?> genotype = converter.toGenotype(optimizable, calculator);
 
         assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Integer, BitGene> castedGenotype = (InvertibleCodec<Integer, BitGene>) genotype;
+        InvertibleCodec<ISeq<Integer>, BitGene> castedGenotype = (InvertibleCodec<ISeq<Integer>, BitGene>) genotype;
         // Encoding
         assertNotNull(castedGenotype.encoding());
         // Encoder
         Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(7);
+            .apply(ISeq.of(7));
         assertEquals("00000100", encodedValue.chromosome()
             .toString());
         Genotype<BitGene> secondEncodedValue = castedGenotype.encoder()
-            .apply(18);
+            .apply(ISeq.of(18));
         assertEquals("00011011", secondEncodedValue.chromosome()
             .toString());
         // Decoder
         Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(new BitSet(0), castedGenotype.encoding()
             .newInstance()
             .length()));
-        assertEquals((Integer) 0, castedGenotype.decode(genoToDecode));
+        assertEquals((Integer) 0, castedGenotype.decode(genoToDecode)
+            .get(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -189,23 +194,24 @@ public class OptimizableRepresentationConverterTest {
         Codec<?, ?> genotype = converter.toGenotype(optimizable, calculator);
 
         assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Double, BitGene> castedGenotype = (InvertibleCodec<Double, BitGene>) genotype;
+        InvertibleCodec<ISeq<Double>, BitGene> castedGenotype = (InvertibleCodec<ISeq<Double>, BitGene>) genotype;
         // Encoding
         assertNotNull(castedGenotype.encoding());
         // Encoder
         Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(5.0);
+            .apply(ISeq.of(5.0));
         assertEquals("00000011", encodedValue.chromosome()
             .toString());
         Genotype<BitGene> ambiguousEncodedValue = castedGenotype.encoder()
-            .apply(2.0);
+            .apply(ISeq.of(2.0));
         assertEquals("00000001", ambiguousEncodedValue.chromosome()
             .toString());
         // Decoder
         Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(new BitSet(0), castedGenotype.encoding()
             .newInstance()
             .length()));
-        assertEquals((Double) 1.0, castedGenotype.decode(genoToDecode));
+        assertEquals((Double) 1.0, castedGenotype.decode(genoToDecode)
+            .get(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -219,23 +225,24 @@ public class OptimizableRepresentationConverterTest {
         Codec<?, ?> genotype = converter.toGenotype(optimizable, calculator);
 
         assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Double, BitGene> castedGenotype = (InvertibleCodec<Double, BitGene>) genotype;
+        InvertibleCodec<ISeq<Double>, BitGene> castedGenotype = (InvertibleCodec<ISeq<Double>, BitGene>) genotype;
         // Encoding
         assertNotNull(castedGenotype.encoding());
         // Encoder
         Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(5.0);
+            .apply(ISeq.of(5.0));
         assertEquals("00000111", encodedValue.chromosome()
             .toString());
         Genotype<BitGene> ambiguousEncodedValue = castedGenotype.encoder()
-            .apply(18.0);
+            .apply(ISeq.of(18.0));
         assertEquals("00011011", ambiguousEncodedValue.chromosome()
             .toString());
         // Decoder
         Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(new BitSet(0), castedGenotype.encoding()
             .newInstance()
             .length()));
-        assertEquals((Double) 0.0, castedGenotype.decode(genoToDecode));
+        assertEquals((Double) 0.0, castedGenotype.decode(genoToDecode)
+            .get(0));
     }
 
     // TODO nbruening Test toPhenoValue methods

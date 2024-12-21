@@ -3,9 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<<HEAD:bundles/org.palladiosimulator.simexp.dsl.ea.optimizer/src/main/java/org/palladiosimulator/simexp/dsl/ea/optimizer/impl/conversion/BoundsParser.java
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;=======
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OneHotEncodingCodecHelper;>>>>>>>ma_bruening-ea-refactor-representation:bundles/org.palladiosimulator.simexp.dsl.ea.optimizer/src/main/java/org/palladiosimulator/simexp/dsl/ea/optimizer/impl/BoundsParser.java
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;

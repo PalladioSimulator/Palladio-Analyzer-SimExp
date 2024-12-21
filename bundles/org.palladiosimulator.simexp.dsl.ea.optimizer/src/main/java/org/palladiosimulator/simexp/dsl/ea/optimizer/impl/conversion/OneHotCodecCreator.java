@@ -2,10 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.BitSet;
 import java.util.Objects;
-
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.util.GrayConverterHelper;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -40,7 +37,5 @@ public class OneHotCodecCreator implements CodecCreator {
                 return Genotype.of(new BitChromosome(bits, 0, basicSet.size()));
             });
     }
-
-
 
 }
