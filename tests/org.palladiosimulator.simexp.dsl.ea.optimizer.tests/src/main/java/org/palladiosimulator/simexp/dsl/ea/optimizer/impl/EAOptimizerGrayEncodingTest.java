@@ -43,7 +43,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import io.jenetics.util.RandomRegistry;
 
-public class EAOptimizerTest {
+public class EAOptimizerGrayEncodingTest {
 
     private static final double DELTA = 0.0001;
 
