@@ -36,7 +36,7 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
             double fitness = fitnessFuture.get();
             return fitness;
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error(String.format("%s -> return fitness of 0.0", e.getMessage()), e);
         }
 
         return 0.0;
