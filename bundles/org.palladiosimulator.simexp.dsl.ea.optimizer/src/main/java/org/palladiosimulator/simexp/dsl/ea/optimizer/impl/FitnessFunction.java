@@ -31,7 +31,7 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
     @Override
     public Double apply(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
-        List<OptimizableValue<?>> optimizableValues = toOptimizableValues(chromosomes);
+        List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
 
         Future<Double> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
@@ -42,15 +42,6 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
         }
 
         return 0.0;
-    }
-
-    private List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
-        List<OptimizableValue<?>> values = new ArrayList<>();
-        for (SmodelBitChromosome chomosome : chromosomes) {
-            OptimizableValue<?> value = optimizableNormalizer.toOptimizable(chomosome);
-            values.add(value);
-        }
-        return values;
     }
 
     private List<SmodelBitChromosome> extracted(Genotype<BitGene> genotype) {

@@ -24,6 +24,12 @@ public class OptimizableNormalizer {
         this.expressionCalculator = expressionCalculator;
     }
 
+    public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
+        return optimizables.stream()
+            .map(o -> toNormalized(o))
+            .collect(Collectors.toList());
+    }
+
     public SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
@@ -46,6 +52,12 @@ public class OptimizableNormalizer {
         }
 
         throw new RuntimeException("invalid bounds: " + bounds);
+    }
+
+    public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
+        return chromosomes.stream()
+            .map(c -> toOptimizable(c))
+            .collect(Collectors.toList());
     }
 
     public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
