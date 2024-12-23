@@ -19,6 +19,10 @@ public class SmodelBitChromosome extends BitChromosome {
         this.optimizable = optimizable;
     }
 
+    public Optimizable getOptimizable() {
+        return optimizable;
+    }
+
     @Override
     public boolean isValid() {
         // TODO: check for gene length's
@@ -41,7 +45,7 @@ public class SmodelBitChromosome extends BitChromosome {
             throw new IllegalArgumentException("The genes sequence must contain at least one gene.");
         }
 
-        final SmodelBitChromosome chromosome = new SmodelBitChromosome(optimizable, Bits.newArray(genes.length()),
+        final SmodelBitChromosome chromosome = new SmodelBitChromosome(getOptimizable(), Bits.newArray(genes.length()),
                 genes.length());
         int ones = 0;
 

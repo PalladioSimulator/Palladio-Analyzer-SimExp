@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -39,6 +41,19 @@ public class OptimizableNormalizer {
     }
 
     public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
-        return null;
+        Optimizable optimizable = chromosome.getOptimizable();
+        DataType dataType = optimizable.getDataType();
+        switch (dataType) {
+        case INT:
+            return toOptimizableInt(optimizable, chromosome);
+        default:
+            throw new OptimizableProcessingException("Unsupported type: " + dataType);
+        }
+    }
+
+    private OptimizableValue<Integer> toOptimizableInt(Optimizable optimizable, SmodelBitChromosome chromosome) {
+        SmodelBitset bitSet = chromosome.toBitSet();
+        int value = bitSet.toInt();
+        return new OptimizableValue<>(optimizable, value);
     }
 }
