@@ -43,11 +43,8 @@ public class OptimizableNormalizer {
             int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
             int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
 
-            List<Integer> ints = IntStream.iterate(startValue, n -> n + stepSize)
-                .takeWhile(n -> n < endValue)
-                .boxed()
-                .collect(Collectors.toList());
-            int minLength = powerUtil.minBitSizeForPower(ints.size());
+            int power = (endValue - startValue) / stepSize;
+            int minLength = powerUtil.minBitSizeForPower(power);
             return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable);
         }
 
