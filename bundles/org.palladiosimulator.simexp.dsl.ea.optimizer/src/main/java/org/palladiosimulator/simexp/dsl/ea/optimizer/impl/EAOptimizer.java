@@ -56,12 +56,7 @@ public class EAOptimizer implements IEAOptimizer {
                 gt -> gt.gene()
                     .allele());
         ////// to phenotype end
-
-        OptimizerEngineFactory optimizerEngineFactory = new OptimizerEngineFactory();
-//        optimizerEngineFactory.bla(chromoCreator::eval);
-
-//        optimizerEngineFactory.builder(chromoCreator::eval, codec);
-
+        
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(100)
             .selector(new TournamentSelector<>((int) (1000 * 0.05)))

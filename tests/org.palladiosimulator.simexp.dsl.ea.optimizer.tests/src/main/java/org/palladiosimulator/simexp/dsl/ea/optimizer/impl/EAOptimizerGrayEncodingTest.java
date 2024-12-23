@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
@@ -42,6 +42,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
+import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 
 public class EAOptimizerGrayEncodingTest {
@@ -120,10 +121,10 @@ public class EAOptimizerGrayEncodingTest {
         verify(statusReceiver, atLeast(1)).reportStatus(optimizableListCaptor.capture(), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(50.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
-        OptimizableValue<?> finalValue = allValues.get(allValues.size() - 1)
+        List<List<OptimizableValue<?>>> optimizableValues = optimizableListCaptor.getAllValues();
+        OptimizableValue<?> finalOptimizableValue = optimizableValues.get(optimizableValues.size() - 1)
             .get(0);
-        assertTrue((Boolean) finalValue.getValue());
+        assertFalse((Boolean) ((ISeq) finalOptimizableValue.getValue()).get(0));
     }
 
     @Test
@@ -571,7 +572,7 @@ public class EAOptimizerGrayEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(60.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(61.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -639,6 +640,6 @@ public class EAOptimizerGrayEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(863.7281, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(913.7282, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 }

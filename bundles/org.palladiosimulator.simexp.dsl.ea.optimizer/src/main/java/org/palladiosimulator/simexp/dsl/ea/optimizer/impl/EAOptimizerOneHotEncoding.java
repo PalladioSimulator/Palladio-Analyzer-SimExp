@@ -47,7 +47,6 @@ public class EAOptimizerOneHotEncoding implements IEAOptimizer {
                     .allele());
         ////// to phenotype end
 
-        OptimizerEngineFactory optimizerEngineFactory = new OptimizerEngineFactory();
 //        optimizerEngineFactory.bla(chromoCreator::eval);
 
 //        optimizerEngineFactory.builder(chromoCreator::eval, codec);
