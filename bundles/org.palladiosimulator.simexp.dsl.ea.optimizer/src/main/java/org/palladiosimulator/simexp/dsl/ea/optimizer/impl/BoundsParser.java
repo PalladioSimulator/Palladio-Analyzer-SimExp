@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OneHotEncodingCodecHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;

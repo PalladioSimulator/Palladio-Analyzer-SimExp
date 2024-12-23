@@ -2,9 +2,9 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints;
 
 import java.util.BitSet;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.GrayConverter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.GrayConverter;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.AnyGene;

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.BitSet;
 
