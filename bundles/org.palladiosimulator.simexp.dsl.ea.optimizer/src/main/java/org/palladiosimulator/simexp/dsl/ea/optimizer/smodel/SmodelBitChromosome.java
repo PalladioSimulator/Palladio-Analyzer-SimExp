@@ -30,6 +30,12 @@ public class SmodelBitChromosome extends BitChromosome {
     }
 
     @Override
+    public int intValue() {
+        SmodelBitset bitSet = toBitSet();
+        return bitSet.toInt();
+    }
+
+    @Override
     public SmodelBitset toBitSet() {
         final SmodelBitset set = new SmodelBitset(length());
         for (int i = 0, n = length(); i < n; ++i) {
@@ -49,12 +55,6 @@ public class SmodelBitChromosome extends BitChromosome {
                 genes.length());
         int ones = 0;
 
-        // TODO: check size of new genes
-
-        /*
-         * if (genes instanceof BitGeneISeq) { final BitGeneISeq iseq = (BitGeneISeq) genes;
-         * iseq.copyTo(chromosome._genes); ones = Bits.count(chromosome._genes); } else {
-         */
         for (int i = genes.length(); --i >= 0;) {
             if (genes.get(i)
                 .booleanValue()) {
@@ -62,7 +62,6 @@ public class SmodelBitChromosome extends BitChromosome {
                 ++ones;
             }
         }
-        // }
 
         chromosome._p = (double) ones / (double) genes.length();
         return chromosome;

@@ -14,9 +14,15 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 public class OptimizableNormalizer {
-    private final PowerUtil powerUtil = new PowerUtil();
+    private final PowerUtil powerUtil;
+    private final IExpressionCalculator expressionCalculator;
 
-    public SmodelBitChromosome toNormalized(Optimizable optimizable, IExpressionCalculator expressionCalculator) {
+    public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
+        this.powerUtil = new PowerUtil();
+        this.expressionCalculator = expressionCalculator;
+    }
+
+    public SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
             int minLength = powerUtil.minBitSizeForPower(setBounds.getValues()
@@ -52,8 +58,29 @@ public class OptimizableNormalizer {
     }
 
     private OptimizableValue<Integer> toOptimizableInt(Optimizable optimizable, SmodelBitChromosome chromosome) {
-        SmodelBitset bitSet = chromosome.toBitSet();
-        int value = bitSet.toInt();
+        int valueIndex = chromosome.intValue();
+        List<Integer> valueList = getValueListInt(optimizable);
+        int value = valueList.get(valueIndex);
         return new OptimizableValue<>(optimizable, value);
+    }
+
+    private List<Integer> getValueListInt(Optimizable optimizable) {
+        Bounds bounds = optimizable.getValues();
+        if (bounds instanceof SetBounds setBounds) {
+            return setBounds.getValues()
+                .stream()
+                .map(e -> expressionCalculator.calculateInteger(e))
+                .collect(Collectors.toList());
+        }
+        if (bounds instanceof RangeBounds rangeBounds) {
+            int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
+            int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
+            int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
+            return IntStream.iterate(startValue, n -> n + stepSize)
+                .takeWhile(n -> n < endValue)
+                .boxed()
+                .collect(Collectors.toList());
+        }
+        throw new RuntimeException("invalid bounds: " + bounds);
     }
 }

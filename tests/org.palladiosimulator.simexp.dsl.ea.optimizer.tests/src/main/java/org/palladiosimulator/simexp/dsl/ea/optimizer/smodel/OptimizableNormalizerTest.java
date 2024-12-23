@@ -29,7 +29,7 @@ public class OptimizableNormalizerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        optimizableNormalizer = new OptimizableNormalizer();
+        optimizableNormalizer = new OptimizableNormalizer(calculator);
         smodelCreator = new SmodelCreator();
     }
 
@@ -39,7 +39,7 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
 
-        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(0, actualChromosome.length());
     }
@@ -51,7 +51,7 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
 
-        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(1, actualChromosome.length());
     }
@@ -64,7 +64,7 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2, literal3);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
 
-        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(2, actualChromosome.length());
     }
@@ -80,15 +80,17 @@ public class OptimizableNormalizerTest {
         RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
         Optimizable optimizable = smodelCreator.createOptimizable("intRangeOptimizable", DataType.INT, bounds);
 
-        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(1, actualChromosome.length());
     }
 
     @Test
-    public void testToOptimizableInt0() {
-        Literal literal1 = smodelCreator.createIntLiteral(1);
-        Literal literal2 = smodelCreator.createIntLiteral(2);
+    public void testToOptimizableIntIndex0() {
+        IntLiteral literal1 = smodelCreator.createIntLiteral(1);
+        IntLiteral literal2 = smodelCreator.createIntLiteral(2);
+        when(calculator.calculateInteger(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateInteger(literal2)).thenReturn(literal2.getValue());
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
@@ -96,14 +98,16 @@ public class OptimizableNormalizerTest {
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
 
-        assertEquals(0, actualValue.getValue());
+        assertEquals(1, actualValue.getValue());
         assertSame(actualValue.getOptimizable(), optimizable);
     }
 
     @Test
-    public void testToOptimizableInt1() {
-        Literal literal1 = smodelCreator.createIntLiteral(1);
-        Literal literal2 = smodelCreator.createIntLiteral(2);
+    public void testToOptimizableIntIndex1() {
+        IntLiteral literal1 = smodelCreator.createIntLiteral(1);
+        IntLiteral literal2 = smodelCreator.createIntLiteral(2);
+        when(calculator.calculateInteger(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateInteger(literal2)).thenReturn(literal2.getValue());
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
@@ -112,7 +116,7 @@ public class OptimizableNormalizerTest {
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 
-        assertEquals(1, actualValue.getValue());
+        assertEquals(2, actualValue.getValue());
         assertSame(actualValue.getOptimizable(), optimizable);
     }
 }
