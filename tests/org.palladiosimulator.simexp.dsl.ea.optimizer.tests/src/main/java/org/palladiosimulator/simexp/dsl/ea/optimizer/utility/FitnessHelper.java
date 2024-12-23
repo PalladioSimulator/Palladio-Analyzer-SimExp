@@ -66,6 +66,10 @@ public class FitnessHelper {
                             if (element != null) {
                                 value += (Double) element;
                             }
+                        } else if (optimizableDataType == DataType.BOOL) {
+                            if (element != null) {
+                                value += 50;
+                            }
                         }
 
                     }

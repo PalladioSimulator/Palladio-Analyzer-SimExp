@@ -30,6 +30,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.ProblemEncoding;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -81,9 +82,10 @@ public class EAOptimizerGrayEncodingTest {
     public void setUp() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
-        when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
-
         setBoundsHelper = new SetBoundsHelper();
+
+        when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
+        when(eaConfig.getEncoding()).thenReturn(ProblemEncoding.GrayEncoding);
 
         threadLocalRandom = ThreadLocal.withInitial(() -> {
             RandomRegistry.random(new Random(42));
@@ -119,9 +121,9 @@ public class EAOptimizerGrayEncodingTest {
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(50.0, capturedValues.get(capturedValues.size() - 1), DELTA);
         List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
-        OptimizableValue<?> optimizableValue = allValues.get(0)
+        OptimizableValue<?> finalValue = allValues.get(allValues.size() - 1)
             .get(0);
-        assertTrue((Boolean) optimizableValue.getValue());
+        assertTrue((Boolean) finalValue.getValue());
     }
 
     @Test
