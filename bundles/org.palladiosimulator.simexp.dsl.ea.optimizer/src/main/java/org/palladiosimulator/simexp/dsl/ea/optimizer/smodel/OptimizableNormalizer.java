@@ -39,16 +39,26 @@ public class OptimizableNormalizer {
         }
 
         if (bounds instanceof RangeBounds rangeBounds) {
-            int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
-            int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
-            int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
-
-            int power = (endValue - startValue) / stepSize;
-            int minLength = powerUtil.minBitSizeForPower(power);
-            return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable);
+            DataType dataType = optimizable.getDataType();
+            switch (dataType) {
+            case INT:
+                return toNormalizedRangeInt(optimizable, rangeBounds);
+            default:
+                throw new OptimizableProcessingException("Unsupported type: " + dataType);
+            }
         }
 
         throw new RuntimeException("invalid bounds: " + bounds);
+    }
+
+    private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {
+        int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
+        int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
+        int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
+
+        int power = (endValue - startValue) / stepSize;
+        int minLength = powerUtil.minBitSizeForPower(power);
+        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable);
     }
 
     public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
