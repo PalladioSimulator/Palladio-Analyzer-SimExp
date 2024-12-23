@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.codecs;
 
 import io.jenetics.BitGene;
 import io.jenetics.engine.InvertibleCodec;

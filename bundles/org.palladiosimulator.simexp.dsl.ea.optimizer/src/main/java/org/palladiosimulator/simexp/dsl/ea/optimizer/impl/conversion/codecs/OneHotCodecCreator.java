@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.codecs;
 
 import static java.util.Objects.requireNonNull;
 
@@ -31,7 +31,11 @@ public class OneHotCodecCreator implements CodecCreator {
                     while (i < basicSet.size() && !Objects.equals(basicSet.get(i), v)) {
                         ++i;
                     }
-                    Bits.set(bits, i);
+                    if (Objects.equals(basicSet.get(i), v)) {
+                        Bits.set(bits, i);
+                    } else if (i == basicSet.size()) {
+                        throw new RuntimeException("Given value to decode is not in the based set");
+                    }
                 }
 
                 return Genotype.of(new BitChromosome(bits, 0, basicSet.size()));

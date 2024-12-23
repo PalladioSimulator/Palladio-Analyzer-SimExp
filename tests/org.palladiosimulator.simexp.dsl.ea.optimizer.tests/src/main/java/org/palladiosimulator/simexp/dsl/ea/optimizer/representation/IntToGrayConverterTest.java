@@ -7,7 +7,7 @@ import java.util.BitSet;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GrayConverterTest {
+public class IntToGrayConverterTest {
 
     private IntToGrayConverter grayConverter;
 

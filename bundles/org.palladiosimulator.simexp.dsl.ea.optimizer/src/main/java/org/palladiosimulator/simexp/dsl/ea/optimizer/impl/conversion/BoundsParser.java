@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.codecs.CodecCreator;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;

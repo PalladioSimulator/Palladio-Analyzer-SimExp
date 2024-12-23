@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosomeFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.codecs.CodecCreator;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
