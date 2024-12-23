@@ -14,12 +14,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 public class OptimizableNormalizer {
     private final PowerUtil powerUtil = new PowerUtil();
 
-    public SmodelBitset toNormalized(Optimizable optimizable, IExpressionCalculator expressionCalculator) {
+    public SmodelBitChromosome toNormalized(Optimizable optimizable, IExpressionCalculator expressionCalculator) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
             int minLength = powerUtil.minBitSizeForPower(setBounds.getValues()
                 .size());
-            return new SmodelBitset(optimizable, minLength);
+            return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable);
         }
 
         if (bounds instanceof RangeBounds rangeBounds) {
@@ -32,27 +32,13 @@ public class OptimizableNormalizer {
                 .boxed()
                 .collect(Collectors.toList());
             int minLength = powerUtil.minBitSizeForPower(ints.size());
-            return new SmodelBitset(optimizable, minLength);
+            return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable);
         }
 
         throw new RuntimeException("invalid bounds: " + bounds);
     }
 
-    // Convert Binary to Gray Code; used formula: Gray = Binary XOR (Binary >> 1)
-    private int binaryToGray(int binary) {
-        return binary ^ (binary >> 1);
-    }
-
-    public OptimizableValue<?> toOptimizable(SmodelBitset bitSet) {
+    public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
         return null;
-    }
-
-    // Convert Gray Code to Binary
-    public static int grayToBinary(int gray) {
-        int binary = gray;
-        while ((gray >>= 1) > 0) {
-            binary ^= gray;
-        }
-        return binary;
     }
 }

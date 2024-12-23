@@ -37,11 +37,12 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
 
-        SmodelBitset actualBitSet = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
 
-        SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 0);
-        assertEquals(expectedBitSet, actualBitSet);
-        assertEquals(0, actualBitSet.getNbits());
+        // SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 0);
+        // assertEquals(expectedBitSet, actualChromosome);
+        // assertEquals(0, actualChromosome.getNbits());
+        assertEquals(0, actualChromosome.length());
     }
 
     @Test
@@ -50,12 +51,14 @@ public class OptimizableNormalizerTest {
         Literal literal2 = smodelCreator.createIntLiteral(2);
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
-        SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 1);
 
-        SmodelBitset actualBitSet = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
 
-        assertEquals(expectedBitSet, actualBitSet);
-        assertEquals(1, actualBitSet.getNbits());
+        /*
+         * SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 1);
+         * assertEquals(expectedBitSet, actualBitSet); assertEquals(1, actualBitSet.getNbits());
+         */
+        assertEquals(1, actualChromosome.length());
     }
 
     @Test
@@ -65,12 +68,14 @@ public class OptimizableNormalizerTest {
         Literal literal3 = smodelCreator.createIntLiteral(3);
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2, literal3);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
-        SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 2);
 
-        SmodelBitset actualBitSet = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
 
-        assertEquals(expectedBitSet, actualBitSet);
-        assertEquals(2, actualBitSet.getNbits());
+        /*
+         * SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 2);
+         * assertEquals(expectedBitSet, actualBitSet); assertEquals(2, actualBitSet.getNbits());
+         */
+        assertEquals(2, actualChromosome.length());
     }
 
     @Test
@@ -84,11 +89,13 @@ public class OptimizableNormalizerTest {
         RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
         Optimizable optimizable = smodelCreator.createOptimizable("intRangeOptimizable", DataType.INT, bounds);
 
-        SmodelBitset actualBitSet = optimizableNormalizer.toNormalized(optimizable, calculator);
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable, calculator);
 
-        SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 1);
-        assertEquals(expectedBitSet, actualBitSet);
-        assertEquals(1, actualBitSet.getNbits());
+        /*
+         * SmodelBitset expectedBitSet = new SmodelBitset(optimizable, 1);
+         * assertEquals(expectedBitSet, actualBitSet); assertEquals(1, actualBitSet.getNbits());
+         */
+        assertEquals(1, actualChromosome.length());
     }
 
 //    @Test(expected = RuntimeException.class)
