@@ -43,6 +43,7 @@ public class OptimizableNormalizer {
             switch (dataType) {
             case INT:
                 return toNormalizedRangeInt(optimizable, rangeBounds);
+            // ToDo: add other datatypes
             default:
                 throw new OptimizableProcessingException("Unsupported type: " + dataType);
             }
@@ -73,6 +74,7 @@ public class OptimizableNormalizer {
         switch (dataType) {
         case INT:
             return toOptimizableInt(optimizable, chromosome);
+        // ToDo: add other datatypes
         default:
             throw new OptimizableProcessingException("Unsupported type: " + dataType);
         }
