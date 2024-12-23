@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 

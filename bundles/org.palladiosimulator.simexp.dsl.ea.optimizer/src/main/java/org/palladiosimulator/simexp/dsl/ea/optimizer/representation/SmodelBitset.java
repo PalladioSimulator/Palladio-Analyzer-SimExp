@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 public class SmodelBitset extends FixedSizeBitSet {
     private static final long serialVersionUID = 1L;
