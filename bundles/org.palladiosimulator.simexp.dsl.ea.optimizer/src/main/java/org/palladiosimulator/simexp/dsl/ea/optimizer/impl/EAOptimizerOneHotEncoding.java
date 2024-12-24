@@ -28,7 +28,7 @@ import io.jenetics.engine.EvolutionStatistics;
 
 public class EAOptimizerOneHotEncoding implements IEAOptimizer {
 
-    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizerGrayEncoding.class);
 
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,

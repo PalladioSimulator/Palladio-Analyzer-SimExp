@@ -49,7 +49,7 @@ public class EAOptimizerGrayEncodingTest {
 
     private static final double DELTA = 0.0001;
 
-    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizerGrayEncoding.class);
 
     private IEAOptimizer optimizer;
 

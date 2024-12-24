@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.CodecOptimizablePair;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizerGrayEncoding;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosomeFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
@@ -23,7 +23,7 @@ import io.jenetics.engine.Codec;
 
 public abstract class AbstractConverter {
 
-    protected static final Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+    protected static final Logger LOGGER = Logger.getLogger(EAOptimizerGrayEncoding.class);
 
     protected BoundsParser parser;
 
@@ -66,7 +66,7 @@ public abstract class AbstractConverter {
         List<OptimizableValue<?>> finalOptimizableValues = new ArrayList();
 
         for (SingleOptimizableChromosome singleChromo : phenoChromo.chromosomes) {
-            LOGGER.info(singleChromo.getPhenotype());
+//            LOGGER.info(singleChromo.getPhenotype());
             finalOptimizableValues.add(singleChromo.toOptimizableValue());
         }
 

@@ -31,8 +31,10 @@ import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.util.RandomRegistry;
 
-public class EAOptimizer implements IEAOptimizer {
-    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+public class EAOptimizerGrayEncoding implements IEAOptimizer {
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizerGrayEncoding.class);
+
+    protected int populationSize = 500;
 
     public static int eval(final Genotype<IntegerGene> gt) {
         return gt.chromosome()
@@ -43,7 +45,7 @@ public class EAOptimizer implements IEAOptimizer {
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-        LOGGER.info("EA running...");
+//        LOGGER.info("EA running...");
         ////// to phenotype
 
         AbstractConverter converter = new GrayRepresentationConverter();
@@ -56,7 +58,7 @@ public class EAOptimizer implements IEAOptimizer {
                 gt -> gt.gene()
                     .allele());
         ////// to phenotype end
-        
+
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(100)
             .selector(new TournamentSelector<>((int) (1000 * 0.05)))
@@ -75,22 +77,22 @@ public class EAOptimizer implements IEAOptimizer {
 
         final Phenotype<AnyGene<OptimizableChromosome>, Double> phenotype = engine.stream()
             .limit(bySteadyFitness(7))
-            .limit(500)
+            .limit(populationSize)
             .peek(statistics)
             .peek(result -> evolutionStatusReceiver.reportStatus(converter.toPhenoValue(result.bestPhenotype()),
                     result.bestFitness()))
             .collect(EvolutionResult.toBestPhenotype());
 
-        LOGGER.info("EA finished...");
+//        LOGGER.info("EA finished...");
 
-        LOGGER.info(statistics);
+//        LOGGER.info(statistics);
     }
 
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, int numThreads) {
         assert (numThreads > 0);
-        LOGGER.info("EA running...");
+//        LOGGER.info("EA running...");
         ////// to phenotype
         AbstractConverter converter = new GrayRepresentationConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
@@ -103,6 +105,15 @@ public class EAOptimizer implements IEAOptimizer {
                     .allele());
         ////// to phenotype end
 
+        final Engine<AnyGene<OptimizableChromosome>, Double> engine = buildEngine(numThreads, chromoCreator, codec);
+
+        //// setup EA
+        runOptimization(evolutionStatusReceiver, converter, engine);
+    }
+
+    protected Engine<AnyGene<OptimizableChromosome>, Double> buildEngine(int numThreads,
+            OptimizableChromosomeFactory chromoCreator,
+            Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec) {
         final Engine<AnyGene<OptimizableChromosome>, Double> engine;
 
         if (numThreads == 1) {
@@ -123,9 +134,7 @@ public class EAOptimizer implements IEAOptimizer {
                 .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
                 .build();
         }
-
-        //// setup EA
-        runOptimization(evolutionStatusReceiver, converter, engine);
+        return engine;
     }
 
     public void optimize3(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
@@ -145,7 +154,7 @@ public class EAOptimizer implements IEAOptimizer {
         ////// to phenotype end
 
         //// setup EA
-        Engine<IntegerGene, Integer> engine = Engine.builder(EAOptimizer::eval, genotype)
+        Engine<IntegerGene, Integer> engine = Engine.builder(EAOptimizerGrayEncoding::eval, genotype)
             .executor(Runnable::run)
             .build();
 
