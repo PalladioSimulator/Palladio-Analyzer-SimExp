@@ -18,7 +18,7 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
 
-public class OptimizableChromosomeConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
+public class OptimizableChromosomeOHConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
 
     @Override
     public boolean test(Phenotype<AnyGene<OptimizableChromosome>, Double> individual) {
@@ -28,7 +28,8 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
             .allele();
         boolean result = true;
         for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
+            Chromosome chromosome = chromoPair.genotype()
+                .chromosome();
 
             if (chromoPair.optimizable()
                 .getDataType() == DataType.BOOL) {
@@ -56,7 +57,8 @@ public class OptimizableChromosomeConstraint implements Constraint<AnyGene<Optim
         Random random = new Random();
 
         for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = ((Genotype) chromoPair.genotype()).chromosome();
+            Chromosome chromosome = chromoPair.genotype()
+                .chromosome();
 
             if ((chromoPair.optimizable()
                 .getDataType() != DataType.BOOL) && (chromosome instanceof BitChromosome bitChromo)) {

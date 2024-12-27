@@ -11,7 +11,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeOHConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeGrayConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.AbstractConverter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.GrayRepresentationConverter;
@@ -193,7 +193,7 @@ public class EAOptimizerGrayEncoding implements IEAOptimizer {
         //// setup EA
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
             .populationSize(100)
-            .constraint(new OptimizableChromosomeConstraint())
+            .constraint(new OptimizableChromosomeOHConstraint())
             .selector(new TournamentSelector<>((int) (1000 * 0.05)))
             .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
             .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))

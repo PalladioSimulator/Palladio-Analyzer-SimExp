@@ -10,7 +10,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeGrayConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeOHConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.AbstractConverter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.conversion.OneHotEncodingConverter;
 
@@ -27,6 +27,8 @@ import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
 
 public class EAOptimizerOneHotEncoding implements IEAOptimizer {
+
+    protected int populationSize = 100;
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizerGrayEncoding.class);
 
@@ -52,10 +54,11 @@ public class EAOptimizerOneHotEncoding implements IEAOptimizer {
 //        optimizerEngineFactory.builder(chromoCreator::eval, codec);
 
         final Engine<AnyGene<OptimizableChromosome>, Double> engine = Engine.builder(chromoCreator::eval, codec)
-            .populationSize(100)
+            .populationSize(populationSize)
+            .constraint(new OptimizableChromosomeOHConstraint())
             .selector(new TournamentSelector<>((int) (1000 * 0.05)))
             .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-            .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+            .alterers(new Mutator<>(0.001), new UniformCrossover<>(0.5))
             .build();
 
         //// setup EA
@@ -67,7 +70,7 @@ public class EAOptimizerOneHotEncoding implements IEAOptimizer {
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, int numThreads) {
         assert (numThreads > 0);
-        LOGGER.info("EA running...");
+//        LOGGER.info("EA running...");
         ////// to phenotype
         AbstractConverter converter = new OneHotEncodingConverter();
         List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
@@ -80,29 +83,37 @@ public class EAOptimizerOneHotEncoding implements IEAOptimizer {
                     .allele());
         ////// to phenotype end
 
+        final Engine<AnyGene<OptimizableChromosome>, Double> engine = buildEngine(numThreads, chromoCreator, codec);
+
+        //// setup EA
+        runOptimization(evolutionStatusReceiver, converter, engine);
+    }
+
+    protected Engine<AnyGene<OptimizableChromosome>, Double> buildEngine(int numThreads,
+            OptimizableChromosomeFactory chromoCreator,
+            Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec) {
         final Engine<AnyGene<OptimizableChromosome>, Double> engine;
 
         if (numThreads == 1) {
             engine = Engine.builder(chromoCreator::eval, codec)
                 .populationSize(100)
                 .executor(Runnable::run)
-                .constraint(new OptimizableChromosomeGrayConstraint())
+                .constraint(new OptimizableChromosomeOHConstraint())
                 .selector(new TournamentSelector<>((int) (1000 * 0.05)))
                 .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+                .alterers(new Mutator<>(0.001), new UniformCrossover<>(0.5))
                 .build();
         } else {
             engine = Engine.builder(chromoCreator::eval, codec)
                 .populationSize(100)
                 .executor(Executors.newFixedThreadPool(numThreads))
+                .constraint(new OptimizableChromosomeOHConstraint())
                 .selector(new TournamentSelector<>((int) (1000 * 0.05)))
                 .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
                 .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
                 .build();
         }
-
-        //// setup EA
-        runOptimization(evolutionStatusReceiver, converter, engine);
+        return engine;
     }
 
     private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver, AbstractConverter converter,
@@ -117,9 +128,9 @@ public class EAOptimizerOneHotEncoding implements IEAOptimizer {
                     result.bestFitness()))
             .collect(EvolutionResult.toBestPhenotype());
 
-        LOGGER.info("EA finished...");
-
-        LOGGER.info(statistics);
+//        LOGGER.info("EA finished...");
+//
+//        LOGGER.info(statistics);
 
     }
 
