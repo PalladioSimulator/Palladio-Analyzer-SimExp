@@ -17,6 +17,7 @@ import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
+import io.jenetics.util.RandomRegistry;
 
 public class OptimizableChromosomeOHConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
 
@@ -54,7 +55,7 @@ public class OptimizableChromosomeOHConstraint implements Constraint<AnyGene<Opt
             .chromosome()
             .gene()
             .allele();
-        Random random = new Random();
+        Random random = RandomRegistry.random();
 
         for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
             Chromosome chromosome = chromoPair.genotype()

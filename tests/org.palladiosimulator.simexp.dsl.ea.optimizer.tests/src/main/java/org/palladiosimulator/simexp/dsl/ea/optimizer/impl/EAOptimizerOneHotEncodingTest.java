@@ -148,7 +148,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(19.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(18.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -173,11 +173,11 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(0.0, capturedValues.get(0), DELTA);
-        assertEquals(0.0, capturedValues.get(1), DELTA);
-        assertEquals(0.0, capturedValues.get(2), DELTA);
-        assertEquals(0.0, capturedValues.get(4), DELTA);
-        assertEquals(0.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(94.0, capturedValues.get(0), DELTA);
+        assertEquals(94.0, capturedValues.get(1), DELTA);
+        assertEquals(94.0, capturedValues.get(2), DELTA);
+        assertEquals(94.0, capturedValues.get(4), DELTA);
+        assertEquals(94.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(964.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(981.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -305,7 +305,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(0.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(99.999, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -327,7 +327,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(19.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(18.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -348,7 +348,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(0.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(94.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -373,7 +373,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(0.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(98681.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -417,7 +417,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(90.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(85.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -467,7 +467,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(97.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(98.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -494,7 +494,7 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(33.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(35.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -641,6 +641,6 @@ public class EAOptimizerOneHotEncodingTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(739.0566, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(932.60264, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 }
