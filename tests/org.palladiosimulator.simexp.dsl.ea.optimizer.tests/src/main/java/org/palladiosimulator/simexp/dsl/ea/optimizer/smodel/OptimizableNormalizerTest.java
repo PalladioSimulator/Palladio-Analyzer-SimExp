@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableVa
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
@@ -34,6 +35,18 @@ public class OptimizableNormalizerTest {
         initMocks(this);
         optimizableNormalizer = new OptimizableNormalizer(calculator);
         smodelCreator = new SmodelCreator();
+    }
+
+    @Test
+    public void testToNormalizedBoolSet() {
+        Literal literal1 = smodelCreator.createBoolLiteral(true);
+        Literal literal2 = smodelCreator.createBoolLiteral(true);
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("boolSetOptimizable", DataType.BOOL, bounds);
+
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
+
+        assertEquals(1, actualChromosome.length());
     }
 
     @Test
@@ -114,6 +127,41 @@ public class OptimizableNormalizerTest {
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(1, actualChromosome.length());
+    }
+
+    @Test
+    public void testToOptimizableBoolIndex0True() {
+        BoolLiteral literal1 = smodelCreator.createBoolLiteral(true);
+        BoolLiteral literal2 = smodelCreator.createBoolLiteral(false);
+        when(calculator.calculateBoolean(literal1)).thenReturn(literal1.isTrue());
+        when(calculator.calculateBoolean(literal2)).thenReturn(literal2.isTrue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.BOOL, bounds);
+        SmodelBitset bitset = new SmodelBitset(1);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+
+        OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
+
+        assertEquals(true, actualValue.getValue());
+        assertSame(actualValue.getOptimizable(), optimizable);
+    }
+
+    @Test
+    public void testToOptimizableBoolIndex0False() {
+        BoolLiteral literal1 = smodelCreator.createBoolLiteral(true);
+        BoolLiteral literal2 = smodelCreator.createBoolLiteral(false);
+        when(calculator.calculateBoolean(literal1)).thenReturn(literal1.isTrue());
+        when(calculator.calculateBoolean(literal2)).thenReturn(literal2.isTrue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.BOOL, bounds);
+        SmodelBitset bitset = new SmodelBitset(1);
+        bitset.set(0);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+
+        OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
+
+        assertEquals(false, actualValue.getValue());
+        assertSame(actualValue.getOptimizable(), optimizable);
     }
 
     @Test

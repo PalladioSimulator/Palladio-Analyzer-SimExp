@@ -200,7 +200,7 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(992.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(999.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -223,7 +223,7 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(9.65, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(9.15, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -490,7 +490,7 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(30.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(38.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -569,7 +569,7 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(60.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(68.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
@@ -637,6 +637,6 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(863.7281, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1041.84433, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 }

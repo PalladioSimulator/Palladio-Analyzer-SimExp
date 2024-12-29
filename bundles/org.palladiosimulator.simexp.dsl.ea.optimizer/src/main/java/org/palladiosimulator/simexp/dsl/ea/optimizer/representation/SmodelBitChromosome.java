@@ -23,7 +23,9 @@ public class SmodelBitChromosome extends BitChromosome {
         super(bits, 0, length);
         this.optimizable = optimizable;
         this.numOfValues = numOfValues;
-        _p = 0.4 * (2 / length);
+        if (length != 0) {
+            _p = 0.4 * (2 / length);
+        }
     }
 
     public Optimizable getOptimizable() {

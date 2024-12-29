@@ -47,7 +47,6 @@ public class OptimizableNormalizer {
                 return toNormalizedRangeInt(optimizable, rangeBounds);
             case DOUBLE:
                 return toNormalizedRangeDouble(optimizable, rangeBounds);
-            // ToDo: add other datatypes
             default:
                 throw new OptimizableProcessingException("Unsupported type: " + dataType);
             }
@@ -92,7 +91,8 @@ public class OptimizableNormalizer {
             return toOptimizableInt(optimizable, chromosome);
         case DOUBLE:
             return toOptimizableDouble(optimizable, chromosome);
-        // ToDo: add other datatypes
+        case BOOL:
+            return toOptimizableBool(optimizable, chromosome);
         default:
             throw new OptimizableProcessingException("Unsupported type: " + dataType);
         }
@@ -112,12 +112,12 @@ public class OptimizableNormalizer {
         return new OptimizableValue<>(optimizable, value);
     }
 
-//    private OptimizableValue<Double> toOptimizableBoolean(Optimizable optimizable, SmodelBitChromosome chromosome) {
-//        int valueIndex = chromosome.intValue();
-//        List<Double> valueList = getValueListDouble(optimizable);
-//        double value = valueList.get(valueIndex);
-//        return new OptimizableValue<>(optimizable, value);
-//    }
+    private OptimizableValue<Boolean> toOptimizableBool(Optimizable optimizable, SmodelBitChromosome chromosome) {
+        int valueIndex = chromosome.intValue();
+        List<Boolean> valueList = getValueListBoolean(optimizable);
+        Boolean value = valueList.get(valueIndex);
+        return new OptimizableValue<>(optimizable, value);
+    }
 
     private List<Integer> getValueListInt(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
@@ -154,6 +154,17 @@ public class OptimizableNormalizer {
             return DoubleStream.iterate(startValue, n -> n + stepSize)
                 .takeWhile(n -> n < endValue)
                 .boxed()
+                .collect(Collectors.toList());
+        }
+        throw new RuntimeException("invalid bounds: " + bounds);
+    }
+
+    private List<Boolean> getValueListBoolean(Optimizable optimizable) {
+        Bounds bounds = optimizable.getValues();
+        if (bounds instanceof SetBounds setBounds) {
+            return setBounds.getValues()
+                .stream()
+                .map(e -> expressionCalculator.calculateBoolean(e))
                 .collect(Collectors.toList());
         }
         throw new RuntimeException("invalid bounds: " + bounds);
