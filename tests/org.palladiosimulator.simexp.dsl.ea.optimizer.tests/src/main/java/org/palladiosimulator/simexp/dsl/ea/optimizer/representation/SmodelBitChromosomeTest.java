@@ -18,14 +18,15 @@ public class SmodelBitChromosomeTest {
     @Before
     public void setUp() {
         smodelCreator = new SmodelCreator();
-        Literal literal1 = smodelCreator.createIntLiteral(1);
-        Literal literal2 = smodelCreator.createIntLiteral(2);
-        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
-        optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
+
     }
 
     @Test
     public void testIntValue0() {
+        Literal literal1 = smodelCreator.createIntLiteral(1);
+        Literal literal2 = smodelCreator.createIntLiteral(2);
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
 
@@ -36,6 +37,10 @@ public class SmodelBitChromosomeTest {
 
     @Test
     public void testIntValue1() {
+        Literal literal1 = smodelCreator.createIntLiteral(1);
+        Literal literal2 = smodelCreator.createIntLiteral(2);
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
@@ -43,5 +48,19 @@ public class SmodelBitChromosomeTest {
         int actualIntValue = chromosome.intValue();
 
         assertEquals(1, actualIntValue);
+    }
+
+    @Test
+    public void testDoubleValue0() {
+        Literal literal1 = smodelCreator.createDoubleLiteral(1);
+        Literal literal2 = smodelCreator.createDoubleLiteral(2);
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
+        SmodelBitset bitset = new SmodelBitset(1);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
+
+        int actualIntValue = chromosome.intValue();
+
+        assertEquals(0, actualIntValue);
     }
 }

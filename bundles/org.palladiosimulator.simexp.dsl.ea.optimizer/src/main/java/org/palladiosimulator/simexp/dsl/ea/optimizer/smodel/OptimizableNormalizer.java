@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
@@ -44,6 +45,8 @@ public class OptimizableNormalizer {
             switch (dataType) {
             case INT:
                 return toNormalizedRangeInt(optimizable, rangeBounds);
+            case DOUBLE:
+                return toNormalizedRangeDouble(optimizable, rangeBounds);
             // ToDo: add other datatypes
             default:
                 throw new OptimizableProcessingException("Unsupported type: " + dataType);
@@ -63,6 +66,18 @@ public class OptimizableNormalizer {
         return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, power);
     }
 
+    private SmodelBitChromosome toNormalizedRangeDouble(Optimizable optimizable, RangeBounds rangeBounds) {
+        double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
+        double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
+        double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
+
+        int power = (int) Math.floor((endValue - startValue) / stepSize);
+        int minLength = powerUtil.minBitSizeForPower(power);
+        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, power);
+    }
+
+    // TODO add sets
+
     public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
         return chromosomes.stream()
             .map(c -> toOptimizable(c))
@@ -75,6 +90,8 @@ public class OptimizableNormalizer {
         switch (dataType) {
         case INT:
             return toOptimizableInt(optimizable, chromosome);
+        case DOUBLE:
+            return toOptimizableDouble(optimizable, chromosome);
         // ToDo: add other datatypes
         default:
             throw new OptimizableProcessingException("Unsupported type: " + dataType);
@@ -87,6 +104,20 @@ public class OptimizableNormalizer {
         int value = valueList.get(valueIndex);
         return new OptimizableValue<>(optimizable, value);
     }
+
+    private OptimizableValue<Double> toOptimizableDouble(Optimizable optimizable, SmodelBitChromosome chromosome) {
+        int valueIndex = chromosome.intValue();
+        List<Double> valueList = getValueListDouble(optimizable);
+        double value = valueList.get(valueIndex);
+        return new OptimizableValue<>(optimizable, value);
+    }
+
+//    private OptimizableValue<Double> toOptimizableBoolean(Optimizable optimizable, SmodelBitChromosome chromosome) {
+//        int valueIndex = chromosome.intValue();
+//        List<Double> valueList = getValueListDouble(optimizable);
+//        double value = valueList.get(valueIndex);
+//        return new OptimizableValue<>(optimizable, value);
+//    }
 
     private List<Integer> getValueListInt(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
@@ -101,6 +132,26 @@ public class OptimizableNormalizer {
             int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
             int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
             return IntStream.iterate(startValue, n -> n + stepSize)
+                .takeWhile(n -> n < endValue)
+                .boxed()
+                .collect(Collectors.toList());
+        }
+        throw new RuntimeException("invalid bounds: " + bounds);
+    }
+
+    private List<Double> getValueListDouble(Optimizable optimizable) {
+        Bounds bounds = optimizable.getValues();
+        if (bounds instanceof SetBounds setBounds) {
+            return setBounds.getValues()
+                .stream()
+                .map(e -> expressionCalculator.calculateDouble(e))
+                .collect(Collectors.toList());
+        }
+        if (bounds instanceof RangeBounds rangeBounds) {
+            double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
+            double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
+            double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
+            return DoubleStream.iterate(startValue, n -> n + stepSize)
                 .takeWhile(n -> n < endValue)
                 .boxed()
                 .collect(Collectors.toList());

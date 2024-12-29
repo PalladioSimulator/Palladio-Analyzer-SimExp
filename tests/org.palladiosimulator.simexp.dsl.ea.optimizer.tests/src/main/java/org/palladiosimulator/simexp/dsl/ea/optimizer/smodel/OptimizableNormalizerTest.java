@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChr
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -59,6 +60,18 @@ public class OptimizableNormalizerTest {
     }
 
     @Test
+    public void testToNormalizedDoubleSetPower1() {
+        Literal literal1 = smodelCreator.createDoubleLiteral(1);
+        Literal literal2 = smodelCreator.createDoubleLiteral(2);
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("doubleSetOptimizable", DataType.DOUBLE, bounds);
+
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
+
+        assertEquals(1, actualChromosome.length());
+    }
+
+    @Test
     public void testToNormalizedIntSetPower2() {
         Literal literal1 = smodelCreator.createIntLiteral(1);
         Literal literal2 = smodelCreator.createIntLiteral(2);
@@ -81,6 +94,22 @@ public class OptimizableNormalizerTest {
         when(calculator.calculateInteger(step)).thenReturn(step.getValue());
         RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
         Optimizable optimizable = smodelCreator.createOptimizable("intRangeOptimizable", DataType.INT, bounds);
+
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
+
+        assertEquals(1, actualChromosome.length());
+    }
+
+    @Test
+    public void testToNormalizedDoubleRangePower1() {
+        DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
+        DoubleLiteral end = smodelCreator.createDoubleLiteral(3);
+        DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
+        when(calculator.calculateDouble(start)).thenReturn(start.getValue());
+        when(calculator.calculateDouble(end)).thenReturn(end.getValue());
+        when(calculator.calculateDouble(step)).thenReturn(step.getValue());
+        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        Optimizable optimizable = smodelCreator.createOptimizable("doubleRangeOptimizable", DataType.DOUBLE, bounds);
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
@@ -119,6 +148,24 @@ public class OptimizableNormalizerTest {
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 
         assertEquals(2, actualValue.getValue());
+        assertSame(actualValue.getOptimizable(), optimizable);
+    }
+
+    @Test
+    public void testToOptimizableDoubleIndex1() {
+        DoubleLiteral literal1 = smodelCreator.createDoubleLiteral(1);
+        DoubleLiteral literal2 = smodelCreator.createDoubleLiteral(2);
+        when(calculator.calculateDouble(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateDouble(literal2)).thenReturn(literal2.getValue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
+        SmodelBitset bitset = new SmodelBitset(1);
+        bitset.set(0);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+
+        OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
+
+        assertEquals(2.0, actualValue.getValue());
         assertSame(actualValue.getOptimizable(), optimizable);
     }
 

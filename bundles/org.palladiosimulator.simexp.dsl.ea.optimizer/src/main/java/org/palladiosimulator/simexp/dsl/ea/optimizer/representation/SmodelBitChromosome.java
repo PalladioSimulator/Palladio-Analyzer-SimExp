@@ -76,7 +76,6 @@ public class SmodelBitChromosome extends BitChromosome {
     // Warum??? Überschreiben + Exception werfen = Schlechter Stil
     @Override
     public SmodelBitChromosome newInstance() {
-
         SmodelBitset smodelBitset = new SmodelBitset(length());
         int initialValue = RandomRegistry.random()
             .nextInt(numOfValues);
@@ -87,10 +86,6 @@ public class SmodelBitChromosome extends BitChromosome {
                 smodelBitset.set(i);
             }
         }
-        //TODO nbruening: Remove
-//        Randoms.indexes(RandomRegistry.random(), _length, _p)
-//            .forEach(i -> smodelBitset.set(i));
-
         return of(smodelBitset, optimizable, numOfValues);
 //        throw new RuntimeException("not supported");
     }
