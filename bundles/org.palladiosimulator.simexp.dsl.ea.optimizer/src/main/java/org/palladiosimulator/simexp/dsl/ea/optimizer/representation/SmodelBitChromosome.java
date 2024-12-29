@@ -2,21 +2,28 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.BitSet;
+
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.internal.util.Bits;
 import io.jenetics.util.ISeq;
+import io.jenetics.util.RandomRegistry;
 
 public class SmodelBitChromosome extends BitChromosome {
     private static final long serialVersionUID = 1L;
 
     private final Optimizable optimizable;
 
-    private SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length) {
+    private int numOfValues;
+
+    private SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues) {
         super(bits, 0, length);
         this.optimizable = optimizable;
+        this.numOfValues = numOfValues;
+        _p = 0.4 * (2 / length);
     }
 
     public Optimizable getOptimizable() {
@@ -25,8 +32,7 @@ public class SmodelBitChromosome extends BitChromosome {
 
     @Override
     public boolean isValid() {
-        // TODO: check for gene length's
-        return true;
+        return intValue() < numOfValues;
     }
 
     @Override
@@ -52,7 +58,7 @@ public class SmodelBitChromosome extends BitChromosome {
         }
 
         final SmodelBitChromosome chromosome = new SmodelBitChromosome(getOptimizable(), Bits.newArray(genes.length()),
-                genes.length());
+                genes.length(), numOfValues);
         int ones = 0;
 
         for (int i = genes.length(); --i >= 0;) {
@@ -67,13 +73,29 @@ public class SmodelBitChromosome extends BitChromosome {
         return chromosome;
     }
 
+    // Warum??? Überschreiben + Exception werfen = Schlechter Stil
     @Override
     public SmodelBitChromosome newInstance() {
-        // return of(_length, _p);
-        throw new RuntimeException("not supported");
+
+        SmodelBitset smodelBitset = new SmodelBitset(length());
+        int initialValue = RandomRegistry.random()
+            .nextInt(numOfValues);
+
+        BitSet naiveBitSet = BitSet.valueOf(new long[] { initialValue });
+        for (int i = 0; i < naiveBitSet.length(); i++) {
+            if (naiveBitSet.get(i)) {
+                smodelBitset.set(i);
+            }
+        }
+        //TODO nbruening: Remove
+//        Randoms.indexes(RandomRegistry.random(), _length, _p)
+//            .forEach(i -> smodelBitset.set(i));
+
+        return of(smodelBitset, optimizable, numOfValues);
+//        throw new RuntimeException("not supported");
     }
 
-    public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable) {
+    public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable, int numOfValues) {
         int length = bits.getNbits();
         final byte[] bytes = Bits.newArray(length);
         for (int i = 0; i < length; ++i) {
@@ -81,6 +103,6 @@ public class SmodelBitChromosome extends BitChromosome {
                 Bits.set(bytes, i);
             }
         }
-        return new SmodelBitChromosome(optimizable, bytes, length);
+        return new SmodelBitChromosome(optimizable, bytes, length, numOfValues);
     }
 }

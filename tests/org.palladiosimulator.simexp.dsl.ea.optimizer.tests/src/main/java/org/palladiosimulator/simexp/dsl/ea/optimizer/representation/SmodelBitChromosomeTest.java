@@ -27,7 +27,7 @@ public class SmodelBitChromosomeTest {
     @Test
     public void testIntValue0() {
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
 
         int actualIntValue = chromosome.intValue();
 
@@ -38,7 +38,7 @@ public class SmodelBitChromosomeTest {
     public void testIntValue1() {
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
 
         int actualIntValue = chromosome.intValue();
 

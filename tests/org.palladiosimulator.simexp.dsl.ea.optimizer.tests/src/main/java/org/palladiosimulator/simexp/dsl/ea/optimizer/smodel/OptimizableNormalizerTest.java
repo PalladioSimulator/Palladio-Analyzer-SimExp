@@ -96,7 +96,7 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
 
@@ -114,11 +114,13 @@ public class OptimizableNormalizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 
         assertEquals(2, actualValue.getValue());
         assertSame(actualValue.getOptimizable(), optimizable);
     }
+
+    // TODO nbruening: Tests for isValid() and newInstance() method
 }
