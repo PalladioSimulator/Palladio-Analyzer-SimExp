@@ -9,7 +9,6 @@ import org.palladiosimulator.simexp.core.store.DescriptionProvider;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.examples.hri.RobotCognitionSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing.FaultTolerantLoadBalancingSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
@@ -29,8 +28,11 @@ public class PcmSimulationExecutorFactory extends BaseSimulationExecutorFactory 
         case RELIABILITY -> new RobotCognitionSimulationExecutorFactory(workflowConfiguration, modelLoaderFactory,
                 new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
 
-        case PERFORMABILITY -> new FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration,
-                modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
+        /*
+         * case PERFORMABILITY -> new
+         * FaultTolerantLoadBalancingSimulationExecutorFactory(workflowConfiguration,
+         * modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
+         */
 
         default -> throw new RuntimeException("Unexpected QualityObjective: " + qualityObjective);
         };
