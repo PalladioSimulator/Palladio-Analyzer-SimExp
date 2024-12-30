@@ -4,7 +4,7 @@
    <extension
          point="org.palladiosimulator.simexp.workflow.launch">
       <factory
-            class="org.palladiosimulator.simexp.pcm.examples.loadbalancing.LoadBalancingLaunchFactory">
+            class="org.palladiosimulator.simexp.pcm.examples.loadbalancing.CustomLoadBalancingLaunchFactory">
       </factory>
    </extension>
 
