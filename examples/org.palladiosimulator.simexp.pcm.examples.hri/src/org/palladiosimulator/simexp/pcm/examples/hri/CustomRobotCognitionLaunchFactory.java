@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class RobotCognitionLaunchFactory implements ILaunchFactory {
+public class CustomRobotCognitionLaunchFactory implements ILaunchFactory {
 
     @Override
     public boolean canHandle(IWorkflowConfiguration config) {
