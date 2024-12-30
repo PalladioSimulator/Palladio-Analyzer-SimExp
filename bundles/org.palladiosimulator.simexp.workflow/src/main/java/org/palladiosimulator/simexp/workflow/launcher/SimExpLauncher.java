@@ -39,7 +39,6 @@ import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -99,10 +98,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
         SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
         return switch (simulationEngine) {
-        case PCM -> {
-            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
-        }
+//        case PCM -> {
+//            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
+//            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
+//        }
         case PRISM -> {
             PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
             yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
