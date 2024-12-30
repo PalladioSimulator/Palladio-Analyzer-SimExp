@@ -124,9 +124,16 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-		 
+
    <plugin
          id="org.palladiosimulator.simexp.model.strategy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.pcm.examples.loadbalancing"
          download-size="0"
          install-size="0"
          version="0.0.0"

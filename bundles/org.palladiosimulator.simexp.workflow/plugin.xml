@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.palladiosimulator.simexp.workflow.launch" name="launch_factory" schema="schema/org.palladiosimulator.simexp.workflow.launch.exsd"/>
    <extension
          point="org.palladiosimulator.simexp.service.serviceregistry">
       <provider

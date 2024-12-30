@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Loadbalancing
-Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.loadbalancing
+Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.examples.loadbalancing;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.examples.loadbalancing
 Bundle-RequiredExecutionEnvironment: JavaSE-17
@@ -29,5 +29,7 @@ Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.apache.log4j,
  org.apache.commons.lang,
  org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
- org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.pcm.examples.loadbalancing
