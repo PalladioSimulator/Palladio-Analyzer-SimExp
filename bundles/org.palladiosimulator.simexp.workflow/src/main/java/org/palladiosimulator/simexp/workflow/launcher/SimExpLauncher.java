@@ -40,6 +40,7 @@ import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
@@ -64,16 +65,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
-            SimulatorType simulatorType = config.getSimulatorType();
-            SimulationExecutor simulationExecutor = switch (simulatorType) {
-            case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider);
+            /*
+             * SimulatorType simulatorType = config.getSimulatorType(); SimulationExecutor
+             * simulationExecutor = switch (simulatorType) { case CUSTOM -> { yield
+             * createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider); }
+             * case MODELLED -> { yield createModelledSimulationExecutor(config,
+             * launchDescriptionProvider, seedProvider); } default -> throw new
+             * IllegalArgumentException("SimulatorType not supported: " + simulatorType); };
+             */
+            SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
+            SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
+                    launchDescriptionProvider, seedProvider);
+            if (simulationExecutor == null) {
+                throw new IllegalArgumentException("Unable to create simulation executor");
             }
-            case MODELLED -> {
-                yield createModelledSimulationExecutor(config, launchDescriptionProvider, seedProvider);
-            }
-            default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
-            };
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
