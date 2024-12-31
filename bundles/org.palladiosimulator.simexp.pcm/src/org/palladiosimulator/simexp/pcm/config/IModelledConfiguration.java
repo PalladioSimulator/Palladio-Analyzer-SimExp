@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.pcm.modelled.config;
+package org.palladiosimulator.simexp.pcm.config;
 
 import org.eclipse.emf.common.util.URI;
 
