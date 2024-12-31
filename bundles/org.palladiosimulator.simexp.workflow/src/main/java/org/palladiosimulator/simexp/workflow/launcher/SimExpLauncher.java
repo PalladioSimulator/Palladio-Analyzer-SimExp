@@ -34,11 +34,7 @@ import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.core.store.DescriptionProvider;
-import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -94,28 +90,30 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         return buildWorkflowConfiguration(configuration, mode);
     }
 
-    private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
-        SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
-        return switch (simulationEngine) {
-//        case PCM -> {
-//            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-//            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
-//        }
-        case PRISM -> {
-            PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
-                    seedProvider);
-        }
-        default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
-        };
-    }
+//    private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
+//            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
+//        SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
+//        return switch (simulationEngine) {
+////        case PCM -> {
+////            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
+////            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
+////        }
+////        case PRISM -> {
+////            PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
+////            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
+////                    seedProvider);
+////        }
+//        default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
+//        };
+//    }
 
-    private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider) {
-        ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, launchDescriptionProvider, seedProvider);
-    }
+    /*
+     * private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration
+     * workflowConfiguration, LaunchDescriptionProvider launchDescriptionProvider,
+     * Optional<ISeedProvider> seedProvider) { ModelledSimulationExecutorFactory factory = new
+     * ModelledSimulationExecutorFactory(); return factory.create(workflowConfiguration,
+     * launchDescriptionProvider, seedProvider); }
+     */
 
     @SuppressWarnings("unchecked")
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
