@@ -7,5 +7,11 @@
             class="org.palladiosimulator.simexp.pcm.examples.hri.CustomRobotCognitionLaunchFactory">
       </factory>
    </extension>
+   <extension
+         point="org.palladiosimulator.simexp.workflow.launch">
+      <factory
+            class="org.palladiosimulator.simexp.pcm.examples.hri.ModelledReliabilityPcmExperienceSimulationExecutorLaunchFactory">
+      </factory>
+   </extension>
 
 </plugin>
