@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.pcm.modelled.prism.ModelledPrismPcmExperienc
 import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
-import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.reliability.ModelledReliabilityPcmExperienceSimulationExecutorFactory;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
@@ -43,10 +42,13 @@ public class ModelledSimulationExecutorFactory extends BaseSimulationExecutorFac
             Optional<ISeedProvider> seedProvider) {
         QualityObjective qualityObjective = workflowConfiguration.getQualityObjective();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = switch (qualityObjective) {
-        case PERFORMANCE -> {
-            yield new ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration,
-                    modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
-        }
+
+        /*
+         * case PERFORMANCE -> { yield new
+         * ModelledPerformancePcmExperienceSimulationExecutorFactory(workflowConfiguration,
+         * modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider); }
+         */
+
         case RELIABILITY -> {
             yield new ModelledReliabilityPcmExperienceSimulationExecutorFactory(workflowConfiguration,
                     modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider), seedProvider);
