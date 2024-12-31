@@ -4,7 +4,7 @@
    <extension
          point="org.palladiosimulator.simexp.workflow.launch">
       <factory
-            class="org.palladiosimulator.simexp.pcm.examples.deltaiot.PrismSimulationExecutorLaunchFactory">
+            class="org.palladiosimulator.simexp.pcm.examples.deltaiot.CustomPrismSimulationExecutorLaunchFactory">
       </factory>
    </extension>
 
