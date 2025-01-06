@@ -39,32 +39,28 @@ public class EAOptimizer implements IEAOptimizer {
     @Override
     public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-//        LOGGER.info("EA running...");
-//        ////// to phenotype
-//        OptimizableRepresentationConverter converter = new OptimizableRepresentationConverter();
-//
-//        List<CodecOptimizablePair> parsedCodecs = converter.parseOptimizables(optimizableProvider);
-//
-//        OptimizableChromosomeFactory chromoCreator = new OptimizableChromosomeFactory();
-//
-//        Codec<OptimizableChromosome, AnyGene<OptimizableChromosome>> codec = Codec.of(
-//                Genotype.of(AnyChromosome.of(chromoCreator.getNextChromosomeSupplier(parsedCodecs, fitnessEvaluator))),
-//                gt -> gt.gene()
-//                    .allele());
-//        ////// to phenotype end
-//
-//        final Engine<BitGene, Double> engine;
-//
-//        engine = Engine.builder(chromoCreator::eval, codec)
-//            .populationSize(100)
-//            .selector(new TournamentSelector<>((int) (1000 * 0.05)))
-//            .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-//            .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
-//            .build();
-//
-//        //// setup EA
-//
-//        runOptimization(evolutionStatusReceiver, converter, engine);
+        LOGGER.info("EA running...");
+        ////// to phenotype
+        OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
+        List<Optimizable> optimizableList = new ArrayList<>();
+        optimizableProvider.getOptimizables()
+            .forEach(o -> optimizableList.add(o));
+        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
+        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        ////// to phenotype end
+
+        final Engine<BitGene, Double> engine;
+        FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
+
+        engine = Engine.builder(fitnessFunction::apply, genotype)
+                .populationSize(100)
+                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
+                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+                .build();
+        //// setup EA
+
+        runOptimization(evolutionStatusReceiver, normalizer, engine);
     }
 
     @Override
