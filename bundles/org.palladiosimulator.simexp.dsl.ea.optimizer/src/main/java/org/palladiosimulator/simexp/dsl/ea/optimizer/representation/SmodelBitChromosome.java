@@ -19,7 +19,7 @@ public class SmodelBitChromosome extends BitChromosome {
 
     private int numOfValues;
 
-    private SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues) {
+    protected SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues) {
         super(bits, 0, length);
         this.optimizable = optimizable;
         this.numOfValues = numOfValues;
@@ -88,6 +88,8 @@ public class SmodelBitChromosome extends BitChromosome {
                 smodelBitset.set(i);
             }
         }
+        smodelBitset.fromInt(initialValue);
+
         return of(smodelBitset, optimizable, numOfValues);
 //        throw new RuntimeException("not supported");
     }

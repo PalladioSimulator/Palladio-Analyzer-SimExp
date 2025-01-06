@@ -1,93 +1,60 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints;
 
-import java.util.BitSet;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.GrayConverter;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.SingleOptimizableChromosome;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-
-import io.jenetics.AnyGene;
-import io.jenetics.BitChromosome;
+import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
-import io.jenetics.util.RandomRegistry;
 
-public class OptimizableChromosomeGrayConstraint implements Constraint<AnyGene<OptimizableChromosome>, Double> {
-
-    private GrayConverter grayConverterHelper;
+public class OptimizableChromosomeGrayConstraint implements Constraint<BitGene, Double> {
 
     public OptimizableChromosomeGrayConstraint() {
-        grayConverterHelper = new GrayConverter();
     }
 
     @Override
-    public boolean test(Phenotype<AnyGene<OptimizableChromosome>, Double> individual) {
-        OptimizableChromosome allele = individual.genotype()
-            .chromosome()
-            .gene()
-            .allele();
-        boolean result = true;
-        for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = chromoPair.genotype()
-                .chromosome();
+    public boolean test(Phenotype<BitGene, Double> individual) {
+        Genotype<BitGene> genotype = individual.genotype();
 
-            if (chromoPair.optimizable()
-                .getDataType() == DataType.BOOL) {
-                // TODO handle this case implicitly
-                // do nothing
-            } else if (chromosome instanceof BitChromosome bitChromo) {
-                if (!bitChromosomeValid(bitChromo)) {
-                    result = false;
-                }
-            } else {
-                throw new RuntimeException("Not implemented yet");
+        for (int i = 0; i < genotype.length(); i++) {
+            if (!genotype.get(i)
+                .isValid()) {
+                return false;
             }
         }
-        return result;
+
+        return true;
     }
 
     @Override
-    public Phenotype<AnyGene<OptimizableChromosome>, Double> repair(
-            Phenotype<AnyGene<OptimizableChromosome>, Double> individual, long generation) {
+    public Phenotype<BitGene, Double> repair(Phenotype<BitGene, Double> individual, long generation) {
+        List<Chromosome<BitGene>> chromosomes = new ArrayList();
+        Genotype<BitGene> genotype = individual.genotype();
 
-        OptimizableChromosome allele = individual.genotype()
-            .chromosome()
-            .gene()
-            .allele();
-        boolean result = true;
-        for (SingleOptimizableChromosome chromoPair : allele.chromosomes) {
-            Chromosome chromosome = chromoPair.genotype()
-                .chromosome();
+        for (int i = 0; i < genotype.length(); i++) {
+            if (!genotype.get(i)
+                .isValid()) {
+                Chromosome<BitGene> chromosome = genotype.get(i);
+                Chromosome<BitGene> newInstance;
+                do {
+                    newInstance = chromosome.newInstance();
+                } while (!newInstance.isValid());
 
-            if (chromoPair.optimizable()
-                .getDataType() == DataType.BOOL) {
-                // TODO handle this case implicitly
-                // do nothing
-            } else if (chromosome instanceof BitChromosome bitChromo) {
-                while (!bitChromosomeValid(bitChromo)) {
-                    int newIdx = RandomRegistry.random()
-                        .nextInt(0, (int) Math.pow(2, bitChromo.length()));
-                    BitSet newBitSet = grayConverterHelper.idxToGray(newIdx, bitChromo.length());
-                    bitChromo = BitChromosome.of(newBitSet, bitChromo.length());
-                }
-                chromoPair.setGenotype(Genotype.of(bitChromo));
+                chromosomes.add(newInstance);
             } else {
-                throw new RuntimeException("Not implemented yet");
+                chromosomes.add(genotype.get(i));
             }
         }
-        if (!test(individual)) {
-            throw new RuntimeException("this should not happen");
+        Phenotype<BitGene, Double> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
+
+        if (!test(repairedIndividual)) {
+            throw new RuntimeException("Repaired phenotype is still broken");
         }
 
-        return individual;
-    }
+        return repairedIndividual;
 
-    private boolean bitChromosomeValid(BitChromosome bitChromo) {
-        int idx = grayConverterHelper.grayToIdx(bitChromo.toBitSet());
-        return (idx < Math.pow(2, bitChromo.length())) && (idx >= 0);
     }
 
 }

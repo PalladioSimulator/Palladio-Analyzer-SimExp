@@ -36,8 +36,9 @@ public class OptimizableNormalizer {
         if (bounds instanceof SetBounds setBounds) {
             int minLength = powerUtil.minBitSizeForPower(setBounds.getValues()
                 .size());
-            return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, setBounds.getValues()
-                .size());
+            return toNormalizedSet(optimizable, setBounds.getValues()
+                .size(), minLength);
+
         }
 
         if (bounds instanceof RangeBounds rangeBounds) {
@@ -55,6 +56,10 @@ public class OptimizableNormalizer {
         throw new RuntimeException("invalid bounds: " + bounds);
     }
 
+    protected SmodelBitChromosome toNormalizedSet(Optimizable optimizable, int boundsSize, int minLength) {
+        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize);
+    }
+
     private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {
         int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
         int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
@@ -62,7 +67,7 @@ public class OptimizableNormalizer {
 
         int power = (endValue - startValue) / stepSize;
         int minLength = powerUtil.minBitSizeForPower(power);
-        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, power);
+        return toNormalizedSet(optimizable, power, minLength);
     }
 
     private SmodelBitChromosome toNormalizedRangeDouble(Optimizable optimizable, RangeBounds rangeBounds) {
@@ -72,7 +77,7 @@ public class OptimizableNormalizer {
 
         int power = (int) Math.floor((endValue - startValue) / stepSize);
         int minLength = powerUtil.minBitSizeForPower(power);
-        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, power);
+        return toNormalizedSet(optimizable, power, minLength);
     }
 
     // TODO add sets
