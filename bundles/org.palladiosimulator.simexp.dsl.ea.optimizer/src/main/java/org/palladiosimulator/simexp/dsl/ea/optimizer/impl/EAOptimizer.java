@@ -4,7 +4,9 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -42,23 +44,13 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("EA running...");
         ////// to phenotype
         OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
-        List<Optimizable> optimizableList = new ArrayList<>();
-        optimizableProvider.getOptimizables()
-            .forEach(o -> optimizableList.add(o));
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
-        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
         ////// to phenotype end
-
-        final Engine<BitGene, Double> engine;
         FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
 
-        engine = Engine.builder(fitnessFunction::apply, genotype)
-                .populationSize(100)
-                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
-                .build();
         //// setup EA
+        final Engine<BitGene, Double> engine = buildEngine(ForkJoinPool.commonPool(), genotype, fitnessEvaluator,
+                normalizer);
 
         runOptimization(evolutionStatusReceiver, normalizer, engine);
     }
@@ -70,38 +62,44 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("EA running...");
         ////// to phenotype
         OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
-        List<Optimizable> optimizableList = new ArrayList<>();
-        optimizableProvider.getOptimizables()
-            .forEach(o -> optimizableList.add(o));
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
-        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
         ////// to phenotype end
 
         final Engine<BitGene, Double> engine;
         FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
 
         if (numThreads == 1) {
-            engine = Engine.builder(fitnessFunction::apply, genotype)
-                .populationSize(100)
-                .executor(Runnable::run)
-                .constraint(new OptimizableChromosomeBinaryConstraint())
-                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
-                .build();
+            engine = buildEngine(Runnable::run, genotype, fitnessEvaluator, normalizer);
         } else {
-            engine = Engine.builder(fitnessFunction::apply, genotype)
-                .populationSize(100)
-                .executor(Executors.newFixedThreadPool(numThreads))
-                .constraint(new OptimizableChromosomeBinaryConstraint())
-                .selector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
-                .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
-                .build();
+            engine = buildEngine(Executors.newFixedThreadPool(numThreads), genotype, fitnessEvaluator, normalizer);
         }
 
         //// setup EA
         runOptimization(evolutionStatusReceiver, normalizer, engine);
+    }
+
+    private Engine<BitGene, Double> buildEngine(Executor executor, Genotype<BitGene> genotype,
+            IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer normalizer) {
+        FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
+
+        return Engine.builder(fitnessFunction::apply, genotype)
+            .populationSize(100)
+            .executor(executor)
+            .constraint(new OptimizableChromosomeBinaryConstraint())
+            .selector(new TournamentSelector<>((int) (1000 * 0.05)))
+            .offspringSelector(new TournamentSelector<>((int) (1000 * 0.05)))
+            .alterers(new Mutator<>(0.2), new UniformCrossover<>(0.5))
+            .build();
+    }
+
+    private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
+            OptimizableNormalizer normalizer) {
+        List<Optimizable> optimizableList = new ArrayList<>();
+        optimizableProvider.getOptimizables()
+            .forEach(o -> optimizableList.add(o));
+        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
+        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        return genotype;
     }
 
     private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver, OptimizableNormalizer normalizer,
