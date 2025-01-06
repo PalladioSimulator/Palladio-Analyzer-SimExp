@@ -27,10 +27,6 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
 //            SmodelBitChromosome smdlChromo = (SmodelBitChromosome) c;
 ////            c.as(SmodelBitChromosome.class);
 //        });
-        Boolean allele = individual.genotype()
-            .chromosome()
-            .gene()
-            .allele();
 
         Genotype<BitGene> genotype = individual.genotype();
 
