@@ -641,7 +641,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/-->
 
    <plugin
          id="org.palladiosimulator.experimentautomation.application.tooladapter.simulizar"
@@ -676,9 +676,9 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/-->
+         unpack="false"/>
 
-   <!--plugin
+   <plugin
          id="org.palladiosimulator.failuremodel"
          download-size="0"
          install-size="0"
@@ -697,7 +697,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/-->
+         unpack="false"/>
 
    <plugin
          id="org.palladiosimulator.mdsdprofiles"
@@ -797,12 +797,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
+   <plugin
          id="org.palladiosimulator.pcm.editor"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/-->
+         unpack="false"/>
 
    <plugin
          id="org.palladiosimulator.pcm.edp2.measuringpoint"
@@ -972,13 +972,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
-         id="org.palladiosimulator.simulizar.failurescenario"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/-->
-
    <plugin
          id="org.palladiosimulator.simulizar.measuringpoint"
          download-size="0"
@@ -1007,13 +1000,6 @@
          unpack="false"/-->
 
    <plugin
-         id="org.palladiosimulator.simulizar.reconfiguration.qvto"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.palladiosimulator.simulizar.reconfiguration.storydiagram"
          download-size="0"
          install-size="0"
@@ -1027,12 +1013,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!--plugin
+   <plugin
          id="org.palladiosimulator.simulizar.reliability"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/-->
+         unpack="false"/>
 
    <plugin
          id="org.palladiosimulator.simulizar.runtimemeasurement"
