@@ -122,8 +122,8 @@ public class OneHotGrayComparatorTool {
             int newRandom = r.nextInt();
 
             long timeBeforeRun = System.nanoTime();
-            double grayBestFitness = runOptimization(newRandom, grayOptFunction, statusReceiver);
-            grayMaxFitnessValues.add(grayBestFitness);
+//            double grayBestFitness = runOptimization(newRandom, grayOptFunction, statusReceiver);
+//            grayMaxFitnessValues.add(grayBestFitness);
             grayRuntime += System.nanoTime() - timeBeforeRun;
 
             long ohTimeBeforeRun = System.nanoTime();
@@ -146,6 +146,7 @@ public class OneHotGrayComparatorTool {
         LOGGER.info("Max Fitness reached: " + grayMaxFitnessReached + " out of " + NUMBER_OF_RUNS + " times");
         LOGGER.info("Gray Avg: " + grayAvg);
         LOGGER.info("FitnessEvals Gray: " + numFitnessEvalsGray.get() + " Runtime: " + grayRuntime);
+        LOGGER.info("True FitnessEvals Gray: " + FitnessHelper.activated.get());
 
         strBuilder = new StringBuilder();
         int oneHotMaxFitnessReached = 0;
