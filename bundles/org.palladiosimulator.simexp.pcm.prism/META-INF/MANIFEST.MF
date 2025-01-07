@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Prism
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.prism
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.palladiosimulator.simexp.pcm.prism.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.solver;bundle-version="4.1.0",
