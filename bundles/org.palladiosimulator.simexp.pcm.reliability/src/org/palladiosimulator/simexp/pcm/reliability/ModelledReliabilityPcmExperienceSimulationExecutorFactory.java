@@ -102,6 +102,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
+        envDynamics.init(getSeedProvider());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p;
