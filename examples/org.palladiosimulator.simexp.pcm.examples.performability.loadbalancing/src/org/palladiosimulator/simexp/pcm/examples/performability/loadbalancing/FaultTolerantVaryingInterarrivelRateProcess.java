@@ -44,8 +44,9 @@ import com.google.common.collect.Maps;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> {
+public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(FaultTolerantVaryingInterarrivelRateProcess.class.getName());
 
@@ -86,6 +87,8 @@ public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action
     private final ProbabilityMassFunction<State> initialDist;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
+    private boolean initialized = false;
+
     public FaultTolerantVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
             IExperimentProvider experimentProvider) {
         PerceivedValueConverter<List<InputValue<CategoricalValue>>> perceivedValueConverter = new PerceivedValueConverter<>() {
@@ -115,7 +118,16 @@ public class FaultTolerantVaryingInterarrivelRateProcess<C, A, Aa extends Action
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
+    }
+
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 

@@ -71,6 +71,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         FaultTolerantVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new FaultTolerantVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
+        p.init(getSeedProvider());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
 
