@@ -60,14 +60,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
-            /*
-             * SimulatorType simulatorType = config.getSimulatorType(); SimulationExecutor
-             * simulationExecutor = switch (simulatorType) { case CUSTOM -> { yield
-             * createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider); }
-             * case MODELLED -> { yield createModelledSimulationExecutor(config,
-             * launchDescriptionProvider, seedProvider); } default -> throw new
-             * IllegalArgumentException("SimulatorType not supported: " + simulatorType); };
-             */
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
                     launchDescriptionProvider, seedProvider);
@@ -89,31 +81,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         LOGGER.debug("Derive workflow configuration");
         return buildWorkflowConfiguration(configuration, mode);
     }
-
-//    private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-//            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
-//        SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
-//        return switch (simulationEngine) {
-////        case PCM -> {
-////            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-////            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
-////        }
-////        case PRISM -> {
-////            PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-////            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
-////                    seedProvider);
-////        }
-//        default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
-//        };
-//    }
-
-    /*
-     * private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration
-     * workflowConfiguration, LaunchDescriptionProvider launchDescriptionProvider,
-     * Optional<ISeedProvider> seedProvider) { ModelledSimulationExecutorFactory factory = new
-     * ModelledSimulationExecutorFactory(); return factory.create(workflowConfiguration,
-     * launchDescriptionProvider, seedProvider); }
-     */
 
     @SuppressWarnings("unchecked")
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
