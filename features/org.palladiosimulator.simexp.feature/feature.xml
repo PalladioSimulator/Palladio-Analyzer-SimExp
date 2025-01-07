@@ -154,7 +154,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.palladiosimulator.envdyn.examples.deltaiot"
+         id="org.palladiosimulator.simexp.pcm.examples.deltaiot"
          download-size="0"
          install-size="0"
          version="0.0.0"
