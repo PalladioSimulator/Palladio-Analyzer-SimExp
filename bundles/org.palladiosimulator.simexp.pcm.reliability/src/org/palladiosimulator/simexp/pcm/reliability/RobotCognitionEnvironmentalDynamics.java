@@ -29,18 +29,32 @@ import com.google.common.collect.Lists;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class RobotCognitionEnvironmentalDynamics<A, R> {
+public class RobotCognitionEnvironmentalDynamics<A, R> implements ISeedable {
 
+    private final ProbabilityMassFunction<State> initialDist;
     private final EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> envProcess;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
+
     private SampleDumper sampleDumper = null;
+    private boolean initialized = false;
 
     public RobotCognitionEnvironmentalDynamics(DynamicBayesianNetwork<CategoricalValue> dbn) {
-        this.envProcess = createEnvironmentalProcess(dbn);
+        this.initialDist = createInitialDist();
+        this.envProcess = createEnvironmentalProcess(dbn, initialDist);
+    }
+
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
     }
 
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 
@@ -77,8 +91,8 @@ public class RobotCognitionEnvironmentalDynamics<A, R> {
     }
 
     private EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> createEnvironmentalProcess(
-            DynamicBayesianNetwork<CategoricalValue> dbn) {
-        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), sampleDumper, createInitialDist(),
+            DynamicBayesianNetwork<CategoricalValue> dbn, ProbabilityMassFunction<State> initialDist) {
+        return new UnobservableEnvironmentProcess<>(createDerivableProcess(), sampleDumper, initialDist,
                 createObsProducer(dbn));
     }
 

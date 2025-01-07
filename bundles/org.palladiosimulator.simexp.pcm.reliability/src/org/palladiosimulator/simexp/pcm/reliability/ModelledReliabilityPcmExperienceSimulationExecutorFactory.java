@@ -82,7 +82,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         ParameterParser parameterParser = getParameterParser();
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, getProbabilityDistributionRegistry(),
-                    getDistributionFactory(), parameterParser, getProbDistRepoLookup())
+                    getDistributionFactory(), parameterParser, getProbDistRepoLookup(), getSeedProvider())
             /**
              * disabled PCM performance analysis based on SimuCom for RobotCognition example;
              * SimuCom is deprecated and simulation currently fails
