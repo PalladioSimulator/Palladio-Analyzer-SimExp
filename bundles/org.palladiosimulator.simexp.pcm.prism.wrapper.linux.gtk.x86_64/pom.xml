@@ -53,7 +53,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}</outputDirectory>
+  	      <outputDirectory>${project.basedir}/os/linux/x86_64</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/${prism.file}/lib</directory>
