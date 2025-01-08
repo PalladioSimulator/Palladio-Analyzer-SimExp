@@ -1,0 +1,5 @@
+{
+	"prefix": "lib",
+    "extension": ".so",
+    "libraries": ["dd", "dv", "jdd", "lpsolve55", "lpsolve55j", "odd", "prismhybrid", "prismmtbdd", "prismsparse", "prism"]
+}

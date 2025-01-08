@@ -74,6 +74,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         PerformabilityVaryingInterarrivelRateProcess<PCMInstance, QVTOReconfigurator, QVToReconfiguration, Double> p = new PerformabilityVaryingInterarrivelRateProcess<>(
                 dbn, experimentProvider);
+        p.init(getSeedProvider());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
             .getEnvironmentProcess();
         List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);

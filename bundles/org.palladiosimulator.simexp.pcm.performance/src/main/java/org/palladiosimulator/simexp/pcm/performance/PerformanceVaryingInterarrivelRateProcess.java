@@ -46,8 +46,9 @@ import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
+public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(PerformanceVaryingInterarrivelRateProcess.class.getName());
 
@@ -78,6 +79,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
     private final ProbabilityMassFunction<State> initialDist;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
+    private boolean initialized = false;
     private SampleDumper sampleDumper = null;
 
     public PerformanceVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -103,6 +105,12 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
+    }
+
     private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
         return expRunner -> {
             // TODO exception handling
@@ -116,6 +124,9 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
     }
 
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 

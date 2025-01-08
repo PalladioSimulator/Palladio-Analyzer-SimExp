@@ -45,8 +45,9 @@ import com.google.common.collect.Maps;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> {
+public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityVaryingInterarrivelRateProcess.class.getName());
 
@@ -88,6 +89,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
     private SampleDumper sampleDumper = null;
+    private boolean initialized = false;
 
     public PerformabilityVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
             IExperimentProvider experimentProvider) {
@@ -118,7 +120,16 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
+    }
+
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 
