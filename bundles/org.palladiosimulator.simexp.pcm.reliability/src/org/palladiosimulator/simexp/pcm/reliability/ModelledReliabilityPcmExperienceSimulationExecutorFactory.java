@@ -82,7 +82,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         ParameterParser parameterParser = getParameterParser();
         List<ExperienceSimulationRunner> runners = List
             .of(new PcmRelExperienceSimulationRunner<>(predictionConfig, getProbabilityDistributionRegistry(),
-                    getDistributionFactory(), parameterParser, getProbDistRepoLookup())
+                    getDistributionFactory(), parameterParser, getProbDistRepoLookup(), getSeedProvider())
             /**
              * disabled PCM performance analysis based on SimuCom for RobotCognition example;
              * SimuCom is deprecated and simulation currently fails
@@ -102,6 +102,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         RobotCognitionEnvironmentalDynamics<QVTOReconfigurator, Double> envDynamics = new RobotCognitionEnvironmentalDynamics<>(
                 dbn);
+        envDynamics.init(getSeedProvider());
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> p = envDynamics
             .getEnvironmentProcess();
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p;
