@@ -7,7 +7,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
  org.apache.log4j;bundle-version="1.2.19",
  com.google.gson;bundle-version="2.8.2",
- org.apache.commons.lang3;bundle-version="3.1.0"
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ org.apache.commons.io;bundle-version="2.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.prism.wrapper
 Bundle-ActivationPolicy: lazy

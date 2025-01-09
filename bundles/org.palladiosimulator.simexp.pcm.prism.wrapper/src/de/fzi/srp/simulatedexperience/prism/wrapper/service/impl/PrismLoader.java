@@ -1,7 +1,6 @@
 /** */
 package de.fzi.srp.simulatedexperience.prism.wrapper.service.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,11 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.io.file.PathUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -34,61 +32,56 @@ public enum PrismLoader {
     private Path prismBinary;
 
     private class LibraryList {
-        public String prefix;
-        public String extension;
-        public List<String> libraries;
+        public String architecture;
+        public String folder;
     }
 
     public synchronized Path load() {
         if (prismBinary != null) {
             return prismBinary;
         }
-        // preloadLibraries();
-        Path prismPath = Paths.get("/home/zd745/develop/prism/prism-4.8.1-linux64-x86");
+        Path prismPath = preloadLibraries();
+        // Path prismPath = Paths.get("/home/zd745/develop/prism/prism-4.8.1-linux64-x86");
         Path prismBinPath = prismPath.resolve("bin");
         prismBinary = prismBinPath.resolve("prism");
         return prismBinary;
     }
 
-    private void preloadLibraries() {
+    private Path preloadLibraries() {
         LOGGER.debug("preloading PRISM libraries");
         Bundle bundle = Platform.getBundle("org.palladiosimulator.simexp.pcm.prism.wrapper");
         try {
             LibraryList libraryList = loadLibraryList(bundle);
-            Map<String, URL> resolved = resolveLibraries(bundle, libraryList);
-            Path workspaceLibPath = getWorkspaceLibPath();
-            Files.createDirectories(workspaceLibPath);
-            Map<String, Path> libraryPaths = new HashMap<>();
-            for (Map.Entry<String, URL> entry : resolved.entrySet()) {
-                URL url = entry.getValue();
-                URL resolvedLibrary = FileLocator.resolve(url);
-                // Force escaping of invalid characters
-                URI prismFileUri = new URI(resolvedLibrary.getProtocol(), resolvedLibrary.getPath(), null);
-                // LOGGER.debug(String.format("URI: %s", prismFileUri));
-                Path sourceLibraryPath = new File(prismFileUri).toPath();
-                Path targetLibraryPath = workspaceLibPath.resolve(sourceLibraryPath.getFileName());
-                if (!Files.exists(targetLibraryPath)) {
-                    Files.copy(sourceLibraryPath, targetLibraryPath);
-                }
-                libraryPaths.put(entry.getKey(), targetLibraryPath);
+            String folderName = String.format("$os$/%s", libraryList.folder);
+            org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(folderName);
+            URL locatedFolder = FileLocator.find(bundle, path, Collections.emptyMap());
+            if (locatedFolder == null) {
+                throw new RuntimeException("unable to resolve: " + folderName);
             }
-            for (String name : libraryList.libraries) {
-                // LOGGER.debug(String.format("load library: %s", System.mapLibraryName(name)));
-                Path libraryPath = libraryPaths.get(name);
-                System.load(libraryPath.toString());
-            }
+            URL folderURL = FileLocator.toFileURL(locatedFolder);
+            URI folderUri = new URI(folderURL.getProtocol(), folderURL.getPath(), null);
+            Path folderPath = Paths.get(folderUri);
+            Path workspacePrismPath = getWorkspacePrismPath();
+            Path workspacePrismOsPath = workspacePrismPath.resolve(libraryList.architecture);
+            Files.createDirectories(workspacePrismOsPath);
+            PathUtils.copyDirectory(folderPath, workspacePrismOsPath, StandardCopyOption.REPLACE_EXISTING);
+            return workspacePrismOsPath;
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private Path getWorkspaceLibPath() throws URISyntaxException {
+    private Path getWorkspacePath() throws URISyntaxException {
         Location instanceLocation = Platform.getInstanceLocation();
         URL instanceUrl = instanceLocation.getURL();
         URI instanceUri = new URI(instanceUrl.getProtocol(), instanceUrl.getPath(), null);
         Path workspacePath = Paths.get(instanceUri);
-        Path libFolder = workspacePath.resolve("lib");
-        return libFolder;
+        return workspacePath;
+    }
+
+    private Path getWorkspacePrismPath() throws URISyntaxException {
+        Path workspacePath = getWorkspacePath();
+        return workspacePath.resolve("prism");
     }
 
     private LibraryList loadLibraryList(Bundle bundle) throws UnsupportedEncodingException, IOException {
@@ -102,21 +95,5 @@ public enum PrismLoader {
             LibraryList libraryList = gson.fromJson(reader, LibraryList.class);
             return libraryList;
         }
-    }
-
-    private Map<String, URL> resolveLibraries(Bundle bundle, LibraryList libraryList) throws IOException {
-        Map<String, URL> entries = new HashMap<>();
-        for (String name : libraryList.libraries) {
-            String libName = String.format("$os$/%s%s%s", libraryList.prefix, name, libraryList.extension);
-            org.eclipse.core.runtime.Path path = new org.eclipse.core.runtime.Path(libName);
-            URL locatedBinary = FileLocator.find(bundle, path, Collections.<String, String> emptyMap());
-            if (locatedBinary == null) {
-                throw new RuntimeException("unable to resolve: " + libName);
-            }
-            // LOGGER.debug(String.format("resolved URL: %s", locatedBinary));
-            URL fileURL = FileLocator.toFileURL(locatedBinary);
-            entries.put(name, fileURL);
-        }
-        return entries;
     }
 }

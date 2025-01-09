@@ -47,18 +47,20 @@
         <version>3.3.1</version>
         <executions>
           <execution>
-            <id>copy-linux-shared_libraries</id>
+            <id>copy-linux-files</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-  	      <outputDirectory>${project.basedir}/os/linux/x86_64</outputDirectory>
+  	      	  <outputDirectory>${project.basedir}/os/linux/x86_64</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/${prism.file}/lib</directory>
+                  <directory>${project.build.directory}/${prism.file}</directory>
                   <includes>
-                    <include>*.so</include>
+                    <include>bin/</include>
+                    <!--include>etc/</include-->
+                    <include>lib/</include>
                   </includes>
                 </resource>
               </resources>
@@ -66,6 +68,26 @@
           </execution>
         </executions>
       </plugin>
+
+	  <plugin> 
+		  <groupId>com.google.code.maven-replacer-plugin</groupId>
+		  <artifactId>maven-replacer-plugin</artifactId>
+		  <version>1.3.7</version>
+		  <executions>
+		    <execution>
+		      <phase>prepare-package</phase>
+		      <goals>
+		        <goal>replace</goal>
+		      </goals>
+		    </execution>
+		  </executions>
+		  <configuration>
+		    <file>os/linux/x86_64/bin/prism</file>
+		    <regex>false</regex>
+		    <token>PRISM_DIR="/home/ubuntu/prism/prism"</token>
+		    <value>PRISM_DIR=$( dirname $( dirname $(realpath $0) ) )</value>
+		  </configuration>
+	  </plugin>
 
     </plugins>
   </build>
