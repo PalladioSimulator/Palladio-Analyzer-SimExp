@@ -59,7 +59,6 @@
                   <directory>${project.build.directory}/${prism.file}</directory>
                   <includes>
                     <include>bin/</include>
-                    <!--include>etc/</include-->
                     <include>lib/</include>
                   </includes>
                 </resource>
