@@ -17,7 +17,7 @@ public class SmodelBitset extends FixedSizeBitSet {
         return value;
     }
 
-    public void fromInt(int value) {
+    public SmodelBitset fromInt(int value) {
         BitSet naiveBitSet = BitSet.valueOf(new long[] { value });
         if (naiveBitSet.length() > getNbits()) {
             throw new RuntimeException("Given value needs more bits to encode than this bitset has");
@@ -27,6 +27,7 @@ public class SmodelBitset extends FixedSizeBitSet {
                 set(i);
             }
         }
+        return this;
     }
 
 }

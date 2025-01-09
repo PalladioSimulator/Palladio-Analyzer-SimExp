@@ -57,15 +57,14 @@ public class EAOptimizer implements IEAOptimizer {
         ////// to phenotype
         OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
-        ////// to phenotype end
 
+        ///// setup EA
         final Engine<BitGene, Double> engine;
         FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
         OptimizationEngineBuilder builder = new OptimizationEngineBuilder();
-
         engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.2, 0.3);
 
-        //// setup EA
+        //// run optimization
         runOptimization(evolutionStatusReceiver, normalizer, engine);
     }
 

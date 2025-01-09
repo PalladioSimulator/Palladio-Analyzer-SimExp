@@ -75,7 +75,6 @@ public class SmodelBitChromosome extends BitChromosome {
         return chromosome;
     }
 
-    // Warum??? Überschreiben + Exception werfen = Schlechter Stil
     @Override
     public SmodelBitChromosome newInstance() {
         SmodelBitset smodelBitset = new SmodelBitset(length());
@@ -95,6 +94,9 @@ public class SmodelBitChromosome extends BitChromosome {
     }
 
     public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable, int numOfValues) {
+        if (numOfValues <= 0) {
+            throw new RuntimeException("There must be at least one value!");
+        }
         int length = bits.getNbits();
         final byte[] bytes = Bits.newArray(length);
         for (int i = 0; i < length; ++i) {
