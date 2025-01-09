@@ -31,7 +31,7 @@ public enum PrismLoader {
 
     private static final Logger LOGGER = Logger.getLogger(PrismLoader.class);
 
-    private boolean initialized = false;
+    private Path prismBinary;
 
     private class LibraryList {
         public String prefix;
@@ -39,12 +39,15 @@ public enum PrismLoader {
         public List<String> libraries;
     }
 
-    public synchronized void load() {
-        if (initialized) {
-            return;
+    public synchronized Path load() {
+        if (prismBinary != null) {
+            return prismBinary;
         }
-        initialized = true;
-        preloadLibraries();
+        // preloadLibraries();
+        Path prismPath = Paths.get("/home/zd745/develop/prism/prism-4.8.1-linux64-x86");
+        Path prismBinPath = prismPath.resolve("bin");
+        prismBinary = prismBinPath.resolve("prism");
+        return prismBinary;
     }
 
     private void preloadLibraries() {
