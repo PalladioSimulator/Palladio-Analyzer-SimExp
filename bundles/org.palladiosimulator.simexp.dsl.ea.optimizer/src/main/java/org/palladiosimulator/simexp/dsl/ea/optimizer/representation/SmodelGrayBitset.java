@@ -10,6 +10,28 @@ public class SmodelGrayBitset extends SmodelBitset {
         super(nbits);
     }
 
+    public SmodelGrayBitset(int nbits, int value) {
+        this(nbits);
+
+        if ((new PowerUtil()).minBitSizeForPower(value) > getNbits()) {
+            throw new RuntimeException("Given value needs more bits to encode than this bitset has");
+        }
+
+        int gray = value ^ (value >> 1);
+
+        int i = 0;
+
+        while (gray != 0) {
+            if ((gray & 1) == 1) {
+                set(i);
+            } else {
+                clear(i);
+            }
+            gray >>= 1;
+            i++;
+        }
+    }
+
     @Override
     public int toInt() {
         int idx = 0;
@@ -28,25 +50,8 @@ public class SmodelGrayBitset extends SmodelBitset {
         return idx;
     }
 
-    @Override
-    public SmodelGrayBitset fromInt(int value) {
-        if ((new PowerUtil()).minBitSizeForPower(value) > getNbits()) {
-            throw new RuntimeException("Given value needs more bits to encode than this bitset has");
-        }
-        int gray = value ^ (value >> 1);
-
-        int i = 0;
-
-        while (gray != 0) {
-            if ((gray & 1) == 1) {
-                set(i);
-            } else {
-                clear(i);
-            }
-            gray >>= 1;
-            i++;
-        }
-        return this;
+    public static SmodelGrayBitset fromInt(int value) {
+        return new SmodelGrayBitset((new PowerUtil()).minBitSizeForPower(value), value);
     }
 
 }

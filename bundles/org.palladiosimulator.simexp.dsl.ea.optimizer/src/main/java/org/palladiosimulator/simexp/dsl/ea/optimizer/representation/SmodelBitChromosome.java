@@ -2,8 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.BitSet;
-
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitChromosome;
@@ -77,20 +75,10 @@ public class SmodelBitChromosome extends BitChromosome {
 
     @Override
     public SmodelBitChromosome newInstance() {
-        SmodelBitset smodelBitset = new SmodelBitset(length());
         int initialValue = RandomRegistry.random()
             .nextInt(numOfValues);
-
-        BitSet naiveBitSet = BitSet.valueOf(new long[] { initialValue });
-        for (int i = 0; i < naiveBitSet.length(); i++) {
-            if (naiveBitSet.get(i)) {
-                smodelBitset.set(i);
-            }
-        }
-        smodelBitset.fromInt(initialValue);
-
+        SmodelBitset smodelBitset = SmodelBitset.fromInt(length(), initialValue);
         return of(smodelBitset, optimizable, numOfValues);
-//        throw new RuntimeException("not supported");
     }
 
     public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable, int numOfValues) {

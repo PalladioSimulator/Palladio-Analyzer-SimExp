@@ -192,7 +192,7 @@ public class SmodelBitChromosomeTest {
     @Test
     public void testNewInstanceLengthZero() {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
-        DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
+        DoubleLiteral end = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
         RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
