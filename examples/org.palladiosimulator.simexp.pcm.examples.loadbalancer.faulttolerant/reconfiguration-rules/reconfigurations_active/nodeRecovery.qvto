@@ -48,9 +48,6 @@ transformation nodeRecovery( in pcmAllocation : PCM_ALLOC ) {
 		log('Start node recovery ...');
 		if ((serverNode1.toString() = 'available') and (serverNode2.toString() != 'available')){
 			log("serverNode1 : '" + serverNode1.toString() + "', serverNode2: '" + serverNode2.toString() + "'");
-//		 	setBranchProbabilityNode1();
-//		 	unsetBranchProbabilityNode2();
-//		 	unsetBranchProbabilityFailSave()
 			var probBranch1 : Real = 1.0;
 			var probBranch2 : Real = 0.0;
 			pcmAllocation.rootObjects()[Allocation]->forAll(
@@ -60,9 +57,6 @@ transformation nodeRecovery( in pcmAllocation : PCM_ALLOC ) {
 	 	};
 	 	if ((serverNode1 = "available") and (serverNode2 = "available")){
 			log("serverNode1 : '" + serverNode1.toString() + "', serverNode2: '" + serverNode2.toString() + "'");
-//		 	setBranchProbabilityNode1();
-//		 	unsetBranchProbabilityNode2();
-//		 	unsetBranchProbabilityFailSave();
 			var probBranch1 : Real = 1.0;
 			var probBranch2 : Real = 0.0;
 			pcmAllocation.rootObjects()[Allocation]->forAll(
@@ -72,9 +66,6 @@ transformation nodeRecovery( in pcmAllocation : PCM_ALLOC ) {
 	 	};
 	 	if ((serverNode1 != "available") and (serverNode2 = "available")){
 			log("serverNode1 : '" + serverNode1.toString() + "', serverNode2: '" + serverNode2.toString() + "'");
-//		 	unsetBranchProbabilityNode1(); 
-//		 	setBranchProbabilityNode2();
-//		 	unsetBranchProbabilityFailSave();
 			var probBranch1 : Real = 0.0;
 			var probBranch2 : Real = 1.0;
 			pcmAllocation.rootObjects()[Allocation]->forAll(
@@ -84,9 +75,6 @@ transformation nodeRecovery( in pcmAllocation : PCM_ALLOC ) {
 	 	};
 	 	if ((serverNode1 != "available") and (serverNode2 != "available")){
 			log("serverNode1 : '" + serverNode1.toString() + "', serverNode2: '" + serverNode2.toString() + "'");
-//		 	unsetBranchProbabilityNode1(); 
-//		 	unsetBranchProbabilityNode2();
-//		 	setBranchProbabilityFailSave();
 			var probBranch1 : Real = 0.0;
 			var probBranch2 : Real = 0.0;
 			pcmAllocation.rootObjects()[Allocation]->forAll(
