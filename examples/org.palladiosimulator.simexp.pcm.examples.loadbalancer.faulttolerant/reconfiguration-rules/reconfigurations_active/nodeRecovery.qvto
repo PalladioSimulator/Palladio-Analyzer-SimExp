@@ -31,7 +31,10 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
+transformation nodeRecovery( in pcmAllocation : PCM_ALLOC ) {
+	
+	configuration property node1 : String;							// node1 availability
+	configuration property node2 : String;							// node2 availability
 							
 
 	/**
@@ -39,20 +42,57 @@ transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 	 * This is the entry point to the overall transformation.
 	 */
 	main() {
+	
+	log('Transformation rule [nodeRecovery] ...');
+	if ((node1 != "available") or (node2 != "available")) {
+		log('Start node recovery ...');
+		if ((node1.toString() = 'available') and (node2.toString() != 'available')){
+			log("node1 : '" + node1.toString() + "', node2: '" + node2.toString() + "'");
+			var probBranch1 : Real = 1.0;
+			var probBranch2 : Real = 0.0;
+			pcmAllocation.rootObjects()[Allocation]->forAll(
+								allocation : Allocation | 
+								setBranchProbabilities(allocation.allocationContexts_Allocation, probBranch1, probBranch2)
+							);
+	 	};
+	 	if ((node1 = "available") and (node2 = "available")){
+			log("node1 : '" + node1.toString() + "', node2: '" + node2.toString() + "'");
+			var probBranch1 : Real = 1.0;
+			var probBranch2 : Real = 0.0;
+			pcmAllocation.rootObjects()[Allocation]->forAll(
+								allocation : Allocation | 
+								setBranchProbabilities(allocation.allocationContexts_Allocation, probBranch1, probBranch2)
+							);
+	 	};
+	 	if ((node1 != "available") and (node2 = "available")){
+			log("node1 : '" + node1.toString() + "', node2: '" + node2.toString() + "'");
+			var probBranch1 : Real = 0.0;
+			var probBranch2 : Real = 1.0;
+			pcmAllocation.rootObjects()[Allocation]->forAll(
+								allocation : Allocation | 
+								setBranchProbabilities(allocation.allocationContexts_Allocation, probBranch1, probBranch2)
+							);
+	 	};
+	 	if ((node1 != "available") and (node2 != "available")){
+			log("node1 : '" + node1.toString() + "', node2: '" + node2.toString() + "'");
+			var probBranch1 : Real = 0.0;
+			var probBranch2 : Real = 0.0;
+			pcmAllocation.rootObjects()[Allocation]->forAll(
+								allocation : Allocation | 
+								setBranchProbabilities(allocation.allocationContexts_Allocation, probBranch1, probBranch2)
+							);
+	 	};	 	
+	log('Node recovery DONE.');
+	};
 
-		log('*** STARTED: Transformation rule [setBranchProbabilityNode1] ...');
-		pcmAllocation.rootObjects()[Allocation]->forAll(
-					allocation : Allocation | 
-					setBranchProbabilities(allocation.allocationContexts_Allocation)
-				);
-		log('*** DONE: Transformation rule [setBranchProbabilityNode1]');
+	log('Transformation rule [unsetBranchProbabilityNode1] DONE.');
 	}
 	
 	
 	/**
 	 * branchProbabilityProcessing Processing.
 	 */
-	helper setBranchProbabilities(allocationContexts : Set(AllocationContext)) : Boolean {
+	helper setBranchProbabilities(allocationContexts : Set(AllocationContext), in probBranch1 : Real, in probBranch2: Real) : Boolean {
 	
 		allocationContexts->forEach(allocation){
 
@@ -61,8 +101,14 @@ transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 				allocation.assemblyContext_AllocationContext.encapsulatedComponent__AssemblyContext.oclAsType(BasicComponent).serviceEffectSpecifications__BasicComponent->forEach(seff) {
 					if(seff.oclIsTypeOf(ResourceDemandingSEFF)) {
 						var branch1 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_ridTkAEoEeS7FKokKTKFow"); // entityName="delegateToServer1"
-						branch1.branchProbability := 1.0;
+						branch1.branchProbability := probBranch1;
 						log('Set branch1.branchProbability to ' + branch1.branchProbability.toString());
+						var branch2 : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_tjFukAEoEeS7FKokKTKFow"); // entityName="delegateToServer2"
+						branch2.branchProbability := probBranch2;
+						log('Set branch2.branchProbability to ' + branch2.branchProbability.toString());
+						var branchFailSave : ProbabilisticBranchTransition = seff.allSubobjects()[ProbabilisticBranchTransition]->any(id="_fm8UkQFdEe-xm__qsFXqOw"); // entityName="failSavee"
+						branchFailSave.branchProbability := 0.0;
+						log('Set branchFailSave.branchProbability to ' + branchFailSave.branchProbability.toString());
 						return true;
 					}
 				}
@@ -70,6 +116,6 @@ transformation setBranchProbabilityNode1( in pcmAllocation : PCM_ALLOC ) {
 		};
 		
 		return false;
-	}
+	}	
 	
 }
