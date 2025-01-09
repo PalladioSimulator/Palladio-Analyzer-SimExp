@@ -74,6 +74,8 @@ public class PrismInvocationService implements PrismService {
             args.add(resultFile.toString());
             LOGGER.debug(String.format("execute: %s", StringUtils.join(args, " ")));
             ProcessBuilder pb = new ProcessBuilder(args);
+            pb.directory(prismBinary.getParent()
+                .toFile());
             pb.environment()
                 .put("PRISM_JAVA", javaBinary.toString());
             Process p = pb.start();

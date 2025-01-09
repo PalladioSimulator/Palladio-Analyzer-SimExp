@@ -34,16 +34,14 @@ public enum PrismLoader {
     private class LibraryList {
         public String architecture;
         public String folder;
+        public String binaryExtension;
     }
 
     public synchronized Path load() {
         if (prismBinary != null) {
             return prismBinary;
         }
-        Path prismPath = preloadLibraries();
-        // Path prismPath = Paths.get("/home/zd745/develop/prism/prism-4.8.1-linux64-x86");
-        Path prismBinPath = prismPath.resolve("bin");
-        prismBinary = prismBinPath.resolve("prism");
+        prismBinary = preloadLibraries();
         return prismBinary;
     }
 
@@ -65,7 +63,10 @@ public enum PrismLoader {
             Path workspacePrismOsPath = workspacePrismPath.resolve(libraryList.architecture);
             Files.createDirectories(workspacePrismOsPath);
             PathUtils.copyDirectory(folderPath, workspacePrismOsPath, StandardCopyOption.REPLACE_EXISTING);
-            return workspacePrismOsPath;
+
+            Path prismBinPath = workspacePrismOsPath.resolve("bin");
+            Path prismExe = prismBinPath.resolve(String.format("prism%s", libraryList.binaryExtension));
+            return prismExe;
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
