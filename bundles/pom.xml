@@ -58,6 +58,7 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
 
