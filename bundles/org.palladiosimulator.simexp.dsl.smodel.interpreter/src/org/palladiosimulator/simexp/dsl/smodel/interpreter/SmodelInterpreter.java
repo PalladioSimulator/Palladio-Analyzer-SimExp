@@ -28,13 +28,7 @@ public class SmodelInterpreter implements Analyzer, Planner, IResettable {
     public SmodelInterpreter(Smodel model, IFieldValueProvider probeValueProvider,
             IFieldValueProvider envVariableValueProvider) {
         IFieldValueProvider optimizableValueProvider = new OptimizableValueProvider();
-        ISmodelConfig smodelConfig = new ISmodelConfig() {
-
-            @Override
-            public double getEpsilon() {
-                return 0.0001;
-            }
-        };
+        ISmodelConfig smodelConfig = new DefaultSmodelConfig();
         IFieldValueProvider constantValueProvider = new ConstantValueProvider(smodelConfig);
         variableValueProvider = new VariableValueProvider(smodelConfig, constantValueProvider, probeValueProvider,
                 optimizableValueProvider, envVariableValueProvider);
