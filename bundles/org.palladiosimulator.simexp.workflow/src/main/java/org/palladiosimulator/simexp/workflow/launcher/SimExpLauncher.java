@@ -30,6 +30,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
@@ -101,6 +102,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
             Set<String> transformationNames = configuration.getAttribute(SimulationConstants.TRANSFORMATIONS_ACTIVE,
                     Collections.emptySet());
+            String modelledOptimizationTypeStr = (String) launchConfigurationParams
+                .get(SimulationConstants.MODELLED_OPTIMIZATION_TYPE);
+            ModelledOptimizationType modelledOptimizationType = ModelledOptimizationType
+                .valueOf(modelledOptimizationTypeStr);
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -154,8 +159,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
-                    transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
-                    environmentalModels, simulationParameters, seedProvider);
+                    transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
+                    prismConfig, environmentalModels, simulationParameters, seedProvider);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
