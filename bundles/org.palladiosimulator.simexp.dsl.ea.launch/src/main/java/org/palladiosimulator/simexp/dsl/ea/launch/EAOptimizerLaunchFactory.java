@@ -2,12 +2,15 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 
 import java.util.Optional;
 
+import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
+import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -26,17 +29,19 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
             return 0;
         }
 
-        // TODO:
-
-        return 0;
+        return 10;
     }
 
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory) {
-        // TODO Auto-generated method stub
-        return null;
+        ModelLoader modelLoader = modelLoaderFactory.create();
+        ModelledModelLoader modelledModelLoader = (ModelledModelLoader) modelLoader;
+        IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
+        URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
+        Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
+        return new EAOptimizerSimulationExecutor(smodel);
     }
 
 }
