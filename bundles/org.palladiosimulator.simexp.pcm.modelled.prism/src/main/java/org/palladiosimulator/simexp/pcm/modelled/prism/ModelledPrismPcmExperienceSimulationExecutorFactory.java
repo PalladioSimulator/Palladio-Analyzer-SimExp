@@ -45,7 +45,6 @@ import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTPartiallyEnvDynamics;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
-import org.palladiosimulator.simexp.pcm.examples.deltaiot.FileDumperPrismObserver;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationparams.DeltaIoTReconfigurationParamRepository;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.DeltaIoTPcmBasedPrismExperienceSimulationRunner;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.EnergyConsumptionPrismFileUpdater;
@@ -121,8 +120,6 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         IExperimentProvider experimentProvider = createExperimentProvider(experiment);
         DeltaIoTPcmBasedPrismExperienceSimulationRunner<QVTOReconfigurator> runner = new DeltaIoTPcmBasedPrismExperienceSimulationRunner<>(
                 prismGenerator, prismFolder, strategyId, reconfParamsRepo, experimentProvider);
-        FileDumperPrismObserver observer = new FileDumperPrismObserver(prismFolder);
-        runner.addPrismObserver(observer);
 
         IQVToReconfigurationManager qvtoReconfigurationManager = createQvtoReconfigurationManager(experiment,
                 getWorkflowConfiguration());
@@ -179,9 +176,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .getLocation();
         Path outputBasePath = Paths.get(workspaceBasePath.toString());
         Path resourcePath = outputBasePath.resolve("resource");
-        Path prismPath = resourcePath.resolve("prism");
-        Path prismStrategyPath = prismPath.resolve(strategyId);
-        return prismStrategyPath;
+        Path prismStrategyPath = resourcePath.resolve(strategyId);
+        Path prismPath = prismStrategyPath.resolve("prism");
+        return prismPath;
     }
 
     private SimulatedMeasurementSpecification findPrismMeasurementSpec(List<PrismSimulatedMeasurementSpec> specs,

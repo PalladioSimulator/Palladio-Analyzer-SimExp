@@ -1,5 +1,5 @@
 {
-	"prefix": "",
-    "extension": ".dll",
-    "libraries": ["dd", "dv", "jdd", "lpsolve55", "lpsolve55j", "odd", "prism", "prismsparse", "prismmtbdd", "prismhybrid"]
+	"architecture": "win32.win32.x86_64",
+	"folder": "x86_64",
+	"binaryExtension": ".bat"
 }
