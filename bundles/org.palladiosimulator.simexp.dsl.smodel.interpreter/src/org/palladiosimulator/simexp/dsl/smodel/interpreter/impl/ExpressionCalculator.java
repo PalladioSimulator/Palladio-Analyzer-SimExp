@@ -1,7 +1,9 @@
-package org.palladiosimulator.simexp.dsl.smodel.interpreter;
+package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import org.apache.commons.math3.util.Precision;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.ISmodelConfig;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
