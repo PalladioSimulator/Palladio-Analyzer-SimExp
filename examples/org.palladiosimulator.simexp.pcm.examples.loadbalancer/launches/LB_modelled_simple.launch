@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
+    <stringAttribute key="ModelledOptimizationType" value="SIMPLE"/>
     <intAttribute key="NumberOfRuns" value="1"/>
     <intAttribute key="NumberOfSimulationsPerRun" value="20"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
