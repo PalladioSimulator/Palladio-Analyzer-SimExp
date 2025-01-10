@@ -47,7 +47,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     }
 
     private void runOptimization(IEAOptimizer optimizer) {
-        IOptimizableProvider optimizableProvider = new OptimizableProvider();
+        IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
         IEAFitnessEvaluator fitnessEvaluator = new EAFitnessEvaluator();
 
         try {
