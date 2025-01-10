@@ -12,10 +12,10 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.impl.SmodelPlaner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Analyzer;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Planner;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.ConstantValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.FieldValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.SaveFieldValueProvider;
-import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.VariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.FieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.OptimizableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.SaveFieldValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl.VariableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class SmodelInterpreter implements Analyzer, Planner, IResettable {
