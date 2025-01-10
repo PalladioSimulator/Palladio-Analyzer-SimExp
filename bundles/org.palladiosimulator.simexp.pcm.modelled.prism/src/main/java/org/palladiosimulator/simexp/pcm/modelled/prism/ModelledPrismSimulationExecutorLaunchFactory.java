@@ -18,17 +18,17 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class ModelledPrismSimulationExecutorLaunchFactory implements ILaunchFactory {
 
     @Override
-    public boolean canHandle(IWorkflowConfiguration config) {
+    public int canHandle(IWorkflowConfiguration config) {
         SimulatorType simulatorType = config.getSimulatorType();
         if (simulatorType != SimulatorType.MODELLED) {
-            return false;
+            return 0;
         }
         SimulationEngine simulationEngine = config.getSimulationEngine();
         if (simulationEngine != SimulationEngine.PRISM) {
-            return false;
+            return 0;
         }
 
-        return true;
+        return 1;
     }
 
     @Override

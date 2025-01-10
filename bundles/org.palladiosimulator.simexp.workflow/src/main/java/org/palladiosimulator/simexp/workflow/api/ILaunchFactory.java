@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public interface ILaunchFactory {
-    boolean canHandle(IWorkflowConfiguration config);
+    int canHandle(IWorkflowConfiguration config);
 
     SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,

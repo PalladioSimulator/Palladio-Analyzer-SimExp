@@ -14,14 +14,14 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class EAOptimizerLaunchFactory implements ILaunchFactory {
 
     @Override
-    public boolean canHandle(IWorkflowConfiguration config) {
+    public int canHandle(IWorkflowConfiguration config) {
         SimulatorType simulatorType = config.getSimulatorType();
         if (simulatorType != SimulatorType.MODELLED) {
-            return false;
+            return 0;
         }
         // TODO:
 
-        return false;
+        return 0;
     }
 
     @Override

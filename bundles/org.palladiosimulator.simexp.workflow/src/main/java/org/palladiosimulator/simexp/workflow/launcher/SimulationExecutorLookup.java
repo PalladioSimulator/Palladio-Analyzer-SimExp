@@ -1,9 +1,12 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -23,14 +26,28 @@ public class SimulationExecutorLookup {
             throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
+        List<Pair<ILaunchFactory, Integer>> candidates = new ArrayList<>();
         for (ILaunchFactory factory : factories) {
-            if (factory.canHandle(config)) {
-                PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
-                return factory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
-                        modelLoaderFactory);
+            int value = factory.canHandle(config);
+            if (value > 0) {
+                candidates.add(new ImmutablePair<>(factory, value));
             }
         }
+        ILaunchFactory launchFactory = selectCandidate(candidates);
+        if (launchFactory != null) {
+            PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
+            return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
+                    modelLoaderFactory);
+        }
+
         return null;
+    }
+
+    private ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates) {
+        Pair<ILaunchFactory, Integer> maxPair = candidates.stream()
+            .max(Comparator.comparing(p -> p.getRight()))
+            .orElse(null);
+        return maxPair.getKey();
     }
 
     private List<ILaunchFactory> lookupFactories(IExtensionRegistry registry) throws CoreException {
