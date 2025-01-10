@@ -4,6 +4,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.palladiosimulator.simexp.dsl.ea.launch
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
-Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch
+Require-Bundle: org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
+ tools.mdsd.probdist.api;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm.examples;bundle-version="1.0.0"
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
