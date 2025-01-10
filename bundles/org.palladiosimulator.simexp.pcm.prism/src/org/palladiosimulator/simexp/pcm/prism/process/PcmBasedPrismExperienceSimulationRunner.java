@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -30,7 +29,6 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
 
     private final PrismService prismService;
     private final PrismGenerator<A, V> prismGenerator;
-    private final List<IPrismObserver> prismObservers;
 
     public PcmBasedPrismExperienceSimulationRunner(PrismGenerator<A, V> prismGenerator, Path prismFolder,
             String strategyId) {
@@ -40,11 +38,6 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
             .orElseThrow(() -> new RuntimeException("There is no prism service."));
         this.prismGenerator = prismGenerator;
         this.prismService.initialise(prismFolder, strategyId);
-        this.prismObservers = new ArrayList<>();
-    }
-
-    public void addPrismObserver(IPrismObserver prismObserver) {
-        prismObservers.add(prismObserver);
     }
 
     @Override
@@ -58,17 +51,10 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
         PrismResult result = new PrismResult();
         for (PrismSimulatedMeasurementSpec each : filterPrismSpecs(sasState)) {
             PrismContext context = prismGenerator.generate(sasState, each);
-            preProcessContext(context, sasState);
             PrismResult resultToMerge = prismService.modelCheck(context);
             result.mergeWith(resultToMerge);
         }
         return result;
-    }
-
-    private void preProcessContext(PrismContext context, PcmSelfAdaptiveSystemState<A, V> sasState) {
-        for (IPrismObserver prismObserver : prismObservers) {
-            prismObserver.onContext(context, sasState.getName());
-        }
     }
 
     private List<PrismSimulatedMeasurementSpec> filterPrismSpecs(PcmSelfAdaptiveSystemState<A, V> sasState) {

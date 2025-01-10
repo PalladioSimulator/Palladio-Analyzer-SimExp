@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
     <intAttribute key="NumberOfRuns" value="1"/>
-    <intAttribute key="NumberOfSimulationsPerRun" value="100"/>
+    <intAttribute key="NumberOfSimulationsPerRun" value="20"/>
     <stringAttribute key="Quality Objective" value="PERFORMABILITY"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="FT_LB_custom"/>
     <stringAttribute key="Simulator Type" value="CUSTOM"/>
+    <setAttribute key="TransformationsActive">
+        <setEntry value="scaleIn"/>
+        <setEntry value="scaleOut"/>
+    </setAttribute>
     <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/loadbalancer_on_iaas.allocation"/>
     <stringAttribute key="dynamicModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/environment/environmentalDynamics.dynamicmodel"/>
     <stringAttribute key="experimentsFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/experiments/simexp.experiments"/>
