@@ -192,9 +192,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             .getLocation();
         Path outputBasePath = Paths.get(workspaceBasePath.toString());
         Path resourcePath = outputBasePath.resolve("resource");
-        Path prismPath = resourcePath.resolve("prism");
-        Path prismStrategyPath = prismPath.resolve(strategyId);
-        return prismStrategyPath;
+        Path prismStrategyPath = resourcePath.resolve(strategyId);
+        Path prismPath = prismStrategyPath.resolve("prism");
+        return prismPath;
     }
 
     private Path getCSVPath(String strategyId) {
