@@ -15,6 +15,10 @@ public class ConstantValueProvider implements IFieldValueProvider {
         this.expressionCalculator = new ExpressionCalculator(smodelConfig, this);
     }
 
+    public IExpressionCalculator getConstantExpressionCalculator() {
+        return expressionCalculator;
+    }
+
     @Override
     public Boolean getBoolValue(Field field) {
         Constant constant = (Constant) field;
