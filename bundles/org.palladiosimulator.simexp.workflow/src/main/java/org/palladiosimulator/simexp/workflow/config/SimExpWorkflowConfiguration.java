@@ -9,10 +9,10 @@ import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflo
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 

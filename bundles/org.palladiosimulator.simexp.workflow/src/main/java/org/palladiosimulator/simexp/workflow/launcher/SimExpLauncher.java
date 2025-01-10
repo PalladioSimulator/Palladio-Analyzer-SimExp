@@ -34,12 +34,8 @@ import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.core.store.DescriptionProvider;
-import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
@@ -64,16 +60,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
-            SimulatorType simulatorType = config.getSimulatorType();
-            SimulationExecutor simulationExecutor = switch (simulatorType) {
-            case CUSTOM -> {
-                yield createCustomSimulationExecutor(config, launchDescriptionProvider, seedProvider);
+            SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
+            SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
+                    launchDescriptionProvider, seedProvider);
+            if (simulationExecutor == null) {
+                throw new IllegalArgumentException("Unable to create simulation executor");
             }
-            case MODELLED -> {
-                yield createModelledSimulationExecutor(config, launchDescriptionProvider, seedProvider);
-            }
-            default -> throw new IllegalArgumentException("SimulatorType not supported: " + simulatorType);
-            };
             String policyId = simulationExecutor.getPolicyId();
             launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
@@ -88,29 +80,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             throws CoreException {
         LOGGER.debug("Derive workflow configuration");
         return buildWorkflowConfiguration(configuration, mode);
-    }
-
-    private SimulationExecutor createCustomSimulationExecutor(IWorkflowConfiguration workflowConfiguration,
-            DescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider) {
-        SimulationEngine simulationEngine = workflowConfiguration.getSimulationEngine();
-        return switch (simulationEngine) {
-        case PCM -> {
-            PcmSimulationExecutorFactory factory = new PcmSimulationExecutorFactory();
-            yield factory.create((IPCMWorkflowConfiguration) workflowConfiguration, descriptionProvider, seedProvider);
-        }
-        case PRISM -> {
-            PrismSimulationExecutorFactory factory = new PrismSimulationExecutorFactory();
-            yield factory.create((IPrismWorkflowConfiguration) workflowConfiguration, descriptionProvider,
-                    seedProvider);
-        }
-        default -> throw new RuntimeException("Unexpected simulation engine " + simulationEngine);
-        };
-    }
-
-    private SimulationExecutor createModelledSimulationExecutor(IModelledWorkflowConfiguration workflowConfiguration,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider) {
-        ModelledSimulationExecutorFactory factory = new ModelledSimulationExecutorFactory();
-        return factory.create(workflowConfiguration, launchDescriptionProvider, seedProvider);
     }
 
     @SuppressWarnings("unchecked")

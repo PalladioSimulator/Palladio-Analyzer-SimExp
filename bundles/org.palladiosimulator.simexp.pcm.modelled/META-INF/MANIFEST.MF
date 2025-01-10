@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: PCM modelled
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm.modelled
 Bundle-Version: 1.0.0.qualifier
-Export-Package: org.palladiosimulator.simexp.pcm.modelled,
- org.palladiosimulator.simexp.pcm.modelled.config
+Export-Package: org.palladiosimulator.simexp.pcm.modelled
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.33.0",
  org.apache.log4j;bundle-version="1.2.19",
  org.palladiosimulator.simexp.core;bundle-version="1.0.0",

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.palladiosimulator.simexp.workflow.launch">
+      <factory
+            class="org.palladiosimulator.simexp.pcm.examples.hri.CustomRobotCognitionLaunchFactory">
+      </factory>
+   </extension>
+   <extension
+         point="org.palladiosimulator.simexp.workflow.launch">
+      <factory
+            class="org.palladiosimulator.simexp.pcm.examples.hri.ModelledReliabilityPcmExperienceSimulationExecutorLaunchFactory">
+      </factory>
+   </extension>
+
+</plugin>
