@@ -48,7 +48,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     }
 
     private LocalEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config) {
-        return new LocalEAFitnessEvaluator();
+        return new LocalEAFitnessEvaluator(null);
     }
 
 }

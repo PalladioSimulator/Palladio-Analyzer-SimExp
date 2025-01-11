@@ -6,4 +6,6 @@ public interface SimulationExecutor {
     void execute();
 
     void evaluate();
+
+    void dispose();
 }

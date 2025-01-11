@@ -25,6 +25,10 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public String getPolicyId() {
         return String.format("EA-%s", smodel.getModelName());
     }

@@ -33,6 +33,10 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public String getPolicyId() {
         return reconfSelectionPolicy.getId();
     }
