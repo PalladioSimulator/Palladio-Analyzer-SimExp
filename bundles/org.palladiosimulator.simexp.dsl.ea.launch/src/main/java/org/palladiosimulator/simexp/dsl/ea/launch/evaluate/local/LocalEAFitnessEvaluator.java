@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 
-public class EAFitnessEvaluator implements IEAFitnessEvaluator {
+public class LocalEAFitnessEvaluator implements IEAFitnessEvaluator {
 
     @Override
     public Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues) {
