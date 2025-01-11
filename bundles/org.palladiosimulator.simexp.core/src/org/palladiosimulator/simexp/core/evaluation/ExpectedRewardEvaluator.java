@@ -80,4 +80,8 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         return totalReward;
     }
 
+    @Override
+    public String getName() {
+        return "expected";
+    }
 }

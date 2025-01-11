@@ -46,7 +46,8 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     public void evaluate() {
         double totalReward = rewardCalculation.computeTotalReward();
         LOGGER.info("***********************************************************************");
-        LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
+        LOGGER.info(String.format("The total %s reward of policy %1s is %2s", rewardCalculation.getName(),
+                reconfSelectionPolicy.getId(), totalReward));
         LOGGER.info("***********************************************************************");
     }
 }
