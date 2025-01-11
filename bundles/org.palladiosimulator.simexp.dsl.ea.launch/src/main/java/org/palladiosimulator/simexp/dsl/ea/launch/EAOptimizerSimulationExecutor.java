@@ -55,13 +55,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
 
     private void runOptimization(IEAOptimizer optimizer) {
         IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
-        try {
-            LOGGER.info("EA optimization running...");
-            optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
-            LOGGER.info("EA optimization finished...");
-        } catch (Exception e) {
-            LOGGER.info("Failure during EA optimization", e);
-        }
+        LOGGER.info("EA optimization running...");
+        optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
+        LOGGER.info("EA optimization finished...");
     }
 
     @Override
