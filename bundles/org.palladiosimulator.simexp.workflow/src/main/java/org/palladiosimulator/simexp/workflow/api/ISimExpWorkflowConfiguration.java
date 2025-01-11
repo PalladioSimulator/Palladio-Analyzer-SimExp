@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.workflow.config;
+package org.palladiosimulator.simexp.workflow.api;
 
 import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;

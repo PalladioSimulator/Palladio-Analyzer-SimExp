@@ -11,6 +11,7 @@ import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 

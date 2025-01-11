@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
+import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -43,12 +44,15 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
-        IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration);
+        IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
+                launchDescriptionProvider, seedProvider, modelLoaderFactory);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator);
     }
 
-    private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config) {
-        return new LocalEAFitnessEvaluator();
+    private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
+            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            Factory modelLoaderFactory) {
+        return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory);
     }
 
 }
