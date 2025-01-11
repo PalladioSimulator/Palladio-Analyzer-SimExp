@@ -17,9 +17,11 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     protected static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
+    private final IEAFitnessEvaluator fitnessEvaluator;
 
-    public EAOptimizerSimulationExecutor(Smodel smodel) {
+    public EAOptimizerSimulationExecutor(Smodel smodel, IEAFitnessEvaluator fitnessEvaluator) {
         this.smodel = smodel;
+        this.fitnessEvaluator = fitnessEvaluator;
     }
 
     @Override
@@ -48,8 +50,6 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
 
     private void runOptimization(IEAOptimizer optimizer) {
         IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
-        IEAFitnessEvaluator fitnessEvaluator = new EAFitnessEvaluator();
-
         try {
             LOGGER.info("EA optimization running...");
             optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
