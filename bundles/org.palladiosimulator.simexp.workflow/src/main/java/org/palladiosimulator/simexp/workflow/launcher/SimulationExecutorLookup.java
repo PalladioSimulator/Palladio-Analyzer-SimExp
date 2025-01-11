@@ -14,14 +14,14 @@ import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.ISimExpWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class SimulationExecutorLookup {
     private static final String LAUNCH_ID = "org.palladiosimulator.simexp.workflow.launch";
 
-    public SimulationExecutor lookupSimulationExecutor(SimExpWorkflowConfiguration config,
+    public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider)
             throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();

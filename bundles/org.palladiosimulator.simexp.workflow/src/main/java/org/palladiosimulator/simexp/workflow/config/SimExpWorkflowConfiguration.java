@@ -10,18 +10,12 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration
-        implements IPCMWorkflowConfiguration, IPrismWorkflowConfiguration, IModelledWorkflowConfiguration,
-        IModelledPcmWorkflowConfiguration, IModelledPrismWorkflowConfiguration {
+        implements ISimExpWorkflowConfiguration {
 
     /**
      * This class serves as container configuration class to hold all relevant configuration
