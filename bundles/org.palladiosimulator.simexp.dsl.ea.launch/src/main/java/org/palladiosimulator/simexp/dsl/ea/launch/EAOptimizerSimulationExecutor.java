@@ -6,10 +6,10 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
@@ -17,15 +17,16 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     protected static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
-    private final IEAFitnessEvaluator fitnessEvaluator;
+    private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
 
-    public EAOptimizerSimulationExecutor(Smodel smodel, IEAFitnessEvaluator fitnessEvaluator) {
+    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
     }
 
     @Override
     public void dispose() {
+        fitnessEvaluator.dispose();
     }
 
     @Override

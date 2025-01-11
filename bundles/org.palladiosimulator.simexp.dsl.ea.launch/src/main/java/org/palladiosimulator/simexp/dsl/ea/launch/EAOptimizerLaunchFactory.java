@@ -6,7 +6,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
@@ -43,12 +43,12 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
-        IEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration);
+        IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator);
     }
 
-    private LocalEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config) {
-        return new LocalEAFitnessEvaluator(null);
+    private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config) {
+        return new LocalEAFitnessEvaluator();
     }
 
 }
