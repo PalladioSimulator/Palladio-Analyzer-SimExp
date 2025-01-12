@@ -26,13 +26,7 @@ public class SimulationExecutorLookup {
             throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
-        List<Pair<ILaunchFactory, Integer>> candidates = new ArrayList<>();
-        for (ILaunchFactory factory : factories) {
-            int value = factory.canHandle(config);
-            if (value > 0) {
-                candidates.add(new ImmutablePair<>(factory, value));
-            }
-        }
+        List<Pair<ILaunchFactory, Integer>> candidates = createCandidates(config, factories);
         ILaunchFactory launchFactory = selectCandidate(candidates);
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
@@ -41,6 +35,18 @@ public class SimulationExecutorLookup {
         }
 
         return null;
+    }
+
+    private List<Pair<ILaunchFactory, Integer>> createCandidates(ISimExpWorkflowConfiguration config,
+            List<ILaunchFactory> factories) {
+        List<Pair<ILaunchFactory, Integer>> candidates = new ArrayList<>();
+        for (ILaunchFactory factory : factories) {
+            int value = factory.canHandle(config);
+            if (value > 0) {
+                candidates.add(new ImmutablePair<>(factory, value));
+            }
+        }
+        return candidates;
     }
 
     private ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates) {
