@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableVa
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.RunInMainThreadEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
@@ -91,12 +92,13 @@ public class EAOptimizerTest {
         });
 
         optFunction = r -> {
-            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver, 1);
+            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
             return "";
         };
 
         EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
-        optimizer = eaOptimizer.create(eaConfig);
+
+        optimizer = eaOptimizer.create(new RunInMainThreadEAConfig());
     }
 
     @Test
