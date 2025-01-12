@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.workflow.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.workflow.tests
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: org.palladiosimulator.simexp.workflow.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Fragment-Host: org.palladiosimulator.simexp.workflow;bundle-version="1.0.0"
+Require-Bundle: org.junit;bundle-version="4.13.0",
+ net.bytebuddy.byte-buddy;bundle-version="1.10.9",
+ net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
+ org.objenesis;bundle-version="2.6.0",
+ org.mockito.mockito-merged;bundle-version="3.3.3"
