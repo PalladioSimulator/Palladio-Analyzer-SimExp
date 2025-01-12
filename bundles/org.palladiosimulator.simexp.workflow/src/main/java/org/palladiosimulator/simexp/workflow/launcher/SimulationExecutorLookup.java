@@ -21,13 +21,23 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class SimulationExecutorLookup {
     private static final String LAUNCH_ID = "org.palladiosimulator.simexp.workflow.launch";
 
+    private final int maxLevel;
+
+    public SimulationExecutorLookup() {
+        this(Integer.MAX_VALUE);
+    }
+
+    public SimulationExecutorLookup(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
     public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider)
             throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
         List<Pair<ILaunchFactory, Integer>> candidates = createCandidates(config, factories);
-        ILaunchFactory launchFactory = selectCandidate(candidates);
+        ILaunchFactory launchFactory = selectCandidate(candidates, maxLevel);
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
             return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
@@ -49,8 +59,9 @@ public class SimulationExecutorLookup {
         return candidates;
     }
 
-    ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates) {
+    ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates, int maxLevel) {
         Pair<ILaunchFactory, Integer> maxPair = candidates.stream()
+            .filter(p -> p.getRight() < maxLevel)
             .max(Comparator.comparing(p -> p.getRight()))
             .orElse(null);
         return maxPair.getKey();

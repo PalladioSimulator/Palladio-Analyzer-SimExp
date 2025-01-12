@@ -29,14 +29,24 @@ public class SimulationExecutorLookupTest {
     }
 
     @Test
-    public void testSelectCandidate() {
+    public void testSelectCandidateMaxLevel() {
         List<Pair<ILaunchFactory, Integer>> candidates = new ArrayList<>();
         candidates.add(new ImmutablePair<>(factory1, 1));
         candidates.add(new ImmutablePair<>(factory2, 10));
 
-        ILaunchFactory actualCandidate = lookup.selectCandidate(candidates);
+        ILaunchFactory actualCandidate = lookup.selectCandidate(candidates, Integer.MAX_VALUE);
 
         assertEquals(factory2, actualCandidate);
     }
 
+    @Test
+    public void testSelectCandidateMaxLevel10() {
+        List<Pair<ILaunchFactory, Integer>> candidates = new ArrayList<>();
+        candidates.add(new ImmutablePair<>(factory1, 1));
+        candidates.add(new ImmutablePair<>(factory2, 10));
+
+        ILaunchFactory actualCandidate = lookup.selectCandidate(candidates, 10);
+
+        assertEquals(factory1, actualCandidate);
+    }
 }
