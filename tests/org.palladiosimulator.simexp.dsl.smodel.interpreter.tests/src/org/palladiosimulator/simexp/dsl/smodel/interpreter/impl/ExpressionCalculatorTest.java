@@ -1307,6 +1307,36 @@ public class ExpressionCalculatorTest {
         assertThat(actualCalculatedValue).isEqualTo("s");
     }
 
+    @Test
+    public void testIntLiteral() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const int value = 1;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        int actualCalculatedValue = calculator.calculateInteger(constant.getValue()
+            .getLiteral());
+
+        assertThat(actualCalculatedValue).isEqualTo(1);
+    }
+
+    @Test
+    public void testDoubleLiteral() throws Exception {
+        String sb = MODEL_NAME_LINE + """
+                const double value = 1.0;
+                """;
+        Smodel model = parserHelper.parse(sb);
+        validationTestHelper.assertNoErrors(model);
+        Constant constant = getFirstConstant(model);
+
+        double actualCalculatedValue = calculator.calculateInteger(constant.getValue()
+            .getLiteral());
+
+        assertThat(actualCalculatedValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
+    }
+
     private Constant getFirstConstant(Smodel model) {
         EList<Constant> constants = model.getConstants();
         Constant constant = constants.get(0);
