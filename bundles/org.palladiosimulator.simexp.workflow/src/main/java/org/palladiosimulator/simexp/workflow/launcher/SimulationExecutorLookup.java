@@ -49,7 +49,7 @@ public class SimulationExecutorLookup {
         return candidates;
     }
 
-    private ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates) {
+    ILaunchFactory selectCandidate(List<Pair<ILaunchFactory, Integer>> candidates) {
         Pair<ILaunchFactory, Integer> maxPair = candidates.stream()
             .max(Comparator.comparing(p -> p.getRight()))
             .orElse(null);
