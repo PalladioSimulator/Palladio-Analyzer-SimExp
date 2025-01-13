@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
@@ -62,7 +63,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     private Double doCalcFitness(List<OptimizableValue<?>> optimizableValues) throws CoreException {
-        SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
+        SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup(
+                EAOptimizerLaunchFactory.HANDLE_VALUE);
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup
             .lookupSimulationExecutor((ISimExpWorkflowConfiguration) config, launchDescriptionProvider, seedProvider);
 

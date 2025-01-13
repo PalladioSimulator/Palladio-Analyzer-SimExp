@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizerLaunchFactory implements ILaunchFactory {
+    public static final int HANDLE_VALUE = 10;
 
     @Override
     public int canHandle(IWorkflowConfiguration config) {
@@ -32,7 +33,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
             return 0;
         }
 
-        return 10;
+        return HANDLE_VALUE;
     }
 
     @Override
