@@ -7,7 +7,7 @@ Bundle-Version: 0.1.0.qualifier
 Export-Package: org.palladiosimulator.simexp.dsl.ea.api
 Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0",
- org.palladiosimulator.simexp.model.strategy;bundle-version="1.0.0"
+ org.apache.commons.lang3;bundle-version="3.1.0"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.api
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
