@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
@@ -15,6 +14,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.model.strategy.OptimizableValue;
 
 public class OptimizableNormalizer {
     private final PowerUtil powerUtil;

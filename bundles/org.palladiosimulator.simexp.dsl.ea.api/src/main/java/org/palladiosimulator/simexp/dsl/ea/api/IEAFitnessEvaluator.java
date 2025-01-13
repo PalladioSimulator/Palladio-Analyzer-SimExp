@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.model.strategy.OptimizableValue;
 
 /**
  * Interface to calculate the fitness of of {@link Optimizable} values.

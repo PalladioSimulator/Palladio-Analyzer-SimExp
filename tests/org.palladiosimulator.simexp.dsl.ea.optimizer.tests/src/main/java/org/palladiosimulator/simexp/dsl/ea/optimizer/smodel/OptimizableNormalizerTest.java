@@ -15,7 +15,6 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -30,6 +29,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
+import org.palladiosimulator.simexp.model.strategy.OptimizableValue;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;

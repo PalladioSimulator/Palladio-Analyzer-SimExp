@@ -29,7 +29,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -40,6 +39,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
+import org.palladiosimulator.simexp.model.strategy.OptimizableValue;
 
 import io.jenetics.util.RandomRegistry;
 
