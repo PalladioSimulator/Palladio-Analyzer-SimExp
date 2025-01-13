@@ -27,9 +27,9 @@ import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -67,7 +67,7 @@ public class EAOptimizerTest {
     private IExpressionCalculator calculator;
 
     @Captor
-    private ArgumentCaptor<List<IEAFitnessEvaluator.OptimizableValue<?>>> optimizableListCaptor;
+    private ArgumentCaptor<List<OptimizableValue<?>>> optimizableListCaptor;
 
     private SmodelCreator smodelCreator;
 
