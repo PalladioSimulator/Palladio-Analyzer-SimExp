@@ -1,10 +1,11 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
-public class GrayConverter {
+public class GrayBitInterpreter implements BitInterpreter {
 
-    public int grayToIdx(BitSet bitSet) {
+    @Override
+    public int toInt(SmodelBitset bitSet) {
         int idx = 0;
         if (bitSet.length() > 0) {
             if (bitSet.get(bitSet.length() - 1)) {
@@ -21,19 +22,20 @@ public class GrayConverter {
         return idx;
     }
 
-    public BitSet idxToGray(int idx, int lengthBitSet) {
-        int gray = idx ^ (idx >> 1);
-        BitSet bitSet = new BitSet(lengthBitSet);
+    @Override
+    public BitSet toBitSet(int value) {
+        BitSet bitSet = new BitSet();
+        int gray = value ^ (value >> 1);
         int i = 0;
-
         while (gray != 0) {
             if ((gray & 1) == 1) {
                 bitSet.set(i);
+            } else {
+                bitSet.clear(i);
             }
             gray >>= 1;
             i++;
         }
-
         return bitSet;
     }
 

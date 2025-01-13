@@ -47,4 +47,50 @@ public class SmodelBitsetTest {
 
         assertEquals(3, actualInt);
     }
+
+    @Test
+    public void testFromInt1() {
+        SmodelBitset expectedBitSet = new SmodelBitset(3, new BinaryBitInterpreter());
+        expectedBitSet.set(0);
+
+        SmodelBitset bitSet = SmodelBitset.fromInt(1, 1, new BinaryBitInterpreter());
+
+        assertEquals(expectedBitSet, bitSet);
+    }
+
+    @Test
+    public void testFromInt2() {
+        SmodelBitset expectedBitSet = new SmodelBitset(3, new BinaryBitInterpreter());
+        expectedBitSet.set(0);
+        expectedBitSet.set(1);
+        expectedBitSet.set(3);
+
+        SmodelBitset bitSet = SmodelBitset.fromInt(4, 11, new BinaryBitInterpreter());
+
+        assertEquals(expectedBitSet, bitSet);
+    }
+
+    @Test
+    public void testGrayToInt() {
+        SmodelBitset grayBitSet = new SmodelBitset(4, new GrayBitInterpreter());
+        grayBitSet.set(1);
+        grayBitSet.set(2);
+        grayBitSet.set(3);
+
+        int actualInt = grayBitSet.toInt();
+
+        assertEquals(11, actualInt);
+    }
+
+    @Test
+    public void testGrayFromInt() {
+        SmodelBitset expectedBitSet = new SmodelBitset(3, new GrayBitInterpreter());
+        expectedBitSet.set(1);
+        expectedBitSet.set(2);
+        expectedBitSet.set(3);
+
+        SmodelBitset bitSet = SmodelBitset.fromInt(4, 11, new GrayBitInterpreter());
+
+        assertEquals(expectedBitSet, bitSet);
+    }
 }
