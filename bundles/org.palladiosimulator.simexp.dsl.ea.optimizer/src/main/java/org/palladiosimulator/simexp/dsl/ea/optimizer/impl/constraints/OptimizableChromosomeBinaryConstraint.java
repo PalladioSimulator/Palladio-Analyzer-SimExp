@@ -11,23 +11,8 @@ import io.jenetics.engine.Constraint;
 
 public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene, Double> {
 
-//    private Map<Optimizable, Integer> optimizable2valueListLength;
-//
-//    public OptimizableChromosomeBinaryConstraint(Map<Optimizable, Integer> optimizable2valueListLength) {
-//        this.optimizable2valueListLength = optimizable2valueListLength;
-//
-//    }
-
     @Override
     public boolean test(Phenotype<BitGene, Double> individual) {
-//        OptimizableChromosome allele = individual.genotype()
-//            .chromosome()
-//            .gene();
-//        individual.genotype().forEach(c -> {
-//            SmodelBitChromosome smdlChromo = (SmodelBitChromosome) c;
-////            c.as(SmodelBitChromosome.class);
-//        });
-
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
