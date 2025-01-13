@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
-import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
+import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
@@ -66,17 +66,21 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private Double doCalcFitness(List<OptimizableValue<?>> optimizableValues) throws CoreException {
         SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup(
                 EAOptimizerLaunchFactory.HANDLE_VALUE);
-        SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup
-            .lookupSimulationExecutor((ISimExpWorkflowConfiguration) config, launchDescriptionProvider, seedProvider);
 
-        LOGGER.info("effective simulation start");
+        OptimizableSimExpWorkflowConfiguration optimizableSimExpWorkflowConfiguration = new OptimizableSimExpWorkflowConfiguration(
+                (SimExpWorkflowConfiguration) config, optimizableValues);
+
+        SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup
+            .lookupSimulationExecutor(optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider);
+
+        LOGGER.info("### fitness evaluation simulation start ###");
         try {
             effectiveSimulationExecutor.execute();
             effectiveSimulationExecutor.evaluate();
         } finally {
             effectiveSimulationExecutor.dispose();
         }
-        LOGGER.info("effective simulation finish");
+        LOGGER.info("### fitness evaluation finished ###");
 
         // TODO:
         return 0.0;

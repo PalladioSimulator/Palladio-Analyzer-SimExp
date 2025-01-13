@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
@@ -29,6 +30,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLook
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -39,6 +41,7 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
+import org.palladiosimulator.simexp.pcm.modelled.config.IOptimizedConfiguration;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.ModelledPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.process.PerformabilityPcmExperienceSimulationRunner;
@@ -97,9 +100,12 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 probabilisticModelRepository);
+        IOptimizedConfiguration optimizedConfiguration = getOptimizedConfiguration(getWorkflowConfiguration(), smodel);
+        List<OptimizableValue<?>> optimizableValues = optimizedConfiguration.getOptimizableValues();
+        OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider(optimizableValues);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
-                environmentVariableValueProvider);
+                environmentVariableValueProvider, optimizableValueProvider);
         beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(null,

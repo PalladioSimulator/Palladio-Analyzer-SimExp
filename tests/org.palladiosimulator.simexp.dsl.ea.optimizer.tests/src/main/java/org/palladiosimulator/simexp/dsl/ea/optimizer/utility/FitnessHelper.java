@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.mockito.invocation.InvocationOnMock;
-import org.palladiosimulator.simexp.dsl.ea.api.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.internal.collection.ArrayISeq;

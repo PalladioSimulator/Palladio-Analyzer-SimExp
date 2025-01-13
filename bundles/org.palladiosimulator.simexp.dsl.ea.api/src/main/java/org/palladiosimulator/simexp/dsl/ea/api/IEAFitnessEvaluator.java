@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 /**

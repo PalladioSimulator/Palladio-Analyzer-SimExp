@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.api;
+package org.palladiosimulator.simexp.dsl.smodel.api;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

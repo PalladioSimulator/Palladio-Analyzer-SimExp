@@ -31,5 +31,6 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
  org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
  org.apache.commons.lang3;bundle-version="3.1.0"
 Export-Package: org.palladiosimulator.simexp.workflow.api,
+ org.palladiosimulator.simexp.workflow.config,
  org.palladiosimulator.simexp.workflow.launcher,
  org.palladiosimulator.simexp.workflow.trafo
