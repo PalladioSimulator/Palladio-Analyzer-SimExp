@@ -41,9 +41,8 @@ public class OptimizableValue<V> {
         }
         @SuppressWarnings("unchecked")
         OptimizableValue<V> rhs = (OptimizableValue<V>) obj;
-        return new EqualsBuilder().appendSuper(super.equals(obj))
-            .append(optimizable.getName(), rhs.getOptimizable()
-                .getName())
+        return new EqualsBuilder().append(optimizable.getName(), rhs.getOptimizable()
+            .getName())
             .append(value, rhs.getValue())
             .isEquals();
     }
