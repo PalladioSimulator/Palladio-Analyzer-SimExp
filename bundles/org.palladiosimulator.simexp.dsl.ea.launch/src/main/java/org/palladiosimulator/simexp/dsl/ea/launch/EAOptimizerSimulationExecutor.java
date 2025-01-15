@@ -14,7 +14,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 
 public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvolutionStatusReceiver {
-    protected static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
+    private static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
