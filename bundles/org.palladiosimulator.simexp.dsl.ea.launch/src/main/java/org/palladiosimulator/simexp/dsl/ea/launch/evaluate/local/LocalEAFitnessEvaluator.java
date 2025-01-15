@@ -30,6 +30,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final Optional<ISeedProvider> seedProvider;
     private final Factory modelLoaderFactory;
     private final ExecutorService executor;
+    private final ClassLoader classloader;
 
     public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
@@ -39,6 +40,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         this.seedProvider = seedProvider;
         this.modelLoaderFactory = modelLoaderFactory;
         this.executor = Executors.newFixedThreadPool(1);
+        this.classloader = Thread.currentThread()
+            .getContextClassLoader();
     }
 
     @Override
@@ -57,6 +60,12 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
 
             @Override
             public Double call() throws Exception {
+                /**
+                 * Treats this thread as belonging to the simulation with respect to logging. See:
+                 * de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender
+                 */
+                Thread.currentThread()
+                    .setContextClassLoader(classloader);
                 return doCalcFitness(optimizableValues);
             }
         });
