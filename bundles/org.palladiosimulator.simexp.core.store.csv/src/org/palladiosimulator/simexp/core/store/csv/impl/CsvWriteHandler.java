@@ -17,21 +17,18 @@ public class CsvWriteHandler extends CsvHandler {
         this.csvFile = csvFile;
     }
 
-    public void append(List<SimulatedExperience> trajectory) {
+    public void append(List<SimulatedExperience> trajectory) throws IOException {
         append(CsvFormatter.format(trajectory));
     }
 
-    public void append(SimulatedExperience simulatedExperience) {
+    public void append(SimulatedExperience simulatedExperience) throws IOException {
         append(CsvFormatter.format(simulatedExperience));
     }
 
-    public void append(String value) {
+    public void append(String value) throws IOException {
         try (PrintWriter csvWritter = new PrintWriter(
                 Files.newBufferedWriter(csvFile, StandardOpenOption.CREATE, StandardOpenOption.APPEND))) {
             csvWritter.println(value);
-        } catch (IOException e) {
-            // TODO exception handling
-            throw new RuntimeException("", e);
         }
     }
 

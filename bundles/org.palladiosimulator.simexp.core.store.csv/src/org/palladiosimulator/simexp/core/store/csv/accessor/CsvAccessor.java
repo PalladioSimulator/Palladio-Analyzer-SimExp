@@ -59,13 +59,11 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
 
     @Override
     public void store(SimulatedExperienceStoreDescription description, SimulatedExperience simulatedExperience) {
-        // TODO Exception handling
         connect(description);
         try {
-            Objects.requireNonNull(csvStoreWriteHandler, "");
-            Objects.requireNonNull(csvSampleWriteHandler, "");
-
             csvStoreWriteHandler.append(simulatedExperience);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
             close();
         }
@@ -75,11 +73,9 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     public void store(SimulatedExperienceStoreDescription description, List<SimulatedExperience> trajectory) {
         connect(description);
         try {
-            // TODO Exception handling
-            Objects.requireNonNull(csvStoreWriteHandler, "");
-            Objects.requireNonNull(csvSampleWriteHandler, "");
-
             csvSampleWriteHandler.append(trajectory);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
             close();
         }
