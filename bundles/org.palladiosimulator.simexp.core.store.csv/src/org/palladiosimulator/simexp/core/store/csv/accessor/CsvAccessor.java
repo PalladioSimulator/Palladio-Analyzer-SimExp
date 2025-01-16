@@ -4,14 +4,16 @@ import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.star
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.withSameId;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
@@ -23,6 +25,7 @@ import org.palladiosimulator.simexp.core.store.csv.impl.CsvSimulatedExperience;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvWriteHandler;
 
 public class CsvAccessor implements SimulatedExperienceAccessor {
+    private static final Logger LOGGER = Logger.getLogger(CsvAccessor.class);
 
     private Optional<SimulatedExperienceCache> cache = Optional.empty();
 
@@ -35,12 +38,16 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     public void connect(SimulatedExperienceStoreDescription desc) {
         File csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
         if (csvStoreFile.exists()) {
-            File csvSampleSpaceFile = CsvHandler.loadOrCreate(desc.getSimulationId(),
-                    constructSampleSpaceFileName(desc.getSampleSpaceId()));
-            csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
-            csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
-            csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile);
-            csvStoreReadHandler = CsvReadHandler.load(csvStoreFile);
+            try {
+                File csvSampleSpaceFile = CsvHandler.loadOrCreate(desc.getSimulationId(),
+                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
+                csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
+                csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
+                csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile);
+                csvStoreReadHandler = CsvReadHandler.load(csvStoreFile);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         } else {
             csvSampleWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
                     constructSampleSpaceFileName(desc.getSampleSpaceId()));
@@ -62,18 +69,8 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     }
 
     private File getCsvFile(String folder, String file) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(concatPathSegments(CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER, folder, file));
-        builder.append(CsvHandler.CSV_FILE_EXTENSION);
-        return new File(builder.toString());
-    }
-
-    private String concatPathSegments(String... segments) {
-        if (segments.length == 1) {
-            return segments[0];
-        }
-        String[] remaining = Arrays.copyOfRange(segments, 1, segments.length);
-        return concatPathSegments(segments[0], concatPathSegments(remaining));
+        Path csvFile = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(file + CsvHandler.CSV_FILE_EXTENSION);
+        return csvFile.toFile();
     }
 
     private String constructSampleSpaceFileName(String filePrefix) {
