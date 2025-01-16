@@ -40,7 +40,9 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         Path csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
         if (Files.exists(csvStoreFile)) {
             try {
-                File csvSampleSpaceFile = CsvHandler.loadOrCreate(desc.getSimulationId(),
+                Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
+                Files.createDirectories(csvFolder);
+                File csvSampleSpaceFile = CsvHandler.loadOrCreate(csvFolder,
                         constructSampleSpaceFileName(desc.getSampleSpaceId()));
                 csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
                 csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);

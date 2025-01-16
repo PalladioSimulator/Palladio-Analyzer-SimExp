@@ -18,8 +18,7 @@ public abstract class CsvHandler {
     public final static String SAMPLE_SPACE_FILE = "SampleSpace";
     public final static String SIMULATED_EXPERIENCE_STORE_FILE = "SimulatedExperienceStore";
 
-    public static File loadOrCreate(String folder, String file) throws IOException {
-        Path csvFolder = loadOrCreateFolder(folder);
+    public static File loadOrCreate(Path csvFolder, String file) throws IOException {
         Path csvFile = csvFolder.resolve(file + CSV_FILE_EXTENSION);
         return csvFile.toFile();
     }
