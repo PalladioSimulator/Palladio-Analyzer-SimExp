@@ -14,7 +14,6 @@ import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.performance.ModelledPerformancePcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -44,12 +43,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorLaunchFactory imp
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
         IModelledPcmWorkflowConfiguration workflowConfiguration = (IModelledPcmWorkflowConfiguration) config;
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
-        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
         ModelledPerformancePcmExperienceSimulationExecutorFactory factory = new ModelledPerformancePcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, modelledModelLoaderFactory,
                 new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);

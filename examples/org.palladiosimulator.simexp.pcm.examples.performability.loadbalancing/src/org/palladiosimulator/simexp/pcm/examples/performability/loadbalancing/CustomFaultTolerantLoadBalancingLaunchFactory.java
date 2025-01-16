@@ -11,7 +11,6 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -41,11 +40,8 @@ public class CustomFaultTolerantLoadBalancingLaunchFactory implements ILaunchFac
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
-        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory,
                 new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);

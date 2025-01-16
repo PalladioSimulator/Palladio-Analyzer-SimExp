@@ -17,10 +17,6 @@ public class SimulatedExperienceStore<A, R> {
     public SimulatedExperienceStore(SimulatedExperienceAccessor accessor, DescriptionProvider descriptionProvider) {
         this.descriptionProvider = descriptionProvider;
         this.accessor = accessor;
-        /*
-         * ServiceRegistry.get() .findService(SimulatedExperienceCache.class) .ifPresent(cache ->
-         * accessor.setOptionalCache(cache));
-         */
     }
 
     public void store(Trajectory<A, R> trajectory) {

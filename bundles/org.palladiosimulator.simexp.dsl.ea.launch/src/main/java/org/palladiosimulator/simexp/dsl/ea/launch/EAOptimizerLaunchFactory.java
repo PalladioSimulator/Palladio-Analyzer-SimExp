@@ -6,6 +6,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
@@ -40,7 +41,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            ModelLoader.Factory modelLoaderFactory) {
+            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
         ModelLoader modelLoader = modelLoaderFactory.create();
         ModelledModelLoader modelledModelLoader = (ModelledModelLoader) modelLoader;
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;

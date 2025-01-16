@@ -34,5 +34,4 @@ Require-Bundle: com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
  org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.simulator,
- org.palladiosimulator.simexp.pcm.modelled,
- org.palladiosimulator.simexp.service;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.pcm.modelled

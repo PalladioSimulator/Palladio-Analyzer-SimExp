@@ -12,6 +12,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -40,8 +43,14 @@ public class SimulationExecutorLookup {
         ILaunchFactory launchFactory = selectCandidate(candidates, maxLevel);
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
+            SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+                .findService(SimulatedExperienceAccessor.class)
+                .orElseThrow(() -> new RuntimeException(""));
+            ServiceRegistry.get()
+                .findService(SimulatedExperienceCache.class)
+                .ifPresent(cache -> accessor.setOptionalCache(cache));
             return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
-                    modelLoaderFactory);
+                    modelLoaderFactory, accessor);
         }
 
         return null;
