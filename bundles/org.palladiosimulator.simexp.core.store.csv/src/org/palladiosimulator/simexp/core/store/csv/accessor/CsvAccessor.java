@@ -5,6 +5,7 @@ import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.with
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +37,15 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
 
     @Override
     public void connect(SimulatedExperienceStoreDescription desc) {
-        File csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-        if (csvStoreFile.exists()) {
+        Path csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+        if (Files.exists(csvStoreFile)) {
             try {
                 File csvSampleSpaceFile = CsvHandler.loadOrCreate(desc.getSimulationId(),
                         constructSampleSpaceFileName(desc.getSampleSpaceId()));
                 csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
                 csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
-                csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile);
-                csvStoreReadHandler = CsvReadHandler.load(csvStoreFile);
+                csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile.toFile());
+                csvStoreReadHandler = CsvReadHandler.load(csvStoreFile.toFile());
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
             }
@@ -68,9 +69,9 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         }
     }
 
-    private File getCsvFile(String folder, String file) {
+    private Path getCsvFile(String folder, String file) {
         Path csvFile = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(file + CsvHandler.CSV_FILE_EXTENSION);
-        return csvFile.toFile();
+        return csvFile;
     }
 
     private String constructSampleSpaceFileName(String filePrefix) {
