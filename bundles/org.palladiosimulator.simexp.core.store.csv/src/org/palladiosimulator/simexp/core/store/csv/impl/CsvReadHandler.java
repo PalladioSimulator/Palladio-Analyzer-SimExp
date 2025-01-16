@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core.store.csv.accessor;
+package org.palladiosimulator.simexp.core.store.csv.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
