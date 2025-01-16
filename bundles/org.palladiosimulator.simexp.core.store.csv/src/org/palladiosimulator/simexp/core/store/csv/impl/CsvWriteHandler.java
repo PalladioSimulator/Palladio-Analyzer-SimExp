@@ -13,15 +13,16 @@ public class CsvWriteHandler extends CsvHandler {
 
     private final PrintWriter csvWriter;
 
-    private CsvWriteHandler(String folder, String file) {
-        csvWriter = createCsvWriter(folder, file);
+    private CsvWriteHandler(String folder, String file) throws IOException {
+        File csvFile = createCsvFile(folder, file);
+        csvWriter = createCsvWriter(csvFile);
     }
 
     private CsvWriteHandler(File csvFile) {
         csvWriter = loadCsvWriterWithAppendMode(csvFile);
     }
 
-    public static CsvWriteHandler create(String folder, String file) {
+    public static CsvWriteHandler create(String folder, String file) throws IOException {
         return new CsvWriteHandler(folder, file);
     }
 
@@ -29,14 +30,8 @@ public class CsvWriteHandler extends CsvHandler {
         return new CsvWriteHandler(csvFile);
     }
 
-    private PrintWriter createCsvWriter(String folder, String file) {
-        try {
-            File csvFile = createCsvFile(folder, file);
-            return loadCsvWriterWithoutAppendMode(csvFile);
-        } catch (IOException e) {
-            // TODO exception handling
-            throw new RuntimeException("", e);
-        }
+    private PrintWriter createCsvWriter(File csvFile) {
+        return loadCsvWriterWithoutAppendMode(csvFile);
     }
 
     private PrintWriter loadCsvWriterWithoutAppendMode(File csvFile) {

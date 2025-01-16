@@ -38,8 +38,8 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     @Override
     public void connect(SimulatedExperienceStoreDescription desc) {
         Path csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-        if (Files.exists(csvStoreFile)) {
-            try {
+        try {
+            if (Files.exists(csvStoreFile)) {
                 Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
                 Files.createDirectories(csvFolder);
                 File csvSampleSpaceFile = loadOrCreate(csvFolder,
@@ -48,18 +48,18 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
                 csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
                 csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile.toFile());
                 csvStoreReadHandler = CsvReadHandler.load(csvStoreFile.toFile());
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
+            } else {
+                csvSampleWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
+                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
+                csvSampleReadHandler = CsvReadHandler.create(desc.getSimulationId(),
+                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
+                csvStoreWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
+                        CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+                csvStoreReadHandler = CsvReadHandler.create(desc.getSimulationId(),
+                        CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
             }
-        } else {
-            csvSampleWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
-                    constructSampleSpaceFileName(desc.getSampleSpaceId()));
-            csvSampleReadHandler = CsvReadHandler.create(desc.getSimulationId(),
-                    constructSampleSpaceFileName(desc.getSampleSpaceId()));
-            csvStoreWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
-                    CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-            csvStoreReadHandler = CsvReadHandler.create(desc.getSimulationId(),
-                    CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         }
 
         if (csvSampleReadHandler.isEmptyFile()) {
