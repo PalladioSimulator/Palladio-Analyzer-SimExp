@@ -5,11 +5,13 @@ import java.util.Optional;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -37,9 +39,12 @@ public class ModelledPrismSimulationExecutorLaunchFactory implements ILaunchFact
             Factory modelLoaderFactory) {
         IModelledPrismWorkflowConfiguration workflowConfiguration = (IModelledPrismWorkflowConfiguration) config;
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
         ModelledPrismPcmExperienceSimulationExecutorFactory factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
-                workflowConfiguration, modelledModelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider),
-                seedProvider);
+                workflowConfiguration, modelledModelLoaderFactory,
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
         return factory.create();
     }
 

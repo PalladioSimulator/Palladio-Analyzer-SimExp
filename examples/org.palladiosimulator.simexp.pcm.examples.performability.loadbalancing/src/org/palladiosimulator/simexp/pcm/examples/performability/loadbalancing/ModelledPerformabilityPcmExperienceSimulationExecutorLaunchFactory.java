@@ -6,6 +6,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
@@ -13,6 +14,7 @@ import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.performability.ModelledPerformabilityPcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -45,9 +47,12 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorLaunchFactory 
             Factory modelLoaderFactory) {
         IModelledPcmWorkflowConfiguration workflowConfiguration = (IModelledPcmWorkflowConfiguration) config;
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
         ModelledPerformabilityPcmExperienceSimulationExecutorFactory factory = new ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
-                workflowConfiguration, modelledModelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider),
-                seedProvider);
+                workflowConfiguration, modelledModelLoaderFactory,
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
         return factory.create();
     }
 

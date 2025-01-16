@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -19,8 +20,8 @@ public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends 
     public SimulatorPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor);
     }
 
     @Override

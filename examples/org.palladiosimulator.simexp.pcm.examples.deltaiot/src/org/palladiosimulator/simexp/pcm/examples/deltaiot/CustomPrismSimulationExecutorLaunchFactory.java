@@ -6,11 +6,13 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
@@ -38,9 +40,12 @@ public class CustomPrismSimulationExecutorLaunchFactory implements ILaunchFactor
             Factory modelLoaderFactory) {
         IPrismWorkflowConfiguration workflowConfiguration = (IPrismWorkflowConfiguration) config;
 //        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider),
-                seedProvider);
+                workflowConfiguration, modelLoaderFactory,
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
         return factory.create();
     }
 

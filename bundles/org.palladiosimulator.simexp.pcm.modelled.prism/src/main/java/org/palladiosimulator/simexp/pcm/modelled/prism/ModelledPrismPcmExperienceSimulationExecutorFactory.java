@@ -64,7 +64,6 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -81,8 +80,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor);
     }
 
     @Override
@@ -171,10 +170,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(accessor,
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor(),
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);

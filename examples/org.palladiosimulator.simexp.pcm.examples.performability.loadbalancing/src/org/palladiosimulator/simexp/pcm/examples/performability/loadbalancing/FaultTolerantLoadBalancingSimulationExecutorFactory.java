@@ -45,7 +45,6 @@ import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfigurati
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -63,8 +62,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor);
     }
 
     @Override
@@ -134,10 +133,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         // TODO: use from store
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
-        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(accessor,
+        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor(),
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),

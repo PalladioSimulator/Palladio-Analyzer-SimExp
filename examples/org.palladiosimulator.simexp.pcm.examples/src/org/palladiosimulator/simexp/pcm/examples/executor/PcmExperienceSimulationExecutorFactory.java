@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -59,16 +60,18 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     private final Optional<ISeedProvider> seedProvider;
+    private final SimulatedExperienceAccessor accessor;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
+        this.accessor = accessor;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(
                 seedProvider);
@@ -78,6 +81,10 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
             .loadRepository();
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+    }
+
+    protected SimulatedExperienceAccessor getAccessor() {
+        return accessor;
     }
 
     protected Optional<ISeedProvider> getSeedProvider() {

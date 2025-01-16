@@ -8,29 +8,26 @@ import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class SimulatedExperienceStore<A, R> {
 
     private final DescriptionProvider descriptionProvider;
-    private final SimulatedExperienceAccessor simExperienceAccessor;
+    private final SimulatedExperienceAccessor accessor;
 
-    public SimulatedExperienceStore(DescriptionProvider descriptionProvider) {
+    public SimulatedExperienceStore(SimulatedExperienceAccessor accessor, DescriptionProvider descriptionProvider) {
         this.descriptionProvider = descriptionProvider;
-        // TODO exception handling
-        this.simExperienceAccessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
-        ServiceRegistry.get()
-            .findService(SimulatedExperienceCache.class)
-            .ifPresent(cache -> simExperienceAccessor.setOptionalCache(cache));
+        this.accessor = accessor;
+        /*
+         * ServiceRegistry.get() .findService(SimulatedExperienceCache.class) .ifPresent(cache ->
+         * accessor.setOptionalCache(cache));
+         */
     }
 
     public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        simExperienceAccessor.store(toSimulatedExperience(trajectory));
-        simExperienceAccessor.close();
+        accessor.connect(description);
+        accessor.store(toSimulatedExperience(trajectory));
+        accessor.close();
     }
 
     private List<SimulatedExperience> toSimulatedExperience(Trajectory<A, R> trajectory) {
@@ -47,9 +44,9 @@ public class SimulatedExperienceStore<A, R> {
         }
 
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        simExperienceAccessor.store(simExp);
-        simExperienceAccessor.close();
+        accessor.connect(description);
+        accessor.store(simExp);
+        accessor.close();
     }
 
     private boolean isAlreadyStored(SimulatedExperience simExp) {
@@ -58,17 +55,17 @@ public class SimulatedExperienceStore<A, R> {
 
     public Optional<SimulatedExperience> findSimulatedExperience(String id) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        Optional<SimulatedExperience> result = simExperienceAccessor.findSimulatedExperience(id);
-        simExperienceAccessor.close();
+        accessor.connect(description);
+        Optional<SimulatedExperience> result = accessor.findSimulatedExperience(id);
+        accessor.close();
         return result;
     }
 
     public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        simExperienceAccessor.connect(description);
-        Optional<SimulatedExperience> result = simExperienceAccessor.findSelfAdaptiveSystemState(id);
-        simExperienceAccessor.close();
+        accessor.connect(description);
+        Optional<SimulatedExperience> result = accessor.findSelfAdaptiveSystemState(id);
+        accessor.close();
         return result;
     }
 
