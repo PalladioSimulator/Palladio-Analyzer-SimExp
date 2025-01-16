@@ -57,18 +57,25 @@ public class SimulatedExperienceStore<A, R> {
 
     public Optional<SimulatedExperience> findSimulatedExperience(String id) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        accessor.connect(description);
-        Optional<SimulatedExperience> result = accessor.findSimulatedExperience(id);
-        accessor.close();
-        return result;
+        SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor();
+        readAccessor.connect(description);
+        try {
+            Optional<SimulatedExperience> result = readAccessor.findSimulatedExperience(id);
+            return result;
+        } finally {
+            readAccessor.close();
+        }
     }
 
     public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        accessor.connect(description);
-        Optional<SimulatedExperience> result = accessor.findSelfAdaptiveSystemState(id);
-        accessor.close();
-        return result;
+        SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor();
+        readAccessor.connect(description);
+        try {
+            Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
+            return result;
+        } finally {
+            readAccessor.close();
+        }
     }
-
 }

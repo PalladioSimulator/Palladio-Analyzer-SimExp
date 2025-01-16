@@ -6,17 +6,18 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 
 public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
 
-    private final SimulatedExperienceAccessor accessor;
+    private final SimulatedExperienceReadAccessor readAccessor;
 
     private int iteration;
 
     private SampleModelIterator(SimulatedExperienceAccessor accessor, SimulatedExperienceStoreDescription desc) {
-        this.accessor = accessor;
-        this.accessor.connect(desc);
+        readAccessor = accessor.createSimulatedExperienceReadAccessor();
+        readAccessor.connect(desc);
         this.iteration = 0;
     }
 
@@ -31,7 +32,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     @Override
     public boolean hasNext() {
-        return accessor.existTrajectoryAt(iteration);
+        return readAccessor.existTrajectoryAt(iteration);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
             throw new RuntimeException("");
         }
 
-        Optional<List<SimulatedExperience>> traj = accessor.getTrajectoryAt(iteration);
+        Optional<List<SimulatedExperience>> traj = readAccessor.getTrajectoryAt(iteration);
 
         iteration++;
 
@@ -50,7 +51,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
     }
 
     public void terminate() {
-        accessor.close();
+        readAccessor.close();
     }
 
 }
