@@ -72,12 +72,12 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     }
 
     private File loadOrCreate(Path csvFolder, String file) throws IOException {
-        Path csvFile = csvFolder.resolve(file + CsvHandler.CSV_FILE_EXTENSION);
+        Path csvFile = csvFolder.resolve(file);
         return csvFile.toFile();
     }
 
     private Path getCsvFile(String folder, String file) {
-        Path csvFile = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(file + CsvHandler.CSV_FILE_EXTENSION);
+        Path csvFile = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(file);
         return csvFile;
     }
 

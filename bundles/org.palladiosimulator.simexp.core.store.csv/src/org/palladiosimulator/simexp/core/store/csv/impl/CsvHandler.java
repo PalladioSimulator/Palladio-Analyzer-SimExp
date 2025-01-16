@@ -10,17 +10,18 @@ import org.eclipse.core.resources.ResourcesPlugin;
 
 public abstract class CsvHandler {
 
-    public final static String CSV_FILE_EXTENSION = ".csv";
+    private final static String CSV_FILE_EXTENSION = ".csv";
+    public final static String SAMPLE_SPACE_FILE = "SampleSpace" + CSV_FILE_EXTENSION;
+    public final static String SIMULATED_EXPERIENCE_STORE_FILE = "SimulatedExperienceStore" + CSV_FILE_EXTENSION;
+
     public final static Path SIMULATED_EXPERIENCE_BASE_FOLDER = Paths.get(ResourcesPlugin.getWorkspace()
         .getRoot()
         .getLocation()
         .toString() + "/resource");
-    public final static String SAMPLE_SPACE_FILE = "SampleSpace";
-    public final static String SIMULATED_EXPERIENCE_STORE_FILE = "SimulatedExperienceStore";
 
     public File createCsvFile(String folder, String file) throws IOException {
         Path csvFolder = loadOrCreateFolder(folder);
-        Path csvFile = csvFolder.resolve(file + CSV_FILE_EXTENSION);
+        Path csvFile = csvFolder.resolve(file);
         return csvFile.toFile();
     }
 
