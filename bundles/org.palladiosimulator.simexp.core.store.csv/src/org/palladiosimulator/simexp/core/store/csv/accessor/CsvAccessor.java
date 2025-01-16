@@ -134,17 +134,12 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
 
     @Override
     public Optional<List<SimulatedExperience>> getTrajectoryAt(int index) {
-        // TODO Exception handling
-        Objects.requireNonNull(csvSampleReadHandler, "");
-
         // First line (header) has to be omitted
         index++;
 
         try {
-            String rowAt = csvSampleReadHandler.getRowAt(index);
-            if (rowAt.isEmpty()) {
-                return Optional.empty();
-            }
+            List<String> allRows = csvSampleReadHandler.getAllRows();
+            String rowAt = allRows.get(index);
             String[] row = rowAt.split(CsvFormatter.CSV_DELIMITER);
             return Optional.of(toTrajectory(row));
         } catch (IndexOutOfBoundsException | IOException e) {
