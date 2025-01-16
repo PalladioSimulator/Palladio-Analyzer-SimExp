@@ -42,7 +42,7 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
             try {
                 Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
                 Files.createDirectories(csvFolder);
-                File csvSampleSpaceFile = CsvHandler.loadOrCreate(csvFolder,
+                File csvSampleSpaceFile = loadOrCreate(csvFolder,
                         constructSampleSpaceFileName(desc.getSampleSpaceId()));
                 csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
                 csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
@@ -69,6 +69,11 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         if (csvStoreReadHandler.isEmptyFile()) {
             csvStoreWriteHandler.append(CsvFormatter.formatSimulatedExperienceStoreHeader());
         }
+    }
+
+    private File loadOrCreate(Path csvFolder, String file) throws IOException {
+        Path csvFile = csvFolder.resolve(file + CsvHandler.CSV_FILE_EXTENSION);
+        return csvFile.toFile();
     }
 
     private Path getCsvFile(String folder, String file) {
