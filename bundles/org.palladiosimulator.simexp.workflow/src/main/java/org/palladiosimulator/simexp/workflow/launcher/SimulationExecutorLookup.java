@@ -13,8 +13,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -35,20 +33,14 @@ public class SimulationExecutorLookup {
     }
 
     public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider)
-            throws CoreException {
+            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceAccessor accessor) throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
         List<Pair<ILaunchFactory, Integer>> candidates = createCandidates(config, factories);
         ILaunchFactory launchFactory = selectCandidate(candidates, maxLevel);
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
-            SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-                .findService(SimulatedExperienceAccessor.class)
-                .orElseThrow(() -> new RuntimeException(""));
-            ServiceRegistry.get()
-                .findService(SimulatedExperienceCache.class)
-                .ifPresent(cache -> accessor.setOptionalCache(cache));
             return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
                     modelLoaderFactory, accessor);
         }
