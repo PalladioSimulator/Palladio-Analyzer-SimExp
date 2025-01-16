@@ -61,7 +61,8 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     public void store(SimulatedExperienceStoreDescription description, SimulatedExperience simulatedExperience) {
         connect(description);
         try {
-            csvStoreWriteHandler.append(simulatedExperience);
+            String line = CsvFormatter.format(simulatedExperience);
+            csvStoreWriteHandler.append(line);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         } finally {
@@ -73,7 +74,8 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     public void store(SimulatedExperienceStoreDescription description, List<SimulatedExperience> trajectory) {
         connect(description);
         try {
-            csvSampleWriteHandler.append(trajectory);
+            String line = CsvFormatter.format(trajectory);
+            csvSampleWriteHandler.append(line);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         } finally {
