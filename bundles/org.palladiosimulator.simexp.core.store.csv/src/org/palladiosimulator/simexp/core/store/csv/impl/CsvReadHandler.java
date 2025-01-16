@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class CsvReadHandler extends CsvHandler {
 
-    private Path csvFile;
+    private final Path csvFile;
 
     public CsvReadHandler(Path csvFile) {
         this.csvFile = csvFile;
@@ -17,7 +17,6 @@ public class CsvReadHandler extends CsvHandler {
 
     @Override
     public void close() {
-        csvFile = null;
     }
 
     public List<String> getAllRows() throws IOException {
