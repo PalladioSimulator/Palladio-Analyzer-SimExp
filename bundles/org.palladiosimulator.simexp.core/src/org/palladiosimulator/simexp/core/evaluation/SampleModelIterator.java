@@ -31,8 +31,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     @Override
     public boolean hasNext() {
-        return accessor.getTrajectoryAt(iteration)
-            .isPresent();
+        return accessor.existTrajectoryAt(iteration);
     }
 
     @Override

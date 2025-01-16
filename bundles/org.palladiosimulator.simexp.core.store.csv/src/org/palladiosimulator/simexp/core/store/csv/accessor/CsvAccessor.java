@@ -121,6 +121,18 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     }
 
     @Override
+    public boolean existTrajectoryAt(int index) {
+        try {
+            List<String> allRows = csvSampleReadHandler.getAllRows();
+            // First line (header) has to be omitted
+            index++;
+            return index < allRows.size();
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
     public Optional<List<SimulatedExperience>> getTrajectoryAt(int index) {
         // TODO Exception handling
         Objects.requireNonNull(csvSampleReadHandler, "");
