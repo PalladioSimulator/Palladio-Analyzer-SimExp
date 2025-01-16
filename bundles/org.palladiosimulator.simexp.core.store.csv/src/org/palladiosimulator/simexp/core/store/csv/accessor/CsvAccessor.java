@@ -3,11 +3,11 @@ package org.palladiosimulator.simexp.core.store.csv.accessor;
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.startingWith;
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.withSameId;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,52 +37,24 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
 
     @Override
     public void connect(SimulatedExperienceStoreDescription desc) {
-        Path csvStoreFile = getCsvFile(desc.getSimulationId(), CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+        Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
+        Path csvStoreFile = csvFolder.resolve(CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+        Path csvSampleSpaceFile = csvFolder.resolve(CsvHandler.SAMPLE_SPACE_FILE);
         try {
-            if (Files.exists(csvStoreFile)) {
-                Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
-                Files.createDirectories(csvFolder);
-                File csvSampleSpaceFile = loadOrCreate(csvFolder,
-                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
-                csvSampleWriteHandler = CsvWriteHandler.load(csvSampleSpaceFile);
-                csvSampleReadHandler = CsvReadHandler.load(csvSampleSpaceFile);
-                csvStoreWriteHandler = CsvWriteHandler.load(csvStoreFile.toFile());
-                csvStoreReadHandler = CsvReadHandler.load(csvStoreFile.toFile());
-            } else {
-                csvSampleWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
-                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
-                csvSampleReadHandler = CsvReadHandler.create(desc.getSimulationId(),
-                        constructSampleSpaceFileName(desc.getSampleSpaceId()));
-                csvStoreWriteHandler = CsvWriteHandler.create(desc.getSimulationId(),
-                        CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-                csvStoreReadHandler = CsvReadHandler.create(desc.getSimulationId(),
-                        CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+            Files.createDirectories(csvFolder);
+            csvSampleWriteHandler = new CsvWriteHandler(csvSampleSpaceFile);
+            csvSampleReadHandler = new CsvReadHandler(csvSampleSpaceFile);
+            csvStoreWriteHandler = new CsvWriteHandler(csvStoreFile);
+            csvStoreReadHandler = new CsvReadHandler(csvStoreFile);
+            if (csvSampleReadHandler.isEmptyFile()) {
+                csvSampleWriteHandler.append(CsvFormatter.formatSampleSpaceHeader(desc.getSampleHorizon()));
+            }
+            if (csvStoreReadHandler.isEmptyFile()) {
+                csvStoreWriteHandler.append(CsvFormatter.formatSimulatedExperienceStoreHeader());
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
-        if (csvSampleReadHandler.isEmptyFile()) {
-            csvSampleWriteHandler.append(CsvFormatter.formatSampleSpaceHeader(desc.getSampleHorizon()));
-        }
-
-        if (csvStoreReadHandler.isEmptyFile()) {
-            csvStoreWriteHandler.append(CsvFormatter.formatSimulatedExperienceStoreHeader());
-        }
-    }
-
-    private File loadOrCreate(Path csvFolder, String file) throws IOException {
-        Path csvFile = csvFolder.resolve(file);
-        return csvFile.toFile();
-    }
-
-    private Path getCsvFile(String folder, String file) {
-        Path csvFile = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(file);
-        return csvFile;
-    }
-
-    private String constructSampleSpaceFileName(String filePrefix) {
-        return filePrefix + CsvHandler.SAMPLE_SPACE_FILE;
     }
 
     @Override
@@ -118,6 +90,7 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         csvStoreReadHandler.close();
         csvStoreWriteHandler.close();
         csvSampleWriteHandler.close();
+        csvSampleReadHandler.close();
     }
 
     @Override
@@ -159,8 +132,8 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
             String[] row = csvSampleReadHandler.getRowAt(index)
                 .split(CsvFormatter.CSV_DELIMITER);
             return Optional.of(toTrajectory(row));
-        } catch (IndexOutOfBoundsException e) {
-            // TODO logging
+        } catch (IndexOutOfBoundsException | IOException e) {
+            LOGGER.error(e.getMessage(), e);
             return Optional.empty();
         }
     }
@@ -191,9 +164,15 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     }
 
     private Optional<SimulatedExperience> queryForSimulatedExperience(Predicate<String> criterion) {
-        Stream<String> lines = csvStoreReadHandler.getAllRows()
-            .stream();
-        return lines.filter(criterion)
+        List<String> lines;
+        try {
+            lines = csvStoreReadHandler.getAllRows();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            lines = Collections.emptyList();
+        }
+        Stream<String> stream = lines.stream();
+        return stream.filter(criterion)
             .map(row -> CsvSimulatedExperience.of(row))
             .findFirst();
     }

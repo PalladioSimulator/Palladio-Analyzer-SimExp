@@ -1,8 +1,5 @@
 package org.palladiosimulator.simexp.core.store.csv.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -18,18 +15,6 @@ public abstract class CsvHandler {
         .getRoot()
         .getLocation()
         .toString() + "/resource");
-
-    public File createCsvFile(String folder, String file) throws IOException {
-        Path csvFolder = loadOrCreateFolder(folder);
-        Path csvFile = csvFolder.resolve(file);
-        return csvFile.toFile();
-    }
-
-    private Path loadOrCreateFolder(String folder) throws IOException {
-        Path csvFolder = SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(folder);
-        Files.createDirectories(csvFolder);
-        return csvFolder;
-    }
 
     public abstract void close();
 
