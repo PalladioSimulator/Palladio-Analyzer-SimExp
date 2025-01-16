@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.core.store.csv.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 
@@ -51,14 +50,6 @@ public abstract class CsvHandler {
             csvFolder.mkdirs();
         }
         return csvFolder;
-    }
-
-    public static String concatPathSegments(String... segments) {
-        if (segments.length == 1) {
-            return segments[0];
-        }
-        String[] remaining = Arrays.copyOfRange(segments, 1, segments.length);
-        return concatPathSegments(segments[0], concatPathSegments(remaining));
     }
 
     private static String concatPathSegments(String first, String second) {
