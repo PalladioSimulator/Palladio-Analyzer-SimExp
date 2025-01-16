@@ -5,12 +5,8 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
-public interface SimulatedExperienceReadAccessor {
+public interface SimulatedExperienceReadAccessor extends BaseSimulatedExperienceAccessor {
     void setOptionalCache(SimulatedExperienceCache cache);
-
-    void connect(SimulatedExperienceStoreDescription desc);
-
-    void close();
 
     Optional<SimulatedExperience> findSimulatedExperience(String id);
 
