@@ -5,21 +5,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
 public class CsvWriteHandler extends CsvHandler {
 
+    private final Path csvFile;
     private final PrintWriter csvWriter;
 
     private CsvWriteHandler(String folder, String file) throws IOException {
-        File csvFile = createCsvFile(folder, file);
-        csvWriter = createCsvWriter(csvFile);
+        this.csvFile = createCsvFile(folder, file).toPath();
+        csvWriter = createCsvWriter(csvFile.toFile());
     }
 
-    private CsvWriteHandler(File csvFile) {
-        csvWriter = loadCsvWriterWithAppendMode(csvFile);
+    private CsvWriteHandler(Path csvFile) {
+        this.csvFile = csvFile;
+        csvWriter = loadCsvWriterWithAppendMode(csvFile.toFile());
     }
 
     public static CsvWriteHandler create(String folder, String file) throws IOException {
@@ -27,7 +30,7 @@ public class CsvWriteHandler extends CsvHandler {
     }
 
     public static CsvWriteHandler load(File csvFile) {
-        return new CsvWriteHandler(csvFile);
+        return new CsvWriteHandler(csvFile.toPath());
     }
 
     private PrintWriter createCsvWriter(File csvFile) {
