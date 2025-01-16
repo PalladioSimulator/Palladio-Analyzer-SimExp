@@ -129,8 +129,11 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         index++;
 
         try {
-            String[] row = csvSampleReadHandler.getRowAt(index)
-                .split(CsvFormatter.CSV_DELIMITER);
+            String rowAt = csvSampleReadHandler.getRowAt(index);
+            if (rowAt.isEmpty()) {
+                return Optional.empty();
+            }
+            String[] row = rowAt.split(CsvFormatter.CSV_DELIMITER);
             return Optional.of(toTrajectory(row));
         } catch (IndexOutOfBoundsException | IOException e) {
             LOGGER.error(e.getMessage(), e);

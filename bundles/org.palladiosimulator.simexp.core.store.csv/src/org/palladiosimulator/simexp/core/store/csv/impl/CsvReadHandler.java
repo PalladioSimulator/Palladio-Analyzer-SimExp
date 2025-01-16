@@ -28,10 +28,16 @@ public class CsvReadHandler extends CsvHandler {
     }
 
     public String getRowAt(int index) throws IndexOutOfBoundsException, IOException {
+        if (!Files.exists(csvFile)) {
+            return "";
+        }
         return getAllRows().get(index);
     }
 
     public boolean isEmptyFile() throws IOException {
+        if (!Files.exists(csvFile)) {
+            return true;
+        }
         return getAllRows().size() == 0;
     }
 
