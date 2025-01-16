@@ -4,7 +4,6 @@ import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.star
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.withSameId;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
@@ -24,8 +22,6 @@ import org.palladiosimulator.simexp.core.store.csv.impl.CsvReadHandler;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvSimulatedExperience;
 
 public class ReadAccessor implements SimulatedExperienceReadAccessor {
-    private static final Logger LOGGER = Logger.getLogger(ReadAccessor.class);
-
     private CsvReadHandler csvSampleReadHandler = null;
     private CsvReadHandler csvStoreReadHandler = null;
 
@@ -37,13 +33,8 @@ public class ReadAccessor implements SimulatedExperienceReadAccessor {
         Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
         Path csvStoreFile = csvFolder.resolve(CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
         Path csvSampleSpaceFile = csvFolder.resolve(CsvHandler.SAMPLE_SPACE_FILE);
-        try {
-            Files.createDirectories(csvFolder);
-            csvSampleReadHandler = new CsvReadHandler(csvSampleSpaceFile);
-            csvStoreReadHandler = new CsvReadHandler(csvStoreFile);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        csvSampleReadHandler = new CsvReadHandler(csvSampleSpaceFile);
+        csvStoreReadHandler = new CsvReadHandler(csvStoreFile);
     }
 
     @Override
