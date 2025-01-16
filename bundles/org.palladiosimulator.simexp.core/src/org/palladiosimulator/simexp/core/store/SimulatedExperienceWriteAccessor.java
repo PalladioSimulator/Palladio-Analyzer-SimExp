@@ -7,8 +7,8 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 public interface SimulatedExperienceWriteAccessor extends BaseSimulatedExperienceAccessor {
     void setOptionalCache(SimulatedExperienceCache cache);
 
-    void store(List<SimulatedExperience> trajectory);
+    void store(SimulatedExperienceStoreDescription desc, List<SimulatedExperience> trajectory);
 
-    void store(SimulatedExperience simulatedExperience);
+    void store(SimulatedExperienceStoreDescription desc, SimulatedExperience simulatedExperience);
 
 }

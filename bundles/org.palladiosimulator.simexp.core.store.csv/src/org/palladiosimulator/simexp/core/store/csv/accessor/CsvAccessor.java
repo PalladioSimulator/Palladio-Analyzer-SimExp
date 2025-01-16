@@ -62,21 +62,31 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
     }
 
     @Override
-    public void store(SimulatedExperience simulatedExperience) {
+    public void store(SimulatedExperienceStoreDescription description, SimulatedExperience simulatedExperience) {
         // TODO Exception handling
-        Objects.requireNonNull(csvStoreWriteHandler, "");
-        Objects.requireNonNull(csvSampleWriteHandler, "");
+        connect(description);
+        try {
+            Objects.requireNonNull(csvStoreWriteHandler, "");
+            Objects.requireNonNull(csvSampleWriteHandler, "");
 
-        csvStoreWriteHandler.append(simulatedExperience);
+            csvStoreWriteHandler.append(simulatedExperience);
+        } finally {
+            close();
+        }
     }
 
     @Override
-    public void store(List<SimulatedExperience> trajectory) {
-        // TODO Exception handling
-        Objects.requireNonNull(csvStoreWriteHandler, "");
-        Objects.requireNonNull(csvSampleWriteHandler, "");
+    public void store(SimulatedExperienceStoreDescription description, List<SimulatedExperience> trajectory) {
+        connect(description);
+        try {
+            // TODO Exception handling
+            Objects.requireNonNull(csvStoreWriteHandler, "");
+            Objects.requireNonNull(csvSampleWriteHandler, "");
 
-        csvSampleWriteHandler.append(trajectory);
+            csvSampleWriteHandler.append(trajectory);
+        } finally {
+            close();
+        }
     }
 
     @Override
