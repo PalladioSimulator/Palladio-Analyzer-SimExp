@@ -16,10 +16,13 @@ import org.palladiosimulator.simexp.core.store.csv.impl.CsvWriteHandler;
 public class WriteAccessor implements SimulatedExperienceWriteAccessor {
     private static final Logger LOGGER = Logger.getLogger(WriteAccessor.class);
 
+    private final SimulatedExperienceStoreDescription description;
+
     private CsvWriteHandler csvSampleWriteHandler = null;
     private CsvWriteHandler csvStoreWriteHandler = null;
 
-    public WriteAccessor() {
+    public WriteAccessor(SimulatedExperienceStoreDescription description) {
+        this.description = description;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class WriteAccessor implements SimulatedExperienceWriteAccessor {
     }
 
     @Override
-    public void store(SimulatedExperienceStoreDescription description, SimulatedExperience simulatedExperience) {
+    public void store(SimulatedExperience simulatedExperience) {
         connect(description);
         try {
             String line = CsvFormatter.format(simulatedExperience);
@@ -58,7 +61,7 @@ public class WriteAccessor implements SimulatedExperienceWriteAccessor {
     }
 
     @Override
-    public void store(SimulatedExperienceStoreDescription description, List<SimulatedExperience> trajectory) {
+    public void store(List<SimulatedExperience> trajectory) {
         connect(description);
         try {
             String line = CsvFormatter.format(trajectory);
