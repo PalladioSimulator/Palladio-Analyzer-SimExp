@@ -21,7 +21,12 @@ public class SimulatedExperienceStore<A, R> {
 
     public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        accessor.store(description, toSimulatedExperience(trajectory));
+        SimulatedExperienceWriteAccessor writeAccessor = accessor.createSimulatedExperienceWriteAccessor();
+        try {
+            writeAccessor.store(description, toSimulatedExperience(trajectory));
+        } finally {
+            writeAccessor.close();
+        }
     }
 
     private List<SimulatedExperience> toSimulatedExperience(Trajectory<A, R> trajectory) {
@@ -38,7 +43,12 @@ public class SimulatedExperienceStore<A, R> {
         }
 
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        accessor.store(description, simExp);
+        SimulatedExperienceWriteAccessor writeAccessor = accessor.createSimulatedExperienceWriteAccessor();
+        try {
+            writeAccessor.store(description, simExp);
+        } finally {
+            writeAccessor.close();
+        }
     }
 
     private boolean isAlreadyStored(SimulatedExperience simExp) {
