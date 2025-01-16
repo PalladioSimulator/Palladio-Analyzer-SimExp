@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.valuefunction.MonteCarloPrediction;
 import org.palladiosimulator.simexp.core.valuefunction.ValueFunction;
 
@@ -23,7 +24,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         private List<String> filterSampledInitials() {
             List<String> sampledInitials = Lists.newArrayList();
 
-            SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
+            SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
             while (iterator.hasNext()) {
                 String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next()
                     .get(0));
@@ -56,15 +57,17 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
     private final String simulationId;
     private final String sampleSpaceId;
+    private final SimulatedExperienceAccessor accessor;
 
-    public ExpectedRewardEvaluator(String simulationId, String sampleSpaceId) {
+    public ExpectedRewardEvaluator(SimulatedExperienceAccessor accessor, String simulationId, String sampleSpaceId) {
         this.simulationId = simulationId;
         this.sampleSpaceId = sampleSpaceId;
+        this.accessor = accessor;
     }
 
     @Override
     public double computeTotalReward() {
-        SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
+        SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
         ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation()
             .estimate(iterator);
 

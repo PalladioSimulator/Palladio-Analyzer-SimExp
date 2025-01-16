@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -63,6 +64,7 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -169,7 +171,10 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(accessor,
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);

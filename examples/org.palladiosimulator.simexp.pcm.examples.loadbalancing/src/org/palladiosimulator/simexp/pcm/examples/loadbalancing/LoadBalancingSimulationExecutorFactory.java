@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
@@ -36,6 +37,7 @@ import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfigurati
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -96,8 +98,11 @@ public class LoadBalancingSimulationExecutorFactory
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
-            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator.of(accessor,
+                getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);

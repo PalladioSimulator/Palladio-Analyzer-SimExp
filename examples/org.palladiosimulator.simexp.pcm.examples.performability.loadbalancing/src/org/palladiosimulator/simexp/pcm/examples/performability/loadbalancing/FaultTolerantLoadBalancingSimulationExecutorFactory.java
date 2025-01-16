@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
@@ -44,6 +45,7 @@ import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfigurati
 import org.palladiosimulator.simexp.pcm.state.InitialPcmStateCreator;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -132,7 +134,10 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         // TODO: use from store
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = new PerformabilityEvaluator(
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(accessor,
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),

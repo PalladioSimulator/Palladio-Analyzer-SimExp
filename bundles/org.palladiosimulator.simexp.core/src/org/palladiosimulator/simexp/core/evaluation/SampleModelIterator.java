@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 
 public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
 
@@ -15,21 +14,19 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     private int iteration;
 
-    private SampleModelIterator(SimulatedExperienceStoreDescription desc) {
-        // TODO Exception Handling
-        this.accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
+    private SampleModelIterator(SimulatedExperienceAccessor accessor, SimulatedExperienceStoreDescription desc) {
+        this.accessor = accessor;
         this.accessor.connect(desc);
         this.iteration = 0;
     }
 
-    public static SampleModelIterator get(String simulationId, String sampleSpaceId) {
+    public static SampleModelIterator get(SimulatedExperienceAccessor accessor, String simulationId,
+            String sampleSpaceId) {
         SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
             .withSimulationId(simulationId)
             .andSampleSpaceId(sampleSpaceId)
             .build();
-        return new SampleModelIterator(desc);
+        return new SampleModelIterator(accessor, desc);
     }
 
     @Override

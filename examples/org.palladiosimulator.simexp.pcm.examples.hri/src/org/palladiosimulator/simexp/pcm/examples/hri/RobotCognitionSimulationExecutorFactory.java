@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
@@ -40,6 +41,7 @@ import org.palladiosimulator.simexp.pcm.simulator.SimulatorPcmExperienceSimulati
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
@@ -128,7 +130,10 @@ public class RobotCognitionSimulationExecutorFactory
 
         String sampleSpaceId = SimulatedExperienceConstants
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(accessor,
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),

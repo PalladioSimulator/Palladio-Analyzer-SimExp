@@ -37,5 +37,6 @@ Require-Bundle: org.apache.log4j,
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
  org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.simulator,
- org.palladiosimulator.simexp.pcm.modelled
+ org.palladiosimulator.simexp.pcm.modelled,
+ org.palladiosimulator.simexp.service;bundle-version="1.0.0"
 Export-Package: org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing

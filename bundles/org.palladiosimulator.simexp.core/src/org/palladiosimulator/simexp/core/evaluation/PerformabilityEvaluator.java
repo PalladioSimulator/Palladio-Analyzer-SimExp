@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 
 public class PerformabilityEvaluator implements TotalRewardCalculation {
 
@@ -13,14 +14,17 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
 
     private final String simulationId;
     private final String sampleSpaceId;
+    private final SimulatedExperienceAccessor accessor;
 
-    public PerformabilityEvaluator(String simulationId, String sampleSpaceId) {
+    private PerformabilityEvaluator(SimulatedExperienceAccessor accessor, String simulationId, String sampleSpaceId) {
         this.simulationId = simulationId;
         this.sampleSpaceId = sampleSpaceId;
+        this.accessor = accessor;
     }
 
-    public static TotalRewardCalculation of(String simulationId, String sampleSpaceId) {
-        return new PerformabilityEvaluator(simulationId, sampleSpaceId);
+    public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor, String simulationId,
+            String sampleSpaceId) {
+        return new PerformabilityEvaluator(accessor, simulationId, sampleSpaceId);
     }
 
     @Override
@@ -28,7 +32,7 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
         double totalReward = 0;
 
         List<Double> responseTimes = new ArrayList<>();
-        SampleModelIterator iterator = SampleModelIterator.get(simulationId, sampleSpaceId);
+        SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
 
         /**
          * total reward computation: aggregate data based on the performability metric, i.e.

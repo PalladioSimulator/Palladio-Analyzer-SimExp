@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -53,6 +54,7 @@ import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismGenerator;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.models.PCMInstance;
 
@@ -179,7 +181,10 @@ public class DeltaIoTSimulationExecutorFactory extends
             .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
+        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
+            .findService(SimulatedExperienceAccessor.class)
+            .orElseThrow(() -> new RuntimeException(""));
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(accessor,
                 getSimulationParameters().getSimulationID(), sampleSpaceId);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
