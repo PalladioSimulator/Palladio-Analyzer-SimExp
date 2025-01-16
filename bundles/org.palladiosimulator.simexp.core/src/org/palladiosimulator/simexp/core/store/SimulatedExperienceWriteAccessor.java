@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
-public interface SimulatedExperienceWriteAccessor extends BaseSimulatedExperienceAccessor {
+public interface SimulatedExperienceWriteAccessor {
     void setOptionalCache(SimulatedExperienceCache cache);
 
     void store(SimulatedExperienceStoreDescription desc, List<SimulatedExperience> trajectory);

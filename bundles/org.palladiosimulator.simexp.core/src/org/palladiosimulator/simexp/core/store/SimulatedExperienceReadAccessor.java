@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 
-public interface SimulatedExperienceReadAccessor extends BaseSimulatedExperienceAccessor {
+public interface SimulatedExperienceReadAccessor {
     void connect(SimulatedExperienceStoreDescription desc);
 
     void close();
