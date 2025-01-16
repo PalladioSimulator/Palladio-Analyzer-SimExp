@@ -36,7 +36,6 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.cache.guava.loader.GuavaSimulatedExperienceCache;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -66,7 +65,6 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
             SimulatedExperienceAccessor accessor = new CsvAccessor();
-            accessor.setOptionalCache(new GuavaSimulatedExperienceCache());
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
                     launchDescriptionProvider, seedProvider, accessor);
             if (simulationExecutor == null) {

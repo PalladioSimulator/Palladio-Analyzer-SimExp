@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.cache.guava.loader.GuavaSimulatedExperienceCache;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
@@ -83,7 +82,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 (SimExpWorkflowConfiguration) config, optimizableValues);
 
         SimulatedExperienceAccessor accessor = new CsvAccessor();
-        accessor.setOptionalCache(new GuavaSimulatedExperienceCache());
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
                 optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor);
 

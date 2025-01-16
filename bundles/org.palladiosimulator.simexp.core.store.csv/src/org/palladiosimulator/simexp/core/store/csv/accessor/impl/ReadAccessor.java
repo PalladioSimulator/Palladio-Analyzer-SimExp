@@ -10,14 +10,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter;
@@ -30,7 +28,6 @@ public class ReadAccessor implements SimulatedExperienceReadAccessor {
 
     private CsvReadHandler csvSampleReadHandler = null;
     private CsvReadHandler csvStoreReadHandler = null;
-    private Optional<SimulatedExperienceCache> cache = Optional.empty();
 
     public ReadAccessor() {
     }
@@ -57,28 +54,13 @@ public class ReadAccessor implements SimulatedExperienceReadAccessor {
 
     @Override
     public Optional<SimulatedExperience> findSimulatedExperience(String id) {
-        // TODO Exception handling
-        Objects.requireNonNull(csvStoreReadHandler, "");
-        Optional<SimulatedExperience> result = queryCache(id);
-        if (result.isPresent()) {
-            return result;
-        }
-
-        result = queryStoreWithFull(id);
-        result.ifPresent(s -> putInCache(id, s));
+        Optional<SimulatedExperience> result = queryStoreWithFull(id);
         return result;
     }
 
     @Override
     public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
-        Objects.requireNonNull(csvStoreReadHandler, "");
-        Optional<SimulatedExperience> result = queryCache(id);
-        if (result.isPresent()) {
-            return result;
-        }
-
-        result = queryStoreWithPrefix(id);
-        result.ifPresent(s -> putInCache(id, s));
+        Optional<SimulatedExperience> result = queryStoreWithPrefix(id);
         return result;
     }
 
@@ -150,22 +132,4 @@ public class ReadAccessor implements SimulatedExperienceReadAccessor {
             .map(row -> CsvSimulatedExperience.of(row))
             .findFirst();
     }
-
-    private Optional<SimulatedExperience> queryCache(String id) {
-        if (cache.isPresent()) {
-            return cache.get()
-                .load(id);
-        }
-        return Optional.empty();
-    }
-
-    private void putInCache(String id, SimulatedExperience simulatedExperience) {
-        cache.ifPresent(c -> c.put(id, simulatedExperience));
-    }
-
-    @Override
-    public void setOptionalCache(SimulatedExperienceCache cache) {
-        this.cache = Optional.of(cache);
-    }
-
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 
@@ -27,10 +26,6 @@ public class CachingReadAccessor implements SimulatedExperienceReadAccessor {
     public void close() {
         cache.clear();
         delegate.close();
-    }
-
-    @Override
-    public void setOptionalCache(SimulatedExperienceCache cache) {
     }
 
     @Override
