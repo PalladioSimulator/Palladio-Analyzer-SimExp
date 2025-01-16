@@ -14,7 +14,7 @@ public abstract class CsvHandler {
         .getRoot()
         .getLocation()
         .toString() + "/resource";
-    protected final static String SAMPLE_SPACE_FILE = "SampleSpace";
+    public final static String SAMPLE_SPACE_FILE = "SampleSpace";
     public final static String SIMULATED_EXPERIENCE_STORE_FILE = "SimulatedExperienceStore";
 
     public static File loadOrCreate(String folder, String file) {
@@ -51,10 +51,6 @@ public abstract class CsvHandler {
             csvFolder.mkdirs();
         }
         return csvFolder;
-    }
-
-    public static String constructSampleSpaceFileName(String filePrefix) {
-        return filePrefix + SAMPLE_SPACE_FILE;
     }
 
     public static String concatPathSegments(String... segments) {

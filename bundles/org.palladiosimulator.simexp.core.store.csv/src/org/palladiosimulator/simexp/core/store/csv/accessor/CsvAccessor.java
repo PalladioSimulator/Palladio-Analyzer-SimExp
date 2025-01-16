@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.core.store.csv.accessor;
 
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.startingWith;
 import static org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter.withSameId;
-import static org.palladiosimulator.simexp.core.store.csv.impl.CsvHandler.constructSampleSpaceFileName;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,6 +65,10 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
         builder.append(CsvHandler.concatPathSegments(CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER, folder, file));
         builder.append(CsvHandler.CSV_FILE_EXTENSION);
         return new File(builder.toString());
+    }
+
+    private String constructSampleSpaceFileName(String filePrefix) {
+        return filePrefix + CsvHandler.SAMPLE_SPACE_FILE;
     }
 
     @Override
