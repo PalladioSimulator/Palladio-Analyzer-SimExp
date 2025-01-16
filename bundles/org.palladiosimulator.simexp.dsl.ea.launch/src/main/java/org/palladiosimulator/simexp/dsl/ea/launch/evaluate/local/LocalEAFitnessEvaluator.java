@@ -12,13 +12,13 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
+import org.palladiosimulator.simexp.core.store.cache.guava.loader.GuavaSimulatedExperienceCache;
+import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
@@ -82,12 +82,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         OptimizableSimExpWorkflowConfiguration optimizableSimExpWorkflowConfiguration = new OptimizableSimExpWorkflowConfiguration(
                 (SimExpWorkflowConfiguration) config, optimizableValues);
 
-        SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-            .findService(SimulatedExperienceAccessor.class)
-            .orElseThrow(() -> new RuntimeException(""));
-        ServiceRegistry.get()
-            .findService(SimulatedExperienceCache.class)
-            .ifPresent(cache -> accessor.setOptionalCache(cache));
+        SimulatedExperienceAccessor accessor = new CsvAccessor();
+        accessor.setOptionalCache(new GuavaSimulatedExperienceCache());
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
                 optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor);
 

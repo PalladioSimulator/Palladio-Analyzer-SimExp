@@ -36,9 +36,9 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceCache;
+import org.palladiosimulator.simexp.core.store.cache.guava.loader.GuavaSimulatedExperienceCache;
+import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.service.registry.ServiceRegistry;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -65,12 +65,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
-            SimulatedExperienceAccessor accessor = ServiceRegistry.get()
-                .findService(SimulatedExperienceAccessor.class)
-                .orElseThrow(() -> new RuntimeException(""));
-            ServiceRegistry.get()
-                .findService(SimulatedExperienceCache.class)
-                .ifPresent(cache -> accessor.setOptionalCache(cache));
+            SimulatedExperienceAccessor accessor = new CsvAccessor();
+            accessor.setOptionalCache(new GuavaSimulatedExperienceCache());
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
                     launchDescriptionProvider, seedProvider, accessor);
             if (simulationExecutor == null) {
