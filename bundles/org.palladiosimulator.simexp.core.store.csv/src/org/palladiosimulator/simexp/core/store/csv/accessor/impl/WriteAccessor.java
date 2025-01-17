@@ -21,11 +21,10 @@ public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWr
         this.description = description;
     }
 
-    @Override
-    public void connect(SimulatedExperienceStoreDescription desc) {
+    private void connect() {
         Path csvStoreFile = resourceFolder.resolve(SIMULATED_EXPERIENCE_STORE_FILE);
         Path csvSampleSpaceFile = resourceFolder.resolve(SAMPLE_SPACE_FILE);
-        String sampleSpaceHeader = CsvFormatter.formatSampleSpaceHeader(desc.getSampleHorizon());
+        String sampleSpaceHeader = CsvFormatter.formatSampleSpaceHeader(description.getSampleHorizon());
         csvSampleWriteHandler = new CsvWriteHandler(csvSampleSpaceFile, sampleSpaceHeader);
         String storeHeader = CsvFormatter.formatSimulatedExperienceStoreHeader();
         csvStoreWriteHandler = new CsvWriteHandler(csvStoreFile, storeHeader);
@@ -37,7 +36,7 @@ public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWr
 
     @Override
     public void store(SimulatedExperience simulatedExperience) {
-        connect(description);
+        connect();
         try {
             String line = CsvFormatter.format(simulatedExperience);
             csvStoreWriteHandler.append(line);
@@ -50,7 +49,7 @@ public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWr
 
     @Override
     public void store(List<SimulatedExperience> trajectory) {
-        connect(description);
+        connect();
         try {
             String line = CsvFormatter.format(trajectory);
             csvSampleWriteHandler.append(line);
