@@ -1,5 +1,8 @@
 package org.palladiosimulator.core.simulation;
 
+import java.util.Collections;
+import java.util.List;
+
 public interface SimulationExecutor {
     static class SimulationResult {
         private final double totalReward;
@@ -16,6 +19,10 @@ public interface SimulationExecutor {
 
         public String getRewardDescription() {
             return rewardDescription;
+        }
+
+        public List<String> getDetailDescription() {
+            return Collections.emptyList();
         }
     }
 

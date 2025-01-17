@@ -41,6 +41,20 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
         return String.format("EA-%s", smodel.getModelName());
     }
 
+    private static class EASimulationResult extends SimulationResult {
+        private final List<String> detailDescription;
+
+        public EASimulationResult(double totalReward, String rewardDescription, List<String> detailDescription) {
+            super(totalReward, rewardDescription);
+            this.detailDescription = detailDescription;
+        }
+
+        @Override
+        public List<String> getDetailDescription() {
+            return detailDescription;
+        }
+    }
+
     @Override
     public SimulationResult evaluate() {
         double totalReward = 0.0;
@@ -49,19 +63,14 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
             totalReward = fittest.getLeft();
             optimizables = fittest.getRight();
         }
-        String description = String.format("total fittest individual of policy %s (%s)", getPolicyId(),
-                asString(optimizables));
-
-        LOGGER.info("***********************************************************************");
-        LOGGER.info(String.format("The %s has an reward of %s", description, totalReward));
-        LOGGER.info("Optimizable values:");
+        String description = String.format("fittest individual of policy %s", getPolicyId());
+        List<String> detailDescription = new ArrayList<>();
+        detailDescription.add("Optimizable values:");
         for (OptimizableValue<?> ov : optimizables) {
-            LOGGER.info(String.format("- %s: %s", ov.getOptimizable()
+            detailDescription.add(String.format("- %s: %s", ov.getOptimizable()
                 .getName(), ov.getValue()));
         }
-        LOGGER.info("***********************************************************************");
-
-        return new SimulationResult(totalReward, description);
+        return new EASimulationResult(totalReward, description, detailDescription);
     }
 
     @Override

@@ -1,8 +1,11 @@
 package org.palladiosimulator.simexp.workflow.jobs;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
@@ -28,7 +31,14 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
 
         try {
             simulationExecutor.execute();
-            simulationExecutor.evaluate();
+            SimulationResult evaluateResult = simulationExecutor.evaluate();
+            LOGGER.info("***********************************************************************");
+            LOGGER.info(String.format("The %s is %s", evaluateResult.getRewardDescription(),
+                    evaluateResult.getTotalReward()));
+            List<String> detailDescription = evaluateResult.getDetailDescription();
+            detailDescription.stream()
+                .forEach(l -> LOGGER.info(l));
+            LOGGER.info("***********************************************************************");
         } finally {
             simulationExecutor.dispose();
         }

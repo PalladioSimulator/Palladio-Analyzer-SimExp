@@ -51,9 +51,6 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
         double totalReward = rewardCalculation.computeTotalReward();
         String description = String.format("total %s reward of policy %1s", rewardCalculation.getName(),
                 reconfSelectionPolicy.getId());
-        LOGGER.info("***********************************************************************");
-        LOGGER.info(String.format("The %s is %s", description, totalReward));
-        LOGGER.info("***********************************************************************");
         return new SimulationResult(totalReward, description);
     }
 }
