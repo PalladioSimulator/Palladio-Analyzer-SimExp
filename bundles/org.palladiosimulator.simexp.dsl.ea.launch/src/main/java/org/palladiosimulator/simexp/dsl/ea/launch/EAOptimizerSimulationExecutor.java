@@ -35,14 +35,17 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     }
 
     @Override
-    public void evaluate() {
+    public SimulationResult evaluate() {
         // TODO:
         double totalReward = 0.0;
+        String description = String.format("total fittest individual of policy %s", getPolicyId());
+
         LOGGER.info("***********************************************************************");
-        LOGGER.info(
-                String.format("The fittest individual of policy %1s has an reward of %2s", getPolicyId(), totalReward));
+        LOGGER.info(String.format("The %s has an reward of %s", description, totalReward));
         // TODO: dump optimization values
         LOGGER.info("***********************************************************************");
+
+        return new SimulationResult(totalReward, description);
     }
 
     @Override

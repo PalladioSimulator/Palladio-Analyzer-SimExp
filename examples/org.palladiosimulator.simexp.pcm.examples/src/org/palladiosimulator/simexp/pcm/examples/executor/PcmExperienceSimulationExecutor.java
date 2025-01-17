@@ -47,11 +47,13 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     }
 
     @Override
-    public void evaluate() {
+    public SimulationResult evaluate() {
         double totalReward = rewardCalculation.computeTotalReward();
+        String description = String.format("total %s reward of policy %1s", rewardCalculation.getName(),
+                reconfSelectionPolicy.getId());
         LOGGER.info("***********************************************************************");
-        LOGGER.info(String.format("The total %s reward of policy %1s is %2s", rewardCalculation.getName(),
-                reconfSelectionPolicy.getId(), totalReward));
+        LOGGER.info(String.format("The %s is %s", description, totalReward));
         LOGGER.info("***********************************************************************");
+        return new SimulationResult(totalReward, description);
     }
 }

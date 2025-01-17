@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
@@ -105,15 +106,18 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 currentResourceFolder);
 
         LOGGER.info(String.format("### fitness evaluation simulation start: %d ###", counter));
+        SimulationResult simulationResult = execute(effectiveSimulationExecutor);
+        LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
+                simulationResult.getTotalReward()));
+        return simulationResult.getTotalReward();
+    }
+
+    private SimulationResult execute(SimulationExecutor effectiveSimulationExecutor) {
         try {
             effectiveSimulationExecutor.execute();
-            effectiveSimulationExecutor.evaluate();
+            return effectiveSimulationExecutor.evaluate();
         } finally {
             effectiveSimulationExecutor.dispose();
         }
-        LOGGER.info(String.format("### fitness evaluation finished: %d ###", counter));
-
-        // TODO:
-        return 0.0;
     }
 }
