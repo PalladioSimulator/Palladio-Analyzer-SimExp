@@ -8,10 +8,9 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceWriteAccessor;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter;
-import org.palladiosimulator.simexp.core.store.csv.impl.CsvHandler;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvWriteHandler;
 
-public class WriteAccessor implements SimulatedExperienceWriteAccessor {
+public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWriteAccessor {
     private final Path resourceFolder;
     private final SimulatedExperienceStoreDescription description;
 
@@ -25,8 +24,8 @@ public class WriteAccessor implements SimulatedExperienceWriteAccessor {
 
     @Override
     public void connect(SimulatedExperienceStoreDescription desc) {
-        Path csvStoreFile = resourceFolder.resolve(CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-        Path csvSampleSpaceFile = resourceFolder.resolve(CsvHandler.SAMPLE_SPACE_FILE);
+        Path csvStoreFile = resourceFolder.resolve(SIMULATED_EXPERIENCE_STORE_FILE);
+        Path csvSampleSpaceFile = resourceFolder.resolve(SAMPLE_SPACE_FILE);
         String sampleSpaceHeader = CsvFormatter.formatSampleSpaceHeader(desc.getSampleHorizon());
         csvSampleWriteHandler = new CsvWriteHandler(csvSampleSpaceFile, sampleSpaceHeader);
         String storeHeader = CsvFormatter.formatSimulatedExperienceStoreHeader();
