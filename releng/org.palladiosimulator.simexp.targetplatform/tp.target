@@ -11,7 +11,6 @@
 		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20200529191137/repository"/>
 			<unit id="com.google.inject" version="3.0.0.v201605172100"/>
 			<unit id="com.google.inject.assistedinject" version="3.0.0.v201402270930"/>
-			<unit id="com.google.guava" version="27.1.0.v20190517-1946"/>
 			<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">

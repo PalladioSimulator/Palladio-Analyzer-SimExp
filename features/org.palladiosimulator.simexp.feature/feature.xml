@@ -62,13 +62,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.palladiosimulator.simexp.core.store.cache.guava"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
 	<plugin
          id="org.palladiosimulator.simexp.distribution"
          download-size="0"
@@ -216,13 +209,6 @@
          version="0.0.0"
          unpack="false"/>
          
-   <plugin
-         id="org.palladiosimulator.simexp.core.store.cache.guava"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
    <plugin
          id="org.palladiosimulator.simexp.pcm.examples.deltaiot"
          download-size="0"

@@ -25,7 +25,6 @@
 		<module>org.palladiosimulator.simexp.environmentaldynamics</module>
 		<module>org.palladiosimulator.simexp.core</module>
 		<module>org.palladiosimulator.simexp.core.store.csv</module>
-		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
 		<module>org.palladiosimulator.simexp.model.io</module>
 		<module>org.palladiosimulator.simexp.model.strategy</module>
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
