@@ -25,7 +25,9 @@ public class CsvAccessor implements SimulatedExperienceAccessor {
 
     @Override
     public SimulatedExperienceReadAccessor createSimulatedExperienceReadAccessor() {
-        SimulatedExperienceReadAccessor readAccessor = new CachingReadAccessor(new ReadAccessor(resourceFolder));
+        ReadAccessor delegate = new ReadAccessor(resourceFolder);
+        delegate.connect();
+        SimulatedExperienceReadAccessor readAccessor = new CachingReadAccessor(delegate);
         return readAccessor;
     }
 }

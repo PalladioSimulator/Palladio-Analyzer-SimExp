@@ -27,7 +27,6 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
         super(resourceFolder);
     }
 
-    @Override
     public void connect() {
         Path csvStoreFile = resourceFolder.resolve(SIMULATED_EXPERIENCE_STORE_FILE);
         Path csvSampleSpaceFile = resourceFolder.resolve(SAMPLE_SPACE_FILE);

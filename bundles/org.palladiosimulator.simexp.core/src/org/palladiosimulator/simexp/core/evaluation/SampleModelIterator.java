@@ -16,7 +16,6 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     private SampleModelIterator(SimulatedExperienceAccessor accessor) {
         readAccessor = accessor.createSimulatedExperienceReadAccessor();
-        readAccessor.connect();
         this.iteration = 0;
     }
 

@@ -17,11 +17,6 @@ public class CachingReadAccessor implements SimulatedExperienceReadAccessor {
     }
 
     @Override
-    public void connect() {
-        delegate.connect();
-    }
-
-    @Override
     public void close() {
         cache.clear();
         delegate.close();
