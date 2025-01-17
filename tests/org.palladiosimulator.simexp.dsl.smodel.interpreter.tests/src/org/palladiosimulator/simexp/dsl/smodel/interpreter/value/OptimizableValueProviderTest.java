@@ -67,4 +67,16 @@ public class OptimizableValueProviderTest {
 
         assertThat(actualValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
     }
+
+    @Test
+    public void testGetStringValueTwoInstances() {
+        Optimizable optimizable1 = smodelCreator.createOptimizable("opt", DataType.STRING, null);
+        Optimizable optimizable2 = smodelCreator.createOptimizable("opt", DataType.STRING, null);
+        OptimizableValue<String> optimizableValue = new OptimizableValue<>(optimizable1, "a");
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
+
+        String actualValue = valueProvider.getStringValue(optimizable2);
+
+        assertThat(actualValue).isEqualTo("a");
+    }
 }

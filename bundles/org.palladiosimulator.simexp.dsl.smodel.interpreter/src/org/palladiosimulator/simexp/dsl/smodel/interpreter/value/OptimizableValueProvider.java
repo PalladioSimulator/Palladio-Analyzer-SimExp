@@ -1,8 +1,9 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
@@ -16,9 +17,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
  *
  */
 public class OptimizableValueProvider implements IFieldValueProvider {
-    private final Map<Optimizable, Object> optimizableValues = new HashMap<>();
+    private final Map<Optimizable, Object> optimizableValues;
 
     public OptimizableValueProvider(List<OptimizableValue<?>> optimizableValues) {
+        Comparator<Optimizable> comparator = Comparator.comparing(o -> o.getName());
+        this.optimizableValues = new TreeMap<>(comparator);
         for (OptimizableValue<?> value : optimizableValues) {
             this.optimizableValues.put(value.getOptimizable(), value.getValue());
         }
