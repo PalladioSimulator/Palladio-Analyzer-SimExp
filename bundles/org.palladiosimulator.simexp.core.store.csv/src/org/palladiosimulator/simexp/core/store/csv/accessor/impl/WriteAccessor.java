@@ -11,15 +11,14 @@ import org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvWriteHandler;
 
 public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWriteAccessor {
-    private final Path resourceFolder;
     private final SimulatedExperienceStoreDescription description;
 
     private CsvWriteHandler csvSampleWriteHandler = null;
     private CsvWriteHandler csvStoreWriteHandler = null;
 
     public WriteAccessor(Path resourceFolder, SimulatedExperienceStoreDescription description) {
+        super(resourceFolder);
         this.description = description;
-        this.resourceFolder = resourceFolder;
     }
 
     @Override
