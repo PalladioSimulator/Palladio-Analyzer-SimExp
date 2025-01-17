@@ -22,17 +22,19 @@ import org.palladiosimulator.simexp.core.store.csv.impl.CsvReadHandler;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvSimulatedExperience;
 
 public class ReadAccessor implements SimulatedExperienceReadAccessor {
+    private final Path resourceFolder;
+
     private CsvReadHandler csvSampleReadHandler = null;
     private CsvReadHandler csvStoreReadHandler = null;
 
-    public ReadAccessor() {
+    public ReadAccessor(Path resourceFolder) {
+        this.resourceFolder = resourceFolder;
     }
 
     @Override
     public void connect(SimulatedExperienceStoreDescription desc) {
-        Path csvFolder = CsvHandler.SIMULATED_EXPERIENCE_BASE_FOLDER.resolve(desc.getSimulationId());
-        Path csvStoreFile = csvFolder.resolve(CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
-        Path csvSampleSpaceFile = csvFolder.resolve(CsvHandler.SAMPLE_SPACE_FILE);
+        Path csvStoreFile = resourceFolder.resolve(CsvHandler.SIMULATED_EXPERIENCE_STORE_FILE);
+        Path csvSampleSpaceFile = resourceFolder.resolve(CsvHandler.SAMPLE_SPACE_FILE);
         csvSampleReadHandler = new CsvReadHandler(csvSampleSpaceFile);
         csvStoreReadHandler = new CsvReadHandler(csvStoreFile);
     }

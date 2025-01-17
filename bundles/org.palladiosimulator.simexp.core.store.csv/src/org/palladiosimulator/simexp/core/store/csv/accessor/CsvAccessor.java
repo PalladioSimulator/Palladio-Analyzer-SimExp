@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.core.store.csv.accessor;
 
+import java.nio.file.Path;
+
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
@@ -9,19 +11,21 @@ import org.palladiosimulator.simexp.core.store.csv.accessor.impl.ReadAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.impl.WriteAccessor;
 
 public class CsvAccessor implements SimulatedExperienceAccessor {
+    private final Path resourceFolder;
 
-    public CsvAccessor() {
+    public CsvAccessor(Path resourceFolder) {
+        this.resourceFolder = resourceFolder;
     }
 
     @Override
     public SimulatedExperienceWriteAccessor createSimulatedExperienceWriteAccessor(
             SimulatedExperienceStoreDescription desc) {
-        return new WriteAccessor(desc);
+        return new WriteAccessor(resourceFolder, desc);
     }
 
     @Override
     public SimulatedExperienceReadAccessor createSimulatedExperienceReadAccessor() {
-        SimulatedExperienceReadAccessor readAccessor = new CachingReadAccessor(new ReadAccessor());
+        SimulatedExperienceReadAccessor readAccessor = new CachingReadAccessor(new ReadAccessor(resourceFolder));
         return readAccessor;
     }
 }

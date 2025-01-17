@@ -64,10 +64,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
-            SimulatedExperienceAccessor accessor = new CsvAccessor();
             String simulationID = simulationParameters.getSimulationID();
             Path resourcePath = getResourcePath(simulationID);
             Files.createDirectories(resourcePath);
+            SimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
                     launchDescriptionProvider, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {

@@ -91,7 +91,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         OptimizableSimExpWorkflowConfiguration optimizableSimExpWorkflowConfiguration = new OptimizableSimExpWorkflowConfiguration(
                 (SimExpWorkflowConfiguration) config, optimizableValues);
 
-        SimulatedExperienceAccessor accessor = new CsvAccessor();
         Path currentResourceFolder = resourcePath.resolve(String.format("ea_%04d", counter));
         try {
             Files.createDirectories(currentResourceFolder);
@@ -100,6 +99,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                     e);
             throw new CoreException(status);
         }
+        SimulatedExperienceAccessor accessor = new CsvAccessor(currentResourceFolder);
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
                 optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor,
                 currentResourceFolder);
