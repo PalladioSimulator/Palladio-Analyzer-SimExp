@@ -1,7 +1,12 @@
 package org.palladiosimulator.simexp.core.store.csv.impl;
 
-public abstract class CsvHandler {
+import java.nio.file.Path;
 
-    public abstract void close();
+public abstract class CsvHandler {
+    protected final Path csvFile;
+
+    public CsvHandler(Path csvFile) {
+        this.csvFile = csvFile;
+    }
 
 }

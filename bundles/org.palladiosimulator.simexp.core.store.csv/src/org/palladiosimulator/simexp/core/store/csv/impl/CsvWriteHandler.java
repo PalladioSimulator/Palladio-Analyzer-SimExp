@@ -9,11 +9,10 @@ import java.nio.file.StandardOpenOption;
 
 public class CsvWriteHandler extends CsvHandler {
 
-    private final Path csvFile;
     private final String header;
 
     public CsvWriteHandler(Path csvFile, String header) {
-        this.csvFile = csvFile;
+        super(csvFile);
         this.header = header;
     }
 
@@ -30,9 +29,5 @@ public class CsvWriteHandler extends CsvHandler {
             }
             csvWritter.println(value);
         }
-    }
-
-    @Override
-    public void close() {
     }
 }

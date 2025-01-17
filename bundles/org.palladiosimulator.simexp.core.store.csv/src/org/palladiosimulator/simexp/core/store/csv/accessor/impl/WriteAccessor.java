@@ -33,8 +33,6 @@ public class WriteAccessor extends BaseAccessor implements SimulatedExperienceWr
 
     @Override
     public void close() {
-        csvStoreWriteHandler.close();
-        csvSampleWriteHandler.close();
     }
 
     @Override

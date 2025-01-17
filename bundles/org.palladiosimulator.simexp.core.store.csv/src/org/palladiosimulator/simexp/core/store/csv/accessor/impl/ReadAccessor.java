@@ -38,8 +38,6 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
 
     @Override
     public void close() {
-        csvStoreReadHandler.close();
-        csvSampleReadHandler.close();
     }
 
     @Override

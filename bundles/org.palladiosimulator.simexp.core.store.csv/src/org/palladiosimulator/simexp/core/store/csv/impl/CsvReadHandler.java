@@ -9,14 +9,8 @@ import java.util.stream.Collectors;
 
 public class CsvReadHandler extends CsvHandler {
 
-    private final Path csvFile;
-
     public CsvReadHandler(Path csvFile) {
-        this.csvFile = csvFile;
-    }
-
-    @Override
-    public void close() {
+        super(csvFile);
     }
 
     public List<String> getAllRows() throws IOException {
