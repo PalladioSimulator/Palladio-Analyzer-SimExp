@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
@@ -36,6 +40,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final Path resourcePath;
     private final ClassLoader classloader;
 
+    private int counter = 0;
+
     public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
@@ -60,7 +66,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+    public synchronized Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+        int currentCounter = counter++;
         Future<Double> future = executor.submit(new Callable<Double>() {
 
             @Override
@@ -71,13 +78,13 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                  */
                 Thread.currentThread()
                     .setContextClassLoader(classloader);
-                return doCalcFitness(optimizableValues);
+                return doCalcFitness(currentCounter, optimizableValues);
             }
         });
         return future;
     }
 
-    private Double doCalcFitness(List<OptimizableValue<?>> optimizableValues) throws CoreException {
+    private Double doCalcFitness(int counter, List<OptimizableValue<?>> optimizableValues) throws CoreException {
         SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup(
                 EAOptimizerLaunchFactory.HANDLE_VALUE);
 
@@ -85,18 +92,26 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 (SimExpWorkflowConfiguration) config, optimizableValues);
 
         SimulatedExperienceAccessor accessor = new CsvAccessor();
+        Path currentResourceFolder = resourcePath.resolve(String.format("ea_%04d", counter));
+        try {
+            Files.createDirectories(currentResourceFolder);
+        } catch (IOException e) {
+            IStatus status = new Status(IStatus.ERROR, "org.palladiosimulator.simexp.dsl.ea.launch", 0, e.getMessage(),
+                    e);
+            throw new CoreException(status);
+        }
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
                 optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor,
-                resourcePath);
+                currentResourceFolder);
 
-        LOGGER.info("### fitness evaluation simulation start ###");
+        LOGGER.info(String.format("### fitness evaluation simulation start: %d ###", counter));
         try {
             effectiveSimulationExecutor.execute();
             effectiveSimulationExecutor.evaluate();
         } finally {
             effectiveSimulationExecutor.dispose();
         }
-        LOGGER.info("### fitness evaluation finished ###");
+        LOGGER.info(String.format("### fitness evaluation finished: %d ###", counter));
 
         // TODO:
         return 0.0;
