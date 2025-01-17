@@ -22,7 +22,6 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
-import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
@@ -131,10 +130,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        String sampleSpaceId = SimulatedExperienceConstants
-            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
-        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor(),
-                getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor());
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);

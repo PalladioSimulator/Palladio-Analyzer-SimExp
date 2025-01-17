@@ -24,7 +24,6 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
@@ -164,12 +163,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 
-        String sampleSpaceId = SimulatedExperienceConstants
-            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor(),
-                getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
         return executor;

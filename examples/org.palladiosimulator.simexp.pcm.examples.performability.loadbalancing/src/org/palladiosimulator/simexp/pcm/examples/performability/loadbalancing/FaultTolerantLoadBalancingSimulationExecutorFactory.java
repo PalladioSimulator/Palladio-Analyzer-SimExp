@@ -24,7 +24,6 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
-import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -132,11 +131,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        // TODO: use from store
-        String sampleSpaceId = SimulatedExperienceConstants
-            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
-        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor(),
-                getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor());
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);

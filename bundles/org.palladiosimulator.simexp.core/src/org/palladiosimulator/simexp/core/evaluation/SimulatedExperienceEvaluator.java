@@ -8,27 +8,22 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 
 public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
 
-    private final String simulationId;
-    private final String sampleSpaceId;
     private final SimulatedExperienceAccessor accessor;
 
-    private SimulatedExperienceEvaluator(SimulatedExperienceAccessor accessor, String simulationId,
-            String sampleSpaceId) {
-        this.simulationId = simulationId;
-        this.sampleSpaceId = sampleSpaceId;
+    private SimulatedExperienceEvaluator(SimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
     public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor, String simulationId,
             String sampleSpaceId) {
-        return new SimulatedExperienceEvaluator(accessor, simulationId, sampleSpaceId);
+        return new SimulatedExperienceEvaluator(accessor);
     }
 
     @Override
     public double computeTotalReward() {
         double totalReward = 0;
 
-        SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
+        SampleModelIterator iterator = SampleModelIterator.get(accessor);
         while (iterator.hasNext()) {
             List<SimulatedExperience> traj = iterator.next();
             totalReward += accumulateReward(traj.stream());

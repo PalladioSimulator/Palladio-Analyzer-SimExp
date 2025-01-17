@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 
 public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
 
@@ -15,19 +14,14 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     private int iteration;
 
-    private SampleModelIterator(SimulatedExperienceAccessor accessor, SimulatedExperienceStoreDescription desc) {
+    private SampleModelIterator(SimulatedExperienceAccessor accessor) {
         readAccessor = accessor.createSimulatedExperienceReadAccessor();
-        readAccessor.connect(desc);
+        readAccessor.connect();
         this.iteration = 0;
     }
 
-    public static SampleModelIterator get(SimulatedExperienceAccessor accessor, String simulationId,
-            String sampleSpaceId) {
-        SimulatedExperienceStoreDescription desc = SimulatedExperienceStoreDescription.newBuilder()
-            .withSimulationId(simulationId)
-            .andSampleSpaceId(sampleSpaceId)
-            .build();
-        return new SampleModelIterator(accessor, desc);
+    public static SampleModelIterator get(SimulatedExperienceAccessor accessor) {
+        return new SampleModelIterator(accessor);
     }
 
     @Override

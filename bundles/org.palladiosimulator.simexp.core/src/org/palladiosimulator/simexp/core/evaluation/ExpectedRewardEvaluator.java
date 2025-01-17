@@ -24,7 +24,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         private List<String> filterSampledInitials() {
             List<String> sampledInitials = Lists.newArrayList();
 
-            SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
+            SampleModelIterator iterator = SampleModelIterator.get(accessor);
             while (iterator.hasNext()) {
                 String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next()
                     .get(0));
@@ -55,19 +55,15 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
     }
 
-    private final String simulationId;
-    private final String sampleSpaceId;
     private final SimulatedExperienceAccessor accessor;
 
-    public ExpectedRewardEvaluator(SimulatedExperienceAccessor accessor, String simulationId, String sampleSpaceId) {
-        this.simulationId = simulationId;
-        this.sampleSpaceId = sampleSpaceId;
+    public ExpectedRewardEvaluator(SimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
     @Override
     public double computeTotalReward() {
-        SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
+        SampleModelIterator iterator = SampleModelIterator.get(accessor);
         ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation()
             .estimate(iterator);
 

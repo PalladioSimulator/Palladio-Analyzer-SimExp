@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvFormatter;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvReadHandler;
 import org.palladiosimulator.simexp.core.store.csv.impl.CsvSimulatedExperience;
@@ -29,7 +28,7 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
     }
 
     @Override
-    public void connect(SimulatedExperienceStoreDescription desc) {
+    public void connect() {
         Path csvStoreFile = resourceFolder.resolve(SIMULATED_EXPERIENCE_STORE_FILE);
         Path csvSampleSpaceFile = resourceFolder.resolve(SAMPLE_SPACE_FILE);
         csvSampleReadHandler = new CsvReadHandler(csvSampleSpaceFile);

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 
 public class CachingReadAccessor implements SimulatedExperienceReadAccessor {
     private final SimulatedExperienceReadAccessor delegate;
@@ -18,8 +17,8 @@ public class CachingReadAccessor implements SimulatedExperienceReadAccessor {
     }
 
     @Override
-    public void connect(SimulatedExperienceStoreDescription desc) {
-        delegate.connect(desc);
+    public void connect() {
+        delegate.connect();
     }
 
     @Override

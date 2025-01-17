@@ -12,19 +12,14 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityEvaluator.class.getName());
 
-    private final String simulationId;
-    private final String sampleSpaceId;
     private final SimulatedExperienceAccessor accessor;
 
-    private PerformabilityEvaluator(SimulatedExperienceAccessor accessor, String simulationId, String sampleSpaceId) {
-        this.simulationId = simulationId;
-        this.sampleSpaceId = sampleSpaceId;
+    private PerformabilityEvaluator(SimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
-    public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor, String simulationId,
-            String sampleSpaceId) {
-        return new PerformabilityEvaluator(accessor, simulationId, sampleSpaceId);
+    public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor) {
+        return new PerformabilityEvaluator(accessor);
     }
 
     @Override
@@ -32,7 +27,7 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
         double totalReward = 0;
 
         List<Double> responseTimes = new ArrayList<>();
-        SampleModelIterator iterator = SampleModelIterator.get(accessor, simulationId, sampleSpaceId);
+        SampleModelIterator iterator = SampleModelIterator.get(accessor);
 
         /**
          * total reward computation: aggregate data based on the performability metric, i.e.
