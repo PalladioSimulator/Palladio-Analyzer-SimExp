@@ -21,11 +21,9 @@ public class SimulatedExperienceStore<A, R> {
 
     public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        SimulatedExperienceWriteAccessor writeAccessor = accessor.createSimulatedExperienceWriteAccessor(description);
-        try {
+        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
+            .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(toSimulatedExperience(trajectory));
-        } finally {
-            writeAccessor.close();
         }
     }
 
@@ -43,11 +41,9 @@ public class SimulatedExperienceStore<A, R> {
         }
 
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        SimulatedExperienceWriteAccessor writeAccessor = accessor.createSimulatedExperienceWriteAccessor(description);
-        try {
+        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
+            .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(simExp);
-        } finally {
-            writeAccessor.close();
         }
     }
 
