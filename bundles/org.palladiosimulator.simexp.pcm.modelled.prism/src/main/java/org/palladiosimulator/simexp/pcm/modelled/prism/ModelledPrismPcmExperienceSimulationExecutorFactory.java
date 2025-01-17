@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.modelled.prism;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -80,8 +77,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+                resourcePath);
     }
 
     @Override
@@ -112,7 +110,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 prismFileUpdaters);
 
         String strategyId = getSimulationParameters().getSimulationID();
-        Path prismFolder = getPrismFolder(strategyId);
+        Path prismFolder = getPrismFolder();
         try {
             Files.createDirectories(prismFolder);
         } catch (IOException e) {
@@ -177,14 +175,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         return executor;
     }
 
-    private Path getPrismFolder(String strategyId) {
-        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
-            .getRoot()
-            .getLocation();
-        Path outputBasePath = Paths.get(workspaceBasePath.toString());
-        Path resourcePath = outputBasePath.resolve("resource");
-        Path prismStrategyPath = resourcePath.resolve(strategyId);
-        Path prismPath = prismStrategyPath.resolve("prism");
+    private Path getPrismFolder() {
+        Path prismPath = getResourcePath().resolve("prism");
         return prismPath;
     }
 

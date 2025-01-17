@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.hri;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -41,11 +42,11 @@ public class CustomRobotCognitionLaunchFactory implements ILaunchFactory {
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
         return factory.create();
     }
 

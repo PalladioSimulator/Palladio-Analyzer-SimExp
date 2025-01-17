@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.modelled.prism;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -35,12 +36,12 @@ public class ModelledPrismSimulationExecutorLaunchFactory implements ILaunchFact
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IModelledPrismWorkflowConfiguration workflowConfiguration = (IModelledPrismWorkflowConfiguration) config;
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
         ModelledPrismPcmExperienceSimulationExecutorFactory factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, modelledModelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
         return factory.create();
     }
 

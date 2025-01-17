@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -40,11 +41,11 @@ public class CustomFaultTolerantLoadBalancingLaunchFactory implements ILaunchFac
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
         return factory.create();
     }
 

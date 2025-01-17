@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
@@ -31,8 +32,9 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
             ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+                resourcePath);
     }
 
     @Override

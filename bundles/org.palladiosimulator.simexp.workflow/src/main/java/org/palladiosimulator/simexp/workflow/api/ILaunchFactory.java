@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.workflow.api;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -14,5 +15,5 @@ public interface ILaunchFactory {
 
     SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor);
+            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath);
 }

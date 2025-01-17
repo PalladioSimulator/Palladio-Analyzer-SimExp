@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -32,16 +33,18 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final Optional<ISeedProvider> seedProvider;
     private final Factory modelLoaderFactory;
     private final ExecutorService executor;
+    private final Path resourcePath;
     private final ClassLoader classloader;
 
     public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory) {
+            Factory modelLoaderFactory, Path resourcePath) {
         this.config = config;
         this.launchDescriptionProvider = launchDescriptionProvider;
         this.seedProvider = seedProvider;
         this.modelLoaderFactory = modelLoaderFactory;
         this.executor = Executors.newFixedThreadPool(1);
+        this.resourcePath = resourcePath;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
     }
@@ -83,7 +86,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
 
         SimulatedExperienceAccessor accessor = new CsvAccessor();
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
-                optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor);
+                optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor,
+                resourcePath);
 
         LOGGER.info("### fitness evaluation simulation start ###");
         try {

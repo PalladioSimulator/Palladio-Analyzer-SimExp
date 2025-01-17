@@ -65,8 +65,11 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
             SimulatedExperienceAccessor accessor = new CsvAccessor();
+            String simulationID = simulationParameters.getSimulationID();
+            Path resourcePath = getResourcePath(simulationID);
+            Files.createDirectories(resourcePath);
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
-                    launchDescriptionProvider, seedProvider, accessor);
+                    launchDescriptionProvider, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
@@ -77,6 +80,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
+    }
+
+    private Path getResourcePath(String strategyId) {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString());
+        Path resourcePath = outputBasePath.resolve("resource");
+        return resourcePath.resolve(strategyId);
     }
 
     @Override

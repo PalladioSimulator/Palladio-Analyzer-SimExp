@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
@@ -41,22 +42,23 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
+            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         ModelLoader modelLoader = modelLoaderFactory.create();
         ModelledModelLoader modelledModelLoader = (ModelledModelLoader) modelLoader;
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launchDescriptionProvider, seedProvider, modelLoaderFactory);
+                launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory) {
-        return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory);
+            Factory modelLoaderFactory, Path resourcePath) {
+        return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory,
+                resourcePath);
     }
 
 }

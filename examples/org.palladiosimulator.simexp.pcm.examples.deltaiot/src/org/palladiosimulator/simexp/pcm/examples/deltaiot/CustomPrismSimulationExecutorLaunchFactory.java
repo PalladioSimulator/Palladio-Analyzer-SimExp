@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -36,12 +37,12 @@ public class CustomPrismSimulationExecutorLaunchFactory implements ILaunchFactor
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor) {
+            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IPrismWorkflowConfiguration workflowConfiguration = (IPrismWorkflowConfiguration) config;
 //        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor);
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
         return factory.create();
     }
 

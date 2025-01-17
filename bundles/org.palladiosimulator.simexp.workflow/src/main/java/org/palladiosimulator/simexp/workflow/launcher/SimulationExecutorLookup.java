@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +35,7 @@ public class SimulationExecutorLookup {
 
     public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            SimulatedExperienceAccessor accessor) throws CoreException {
+            SimulatedExperienceAccessor accessor, Path resourcePath) throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
         List<Pair<ILaunchFactory, Integer>> candidates = createCandidates(config, factories);
@@ -42,7 +43,7 @@ public class SimulationExecutorLookup {
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
             return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
-                    modelLoaderFactory, accessor);
+                    modelLoaderFactory, accessor, resourcePath);
         }
 
         return null;
