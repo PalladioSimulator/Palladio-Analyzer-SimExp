@@ -1,7 +1,12 @@
 package org.palladiosimulator.simexp.dsl.ea.launch;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
@@ -18,6 +23,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
 
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
+
+    private Pair<Double, List<OptimizableValue<?>>> fittest;
 
     public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator) {
         this.smodel = smodel;
@@ -36,13 +43,22 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
 
     @Override
     public SimulationResult evaluate() {
-        // TODO:
         double totalReward = 0.0;
-        String description = String.format("total fittest individual of policy %s", getPolicyId());
+        List<OptimizableValue<?>> optimizables = Collections.emptyList();
+        if (fittest != null) {
+            totalReward = fittest.getLeft();
+            optimizables = fittest.getRight();
+        }
+        String description = String.format("total fittest individual of policy %s (%s)", getPolicyId(),
+                asString(optimizables));
 
         LOGGER.info("***********************************************************************");
         LOGGER.info(String.format("The %s has an reward of %s", description, totalReward));
-        // TODO: dump optimization values
+        LOGGER.info("Optimizable values:");
+        for (OptimizableValue<?> ov : optimizables) {
+            LOGGER.info(String.format("- %s: %s", ov.getOptimizable()
+                .getName(), ov.getValue()));
+        }
         LOGGER.info("***********************************************************************");
 
         return new SimulationResult(totalReward, description);
@@ -64,9 +80,24 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     }
 
     @Override
-    public void reportStatus(List<OptimizableValue<?>> optimizableValues, double fitness) {
-        // TODO Auto-generated method stub
+    public synchronized void reportStatus(List<OptimizableValue<?>> optimizableValues, double fitness) {
+        LOGGER.info(String.format("received fitness status for: %s = %s", asString(optimizableValues), fitness));
 
+        if (fittest == null) {
+            fittest = new ImmutablePair<>(fitness, optimizableValues);
+        }
+        if (fitness > fittest.getLeft()) {
+            fittest = new ImmutablePair<>(fitness, optimizableValues);
+        }
+    }
+
+    private String asString(List<OptimizableValue<?>> optimizableValues) {
+        List<String> entries = new ArrayList<>();
+        for (OptimizableValue<?> ov : optimizableValues) {
+            entries.add(String.format("%s: %s", ov.getOptimizable()
+                .getName(), ov.getValue()));
+        }
+        return StringUtils.join(entries, ",");
     }
 
 }
