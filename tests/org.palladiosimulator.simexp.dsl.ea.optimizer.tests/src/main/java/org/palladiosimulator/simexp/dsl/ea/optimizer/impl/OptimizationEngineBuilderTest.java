@@ -22,15 +22,15 @@ import io.jenetics.util.ISeq;
 
 public class OptimizationEngineBuilderTest {
 
+    private Genotype<BitGene> genotype;
+
+    private Phenotype<BitGene, Double> phenotype;
+
     @Mock
     private FitnessFunction fitnessFunction;
 
-    private Genotype<BitGene> genotype;
-
     @Mock
     private Executor executor;
-
-    private Phenotype<BitGene, Double> phenotype;
 
     @Before
     public void setUp() {

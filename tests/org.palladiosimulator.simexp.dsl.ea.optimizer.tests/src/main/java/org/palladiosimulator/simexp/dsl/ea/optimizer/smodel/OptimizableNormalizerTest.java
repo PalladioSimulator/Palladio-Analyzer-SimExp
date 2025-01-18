@@ -1,14 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
@@ -31,16 +28,17 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
-import io.jenetics.BitChromosome;
-import io.jenetics.BitGene;
-import io.jenetics.Genotype;
-import io.jenetics.engine.Codec;
-import io.jenetics.engine.InvertibleCodec;
 import io.jenetics.util.RandomRegistry;
 
 public class OptimizableNormalizerTest {
 
     private final List<Integer> smallIntList = List.of(1, 3, 7, 3, 8, 2, 9);
+
+    private OptimizableNormalizer optimizableNormalizer;
+
+    private SmodelCreator smodelCreator;
+
+    private SetBoundsHelper setBoundsHelper;
 
     @Mock
     private IExpressionCalculator calculator;
@@ -53,12 +51,6 @@ public class OptimizableNormalizerTest {
 
     @Mock
     public Optimizable optimizable;
-
-    private OptimizableNormalizer optimizableNormalizer;
-
-    private SmodelCreator smodelCreator;
-
-    private SetBoundsHelper setBoundsHelper;
 
     @Before
     public void setUp() {
@@ -250,6 +242,7 @@ public class OptimizableNormalizerTest {
 
     @Test
     public void parseOptimizablesTest() {
+        // Arrange
         SetBounds boolBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
                 calculator);
         when(boolOptimizable.getValues()).thenReturn(boolBound);
@@ -261,19 +254,18 @@ public class OptimizableNormalizerTest {
         optimizables.add(boolOptimizable);
         optimizables.add(intOptimizable);
 
+        // Act
         List<SmodelBitChromosome> parsedOptimizables = optimizableNormalizer.toNormalized(optimizables);
 
+        // Assert
         SmodelBitChromosome firstOptimizable = parsedOptimizables.get(0);
-
         assertEquals(firstOptimizable.getOptimizable(), boolOptimizable);
         RandomRegistry.with(new Random(42), (r) -> {
             SmodelBitChromosome newInstance = firstOptimizable.newInstance();
             assertEquals(1, newInstance.intValue());
             return "";
         });
-
         SmodelBitChromosome secondOptimizable = parsedOptimizables.get(1);
-
         assertEquals(secondOptimizable.getOptimizable(), intOptimizable);
         RandomRegistry.with(new Random(42), (r) -> {
             SmodelBitChromosome newInstance = secondOptimizable.newInstance();
@@ -294,14 +286,6 @@ public class OptimizableNormalizerTest {
         checkBooleanGenotype(genotype);
     }
 
-    private void checkBooleanGenotype(SmodelBitChromosome chromosome) {
-        RandomRegistry.with(new Random(42), (r) -> {
-            SmodelBitChromosome newInstance = chromosome.newInstance();
-            assertEquals(1, newInstance.intValue());
-            return "";
-        });
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeIntegerSet() {
@@ -320,28 +304,6 @@ public class OptimizableNormalizerTest {
 
     }
 
-    private void checkSmallIntListGenotype(Codec<?, ?> genotype) {
-        assertTrue(genotype instanceof InvertibleCodec);
-        InvertibleCodec<Integer, BitGene> castedGenotype = (InvertibleCodec<Integer, BitGene>) genotype;
-        // Encoding
-        assertNotNull(castedGenotype.encoding());
-        // Encoder
-        Genotype<BitGene> encodedValue = castedGenotype.encoder()
-            .apply(7);
-        assertEquals("00000011", encodedValue.chromosome()
-            .toString());
-        Genotype<BitGene> ambiguousEncodedValue = castedGenotype.encoder()
-            .apply(3);
-        assertEquals("00000001", ambiguousEncodedValue.chromosome()
-            .toString());
-        // Decoder
-        Genotype<BitGene> genoToDecode = Genotype.of(BitChromosome.of(new BitSet(0), castedGenotype.encoding()
-            .newInstance()
-            .length()));
-        assertEquals((Integer) 1, castedGenotype.decode(genoToDecode));
-    }
-
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeIntegerRange() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
@@ -358,7 +320,6 @@ public class OptimizableNormalizerTest {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeDoubleSet() {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
@@ -376,7 +337,6 @@ public class OptimizableNormalizerTest {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeDoubleRange() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
@@ -394,5 +354,12 @@ public class OptimizableNormalizerTest {
         });
     }
 
-    // TODO nbruening: Tests for isValid() and newInstance() method
+    private void checkBooleanGenotype(SmodelBitChromosome chromosome) {
+        RandomRegistry.with(new Random(42), (r) -> {
+            SmodelBitChromosome newInstance = chromosome.newInstance();
+            assertEquals(1, newInstance.intValue());
+            return "";
+        });
+    }
+
 }

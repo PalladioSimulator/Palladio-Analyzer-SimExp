@@ -14,6 +14,7 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class FitnessHelper {
+    @SuppressWarnings("rawtypes")
     public Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
         List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
         Double fitnessValue = getNextFitness(optimizableValues);
@@ -47,6 +48,7 @@ public class FitnessHelper {
         };
     }
 
+    @SuppressWarnings("rawtypes")
     private Double getNextFitness(List<IEAFitnessEvaluator.OptimizableValue> optimizableValues) {
         double value = 0;
 

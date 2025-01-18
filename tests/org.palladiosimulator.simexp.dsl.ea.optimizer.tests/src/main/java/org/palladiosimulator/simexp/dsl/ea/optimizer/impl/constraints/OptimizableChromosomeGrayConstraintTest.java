@@ -36,11 +36,12 @@ public class OptimizableChromosomeGrayConstraintTest {
     public void testValidPhenotype() {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(1);
-
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
-        assertTrue(objectUnderTest.test(phenotype));
+        boolean testResult = objectUnderTest.test(phenotype);
+
+        assertTrue(testResult);
     }
 
     @Test
@@ -48,11 +49,12 @@ public class OptimizableChromosomeGrayConstraintTest {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(1);
         bitSet.set(3);
-
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
-        assertFalse(objectUnderTest.test(phenotype));
+        boolean testResult = objectUnderTest.test(phenotype);
+
+        assertFalse(testResult);
     }
 
     @Test

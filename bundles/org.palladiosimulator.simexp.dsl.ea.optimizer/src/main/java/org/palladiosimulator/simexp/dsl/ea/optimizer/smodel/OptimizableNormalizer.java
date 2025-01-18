@@ -56,6 +56,27 @@ public class OptimizableNormalizer {
         throw new RuntimeException("invalid bounds: " + bounds);
     }
 
+    public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
+        return chromosomes.stream()
+            .map(c -> toOptimizable(c))
+            .collect(Collectors.toList());
+    }
+
+    public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
+        Optimizable optimizable = chromosome.getOptimizable();
+        DataType dataType = optimizable.getDataType();
+        switch (dataType) {
+        case INT:
+            return toOptimizableInt(optimizable, chromosome);
+        case DOUBLE:
+            return toOptimizableDouble(optimizable, chromosome);
+        case BOOL:
+            return toOptimizableBool(optimizable, chromosome);
+        default:
+            throw new OptimizableProcessingException("Unsupported type: " + dataType);
+        }
+    }
+
     protected SmodelBitChromosome toNormalizedSet(Optimizable optimizable, int boundsSize, int minLength) {
         return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize);
     }
@@ -78,29 +99,6 @@ public class OptimizableNormalizer {
         int power = (int) Math.floor((endValue - startValue) / stepSize);
         int minLength = powerUtil.minBitSizeForPower(power);
         return toNormalizedSet(optimizable, power, minLength);
-    }
-
-    // TODO add sets
-
-    public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
-        return chromosomes.stream()
-            .map(c -> toOptimizable(c))
-            .collect(Collectors.toList());
-    }
-
-    public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
-        Optimizable optimizable = chromosome.getOptimizable();
-        DataType dataType = optimizable.getDataType();
-        switch (dataType) {
-        case INT:
-            return toOptimizableInt(optimizable, chromosome);
-        case DOUBLE:
-            return toOptimizableDouble(optimizable, chromosome);
-        case BOOL:
-            return toOptimizableBool(optimizable, chromosome);
-        default:
-            throw new OptimizableProcessingException("Unsupported type: " + dataType);
-        }
     }
 
     private OptimizableValue<Integer> toOptimizableInt(Optimizable optimizable, SmodelBitChromosome chromosome) {

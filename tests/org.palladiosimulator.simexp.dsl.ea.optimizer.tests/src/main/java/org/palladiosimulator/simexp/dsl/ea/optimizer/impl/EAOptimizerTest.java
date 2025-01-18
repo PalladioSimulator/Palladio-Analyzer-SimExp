@@ -188,7 +188,6 @@ public class EAOptimizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
             @Override
             public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
@@ -577,7 +576,6 @@ public class EAOptimizerTest {
     @Test
     public void manySuboptimizablesOptimizableSetTest() {
         Random r = new Random(42);
-
         Map<Optimizable, Object> optimizables = new LinkedHashMap();
         for (int i = 0; i < 15; i++) {
             double randDouble = r.nextDouble();
