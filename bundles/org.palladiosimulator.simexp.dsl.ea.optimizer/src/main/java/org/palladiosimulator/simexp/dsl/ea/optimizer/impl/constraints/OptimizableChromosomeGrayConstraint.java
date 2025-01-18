@@ -9,6 +9,7 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
 
+//TODO nbruening: Implement usage
 public class OptimizableChromosomeGrayConstraint implements Constraint<BitGene, Double> {
 
     public OptimizableChromosomeGrayConstraint() {
