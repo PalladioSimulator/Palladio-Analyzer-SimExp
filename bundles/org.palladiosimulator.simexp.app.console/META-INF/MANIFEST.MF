@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Console app
+Bundle-SymbolicName: org.palladiosimulator.simexp.app.console;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Require-Bundle: org.eclipse.equinox.app;bundle-version="1.6.200",
+ org.eclipse.core.runtime;bundle-version="3.26.100",
+ org.apache.log4j;bundle-version="1.2.19",
+ org.eclipse.core.resources,
+ org.eclipse.debug.core,
+ com.google.gson;bundle-version="2.8.2"
+Automatic-Module-Name: org.palladiosimulator.simexp.app.console
+Bundle-RequiredExecutionEnvironment: JavaSE-17

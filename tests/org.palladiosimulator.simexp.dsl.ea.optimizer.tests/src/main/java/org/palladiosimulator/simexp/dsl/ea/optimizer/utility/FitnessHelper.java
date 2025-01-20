@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.mockito.invocation.InvocationOnMock;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 import io.jenetics.internal.collection.ArrayISeq;
@@ -15,7 +15,7 @@ import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class FitnessHelper {
     public Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
-        List<IEAFitnessEvaluator.OptimizableValue> optimizableValues = invocation.getArgument(0);
+        List<OptimizableValue> optimizableValues = invocation.getArgument(0);
         Double fitnessValue = getNextFitness(optimizableValues);
         return new Future<>() {
 
@@ -47,10 +47,10 @@ public class FitnessHelper {
         };
     }
 
-    private Double getNextFitness(List<IEAFitnessEvaluator.OptimizableValue> optimizableValues) {
+    private Double getNextFitness(List<OptimizableValue> optimizableValues) {
         double value = 0;
 
-        for (IEAFitnessEvaluator.OptimizableValue singleOptimizableValue : optimizableValues) {
+        for (OptimizableValue singleOptimizableValue : optimizableValues) {
             Object apply = singleOptimizableValue.getValue();
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();

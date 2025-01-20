@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.List;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public interface IEAEvolutionStatusReceiver {
     /**

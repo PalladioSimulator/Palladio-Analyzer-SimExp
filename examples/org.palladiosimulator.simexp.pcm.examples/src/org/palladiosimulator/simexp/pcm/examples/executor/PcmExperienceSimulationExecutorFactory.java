@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.pcm.examples.executor;
 
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -59,16 +61,20 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     private final Optional<ISeedProvider> seedProvider;
+    private final SimulatedExperienceAccessor accessor;
+    private final Path resourcePath;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
+        this.accessor = accessor;
+        this.resourcePath = resourcePath;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(
                 seedProvider);
@@ -78,6 +84,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         ProbabilityDistributionRepository probabilityDistributionRepository = BasicDistributionTypesLoader
             .loadRepository();
         this.probDistRepoLookup = new ProbabilityDistributionRepositoryLookup(probabilityDistributionRepository);
+    }
+
+    protected Path getResourcePath() {
+        return resourcePath;
+    }
+
+    protected SimulatedExperienceAccessor getAccessor() {
+        return accessor;
     }
 
     protected Optional<ISeedProvider> getSeedProvider() {

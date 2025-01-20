@@ -30,10 +30,13 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
+import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
@@ -45,6 +48,7 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -61,8 +65,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
+            String simulationID = simulationParameters.getSimulationID();
+            Path resourcePath = getResourcePath(simulationID);
+            Files.createDirectories(resourcePath);
+            SimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
-                    launchDescriptionProvider, seedProvider);
+                    launchDescriptionProvider, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
@@ -73,6 +81,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             IStatus status = Status.error(e.getMessage(), e);
             throw new CoreException(status);
         }
+    }
+
+    private Path getResourcePath(String strategyId) {
+        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
+            .getRoot()
+            .getLocation();
+        Path outputBasePath = Paths.get(workspaceBasePath.toString());
+        Path resourcePath = outputBasePath.resolve("resource");
+        return resourcePath.resolve(strategyId);
     }
 
     @Override
@@ -101,6 +118,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
             SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
             Set<String> transformationNames = configuration.getAttribute(SimulationConstants.TRANSFORMATIONS_ACTIVE,
                     Collections.emptySet());
+            String modelledOptimizationTypeStr = (String) launchConfigurationParams
+                .get(SimulationConstants.MODELLED_OPTIMIZATION_TYPE);
+            ModelledOptimizationType modelledOptimizationType = ModelledOptimizationType
+                .valueOf(modelledOptimizationTypeStr);
 
             SimulationParameters simulationParameters = new SimulationParameters(
                     (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID),
@@ -154,8 +175,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
-                    transformationNames, qualityObjective, architecturalModels, monitors, prismConfig,
-                    environmentalModels, simulationParameters, seedProvider);
+                    transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
+                    prismConfig, environmentalModels, simulationParameters, seedProvider);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
@@ -192,10 +213,12 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
         Level logLevel = getLogLevel(configuration);
-        ArrayList<LoggerAppenderStruct> appenders = setupLogging(logLevel);
+        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
         for (LoggerAppenderStruct entry : appenders) {
             Logger entryLogger = entry.getLogger();
             entryLogger.addAppender(fa);
+            StreamsProxyAppender appender = entry.getAppender();
+            appender.setThreshold(Level.INFO);
         }
         return appenders;
     }
@@ -211,18 +234,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     @Override
     protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
-        // FIXME: during development set debug level hard-coded to DEBUG
-        ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
-        loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel,
-                Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
-        loggerList.add(setupLogger("org.palladiosimulator.envdyn.api.entity", logLevel, SHORT_LOG_PATTERN));
+        logLevel = null;
+        // String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
+        String layout = "%d{ABSOLUTE} %-5p [%-10t] [%F:%L]: %m%n";
+        // ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
+        ArrayList<LoggerAppenderStruct> loggerList = new ArrayList<>();
+
+        loggerList.add(setupLogger("de.uka.ipd.sdq.workflow", logLevel, layout));
+        loggerList.add(setupLogger("org.openarchitectureware", logLevel, layout));
+
+        loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel, layout));
+
+        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel, layout));
+        loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel, layout));
         return loggerList;
     }
-
 }

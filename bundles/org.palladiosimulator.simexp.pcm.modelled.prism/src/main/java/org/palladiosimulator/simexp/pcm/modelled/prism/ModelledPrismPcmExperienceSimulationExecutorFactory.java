@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.modelled.prism;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -25,8 +22,9 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.mape.PcmMonitor;
@@ -34,6 +32,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.IModelsLook
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.ModelsLookup;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.value.PcmProbeValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVariableValueProvider;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
@@ -55,6 +54,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigu
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
+import org.palladiosimulator.simexp.pcm.modelled.config.IOptimizedConfiguration;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator;
 import org.palladiosimulator.simexp.pcm.prism.generator.PrismFileUpdateGenerator.PrismFileUpdater;
@@ -76,8 +76,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+                resourcePath);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 prismFileUpdaters);
 
         String strategyId = getSimulationParameters().getSimulationID();
-        Path prismFolder = getPrismFolder(strategyId);
+        Path prismFolder = getPrismFolder();
         try {
             Files.createDirectories(prismFolder);
         } catch (IOException e) {
@@ -134,9 +135,12 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
                 probabilisticModelRepository);
+        IOptimizedConfiguration optimizedConfiguration = getOptimizedConfiguration(getWorkflowConfiguration(), smodel);
+        List<OptimizableValue<?>> optimizableValues = optimizedConfiguration.getOptimizableValues();
+        OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider(optimizableValues);
         Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
-                environmentVariableValueProvider);
+                environmentVariableValueProvider, optimizableValueProvider);
         beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
         SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
         String reconfigurationStrategyId = smodel.getModelName();
@@ -159,25 +163,16 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 
-        String sampleSpaceId = SimulatedExperienceConstants
-            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfigurationStrategyId);
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
-                getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
         return executor;
     }
 
-    private Path getPrismFolder(String strategyId) {
-        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
-            .getRoot()
-            .getLocation();
-        Path outputBasePath = Paths.get(workspaceBasePath.toString());
-        Path resourcePath = outputBasePath.resolve("resource");
-        Path prismStrategyPath = resourcePath.resolve(strategyId);
-        Path prismPath = prismStrategyPath.resolve("prism");
+    private Path getPrismFolder() {
+        Path prismPath = getResourcePath().resolve("prism");
         return prismPath;
     }
 

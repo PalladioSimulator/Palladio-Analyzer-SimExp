@@ -83,15 +83,13 @@ public class EAOptimizer implements IEAOptimizer {
     private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver, OptimizableNormalizer normalizer,
             final Engine<BitGene, Double> engine) {
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
+        EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         final Phenotype<BitGene, Double> phenotype = engine.stream()
             .limit(bySteadyFitness(7))
             .limit(500)
             .peek(statistics)
-            .peek(result -> evolutionStatusReceiver.reportStatus(List.of(normalizer.toOptimizable(result.bestPhenotype()
-                .genotype()
-                .chromosome()
-                .as(SmodelBitChromosome.class))), result.bestFitness()))
+            .peek(reporter)
             .collect(EvolutionResult.toBestPhenotype());
 
         LOGGER.info("EA finished...");

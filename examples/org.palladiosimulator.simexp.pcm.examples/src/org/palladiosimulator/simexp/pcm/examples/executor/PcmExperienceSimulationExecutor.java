@@ -33,6 +33,10 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public String getPolicyId() {
         return reconfSelectionPolicy.getId();
     }
@@ -43,10 +47,10 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     }
 
     @Override
-    public void evaluate() {
+    public SimulationResult evaluate() {
         double totalReward = rewardCalculation.computeTotalReward();
-        LOGGER.info("***********************************************************************");
-        LOGGER.info(String.format("The total Reward of policy %1s is %2s", reconfSelectionPolicy.getId(), totalReward));
-        LOGGER.info("***********************************************************************");
+        String description = String.format("total %s reward of policy %1s", rewardCalculation.getName(),
+                reconfSelectionPolicy.getId());
+        return new SimulationResult(totalReward, description);
     }
 }

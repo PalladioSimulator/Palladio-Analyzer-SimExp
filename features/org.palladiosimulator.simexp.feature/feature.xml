@@ -47,6 +47,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.palladiosimulator.simexp.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.palladiosimulator.simexp.workflow"
@@ -55,15 +62,50 @@
          version="0.0.0"
          unpack="false"/>
 
+	<plugin
+         id="org.palladiosimulator.simexp.distribution"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+	<plugin
+         id="org.palladiosimulator.simexp.pcm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
-         id="org.palladiosimulator.simexp.core.store.cache.guava"
+         id="org.palladiosimulator.simexp.distribution.apache"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.palladiosimulator.simexp.pcm"
+         id="org.palladiosimulator.simexp.model.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.smodel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.smodel.interpreter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -138,9 +180,23 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.palladiosimulator.simexp.environmentaldynamics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.palladiosimulator.simexp.commons.constants"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -152,9 +208,23 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
    <plugin
          id="org.palladiosimulator.simexp.pcm.examples.deltaiot"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.palladiosimulator.simexp.core.store.csv"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.pcm"
          download-size="0"
          install-size="0"
          version="0.0.0"
