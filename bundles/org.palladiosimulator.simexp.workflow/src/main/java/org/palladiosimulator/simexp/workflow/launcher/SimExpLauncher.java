@@ -48,6 +48,7 @@ import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -216,6 +217,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         for (LoggerAppenderStruct entry : appenders) {
             Logger entryLogger = entry.getLogger();
             entryLogger.addAppender(fa);
+            StreamsProxyAppender appender = entry.getAppender();
+            appender.setThreshold(Level.INFO);
         }
         return appenders;
     }
@@ -231,14 +234,20 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     @Override
     protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
-        // FIXME: during development set debug level hard-coded to DEBUG
-        ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
-        String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
+        logLevel = null;
+        // String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
+        String layout = "%d{ABSOLUTE} %-5p [%-10t] [%F:%L]: %m%n";
+        // ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
+        ArrayList<LoggerAppenderStruct> loggerList = new ArrayList<>();
+
+        loggerList.add(setupLogger("de.uka.ipd.sdq.workflow", logLevel, layout));
+        loggerList.add(setupLogger("org.openarchitectureware", logLevel, layout));
+
         loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel, layout));
+
         loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel, layout));
         loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel, layout));
         loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel, layout));
         return loggerList;
     }
-
 }
