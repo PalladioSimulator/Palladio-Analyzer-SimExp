@@ -105,7 +105,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor,
                 currentResourceFolder);
 
-        LOGGER.info(String.format("### fitness evaluation simulation start: %d ###", counter));
+        LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));
         SimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
