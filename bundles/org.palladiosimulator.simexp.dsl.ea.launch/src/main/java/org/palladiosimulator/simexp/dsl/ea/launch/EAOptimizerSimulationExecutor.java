@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
@@ -24,7 +23,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
 
-    private Pair<Double, List<OptimizableValue<?>>> fittest;
+    private EAResult optimizationResult;
 
     public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator) {
         this.smodel = smodel;
@@ -59,9 +58,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     public SimulationResult evaluate() {
         double totalReward = 0.0;
         List<OptimizableValue<?>> optimizables = Collections.emptyList();
-        if (fittest != null) {
-            totalReward = fittest.getLeft();
-            optimizables = fittest.getRight();
+        if (optimizationResult != null) {
+            totalReward = optimizationResult.getFitness();
+            optimizables = optimizationResult.getOptimizableValues();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
@@ -84,7 +83,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     private void runOptimization(IEAOptimizer optimizer) {
         IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
         LOGGER.info("EA optimization running...");
-        optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
+        optimizationResult = optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
         LOGGER.info("EA optimization finished...");
     }
 
@@ -93,13 +92,6 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
             double fitness) {
         LOGGER.info(String.format("fitness status in generation %d for: %s = %s", generation,
                 asString(optimizableValues), fitness));
-
-        if (fittest == null) {
-            fittest = new ImmutablePair<>(fitness, optimizableValues);
-        }
-        if (fitness > fittest.getLeft()) {
-            fittest = new ImmutablePair<>(fitness, optimizableValues);
-        }
     }
 
     private String asString(List<OptimizableValue<?>> optimizableValues) {

@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -16,6 +18,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.RunInMainThreadEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
@@ -44,16 +47,17 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     @Override
-    public void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
         if (config instanceof RunInMainThreadEAConfig) {
-            internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, Runnable::run);
+            return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, Runnable::run);
         } else {
-            internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, ForkJoinPool.commonPool());
+            return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver,
+                    ForkJoinPool.commonPool());
         }
     }
 
-    private void internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    private EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         LOGGER.info("EA running...");
         ////// to phenotype
@@ -67,7 +71,7 @@ public class EAOptimizer implements IEAOptimizer {
         engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.2, 0.3);
 
         //// run optimization
-        runOptimization(evolutionStatusReceiver, normalizer, engine);
+        return runOptimization(evolutionStatusReceiver, normalizer, engine);
     }
 
     private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
@@ -80,20 +84,29 @@ public class EAOptimizer implements IEAOptimizer {
         return genotype;
     }
 
-    private void runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver, OptimizableNormalizer normalizer,
-            final Engine<BitGene, Double> engine) {
+    private EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
+            OptimizableNormalizer normalizer, final Engine<BitGene, Double> engine) {
         final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        final Phenotype<BitGene, Double> phenotype = engine.stream()
+        EvolutionResult<BitGene, Double> result = engine.stream()
             .limit(bySteadyFitness(7))
             .limit(500)
             .peek(statistics)
             .peek(reporter)
-            .collect(EvolutionResult.toBestPhenotype());
-
+            .collect(EvolutionResult.toBestEvolutionResult());
         LOGGER.info("EA finished...");
 
+        Double bestFitness = result.bestFitness();
+        Phenotype<BitGene, Double> bestPhenotype = result.bestPhenotype();
+        Genotype<BitGene> genotype = bestPhenotype.genotype();
+        List<SmodelBitChromosome> bestChromosomes = genotype.stream()
+            .map(g -> g.as(SmodelBitChromosome.class))
+            .collect(Collectors.toList());
+        List<OptimizableValue<?>> bestOptimizables = normalizer.toOptimizableValues(bestChromosomes);
+
         LOGGER.info(statistics);
+
+        return new EAResult(bestFitness, bestOptimizables);
     }
 }
