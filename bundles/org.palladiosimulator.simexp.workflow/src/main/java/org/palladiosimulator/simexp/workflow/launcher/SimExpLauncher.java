@@ -212,7 +212,8 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         fa.setLayout(new PatternLayout("%d %-5p [%-10t] [%F:%L]: %m%n"));
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
-        Level logLevel = getLogLevel(configuration);
+        // Level logLevel = getLogLevel(configuration);
+        Level logLevel = Level.INFO;
         List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
         for (LoggerAppenderStruct entry : appenders) {
             Logger entryLogger = entry.getLogger();
@@ -234,19 +235,26 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
 
     @Override
     protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
-        logLevel = null;
         // String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
         String layout = "%d{ABSOLUTE} %-5p [%-10t] [%F:%L]: %m%n";
         // ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
         ArrayList<LoggerAppenderStruct> loggerList = new ArrayList<>();
 
         loggerList.add(setupLogger("de.uka.ipd.sdq.workflow", logLevel, layout));
+        loggerList.add(setupLogger("de.uka.ipd.sdq.workflow.ExecutionTimeLoggingProgressMonitor", Level.WARN, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application.jobs.CopyPartitionJob",
+                Level.WARN, layout));
         loggerList.add(setupLogger("org.openarchitectureware", logLevel, layout));
 
         loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel, layout));
 
         loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel, layout));
+        loggerList
+            .add(setupLogger("org.palladiosimulator.experimentautomation.application.jobs.LogExperimentInformationJob",
+                    Level.WARN, layout));
         loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto", logLevel, layout));
+        loggerList.add(setupLogger("org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator",
+                Level.WARN, layout));
         loggerList.add(setupLogger("de.fzi.srp.simulatedexperience.prism.wrapper.service", logLevel, layout));
         return loggerList;
     }
