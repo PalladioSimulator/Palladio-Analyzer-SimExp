@@ -117,7 +117,8 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(optimizableListCaptor.capture(), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
+                captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(50.0, capturedValues.get(capturedValues.size() - 1), DELTA);
         List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
@@ -144,7 +145,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(19.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -169,7 +170,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99.0, capturedValues.get(0), DELTA);
         assertEquals(99.0, capturedValues.get(1), DELTA);
@@ -200,7 +201,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(999.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -223,7 +224,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(9.15, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -246,7 +247,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(9.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -269,7 +270,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99.999, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -301,7 +302,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99.999, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -323,7 +324,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(19.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -344,7 +345,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -369,7 +370,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99999.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -391,7 +392,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(9.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -413,7 +414,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(90.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -436,7 +437,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(85.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -463,7 +464,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(99.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -490,7 +491,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(38.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -515,7 +516,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(18.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -540,7 +541,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(59.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -569,7 +570,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(68.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -637,7 +638,7 @@ public class EAOptimizerTest {
         }
         LOGGER.info("Maximum Fitness: " + maximumFitness);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(1017.3884567, capturedValues.get(capturedValues.size() - 1), DELTA);
     }

@@ -25,6 +25,7 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Double>> {
 
     @Override
     public void accept(EvolutionResult<BitGene, Double> result) {
+        long generation = result.generation();
         Phenotype<BitGene, Double> phenotype = result.bestPhenotype();
         Genotype<BitGene> genotype = phenotype.genotype();
         List<SmodelBitChromosome> chromosomes = genotype.stream()
@@ -32,6 +33,6 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Double>> {
             .collect(Collectors.toList());
         List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(chromosomes);
         Double fitness = result.bestFitness();
-        evolutionStatusReceiver.reportStatus(optimizables, fitness);
+        evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
     }
 }

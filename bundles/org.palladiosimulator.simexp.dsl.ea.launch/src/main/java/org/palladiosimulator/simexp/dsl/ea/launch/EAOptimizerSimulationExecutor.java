@@ -89,8 +89,10 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     }
 
     @Override
-    public synchronized void reportStatus(List<OptimizableValue<?>> optimizableValues, double fitness) {
-        LOGGER.info(String.format("received fitness status for: %s = %s", asString(optimizableValues), fitness));
+    public synchronized void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues,
+            double fitness) {
+        LOGGER.info(String.format("fitness status in generation %d for: %s = %s", generation,
+                asString(optimizableValues), fitness));
 
         if (fittest == null) {
             fittest = new ImmutablePair<>(fitness, optimizableValues);
