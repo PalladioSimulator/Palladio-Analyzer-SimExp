@@ -72,6 +72,8 @@ public class OptimizableNormalizer {
             return toOptimizableDouble(optimizable, chromosome);
         case BOOL:
             return toOptimizableBool(optimizable, chromosome);
+        case STRING:
+            return toOptimizableString(optimizable, chromosome);
         default:
             throw new OptimizableProcessingException("Unsupported type: " + dataType);
         }
@@ -122,6 +124,13 @@ public class OptimizableNormalizer {
         return new OptimizableValue<>(optimizable, value);
     }
 
+    private OptimizableValue<String> toOptimizableString(Optimizable optimizable, SmodelBitChromosome chromosome) {
+        int valueIndex = chromosome.intValue();
+        List<String> valueList = getValueListString(optimizable);
+        String value = valueList.get(valueIndex);
+        return new OptimizableValue<>(optimizable, value);
+    }
+
     private List<Integer> getValueListInt(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
@@ -168,6 +177,17 @@ public class OptimizableNormalizer {
             return setBounds.getValues()
                 .stream()
                 .map(e -> expressionCalculator.calculateBoolean(e))
+                .collect(Collectors.toList());
+        }
+        throw new RuntimeException("invalid bounds: " + bounds);
+    }
+
+    private List<String> getValueListString(Optimizable optimizable) {
+        Bounds bounds = optimizable.getValues();
+        if (bounds instanceof SetBounds setBounds) {
+            return setBounds.getValues()
+                .stream()
+                .map(e -> expressionCalculator.calculateString(e))
                 .collect(Collectors.toList());
         }
         throw new RuntimeException("invalid bounds: " + bounds);

@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class SetBoundsHelper {
@@ -48,6 +49,18 @@ public class SetBoundsHelper {
         }
         BoolLiteral[] boolLiteralsAsArray = boolLiterals.toArray(new BoolLiteral[boolLiterals.size()]);
         return smodelCreator.createSetBounds(boolLiteralsAsArray);
+    }
+
+    public SetBounds initializeStringSetBound(SmodelCreator smodelCreator, List<String> elementsInSet,
+            IExpressionCalculator calculator) {
+        List<StringLiteral> stringLiterals = new ArrayList<>();
+        for (String element : elementsInSet) {
+            StringLiteral elementLiteral = smodelCreator.createStringLiteral(element);
+            stringLiterals.add(elementLiteral);
+            when(calculator.calculateString(elementLiteral)).thenReturn(element);
+        }
+        StringLiteral[] stringLiteralsAsArray = stringLiterals.toArray(new StringLiteral[stringLiterals.size()]);
+        return smodelCreator.createSetBounds(stringLiteralsAsArray);
     }
 
 }

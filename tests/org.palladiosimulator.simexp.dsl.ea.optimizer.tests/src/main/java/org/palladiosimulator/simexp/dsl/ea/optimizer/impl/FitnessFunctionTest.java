@@ -13,6 +13,7 @@ import java.util.concurrent.Future;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -53,8 +54,7 @@ public class FitnessFunctionTest {
         OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
-        when(fitnessEvaluator.calcFitness(Mockito.argThat(s -> s.contains(optimizableValue))))
-            .thenReturn(fitnessFuture);
+        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         try {
             when(fitnessFuture.get()).thenReturn(50.0);
         } catch (InterruptedException | ExecutionException e) {

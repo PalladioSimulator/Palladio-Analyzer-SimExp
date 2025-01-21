@@ -306,6 +306,119 @@ public class EAOptimizerTest {
     }
 
     @Test
+    public void simpleStringOptimizableSetTest() {
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
+                List.of("Hello", "World", "!", "How", "are", "youuuu"), calculator);
+
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+            @Override
+            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        RandomRegistry.with(threadLocalRandom, optFunction);
+
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        List<Double> capturedValues = captor.getAllValues();
+        assertEquals(6.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    @Test
+    public void mediumStringOptimizableSetTest() {
+        List<String> listOfDoubles = List.of("Nq06", "6xmPSfJtRKU0", "", "LZ4JyxP", "3TA", "AOEf1JPoQyVStrg5YK", "dm",
+                "bdxtTmlypfap", "qT0wClBAC5zjgv0A4rTq", "nbwCQhv", "5beIQ16f0Vu7t", "ycqRYzeeDcBLaM3", "BOL1ngaNk",
+                "vuhHk", "7b1m7oM84ujmmpoG", "zXiKgr8f13", "pzxf9iEPA3qocBiEzo", "0A78Gr", "Ru8wa7c2mv4f",
+                "wRdUn3t4FLUGx2F8j");
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, listOfDoubles, calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+            @Override
+            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        RandomRegistry.with(threadLocalRandom, optFunction);
+
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        List<Double> capturedValues = captor.getAllValues();
+        assertEquals(20.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    @Test
+    public void largeStringOptimizableSetTest() {
+        List<String> listOfDoubles = List.of("aOHxv9wds0Rq4mnXHlmX46", "W7PhffqBEBditr",
+                "KfKtcRnBQyIIXb4LTOh1c3pmm8nmzND6L7tkhu", "EKuKumON10ZKSX7zxOi",
+                "0F4DUScGfteSJuJY2gw7L1RQ0Xh7uL5W9uT9cUDX", "kkF5nrs4XJEsoMBUGm6A", "Fs0jR6BWoKsSNre1cx2PqVHDu",
+                "V4nZGw0KZflYSWCN4rs", "ramXMDt6TXjyP0zH", "nJTt", "4sKq", "5D988NCE8",
+                "wGczZGePCza1Ef9SKWuDXwwf4NbAPjo", "gmnyGD1", "LvN", "yCef6owUPban", "Q6tmizXXBB1mJXeLHGP7pEyIIInR",
+                "LBU5ovSV", "bSC6RU5JPypQp3XgOqAmSl", "PpTDH7Q1IwTpa1euZ4Pfc4Wxm7",
+                "BYgma5dRB7IQBerSlmyxGHAKx5eN03sTXh5h", "aWkMf2WTbGLrHq17GP6g5",
+                "KXWD1o5tZhwep4Nf1mC1AhqssNci8UW4qthYqqrq", "bCk", "wzZE471E3KiSfNiLY",
+                "QLM3qRLWwNPlzDjL2VM0OQPQxeeKLeHZsSt", "pfxukreGYgQmzq2Xa7waZ1K2TyxFpw",
+                "siMROpUeCY48eRNQT6EdraWr8CD3ATRSOsv1", "FHe6HVumNGXjC", "bzyYm80K8lYJin3Hl",
+                "LBR5gbJPduhC17Rn4pjNbcP5WbKgviA55", "66ghmXg9izq", "akyMaeNJkESUvdDr6zPv",
+                "3VhKVolwgqj7YqrfMYzObPhLLTwGaDlSzw8DH6", "K3QjyZFJPMGLn2VUx057R6Zs49T7xZsJ",
+                "vyP5HWmp7TShMkvWxxByZAlAswt37rmgxMF2", "uCHf3GeRPtpqFBxe2dIybTwDfp4UY",
+                "ZvaUxEflsBMxsmamInzfvUH55804zrX5nhnosvD", "cPBQn08jiu", "PMo3Cp", "hd", "FgkQv3SODLAlPXL",
+                "wv1eyPDGZgirCt85ekZnmCQF", "wtm69M79gktAPZJhW4mnIdYMa", "9yXTVql1vFao1WexKISBj6F",
+                "LZyWQmNd75JcahrkpoqLT", "SUJ0vmJZeyGPyz21f", "9rYrl3qbfXfewhQUrRILOybrTP7W8VB",
+                "dbOvOSmf2xHIlNtqiZRYP1CFB10A8PgLq", "h6pMzbX7tuyk3hQYhfIRtzjjfqUJD8a", "P5sT5pZOGTEtQxEl9o5J7eX6Rmy3",
+                "Ma62yJLDlUEbfW53FtZUOeKJAodKTdb", "f3W3ZmPbRrxbTr", "sdcHSJhyu1tw3k0XNHKtut2Hp0oXNqPx",
+                "LsiQJDweglvcNOfyljcKBzVvMDMDHDv0rUhO6", "sf75JRH", "rWsBPkxpSvx9Xw", "dhxJFGmWELXIvfD9g1H",
+                "SpVwrjSPe4EEK4M8YswLeqozoEmeNmc", "KoizZzkfS2zPSKE6DFzEbm1Gv6GxPk8mb1pJz", "Cht6gPj4vwuPNCFL5",
+                "4xrJ4kLRA63W6Qmy", "I2Sj", "MAAmzjEXxU", "AFfl", "2QKm8NNQ7A2gSF7PVk", "r5Qi4h4LpRUKWB3",
+                "XD9cA3spcKWqv8", "rq3bu1UNwnEJQw139PPDg07mg9d69fCyq", "IcqFkcbl90s0vE6EvAoSbwr",
+                "FmI6qrKwC7g4n4q4HwnOUI", "u3n25BPlN01NHQPaiSkk", "BVgem25R", "3QfNnNXbFymI37sGet1oyWBGLd", "RrsYlJbTH",
+                "FRxiyxHmxyvkb", "KT6spsagZupRyhQbfkFs8VNEkwK6", "mjebXsggybwqj", "kDNkSIzTnUt2qBjkUw7DchEA9tljA",
+                "cDY12MzsgPsuQy", "AL", "wVbsXiMSQPPOsefGZndnXsiCUqyB8nvXGjrPVix", "eEYu7mIooTl7IUPsZ0u360ark",
+                "Hrzcl6Fl6nahC7uNZfZSaeZJ13krwelK", "aBjp4q0eAWJtbi0GUeR71kS", "ykp1EZ2K1sS4OnpUHE429",
+                "OTdwNAj3huhSDwUG", "WCbJatvWft", "Ol72PRjTEjn5HwF42hIB1xGmw", "JaDtjg5U8LrqjbJbraLh6Tij1oZbHGWarh8j",
+                "GREcL2kZieDv54ZMNO1XOshgbAczrZDC4x7QzHI", "6dmVilE8AGOF1A3TfUyRc851mLTi98LHBM52b",
+                "IJL7EJoTPSGUP2gmAhYmDD6HGtl6eIJmsqD", "y0c07YCbv8yzvPqUqlFmqHQ8JA4LO", "c9Sb3SdlVyp0CZtICrqk",
+                "1dR8H7RDUZgprr3IHfwb7Yyj8GE", "H", "URnxurCEz35rx", "bIxJ6HiVQKxsKRnKHEgf",
+                "xdLcMdhgam3gBDzvI2r8GtMVE61", "e88GaEA", "3DLah0hCL9w5AWD", "MeR",
+                "R6EaPmdzksyvpiPhaADbBDMzVXL1beGBfkSVs4", "O", "SKtcR9jdhP3NCU2rfRax47Q1Ifo9nxOmuZ2a",
+                "a0lWvuaTb2aTLAlajeSZI", "difopr8JCsRxDaDUzlQ7b9bQWX4AALVjzLJIPgfJ", "IZJEofhHdXfM80ZbEAUn0ggDq4",
+                "F6zRg3K2Gwi0cmswK7C", "2hDcIA8T5kyym", "c", "wZIo26APfPulobklnTWxUQcCJ4EGx5Rr3tw98", "w16uyaSm",
+                "ssbsoFWqeshe8eUeN3m0bLnsDP0SODez8", "G97ptME0dohuouxyeKVyD", "tij0vTvW", "fHh8hqpBiJ2AlFyCPQ",
+                "wVuvuOyW46YHbyzU44sUV7iBt8dYBangUdfS", "Q1m383WCMu5SKK9s", "cdJVYYDU", "XeDV3haZ",
+                "w2Dxekt5E8VjMgZ066TSqsq", "VOFGHXU8joHuhz2ZDkPJ1", "ZGF2E", "d0soyKIHWJS4J2OdTFgUTyLELy9E8k6", "ld",
+                "SjNAoCxtXBDXLIwmjLY", "nkhAFCj7Ay4LodWsIm", "jSThfD", "66OwlEHcT7N4wj01xJIYQQvlltIAZURP2v",
+                "yAjbLNTcqScHn", "XMjlZ", "hGfVWWSyCy4rimSDP", "RXi2yn1m6p3A32L0ZGdVmbIVqTAeNx8iSL",
+                "eE3Awl2MCk35FUGp6LMqfFbqZrfGHT8", "qLYs8RR9kORJjLHlsEN9roMPO", "pcAnKbvIFmLvj4yN4u8S9KDzAbH", "XVSed",
+                "IPpWNda1JyEPVYVMQF", "lRB5naIPvqFDy", "ysVyxqd9YjMPLWKwd6Aoed8", "72RtrI60xAGBqAxpieLv1d7D0iMr4",
+                "jdPYYkGXWAJpFsTAe6hHk4DB", "ERh9aO9l", "oolHUkMbA3YItYylDTPIzVAh5q", "oyE4fB7hZMh0K",
+                "d7yrtU0yBfMe3Y9S3krtFY", "MJrKJUJlrPiCMmhoy", "GUgMaBZQigpBQPP5p39ZdRooY2EvbcVTCXQ85AFS",
+                "GUgMaBZQigpBQPP5p39ZdRooY2EvbcVTCXQ85AFS");
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, listOfDoubles, calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+            @Override
+            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        RandomRegistry.with(threadLocalRandom, optFunction);
+
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        List<Double> capturedValues = captor.getAllValues();
+        assertEquals(40.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    @Test
     public void simpleIntegerOptimizableRangeTest() {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -579,7 +692,7 @@ public class EAOptimizerTest {
         Map<Optimizable, Object> optimizables = new LinkedHashMap();
         for (int i = 0; i < 15; i++) {
             double randDouble = r.nextDouble();
-            if (randDouble < 0.33) {
+            if (randDouble < 0.25) {
                 // Integer
                 List<Integer> numbers = new ArrayList();
                 int max = 0;
@@ -592,9 +705,9 @@ public class EAOptimizerTest {
                 SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, numbers,
                         calculator);
                 optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), max);
-            } else if (randDouble < 0.66) {
+            } else if (randDouble < 0.5) {
                 // Double
-                List<Double> numbers = new ArrayList();
+                List<Double> numbers = new ArrayList<>();
                 double max = 0;
                 for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
                     double nextDouble = r.nextDouble(100);
@@ -604,6 +717,20 @@ public class EAOptimizerTest {
                 }
                 SetBounds doubleSetBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, numbers, calculator);
                 optimizables.put(smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound), max);
+            } else if (randDouble < 0.75) {
+                // Double
+                List<String> strings = new ArrayList<>();
+
+                String max = "";
+                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
+                    String randomString = generateRandomString(r, r.nextInt(50));
+                    strings.add(randomString);
+
+                    if (randomString.length() > max.length())
+                        max = randomString;
+                }
+                SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator, strings, calculator);
+                optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), max);
             } else {
                 // Bool
                 SetBounds boolSetBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
@@ -629,6 +756,8 @@ public class EAOptimizerTest {
                 maximumFitness += 50;
             } else if (obj instanceof Double doubleVal) {
                 maximumFitness += doubleVal;
+            } else if (obj instanceof String stringVal) {
+                maximumFitness += stringVal.length();
             } else {
                 maximumFitness += (Integer) obj;
             }
@@ -637,6 +766,16 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(1017.3884567, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(939.1718649, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    private String generateRandomString(Random r, int length) {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+
+        return r.ints(leftLimit, rightLimit + 1)
+            .limit(length)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
     }
 }

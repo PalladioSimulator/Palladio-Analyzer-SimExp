@@ -26,6 +26,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import io.jenetics.util.RandomRegistry;
@@ -114,6 +115,19 @@ public class OptimizableNormalizerTest {
         Literal literal3 = smodelCreator.createIntLiteral(3);
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2, literal3);
         Optimizable optimizable = smodelCreator.createOptimizable("intSetOptimizable", DataType.INT, bounds);
+
+        SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
+
+        assertEquals(2, actualChromosome.length());
+    }
+
+    @Test
+    public void testToNormalizedStringSet() {
+        Literal literal1 = smodelCreator.createStringLiteral("hello");
+        Literal literal2 = smodelCreator.createStringLiteral("World");
+        Literal literal3 = smodelCreator.createStringLiteral("!");
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2, literal3);
+        Optimizable optimizable = smodelCreator.createOptimizable("stringSetOptimizable", DataType.STRING, bounds);
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
@@ -241,6 +255,24 @@ public class OptimizableNormalizerTest {
     }
 
     @Test
+    public void testToOptimizableStringIndex1() {
+        StringLiteral literal1 = smodelCreator.createStringLiteral("hello");
+        StringLiteral literal2 = smodelCreator.createStringLiteral("World");
+        when(calculator.calculateString(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateString(literal2)).thenReturn(literal2.getValue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.STRING, bounds);
+        SmodelBitset bitset = new SmodelBitset(1);
+        bitset.set(0);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+
+        OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
+
+        assertEquals("World", actualValue.getValue());
+        assertSame(actualValue.getOptimizable(), optimizable);
+    }
+
+    @Test
     public void parseOptimizablesTest() {
         // Arrange
         SetBounds boolBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
@@ -344,12 +376,31 @@ public class OptimizableNormalizerTest {
         when(optimizable.getDataType()).thenReturn(DataType.DOUBLE);
         when(optimizable.getValues()).thenReturn(rangeBound);
 
-        SmodelBitChromosome normalized = optimizableNormalizer.toNormalized(optimizable);
+        SmodelBitChromosome genotype = optimizableNormalizer.toNormalized(optimizable);
 
-        assertEquals(optimizable, normalized.getOptimizable());
+        assertEquals(optimizable, genotype.getOptimizable());
         RandomRegistry.with(new Random(42), (r) -> {
-            SmodelBitChromosome newInstance = normalized.newInstance();
+            SmodelBitChromosome newInstance = genotype.newInstance();
             assertEquals(10, newInstance.intValue());
+            return "";
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testToGenotypeString() {
+        SetBounds setBounds = new SetBoundsHelper().initializeStringSetBound(smodelCreator,
+                List.of("Hello", "World", "!"), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("stringSetOptimizable", DataType.STRING, setBounds);
+
+        SmodelBitChromosome genotype = optimizableNormalizer.toNormalized(optimizable);
+
+        assertEquals(optimizable, genotype.getOptimizable());
+        RandomRegistry.with(new Random(42), (r) -> {
+            SmodelBitChromosome newInstance = genotype.newInstance();
+            assertEquals(2, newInstance.intValue());
+            OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(newInstance);
+            assertEquals("!", actualValue.getValue());
             return "";
         });
     }

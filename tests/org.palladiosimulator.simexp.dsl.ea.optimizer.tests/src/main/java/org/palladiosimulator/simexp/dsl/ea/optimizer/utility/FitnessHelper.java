@@ -57,6 +57,7 @@ public class FitnessHelper {
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
 
+            //TODO nbruening: Remove Seq support?
             if (apply instanceof ArrayISeq arraySeq) {
                 if (arraySeq.size() == 1) {
                     for (Object element : arraySeq.array) {
@@ -64,6 +65,8 @@ public class FitnessHelper {
                             value += (Integer) element;
                         } else if (optimizableDataType == DataType.DOUBLE) {
                             value += (Double) element;
+                        } else if (optimizableDataType == DataType.STRING) {
+                            value += ((String) element).length();
                         }
 
                     }
@@ -80,7 +83,13 @@ public class FitnessHelper {
                 if ((apply != null) && ((Boolean) apply)) {
                     value += 50;
                 }
-            } else {
+            } else if (optimizableDataType == DataType.STRING) {
+                if (apply != null) {
+                    value += ((String) apply).length();
+                }
+            }
+
+            else {
                 throw new RuntimeException("Received unexpected data type: " + optimizableDataType);
             }
         }
