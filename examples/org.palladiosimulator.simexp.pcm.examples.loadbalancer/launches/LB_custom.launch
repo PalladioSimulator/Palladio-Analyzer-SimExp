@@ -6,10 +6,7 @@
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="LB_custom"/>
     <stringAttribute key="Simulator Type" value="CUSTOM"/>
-    <setAttribute key="TransformationsActive">
-        <setEntry value="Step1Outsource"/>
-        <setEntry value="Step1ScaleIn"/>
-    </setAttribute>
+    <setAttribute key="TransformationsActive"/>
     <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/loadbalancer_on_iaas.allocation"/>
     <stringAttribute key="dynamicModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerEnvironmentalDynamics.dynamicmodel"/>
     <stringAttribute key="experimentsFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/experiments/simexp.experiments"/>
