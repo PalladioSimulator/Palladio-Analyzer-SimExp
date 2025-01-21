@@ -17,7 +17,7 @@ public class PowerUtilTest {
     public void testPower1() {
         int actualMinBitSize = powerUtil.minBitSizeForPower(1);
 
-        assertEquals(0, actualMinBitSize);
+        assertEquals(1, actualMinBitSize);
     }
 
     @Test

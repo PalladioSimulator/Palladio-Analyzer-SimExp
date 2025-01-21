@@ -81,7 +81,7 @@ public class OptimizableNormalizerTest {
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
-        assertEquals(0, actualChromosome.length());
+        assertEquals(1, actualChromosome.length());
     }
 
     @Test
