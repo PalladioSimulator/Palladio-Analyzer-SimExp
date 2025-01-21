@@ -338,7 +338,8 @@ public class OptimizableNormalizerTest {
 
     @Test
     public void testToGenotypeIntegerRange() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 20,
+                1);
         when(optimizable.getDataType()).thenReturn(DataType.INT);
         when(optimizable.getValues()).thenReturn(rangeBound);
 
@@ -371,8 +372,8 @@ public class OptimizableNormalizerTest {
 
     @Test
     public void testToGenotypeDoubleRange() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
-                1.0);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
+                20.0, 1.0);
         when(optimizable.getDataType()).thenReturn(DataType.DOUBLE);
         when(optimizable.getValues()).thenReturn(rangeBound);
 

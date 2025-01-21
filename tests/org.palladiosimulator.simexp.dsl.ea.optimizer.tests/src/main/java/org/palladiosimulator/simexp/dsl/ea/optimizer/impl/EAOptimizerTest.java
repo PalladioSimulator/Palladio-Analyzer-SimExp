@@ -128,8 +128,8 @@ public class EAOptimizerTest {
 
     @Test
     public void simpleDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
-                1.0);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
+                20.0, 1.0);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -153,8 +153,8 @@ public class EAOptimizerTest {
     public void mediumDoubleOptimizableRangeTest() {
         double lowerBound = 0.0;
         double upperBound = 100.0;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, 1.0);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, 1.0);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -183,8 +183,8 @@ public class EAOptimizerTest {
         double lowerBound = 0.0;
         double upperBound = 1000.0;
         double stepSize = 1.0;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, stepSize);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, stepSize);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -206,8 +206,8 @@ public class EAOptimizerTest {
 
     @Test
     public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.15, 10.0,
-                0.5);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.15,
+                10.0, 0.5);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -420,7 +420,8 @@ public class EAOptimizerTest {
 
     @Test
     public void simpleIntegerOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 20,
+                1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -442,7 +443,8 @@ public class EAOptimizerTest {
 
     @Test
     public void mediumIntegerOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 100, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 100,
+                1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -465,8 +467,8 @@ public class EAOptimizerTest {
     public void largeIntegerOptimizableRangeTest() {
         int lowerBound = 0;
         int upperBound = 100000;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
@@ -583,12 +585,12 @@ public class EAOptimizerTest {
     @Test
     public void integerDoubleOptimizableRangeTest() {
         int upperBoundInteger = 20;
-        RangeBounds intRangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0,
+        RangeBounds intRangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0,
                 upperBoundInteger, 1);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, intRangeBound);
         double upperBoundDouble = 20.0;
-        RangeBounds doubleRangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
-                upperBoundDouble, 1.0);
+        RangeBounds doubleRangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                0.0, upperBoundDouble, 1.0);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {

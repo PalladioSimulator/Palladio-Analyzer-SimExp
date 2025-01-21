@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -13,6 +14,7 @@ import java.util.concurrent.Future;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -68,7 +70,11 @@ public class FitnessFunctionTest {
 
         // Assert
         assertEquals((Double) 50.0, fitness);
-        verify(fitnessEvaluator.calcFitness(Mockito.argThat(s -> s.contains(optimizableValue))));
+        ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
+        verify(fitnessEvaluator).calcFitness(captor.capture());
+        assertTrue(captor.getAllValues()
+            .get(0)
+            .contains(optimizableValue));
     }
 
 }
