@@ -70,9 +70,14 @@
     <semanticResources>experiments/elasticity.experiments</semanticResources>
     <semanticResources>pathmap://PCM_MODELS/Glassfish.repository</semanticResources>
     <semanticResources>pathmap://PCM_MODELS/default_event_middleware.repository</semanticResources>
-    <semanticResources>/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancingTemplates.templatevariable</semanticResources>
+    <semanticResources>platform:/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancingTemplates.templatevariable</semanticResources>
     <semanticResources>environment/LoadBalancerNonTemporalEnvironment.staticmodel</semanticResources>
     <semanticResources>environment/LoadBalancerEnvironmentalDynamics.dynamicmodel</semanticResources>
+    <semanticResources>environment/LoadBalancingTemplates.templatevariable</semanticResources>
+    <semanticResources>environment/LoadBalancingDistributions.distributionfunction</semanticResources>
+    <semanticResources>strategies/ea/NStepLoadBalancerStrategy_1.smodel</semanticResources>
+    <semanticResources>strategies/ea/NStepLoadBalancerStrategy_2.smodel</semanticResources>
+    <semanticResources>strategies/ea/NStepLoadBalancerStrategy_3.smodel</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_O3G7sDpVEee6JY3Ca_2Bfw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.palladiosimulator.editors.sirius.seff/description/seff.odesign#//@ownedViewpoints[name='Seff']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_O4D98DpVEee6JY3Ca_2Bfw" name="Seff Diagram" repPath="#_O4D98TpVEee6JY3Ca_2Bfw">
