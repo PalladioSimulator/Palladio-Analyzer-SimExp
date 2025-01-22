@@ -8,8 +8,8 @@
     <stringAttribute key="SimulationID" value="LB_modelled"/>
     <stringAttribute key="Simulator Type" value="MODELLED"/>
     <setAttribute key="TransformationsActive">
-        <setEntry value="Step1Outsource"/>
-        <setEntry value="Step1ScaleIn"/>
+        <setEntry value="EA_Step1Outsource"/>
+        <setEntry value="EA_Step1ScaleIn"/>
     </setAttribute>
     <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/loadbalancer_on_iaas.allocation"/>
     <stringAttribute key="dynamicModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerEnvironmentalDynamics.dynamicmodel"/>
@@ -19,7 +19,7 @@
         <listEntry value="System Response Time"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
-    <stringAttribute key="smodelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/strategies/ea/NStepLoadBalancerStrategy_1.smodel"/>
+    <stringAttribute key="smodelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/strategies/ea/NStepLoadBalancerStrategy_3.smodel"/>
     <stringAttribute key="staticModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerNonTemporalEnvironment.staticmodel"/>
     <stringAttribute key="usageFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/overload.usagemodel"/>
 </launchConfiguration>
