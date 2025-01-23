@@ -32,6 +32,20 @@
             <classifier>sources</classifier>
 			<scope>provided</scope>
     </dependency>
+
+    <dependency>
+			<groupId>io.jenetics</groupId>
+			<artifactId>jenetics.ext</artifactId>
+            <version>${jenetics-version}</version>
+			<scope>provided</scope>
+    </dependency>
+    <dependency>
+			<groupId>io.jenetics</groupId>
+			<artifactId>jenetics.ext</artifactId>
+            <version>${jenetics-version}</version>
+            <classifier>sources</classifier>
+			<scope>provided</scope>
+    </dependency>
   </dependencies>
   
   <build>
@@ -47,7 +61,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <includeArtifactIds>jenetics</includeArtifactIds>
+              <includeArtifactIds>jenetics,jenetics.ext</includeArtifactIds>
               <outputDirectory>${basedir}/lib</outputDirectory>
               <stripVersion>true</stripVersion>
               <overWriteReleases>true</overWriteReleases>
