@@ -47,7 +47,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.core"
          download-size="0"
@@ -62,20 +62,20 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="org.palladiosimulator.simexp.distribution"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+   <plugin
          id="org.palladiosimulator.simexp.pcm"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.distribution.apache"
          download-size="0"
@@ -180,7 +180,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.environmentaldynamics"
          download-size="0"
@@ -194,7 +194,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.commons.constants"
          download-size="0"
@@ -208,14 +208,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.pcm.examples.deltaiot"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.palladiosimulator.simexp.core.store.csv"
          download-size="0"
@@ -229,5 +229,39 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.smodel.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.ea.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.pcm.examples.performability"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.ea.optimizer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="io.jenetics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
