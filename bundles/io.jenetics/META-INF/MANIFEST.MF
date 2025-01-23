@@ -5,6 +5,12 @@ Bundle-SymbolicName: io.jenetics
 Bundle-Version: 6.3.0.qualifier
 Export-Package: io.jenetics,
  io.jenetics.engine,
+ io.jenetics.ext,
+ io.jenetics.ext.engine,
+ io.jenetics.ext.internal,
+ io.jenetics.ext.moea,
+ io.jenetics.ext.rewriting,
+ io.jenetics.ext.util,
  io.jenetics.internal.collection,
  io.jenetics.internal.engine,
  io.jenetics.internal.math,
@@ -12,4 +18,5 @@ Export-Package: io.jenetics,
  io.jenetics.stat,
  io.jenetics.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Bundle-ClassPath: lib/jenetics.jar
+Bundle-ClassPath: lib/jenetics.jar,
+ lib/jenetics.ext.jar
