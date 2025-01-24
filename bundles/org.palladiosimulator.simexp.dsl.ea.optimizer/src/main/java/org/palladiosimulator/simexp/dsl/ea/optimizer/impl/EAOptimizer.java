@@ -3,10 +3,11 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -18,7 +19,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.RunInMainThreadEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
-import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
@@ -26,8 +26,10 @@ import io.jenetics.Genotype;
 import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
-import io.jenetics.engine.EvolutionResult;
-import io.jenetics.engine.EvolutionStatistics;
+import io.jenetics.ext.moea.MOEA;
+import io.jenetics.ext.moea.Vec;
+import io.jenetics.util.ISeq;
+import io.jenetics.util.IntRange;
 
 public class EAOptimizer implements IEAOptimizer {
 
@@ -65,8 +67,8 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<BitGene, Double> engine;
-        FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
+        final Engine<BitGene, Vec<double[]>> engine;
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
         OptimizationEngineBuilder builder = new OptimizationEngineBuilder();
         engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.2, 0.3);
 
@@ -85,28 +87,43 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, final Engine<BitGene, Double> engine) {
-        final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
+            OptimizableNormalizer normalizer, final Engine<BitGene, Vec<double[]>> engine) {
+//        final EvolutionStatistics<Vec<Double[]>, ?> statistics = EvolutionStatistics.ofNumber();
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        EvolutionResult<BitGene, Double> result = engine.stream()
+//        engine.stream()
+//            .limit(bySteadyFitness(7))
+//            .limit(500)
+//            .peek(statistics)
+//            .peek(reporter)
+//            .collect(MOEA.toParetoSet(IntRange.of(30, 50)));
+
+        ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
             .limit(bySteadyFitness(7))
-            .limit(500)
-            .peek(statistics)
-            .peek(reporter)
-            .collect(EvolutionResult.toBestEvolutionResult());
+            .limit(100)
+            .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
+
         LOGGER.info("EA finished...");
 
-        Double bestFitness = result.bestFitness();
-        Phenotype<BitGene, Double> bestPhenotype = result.bestPhenotype();
-        Genotype<BitGene> genotype = bestPhenotype.genotype();
-        List<SmodelBitChromosome> bestChromosomes = genotype.stream()
-            .map(g -> g.as(SmodelBitChromosome.class))
-            .collect(Collectors.toList());
-        List<OptimizableValue<?>> bestOptimizables = normalizer.toOptimizableValues(bestChromosomes);
+        result.stream()
+            .forEach(s -> System.out.println(s.toString()));
+        Optional<Phenotype<BitGene, Vec<double[]>>> bestPhenoOptional = result.stream()
+            .max(Comparator.comparing(Phenotype::fitness));
 
-        LOGGER.info(statistics);
+        Phenotype<BitGene, Vec<double[]>> bestPhenotype = bestPhenoOptional.get();
+//        
+//        Phenotype<BitGene, Double> bestPhenotype = result.bestPhenotype();
+//        Genotype<BitGene> genotype = bestPhenotype.genotype();
+//        List<SmodelBitChromosome> bestChromosomes = genotype.stream()
+//            .map(g -> g.as(SmodelBitChromosome.class))
+//            .collect(Collectors.toList());
+//        List<OptimizableValue<?>> bestOptimizables = normalizer.toOptimizableValues(bestChromosomes);
+//
+//        LOGGER.info(statistics);
 
-        return new EAResult(bestFitness, bestOptimizables);
+        return new EAResult(bestPhenotype.fitness()
+            .data()[0], List.of(
+                    normalizer.toOptimizable((SmodelBitChromosome) bestPhenotype.genotype()
+                        .chromosome())));
     }
 }

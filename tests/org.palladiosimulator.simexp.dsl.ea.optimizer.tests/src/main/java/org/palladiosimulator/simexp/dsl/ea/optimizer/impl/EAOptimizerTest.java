@@ -232,7 +232,7 @@ public class EAOptimizerTest {
     @Test
     public void simpleDoubleOptimizableSetTest() {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
-                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
+                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 9.0, 9.0), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
