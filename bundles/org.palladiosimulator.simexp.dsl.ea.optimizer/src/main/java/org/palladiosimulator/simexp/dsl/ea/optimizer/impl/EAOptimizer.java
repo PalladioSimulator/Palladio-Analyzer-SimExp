@@ -23,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
-import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
 import io.jenetics.ext.moea.MOEA;
@@ -40,12 +39,6 @@ public class EAOptimizer implements IEAOptimizer {
     public EAOptimizer(IEAConfig config) {
         this.config = config;
 
-    }
-
-    public static int eval(final Genotype<IntegerGene> gt) {
-        return gt.chromosome()
-            .gene()
-            .intValue();
     }
 
     @Override

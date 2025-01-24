@@ -14,6 +14,7 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class FitnessHelper {
+    @SuppressWarnings("rawtypes")
     public Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
         List<OptimizableValue> optimizableValues = invocation.getArgument(0);
         Double fitnessValue = getNextFitness(optimizableValues);
@@ -47,6 +48,7 @@ public class FitnessHelper {
         };
     }
 
+    @SuppressWarnings("rawtypes")
     private Double getNextFitness(List<OptimizableValue> optimizableValues) {
         double value = 0;
 
@@ -55,6 +57,7 @@ public class FitnessHelper {
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
 
+            // TODO nbruening: Remove Seq support?
             if (apply instanceof ArrayISeq arraySeq) {
                 if (arraySeq.size() == 1) {
                     for (Object element : arraySeq.array) {
@@ -62,6 +65,8 @@ public class FitnessHelper {
                             value += (Integer) element;
                         } else if (optimizableDataType == DataType.DOUBLE) {
                             value += (Double) element;
+                        } else if (optimizableDataType == DataType.STRING) {
+                            value += ((String) element).length();
                         }
 
                     }
@@ -78,7 +83,13 @@ public class FitnessHelper {
                 if ((apply != null) && ((Boolean) apply)) {
                     value += 50;
                 }
-            } else {
+            } else if (optimizableDataType == DataType.STRING) {
+                if (apply != null) {
+                    value += ((String) apply).length();
+                }
+            }
+
+            else {
                 throw new RuntimeException("Received unexpected data type: " + optimizableDataType);
             }
         }
