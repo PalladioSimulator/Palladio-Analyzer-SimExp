@@ -19,14 +19,15 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
+import io.jenetics.ext.moea.Vec;
 
 public class FitnessFunctionTest {
 
@@ -63,13 +64,13 @@ public class FitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
 
         // Act
-        Double fitness = fitnessFunction.apply(genotype);
+        Vec<double[]> fitness = fitnessFunction.apply(genotype);
 
         // Assert
-        assertEquals((Double) 50.0, fitness);
+        assertEquals(50.0, fitness.data()[0], 0.00001);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()

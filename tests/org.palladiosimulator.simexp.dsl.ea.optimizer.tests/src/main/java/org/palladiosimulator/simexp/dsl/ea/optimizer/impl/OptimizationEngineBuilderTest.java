@@ -22,15 +22,15 @@ import io.jenetics.util.ISeq;
 
 public class OptimizationEngineBuilderTest {
 
+    private Genotype<BitGene> genotype;
+
+    private Phenotype<BitGene, Double> phenotype;
+
     @Mock
     private FitnessFunction fitnessFunction;
 
-    private Genotype<BitGene> genotype;
-
     @Mock
     private Executor executor;
-
-    private Phenotype<BitGene, Double> phenotype;
 
     @Before
     public void setUp() {
@@ -41,6 +41,7 @@ public class OptimizationEngineBuilderTest {
 
     @Test
     public void testBuildEngine() {
+        // Arrange
         OptimizationEngineBuilder optimizationEngineBuilder = new OptimizationEngineBuilder();
         int populationSize = 500;
         int selectorSize = 5;
@@ -49,9 +50,12 @@ public class OptimizationEngineBuilderTest {
         double crossoverRate = 0.5;
         ISeq<Phenotype<BitGene, Double>> phenoSeq = ISeq.of(phenotype);
         when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(0.0);
+
+        // Act
         Engine<BitGene, Double> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
                 populationSize, Runnable::run, selectorSize, offspringSelectorSize, mutationRate, crossoverRate);
 
+        // Assert
         engine.eval(phenoSeq);
         verify(fitnessFunction).apply(genotype);
         assertEquals(populationSize, engine.populationSize());
