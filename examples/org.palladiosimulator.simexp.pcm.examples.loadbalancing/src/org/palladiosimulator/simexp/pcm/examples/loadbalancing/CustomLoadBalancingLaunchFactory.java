@@ -1,11 +1,13 @@
 package org.palladiosimulator.simexp.pcm.examples.loadbalancing;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
@@ -18,32 +20,32 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class CustomLoadBalancingLaunchFactory implements ILaunchFactory {
 
     @Override
-    public boolean canHandle(IWorkflowConfiguration config) {
+    public int canHandle(IWorkflowConfiguration config) {
         SimulatorType simulatorType = config.getSimulatorType();
         if (simulatorType != SimulatorType.CUSTOM) {
-            return false;
+            return 0;
         }
         SimulationEngine simulationEngine = config.getSimulationEngine();
         if (simulationEngine != SimulationEngine.PCM) {
-            return false;
+            return 0;
         }
         IPCMWorkflowConfiguration pcmWorkflowConfiguration = (IPCMWorkflowConfiguration) config;
         QualityObjective qualityObjective = pcmWorkflowConfiguration.getQualityObjective();
         if (qualityObjective != QualityObjective.PERFORMANCE) {
-            return false;
+            return 0;
         }
 
-        return true;
+        return 1;
     }
 
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            ModelLoader.Factory modelLoaderFactory) {
+            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory(
-                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(descriptionProvider),
-                seedProvider);
+                workflowConfiguration, modelLoaderFactory,
+                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
         return factory.create();
     }
 }

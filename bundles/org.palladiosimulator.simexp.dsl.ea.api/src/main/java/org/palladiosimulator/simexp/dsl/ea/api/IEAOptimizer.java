@@ -15,7 +15,7 @@ public interface IEAOptimizer {
      * @param evolutionStatusReceiver
      *            receives the current status of the EA
      */
-    void optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver);
 
 }

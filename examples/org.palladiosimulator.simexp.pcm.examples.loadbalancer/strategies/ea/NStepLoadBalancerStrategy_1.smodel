@@ -1,0 +1,19 @@
+modelName = "ModelledNStepLoadbalancerStratgy";
+
+//const double lowerThreshold = 0.3;
+//const double upperThreshold = 2.0;
+optimizable double[0.1, 1, 0.2] lowerThreshold;
+optimizable double[0.5, 2, 0.5] upperDelta;
+
+probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
+
+action Step1Outsource();
+action Step1ScaleIn();
+
+if (responseTime >= lowerThreshold + upperDelta) {
+	Step1Outsource();
+}
+
+if (responseTime <= lowerThreshold) {
+	Step1ScaleIn();	
+}

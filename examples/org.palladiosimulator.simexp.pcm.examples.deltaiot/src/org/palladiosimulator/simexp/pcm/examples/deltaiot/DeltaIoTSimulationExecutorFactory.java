@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -24,8 +21,8 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
-import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
@@ -69,8 +66,9 @@ public class DeltaIoTSimulationExecutorFactory extends
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider);
+            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+                resourcePath);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         String strategyId = getWorkflowConfiguration().getSimulationParameters()
             .getSimulationID();
-        Path prismFolder = getPrismFolder(strategyId);
+        Path prismFolder = getPrismFolder();
         try {
             Files.createDirectories(prismFolder);
         } catch (IOException e) {
@@ -136,7 +134,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         // Strategy: DeltaIoTDefaultReconfigurationStrategy
         SystemConfigurationTracker systemConfigTracker = new SystemConfigurationTracker(getSimulationParameters());
-        Path csvPath = getCSVPath(strategyId);
+        Path csvPath = getCSVPath();
         try {
             Files.createDirectories(csvPath.getParent());
         } catch (IOException e) {
@@ -175,36 +173,21 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 
-        String sampleSpaceId = SimulatedExperienceConstants
-            .constructSampleSpaceId(getSimulationParameters().getSimulationID(), reconfSelectionPolicy.getId());
 //        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
 //            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(
-                getSimulationParameters().getSimulationID(), sampleSpaceId);
+        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
 
-    private Path getPrismFolder(String strategyId) {
-        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
-            .getRoot()
-            .getLocation();
-        Path outputBasePath = Paths.get(workspaceBasePath.toString());
-        Path resourcePath = outputBasePath.resolve("resource");
-        Path prismStrategyPath = resourcePath.resolve(strategyId);
-        Path prismPath = prismStrategyPath.resolve("prism");
+    private Path getPrismFolder() {
+        Path prismPath = getResourcePath().resolve("prism");
         return prismPath;
     }
 
-    private Path getCSVPath(String strategyId) {
-        IPath workspaceBasePath = ResourcesPlugin.getWorkspace()
-            .getRoot()
-            .getLocation();
-        Path outputBasePath = Paths.get(workspaceBasePath.toString(), "resource", strategyId);
-
-        String csvFileName = strategyId + "Configurations.csv";
-        Path csvFilePath = Paths.get(outputBasePath.toString(), csvFileName);
+    private Path getCSVPath() {
+        Path csvFilePath = getResourcePath().resolve("Configurations.csv");
         return csvFilePath;
     }
 

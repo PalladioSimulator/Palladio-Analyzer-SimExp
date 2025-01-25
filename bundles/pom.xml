@@ -25,7 +25,6 @@
 		<module>org.palladiosimulator.simexp.environmentaldynamics</module>
 		<module>org.palladiosimulator.simexp.core</module>
 		<module>org.palladiosimulator.simexp.core.store.csv</module>
-		<module>org.palladiosimulator.simexp.core.store.cache.guava</module>
 		<module>org.palladiosimulator.simexp.model.io</module>
 		<module>org.palladiosimulator.simexp.model.strategy</module>
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
@@ -58,13 +57,14 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
 
-
+		<module>org.palladiosimulator.simexp.app.console</module>
 	</modules>
 	
 </project>

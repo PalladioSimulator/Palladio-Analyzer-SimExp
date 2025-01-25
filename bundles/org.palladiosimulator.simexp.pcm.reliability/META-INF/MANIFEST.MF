@@ -32,7 +32,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.distribution;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0",
- org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.service;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.reliability
 Bundle-ActivationPolicy: lazy
