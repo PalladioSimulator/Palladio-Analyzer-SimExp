@@ -28,10 +28,8 @@ import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.RunInMainThreadEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
@@ -51,7 +49,7 @@ public class EAOptimizerTest {
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-    private IEAOptimizer optimizer;
+    private EAOptimizer optimizer;
 
     @Mock
     private IEAConfig eaConfig;
@@ -93,12 +91,10 @@ public class EAOptimizerTest {
         });
 
         optFunction = r -> {
-            return optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
+            return optimizer.optimizeSingleThread(optimizableProvider, fitnessEvaluator, statusReceiver);
         };
-
-        EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
-
-        optimizer = eaOptimizer.create(new RunInMainThreadEAConfig());
+        EAOptimizerFactory eaOptimizerFactory = new EAOptimizerFactory();
+        optimizer = (EAOptimizer) eaOptimizerFactory.create();
     }
 
     @Test
