@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 
@@ -13,14 +12,6 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 
 public class OptimizationEngineBuilder {
-
-    @Deprecated
-    public Engine<BitGene, Double> buildEngine(FitnessFunction fitnessFunction, Genotype<BitGene> genotype,
-            int populationSize, int selectorSize, int offspringSelectorSize, double mutationRate,
-            double crossoverRate) {
-        return buildEngine(fitnessFunction, genotype, populationSize, ForkJoinPool.commonPool(), selectorSize,
-                offspringSelectorSize, mutationRate, crossoverRate);
-    }
 
     public Engine<BitGene, Double> buildEngine(FitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             int populationSize, Executor executor, int selectorSize, int offspringSelectorSize, double mutationRate,
