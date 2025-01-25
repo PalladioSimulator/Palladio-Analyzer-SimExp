@@ -481,6 +481,7 @@ public class EAOptimizerTest {
 
     @Test
     public void mediumIntegerOptimizableRangeTest() {
+        double estimatedOptimumFitness = 99.0;
         RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 100,
                 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -496,9 +497,16 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
+                captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(99.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(estimatedOptimumFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
+        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
+        assertEquals(1, firstOptimizableList.size());
+        assertEquals(optimizable, firstOptimizableList.get(0)
+            .getOptimizable());
+        assertEquals((int) estimatedOptimumFitness, firstOptimizableList.get(0)
+            .getValue());
     }
 
     @Test
