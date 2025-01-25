@@ -129,7 +129,7 @@ public class EAOptimizerTest {
         OptimizableValue<?> finalOptimizableValue = eaResult.getOptimizableValues()
             .get(0);
         assertEquals(optimizable, finalOptimizableValue.getOptimizable());
-        assertEquals(50.0, finalOptimizableValue.getValue());
+        assertEquals(true, finalOptimizableValue.getValue());
     }
 
     @Test
