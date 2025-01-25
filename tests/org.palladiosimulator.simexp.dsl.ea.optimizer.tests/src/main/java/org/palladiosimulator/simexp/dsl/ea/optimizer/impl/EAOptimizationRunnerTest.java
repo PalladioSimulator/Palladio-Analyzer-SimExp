@@ -82,8 +82,8 @@ public class EAOptimizationRunnerTest {
         optimizableNormalizer = new OptimizableNormalizer(expressionCalculator);
 
         SmodelBitset smodelBitset = new SmodelBitset(7);
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, expressionCalculator, 0,
-                100, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator,
+                expressionCalculator, 0, 100, 1);
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<BitGene> genotype = Genotype.of(SmodelBitChromosome.of(smodelBitset, optimizable, 100));
         Engine<BitGene, Double> engine = new OptimizationEngineBuilder().buildEngine(fitnessFunction, genotype, 10,
