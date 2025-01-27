@@ -24,8 +24,6 @@ public class EAOptimizer implements IEAOptimizer {
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-
-
     public static int eval(final Genotype<IntegerGene> gt) {
         return gt.chromosome()
             .gene()
@@ -57,7 +55,7 @@ public class EAOptimizer implements IEAOptimizer {
         final Engine<BitGene, Double> engine;
         FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
         OptimizationEngineBuilder builder = new OptimizationEngineBuilder();
-        engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.2, 0.3);
+        engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.8, 0.8);
 
         //// run optimization
         return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, engine);

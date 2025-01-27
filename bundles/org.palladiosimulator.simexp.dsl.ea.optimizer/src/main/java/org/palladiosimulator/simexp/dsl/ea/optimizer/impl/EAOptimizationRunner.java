@@ -30,7 +30,7 @@ public class EAOptimizationRunner {
 
         EvolutionResult<BitGene, Double> result = engine.stream()
             .limit(bySteadyFitness(7))
-            .limit(500)
+            .limit(10)
             .peek(statistics)
             .peek(reporter)
             .collect(EvolutionResult.toBestEvolutionResult());
