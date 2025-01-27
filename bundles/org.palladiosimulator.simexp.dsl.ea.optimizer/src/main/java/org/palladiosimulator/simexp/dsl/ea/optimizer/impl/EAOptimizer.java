@@ -7,6 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
@@ -24,7 +25,12 @@ public class EAOptimizer implements IEAOptimizer {
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
+    private IEAConfig config;
 
+    public EAOptimizer(IEAConfig config) {
+        this.config = config;
+
+    }
 
     public static int eval(final Genotype<IntegerGene> gt) {
         return gt.chromosome()
