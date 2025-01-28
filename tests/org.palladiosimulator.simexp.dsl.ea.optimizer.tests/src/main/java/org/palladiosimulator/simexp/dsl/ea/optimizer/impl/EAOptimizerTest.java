@@ -94,7 +94,7 @@ public class EAOptimizerTest {
             return optimizer.optimizeSingleThread(optimizableProvider, fitnessEvaluator, statusReceiver);
         };
         EAOptimizerFactory eaOptimizerFactory = new EAOptimizerFactory();
-        optimizer = (EAOptimizer) eaOptimizerFactory.create();
+        optimizer = (EAOptimizer) eaOptimizerFactory.create(eaConfig);
     }
 
     @Test
