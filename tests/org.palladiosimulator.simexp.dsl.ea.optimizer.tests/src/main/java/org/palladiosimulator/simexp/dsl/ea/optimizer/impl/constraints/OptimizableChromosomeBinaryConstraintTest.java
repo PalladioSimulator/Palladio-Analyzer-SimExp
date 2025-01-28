@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -35,7 +36,7 @@ public class OptimizableChromosomeBinaryConstraintTest {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(1);
 
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new BinaryBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
         OptimizableChromosomeBinaryConstraint objectUnderTest = new OptimizableChromosomeBinaryConstraint();
@@ -48,7 +49,7 @@ public class OptimizableChromosomeBinaryConstraintTest {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(3);
 
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new BinaryBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
         OptimizableChromosomeBinaryConstraint objectUnderTest = new OptimizableChromosomeBinaryConstraint();
@@ -62,7 +63,7 @@ public class OptimizableChromosomeBinaryConstraintTest {
         bitSet.set(3);
         SmodelBitset expectedBitset = new SmodelBitset(4);
         expectedBitset.set(0);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new BinaryBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
         OptimizableChromosomeBinaryConstraint objectUnderTest = new OptimizableChromosomeBinaryConstraint();
         Function<? super Random, Phenotype<BitGene, Double>> optFunction = (Random r) -> {
@@ -83,7 +84,7 @@ public class OptimizableChromosomeBinaryConstraintTest {
     public void testRepairValidPhenotype() {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(2);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new BinaryBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
         OptimizableChromosomeBinaryConstraint objectUnderTest = new OptimizableChromosomeBinaryConstraint();
         Function<? super Random, Phenotype<BitGene, Double>> optFunction = (Random r) -> {

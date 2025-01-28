@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.GrayBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -37,7 +38,7 @@ public class OptimizableChromosomeGrayConstraintTest {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(1);
 
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new GrayBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
         assertTrue(objectUnderTest.test(phenotype));
@@ -49,7 +50,7 @@ public class OptimizableChromosomeGrayConstraintTest {
         bitSet.set(1);
         bitSet.set(3);
 
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new GrayBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
 
         assertFalse(objectUnderTest.test(phenotype));
@@ -62,7 +63,7 @@ public class OptimizableChromosomeGrayConstraintTest {
         bitSet.set(3);
         SmodelBitset expectedBitset = new SmodelBitset(4);
         expectedBitset.set(0);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new GrayBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
         Function<? super Random, Phenotype<BitGene, Double>> optFunction = (Random r) -> {
             return objectUnderTest.repair(phenotype, 0);
@@ -83,7 +84,7 @@ public class OptimizableChromosomeGrayConstraintTest {
         SmodelBitset bitSet = new SmodelBitset(4);
         bitSet.set(0);
         bitSet.set(1);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitSet, optimizable, 5, new GrayBitInterpreter());
         Phenotype<BitGene, Double> phenotype = Phenotype.of(Genotype.of(chromosome), 0);
         Function<? super Random, Phenotype<BitGene, Double>> optFunction = (Random r) -> {
             return objectUnderTest.repair(phenotype, 0);

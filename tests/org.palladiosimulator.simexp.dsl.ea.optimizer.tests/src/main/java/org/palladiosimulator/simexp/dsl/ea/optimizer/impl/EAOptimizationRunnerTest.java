@@ -19,6 +19,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
@@ -85,7 +86,8 @@ public class EAOptimizationRunnerTest {
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, expressionCalculator, 0,
                 100, 1);
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
-        Genotype<BitGene> genotype = Genotype.of(SmodelBitChromosome.of(smodelBitset, optimizable, 100));
+        Genotype<BitGene> genotype = Genotype
+            .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
         Engine<BitGene, Double> engine = new OptimizationEngineBuilder().buildEngine(fitnessFunction, genotype, 10,
                 Runnable::run, 5, 5, 0.2, 0.2);
         optFunction = r -> {

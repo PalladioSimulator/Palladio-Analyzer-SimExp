@@ -17,13 +17,17 @@ public class SmodelBitChromosome extends BitChromosome {
 
     private int numOfValues;
 
-    protected SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues) {
+    private BitInterpreter bitInterpreter;
+
+    protected SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues,
+            BitInterpreter bitInterpreter) {
         super(bits, 0, length);
         this.optimizable = optimizable;
         this.numOfValues = numOfValues;
         if (length != 0) {
             _p = 0.4 * (2 / length);
         }
+        this.bitInterpreter = bitInterpreter;
     }
 
     public Optimizable getOptimizable() {
@@ -38,7 +42,7 @@ public class SmodelBitChromosome extends BitChromosome {
     @Override
     public int intValue() {
         SmodelBitset bitSet = toBitSet();
-        return bitSet.toInt();
+        return bitInterpreter.toInt(bitSet);
     }
 
     @Override
@@ -58,7 +62,7 @@ public class SmodelBitChromosome extends BitChromosome {
         }
 
         final SmodelBitChromosome chromosome = new SmodelBitChromosome(getOptimizable(), Bits.newArray(genes.length()),
-                genes.length(), numOfValues);
+                genes.length(), numOfValues, bitInterpreter);
         int ones = 0;
 
         for (int i = genes.length(); --i >= 0;) {
@@ -77,11 +81,12 @@ public class SmodelBitChromosome extends BitChromosome {
     public SmodelBitChromosome newInstance() {
         int initialValue = RandomRegistry.random()
             .nextInt(numOfValues);
-        SmodelBitset smodelBitset = SmodelBitset.fromInt(length(), initialValue);
-        return of(smodelBitset, optimizable, numOfValues);
+        SmodelBitset smodelBitset = SmodelBitset.fromInt(length(), initialValue, bitInterpreter);
+        return of(smodelBitset, optimizable, numOfValues, bitInterpreter);
     }
 
-    public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable, int numOfValues) {
+    public static SmodelBitChromosome of(final SmodelBitset bits, Optimizable optimizable, int numOfValues,
+            BitInterpreter bitInterpreter) {
         if (numOfValues <= 0) {
             throw new RuntimeException("There must be at least one value!");
         }
@@ -92,6 +97,6 @@ public class SmodelBitChromosome extends BitChromosome {
                 Bits.set(bytes, i);
             }
         }
-        return new SmodelBitChromosome(optimizable, bytes, length, numOfValues);
+        return new SmodelBitChromosome(optimizable, bytes, length, numOfValues, bitInterpreter);
     }
 }

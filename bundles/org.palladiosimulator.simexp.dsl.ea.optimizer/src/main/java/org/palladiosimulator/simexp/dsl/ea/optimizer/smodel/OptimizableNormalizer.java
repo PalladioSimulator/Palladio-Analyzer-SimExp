@@ -6,6 +6,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -57,7 +58,7 @@ public class OptimizableNormalizer {
     }
 
     protected SmodelBitChromosome toNormalizedSet(Optimizable optimizable, int boundsSize, int minLength) {
-        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize);
+        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize, new BinaryBitInterpreter());
     }
 
     private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {

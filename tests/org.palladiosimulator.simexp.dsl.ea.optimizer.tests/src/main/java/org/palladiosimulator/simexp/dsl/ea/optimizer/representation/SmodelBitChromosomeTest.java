@@ -39,7 +39,7 @@ public class SmodelBitChromosomeTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1, new BinaryBitInterpreter());
 
         int actualIntValue = chromosome.intValue();
 
@@ -54,7 +54,7 @@ public class SmodelBitChromosomeTest {
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1, new BinaryBitInterpreter());
 
         int actualIntValue = chromosome.intValue();
 
@@ -70,7 +70,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
 
-        SmodelBitChromosome.of(bitset, optimizable, 0);
+        SmodelBitChromosome.of(bitset, optimizable, 0, new BinaryBitInterpreter());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SmodelBitChromosomeTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1, new BinaryBitInterpreter());
 
         int actualIntValue = chromosome.intValue();
 
@@ -97,7 +97,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(1);
         bitset.set(2);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
 
         assertTrue(chromosome.isValid());
     }
@@ -112,7 +112,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(1);
         bitset.set(3);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
 
         assertFalse(chromosome.isValid());
     }
@@ -127,7 +127,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
         bitset.set(3);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
 
         assertFalse(chromosome.isValid());
     }
@@ -142,7 +142,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
         bitset.set(3);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
 
         SmodelBitset resultBitset = chromosome.toBitSet();
 
@@ -157,7 +157,7 @@ public class SmodelBitChromosomeTest {
         RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
 
         SmodelBitset resultBitset = chromosome.toBitSet();
 
@@ -174,7 +174,7 @@ public class SmodelBitChromosomeTest {
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
         bitset.set(3);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
         Function<? super Random, SmodelBitChromosome> optFunction = (Random r) -> {
             return chromosome.newInstance();
         };
@@ -198,7 +198,7 @@ public class SmodelBitChromosomeTest {
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(8);
         bitset.set(0);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 1, new BinaryBitInterpreter());
         Function<? super Random, SmodelBitChromosome> optFunction = (Random r) -> {
             return chromosome.newInstance();
         };
@@ -221,7 +221,7 @@ public class SmodelBitChromosomeTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(8);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
         BitGene firstGene = BitGene.TRUE;
         BitGene secondGene = BitGene.FALSE;
         BitGene thirdGene = BitGene.TRUE;
@@ -249,7 +249,7 @@ public class SmodelBitChromosomeTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(8);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 2, new BinaryBitInterpreter());
         BitGene firstGene = BitGene.TRUE;
         BitGene secondGene = BitGene.FALSE;
         BitGene thirdGene = BitGene.TRUE;
