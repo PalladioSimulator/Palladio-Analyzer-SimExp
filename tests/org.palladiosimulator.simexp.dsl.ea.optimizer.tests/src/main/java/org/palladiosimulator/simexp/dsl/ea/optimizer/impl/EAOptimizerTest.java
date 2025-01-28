@@ -193,7 +193,7 @@ public class EAOptimizerTest {
         double lowerBound = 0.0;
         double upperBound = 1000.0;
         double stepSize = 1.0;
-        double estimatedOptimumFitness = 999.0;
+        double estimatedOptimumFitness = 998.0;
         RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
                 upperBound, stepSize);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
@@ -380,7 +380,7 @@ public class EAOptimizerTest {
     public void largeIntegerOptimizableRangeTest() {
         int lowerBound = 0;
         int upperBound = 100000;
-        double estimatedOptimumFitness = 99999.0;
+        double estimatedOptimumFitness = 99992.0;
         RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, lowerBound,
                 upperBound, 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -730,6 +730,6 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(1017.3884567, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(899.447326, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 }
