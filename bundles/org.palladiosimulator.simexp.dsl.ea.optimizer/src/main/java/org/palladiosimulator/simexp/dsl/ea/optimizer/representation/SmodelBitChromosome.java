@@ -36,7 +36,7 @@ public class SmodelBitChromosome extends BitChromosome {
 
     @Override
     public boolean isValid() {
-        return intValue() < numOfValues;
+        return bitInterpreter.isValid(toBitSet(), numOfValues);
     }
 
     @Override

@@ -2,7 +2,11 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
+
 public class BinaryBitInterpreter implements BitInterpreter {
+
+    private PowerUtil powerUtil = new PowerUtil();
 
     @Override
     public int toInt(SmodelBitset bitSet) {
@@ -17,6 +21,17 @@ public class BinaryBitInterpreter implements BitInterpreter {
     @Override
     public BitSet toBitSet(int value) {
         return BitSet.valueOf(new long[] { value });
+    }
+
+    @Override
+    public boolean isValid(SmodelBitset bitSet, int numOfValues) {
+        return toInt(bitSet) < numOfValues;
+        // TODO Add tests
+    }
+
+    @Override
+    public int getMinimumLength(int power) {
+        return powerUtil.minBitSizeForPower(power);
     }
 
 }

@@ -6,7 +6,8 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BitInterpreter;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OneHotBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -21,9 +22,13 @@ public class OptimizableNormalizer {
     private final PowerUtil powerUtil;
     private final IExpressionCalculator expressionCalculator;
 
+    private BitInterpreter bitInterpreter;
+
     public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
         this.powerUtil = new PowerUtil();
         this.expressionCalculator = expressionCalculator;
+        bitInterpreter = new OneHotBitInterpreter();
+
     }
 
     public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
@@ -35,7 +40,7 @@ public class OptimizableNormalizer {
     public SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
-            int minLength = powerUtil.minBitSizeForPower(setBounds.getValues()
+            int minLength = bitInterpreter.getMinimumLength(setBounds.getValues()
                 .size());
             return toNormalizedSet(optimizable, setBounds.getValues()
                 .size(), minLength);
@@ -58,7 +63,7 @@ public class OptimizableNormalizer {
     }
 
     protected SmodelBitChromosome toNormalizedSet(Optimizable optimizable, int boundsSize, int minLength) {
-        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize, new BinaryBitInterpreter());
+        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize, bitInterpreter);
     }
 
     private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {
@@ -67,7 +72,7 @@ public class OptimizableNormalizer {
         int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
 
         int power = (endValue - startValue) / stepSize;
-        int minLength = powerUtil.minBitSizeForPower(power);
+        int minLength = bitInterpreter.getMinimumLength(power);
         return toNormalizedSet(optimizable, power, minLength);
     }
 
@@ -77,7 +82,7 @@ public class OptimizableNormalizer {
         double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
 
         int power = (int) Math.floor((endValue - startValue) / stepSize);
-        int minLength = powerUtil.minBitSizeForPower(power);
+        int minLength = bitInterpreter.getMinimumLength(power);
         return toNormalizedSet(optimizable, power, minLength);
     }
 

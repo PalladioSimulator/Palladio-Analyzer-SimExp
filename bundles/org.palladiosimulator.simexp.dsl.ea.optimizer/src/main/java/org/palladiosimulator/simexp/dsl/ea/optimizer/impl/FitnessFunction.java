@@ -31,6 +31,10 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
     @Override
     public Double apply(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
+        //TODO nbruening: Reweight the return of the fitness properly
+        for (SmodelBitChromosome currentChromo : chromosomes) {
+            if (!currentChromo.isValid())
+                return 0.0;        }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
 
         Future<Double> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
