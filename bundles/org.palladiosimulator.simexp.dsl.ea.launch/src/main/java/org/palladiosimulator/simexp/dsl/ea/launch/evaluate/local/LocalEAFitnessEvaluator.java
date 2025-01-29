@@ -67,12 +67,12 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public synchronized Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) {
         int currentCounter = counter++;
-        Future<Double> future = executor.submit(new Callable<Double>() {
+        Future<Optional<Double>> future = executor.submit(new Callable<>() {
 
             @Override
-            public Double call() throws Exception {
+            public Optional<Double> call() throws Exception {
                 /**
                  * Treats this thread as belonging to the simulation with respect to logging. See:
                  * de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender
@@ -85,7 +85,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         return future;
     }
 
-    private Double doCalcFitness(int counter, List<OptimizableValue<?>> optimizableValues) throws CoreException {
+    private Optional<Double> doCalcFitness(int counter, List<OptimizableValue<?>> optimizableValues)
+            throws CoreException {
         SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup(
                 EAOptimizerLaunchFactory.HANDLE_VALUE);
 
@@ -109,7 +110,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         SimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
-        return simulationResult.getTotalReward();
+        return Optional.of(simulationResult.getTotalReward());
     }
 
     private SimulationResult execute(SimulationExecutor effectiveSimulationExecutor) {
