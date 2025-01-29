@@ -13,12 +13,12 @@ public class EAConfig implements IEAConfig {
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return Optional.empty();
+        return Optional.of(10);
     }
 
     @Override
     public Optional<Integer> steadyFitness() {
-        return Optional.empty();
+        return Optional.of(7);
     }
 
 }
