@@ -18,16 +18,17 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Engine;
+import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
 
 public class OptimizationEngineBuilderTest {
 
     private Genotype<BitGene> genotype;
 
-    private Phenotype<BitGene, Double> phenotype;
+    private Phenotype<BitGene, Vec<double[]>> phenotype;
 
     @Mock
-    private FitnessFunction fitnessFunction;
+    private MOEAFitnessFunction fitnessFunction;
 
     @Mock
     private Executor executor;
@@ -48,11 +49,12 @@ public class OptimizationEngineBuilderTest {
         int offspringSelectorSize = 5;
         double mutationRate = 0.2;
         double crossoverRate = 0.5;
-        ISeq<Phenotype<BitGene, Double>> phenoSeq = ISeq.of(phenotype);
-        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(0.0);
+        ISeq<Phenotype<BitGene, Vec<double[]>>> phenoSeq = ISeq.of(phenotype);
+        double[] returnArray = { 0.0 };
+        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(Vec.of(returnArray));
 
         // Act
-        Engine<BitGene, Double> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
+        Engine<BitGene, Vec<double[]>> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
                 populationSize, Runnable::run, selectorSize, offspringSelectorSize, mutationRate, crossoverRate);
 
         // Assert

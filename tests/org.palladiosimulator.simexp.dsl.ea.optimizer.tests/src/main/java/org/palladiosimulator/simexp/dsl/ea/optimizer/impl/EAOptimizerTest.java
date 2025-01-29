@@ -24,6 +24,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -74,7 +75,7 @@ public class EAOptimizerTest {
 
     private ThreadLocal<Random> threadLocalRandom;
 
-    private Function<? super Random, String> optFunction;
+    private Function<? super Random, EAResult> optFunction;
 
     private SetBoundsHelper setBoundsHelper;
 
@@ -92,8 +93,7 @@ public class EAOptimizerTest {
         });
 
         optFunction = r -> {
-            optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
-            return "";
+            return optimizer.optimize(optimizableProvider, fitnessEvaluator, statusReceiver);
         };
 
         EAOptimizerFactory eaOptimizer = new EAOptimizerFactory();
@@ -324,7 +324,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(6.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -349,7 +349,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(20.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -414,7 +414,7 @@ public class EAOptimizerTest {
         RandomRegistry.with(threadLocalRandom, optFunction);
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(List.class), captor.capture());
+        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
         assertEquals(40.0, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
@@ -491,7 +491,7 @@ public class EAOptimizerTest {
 
     @Test
     public void simpleIntegerOptimizableSetTest() {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9),
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9, 9),
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -503,12 +503,14 @@ public class EAOptimizerTest {
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(9.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(2, result.getFitness().length);
+        assertEquals(9.0, result.getFitness()[0], 0.00001);
+        assertEquals(9.0, result.getFitness()[0], 0.00001);
+        assertEquals(optimizable, result.getOptimizableValues()
+            .get(0)
+            .getOptimizable());
     }
 
     @Test

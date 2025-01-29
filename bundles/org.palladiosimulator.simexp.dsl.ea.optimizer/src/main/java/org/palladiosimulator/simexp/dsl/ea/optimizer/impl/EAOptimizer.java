@@ -94,6 +94,7 @@ public class EAOptimizer implements IEAOptimizer {
         ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
             .limit(bySteadyFitness(7))
             .limit(100)
+            .peek(reporter)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 
         LOGGER.info("EA finished...");
@@ -104,19 +105,12 @@ public class EAOptimizer implements IEAOptimizer {
             .max(Comparator.comparing(Phenotype::fitness));
 
         Phenotype<BitGene, Vec<double[]>> bestPhenotype = bestPhenoOptional.get();
-//        
-//        Phenotype<BitGene, Double> bestPhenotype = result.bestPhenotype();
-//        Genotype<BitGene> genotype = bestPhenotype.genotype();
-//        List<SmodelBitChromosome> bestChromosomes = genotype.stream()
-//            .map(g -> g.as(SmodelBitChromosome.class))
-//            .collect(Collectors.toList());
-//        List<OptimizableValue<?>> bestOptimizables = normalizer.toOptimizableValues(bestChromosomes);
-//
-//        LOGGER.info(statistics);
 
-        return new EAResult(bestPhenotype.fitness()
-            .data()[0], List.of(
-                    normalizer.toOptimizable((SmodelBitChromosome) bestPhenotype.genotype()
-                        .chromosome())));
+        return new EAResult(result.stream()
+            .map(p -> p.fitness())
+            .mapToDouble(d -> (Double) d.data()[0])
+            .toArray(),
+                List.of(normalizer.toOptimizable((SmodelBitChromosome) bestPhenotype.genotype()
+                    .chromosome())));
     }
 }
