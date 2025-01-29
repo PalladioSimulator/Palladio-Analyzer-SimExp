@@ -101,10 +101,12 @@ public class EAOptimizationRunnerTest {
         EAResult runOptimization = RandomRegistry.with(new Random(42), optFunction);
 
         assertEquals(95.0, runOptimization.getFitness(), DELTA);
-        assertEquals(95, (int) runOptimization.getOptimizableValues()
+        assertEquals(95, (int) runOptimization.getOptimizableValuesList()
+            .get(0)
             .get(0)
             .getValue());
-        assertEquals(optimizable, runOptimization.getOptimizableValues()
+        assertEquals(optimizable, runOptimization.getOptimizableValuesList()
+            .get(0)
             .get(0)
             .getOptimizable());
     }

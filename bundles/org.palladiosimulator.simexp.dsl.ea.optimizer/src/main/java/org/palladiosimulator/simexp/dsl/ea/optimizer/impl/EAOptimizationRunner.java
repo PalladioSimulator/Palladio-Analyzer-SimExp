@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static io.jenetics.engine.Limits.bySteadyFitness;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,10 +44,13 @@ public class EAOptimizationRunner {
             .map(g -> g.as(SmodelBitChromosome.class))
             .collect(Collectors.toList());
         List<OptimizableValue<?>> bestOptimizables = normalizer.toOptimizableValues(bestChromosomes);
+        List<List<OptimizableValue<?>>> bestOptimizablesList = new ArrayList<>();
+        bestOptimizablesList.add(bestOptimizables);
+        // TODO: add remaining, too
 
         LOGGER.info(statistics);
 
-        return new EAResult(bestFitness, bestOptimizables);
+        return new EAResult(bestFitness, bestOptimizablesList);
     }
 
 }
