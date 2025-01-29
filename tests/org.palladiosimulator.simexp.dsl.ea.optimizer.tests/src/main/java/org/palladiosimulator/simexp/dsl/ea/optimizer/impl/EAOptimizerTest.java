@@ -1,9 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -511,6 +513,17 @@ public class EAOptimizerTest {
         assertEquals(optimizable, result.getOptimizableValues()
             .get(0)
             .getOptimizable());
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
     }
 
     @Test
