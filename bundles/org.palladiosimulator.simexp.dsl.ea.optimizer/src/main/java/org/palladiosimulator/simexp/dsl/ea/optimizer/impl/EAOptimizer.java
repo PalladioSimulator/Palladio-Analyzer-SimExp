@@ -106,6 +106,7 @@ public class EAOptimizer implements IEAOptimizer {
 
         Phenotype<BitGene, Vec<double[]>> bestPhenotype = bestPhenoOptional.get();
 
+        // TODO nbruening: Hier ddarf nicht nur das erste ERgebnis zurückgegeben werden
         return new EAResult(result.stream()
             .map(p -> p.fitness())
             .mapToDouble(d -> (Double) d.data()[0])
