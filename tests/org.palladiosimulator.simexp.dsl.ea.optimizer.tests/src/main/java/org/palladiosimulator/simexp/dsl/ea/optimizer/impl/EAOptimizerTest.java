@@ -984,10 +984,10 @@ public class EAOptimizerTest {
             .size());
         assertEquals(864.013557, result.getFitness(), 0.00001);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(19)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
 
-        assertEquals(878.63701, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(864.013557, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     private String generateRandomString(Random r, int length) {

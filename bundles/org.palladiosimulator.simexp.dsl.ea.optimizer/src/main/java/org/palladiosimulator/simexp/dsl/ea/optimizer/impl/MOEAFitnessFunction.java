@@ -21,7 +21,7 @@ import io.jenetics.ext.moea.Vec;
 
 public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<double[]>> {
 
-    private static final Logger LOGGER = Logger.getLogger(FitnessFunction.class);
+    private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
@@ -38,8 +38,11 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
 
         Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
-            double fitness = fitnessFuture.get()
-                .get();
+
+            Optional<Double> optionalFitness = fitnessFuture.get();
+
+            // TODO nbruening: handle empty
+            double fitness = optionalFitness.get();
             return Vec.of(fitness);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return fitness of 0.0", e.getMessage()), e);
