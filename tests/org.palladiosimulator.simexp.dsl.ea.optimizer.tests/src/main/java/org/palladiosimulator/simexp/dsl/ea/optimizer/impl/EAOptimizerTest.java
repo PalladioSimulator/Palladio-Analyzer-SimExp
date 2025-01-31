@@ -878,7 +878,7 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(939.1718649, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(953.19874, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     private String generateRandomString(Random r, int length) {

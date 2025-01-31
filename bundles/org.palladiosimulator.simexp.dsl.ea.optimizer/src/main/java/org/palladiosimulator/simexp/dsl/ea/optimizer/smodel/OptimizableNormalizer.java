@@ -73,14 +73,18 @@ public class OptimizableNormalizer {
             .map(c -> toOptimizable(c))
             .collect(Collectors.toList());
 
+        addSingleValueOptimizablesIfNotContained(optimizableValuesFromChromosomes);
+        return optimizableValuesFromChromosomes;
+    }
+
+    public void addSingleValueOptimizablesIfNotContained(List<OptimizableValue<?>> optimizableValuesFromChromosomes) {
         singleValueOptimizables.forEach(o -> {
             OptimizableValue<?> optimizable = toOptimizable(o);
             optimizableValuesFromChromosomes.add(optimizable);
         });
-        return optimizableValuesFromChromosomes;
     }
 
-    //TODO nbruening: remove
+    // TODO nbruening: remove
 //    private OptimizableValue<?> toOptimizableSingleChromosome() {
 //        for (Optimizable singleValueOptimizable : singleValueOptimizables) {
 //            if (optimizableValuesFromChromosomes.contains(singleValueOptimizable)) {
