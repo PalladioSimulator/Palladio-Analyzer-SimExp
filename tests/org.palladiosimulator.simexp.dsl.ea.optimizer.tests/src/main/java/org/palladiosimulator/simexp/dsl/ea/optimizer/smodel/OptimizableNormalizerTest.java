@@ -82,7 +82,7 @@ public class OptimizableNormalizerTest {
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
-        assertEquals(1, actualChromosome.length());
+        assertEquals(0, actualChromosome.length());
     }
 
     @Test
@@ -165,6 +165,28 @@ public class OptimizableNormalizerTest {
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
 
         assertEquals(1, actualChromosome.length());
+    }
+
+    @Test
+    public void testToNormalizedDoubleWithSingleValueOptimizable() {
+        DoubleLiteral literal1 = smodelCreator.createDoubleLiteral(1);
+        DoubleLiteral literal2 = smodelCreator.createDoubleLiteral(2);
+        when(calculator.calculateDouble(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateDouble(literal2)).thenReturn(literal2.getValue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable twoValuesOptimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
+        DoubleLiteral literal3 = smodelCreator.createDoubleLiteral(3);
+        when(calculator.calculateDouble(literal3)).thenReturn(literal3.getValue());
+        SetBounds singleValueBounds = smodelCreator.createSetBounds(literal3);
+        Optimizable singleValueOptimizable = smodelCreator.createOptimizable("singleValueOptimizable", DataType.DOUBLE,
+                singleValueBounds);
+        List<Optimizable> optimizableList = List.of(twoValuesOptimizable, singleValueOptimizable);
+
+        List<SmodelBitChromosome> normalized = optimizableNormalizer.toNormalized(optimizableList);
+
+        assertEquals(1, normalized.size());
+        assertEquals(twoValuesOptimizable, normalized.get(0)
+            .getOptimizable());
     }
 
     @Test
@@ -258,6 +280,31 @@ public class OptimizableNormalizerTest {
 
         assertEquals(2.0, actualValue.getValue());
         assertSame(actualValue.getOptimizable(), optimizable);
+    }
+
+    @Test
+    public void testToOptimizableWithSingleValueOptimizable() {
+        DoubleLiteral literal1 = smodelCreator.createDoubleLiteral(1);
+        DoubleLiteral literal2 = smodelCreator.createDoubleLiteral(2);
+        when(calculator.calculateDouble(literal1)).thenReturn(literal1.getValue());
+        when(calculator.calculateDouble(literal2)).thenReturn(literal2.getValue());
+        SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
+        Optimizable twoValuesOptimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
+        DoubleLiteral literal3 = smodelCreator.createDoubleLiteral(3);
+        when(calculator.calculateDouble(literal3)).thenReturn(literal3.getValue());
+        SetBounds singleValueBounds = smodelCreator.createSetBounds(literal3);
+        Optimizable singleValueOptimizable = smodelCreator.createOptimizable("singleValueOptimizable", DataType.DOUBLE,
+                singleValueBounds);
+        List<Optimizable> optimizableList = List.of(twoValuesOptimizable, singleValueOptimizable);
+        List<SmodelBitChromosome> normalized = optimizableNormalizer.toNormalized(optimizableList);
+
+        List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(normalized);
+
+        assertEquals(2, optimizableValues.size());
+        assertEquals(twoValuesOptimizable, optimizableValues.get(0)
+            .getOptimizable());
+        assertEquals(singleValueOptimizable, optimizableValues.get(1)
+            .getOptimizable());
     }
 
     @Test

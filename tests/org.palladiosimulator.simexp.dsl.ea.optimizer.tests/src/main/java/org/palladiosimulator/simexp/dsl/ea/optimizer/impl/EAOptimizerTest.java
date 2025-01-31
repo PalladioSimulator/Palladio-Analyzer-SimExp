@@ -982,7 +982,7 @@ public class EAOptimizerTest {
         LOGGER.info("Maximum Fitness: " + maximumFitness);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(878.63701, result.getFitness(), 0.00001);
+        assertEquals(864.013557, result.getFitness(), 0.00001);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(19)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
