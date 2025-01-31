@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -57,17 +58,21 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     @Override
     public SimulationResult evaluate() {
         double totalReward = 0.0;
-        List<OptimizableValue<?>> optimizables = Collections.emptyList();
+        List<List<OptimizableValue<?>>> optimizablesList = Collections.emptyList();
         if (optimizationResult != null) {
             totalReward = optimizationResult.getFitness();
-            optimizables = optimizationResult.getOptimizableValues();
+            optimizablesList = optimizationResult.getOptimizableValuesList();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
         detailDescription.add("Optimizable values:");
-        for (OptimizableValue<?> ov : optimizables) {
-            detailDescription.add(String.format("- %s: %s", ov.getOptimizable()
-                .getName(), ov.getValue()));
+        for (final ListIterator<List<OptimizableValue<?>>> it = optimizablesList.listIterator(); it.hasNext();) {
+            List<OptimizableValue<?>> optimizables = it.next();
+            detailDescription.add(String.format("- #%d", it.previousIndex()));
+            for (OptimizableValue<?> ov : optimizables) {
+                detailDescription.add(String.format("-- %s: %s", ov.getOptimizable()
+                    .getName(), ov.getValue()));
+            }
         }
         return new EASimulationResult(totalReward, description, detailDescription);
     }

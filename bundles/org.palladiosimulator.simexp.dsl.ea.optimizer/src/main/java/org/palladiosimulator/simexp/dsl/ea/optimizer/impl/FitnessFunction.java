@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -33,9 +34,11 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
 
-        Future<Double> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
+        Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
-            double fitness = fitnessFuture.get();
+            Optional<Double> optionalFitness = fitnessFuture.get();
+            // TODO: handle empty
+            double fitness = optionalFitness.get();
             return fitness;
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return fitness of 0.0", e.getMessage()), e);

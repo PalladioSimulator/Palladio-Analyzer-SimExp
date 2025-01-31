@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -19,6 +20,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
@@ -41,7 +43,7 @@ public class FitnessFunctionTest {
     Optimizable optimizable;
 
     @Mock
-    Future<Double> fitnessFuture;
+    Future<Optional<Double>> fitnessFuture;
 
     @Before
     public void setUp() {
@@ -52,14 +54,15 @@ public class FitnessFunctionTest {
     @Test
     public void testApply() {
         // Arrange
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4);
+        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
+                new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         try {
-            when(fitnessFuture.get()).thenReturn(50.0);
+            when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             fail();

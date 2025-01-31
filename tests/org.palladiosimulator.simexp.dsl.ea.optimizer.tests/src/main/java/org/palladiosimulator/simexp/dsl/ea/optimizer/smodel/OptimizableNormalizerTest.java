@@ -12,6 +12,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -175,7 +176,8 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.BOOL, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
 
@@ -193,7 +195,8 @@ public class OptimizableNormalizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.BOOL, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
 
@@ -210,7 +213,8 @@ public class OptimizableNormalizerTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
-        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome actualChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(actualChromosome);
 
@@ -228,7 +232,8 @@ public class OptimizableNormalizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.INT, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 
@@ -246,7 +251,8 @@ public class OptimizableNormalizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 
@@ -264,7 +270,8 @@ public class OptimizableNormalizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("optimizable", DataType.STRING, bounds);
         SmodelBitset bitset = new SmodelBitset(1);
         bitset.set(0);
-        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2);
+        SmodelBitChromosome initialChromosome = SmodelBitChromosome.of(bitset, optimizable, 2,
+                new BinaryBitInterpreter());
 
         OptimizableValue<?> actualValue = optimizableNormalizer.toOptimizable(initialChromosome);
 

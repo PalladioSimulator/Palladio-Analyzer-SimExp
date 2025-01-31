@@ -5,7 +5,9 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 
 public class EAOptimizerFactory {
-    public IEAOptimizer create(IEAConfig eaConfig) {
-        return new EAOptimizer(eaConfig);
+
+    public IEAOptimizer create(IEAConfig config) {
+        return new EAOptimizer(config);
     }
+
 }
