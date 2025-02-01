@@ -28,24 +28,25 @@ public class EAOptimizationRunner {
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
             OptimizableNormalizer normalizer, final Engine<BitGene, Vec<double[]>> engine) {
-        final EvolutionStatistics<Double, ?> statistics = EvolutionStatistics.ofNumber();
+        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics();
+
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
             .limit(bySteadyFitness(7))
-            .limit(50)
+            .limit(10)
             .peek(reporter)
+            .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 
         LOGGER.info("EA finished...");
 
-        //TODO nbruening: readd statistics
-//        LOGGER.info(statistics);
+        LOGGER.info(paretoStatistics);
 
         // Print results
         // TODO nbruening: remove
-        result.stream()
-            .forEach(s -> LOGGER.info(s.toString()));
+//        result.stream()
+//            .forEach(s -> LOGGER.info(s.toString()));
 
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
