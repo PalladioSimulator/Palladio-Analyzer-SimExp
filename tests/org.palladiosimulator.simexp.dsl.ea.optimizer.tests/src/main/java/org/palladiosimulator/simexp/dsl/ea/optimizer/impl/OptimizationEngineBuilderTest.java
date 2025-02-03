@@ -43,7 +43,7 @@ public class OptimizationEngineBuilderTest {
     @Test
     public void testBuildEngine() {
         // Arrange
-        OptimizationEngineBuilder optimizationEngineBuilder = new OptimizationEngineBuilder();
+        EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder();
         int populationSize = 500;
         int selectorSize = 5;
         int offspringSelectorSize = 5;

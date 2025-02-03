@@ -12,7 +12,7 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 import io.jenetics.ext.moea.Vec;
 
-public class OptimizationEngineBuilder {
+public class EAOptimizationEngineBuilder {
 
     public Engine<BitGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             int populationSize, Executor executor, int selectorSize, int offspringSelectorSize, double mutationRate,
@@ -26,7 +26,7 @@ public class OptimizationEngineBuilder {
 //            .alterers(new Mutator<>(mutationRate), new UniformCrossover<>(crossoverRate))
 //            .build();
 
-        return Engine.builder(fitnessFunction::apply, genotype)
+        return Engine.builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
             .populationSize(populationSize)
             .executor(executor)
             .constraint(new OptimizableChromosomeBinaryConstraint())

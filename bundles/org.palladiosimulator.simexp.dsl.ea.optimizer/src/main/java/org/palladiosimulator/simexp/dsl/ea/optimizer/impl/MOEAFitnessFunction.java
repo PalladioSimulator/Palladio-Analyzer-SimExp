@@ -34,11 +34,14 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
     @Override
     public Vec<double[]> apply(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
+        for (SmodelBitChromosome currentChromo : chromosomes) {
+            if (!currentChromo.isValid()) {
+                return Vec.of(0.0);
+            }
+        }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
-
         Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
-
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             // TODO nbruening: handle empty

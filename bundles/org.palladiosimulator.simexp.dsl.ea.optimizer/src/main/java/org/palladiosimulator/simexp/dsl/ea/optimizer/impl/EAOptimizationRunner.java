@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.BitGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
-import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.ext.moea.MOEA;
 import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
@@ -34,19 +33,13 @@ public class EAOptimizationRunner {
 
         ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
             .limit(bySteadyFitness(7))
-            .limit(10)
+            .limit(100)
             .peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 
         LOGGER.info("EA finished...");
-
         LOGGER.info(paretoStatistics);
-
-        // Print results
-        // TODO nbruening: remove
-//        result.stream()
-//            .forEach(s -> LOGGER.info(s.toString()));
 
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype

@@ -89,7 +89,7 @@ public class EAOptimizationRunnerTest {
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<BitGene> genotype = Genotype
             .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
-        Engine<BitGene, Vec<double[]>> engine = new OptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
+        Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
                 10, Runnable::run, 5, 5, 0.2, 0.2);
         optFunction = r -> {
             return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, engine);

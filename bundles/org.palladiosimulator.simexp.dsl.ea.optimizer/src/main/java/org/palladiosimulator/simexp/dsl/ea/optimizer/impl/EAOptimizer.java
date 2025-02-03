@@ -56,7 +56,7 @@ public class EAOptimizer implements IEAOptimizer {
         ///// setup EA
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
-        OptimizationEngineBuilder builder = new OptimizationEngineBuilder();
+        EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
         engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.8, 0.8);
 
         //// run optimization
