@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -55,7 +56,8 @@ public class OptimizationEngineBuilderTest {
 
         // Act
         Engine<BitGene, Vec<double[]>> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
-                populationSize, Runnable::run, selectorSize, offspringSelectorSize, mutationRate, crossoverRate);
+                new BinaryBitInterpreter(), populationSize, Runnable::run, selectorSize, offspringSelectorSize,
+                mutationRate, crossoverRate);
 
         // Assert
         engine.eval(phenoSeq);

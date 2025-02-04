@@ -57,7 +57,7 @@ public class OptimizableNormalizerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        optimizableNormalizer = new OptimizableNormalizer(calculator);
+        optimizableNormalizer = new OptimizableNormalizer(calculator, new BinaryBitInterpreter());
         setBoundsHelper = new SetBoundsHelper();
         smodelCreator = new SmodelCreator();
     }

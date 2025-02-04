@@ -5,6 +5,11 @@ import java.util.BitSet;
 import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeOHConstraint;
+
+import io.jenetics.BitGene;
+import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
 
 public class OneHotBitInterpreter implements BitInterpreter {
 
@@ -46,6 +51,11 @@ public class OneHotBitInterpreter implements BitInterpreter {
     @Override
     public int getMinimumLength(int power) {
         return power;
+    }
+
+    @Override
+    public Constraint<BitGene, Vec<double[]>> getCorrespondingConstraint() {
+        return new OptimizableChromosomeOHConstraint();
     }
 
 }

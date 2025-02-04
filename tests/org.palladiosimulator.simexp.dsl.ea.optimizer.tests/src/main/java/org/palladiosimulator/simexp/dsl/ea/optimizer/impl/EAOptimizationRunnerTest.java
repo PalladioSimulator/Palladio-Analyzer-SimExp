@@ -81,7 +81,7 @@ public class EAOptimizationRunnerTest {
 
         });
 
-        optimizableNormalizer = new OptimizableNormalizer(expressionCalculator);
+        optimizableNormalizer = new OptimizableNormalizer(expressionCalculator, new BinaryBitInterpreter());
 
         SmodelBitset smodelBitset = new SmodelBitset(7);
         RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator,
@@ -90,7 +90,7 @@ public class EAOptimizationRunnerTest {
         Genotype<BitGene> genotype = Genotype
             .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
         Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
-                10, Runnable::run, 5, 5, 0.2, 0.2);
+                new BinaryBitInterpreter(), 10, Runnable::run, 5, 5, 0.2, 0.2);
         optFunction = r -> {
             return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, engine);
         };

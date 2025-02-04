@@ -5,20 +5,20 @@ import java.util.List;
 import java.util.Random;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.MSeq;
 import io.jenetics.util.RandomRegistry;
 
-public class OptimizableChromosomeOHConstraint implements Constraint<BitGene, Double> {
+public class OptimizableChromosomeOHConstraint implements Constraint<BitGene, Vec<double[]>> {
 
     @Override
-    public boolean test(Phenotype<BitGene, Double> individual) {
+    public boolean test(Phenotype<BitGene, Vec<double[]>> individual) {
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
@@ -32,8 +32,8 @@ public class OptimizableChromosomeOHConstraint implements Constraint<BitGene, Do
     }
 
     @Override
-    public Phenotype<BitGene, Double> repair(Phenotype<BitGene, Double> individual, long generation) {
-        List<Chromosome<BitGene>> chromosomes = new ArrayList();
+    public Phenotype<BitGene, Vec<double[]>> repair(Phenotype<BitGene, Vec<double[]>> individual, long generation) {
+        List<Chromosome<BitGene>> chromosomes = new ArrayList<>();
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
@@ -64,7 +64,7 @@ public class OptimizableChromosomeOHConstraint implements Constraint<BitGene, Do
                 chromosomes.add(genotype.get(i));
             }
         }
-        Phenotype<BitGene, Double> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
+        Phenotype<BitGene, Vec<double[]>> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
 
         if (!test(repairedIndividual)) {
             throw new RuntimeException("Repaired phenotype is still broken");
@@ -90,14 +90,4 @@ public class OptimizableChromosomeOHConstraint implements Constraint<BitGene, Do
         return genes;
     }
 
-    private List<Integer> getBitsThatAreSet(SmodelBitset bitSet) {
-        List<Integer> bitsSet = new ArrayList();
-        int nxtIdx = -1;
-        do {
-            nxtIdx = bitSet.nextSetBit(++nxtIdx);
-            if (nxtIdx != -1)
-                bitsSet.add(nxtIdx);
-        } while (nxtIdx != -1);
-        return bitsSet;
-    }
 }

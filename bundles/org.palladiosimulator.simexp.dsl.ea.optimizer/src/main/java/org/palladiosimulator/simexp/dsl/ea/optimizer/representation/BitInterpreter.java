@@ -2,13 +2,17 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
+import io.jenetics.BitGene;
+import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
+
 /**
  * Helps interpreting {@link SmodelBitset} A BitInterpreter can either decode a given SmodelBitSet
  * or encode a given {@link int} value as a {@link SmodelBitset}. The actual encoding (classic
  * binary, gray, one-hot, etc.) depends on the implementation of BitInterpreter.
  */
-public interface BitInterpreter {
 
+public interface BitInterpreter {
     /**
      * Decodes the given SmodelBitset and returns its value.
      * 
@@ -31,7 +35,10 @@ public interface BitInterpreter {
     // TODO nbruening: Write javadoc
     public boolean isValid(SmodelBitset bitSet, int numOfValues);
 
-    //TODO nbruening: Write javadoc
+    // TODO nbruening: Write javadoc
     public int getMinimumLength(int power);
+
+    // TODO nbruening: Write javadoc
+    public Constraint<BitGene, Vec<double[]>> getCorrespondingConstraint();
 
 }

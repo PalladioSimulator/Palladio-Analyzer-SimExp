@@ -7,7 +7,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
@@ -27,11 +26,10 @@ public class OptimizableNormalizer {
 
     private List<SmodelBitChromosome> singleValueOptimizables;
 
-    public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
+    public OptimizableNormalizer(IExpressionCalculator expressionCalculator, BitInterpreter bitInterpreter) {
         this.expressionCalculator = expressionCalculator;
-        bitInterpreter = new BinaryBitInterpreter();
+        this.bitInterpreter = bitInterpreter;
         singleValueOptimizables = new ArrayList<>();
-
     }
 
     public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {

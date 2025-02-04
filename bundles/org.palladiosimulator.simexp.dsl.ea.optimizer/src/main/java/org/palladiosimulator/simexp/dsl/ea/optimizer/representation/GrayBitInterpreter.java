@@ -2,7 +2,12 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeGrayConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
+
+import io.jenetics.BitGene;
+import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
 
 public class GrayBitInterpreter implements BitInterpreter {
 
@@ -49,10 +54,15 @@ public class GrayBitInterpreter implements BitInterpreter {
         // TODO nbruening Add tests
     }
 
- // TODO nbruening Add tests
+    // TODO nbruening Add tests
     @Override
     public int getMinimumLength(int power) {
         return powerUtil.minBitSizeForPower(power);
+    }
+
+    @Override
+    public Constraint<BitGene, Vec<double[]>> getCorrespondingConstraint() {
+        return new OptimizableChromosomeGrayConstraint();
     }
 
 }

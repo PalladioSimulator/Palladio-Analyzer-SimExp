@@ -2,7 +2,12 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
+
+import io.jenetics.BitGene;
+import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
 
 public class BinaryBitInterpreter implements BitInterpreter {
 
@@ -32,6 +37,11 @@ public class BinaryBitInterpreter implements BitInterpreter {
     @Override
     public int getMinimumLength(int power) {
         return powerUtil.minBitSizeForPower(power);
+    }
+
+    @Override
+    public Constraint<BitGene, Vec<double[]>> getCorrespondingConstraint() {
+        return new OptimizableChromosomeBinaryConstraint();
     }
 
 }
