@@ -1,9 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -94,7 +97,7 @@ public class EAOptimizerTest {
             return optimizer.optimizeSingleThread(optimizableProvider, fitnessEvaluator, statusReceiver);
         };
         EAOptimizerFactory eaOptimizerFactory = new EAOptimizerFactory();
-        optimizer = (EAOptimizer) eaOptimizerFactory.create();
+        optimizer = (EAOptimizer) eaOptimizerFactory.create(eaConfig);
     }
 
     @Test
@@ -102,9 +105,9 @@ public class EAOptimizerTest {
         SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
@@ -122,7 +125,8 @@ public class EAOptimizerTest {
             .get(0);
         assertTrue((Boolean) optimizableValue.getValue());
         assertEquals(50.0, eaResult.getFitness(), DELTA);
-        OptimizableValue<?> finalOptimizableValue = eaResult.getOptimizableValues()
+        OptimizableValue<?> finalOptimizableValue = eaResult.getOptimizableValuesList()
+            .get(0)
             .get(0);
         assertEquals(optimizable, finalOptimizableValue.getOptimizable());
         assertEquals(true, finalOptimizableValue.getValue());
@@ -130,62 +134,78 @@ public class EAOptimizerTest {
 
     @Test
     public void simpleDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0, 20.0,
-                1.0);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
+                20.0, 1.0);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(19.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedFitnessValues = captor.getAllValues();
-        assertEquals(19.0, capturedFitnessValues.get(capturedFitnessValues.size() - 1), DELTA);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(19.0, 19.0, 19.0, 19.0, 19.0, 19.0, 19.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
     }
 
     @Test
     public void mediumDoubleOptimizableRangeTest() {
         double lowerBound = 0.0;
         double upperBound = 100.0;
-        double estimatedOptimumFitness = 99.0;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, 1.0);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, 1.0);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedFitnessValues = captor.getAllValues();
-        assertEquals(99.0, capturedFitnessValues.get(0), DELTA);
-        assertEquals(99.0, capturedFitnessValues.get(1), DELTA);
-        assertEquals(99.0, capturedFitnessValues.get(2), DELTA);
-        assertEquals(99.0, capturedFitnessValues.get(4), DELTA);
-        assertEquals(estimatedOptimumFitness, capturedFitnessValues.get(capturedFitnessValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
-        assertEquals(1, firstOptimizableList.size());
-        assertEquals(optimizable, firstOptimizableList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals(estimatedOptimumFitness, firstOptimizableList.get(0)
-            .getValue());
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(99.0, 99.0, 99.0, 99.0, 99.0, 99.0, 99.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
     }
 
     @Test
@@ -193,81 +213,106 @@ public class EAOptimizerTest {
         double lowerBound = 0.0;
         double upperBound = 1000.0;
         double stepSize = 1.0;
-        double estimatedOptimumFitness = 999.0;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, stepSize);
+        double estimatedOptimumFitness = 998.0;
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, stepSize);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
-
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        assertEquals(998.0, result.getFitness(), 0.00001);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
+            .get(0)
+            .get(0);
+        assertEquals(optimizable, optimizableValue.getOptimizable());
+        assertEquals(998.0, optimizableValue.getValue());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(estimatedOptimumFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
-        assertEquals(1, firstOptimizableList.size());
-        assertEquals(optimizable, firstOptimizableList.get(0)
-            .getOptimizable());
-        assertEquals(estimatedOptimumFitness, firstOptimizableList.get(0)
-            .getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.15, 10.0,
-                0.5);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.15,
+                10.0, 0.5);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(9.15, capturedValues.get(capturedValues.size() - 1), DELTA);
-
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(9.15, result.getFitness(), 0.00001);
+        OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
+            .get(0)
+            .get(0);
+        assertEquals(optimizable, optimizableValue.getOptimizable());
+        assertEquals(9.15, optimizableValue.getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void simpleDoubleOptimizableSetTest() {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
-                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
+                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 9.0, 9.0), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        assertEquals(3, result.getOptimizableValuesList()
+            .size());
+        assertEquals(9.0, result.getFitness(), 0.00001);
+        List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
+        assertEquals(optimizable, optimizableValuesList.get(0)
+            .get(0)
+            .getOptimizable());
+        assertEquals(9.0, optimizableValuesList.get(0)
+            .get(0)
+            .getValue());
+        assertEquals(9.0, optimizableValuesList.get(1)
+            .get(0)
+            .getValue());
+        assertEquals(9.0, optimizableValuesList.get(2)
+            .get(0)
+            .getValue());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(9.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
     }
 
     @Test
@@ -277,20 +322,24 @@ public class EAOptimizerTest {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(99.999, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99.999, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -310,125 +359,301 @@ public class EAOptimizerTest {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(estimatedOptimumFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
-        assertEquals(1, firstOptimizableList.size());
-        assertEquals(optimizable, firstOptimizableList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99.999, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals(estimatedOptimumFitness, firstOptimizableList.get(0)
+        verify(statusReceiver, times(12)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+    }
+
+    @Test
+    public void simpleStringOptimizableSetTest() {
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
+                List.of("Hello", "World", "!", "How", "are", "youuuu", "abcdef"), calculator);
+
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        assertEquals(2, result.getOptimizableValuesList()
+            .size());
+        assertEquals(6.0, result.getFitness(), DELTA);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        assertEquals("abcdef", result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getValue());
+        assertEquals("youuuu", result.getOptimizableValuesList()
+            .get(1)
+            .get(0)
+            .getValue());
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
+                captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
+        List<String> expectedBestGenotypesFitnessEvolution = List.of("abcdef", "abcdef", "youuuu", "abcdef", "youuuu",
+                "abcdef", "youuuu");
+        assertArrayEquals(expectedBestGenotypesFitnessEvolution.stream()
+            .toArray(),
+                optimizableListCaptor.getAllValues()
+                    .stream()
+                    .map((List<OptimizableValue<?>> l) -> l.get(0)
+                        .getValue())
+                    .toArray());
+    }
+
+    @Test
+    public void mediumStringOptimizableSetTest() {
+        List<String> listOfDoubles = List.of("Nq06", "6xmPSfJtRKU0", "", "LZ4JyxP", "3TA", "AOEf1JPoQyVStrg5YK", "dm",
+                "bdxtTmlypfap", "qT0wClBAC5zjgv0A4rTq", "nbwCQhv", "5beIQ16f0Vu7t", "ycqRYzeeDcBLaM3", "BOL1ngaNk",
+                "vuhHk", "7b1m7oM84ujmmpoG", "zXiKgr8f13", "pzxf9iEPA3qocBiEzo", "0A78Gr", "Ru8wa7c2mv4f",
+                "wRdUn3t4FLUGx2F8j");
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, listOfDoubles, calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(20.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+    }
+
+    @Test
+    public void largeStringOptimizableSetTest() {
+        List<String> listOfDoubles = List.of("aOHxv9wds0Rq4mnXHlmX46", "W7PhffqBEBditr",
+                "KfKtcRnBQyIIXb4LTOh1c3pmm8nmzND6L7tkhu", "EKuKumON10ZKSX7zxOi",
+                "0F4DUScGfteSJuJY2gw7L1RQ0Xh7uL5W9uT9cUDX", "kkF5nrs4XJEsoMBUGm6A", "Fs0jR6BWoKsSNre1cx2PqVHDu",
+                "V4nZGw0KZflYSWCN4rs", "ramXMDt6TXjyP0zH", "nJTt", "4sKq", "5D988NCE8",
+                "wGczZGePCza1Ef9SKWuDXwwf4NbAPjo", "gmnyGD1", "LvN", "yCef6owUPban", "Q6tmizXXBB1mJXeLHGP7pEyIIInR",
+                "LBU5ovSV", "bSC6RU5JPypQp3XgOqAmSl", "PpTDH7Q1IwTpa1euZ4Pfc4Wxm7",
+                "BYgma5dRB7IQBerSlmyxGHAKx5eN03sTXh5h", "aWkMf2WTbGLrHq17GP6g5",
+                "KXWD1o5tZhwep4Nf1mC1AhqssNci8UW4qthYqqrq", "bCk", "wzZE471E3KiSfNiLY",
+                "QLM3qRLWwNPlzDjL2VM0OQPQxeeKLeHZsSt", "pfxukreGYgQmzq2Xa7waZ1K2TyxFpw",
+                "siMROpUeCY48eRNQT6EdraWr8CD3ATRSOsv1", "FHe6HVumNGXjC", "bzyYm80K8lYJin3Hl",
+                "LBR5gbJPduhC17Rn4pjNbcP5WbKgviA55", "66ghmXg9izq", "akyMaeNJkESUvdDr6zPv",
+                "3VhKVolwgqj7YqrfMYzObPhLLTwGaDlSzw8DH6", "K3QjyZFJPMGLn2VUx057R6Zs49T7xZsJ",
+                "vyP5HWmp7TShMkvWxxByZAlAswt37rmgxMF2", "uCHf3GeRPtpqFBxe2dIybTwDfp4UY",
+                "ZvaUxEflsBMxsmamInzfvUH55804zrX5nhnosvD", "cPBQn08jiu", "PMo3Cp", "hd", "FgkQv3SODLAlPXL",
+                "wv1eyPDGZgirCt85ekZnmCQF", "wtm69M79gktAPZJhW4mnIdYMa", "9yXTVql1vFao1WexKISBj6F",
+                "LZyWQmNd75JcahrkpoqLT", "SUJ0vmJZeyGPyz21f", "9rYrl3qbfXfewhQUrRILOybrTP7W8VB",
+                "dbOvOSmf2xHIlNtqiZRYP1CFB10A8PgLq", "h6pMzbX7tuyk3hQYhfIRtzjjfqUJD8a", "P5sT5pZOGTEtQxEl9o5J7eX6Rmy3",
+                "Ma62yJLDlUEbfW53FtZUOeKJAodKTdb", "f3W3ZmPbRrxbTr", "sdcHSJhyu1tw3k0XNHKtut2Hp0oXNqPx",
+                "LsiQJDweglvcNOfyljcKBzVvMDMDHDv0rUhO6", "sf75JRH", "rWsBPkxpSvx9Xw", "dhxJFGmWELXIvfD9g1H",
+                "SpVwrjSPe4EEK4M8YswLeqozoEmeNmc", "KoizZzkfS2zPSKE6DFzEbm1Gv6GxPk8mb1pJz", "Cht6gPj4vwuPNCFL5",
+                "4xrJ4kLRA63W6Qmy", "I2Sj", "MAAmzjEXxU", "AFfl", "2QKm8NNQ7A2gSF7PVk", "r5Qi4h4LpRUKWB3",
+                "XD9cA3spcKWqv8", "rq3bu1UNwnEJQw139PPDg07mg9d69fCyq", "IcqFkcbl90s0vE6EvAoSbwr",
+                "FmI6qrKwC7g4n4q4HwnOUI", "u3n25BPlN01NHQPaiSkk", "BVgem25R", "3QfNnNXbFymI37sGet1oyWBGLd", "RrsYlJbTH",
+                "FRxiyxHmxyvkb", "KT6spsagZupRyhQbfkFs8VNEkwK6", "mjebXsggybwqj", "kDNkSIzTnUt2qBjkUw7DchEA9tljA",
+                "cDY12MzsgPsuQy", "AL", "wVbsXiMSQPPOsefGZndnXsiCUqyB8nvXGjrPVix", "eEYu7mIooTl7IUPsZ0u360ark",
+                "Hrzcl6Fl6nahC7uNZfZSaeZJ13krwelK", "aBjp4q0eAWJtbi0GUeR71kS", "ykp1EZ2K1sS4OnpUHE429",
+                "OTdwNAj3huhSDwUG", "WCbJatvWft", "Ol72PRjTEjn5HwF42hIB1xGmw", "JaDtjg5U8LrqjbJbraLh6Tij1oZbHGWarh8j",
+                "GREcL2kZieDv54ZMNO1XOshgbAczrZDC4x7QzHI", "6dmVilE8AGOF1A3TfUyRc851mLTi98LHBM52b",
+                "IJL7EJoTPSGUP2gmAhYmDD6HGtl6eIJmsqD", "y0c07YCbv8yzvPqUqlFmqHQ8JA4LO", "c9Sb3SdlVyp0CZtICrqk",
+                "1dR8H7RDUZgprr3IHfwb7Yyj8GE", "H", "URnxurCEz35rx", "bIxJ6HiVQKxsKRnKHEgf",
+                "xdLcMdhgam3gBDzvI2r8GtMVE61", "e88GaEA", "3DLah0hCL9w5AWD", "MeR",
+                "R6EaPmdzksyvpiPhaADbBDMzVXL1beGBfkSVs4", "O", "SKtcR9jdhP3NCU2rfRax47Q1Ifo9nxOmuZ2a",
+                "a0lWvuaTb2aTLAlajeSZI", "difopr8JCsRxDaDUzlQ7b9bQWX4AALVjzLJIPgfJ", "IZJEofhHdXfM80ZbEAUn0ggDq4",
+                "F6zRg3K2Gwi0cmswK7C", "2hDcIA8T5kyym", "c", "wZIo26APfPulobklnTWxUQcCJ4EGx5Rr3tw98", "w16uyaSm",
+                "ssbsoFWqeshe8eUeN3m0bLnsDP0SODez8", "G97ptME0dohuouxyeKVyD", "tij0vTvW", "fHh8hqpBiJ2AlFyCPQ",
+                "wVuvuOyW46YHbyzU44sUV7iBt8dYBangUdfS", "Q1m383WCMu5SKK9s", "cdJVYYDU", "XeDV3haZ",
+                "w2Dxekt5E8VjMgZ066TSqsq", "VOFGHXU8joHuhz2ZDkPJ1", "ZGF2E", "d0soyKIHWJS4J2OdTFgUTyLELy9E8k6", "ld",
+                "SjNAoCxtXBDXLIwmjLY", "nkhAFCj7Ay4LodWsIm", "jSThfD", "66OwlEHcT7N4wj01xJIYQQvlltIAZURP2v",
+                "yAjbLNTcqScHn", "XMjlZ", "hGfVWWSyCy4rimSDP", "RXi2yn1m6p3A32L0ZGdVmbIVqTAeNx8iSL",
+                "eE3Awl2MCk35FUGp6LMqfFbqZrfGHT8", "qLYs8RR9kORJjLHlsEN9roMPO", "pcAnKbvIFmLvj4yN4u8S9KDzAbH", "XVSed",
+                "IPpWNda1JyEPVYVMQF", "lRB5naIPvqFDy", "ysVyxqd9YjMPLWKwd6Aoed8", "72RtrI60xAGBqAxpieLv1d7D0iMr4",
+                "jdPYYkGXWAJpFsTAe6hHk4DB", "ERh9aO9l", "oolHUkMbA3YItYylDTPIzVAh5q", "oyE4fB7hZMh0K",
+                "d7yrtU0yBfMe3Y9S3krtFY", "MJrKJUJlrPiCMmhoy", "GUgMaBZQigpBQPP5p39ZdRooY2EvbcVTCXQ85AFS",
+                "GUgMaBZQigpBQPP5p39ZdRooY2EvbcVTCXQ85AFS");
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, listOfDoubles, calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        assertEquals(5, result.getOptimizableValuesList()
+            .size());
+        assertEquals(40.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void simpleIntegerOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 20, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 20,
+                1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(19.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(19.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void mediumIntegerOptimizableRangeTest() {
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 100, 1);
+        double estimatedOptimumFitness = 99.0;
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 100,
+                1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(99.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void largeIntegerOptimizableRangeTest() {
         int lowerBound = 0;
         int upperBound = 100000;
-        double estimatedOptimumFitness = 99999.0;
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, lowerBound,
-                upperBound, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator,
+                lowerBound, upperBound, 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
 
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(estimatedOptimumFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
-        assertEquals(1, firstOptimizableList.size());
-        assertEquals(optimizable, firstOptimizableList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99996.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals((int) estimatedOptimumFitness, firstOptimizableList.get(0)
-            .getValue());
+        verify(statusReceiver, times(23)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
-    public void simpleIntegerOptimizableSetTest() {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9),
+    public void simpleIntegerOptimizableSetTestWithParetoEfficientElements() {
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9, 9),
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
+        assertEquals(2, optimizableValuesList.size());
+        assertEquals(9.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, optimizableValuesList.get(0)
+            .get(0)
+            .getOptimizable());
+        assertEquals(9, optimizableValuesList.get(0)
+            .get(0)
+            .getValue());
+        assertEquals(9, optimizableValuesList.get(1)
+            .get(0)
+            .getValue());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(9.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
     }
 
     @Test
@@ -437,20 +662,24 @@ public class EAOptimizerTest {
                 List.of(4, 31, 84, 90, 40, 80, 28, 69, 74, 69, 29, 83, 31, 53, 35, 42, 80, 52, 85, 16), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(90.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(90.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -460,20 +689,24 @@ public class EAOptimizerTest {
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(85.0, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(85.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -488,65 +721,89 @@ public class EAOptimizerTest {
         double estimatedOptimumFitness = 99.0;
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(estimatedOptimumFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizableList = optimizableListCaptor.getValue();
-        assertEquals(1, firstOptimizableList.size());
-        assertEquals(optimizable, firstOptimizableList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(99.0, result.getFitness(), 0.00001);
+        assertEquals(optimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals((int) estimatedOptimumFitness, firstOptimizableList.get(0)
-            .getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
     public void integerDoubleOptimizableRangeTest() {
         int upperBoundInteger = 20;
-        RangeBounds intRangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0,
+        RangeBounds intRangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0,
                 upperBoundInteger, 1);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, intRangeBound);
         double upperBoundDouble = 20.0;
-        RangeBounds doubleRangeBound = RangeBoundsHelper.initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
-                upperBoundDouble, 1.0);
+        RangeBounds doubleRangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
+                0.0, upperBoundDouble, 1.0);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(38.0, result.getFitness(), 0.00001);
+        assertEquals(intOptimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
+        assertEquals(doubleOptimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(1)
+            .getOptimizable());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
+        verify(statusReceiver, times(8)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
                 captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(38.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizablesList = optimizableListCaptor.getValue();
-        assertEquals(2, firstOptimizablesList.size());
-        assertEquals(intOptimizable, firstOptimizablesList.get(0)
-            .getOptimizable());
-        assertEquals(doubleOptimizable, firstOptimizablesList.get(1)
-            .getOptimizable());
-        assertEquals(19, firstOptimizablesList.get(0)
-            .getValue());
-        assertEquals(19.0, firstOptimizablesList.get(1)
-            .getValue());
+        List<Double> fitnessEvolutionValues = captor.getAllValues();
+        List<Double> expectedFitnessEvolution = List.of(37.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0);
+        assertArrayEquals(expectedFitnessEvolution.stream()
+            .mapToDouble(Double::doubleValue)
+            .toArray(),
+                fitnessEvolutionValues.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .toArray(),
+                0.00001);
+        List<Optimizable> expectedBestGenotypesFirstOptimizable = List.of(intOptimizable, intOptimizable,
+                intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable);
+        assertArrayEquals(expectedBestGenotypesFirstOptimizable.stream()
+            .toArray(),
+                optimizableListCaptor.getAllValues()
+                    .stream()
+                    .map((List<OptimizableValue<?>> l) -> l.get(0)
+                        .getOptimizable())
+                    .toArray());
+        List<Optimizable> expectedBestGenotypesSecondOptimizable = List.of(doubleOptimizable, doubleOptimizable,
+                doubleOptimizable, doubleOptimizable, doubleOptimizable, doubleOptimizable, doubleOptimizable,
+                doubleOptimizable);
+        assertArrayEquals(expectedBestGenotypesSecondOptimizable.stream()
+            .toArray(),
+                optimizableListCaptor.getAllValues()
+                    .stream()
+                    .map((List<OptimizableValue<?>> l) -> l.get(1)
+                        .getOptimizable())
+                    .toArray());
     }
 
     @Test
@@ -558,31 +815,24 @@ public class EAOptimizerTest {
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0), calculator);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(18.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizablesList = optimizableListCaptor.getValue();
-        assertEquals(2, firstOptimizablesList.size());
-        assertEquals(intOptimizable, firstOptimizablesList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(18.0, result.getFitness(), 0.00001);
+        assertEquals(intOptimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals(doubleOptimizable, firstOptimizablesList.get(1)
-            .getOptimizable());
-        assertEquals(9, firstOptimizablesList.get(0)
-            .getValue());
-        assertEquals(9.0, firstOptimizablesList.get(1)
-            .getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -594,31 +844,24 @@ public class EAOptimizerTest {
                 calculator);
         Optimizable boolOptimizable = smodelCreator.createOptimizable("test", DataType.BOOL, boolSetBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, boolOptimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(59.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizablesList = optimizableListCaptor.getValue();
-        assertEquals(2, firstOptimizablesList.size());
-        assertEquals(intOptimizable, firstOptimizablesList.get(0)
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(59.0, result.getFitness(), 0.00001);
+        assertEquals(intOptimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
             .getOptimizable());
-        assertEquals(boolOptimizable, firstOptimizablesList.get(1)
-            .getOptimizable());
-        assertEquals(9, firstOptimizablesList.get(0)
-            .getValue());
-        assertEquals(true, firstOptimizablesList.get(1)
-            .getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -634,45 +877,39 @@ public class EAOptimizerTest {
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
         when(optimizableProvider.getOptimizables())
             .thenReturn(List.of(intOptimizable, boolOptimizable, doubleOptimizable));
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(68.0, result.getFitness(), 0.00001);
+        assertEquals(intOptimizable, result.getOptimizableValuesList()
+            .get(0)
+            .get(0)
+            .getOptimizable());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(68.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<OptimizableValue<?>> firstOptimizablesList = optimizableListCaptor.getValue();
-        assertEquals(3, firstOptimizablesList.size());
-        assertEquals(intOptimizable, firstOptimizablesList.get(0)
-            .getOptimizable());
-        assertEquals(boolOptimizable, firstOptimizablesList.get(1)
-            .getOptimizable());
-        assertEquals(doubleOptimizable, firstOptimizablesList.get(2)
-            .getOptimizable());
-        assertEquals(9, firstOptimizablesList.get(0)
-            .getValue());
-        assertEquals(true, firstOptimizablesList.get(1)
-            .getValue());
-        assertEquals(9.0, firstOptimizablesList.get(2)
-            .getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        Double[] expectedBestGenotypesFitnessEvolution = new Double[] { 68.0, 68.0, 68.0, 68.0, 68.0, 68.0, 68.0 };
+        assertArrayEquals(expectedBestGenotypesFitnessEvolution, captor.getAllValues()
+            .stream()
+            .toArray());
+
     }
 
     @Test
     public void manySuboptimizablesOptimizableSetTest() {
         Random r = new Random(42);
-
         Map<Optimizable, Object> optimizables = new LinkedHashMap();
         for (int i = 0; i < 15; i++) {
             double randDouble = r.nextDouble();
-            if (randDouble < 0.33) {
+            if (randDouble < 0.25) {
                 // Integer
                 List<Integer> numbers = new ArrayList();
                 int max = 0;
@@ -685,9 +922,9 @@ public class EAOptimizerTest {
                 SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, numbers,
                         calculator);
                 optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), max);
-            } else if (randDouble < 0.66) {
+            } else if (randDouble < 0.5) {
                 // Double
-                List<Double> numbers = new ArrayList();
+                List<Double> numbers = new ArrayList<>();
                 double max = 0;
                 for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
                     double nextDouble = r.nextDouble(100);
@@ -697,6 +934,20 @@ public class EAOptimizerTest {
                 }
                 SetBounds doubleSetBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, numbers, calculator);
                 optimizables.put(smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound), max);
+            } else if (randDouble < 0.75) {
+                // Double
+                List<String> strings = new ArrayList<>();
+
+                String max = "";
+                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
+                    String randomString = generateRandomString(r, r.nextInt(50));
+                    strings.add(randomString);
+
+                    if (randomString.length() > max.length())
+                        max = randomString;
+                }
+                SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator, strings, calculator);
+                optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), max);
             } else {
                 // Bool
                 SetBounds boolSetBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
@@ -706,15 +957,15 @@ public class EAOptimizerTest {
 
         }
         when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
-        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Double>>() {
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
             @Override
-            public Future<Double> answer(InvocationOnMock invocation) throws Throwable {
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
                 FitnessHelper fitnessHelper = new FitnessHelper();
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         });
 
-        RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double maximumFitness = 0;
         for (Object obj : optimizables.values()) {
@@ -722,14 +973,31 @@ public class EAOptimizerTest {
                 maximumFitness += 50;
             } else if (obj instanceof Double doubleVal) {
                 maximumFitness += doubleVal;
+            } else if (obj instanceof String stringVal) {
+                maximumFitness += stringVal.length();
             } else {
                 maximumFitness += (Integer) obj;
             }
         }
         LOGGER.info("Maximum Fitness: " + maximumFitness);
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(864.013557, result.getFitness(), 0.00001);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-        assertEquals(1017.3884567, capturedValues.get(capturedValues.size() - 1), DELTA);
+
+        assertEquals(864.013557, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    private String generateRandomString(Random r, int length) {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+
+        return r.ints(leftLimit, rightLimit + 1)
+            .limit(length)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+
     }
 }

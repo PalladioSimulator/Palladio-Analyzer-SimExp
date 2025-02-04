@@ -7,6 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
@@ -17,17 +18,18 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
-import io.jenetics.IntegerGene;
 import io.jenetics.engine.Engine;
+import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizer implements IEAOptimizer {
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-    public static int eval(final Genotype<IntegerGene> gt) {
-        return gt.chromosome()
-            .gene()
-            .intValue();
+    private IEAConfig config;
+
+    public EAOptimizer(IEAConfig config) {
+        this.config = config;
+
     }
 
     @Override
@@ -52,9 +54,9 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<BitGene, Double> engine;
-        FitnessFunction fitnessFunction = new FitnessFunction(fitnessEvaluator, normalizer);
-        OptimizationEngineBuilder builder = new OptimizationEngineBuilder();
+        final Engine<BitGene, Vec<double[]>> engine;
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
         engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.8, 0.8);
 
         //// run optimization

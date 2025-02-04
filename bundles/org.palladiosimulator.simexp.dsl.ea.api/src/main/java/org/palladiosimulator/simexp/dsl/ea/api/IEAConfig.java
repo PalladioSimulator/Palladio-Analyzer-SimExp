@@ -1,5 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.api;
 
-public interface IEAConfig {
+import java.util.Optional;
 
+public interface IEAConfig {
+    int populationSize();
+
+    Optional<Integer> maxGenerations();
+
+    Optional<Integer> steadyFitness();
 }

@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.utility;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -14,9 +15,11 @@ import io.jenetics.internal.collection.ArrayISeq;
 import io.jenetics.internal.collection.Empty.EmptyISeq;
 
 public class FitnessHelper {
-    public Future<Double> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
+
+    @SuppressWarnings("rawtypes")
+    public Future<Optional<Double>> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
         List<OptimizableValue> optimizableValues = invocation.getArgument(0);
-        Double fitnessValue = getNextFitness(optimizableValues);
+        Optional<Double> fitnessValue = Optional.of(getNextFitness(optimizableValues));
         return new Future<>() {
 
             @Override
@@ -30,13 +33,13 @@ public class FitnessHelper {
             }
 
             @Override
-            public Double get(long timeout, TimeUnit unit)
+            public Optional<Double> get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException {
                 return fitnessValue;
             }
 
             @Override
-            public Double get() throws InterruptedException, ExecutionException {
+            public Optional<Double> get() throws InterruptedException, ExecutionException {
                 return fitnessValue;
             }
 
@@ -47,6 +50,7 @@ public class FitnessHelper {
         };
     }
 
+    @SuppressWarnings("rawtypes")
     private Double getNextFitness(List<OptimizableValue> optimizableValues) {
         double value = 0;
 
@@ -55,6 +59,7 @@ public class FitnessHelper {
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
 
+            // TODO nbruening: Remove Seq support?
             if (apply instanceof ArrayISeq arraySeq) {
                 if (arraySeq.size() == 1) {
                     for (Object element : arraySeq.array) {
@@ -62,6 +67,8 @@ public class FitnessHelper {
                             value += (Integer) element;
                         } else if (optimizableDataType == DataType.DOUBLE) {
                             value += (Double) element;
+                        } else if (optimizableDataType == DataType.STRING) {
+                            value += ((String) element).length();
                         }
 
                     }
@@ -78,7 +85,13 @@ public class FitnessHelper {
                 if ((apply != null) && ((Boolean) apply)) {
                     value += 50;
                 }
-            } else {
+            } else if (optimizableDataType == DataType.STRING) {
+                if (apply != null) {
+                    value += ((String) apply).length();
+                }
+            }
+
+            else {
                 throw new RuntimeException("Received unexpected data type: " + optimizableDataType);
             }
         }

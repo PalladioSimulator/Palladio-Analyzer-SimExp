@@ -18,19 +18,20 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Engine;
+import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
 
 public class OptimizationEngineBuilderTest {
 
-    @Mock
-    private FitnessFunction fitnessFunction;
-
     private Genotype<BitGene> genotype;
+
+    private Phenotype<BitGene, Vec<double[]>> phenotype;
+
+    @Mock
+    private MOEAFitnessFunction fitnessFunction;
 
     @Mock
     private Executor executor;
-
-    private Phenotype<BitGene, Double> phenotype;
 
     @Before
     public void setUp() {
@@ -41,17 +42,22 @@ public class OptimizationEngineBuilderTest {
 
     @Test
     public void testBuildEngine() {
-        OptimizationEngineBuilder optimizationEngineBuilder = new OptimizationEngineBuilder();
+        // Arrange
+        EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder();
         int populationSize = 500;
         int selectorSize = 5;
         int offspringSelectorSize = 5;
         double mutationRate = 0.2;
         double crossoverRate = 0.5;
-        ISeq<Phenotype<BitGene, Double>> phenoSeq = ISeq.of(phenotype);
-        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(0.0);
-        Engine<BitGene, Double> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
+        ISeq<Phenotype<BitGene, Vec<double[]>>> phenoSeq = ISeq.of(phenotype);
+        double[] returnArray = { 0.0 };
+        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(Vec.of(returnArray));
+
+        // Act
+        Engine<BitGene, Vec<double[]>> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
                 populationSize, Runnable::run, selectorSize, offspringSelectorSize, mutationRate, crossoverRate);
 
+        // Assert
         engine.eval(phenoSeq);
         verify(fitnessFunction).apply(genotype);
         assertEquals(populationSize, engine.populationSize());

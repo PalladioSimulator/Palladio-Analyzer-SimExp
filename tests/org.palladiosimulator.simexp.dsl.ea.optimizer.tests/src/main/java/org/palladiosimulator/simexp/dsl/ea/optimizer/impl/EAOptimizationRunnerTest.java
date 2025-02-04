@@ -34,6 +34,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.RandomRegistry;
 
 public class EAOptimizationRunnerTest {
@@ -44,7 +45,7 @@ public class EAOptimizationRunnerTest {
     private IEAEvolutionStatusReceiver statusReceiver;
 
     @Mock
-    private FitnessFunction fitnessFunction;
+    private MOEAFitnessFunction fitnessFunction;
 
     @Mock
     private IExpressionCalculator expressionCalculator;
@@ -70,12 +71,12 @@ public class EAOptimizationRunnerTest {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         objectUnderTest = new EAOptimizationRunner();
-        when(fitnessFunction.apply(any())).then(new Answer<Double>() {
+        when(fitnessFunction.apply(any())).then(new Answer<Vec<double[]>>() {
             @Override
-            public Double answer(InvocationOnMock invocation) throws Throwable {
+            public Vec<double[]> answer(InvocationOnMock invocation) throws Throwable {
                 SmodelBitChromosome as = (SmodelBitChromosome) invocation.getArgument(0, Genotype.class)
                     .chromosome();
-                return (double) as.intValue();
+                return Vec.of(new double[] { as.intValue() });
             }
 
         });
@@ -83,13 +84,13 @@ public class EAOptimizationRunnerTest {
         optimizableNormalizer = new OptimizableNormalizer(expressionCalculator);
 
         SmodelBitset smodelBitset = new SmodelBitset(7);
-        RangeBounds rangeBound = RangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, expressionCalculator, 0,
-                100, 1);
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator,
+                expressionCalculator, 0, 100, 1);
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<BitGene> genotype = Genotype
             .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
-        Engine<BitGene, Double> engine = new OptimizationEngineBuilder().buildEngine(fitnessFunction, genotype, 10,
-                Runnable::run, 5, 5, 0.2, 0.2);
+        Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
+                10, Runnable::run, 5, 5, 0.2, 0.2);
         optFunction = r -> {
             return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, engine);
         };
@@ -101,10 +102,12 @@ public class EAOptimizationRunnerTest {
         EAResult runOptimization = RandomRegistry.with(new Random(42), optFunction);
 
         assertEquals(95.0, runOptimization.getFitness(), DELTA);
-        assertEquals(95, (int) runOptimization.getOptimizableValues()
+        assertEquals(95, (int) runOptimization.getOptimizableValuesList()
+            .get(0)
             .get(0)
             .getValue());
-        assertEquals(optimizable, runOptimization.getOptimizableValues()
+        assertEquals(optimizable, runOptimization.getOptimizableValuesList()
+            .get(0)
             .get(0)
             .getOptimizable());
     }

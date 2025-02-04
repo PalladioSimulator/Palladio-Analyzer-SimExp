@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -16,36 +17,42 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
+import io.jenetics.ext.moea.Vec;
 
-public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
-    private static final Logger LOGGER = Logger.getLogger(FitnessFunction.class);
+public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<double[]>> {
+
+    private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
 
-    public FitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
+    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
     @Override
-    public Double apply(Genotype<BitGene> genotype) {
+    public Vec<double[]> apply(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
-        //TODO nbruening: Reweight the return of the fitness properly
+//TODO nbruening: Reweight the return of the fitness properly
         for (SmodelBitChromosome currentChromo : chromosomes) {
-            if (!currentChromo.isValid())
-                return 0.0;        }
+            if (!currentChromo.isValid()) {
+                return Vec.of(0.0);
+            }
+        }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
-
-        Future<Double> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
+        Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
-            double fitness = fitnessFuture.get();
-            return fitness;
+            Optional<Double> optionalFitness = fitnessFuture.get();
+
+            // TODO nbruening: handle empty
+            double fitness = optionalFitness.get();
+            return Vec.of(fitness);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return fitness of 0.0", e.getMessage()), e);
         }
 
-        return 0.0;
+        return Vec.of(0.0);
     }
 
     private List<SmodelBitChromosome> extracted(Genotype<BitGene> genotype) {
@@ -59,4 +66,5 @@ public class FitnessFunction implements Function<Genotype<BitGene>, Double> {
         });
         return chromosomes;
     }
+
 }

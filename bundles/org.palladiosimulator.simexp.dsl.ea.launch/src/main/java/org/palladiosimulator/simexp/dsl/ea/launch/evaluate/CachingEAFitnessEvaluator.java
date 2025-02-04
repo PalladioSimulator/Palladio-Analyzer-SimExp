@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,15 +15,15 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     private static final Logger LOGGER = Logger.getLogger(CachingEAFitnessEvaluator.class);
 
     private final IDisposeableEAFitnessEvaluator delegate;
-    private final Map<List<OptimizableValue<?>>, Future<Double>> cache = new HashMap<>();
+    private final Map<List<OptimizableValue<?>>, Future<Optional<Double>>> cache = new HashMap<>();
 
     public CachingEAFitnessEvaluator(IDisposeableEAFitnessEvaluator delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    public synchronized Future<Double> calcFitness(List<OptimizableValue<?>> optimizableValues) {
-        Future<Double> future = cache.get(optimizableValues);
+    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+        Future<Optional<Double>> future = cache.get(optimizableValues);
         if (future == null) {
             LOGGER.info(String.format("cache miss: %s", asString(optimizableValues)));
             future = delegate.calcFitness(optimizableValues);

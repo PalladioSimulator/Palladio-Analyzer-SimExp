@@ -10,7 +10,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class RangeBoundsHelper {
 
-    public static RangeBounds initializeDoubleRangeBound(SmodelCreator smodelCreator, IExpressionCalculator calculator,
+    public RangeBounds initializeDoubleRangeBound(SmodelCreator smodelCreator, IExpressionCalculator calculator,
             double lowerBound, double upperBound, double stepSize) {
         DoubleLiteral lowerBoundLiteral = smodelCreator.createDoubleLiteral(lowerBound);
         DoubleLiteral upperBoundLiteral = smodelCreator.createDoubleLiteral(upperBound);
@@ -24,7 +24,7 @@ public class RangeBoundsHelper {
         return rangeBound;
     }
 
-    public static RangeBounds initializeIntegerRangeBound(SmodelCreator smodelCreator, IExpressionCalculator calculator,
+    public RangeBounds initializeIntegerRangeBound(SmodelCreator smodelCreator, IExpressionCalculator calculator,
             int lowerBound, int upperBound, int stepSize) {
         IntLiteral lowerBoundLiteral = smodelCreator.createIntLiteral(lowerBound);
         IntLiteral upperBoundLiteral = smodelCreator.createIntLiteral(upperBound);

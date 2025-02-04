@@ -8,11 +8,12 @@ import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
+import io.jenetics.ext.moea.Vec;
 
-public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene, Double> {
+public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene, Vec<double[]>> {
 
     @Override
-    public boolean test(Phenotype<BitGene, Double> individual) {
+    public boolean test(Phenotype<BitGene, Vec<double[]>> individual) {
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
@@ -26,7 +27,7 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
     }
 
     @Override
-    public Phenotype<BitGene, Double> repair(Phenotype<BitGene, Double> individual, long generation) {
+    public Phenotype<BitGene, Vec<double[]>> repair(Phenotype<BitGene, Vec<double[]>> individual, long generation) {
         List<Chromosome<BitGene>> chromosomes = new ArrayList();
         Genotype<BitGene> genotype = individual.genotype();
 
@@ -44,7 +45,7 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
                 chromosomes.add(genotype.get(i));
             }
         }
-        Phenotype<BitGene, Double> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
+        Phenotype<BitGene, Vec<double[]>> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
 
         if (!test(repairedIndividual)) {
             throw new RuntimeException("Repaired phenotype is still broken");
