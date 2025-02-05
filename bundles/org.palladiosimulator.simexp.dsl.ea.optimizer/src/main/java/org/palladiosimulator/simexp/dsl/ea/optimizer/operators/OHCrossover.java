@@ -28,6 +28,7 @@ public class OHCrossover extends Crossover<BitGene, Vec<double[]>> {
         Random random = RandomRegistry.random();
         if (random.nextDouble() < inOutProbability) {
             int distance = Math.abs(idxThat - idxOther);
+            distance = distance > 0 ? distance : 1;
             int firstRandomIdx = random.nextInt(distance);
             int secondRandomIdx = random.nextInt(distance);
             int minIdx = Math.min(idxThat, idxOther);
@@ -37,7 +38,8 @@ public class OHCrossover extends Crossover<BitGene, Vec<double[]>> {
             that.swap(idxThat, firstNewIdx);
             other.swap(idxOther, secondNewIdx);
         } else {
-            int distance = Math.abs(idxThat - idxOther);
+            int distance = Math.abs(idxThat - idxOther) * 2;
+            distance = distance > 0 ? distance : 1;
             int firstRandomIdx = random.nextInt(distance);
             int secondRandomIdx = random.nextInt(distance);
             int firstNewIdx = Math.min(idxThat, idxOther) - firstRandomIdx;

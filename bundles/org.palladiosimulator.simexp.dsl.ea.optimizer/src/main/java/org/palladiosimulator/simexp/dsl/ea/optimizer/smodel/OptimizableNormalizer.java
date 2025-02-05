@@ -131,7 +131,8 @@ public class OptimizableNormalizer {
     }
 
     protected SmodelBitChromosome toNormalizedSet(Optimizable optimizable, int boundsSize, int minLength) {
-        return SmodelBitChromosome.of(new SmodelBitset(minLength), optimizable, boundsSize, bitInterpreter);
+        return SmodelBitChromosome.of(new SmodelBitset(minLength, bitInterpreter), optimizable, boundsSize,
+                bitInterpreter);
     }
 
     private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {

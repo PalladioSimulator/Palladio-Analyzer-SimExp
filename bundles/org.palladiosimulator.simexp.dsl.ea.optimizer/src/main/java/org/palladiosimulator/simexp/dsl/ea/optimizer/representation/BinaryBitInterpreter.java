@@ -2,6 +2,8 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.BitSet;
 
+import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 
@@ -12,6 +14,12 @@ import io.jenetics.ext.moea.Vec;
 public class BinaryBitInterpreter implements BitInterpreter {
 
     private PowerUtil powerUtil = new PowerUtil();
+
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+
+    public BinaryBitInterpreter() {
+        LOGGER.info("BinaryBitInterpreter has been created");
+    }
 
     @Override
     public int toInt(SmodelBitset bitSet) {

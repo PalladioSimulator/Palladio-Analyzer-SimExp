@@ -32,8 +32,8 @@ public class EAOptimizationRunner {
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
-            .limit(bySteadyFitness(7))
-            .limit(100)
+            .limit(bySteadyFitness(12))
+            .limit(20)
             .peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));

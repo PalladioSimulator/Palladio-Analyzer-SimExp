@@ -51,16 +51,16 @@ public class EAOptimizer implements IEAOptimizer {
     private EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         LOGGER.info("EA running...");
-        BitInterpreter oneHotBitInterpreter = new OneHotBitInterpreter();
+        BitInterpreter bitInterpreter = new OneHotBitInterpreter();
         OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator(),
-                oneHotBitInterpreter);
+                bitInterpreter);
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
-        engine = builder.buildEngine(fitnessFunction, genotype, oneHotBitInterpreter, 100, executor, 5, 5, 0.8, 0.8);
+        engine = builder.buildEngine(fitnessFunction, genotype, bitInterpreter, 100, executor, 5, 5, 0.2, 0.05);
 
         //// run optimization
         return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, engine);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.EAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeOHConstraint;
 
@@ -12,6 +14,12 @@ import io.jenetics.engine.Constraint;
 import io.jenetics.ext.moea.Vec;
 
 public class OneHotBitInterpreter implements BitInterpreter {
+
+    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+
+    public OneHotBitInterpreter() {
+        LOGGER.info("OneHotBitInterpreter has been created");
+    }
 
     @Override
     public int toInt(SmodelBitset bitSet) {

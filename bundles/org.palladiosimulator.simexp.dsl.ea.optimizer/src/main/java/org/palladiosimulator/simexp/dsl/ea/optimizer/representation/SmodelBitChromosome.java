@@ -47,7 +47,7 @@ public class SmodelBitChromosome extends BitChromosome {
 
     @Override
     public SmodelBitset toBitSet() {
-        final SmodelBitset set = new SmodelBitset(length());
+        final SmodelBitset set = new SmodelBitset(length(), bitInterpreter);
         for (int i = 0, n = length(); i < n; ++i) {
             set.set(i, get(i).bit());
         }

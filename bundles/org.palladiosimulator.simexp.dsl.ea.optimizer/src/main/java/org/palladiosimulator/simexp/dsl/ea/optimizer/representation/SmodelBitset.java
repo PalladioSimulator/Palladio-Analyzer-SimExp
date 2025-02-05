@@ -37,10 +37,6 @@ public class SmodelBitset extends FixedSizeBitSet {
         return bitInterpreter.toInt(this);
     }
 
-    public static SmodelBitset fromInt(int nbits, int value) {
-        return new SmodelBitset(nbits, value);
-    }
-
     public static SmodelBitset fromInt(int nbits, int value, BitInterpreter bitInterpreter) {
         return new SmodelBitset(nbits, value, bitInterpreter);
     }

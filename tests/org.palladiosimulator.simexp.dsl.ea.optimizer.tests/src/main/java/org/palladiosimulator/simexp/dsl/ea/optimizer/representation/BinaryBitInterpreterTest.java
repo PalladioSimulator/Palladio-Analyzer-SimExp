@@ -113,7 +113,7 @@ public class BinaryBitInterpreterTest {
     }
 
     private SmodelBitset idxToBitSet(String first) {
-        SmodelBitset bitSet = new SmodelBitset(first.length());
+        SmodelBitset bitSet = new SmodelBitset(first.length(), new BinaryBitInterpreter());
         int stringLength = first.length();
         for (int i = 0; i < stringLength; i++) {
             if (first.charAt(stringLength - 1 - i) == '1') {
