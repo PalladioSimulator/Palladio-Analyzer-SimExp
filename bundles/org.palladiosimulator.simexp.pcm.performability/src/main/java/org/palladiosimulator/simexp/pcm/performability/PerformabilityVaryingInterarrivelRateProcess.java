@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.performability;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,9 +39,6 @@ import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
@@ -237,7 +235,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
                 }
             }
         }
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     private EnvironmentalState<List<InputValue<CategoricalValue>>> asPcmEnvironmentalState(
@@ -252,7 +250,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
 
     private PerceivedValue<List<InputValue<CategoricalValue>>> asPerceivedValue(
             List<InputValue<CategoricalValue>> sample) {
-        Map<String, String> attributeMap = Maps.newHashMap();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, SERVER_NODE_1_VARIABLE);
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, SERVER_NODE_2_VARIABLE);
