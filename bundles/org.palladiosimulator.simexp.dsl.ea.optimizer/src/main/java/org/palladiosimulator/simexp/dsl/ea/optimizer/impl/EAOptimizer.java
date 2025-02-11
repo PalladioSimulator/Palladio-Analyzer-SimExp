@@ -57,10 +57,11 @@ public class EAOptimizer implements IEAOptimizer {
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
-        engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.8, 0.8);
+        engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.01, 0.01);
 
         //// run optimization
-        return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, engine);
+        return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine,
+                genotype);
     }
 
     private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
