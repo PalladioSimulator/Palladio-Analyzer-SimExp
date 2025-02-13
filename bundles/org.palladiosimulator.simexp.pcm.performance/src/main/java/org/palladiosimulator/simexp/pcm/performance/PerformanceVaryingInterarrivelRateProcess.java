@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.performance;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,9 +38,6 @@ import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
 import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
 import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
@@ -223,7 +221,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
                 }
             }
         }
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     private EnvironmentalState<List<InputValue<CategoricalValue>>> asPcmEnvironmentalState(
@@ -238,7 +236,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
 
     private PerceivedValue<List<InputValue<CategoricalValue>>> asPerceivedValue(
             List<InputValue<CategoricalValue>> sample) {
-        Map<String, String> attributeMap = Maps.newHashMap();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
         PerceivedSelectedInputValues perceivedValue = new PerceivedSelectedInputValues(sample, attributeMap);
         return perceivedValue;
