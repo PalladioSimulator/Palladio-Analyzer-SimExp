@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
+import org.palladiosimulator.analyzer.workflow.core.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
 import org.palladiosimulator.dependability.reliability.uncertainty.solver.api.UncertaintyBasedReliabilityPredictionConfig;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
