@@ -18,7 +18,7 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ResourceEnvironmentMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.1"/>
   </monitors>
-  <monitors id="_eY6lkOuZEe-4yK3gT2vhZQ" entityName="ReconfigurationOutsource">
+  <monitors id="_eY6lkOuZEe-4yK3gT2vhZQ" entityName="ReconfigurationOutsource" activated="false">
     <measurementSpecifications id="_2_fbkOjrEeSExOmBpAKT0Q">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_VYg6MujFEeSB6OBq2SKZxQ"/>
       <processingType xsi:type="monitorrepository:FeedThrough" id="_ZNrDNO0WEeWdrOr0QROn8g"/>
@@ -43,11 +43,18 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ExternalCallActionMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.3"/>
   </monitors>
-  <monitors id="_eSqsMOxgEe-RLKB6swTWrQ" entityName="ReconfigurationScaleIn">
+  <monitors id="_eSqsMOxgEe-RLKB6swTWrQ" entityName="ReconfigurationScaleIn" activated="false">
     <measurementSpecifications id="_hXdS4OxgEe-RLKB6swTWrQ">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_VYg6MujFEeSB6OBq2SKZxQ"/>
       <processingType xsi:type="monitorrepository:FeedThrough" id="_BIie4OxhEe-RLKB6swTWrQ"/>
     </measurementSpecifications>
     <measuringPoint xsi:type="simulizarmeasuringpoint:ReconfigurationMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.7"/>
+  </monitors>
+  <monitors id="_skApEOybEe-RUdC2XFOWlg" entityName="ReconfigurationScale">
+    <measurementSpecifications id="_QD46sOyfEe-wbqvizPsHig">
+   	<metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_VYg6MujFEeSB6OBq2SKZxQ"/>
+      <processingType xsi:type="monitorrepository:FeedThrough" id="_THdZYOyfEe-wbqvizPsHig"/>
+    </measurementSpecifications>
+    <measuringPoint xsi:type="simulizarmeasuringpoint:ReconfigurationMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.8"/>
   </monitors>
 </monitorrepository:MonitorRepository>

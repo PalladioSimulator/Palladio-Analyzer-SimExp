@@ -31,7 +31,7 @@ modeltype PCM_STOEX uses 'http://sdq.ipd.uka.de/StochasticExpressions/2.2';
  * transformation definition, while no name is needed for the output PCM modeltype. Note that OCL 
  * type and namespace notation are used in operational QVT (: and :: respectively).
  */
-transformation outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
+transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 							//inout pcmRepository : PCM_REP,
 							//in pcmSystem : PCM_SYS,
 							inout pcmAllocation : PCM_ALLOC
@@ -40,9 +40,11 @@ transformation outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 							
 							
 	// Define Threshold and Scale Out
-	property upperThreshold : Real = 1.3;
-	property lowerThreshold : Real = 0.7;
+	property upperThreshold : Real = 0.3;
+	property lowerThreshold : Real = 2.0; 
 	property outsourceFactor : Real = 0.1;
+	
+	property responseTimeMonitorId : String = "_LQcqIMltEeSsG6YHnSxiuA";
 
 	/**
 	 * The main transformation.
@@ -67,26 +69,35 @@ transformation outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 	helper Set(RuntimeMeasurement) :: checkCondition() : Boolean {
 	
 		self->forEach(measurement) {
-		log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
+			log('Monitor: ['+ measurement.measurementSpecification.monitor.id.toString() +', '+measurement.measurementSpecification.monitor.entityName.toString()+']');
+			var monitorId : String = measurement.measurementSpecification.monitor.id;
+			var monitorEntityName : String = measurement.measurementSpecification.monitor.entityName;
+			log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
 		
-			if (measurement.measuringValue > upperThreshold) {
 		
-				log('Threshold is exceeded -> scaleOut');
-				pcmAllocation.rootObjects()[Allocation]->forAll(
-					allocation : Allocation | 
-					outSourceProcessing(allocation.allocationContexts_Allocation)
-				);
-				return true;
+			if (monitorId = responseTimeMonitorId) {
+				//		    var measuredValue : Real = measurement.measuringValue;
+				//		    log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value = '+ measurement.measuringValue.toString());
+				if (measurement.measuringValue > upperThreshold) {
+			
+					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + '] -> Threshold is exceeded: ' + measurement.measuringValue.toString() + ' > ' + upperThreshold.toString() + '-> scaleOut');
+					pcmAllocation.rootObjects()[Allocation]->forAll(
+						allocation : Allocation | 
+						outSourceProcessing(allocation.allocationContexts_Allocation)
+					);
+					return true;
+				};
+				if (measurement.measuringValue < lowerThreshold) {
+			
+					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + '] -> Threshold is exceeded: ' + measurement.measuringValue.toString() + ' > ' + lowerThreshold.toString() + '-> scaleIn');
+					pcmAllocation.rootObjects()[Allocation]->forAll(
+						allocation : Allocation | 
+						scaleInProcessing(allocation.allocationContexts_Allocation)
+					);
+					return true;
+				};
 			};
-			if (measurement.measuringValue < lowerThreshold) {
-		
-				log('Threshold is exceeded -> scaleIn');
-				pcmAllocation.rootObjects()[Allocation]->forAll(
-					allocation : Allocation | 
-					scaleInProcessing(allocation.allocationContexts_Allocation)
-				);
-				return true;
-			};
+
 		};
 		
 		log('No measurements match the condition. Number of measurements is ' + self->size().toString());
