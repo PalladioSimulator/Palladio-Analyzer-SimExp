@@ -70,7 +70,7 @@ transformation scaleIn(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 		
 			if (measurement.measuringValue < threshold) {
 		
-				log('Threshold is exceeded');
+				log('Threshold is exceeded: ' + measurement.measuringValue.toString() + ' < ' + threshold.toString());
 				pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					outSourceProcessing(allocation.allocationContexts_Allocation)

@@ -67,10 +67,9 @@ transformation outsource(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 	
 		self->forEach(measurement) {
 		log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
-		
 			if (measurement.measuringValue > threshold) {
 		
-				log('Threshold is exceeded');
+				log('Threshold is exceeded: ' + measurement.measuringValue.toString() + ' > ' + threshold.toString());
 				pcmAllocation.rootObjects()[Allocation]->forAll(
 					allocation : Allocation | 
 					outSourceProcessing(allocation.allocationContexts_Allocation)
