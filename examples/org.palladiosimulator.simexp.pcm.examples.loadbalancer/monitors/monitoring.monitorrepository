@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monitorrepository:MonitorRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:metricspec="http://palladiosimulator.org/MetricSpec/1.0" xmlns:monitorrepository="http://palladiosimulator.org/MonitorRepository/1.0" xmlns:org.palladiosimulator.edp2.models="http://palladiosimulator.org/EDP2/MeasuringPoint/1.0" xmlns:pcmmeasuringpoint="http://palladiosimulator.org/PCM/MeasuringPoint/1.0" id="_I0p9IMltEeSsG6YHnSxiuA" entityName="Monitoring">
+<monitorrepository:MonitorRepository xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:metricspec="http://palladiosimulator.org/MetricSpec/1.0" xmlns:monitorrepository="http://palladiosimulator.org/MonitorRepository/1.0" xmlns:pcmmeasuringpoint="http://palladiosimulator.org/PCM/MeasuringPoint/1.0" xmlns:simulizarmeasuringpoint="http://palladiosimulator.org/simulizar/measuringpoint" id="_I0p9IMltEeSsG6YHnSxiuA" entityName="Monitoring">
   <monitors id="_LQcqIMltEeSsG6YHnSxiuA" entityName="System Response Time">
     <measurementSpecifications id="_vZLk8Mu0EeSC07Pn0gpm5Q">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_6rYmYs7nEeOX_4BzImuHbA"/>
@@ -18,6 +18,13 @@
     </measurementSpecifications>
     <measuringPoint xsi:type="pcmmeasuringpoint:ResourceEnvironmentMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.1"/>
   </monitors>
+  <monitors id="_eY6lkOuZEe-4yK3gT2vhZQ" entityName="Reconfiguration">
+    <measurementSpecifications id="_2_fbkOjrEeSExOmBpAKT0Q">
+      <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_VYg6MujFEeSB6OBq2SKZxQ"/>
+      <processingType xsi:type="monitorrepository:FeedThrough" id="_ZNrDNO0WEeWdrOr0QROn8g"/>
+    </measurementSpecifications>
+    <measuringPoint xsi:type="simulizarmeasuringpoint:ReconfigurationMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.8"/>
+  </monitors>
   <monitors id="_qh0UkAOzEeWk4qXEVpjV-g" entityName="Server1">
     <measurementSpecifications id="_t9ApEAOzEeWk4qXEVpjV-g">
       <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_6rYmYs7nEeOX_4BzImuHbA"/>
@@ -25,7 +32,7 @@
         <statisticalCharacterization xsi:type="monitorrepository:ArithmeticMean"/>
       </processingType>
     </measurementSpecifications>
-    <measuringPoint xsi:type="org.palladiosimulator.edp2.models:ResourceURIMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.2"/>
+    <measuringPoint xsi:type="pcmmeasuringpoint:ExternalCallActionMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.2"/>
   </monitors>
   <monitors id="_sxfRIAOzEeWk4qXEVpjV-g" entityName="Server2">
     <measurementSpecifications id="_5osNEAOzEeWk4qXEVpjV-g">
@@ -34,35 +41,6 @@
         <statisticalCharacterization xsi:type="monitorrepository:ArithmeticMean"/>
       </processingType>
     </measurementSpecifications>
-    <measuringPoint xsi:type="org.palladiosimulator.edp2.models:ResourceURIMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.3"/>
-  </monitors>
-  <monitors id="_qh0UkAOzEeWk4qXEVpjV-g" entityName="cpuServer1">
-    <measurementSpecifications id="_rGYRsH31EeiWO6e9VBmq9g">
-      <metricDescription xsi:type="metricspec:MetricSetDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_mhws4SkUEeSuf8LV7cHLgA"/>
-      <processingType xsi:type="monitorrepository:TimeDriven" id="_vJn8UX4DEeiWO6e9VBmq9g"/>
-    </measurementSpecifications>
-    <measurementSpecifications id="_06S6cH4DEeiWO6e9VBmq9g">
-      <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_paDhIs7qEeOX_4BzImuHbA"/>
-      <processingType xsi:type="monitorrepository:FeedThrough" id="_172eFH4DEeiWO6e9VBmq9g"/>
-    </measurementSpecifications>
-    <measuringPoint xsi:type="pcmmeasuringpoint:ActiveResourceMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.4"/>
-  </monitors>
-  <monitors id="_ya5LsH32EeiWO6e9VBmq9g" entityName="cpuServer2">
-    <measurementSpecifications id="_0aBK0H32EeiWO6e9VBmq9g">
-      <metricDescription xsi:type="metricspec:MetricSetDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_mhws4SkUEeSuf8LV7cHLgA"/>
-      <processingType xsi:type="monitorrepository:TimeDriven" id="_4oYosX32EeiWO6e9VBmq9g"/>
-    </measurementSpecifications>
-    <measurementSpecifications id="_KPq8kH4EEeiWO6e9VBmq9g">
-      <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_paDhIs7qEeOX_4BzImuHbA"/>
-      <processingType xsi:type="monitorrepository:FeedThrough" id="_KyPeJH4EEeiWO6e9VBmq9g"/>
-    </measurementSpecifications>
-    <measuringPoint xsi:type="pcmmeasuringpoint:ActiveResourceMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.5"/>
-  </monitors>
-  <monitors id="_FQZm4H9cEeilne_1eTdk7w" entityName="pointInTime">
-    <measurementSpecifications id="_F0vqEH9cEeilne_1eTdk7w">
-      <metricDescription xsi:type="metricspec:NumericalBaseMetricDescription" href="pathmap://METRIC_SPEC_MODELS/commonMetrics.metricspec#_NCRBos7pEeOX_4BzImuHbA"/>
-      <processingType xsi:type="monitorrepository:FeedThrough" id="_WiDU5H9cEeilne_1eTdk7w"/>
-    </measurementSpecifications>
-    <measuringPoint xsi:type="pcmmeasuringpoint:UsageScenarioMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.0"/>
+    <measuringPoint xsi:type="pcmmeasuringpoint:ExternalCallActionMeasuringPoint" href="sensors.measuringpoint#//@measuringPoints.3"/>
   </monitors>
 </monitorrepository:MonitorRepository>
