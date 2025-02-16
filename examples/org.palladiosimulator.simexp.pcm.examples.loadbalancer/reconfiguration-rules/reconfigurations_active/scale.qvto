@@ -40,8 +40,8 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 							
 							
 	// Define Threshold and Scale Out
-	property upperThreshold : Real = 0.3;
-	property lowerThreshold : Real = 2.0; 
+	property upperThreshold : Real = 2.0;
+	property lowerThreshold : Real = 0.3; 
 	property outsourceFactor : Real = 0.1;
 	
 	property responseTimeMonitorId : String = "_LQcqIMltEeSsG6YHnSxiuA";
@@ -73,23 +73,22 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 			var monitorId : String = measurement.measurementSpecification.monitor.id;
 			var monitorEntityName : String = measurement.measurementSpecification.monitor.entityName;
 			log('Measured value at ' + measurement.measuringPoint.stringRepresentation + ' is ' + measurement.measuringValue.toString());
-		
-		
+
+			// check response time monitor 
 			if (monitorId = responseTimeMonitorId) {
-				//		    var measuredValue : Real = measurement.measuringValue;
-				//		    log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value = '+ measurement.measuringValue.toString());
-				if (measurement.measuringValue > upperThreshold) {
-			
-					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + '] -> Threshold is exceeded: ' + measurement.measuringValue.toString() + ' > ' + upperThreshold.toString() + '-> scaleOut');
+				var measuredValue : Real = measurement.measuringValue;
+//				log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value = '+ measuredValue.toString());
+				if (measuredValue > upperThreshold) {
+					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value exceeded threshold: ' + measuredValue.toString() + ' > ' + upperThreshold.toString() + '-> scaleOut');
 					pcmAllocation.rootObjects()[Allocation]->forAll(
 						allocation : Allocation | 
 						outSourceProcessing(allocation.allocationContexts_Allocation)
 					);
 					return true;
 				};
-				if (measurement.measuringValue < lowerThreshold) {
+				if (measuredValue < lowerThreshold) {
 			
-					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + '] -> Threshold is exceeded: ' + measurement.measuringValue.toString() + ' > ' + lowerThreshold.toString() + '-> scaleIn');
+					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value exceeded threshold: ' + measuredValue.toString() + ' > ' + lowerThreshold.toString() + '-> scaleIn');
 					pcmAllocation.rootObjects()[Allocation]->forAll(
 						allocation : Allocation | 
 						scaleInProcessing(allocation.allocationContexts_Allocation)
@@ -108,8 +107,9 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 	 * outsource Processing.
 	 */
 	helper outSourceProcessing(allocationContexts : Set(AllocationContext)) : Boolean {
+		log('Start scaleOut...');
 	
-	log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
+		log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
 	
 		allocationContexts->forEach(allocation){
 
@@ -141,8 +141,9 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 	 * scaleIn Processing.
 	 */
 	helper scaleInProcessing(allocationContexts : Set(AllocationContext)) : Boolean {
+		log('Start scaleIn...');
 	
-	log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
+		log('Found ' +  allocationContexts->size().toString() + ' AllocationContexts');
 	
 		allocationContexts->forEach(allocation){
 
