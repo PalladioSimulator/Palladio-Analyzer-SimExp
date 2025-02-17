@@ -23,6 +23,8 @@ import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizer implements IEAOptimizer {
 
+    private static final int POPULATION_SIZE = 100;
+
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     private IEAConfig config;
@@ -57,10 +59,10 @@ public class EAOptimizer implements IEAOptimizer {
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
-        engine = builder.buildEngine(fitnessFunction, genotype, 100, executor, 5, 5, 0.8, 0.8);
+        engine = builder.buildEngine(fitnessFunction, genotype, POPULATION_SIZE, executor, 5, 5, 0.01, 0.1);
 
         //// run optimization
-        return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, engine);
+        return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine);
     }
 
     private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,

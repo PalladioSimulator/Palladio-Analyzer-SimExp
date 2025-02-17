@@ -13,6 +13,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalize
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.BitGene;
+import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
 import io.jenetics.ext.moea.MOEA;
@@ -26,8 +27,12 @@ public class EAOptimizationRunner {
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, final Engine<BitGene, Vec<double[]>> engine) {
-        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics();
+            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
+            final Engine<BitGene, Vec<double[]>> engine) {
+        Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
+            .newInstance();
+        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
+                genotypeInstance);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 

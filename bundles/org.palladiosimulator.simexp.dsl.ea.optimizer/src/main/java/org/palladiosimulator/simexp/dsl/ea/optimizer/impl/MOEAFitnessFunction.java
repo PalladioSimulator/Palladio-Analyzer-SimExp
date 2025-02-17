@@ -1,8 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -23,6 +26,9 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
+    private static Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
+        .synchronizedSet(new HashSet<>());
+
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
 
@@ -40,6 +46,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
+        synchronizedSetOfEvaluatedOptimizable.add(optimizableValues);
         Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
             Optional<Double> optionalFitness = fitnessFuture.get();
@@ -52,6 +59,10 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         }
 
         return Vec.of(0.0);
+    }
+
+    public long getNumberOfUniqueFitnessEvaluations() {
+        return synchronizedSetOfEvaluatedOptimizable.size();
     }
 
     private List<SmodelBitChromosome> extracted(Genotype<BitGene> genotype) {

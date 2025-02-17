@@ -39,7 +39,7 @@ public class OptimizableNormalizer {
             .collect(Collectors.toList());
     }
 
-    private void saveIfLengthIsZero(SmodelBitChromosome chromosome) {
+    private synchronized void saveIfLengthIsZero(SmodelBitChromosome chromosome) {
         if (chromosome.length() == 0) {
             singleValueOptimizables.add(chromosome);
         }
@@ -78,39 +78,13 @@ public class OptimizableNormalizer {
         return optimizableValuesFromChromosomes;
     }
 
-    public void addSingleValueOptimizablesIfNotContained(List<OptimizableValue<?>> optimizableValuesFromChromosomes) {
+    public synchronized void addSingleValueOptimizablesIfNotContained(
+            List<OptimizableValue<?>> optimizableValuesFromChromosomes) {
         singleValueOptimizables.forEach(o -> {
             OptimizableValue<?> optimizable = toOptimizable(o);
             optimizableValuesFromChromosomes.add(optimizable);
         });
     }
-
-    // TODO nbruening: remove
-//    private OptimizableValue<?> toOptimizableSingleChromosome() {
-//        for (Optimizable singleValueOptimizable : singleValueOptimizables) {
-//            if (optimizableValuesFromChromosomes.contains(singleValueOptimizable)) {
-//                List<?> valueList;
-//                switch (singleValueOptimizable.getDataType()) {
-//                case INT:
-//                    valueList = getValueListInt(singleValueOptimizable);
-//                    break;
-//                case DOUBLE:
-//                    valueList = getValueListDouble(singleValueOptimizable);
-//                    break;
-//                case BOOL:
-//                    valueList = getValueListBoolean(singleValueOptimizable);
-//                    break;
-//                case STRING:
-//                    valueList = getValueListString(singleValueOptimizable);
-//                    break;
-//                default:
-//                    throw new OptimizableProcessingException("Optimizable has no known datatype: " + singleValueOptimizable);
-//                }
-//
-//                (new OptimizableValue<>(singleValueOptimizable, valueList.get(0)));
-//            }
-//        }
-//    }
 
     public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
         Optimizable optimizable = chromosome.getOptimizable();
