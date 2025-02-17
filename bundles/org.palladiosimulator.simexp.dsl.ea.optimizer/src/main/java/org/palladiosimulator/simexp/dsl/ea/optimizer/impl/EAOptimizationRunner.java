@@ -28,9 +28,11 @@ public class EAOptimizationRunner {
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
             OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<BitGene, Vec<double[]>> engine, Genotype<BitGene> genotype) {
+            final Engine<BitGene, Vec<double[]>> engine) {
+        Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
+            .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
-                genotype);
+                genotypeInstance);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 

@@ -46,8 +46,8 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
 
     @Override
     public String toString() {
-        double percentageVisited = ((double) fitnessFunction.getNumberOfUniqueFitnessEvaluations())
-                / (double) getNumberOfCombinationsInOptimizableSpace();
+        double percentageVisited = (((double) fitnessFunction.getNumberOfUniqueFitnessEvaluations())
+                / (double) getNumberOfCombinationsInOptimizableSpace()) * 100;
         percentageVisited = Math.floor(percentageVisited * ROUNDING_CONSTANT) / ROUNDING_CONSTANT;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
@@ -58,7 +58,7 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
         stringBuilder.append(getNumberOfCombinationsInOptimizableSpace());
         stringBuilder.append("    that's   ");
         stringBuilder.append(percentageVisited + " %");
-        stringBuilder.append("                  |\n");
+        stringBuilder.append("                         |\n");
         stringBuilder.append("+---------------------------------------------------------------------------+\n");
         return evolutionStatistics.toString() + "\n" + stringBuilder.toString();
     }
