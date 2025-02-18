@@ -43,14 +43,21 @@ import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
+import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.ui.UIBasedWorkflowExceptionHandler;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(SimExpLauncher.class.getName());
+
+    @Override
+    protected WorkflowExceptionHandler createExceptionHandler(boolean interactive) {
+        return new UIBasedWorkflowExceptionHandler(!interactive);
+    }
 
     @Override
     protected IJob createWorkflowJob(SimExpWorkflowConfiguration config, ILaunch launch) throws CoreException {
@@ -224,5 +231,4 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         loggerList.add(setupLogger("org.palladiosimulator.envdyn.api.entity", logLevel, SHORT_LOG_PATTERN));
         return loggerList;
     }
-
 }
