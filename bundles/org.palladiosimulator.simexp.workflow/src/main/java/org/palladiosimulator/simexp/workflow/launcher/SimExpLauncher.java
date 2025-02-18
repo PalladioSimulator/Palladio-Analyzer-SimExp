@@ -23,6 +23,7 @@ import org.apache.log4j.PatternLayout;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
@@ -43,9 +44,12 @@ import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
+import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
 import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
 import de.uka.ipd.sdq.workflow.jobs.IJob;
 import de.uka.ipd.sdq.workflow.logging.console.LoggerAppenderStruct;
+import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
+import de.uka.ipd.sdq.workflow.ui.UIBasedWorkflow;
 import de.uka.ipd.sdq.workflow.ui.UIBasedWorkflowExceptionHandler;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
@@ -53,6 +57,14 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(SimExpLauncher.class.getName());
+
+    @Override
+    protected BlackboardBasedWorkflow<MDSDBlackboard> createWorkflow(
+            final SimExpWorkflowConfiguration workflowConfiguration, final IProgressMonitor monitor,
+            final ILaunch launch) throws CoreException {
+        return new UIBasedWorkflow<>(this.createWorkflowJob(workflowConfiguration, launch), monitor,
+                this.createExceptionHandler(workflowConfiguration.isInteractive()), this.createBlackboard());
+    }
 
     @Override
     protected WorkflowExceptionHandler createExceptionHandler(boolean interactive) {
