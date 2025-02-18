@@ -192,7 +192,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
         Level logLevel = getLogLevel(configuration);
-        ArrayList<LoggerAppenderStruct> appenders = setupLogging(logLevel);
+        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
         for (LoggerAppenderStruct entry : appenders) {
             Logger entryLogger = entry.getLogger();
             entryLogger.addAppender(fa);
@@ -210,9 +210,9 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
     }
 
     @Override
-    protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
+    protected List<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
         // FIXME: during development set debug level hard-coded to DEBUG
-        ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);
+        List<LoggerAppenderStruct> loggerList = new ArrayList<>(super.setupLogging(Level.DEBUG));
         loggerList.add(setupLogger("org.palladiosimulator.simexp", logLevel,
                 Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN));
         loggerList.add(setupLogger("org.palladiosimulator.experimentautomation.application", logLevel,
