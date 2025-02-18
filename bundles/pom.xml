@@ -30,6 +30,7 @@
 		<module>org.palladiosimulator.simexp.model.strategy</module>
 		<module>org.palladiosimulator.simexp.pcm.binding</module>
 		<module>org.palladiosimulator.simexp.pcm</module>
+		<module>org.palladiosimulator.simexp.pcm.ui</module>
 		<module>org.palladiosimulator.simexp.pcm.simulator</module>
 		<module>org.palladiosimulator.simexp.pcm.modelled</module>
 		<module>org.palladiosimulator.simexp.pcm.modelled.simulator</module>
