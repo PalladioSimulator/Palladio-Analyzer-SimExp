@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.workflow.config;
+package org.palladiosimulator.simexp.workflow.api;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +15,10 @@ import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
+import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
