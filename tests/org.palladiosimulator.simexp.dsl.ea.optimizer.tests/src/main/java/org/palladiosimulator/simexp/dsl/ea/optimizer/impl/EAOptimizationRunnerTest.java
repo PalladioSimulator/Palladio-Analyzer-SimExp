@@ -92,7 +92,7 @@ public class EAOptimizationRunnerTest {
         Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
                 10, Runnable::run, 5, 5, 0.2, 0.2);
         optFunction = r -> {
-            return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, engine);
+            return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, fitnessFunction, engine);
         };
     }
 

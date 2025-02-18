@@ -45,6 +45,10 @@ public class SmodelBitChromosome extends BitChromosome {
         return bitInterpreter.toInt(bitSet);
     }
 
+    public int getNumOfValues() {
+        return numOfValues;
+    }
+
     @Override
     public SmodelBitset toBitSet() {
         final SmodelBitset set = new SmodelBitset(length());
