@@ -2,8 +2,8 @@ package org.palladiosimulator.simexp.pcm.util;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.palladiosimulator.analyzer.workflow.core.blackboard.PCMResourceSetPartition;
-import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
-import org.palladiosimulator.analyzer.workflow.jobs.PreparePCMBlackboardPartitionJob;
+import org.palladiosimulator.analyzer.workflow.core.jobs.LoadPCMModelsIntoBlackboardJob;
+import org.palladiosimulator.analyzer.workflow.core.jobs.PreparePCMBlackboardPartitionJob;
 import org.palladiosimulator.experimentautomation.application.jobs.CopyPartitionJob;
 import org.palladiosimulator.experimentautomation.application.jobs.LoadModelsIntoBlackboardJob;
 import org.palladiosimulator.experimentautomation.application.jobs.PrepareBlackboardJob;

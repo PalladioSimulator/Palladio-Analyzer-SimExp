@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.reliability.job;
 
-import org.palladiosimulator.analyzer.workflow.jobs.PreparePCMBlackboardPartitionJob;
+import org.palladiosimulator.analyzer.workflow.core.jobs.PreparePCMBlackboardPartitionJob;
 import org.palladiosimulator.solver.core.models.PCMInstance;
 import org.palladiosimulator.solver.core.runconfig.PCMSolverWorkflowRunConfiguration;
 
