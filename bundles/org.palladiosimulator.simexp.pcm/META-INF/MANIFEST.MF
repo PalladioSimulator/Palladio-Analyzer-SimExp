@@ -28,7 +28,8 @@ Require-Bundle: com.google.guava;bundle-version="21.0.0",
  tools.mdsd.probdist.api,
  org.palladiosimulator.envdyn.model,
  org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",
- de.uka.ipd.sdq.codegen.simucontroller;bundle-version="5.2.1"
+ de.uka.ipd.sdq.codegen.simucontroller.core;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm
 Bundle-ActivationPolicy: lazy
