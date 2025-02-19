@@ -26,7 +26,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
-    private static Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
+    private Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
         .synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
