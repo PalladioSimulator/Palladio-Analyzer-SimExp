@@ -7,7 +7,7 @@ Automatic-Module-Name: org.palladiosimulator.simexp.pcm.binding
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.simexp.environmentaldynamics,
- org.palladiosimulator.analyzer.workflow,
+ org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.1",
  org.palladiosimulator.pcm,
  tools.mdsd.probdist.api,
  org.apache.commons.lang;bundle-version="2.6.0",
