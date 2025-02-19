@@ -49,7 +49,7 @@ import org.palladiosimulator.simexp.pcm.state.PcmMeasurementSpecification;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.core.models.PCMInstance;
-import org.palladiosimulator.solver.runconfig.PCMSolverWorkflowRunConfiguration;
+import org.palladiosimulator.solver.core.runconfig.PCMSolverWorkflowRunConfiguration;
 
 import de.uka.ipd.sdq.workflow.mdsd.blackboard.ResourceSetPartition;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
