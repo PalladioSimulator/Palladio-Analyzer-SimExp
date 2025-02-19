@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
 Bundle-Version: 0.1.0.qualifier
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.optimizer.tests
