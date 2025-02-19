@@ -41,7 +41,7 @@ import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 
-import de.uka.ipd.sdq.simulation.AbstractSimulationConfig;
+import de.uka.ipd.sdq.simulation.core.AbstractSimulationConfig;
 import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;
 import de.uka.ipd.sdq.workflow.jobs.SequentialJob;
