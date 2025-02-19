@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.palladiosimulator.analyzer.workflow.core.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.analyzer.workflow.jobs.LoadPCMModelsIntoBlackboardJob;
 import org.palladiosimulator.simexp.pcm.util.PcmUtil;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import de.uka.ipd.sdq.workflow.jobs.CleanupFailedException;
 import de.uka.ipd.sdq.workflow.jobs.IBlackboardInteractingJob;

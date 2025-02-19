@@ -37,7 +37,7 @@ import org.palladiosimulator.failuremodel.failurescenario.FailureScenarioReposit
 import org.palladiosimulator.failuremodel.failurescenario.FailurescenarioPackage;
 import org.palladiosimulator.failuremodel.failuretype.FailureTypeRepository;
 import org.palladiosimulator.simulizar.launcher.jobs.LoadSimuLizarModelsIntoBlackboardJob;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import com.google.common.collect.Lists;
 
