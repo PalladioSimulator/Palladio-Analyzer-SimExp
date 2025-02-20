@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  tools.mdsd.probdist.api;bundle-version="1.0.0",
  com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
- de.uka.ipd.sdq.workflow.mdsd,
+ de.uka.ipd.sdq.workflow.mdsd.core;bundle-version="5.2.1",
  org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.1",
  org.palladiosimulator.commons,
  tools.mdsd.probdist.api.apache,
@@ -32,7 +32,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.distribution;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0",
- org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
+ org.apache.log4j;bundle-version="1.2.19",
+ de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.reliability
 Bundle-ActivationPolicy: lazy
