@@ -35,7 +35,7 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.18.200",
  tools.mdsd.probdist.model.basic;bundle-version="1.0.0",
  org.palladiosimulator.experimentautomation;bundle-version="4.3.0",
  org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="4.3.0",
- de.uka.ipd.sdq.workflow.mdsd;bundle-version="4.3.0",
+ de.uka.ipd.sdq.workflow.mdsd.core;bundle-version="5.2.1",
  de.uka.ipd.sdq.scheduler;bundle-version="5.2.0",
  org.palladiosimulator.simexp.commons.constants,
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0"
