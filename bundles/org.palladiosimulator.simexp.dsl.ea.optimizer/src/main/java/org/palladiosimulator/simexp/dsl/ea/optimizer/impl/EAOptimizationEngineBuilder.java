@@ -21,7 +21,7 @@ public class EAOptimizationEngineBuilder {
         return Engine.builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
             .populationSize(populationSize)
             .executor(executor)
-            .selector(new TournamentSelector<>(selectorSize))
+            .survivorsSelector(new TournamentSelector<>(selectorSize))
             .offspringSelector(new TournamentSelector<>(offspringSelectorSize))
             .alterers(new Mutator<>(mutationRate), new UniformCrossover<>(crossoverRate))
             .build();

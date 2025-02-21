@@ -25,6 +25,10 @@ public class EAOptimizer implements IEAOptimizer {
 
     private static final int POPULATION_SIZE = 80;
 
+    private static final int SURVIVOR_SELECTOR_TOURNAMENT_SIZE = 5;
+
+    private static final int OFFSPRING_SELECTOR_TOURNAMENT_SIZE = 5;
+
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     private IEAConfig config;
@@ -59,7 +63,8 @@ public class EAOptimizer implements IEAOptimizer {
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder();
-        engine = builder.buildEngine(fitnessFunction, genotype, POPULATION_SIZE, executor, 5, 5, 0.01, 0.8);
+        engine = builder.buildEngine(fitnessFunction, genotype, POPULATION_SIZE, executor,
+                SURVIVOR_SELECTOR_TOURNAMENT_SIZE, OFFSPRING_SELECTOR_TOURNAMENT_SIZE, 0.01, 0.8);
 
         //// run optimization
         return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine);
