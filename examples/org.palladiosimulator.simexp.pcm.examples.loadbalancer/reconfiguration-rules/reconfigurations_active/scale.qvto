@@ -78,7 +78,7 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 			if (monitorId = responseTimeMonitorId) {
 				var measuredValue : Real = measurement.measuringValue;
 //				log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value = '+ measuredValue.toString());
-				if (measuredValue > upperThreshold) {
+				if (measuredValue >= upperThreshold) {
 					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value exceeded threshold: ' + measuredValue.toString() + ' > ' + upperThreshold.toString() + '-> scaleOut');
 					pcmAllocation.rootObjects()[Allocation]->forAll(
 						allocation : Allocation | 
@@ -86,7 +86,7 @@ transformation scale(	in runtimeMeasurement : RUNTIMEMEASUREMENT,
 					);
 					return true;
 				};
-				if (measuredValue < lowerThreshold) {
+				if (measuredValue <= lowerThreshold) {
 			
 					log('MeasuringPoint[' + measurement.measuringPoint.stringRepresentation + ']: measured value exceeded threshold: ' + measuredValue.toString() + ' > ' + lowerThreshold.toString() + '-> scaleIn');
 					pcmAllocation.rootObjects()[Allocation]->forAll(
