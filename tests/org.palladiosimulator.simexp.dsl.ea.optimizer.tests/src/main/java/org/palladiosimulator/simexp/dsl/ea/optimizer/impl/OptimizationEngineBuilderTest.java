@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
@@ -43,19 +45,16 @@ public class OptimizationEngineBuilderTest {
     @Test
     public void testBuildEngine() {
         // Arrange
-        EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder();
         int populationSize = 500;
-        int selectorSize = 5;
-        int offspringSelectorSize = 5;
-        double mutationRate = 0.2;
-        double crossoverRate = 0.5;
+        IEAConfig config = new ConfigHelper(populationSize, 0.2, 0.5);
+        EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder(config);
         ISeq<Phenotype<BitGene, Vec<double[]>>> phenoSeq = ISeq.of(phenotype);
         double[] returnArray = { 0.0 };
         when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(Vec.of(returnArray));
 
         // Act
         Engine<BitGene, Vec<double[]>> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
-                populationSize, Runnable::run, selectorSize, offspringSelectorSize, mutationRate, crossoverRate);
+                Runnable::run);
 
         // Assert
         engine.eval(phenoSeq);
