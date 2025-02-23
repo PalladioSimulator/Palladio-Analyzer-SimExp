@@ -13,7 +13,7 @@ public class EAConfig implements IEAConfig {
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return Optional.of(30);
+        return Optional.of(50);
     }
 
     @Override
