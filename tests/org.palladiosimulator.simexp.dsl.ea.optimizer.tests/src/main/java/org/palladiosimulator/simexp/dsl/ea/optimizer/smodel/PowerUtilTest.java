@@ -1,16 +1,23 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 
 public class PowerUtilTest {
     private PowerUtil powerUtil;
 
+    @Mock
+    private IExpressionCalculator calculator;
+
     @Before
     public void setUp() {
-        powerUtil = new PowerUtil();
+        initMocks(this);
+        powerUtil = new PowerUtil(calculator);
     }
 
     @Test
