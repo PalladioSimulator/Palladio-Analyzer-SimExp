@@ -6,11 +6,13 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 
 import io.jenetics.BitGene;
+import io.jenetics.Crossover;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.Engine.Builder;
 import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizationEngineBuilder {
@@ -25,31 +27,49 @@ public class EAOptimizationEngineBuilder {
 
     private static final int OFFSPRING_SELECTOR_TOURNAMENT_SIZE = 5;
 
-    private final int populationSize;
-
     private final double crossoverRate;
 
     private final double mutationRate;
 
+    private IEAConfig config;
+
     public EAOptimizationEngineBuilder(IEAConfig config) {
+        this.config = config;
         mutationRate = config.mutationRate()
             .orElse(DEFAULT_MUTATION_RATE);
         crossoverRate = config.crossoverRate()
             .orElse(DEFAULT_CROSSOVER_RATE);
-        populationSize = config.populationSize()
-            .orElse(DEFAULT_POPULATION_SIZE);
     }
 
     public Engine<BitGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             Executor executor) {
 
-        return Engine.builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
-            .populationSize(populationSize)
+        Builder<BitGene, Vec<double[]>> builder = Engine
+            .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
+            .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
-            .offspringSelector(new TournamentSelector<>(OFFSPRING_SELECTOR_TOURNAMENT_SIZE))
-            .alterers(new Mutator<>(mutationRate), new UniformCrossover<>(crossoverRate))
-            .build();
+            .offspringSelector(new TournamentSelector<>(OFFSPRING_SELECTOR_TOURNAMENT_SIZE));
+
+        builder = addAlterers(builder);
+
+        return builder.build();
+    }
+
+    private Builder<BitGene, Vec<double[]>> addAlterers(Builder<BitGene, Vec<double[]>> builder) {
+        Mutator<BitGene, Vec<double[]>> mutator = new Mutator<>();
+        Crossover<BitGene, Vec<double[]>> crossover = new UniformCrossover<>();
+        if (config.mutationRate()
+            .isPresent()) {
+            mutator = new Mutator<>(config.mutationRate()
+                .get());
+        }
+        if (config.crossoverRate()
+            .isPresent()) {
+            crossover = new UniformCrossover<>(config.crossoverRate()
+                .get());
+        }
+        return builder.alterers(mutator, crossover);
     }
 
 }

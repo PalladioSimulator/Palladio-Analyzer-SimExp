@@ -6,37 +6,40 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 
 public class ConfigHelper implements IEAConfig {
 
-    private Optional<Integer> populationSize;
+    private int populationSize = 80;
     private Optional<Double> mutationRate;
     private Optional<Double> crossoverRate;
+    private Optional<Integer> steadyFitness;
+    private Optional<Integer> maxGenerations;
 
     public ConfigHelper() {
-        populationSize = Optional.empty();
         mutationRate = Optional.empty();
         crossoverRate = Optional.empty();
     };
 
-    public ConfigHelper(int populationSize, double mutationRate, double crossoverRate) {
-        this.populationSize = Optional.of(populationSize);
+    public ConfigHelper(int populationSize, double mutationRate, double crossoverRate, int steadyFitness,
+            int maxGenerations) {
+        this.populationSize = populationSize;
+        this.steadyFitness = Optional.of(steadyFitness);
+        this.maxGenerations = Optional.of(maxGenerations);
         this.mutationRate = Optional.of(mutationRate);
         this.crossoverRate = Optional.of(crossoverRate);
 
     }
 
     @Override
-    public Optional<Integer> populationSize() {
+    public int populationSize() {
         return populationSize;
     }
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return Optional.empty();
+        return maxGenerations;
     }
 
     @Override
     public Optional<Integer> steadyFitness() {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return steadyFitness;
     }
 
     @Override

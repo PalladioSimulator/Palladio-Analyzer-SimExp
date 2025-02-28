@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface IEAConfig {
 
-    Optional<Integer> populationSize();
+    int populationSize();
 
     Optional<Integer> maxGenerations();
 

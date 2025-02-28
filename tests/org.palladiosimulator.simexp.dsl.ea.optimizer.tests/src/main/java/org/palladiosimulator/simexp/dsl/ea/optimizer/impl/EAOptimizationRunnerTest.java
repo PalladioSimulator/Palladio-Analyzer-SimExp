@@ -82,7 +82,7 @@ public class EAOptimizationRunnerTest {
             }
 
         });
-        IEAConfig config = new ConfigHelper(10, 0.2, 0.2);
+        IEAConfig config = new ConfigHelper(10, 0.2, 0.2, 7, 50);
 
         optimizableNormalizer = new OptimizableNormalizer(expressionCalculator);
 

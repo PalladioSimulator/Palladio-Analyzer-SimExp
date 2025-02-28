@@ -17,6 +17,8 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionStream;
+import io.jenetics.engine.Limits;
 import io.jenetics.ext.moea.MOEA;
 import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
@@ -39,12 +41,18 @@ public class EAOptimizationRunner {
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
-            .limit(bySteadyFitness(config.steadyFitness()
-                .orElse(DEFAULT_STEADY_FITNESS_GENERATION_NUMBER)))
-            .limit(config.maxGenerations()
-                .orElse(DEFAULT_MAX_GENERATIONS))
-            .peek(reporter)
+        EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 

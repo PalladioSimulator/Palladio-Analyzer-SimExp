@@ -46,7 +46,7 @@ public class OptimizationEngineBuilderTest {
     public void testBuildEngine() {
         // Arrange
         int populationSize = 500;
-        IEAConfig config = new ConfigHelper(populationSize, 0.2, 0.5);
+        IEAConfig config = new ConfigHelper(populationSize, 0.2, 0.5, 7, 50);
         EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder(config);
         ISeq<Phenotype<BitGene, Vec<double[]>>> phenoSeq = ISeq.of(phenotype);
         double[] returnArray = { 0.0 };

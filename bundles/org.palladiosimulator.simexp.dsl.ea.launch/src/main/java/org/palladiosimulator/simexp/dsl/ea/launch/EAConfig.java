@@ -7,13 +7,13 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 public class EAConfig implements IEAConfig {
 
     @Override
-    public Optional<Integer> populationSize() {
-        return Optional.of(80);
+    public int populationSize() {
+        return 40;
     }
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return Optional.of(50);
+        return Optional.of(25);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class EAConfig implements IEAConfig {
 
     @Override
     public Optional<Double> mutationRate() {
-        return Optional.of(0.01);
+        return Optional.of(0.025);
     }
 
     @Override
