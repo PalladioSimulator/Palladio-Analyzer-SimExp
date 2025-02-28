@@ -173,12 +173,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
-            // ToDo:
-            int eaPopulationSize = 0;
-            Optional<Integer> maxGenerations = Optional.empty();
-            Optional<Integer> steadyFitness = Optional.empty();
-            Optional<Double> mutationRate = Optional.empty();
-            Optional<Double> crossoverRate = Optional.empty();
+            int eaPopulationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            Optional<Integer> maxGenerations = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
+            Optional<Integer> steadyFitness = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
+            Optional<Double> mutationRate = Optional
+                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.MUTATION_RATE));
+            Optional<Double> crossoverRate = Optional
+                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.CROSSOVER_RATE));
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
