@@ -27,6 +27,7 @@ public class LaunchSimExpTabGroup extends AbstractLaunchConfigurationTabGroup {
         ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { //
                 modelsTab, //
                 new SimExpConfigurationTab(ctx, modelsTab, trafoNameProvider), //
+                new EvolutionaryAlgorithmConfigurationTab(ctx), //
                 new CommonTab() };
 
         setTabs(tabs);
