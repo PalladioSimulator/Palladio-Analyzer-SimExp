@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 
@@ -38,20 +39,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
-    private final int populationSize;
-    private final Optional<Integer> maxGenerations;
-    private final Optional<Integer> steadyFitness;
-    private final Optional<Double> mutationRate;
-    private final Optional<Double> crossoverRate;
+    private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels,
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider, int eaPopulationSize,
-            Optional<Integer> maxGenerations, Optional<Integer> steadyFitness, Optional<Double> mutationRate,
-            Optional<Double> crossoverRate) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
+            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -85,12 +81,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
-
-        this.populationSize = eaPopulationSize;
-        this.maxGenerations = maxGenerations;
-        this.steadyFitness = steadyFitness;
-        this.mutationRate = mutationRate;
-        this.crossoverRate = crossoverRate;
+        this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
     }
 
     @Override
@@ -181,26 +172,26 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
     @Override
     public int getPopulationSize() {
-        return populationSize;
+        return evolutionaryAlgorithmConfiguration.getPopulationSize();
     }
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return maxGenerations;
+        return evolutionaryAlgorithmConfiguration.maxGenerations();
     }
 
     @Override
     public Optional<Integer> steadyFitness() {
-        return steadyFitness;
+        return evolutionaryAlgorithmConfiguration.steadyFitness();
     }
 
     @Override
     public Optional<Double> mutationRate() {
-        return mutationRate;
+        return evolutionaryAlgorithmConfiguration.mutationRate();
     }
 
     @Override
     public Optional<Double> crossoverRate() {
-        return crossoverRate;
+        return evolutionaryAlgorithmConfiguration.crossoverRate();
     }
 }
