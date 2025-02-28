@@ -38,13 +38,20 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
+    private final int populationSize;
+    private final Optional<Integer> maxGenerations;
+    private final Optional<Integer> steadyFitness;
+    private final Optional<Double> mutationRate;
+    private final Optional<Double> crossoverRate;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels,
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider, int eaPopulationSize,
+            Optional<Integer> maxGenerations, Optional<Integer> steadyFitness, Optional<Double> mutationRate,
+            Optional<Double> crossoverRate) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -78,6 +85,12 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
+
+        this.populationSize = eaPopulationSize;
+        this.maxGenerations = maxGenerations;
+        this.steadyFitness = steadyFitness;
+        this.mutationRate = mutationRate;
+        this.crossoverRate = crossoverRate;
     }
 
     @Override
@@ -164,5 +177,30 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
+    }
+
+    @Override
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    @Override
+    public Optional<Integer> maxGenerations() {
+        return maxGenerations;
+    }
+
+    @Override
+    public Optional<Integer> steadyFitness() {
+        return steadyFitness;
+    }
+
+    @Override
+    public Optional<Double> mutationRate() {
+        return mutationRate;
+    }
+
+    @Override
+    public Optional<Double> crossoverRate() {
+        return crossoverRate;
     }
 }

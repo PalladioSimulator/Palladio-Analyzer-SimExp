@@ -173,10 +173,18 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
+            // ToDo:
+            int eaPopulationSize = 0;
+            Optional<Integer> maxGenerations = Optional.empty();
+            Optional<Integer> steadyFitness = Optional.empty();
+            Optional<Double> mutationRate = Optional.empty();
+            Optional<Double> crossoverRate = Optional.empty();
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
-                    prismConfig, environmentalModels, simulationParameters, seedProvider);
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaPopulationSize,
+                    maxGenerations, steadyFitness, mutationRate, crossoverRate);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
