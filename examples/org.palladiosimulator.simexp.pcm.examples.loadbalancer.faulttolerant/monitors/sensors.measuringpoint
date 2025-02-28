@@ -15,4 +15,10 @@
   <measuringPoints xsi:type="org.palladiosimulator.edp2.models:ResourceURIMeasuringPoint" stringRepresentation="Server1" resourceURIRepresentation="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/loadbalancer.repository#_8nlBcAEoEeS7FKokKTKFow" measuringPoint="Server1" resourceURI="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/loadbalancer.repository#_8nlBcAEoEeS7FKokKTKFow"/>
   <measuringPoints xsi:type="org.palladiosimulator.edp2.models:ResourceURIMeasuringPoint" stringRepresentation="Server2" resourceURIRepresentation="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/loadbalancer.repository#_-fSxAAEoEeS7FKokKTKFow" measuringPoint="Server2" resourceURI="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/loadbalancer.repository#_-fSxAAEoEeS7FKokKTKFow"/>
   <measuringPoints xsi:type="simulizarmeasuringpoint:ReconfigurationMeasuringPoint" stringRepresentation="Reconfiguration" resourceURIRepresentation="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/reconfigurations_active/acquire.sdm" measuringPoint="Reconfiguration" resourceURI="platform:/resource/org.palladiosimulator.simulizar.examples.loadbalancer/reconfigurations_active/acquire.sdm"/>
+  <measuringPoints xsi:type="pcmmeasuringpoint:ActiveResourceMeasuringPoint" stringRepresentation="CPU [0] in ServerNode2" resourceURIRepresentation="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/iaas.resourceenvironment#_JPnqkAEqEeS7FKokKTKFow">
+    <activeResource href="../iaas.resourceenvironment#_JPnqkAEqEeS7FKokKTKFow"/>
+  </measuringPoints>
+  <measuringPoints xsi:type="pcmmeasuringpoint:ActiveResourceMeasuringPoint" stringRepresentation="CPU [0] in ServerNode1" resourceURIRepresentation="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer.faulttolerant/iaas.resourceenvironment#_GAVEEAEqEeS7FKokKTKFow">
+    <activeResource href="../iaas.resourceenvironment#_GAVEEAEqEeS7FKokKTKFow"/>
+  </measuringPoints>
 </org.palladiosimulator.edp2.models:MeasuringPointRepository>
