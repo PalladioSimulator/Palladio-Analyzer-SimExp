@@ -38,7 +38,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class ModelledSimulatorConfiguration {
+public class ModelledSimulatorConfiguration implements IModelledOptimizerProvider {
     private final ModelledEaOptimizerConfiguration modelledEaOptimizerConfiguration;
 
     private SelectObservableValue<ModelledOptimizationType> modelledOptimizationTypeTarget;
@@ -46,6 +46,11 @@ public class ModelledSimulatorConfiguration {
 
     public ModelledSimulatorConfiguration() {
         modelledEaOptimizerConfiguration = new ModelledEaOptimizerConfiguration();
+    }
+
+    @Override
+    public SelectObservableValue<ModelledOptimizationType> getModelledOptimizationType() {
+        return modelledOptimizationTypeTarget;
     }
 
     public Composite createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {

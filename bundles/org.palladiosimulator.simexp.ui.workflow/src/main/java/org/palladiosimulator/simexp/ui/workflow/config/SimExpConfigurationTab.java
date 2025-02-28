@@ -21,10 +21,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
@@ -35,7 +35,7 @@ import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 
-public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
+public class SimExpConfigurationTab extends BaseLaunchConfigurationTab implements IModelledOptimizerProvider {
     public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 
@@ -56,6 +56,11 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
         this.transformationConfiguration = new TransformationConfiguration(modelValueProvider, trafoNameProvider);
         this.simulatorConfiguration = new SimulatorConfiguration();
         this.modelledSimulatorConfiguration = new ModelledSimulatorConfiguration();
+    }
+
+    @Override
+    public SelectObservableValue<ModelledOptimizationType> getModelledOptimizationType() {
+        return modelledSimulatorConfiguration.getModelledOptimizationType();
     }
 
     @Override
@@ -145,17 +150,6 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab {
                 modifyListener.modifyText(null);
             }
         });
-    }
-
-    private void recursiveSetEnabled(Control ctrl, boolean enabled) {
-        if (ctrl instanceof Composite) {
-            Composite comp = (Composite) ctrl;
-            for (Control c : comp.getChildren()) {
-                recursiveSetEnabled(c, enabled);
-            }
-        } else {
-            ctrl.setEnabled(enabled);
-        }
     }
 
     @Override

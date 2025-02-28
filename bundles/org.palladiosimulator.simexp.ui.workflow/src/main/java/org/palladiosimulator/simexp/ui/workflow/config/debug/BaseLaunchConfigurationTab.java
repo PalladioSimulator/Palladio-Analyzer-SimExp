@@ -11,6 +11,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.palladiosimulator.simexp.ui.workflow.config.IResetLaunchConfigurationTab;
 
 public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigurationTab
@@ -97,5 +98,16 @@ public abstract class BaseLaunchConfigurationTab extends AbstractLaunchConfigura
         }
         setErrorMessage(null);
         return true;
+    }
+
+    protected void recursiveSetEnabled(Control ctrl, boolean enabled) {
+        if (ctrl instanceof Composite) {
+            Composite comp = (Composite) ctrl;
+            for (Control c : comp.getChildren()) {
+                recursiveSetEnabled(c, enabled);
+            }
+        } else {
+            ctrl.setEnabled(enabled);
+        }
     }
 }
