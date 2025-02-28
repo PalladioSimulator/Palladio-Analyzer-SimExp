@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
@@ -36,6 +37,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private final IModelledOptimizerProvider modelledOptimizerProvider;
 
     private Text textPopulationSize;
+    private Text textMaxGenerations;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -71,11 +73,12 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
         Composite simContainer = new Composite(container, SWT.NONE);
         simContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-        GridLayout simContainerLayout = new GridLayout(2, false);
+        GridLayout simContainerLayout = new GridLayout();
         simContainerLayout.marginWidth = 0;
         simContainer.setLayout(simContainerLayout);
 
         createBasics(simContainer, modifyListener);
+        createLimits(simContainer, modifyListener);
     }
 
     private void createBasics(Composite parent, ModifyListener modifyListener) {
@@ -91,6 +94,19 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textPopulationSize.addModifyListener(modifyListener);
     }
 
+    private void createLimits(Composite parent, ModifyListener modifyListener) {
+        Group container = new Group(parent, SWT.NONE);
+        container.setText("Limits");
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        container.setLayout(new GridLayout(2, false));
+
+        final Label simulationIDLabel = new Label(container, SWT.NONE);
+        simulationIDLabel.setText("Max Generations:");
+        textMaxGenerations = new Text(container, SWT.BORDER);
+        textMaxGenerations.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textMaxGenerations.addModifyListener(modifyListener);
+    }
+
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(SimulationConstants.POPULATION_SIZE, SimulationConstants.DEFAULT_POPULATION_SIZE);
@@ -99,6 +115,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     @Override
     protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
         initializeBasicsFrom(configuration, ctx);
+        initializeLimitsFrom(configuration, ctx);
     }
 
     private void initializeBasicsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
@@ -113,6 +130,19 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         Binding numberOfRunsBindValue = ctx.bindValue(numberOfRunsTarget, numberOfRunsModel, numberOfRunsUpdateStrategy,
                 null);
         ControlDecorationSupport.create(numberOfRunsBindValue, SWT.TOP | SWT.RIGHT);
+    }
+
+    private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
+        IObservableValue<String> maxGenTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textMaxGenerations);
+        IObservableValue<Integer> maxGenModel = ConfigurationProperties
+            .integer(SimulationConstants.MAX_GENERATIONS, false)
+            .observe(configuration);
+        UpdateValueStrategy<String, Integer> customMaxGenUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        customMaxGenUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
+        Binding maxGenBindValue = ctx.bindValue(maxGenTarget, maxGenModel, customMaxGenUpdateStrategy, null);
+        ControlDecorationSupport.create(maxGenBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     @Override
