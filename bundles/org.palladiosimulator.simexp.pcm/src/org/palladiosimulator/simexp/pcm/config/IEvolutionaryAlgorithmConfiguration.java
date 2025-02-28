@@ -5,11 +5,11 @@ import java.util.Optional;
 public interface IEvolutionaryAlgorithmConfiguration {
     int getPopulationSize();
 
-    Optional<Integer> maxGenerations();
+    Optional<Integer> getMaxGenerations();
 
-    Optional<Integer> steadyFitness();
+    Optional<Integer> getSteadyFitness();
 
-    Optional<Double> mutationRate();
+    Optional<Double> getMutationRate();
 
-    Optional<Double> crossoverRate();
+    Optional<Double> getCrossoverRate();
 }

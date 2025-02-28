@@ -176,22 +176,22 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
-    public Optional<Integer> maxGenerations() {
-        return evolutionaryAlgorithmConfiguration.maxGenerations();
+    public Optional<Integer> getMaxGenerations() {
+        return evolutionaryAlgorithmConfiguration.getMaxGenerations();
     }
 
     @Override
-    public Optional<Integer> steadyFitness() {
-        return evolutionaryAlgorithmConfiguration.steadyFitness();
+    public Optional<Integer> getSteadyFitness() {
+        return evolutionaryAlgorithmConfiguration.getSteadyFitness();
     }
 
     @Override
-    public Optional<Double> mutationRate() {
-        return evolutionaryAlgorithmConfiguration.mutationRate();
+    public Optional<Double> getMutationRate() {
+        return evolutionaryAlgorithmConfiguration.getMutationRate();
     }
 
     @Override
-    public Optional<Double> crossoverRate() {
-        return evolutionaryAlgorithmConfiguration.crossoverRate();
+    public Optional<Double> getCrossoverRate() {
+        return evolutionaryAlgorithmConfiguration.getCrossoverRate();
     }
 }

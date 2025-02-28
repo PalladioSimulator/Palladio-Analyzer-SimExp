@@ -41,8 +41,8 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
                             .toString()),
                 configuration.getSimulationParameters(), configuration.getSeedProvider(),
                 new EvolutionaryAlgorithmConfiguration(configuration.getPopulationSize(),
-                        configuration.maxGenerations(), configuration.steadyFitness(), configuration.mutationRate(),
-                        configuration.crossoverRate()));
+                        configuration.getMaxGenerations(), configuration.getSteadyFitness(), configuration.getMutationRate(),
+                        configuration.getCrossoverRate()));
         this.optimizableValues = optimizableValues;
     }
 

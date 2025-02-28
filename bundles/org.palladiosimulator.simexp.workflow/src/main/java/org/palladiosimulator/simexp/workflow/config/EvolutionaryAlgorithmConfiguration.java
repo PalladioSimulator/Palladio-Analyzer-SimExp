@@ -26,22 +26,22 @@ public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorith
     }
 
     @Override
-    public Optional<Integer> maxGenerations() {
+    public Optional<Integer> getMaxGenerations() {
         return maxGenerations;
     }
 
     @Override
-    public Optional<Integer> steadyFitness() {
+    public Optional<Integer> getSteadyFitness() {
         return steadyFitness;
     }
 
     @Override
-    public Optional<Double> mutationRate() {
+    public Optional<Double> getMutationRate() {
         return mutationRate;
     }
 
     @Override
-    public Optional<Double> crossoverRate() {
+    public Optional<Double> getCrossoverRate() {
         return crossoverRate;
     }
 }
