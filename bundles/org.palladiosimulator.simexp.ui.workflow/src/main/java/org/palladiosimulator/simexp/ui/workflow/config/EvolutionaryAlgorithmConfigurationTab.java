@@ -38,6 +38,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
     private Text textPopulationSize;
     private Text textMaxGenerations;
+    private Text textSteadyFitness;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -77,18 +78,18 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         simContainerLayout.marginWidth = 0;
         simContainer.setLayout(simContainerLayout);
 
-        createBasics(simContainer, modifyListener);
+        createConfig(simContainer, modifyListener);
         createLimits(simContainer, modifyListener);
     }
 
-    private void createBasics(Composite parent, ModifyListener modifyListener) {
+    private void createConfig(Composite parent, ModifyListener modifyListener) {
         Group container = new Group(parent, SWT.NONE);
-        container.setText("Basics");
+        container.setText("Configuration");
         container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         container.setLayout(new GridLayout(2, false));
 
-        final Label simulationIDLabel = new Label(container, SWT.NONE);
-        simulationIDLabel.setText("Population size:");
+        Label populationSizeLabel = new Label(container, SWT.NONE);
+        populationSizeLabel.setText("Population size:");
         textPopulationSize = new Text(container, SWT.BORDER);
         textPopulationSize.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textPopulationSize.addModifyListener(modifyListener);
@@ -100,11 +101,17 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         container.setLayout(new GridLayout(2, false));
 
-        final Label simulationIDLabel = new Label(container, SWT.NONE);
-        simulationIDLabel.setText("Max Generations:");
+        Label maxGenerationsLabel = new Label(container, SWT.NONE);
+        maxGenerationsLabel.setText("Max generations:");
         textMaxGenerations = new Text(container, SWT.BORDER);
         textMaxGenerations.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textMaxGenerations.addModifyListener(modifyListener);
+
+        Label steadyFitnessLabel = new Label(container, SWT.NONE);
+        steadyFitnessLabel.setText("Steady fitness:");
+        textSteadyFitness = new Text(container, SWT.BORDER);
+        textSteadyFitness.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textSteadyFitness.addModifyListener(modifyListener);
     }
 
     @Override
@@ -114,11 +121,11 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
     @Override
     protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
-        initializeBasicsFrom(configuration, ctx);
+        initializeConfigFrom(configuration, ctx);
         initializeLimitsFrom(configuration, ctx);
     }
 
-    private void initializeBasicsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
+    private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
         IObservableValue<String> numberOfRunsTarget = WidgetProperties.text(SWT.Modify)
             .observe(textPopulationSize);
         IObservableValue<Integer> numberOfRunsModel = ConfigurationProperties
@@ -143,6 +150,18 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         customMaxGenUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
         Binding maxGenBindValue = ctx.bindValue(maxGenTarget, maxGenModel, customMaxGenUpdateStrategy, null);
         ControlDecorationSupport.create(maxGenBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> steadyFitnessTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textSteadyFitness);
+        IObservableValue<Integer> steadyFitnessModel = ConfigurationProperties
+            .integer(SimulationConstants.STEADY_FITNESS, false)
+            .observe(configuration);
+        UpdateValueStrategy<String, Integer> steadyFitnessUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        steadyFitnessUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
+        Binding steadyFitnessBindValue = ctx.bindValue(steadyFitnessTarget, steadyFitnessModel,
+                steadyFitnessUpdateStrategy, null);
+        ControlDecorationSupport.create(steadyFitnessBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     @Override
