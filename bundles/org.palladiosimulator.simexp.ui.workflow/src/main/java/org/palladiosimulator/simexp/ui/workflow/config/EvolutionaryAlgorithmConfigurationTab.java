@@ -39,6 +39,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textPopulationSize;
     private Text textMaxGenerations;
     private Text textSteadyFitness;
+    private Text textMutationRate;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -93,6 +94,12 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textPopulationSize = new Text(container, SWT.BORDER);
         textPopulationSize.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textPopulationSize.addModifyListener(modifyListener);
+
+        Label mutationRateLabel = new Label(container, SWT.NONE);
+        mutationRateLabel.setText("Mutation rate:");
+        textMutationRate = new Text(container, SWT.BORDER);
+        textMutationRate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textMutationRate.addModifyListener(modifyListener);
     }
 
     private void createLimits(Composite parent, ModifyListener modifyListener) {
@@ -126,17 +133,28 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     }
 
     private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
-        IObservableValue<String> numberOfRunsTarget = WidgetProperties.text(SWT.Modify)
+        IObservableValue<String> popSizeTarget = WidgetProperties.text(SWT.Modify)
             .observe(textPopulationSize);
-        IObservableValue<Integer> numberOfRunsModel = ConfigurationProperties
-            .integer(SimulationConstants.POPULATION_SIZE)
+        IObservableValue<Integer> popSizeModel = ConfigurationProperties.integer(SimulationConstants.POPULATION_SIZE)
             .observe(configuration);
-        UpdateValueStrategy<String, Integer> numberOfRunsUpdateStrategy = new UpdateValueStrategy<>(
+        UpdateValueStrategy<String, Integer> popSizeUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        numberOfRunsUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Population size", 1));
-        Binding numberOfRunsBindValue = ctx.bindValue(numberOfRunsTarget, numberOfRunsModel, numberOfRunsUpdateStrategy,
+        popSizeUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Population size", 1));
+        Binding popSizeBindValue = ctx.bindValue(popSizeTarget, popSizeModel, popSizeUpdateStrategy, null);
+        ControlDecorationSupport.create(popSizeBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> mutationRateTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textMutationRate);
+        IObservableValue<Double> mutationRateModel = ConfigurationProperties
+            .value(SimulationConstants.MUTATION_RATE)
+            .observe(configuration);
+        UpdateValueStrategy<String, Double> mutationRateUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        // mutationRateUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Mutation rate",
+        // 1));
+        Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel, mutationRateUpdateStrategy,
                 null);
-        ControlDecorationSupport.create(numberOfRunsBindValue, SWT.TOP | SWT.RIGHT);
+        ControlDecorationSupport.create(mutationRateBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
