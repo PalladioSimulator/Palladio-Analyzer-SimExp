@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
@@ -139,19 +139,17 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Integer> popSizeUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        popSizeUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Population size", 1));
+        popSizeUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Population size", 1));
         Binding popSizeBindValue = ctx.bindValue(popSizeTarget, popSizeModel, popSizeUpdateStrategy, null);
         ControlDecorationSupport.create(popSizeBindValue, SWT.TOP | SWT.RIGHT);
 
         IObservableValue<String> mutationRateTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMutationRate);
-        IObservableValue<Double> mutationRateModel = ConfigurationProperties
-            .value(SimulationConstants.MUTATION_RATE)
+        IObservableValue<Double> mutationRateModel = ConfigurationProperties.value(SimulationConstants.MUTATION_RATE)
             .observe(configuration);
         UpdateValueStrategy<String, Double> mutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        // mutationRateUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Mutation rate",
-        // 1));
+        mutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0));
         Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel, mutationRateUpdateStrategy,
                 null);
         ControlDecorationSupport.create(mutationRateBindValue, SWT.TOP | SWT.RIGHT);

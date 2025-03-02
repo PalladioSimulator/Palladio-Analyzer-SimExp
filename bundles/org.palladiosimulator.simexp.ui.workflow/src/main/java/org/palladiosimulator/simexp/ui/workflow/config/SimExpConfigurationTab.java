@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
-import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinIntegerValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotEmptyValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
@@ -192,7 +192,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab implement
             .observe(configuration);
         UpdateValueStrategy<String, Integer> numberOfRunsUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        numberOfRunsUpdateStrategy.setBeforeSetValidator(new MinIntegerValidator("Number of runs", 1));
+        numberOfRunsUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Number of runs", 1));
         Binding numberOfRunsBindValue = ctx.bindValue(numberOfRunsTarget, numberOfRunsModel, numberOfRunsUpdateStrategy,
                 null);
         ControlDecorationSupport.create(numberOfRunsBindValue, SWT.TOP | SWT.RIGHT);
@@ -205,7 +205,7 @@ public class SimExpConfigurationTab extends BaseLaunchConfigurationTab implement
         UpdateValueStrategy<String, Integer> numberOfSimulationsPerRunUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         numberOfSimulationsPerRunUpdateStrategy
-            .setBeforeSetValidator(new MinIntegerValidator("Number of simulations per run", 1));
+            .setBeforeSetValidator(new MinNumberValidator<>("Number of simulations per run", 1));
         Binding numberOfSimulationsPerRunBindValue = ctx.bindValue(numberOfSimulationsPerRunTarget,
                 numberOfSimulationsPerRunModel, numberOfSimulationsPerRunUpdateStrategy, null);
         ControlDecorationSupport.create(numberOfSimulationsPerRunBindValue, SWT.TOP | SWT.RIGHT);
