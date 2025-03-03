@@ -16,20 +16,32 @@ public class MinNumberValidator<N extends Number & Comparable<N>> implements IVa
         }
     }
 
-    private final String field;
     private final N minValue;
+    private final boolean allowNull;
+    private final String errorMessage;
     private final NumberComparator nc;
 
     public MinNumberValidator(String field, N minValue) {
-        this.field = field;
+        this(field, minValue, false);
+    }
+
+    public MinNumberValidator(String field, N minValue, boolean allowNull) {
         this.minValue = minValue;
+        this.allowNull = allowNull;
+        this.errorMessage = String.format("%s minimum value is %s%s", field, minValue, allowNull ? " or empty" : "");
         this.nc = new NumberComparator();
     }
 
     @Override
     public IStatus validate(N value) {
-        if ((value == null) || (nc.compare(minValue, value) > 0)) {
-            return ValidationStatus.error(String.format("%s minimum value is %s", field, minValue));
+        if (value == null) {
+            if (!allowNull) {
+                return ValidationStatus.error(errorMessage);
+            }
+        } else {
+            if (nc.compare(minValue, value) > 0) {
+                return ValidationStatus.error(errorMessage);
+            }
         }
         return ValidationStatus.ok();
     }

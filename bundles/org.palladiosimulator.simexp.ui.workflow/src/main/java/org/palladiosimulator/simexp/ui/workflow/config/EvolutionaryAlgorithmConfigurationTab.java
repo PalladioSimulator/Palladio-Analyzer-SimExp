@@ -149,7 +149,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> mutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        mutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0));
+        mutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0, true));
         Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel, mutationRateUpdateStrategy,
                 null);
         ControlDecorationSupport.create(mutationRateBindValue, SWT.TOP | SWT.RIGHT);
