@@ -1,10 +1,13 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
+import java.text.DecimalFormat;
 import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.conversion.IConverter;
+import org.eclipse.core.databinding.conversion.text.NumberToStringConverter;
 import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -145,13 +148,23 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
         IObservableValue<String> mutationRateTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMutationRate);
-        IObservableValue<Double> mutationRateModel = ConfigurationProperties.value(SimulationConstants.MUTATION_RATE)
+        IObservableValue<Double> mutationRateModel = ConfigurationProperties
+            .value(SimulationConstants.MUTATION_RATE, false)
             .observe(configuration);
-        UpdateValueStrategy<String, Double> mutationRateUpdateStrategy = new UpdateValueStrategy<>(
+
+        UpdateValueStrategy<String, Double> t2mMutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        mutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0, true));
-        Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel, mutationRateUpdateStrategy,
-                null);
+        t2mMutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0, true));
+        t2mMutationRateUpdateStrategy
+            .setConverter(StringToNumberConverter.toDouble(new DecimalFormat("#.#####"), false));
+        UpdateValueStrategy<Double, String> m2tMutationRateUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        IConverter<?, ?> fromDouble = NumberToStringConverter.fromDouble(new DecimalFormat("#.#####"), false);
+        @SuppressWarnings("unchecked")
+        IConverter<Double, String> mutationRateToStringConverter = (IConverter<Double, String>) fromDouble;
+        m2tMutationRateUpdateStrategy.setConverter(mutationRateToStringConverter);
+        Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel,
+                t2mMutationRateUpdateStrategy, m2tMutationRateUpdateStrategy);
         ControlDecorationSupport.create(mutationRateBindValue, SWT.TOP | SWT.RIGHT);
     }
 
