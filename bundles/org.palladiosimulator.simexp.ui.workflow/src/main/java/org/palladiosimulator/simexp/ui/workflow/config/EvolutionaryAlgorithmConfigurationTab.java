@@ -34,6 +34,10 @@ import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigura
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 
 public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurationTab {
+    private static final String PATTERN_DOUBLE = "#.#####";
+    private static final String PATTERN_MUTTATION_RATE = PATTERN_DOUBLE;
+    private static final String PATTERN_CROSSOVER_RATE = PATTERN_DOUBLE;
+
     private static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
     private static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 
@@ -43,6 +47,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textMaxGenerations;
     private Text textSteadyFitness;
     private Text textMutationRate;
+    private Text textCrossoverRate;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -103,6 +108,12 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textMutationRate = new Text(container, SWT.BORDER);
         textMutationRate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textMutationRate.addModifyListener(modifyListener);
+
+        Label crossoverRateLabel = new Label(container, SWT.NONE);
+        crossoverRateLabel.setText("Crossover rate:");
+        textCrossoverRate = new Text(container, SWT.BORDER);
+        textCrossoverRate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textCrossoverRate.addModifyListener(modifyListener);
     }
 
     private void createLimits(Composite parent, ModifyListener modifyListener) {
@@ -151,21 +162,42 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         IObservableValue<Double> mutationRateModel = ConfigurationProperties
             .value(SimulationConstants.MUTATION_RATE, false)
             .observe(configuration);
-
         UpdateValueStrategy<String, Double> t2mMutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
         t2mMutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0, true));
         t2mMutationRateUpdateStrategy
-            .setConverter(StringToNumberConverter.toDouble(new DecimalFormat("#.#####"), false));
+            .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_MUTTATION_RATE), false));
         UpdateValueStrategy<Double, String> m2tMutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        IConverter<?, ?> fromDouble = NumberToStringConverter.fromDouble(new DecimalFormat("#.#####"), false);
+        IConverter<?, ?> fromDoubleMutationRate = NumberToStringConverter
+            .fromDouble(new DecimalFormat(PATTERN_MUTTATION_RATE), false);
         @SuppressWarnings("unchecked")
-        IConverter<Double, String> mutationRateToStringConverter = (IConverter<Double, String>) fromDouble;
+        IConverter<Double, String> mutationRateToStringConverter = (IConverter<Double, String>) fromDoubleMutationRate;
         m2tMutationRateUpdateStrategy.setConverter(mutationRateToStringConverter);
         Binding mutationRateBindValue = ctx.bindValue(mutationRateTarget, mutationRateModel,
                 t2mMutationRateUpdateStrategy, m2tMutationRateUpdateStrategy);
         ControlDecorationSupport.create(mutationRateBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> crossOverRateTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textCrossoverRate);
+        IObservableValue<Double> crossOverRateModel = ConfigurationProperties
+            .value(SimulationConstants.CROSSOVER_RATE, false)
+            .observe(configuration);
+        UpdateValueStrategy<String, Double> t2mCrossOverRateUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        t2mCrossOverRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Crossover rate", 0.0, true));
+        t2mCrossOverRateUpdateStrategy
+            .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_CROSSOVER_RATE), false));
+        UpdateValueStrategy<Double, String> m2tCrossOverRateUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        IConverter<?, ?> fromDoubleCrossOver = NumberToStringConverter
+            .fromDouble(new DecimalFormat(PATTERN_MUTTATION_RATE), false);
+        @SuppressWarnings("unchecked")
+        IConverter<Double, String> crossOverRateToStringConverter = (IConverter<Double, String>) fromDoubleCrossOver;
+        m2tCrossOverRateUpdateStrategy.setConverter(crossOverRateToStringConverter);
+        Binding crossOverRateBindValue = ctx.bindValue(crossOverRateTarget, crossOverRateModel,
+                t2mCrossOverRateUpdateStrategy, m2tCrossOverRateUpdateStrategy);
+        ControlDecorationSupport.create(crossOverRateBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
