@@ -1,14 +1,10 @@
 package org.palladiosimulator.simexp.ui.workflow.config;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
 import org.eclipse.core.databinding.validation.IValidator;
@@ -38,14 +34,17 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Fi
 
 import de.uka.ipd.sdq.workflow.launchconfig.tabs.TabHelper;
 
-public class ModelledSimulatorConfiguration {
-    private final ModelledEaOptimizerConfiguration modelledEaOptimizerConfiguration;
+public class ModelledSimulatorConfiguration implements IModelledOptimizerProvider {
 
     private SelectObservableValue<ModelledOptimizationType> modelledOptimizationTypeTarget;
     private Text textSModel;
 
     public ModelledSimulatorConfiguration() {
-        modelledEaOptimizerConfiguration = new ModelledEaOptimizerConfiguration();
+    }
+
+    @Override
+    public SelectObservableValue<ModelledOptimizationType> getModelledOptimizationType() {
+        return modelledOptimizationTypeTarget;
     }
 
     public Composite createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
@@ -73,8 +72,6 @@ public class ModelledSimulatorConfiguration {
         optimizationTypeGroup.setLayout(new GridLayout());
 
         modelledOptimizationTypeTarget = new SelectObservableValue<>();
-        Map<ModelledOptimizationType, Composite> optimizationTypeMap = new HashMap<>();
-        Composite optimizationTypeDetails = new Composite(optimizeParent, SWT.NONE);
         for (ModelledOptimizationType type : ModelledOptimizationType.values()) {
             Button button = new Button(optimizationTypeGroup, SWT.RADIO);
             button.setText(type.getName());
@@ -83,60 +80,12 @@ public class ModelledSimulatorConfiguration {
             modelledOptimizationTypeTarget.addOption(type, observeable);
         }
 
-        ISideEffect.create(() -> {
-            return modelledOptimizationTypeTarget.getValue();
-        }, new Consumer<ModelledOptimizationType>() {
-
-            @Override
-            public void accept(ModelledOptimizationType selectedType) {
-                for (Map.Entry<ModelledOptimizationType, Composite> entry : optimizationTypeMap.entrySet()) {
-                    Composite optimizationTypeComposite = entry.getValue();
-                    GridData layoutData = (GridData) optimizationTypeComposite.getLayoutData();
-                    if (selectedType == entry.getKey()) {
-                        layoutData.exclude = false;
-                        optimizationTypeComposite.setVisible(true);
-                    } else {
-                        layoutData.exclude = true;
-                        optimizationTypeComposite.setVisible(false);
-                    }
-                }
-                optimizationTypeDetails.layout();
-                modifyListener.modifyText(null);
-            }
-        });
-
-        optimizationTypeDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        optimizationTypeDetails.setLayout(new GridLayout());
-
-        Composite simpleDetails = createOptimizationTypeComposite(optimizationTypeDetails,
-                ModelledOptimizationType.SIMPLE);
-        optimizationTypeMap.put(ModelledOptimizationType.SIMPLE, simpleDetails);
-
-        Composite eaDetails = createOptimizationTypeComposite(optimizationTypeDetails,
-                ModelledOptimizationType.EVOLUTIONARY_ALGORITHM);
-        modelledEaOptimizerConfiguration.createControl(eaDetails, ctx, modifyListener);
-        optimizationTypeMap.put(ModelledOptimizationType.EVOLUTIONARY_ALGORITHM, eaDetails);
-
         return modelledParent;
-    }
-
-    private Composite createOptimizationTypeComposite(Composite parent,
-            ModelledOptimizationType modelledOptimizationType) {
-        Group content = new Group(parent, SWT.NONE);
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        layoutData.exclude = true;
-        content.setLayoutData(layoutData);
-        content.setVisible(false);
-        content.setLayout(new GridLayout());
-        content.setText(modelledOptimizationType.getName());
-        return content;
     }
 
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(SimulationConstants.MODELLED_OPTIMIZATION_TYPE,
                 SimulationConstants.DEFAULT_MODELLED_OPTIMIZATION_TYPE.name());
-
-        modelledEaOptimizerConfiguration.setDefaults(configuration);
     }
 
     public void initializeFrom(ILaunchConfiguration configuration, DataBindingContext ctx,
@@ -163,7 +112,5 @@ public class ModelledSimulatorConfiguration {
                 UpdateValueStrategy.POLICY_CONVERT);
         ctx.bindValue(modelledOptimizationTypeTarget, modelledOptimizationTypeModel,
                 modelledOptimizationTypeUpdateStrategy, null);
-
-        modelledEaOptimizerConfiguration.initializeFrom(configuration, ctx);
     }
 }

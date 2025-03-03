@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimization
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 
@@ -38,13 +39,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
+    private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels,
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
+            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -78,6 +81,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
+        this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
     }
 
     @Override
@@ -164,5 +168,30 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
+    }
+
+    @Override
+    public int getPopulationSize() {
+        return evolutionaryAlgorithmConfiguration.getPopulationSize();
+    }
+
+    @Override
+    public Optional<Integer> getMaxGenerations() {
+        return evolutionaryAlgorithmConfiguration.getMaxGenerations();
+    }
+
+    @Override
+    public Optional<Integer> getSteadyFitness() {
+        return evolutionaryAlgorithmConfiguration.getSteadyFitness();
+    }
+
+    @Override
+    public Optional<Double> getMutationRate() {
+        return evolutionaryAlgorithmConfiguration.getMutationRate();
+    }
+
+    @Override
+    public Optional<Double> getCrossoverRate() {
+        return evolutionaryAlgorithmConfiguration.getCrossoverRate();
     }
 }

@@ -3,32 +3,37 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 
 public class EAConfig implements IEAConfig {
+    private final IEvolutionaryAlgorithmConfiguration configuration;
+
+    public EAConfig(IEvolutionaryAlgorithmConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public int populationSize() {
-        return 40;
+        return configuration.getPopulationSize();
     }
 
     @Override
     public Optional<Integer> maxGenerations() {
-        return Optional.of(25);
+        return configuration.getMaxGenerations();
     }
 
     @Override
     public Optional<Integer> steadyFitness() {
-        return Optional.of(12);
+        return configuration.getSteadyFitness();
     }
 
     @Override
     public Optional<Double> mutationRate() {
-        return Optional.of(0.025);
+        return configuration.getMutationRate();
     }
 
     @Override
     public Optional<Double> crossoverRate() {
-        return Optional.of(0.8);
+        return configuration.getCrossoverRate();
     }
-
 }

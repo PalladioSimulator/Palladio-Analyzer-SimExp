@@ -17,18 +17,22 @@ import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitness
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 
 public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvolutionStatusReceiver {
     private static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
+    private final IEvolutionaryAlgorithmConfiguration configuration;
 
     private EAResult optimizationResult;
 
-    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator) {
+    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
+            IEvolutionaryAlgorithmConfiguration configuration) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
+        this.configuration = configuration;
     }
 
     @Override
@@ -80,7 +84,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        IEAConfig eaConfig = new EAConfig();
+        IEAConfig eaConfig = new EAConfig(configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }

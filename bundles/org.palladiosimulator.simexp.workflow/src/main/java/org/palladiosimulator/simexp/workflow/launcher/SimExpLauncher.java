@@ -41,6 +41,7 @@ import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
@@ -173,10 +174,22 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
+            int populationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            Optional<Integer> maxGenerations = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
+            Optional<Integer> steadyFitness = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
+            Optional<Double> mutationRate = Optional
+                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.MUTATION_RATE));
+            Optional<Double> crossoverRate = Optional
+                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.CROSSOVER_RATE));
+            EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
+                    maxGenerations, steadyFitness, mutationRate, crossoverRate);
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
-                    prismConfig, environmentalModels, simulationParameters, seedProvider);
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",

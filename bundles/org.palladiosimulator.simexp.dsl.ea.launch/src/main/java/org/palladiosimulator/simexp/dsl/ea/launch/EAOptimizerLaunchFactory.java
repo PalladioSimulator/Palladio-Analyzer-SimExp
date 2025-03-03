@@ -12,6 +12,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvalu
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
@@ -51,7 +52,8 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
-        return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator);
+        return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
+                (IEvolutionaryAlgorithmWorkflowConfiguration) config);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
