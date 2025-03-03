@@ -52,4 +52,9 @@ public class ConfigHelper implements IEAConfig {
         return crossoverRate;
     }
 
+    @Override
+    public Optional<Double> penaltyForInvalids() {
+        return Optional.empty();
+    }
+
 }

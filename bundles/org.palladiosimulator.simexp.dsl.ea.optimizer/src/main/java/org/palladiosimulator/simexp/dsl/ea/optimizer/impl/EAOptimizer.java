@@ -62,7 +62,15 @@ public class EAOptimizer implements IEAOptimizer {
 
         ///// setup EA
         final Engine<BitGene, Vec<double[]>> engine;
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction;
+        if (config.penaltyForInvalids()
+            .isPresent()) {
+            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer, config.penaltyForInvalids()
+                .get());
+        } else {
+            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        }
+
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);
 
         engine = builder.buildEngine(fitnessFunction, genotype, executor);

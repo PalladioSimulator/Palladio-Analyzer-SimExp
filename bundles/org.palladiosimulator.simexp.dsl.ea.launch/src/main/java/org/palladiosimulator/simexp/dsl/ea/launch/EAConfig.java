@@ -31,4 +31,9 @@ public class EAConfig implements IEAConfig {
         return Optional.of(0.8);
     }
 
+    @Override
+    public Optional<Double> penaltyForInvalids() {
+        return Optional.empty();
+    }
+
 }

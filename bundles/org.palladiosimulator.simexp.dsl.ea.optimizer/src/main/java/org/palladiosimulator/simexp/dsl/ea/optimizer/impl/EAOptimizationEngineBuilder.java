@@ -19,7 +19,7 @@ public class EAOptimizationEngineBuilder {
 
     private static final int DEFAULT_POPULATION_SIZE = 80;
 
-    private static final double DEFAULT_MUTATION_RATE = 0.01;
+    private static final double DEFAULT_MUTATION_RATE = 0.0125;
 
     private static final double DEFAULT_CROSSOVER_RATE = 0.8;
 

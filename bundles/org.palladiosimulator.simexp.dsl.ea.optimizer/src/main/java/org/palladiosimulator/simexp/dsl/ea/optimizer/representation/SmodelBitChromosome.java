@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import static java.util.Objects.requireNonNull;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitChromosome;
@@ -12,6 +13,8 @@ import io.jenetics.util.RandomRegistry;
 
 public class SmodelBitChromosome extends BitChromosome {
     private static final long serialVersionUID = 1L;
+
+    private final static Logger LOGGER = Logger.getLogger(SmodelBitChromosome.class);
 
     private final Optimizable optimizable;
 
@@ -62,7 +65,10 @@ public class SmodelBitChromosome extends BitChromosome {
     public SmodelBitChromosome newInstance(final ISeq<BitGene> genes) {
         requireNonNull(genes, "Genes");
         if (genes.isEmpty()) {
+            // TODO nbruening: Deal with this!
             throw new IllegalArgumentException("The genes sequence must contain at least one gene.");
+//            LOGGER.error("Encountered a chromosome with no genes: " + this
+//                    + " \n This chromosome will be punished with the penalty fitness.");
         }
 
         final SmodelBitChromosome chromosome = new SmodelBitChromosome(getOptimizable(), Bits.newArray(genes.length()),
