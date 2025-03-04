@@ -13,4 +13,6 @@ public interface IEAConfig {
     Optional<Double> mutationRate();
 
     Optional<Double> crossoverRate();
+
+    Optional<Double> penaltyForInvalids();
 }
