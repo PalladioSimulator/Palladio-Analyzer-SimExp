@@ -1,117 +1,82 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.offset;
+
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.EnvVariable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class OptimizableValueProviderTest {
+    private static final double DOUBLE_EPSILON = 1e-15;
 
     private OptimizableValueProvider valueProvider;
     private SmodelCreator smodelCreator;
 
     @Before
     public void setUp() throws Exception {
-        valueProvider = new OptimizableValueProvider();
+        valueProvider = new OptimizableValueProvider(Collections.emptyList());
         smodelCreator = new SmodelCreator();
     }
 
     @Test
-    public void testGetBoolValueNotSupported() {
-        Optimizable expectedField = smodelCreator.createOptimizable("boolOpt", DataType.BOOL, null);
+    public void testGetBoolValue() {
+        Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.BOOL, null);
+        OptimizableValue<Boolean> optimizableValue = new OptimizableValue<>(optimizable, true);
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
 
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
-            valueProvider.getBoolValue(expectedField);
-        })
-            .withMessage("Boolean Field not supported");
+        Boolean actualValue = valueProvider.getBoolValue(optimizable);
+
+        assertThat(actualValue).isTrue();
     }
 
     @Test
-    public void testGetStringValueNotSupported() {
-        Optimizable expectedField = smodelCreator.createOptimizable("stringOpt", DataType.STRING, null);
+    public void testGetStringValue() {
+        Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.STRING, null);
+        OptimizableValue<String> optimizableValue = new OptimizableValue<>(optimizable, "a");
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
 
-        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
-            valueProvider.getStringValue(expectedField);
-        })
-            .withMessage("String Field not supported");
+        String actualValue = valueProvider.getStringValue(optimizable);
+
+        assertThat(actualValue).isEqualTo("a");
     }
 
     @Test
-    public void testGetIntegerValueForUnsupportedField() throws Exception {
-        EnvVariable expectedField = SmodelFactory.eINSTANCE.createEnvVariable();
+    public void testGetIntegerValue() throws Exception {
+        Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.INT, null);
+        OptimizableValue<Integer> optimizableValue = new OptimizableValue<>(optimizable, 1);
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
 
-        Integer actualValue = valueProvider.getIntegerValue(expectedField);
+        Integer actualValue = valueProvider.getIntegerValue(optimizable);
 
-        assertThat(actualValue).isNull();
-
+        assertThat(actualValue).isEqualTo(1);
     }
 
     @Test
-    public void testGetIntegerValueForSet() throws Exception {
-        IntLiteral expectedValue1 = smodelCreator.createIntLiteral(2);
-        IntLiteral expectedValue2 = smodelCreator.createIntLiteral(1);
-        SetBounds bounds = smodelCreator.createSetBounds(expectedValue1, expectedValue2);
-        Optimizable expectedField = smodelCreator.createOptimizable("IntOpt", DataType.INT, bounds);
+    public void testGetDoubleValue() throws Exception {
+        Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.DOUBLE, null);
+        OptimizableValue<Double> optimizableValue = new OptimizableValue<>(optimizable, 1.0);
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
 
-        Integer actualValue = valueProvider.getIntegerValue(expectedField);
+        Double actualValue = valueProvider.getDoubleValue(optimizable);
 
-        assertThat(actualValue).isEqualTo(expectedValue1.getValue());
+        assertThat(actualValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
     }
 
     @Test
-    public void testGetIntegerValueForRange() throws Exception {
-        IntLiteral expectedValue1 = smodelCreator.createIntLiteral(2);
-        IntLiteral expectedValue2 = smodelCreator.createIntLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(expectedValue1, expectedValue2, null);
-        Optimizable expectedField = smodelCreator.createOptimizable("IntOpt", DataType.INT, bounds);
+    public void testGetStringValueTwoInstances() {
+        Optimizable optimizable1 = smodelCreator.createOptimizable("opt", DataType.STRING, null);
+        Optimizable optimizable2 = smodelCreator.createOptimizable("opt", DataType.STRING, null);
+        OptimizableValue<String> optimizableValue = new OptimizableValue<>(optimizable1, "a");
+        valueProvider = new OptimizableValueProvider(Collections.singletonList(optimizableValue));
 
-        Integer actualValue = valueProvider.getIntegerValue(expectedField);
+        String actualValue = valueProvider.getStringValue(optimizable2);
 
-        assertThat(actualValue).isEqualTo(expectedValue1.getValue());
+        assertThat(actualValue).isEqualTo("a");
     }
-
-    @Test
-    public void testGetDoubleValueForUnsupportedField() throws Exception {
-        EnvVariable expectedField = SmodelFactory.eINSTANCE.createEnvVariable();
-
-        Double actualValue = valueProvider.getDoubleValue(expectedField);
-
-        assertThat(actualValue).isNull();
-
-    }
-
-    @Test
-    public void testGetDoubleValueForSet() throws Exception {
-        DoubleLiteral expectedValue1 = smodelCreator.createDoubleLiteral(2.0);
-        DoubleLiteral expectedValue2 = smodelCreator.createDoubleLiteral(1.0);
-        SetBounds bounds = smodelCreator.createSetBounds(expectedValue1, expectedValue2);
-        Optimizable expectedField = smodelCreator.createOptimizable("DoubleOpt", DataType.DOUBLE, bounds);
-
-        Double actualValue = valueProvider.getDoubleValue(expectedField);
-
-        assertThat(actualValue).isEqualTo(expectedValue1.getValue());
-    }
-
-    @Test
-    public void testGetDoubleValueForRange() throws Exception {
-        DoubleLiteral expectedValue1 = smodelCreator.createDoubleLiteral(2.0);
-        DoubleLiteral expectedValue2 = smodelCreator.createDoubleLiteral(1.0);
-        RangeBounds bounds = smodelCreator.createRangeBounds(expectedValue1, expectedValue2, null);
-        Optimizable expectedField = smodelCreator.createOptimizable("DoubleOpt", DataType.DOUBLE, bounds);
-
-        Double actualValue = valueProvider.getDoubleValue(expectedField);
-
-        assertThat(actualValue).isEqualTo(expectedValue1.getValue());
-    }
-
 }

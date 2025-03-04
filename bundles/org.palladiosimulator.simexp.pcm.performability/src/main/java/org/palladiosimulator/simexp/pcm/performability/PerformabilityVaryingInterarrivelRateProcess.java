@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.performability;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,14 +40,12 @@ import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> {
+public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityVaryingInterarrivelRateProcess.class.getName());
 
@@ -88,6 +87,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
     private SampleDumper sampleDumper = null;
+    private boolean initialized = false;
 
     public PerformabilityVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
             IExperimentProvider experimentProvider) {
@@ -118,7 +118,16 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
+    }
+
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 
@@ -226,7 +235,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
                 }
             }
         }
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     private EnvironmentalState<List<InputValue<CategoricalValue>>> asPcmEnvironmentalState(
@@ -241,7 +250,7 @@ public class PerformabilityVaryingInterarrivelRateProcess<C, A, Aa extends Actio
 
     private PerceivedValue<List<InputValue<CategoricalValue>>> asPerceivedValue(
             List<InputValue<CategoricalValue>> sample) {
-        Map<String, String> attributeMap = Maps.newHashMap();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_1_ATTRIBUTE, SERVER_NODE_1_VARIABLE);
         attributeMap.put(PCM_RESOURCE_CONTAINER_SERVER_2_ATTRIBUTE, SERVER_NODE_2_VARIABLE);

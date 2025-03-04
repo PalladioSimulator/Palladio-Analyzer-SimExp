@@ -6,21 +6,18 @@ import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.pcm.modelled.config.IModelledWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.modelled.prism.config.IModelledPrismWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.modelled.simulator.config.IModelledPcmWorkflowConfiguration;
-import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfiguration
-        implements IPCMWorkflowConfiguration, IPrismWorkflowConfiguration, IModelledWorkflowConfiguration,
-        IModelledPcmWorkflowConfiguration, IModelledPrismWorkflowConfiguration {
+        implements ISimExpWorkflowConfiguration {
 
     /**
      * This class serves as container configuration class to hold all relevant configuration
@@ -28,6 +25,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
      * 
      */
     private final URI smodelFile;
+    private final ModelledOptimizationType modelledOptimizationType;
     private final SimulatorType simulatorType;
     private final SimulationEngine simulationEngine;
     private final Set<String> transformationNames;
@@ -41,12 +39,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
+    private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
-            ArchitecturalModelsWorkflowConfiguration architecturalModels, MonitorConfiguration monitors,
+            ArchitecturalModelsWorkflowConfiguration architecturalModels,
+            ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
+            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -63,6 +64,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.setAllocationFiles(architecturalModels.getAllocationFiles());
         this.experimentsFile = URI.createURI(architecturalModels.getExperimentsFile());
         this.smodelFile = URI.createURI(architecturalModels.getSmodelFile());
+        this.modelledOptimizationType = modelledOptimizationType;
         this.staticModelFile = URI.createURI(environmentalModels.getStaticModelFile());
         this.dynamicModelFile = URI.createURI(environmentalModels.getDynamicModelFile());
         this.monitorRepositoryFile = URI.createURI(monitors.getMonitorRepositoryFile());
@@ -79,6 +81,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
+        this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
     }
 
     @Override
@@ -96,6 +99,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public URI getSmodelURI() {
         return smodelFile;
+    }
+
+    @Override
+    public ModelledOptimizationType getOptimizationType() {
+        return modelledOptimizationType;
     }
 
     @Override
@@ -160,5 +168,30 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
+    }
+
+    @Override
+    public int getPopulationSize() {
+        return evolutionaryAlgorithmConfiguration.getPopulationSize();
+    }
+
+    @Override
+    public Optional<Integer> getMaxGenerations() {
+        return evolutionaryAlgorithmConfiguration.getMaxGenerations();
+    }
+
+    @Override
+    public Optional<Integer> getSteadyFitness() {
+        return evolutionaryAlgorithmConfiguration.getSteadyFitness();
+    }
+
+    @Override
+    public Optional<Double> getMutationRate() {
+        return evolutionaryAlgorithmConfiguration.getMutationRate();
+    }
+
+    @Override
+    public Optional<Double> getCrossoverRate() {
+        return evolutionaryAlgorithmConfiguration.getCrossoverRate();
     }
 }

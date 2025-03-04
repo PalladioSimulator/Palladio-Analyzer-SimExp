@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
+    <stringAttribute key="ModelledOptimizationType" value="SIMPLE"/>
+    <intAttribute key="NumberOfRuns" value="1"/>
+    <intAttribute key="NumberOfSimulationsPerRun" value="20"/>
+    <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
+    <stringAttribute key="Simulation Engine" value="PCM"/>
+    <stringAttribute key="SimulationID" value="LB_modelled"/>
+    <stringAttribute key="Simulator Type" value="MODELLED"/>
+    <setAttribute key="TransformationsActive"/>
+    <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/loadbalancer_on_iaas.allocation"/>
+    <stringAttribute key="dynamicModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerEnvironmentalDynamics.dynamicmodel"/>
+    <stringAttribute key="experimentsFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/experiments/simexp.experiments"/>
+    <stringAttribute key="monitorRepositoryFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/monitors/monitoring.monitorrepository"/>
+    <listAttribute key="monitors">
+        <listEntry value="System Response Time"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <stringAttribute key="smodelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/strategies/NStepLoadBalancerStrategy.smodel"/>
+    <stringAttribute key="staticModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerNonTemporalEnvironment.staticmodel"/>
+    <stringAttribute key="usageFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/overload.usagemodel"/>
+</launchConfiguration>

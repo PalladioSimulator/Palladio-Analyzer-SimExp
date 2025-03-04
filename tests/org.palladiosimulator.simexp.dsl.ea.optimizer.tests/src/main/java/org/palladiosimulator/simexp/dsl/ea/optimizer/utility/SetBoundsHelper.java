@@ -10,11 +10,12 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class SetBoundsHelper {
 
-    public static SetBounds initializeIntegerSetBound(SmodelCreator smodelCreator, List<Integer> elementsInSet,
+    public SetBounds initializeIntegerSetBound(SmodelCreator smodelCreator, List<Integer> elementsInSet,
             IExpressionCalculator calculator) {
         List<IntLiteral> intLiterals = new ArrayList();
         for (Integer element : elementsInSet) {
@@ -26,7 +27,7 @@ public class SetBoundsHelper {
         return smodelCreator.createSetBounds(doubleLiteralsAsArray);
     }
 
-    public static SetBounds initializeDoubleSetBound(SmodelCreator smodelCreator, List<Double> elementsInSet,
+    public SetBounds initializeDoubleSetBound(SmodelCreator smodelCreator, List<Double> elementsInSet,
             IExpressionCalculator calculator) {
         List<DoubleLiteral> doubleLiterals = new ArrayList();
         for (Double element : elementsInSet) {
@@ -38,7 +39,7 @@ public class SetBoundsHelper {
         return smodelCreator.createSetBounds(doubleLiteralsAsArray);
     }
 
-    public static SetBounds initializeBooleanSetBound(SmodelCreator smodelCreator, List<Boolean> elementsInSet,
+    public SetBounds initializeBooleanSetBound(SmodelCreator smodelCreator, List<Boolean> elementsInSet,
             IExpressionCalculator calculator) {
         List<BoolLiteral> boolLiterals = new ArrayList();
         for (Boolean element : elementsInSet) {
@@ -48,6 +49,18 @@ public class SetBoundsHelper {
         }
         BoolLiteral[] boolLiteralsAsArray = boolLiterals.toArray(new BoolLiteral[boolLiterals.size()]);
         return smodelCreator.createSetBounds(boolLiteralsAsArray);
+    }
+
+    public SetBounds initializeStringSetBound(SmodelCreator smodelCreator, List<String> elementsInSet,
+            IExpressionCalculator calculator) {
+        List<StringLiteral> stringLiterals = new ArrayList<>();
+        for (String element : elementsInSet) {
+            StringLiteral elementLiteral = smodelCreator.createStringLiteral(element);
+            stringLiterals.add(elementLiteral);
+            when(calculator.calculateString(elementLiteral)).thenReturn(element);
+        }
+        StringLiteral[] stringLiteralsAsArray = stringLiterals.toArray(new StringLiteral[stringLiterals.size()]);
+        return smodelCreator.createSetBounds(stringLiteralsAsArray);
     }
 
 }

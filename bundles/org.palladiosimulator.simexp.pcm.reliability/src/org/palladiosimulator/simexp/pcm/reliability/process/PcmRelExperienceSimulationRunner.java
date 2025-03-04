@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.reliability.process;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
@@ -30,6 +31,7 @@ import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionFactory;
 import tools.mdsd.probdist.api.factory.IProbabilityDistributionRegistry;
 import tools.mdsd.probdist.api.parser.ParameterParser;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulationRunner {
 
@@ -39,11 +41,13 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
     private final IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory;
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
+    private final Optional<ISeedProvider> seedProvider;
 
     public PcmRelExperienceSimulationRunner(UncertaintyBasedReliabilityPredictionConfig globalConfig,
             IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry,
             IProbabilityDistributionFactory<CategoricalValue> probabilityDistributionFactory,
-            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup) {
+            ParameterParser parameterParser, IProbabilityDistributionRepositoryLookup probDistRepoLookup,
+            Optional<ISeedProvider> seedProvider) {
         this.globalConfig = globalConfig;
         this.uncertaintyStateSpace = buildUncertaintyStateSpace(globalConfig.getUncertaintyRepository(),
                 parameterParser);
@@ -51,6 +55,7 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
         this.probabilityDistributionFactory = probabilityDistributionFactory;
         this.parameterParser = parameterParser;
         this.probDistRepoLookup = probDistRepoLookup;
+        this.seedProvider = seedProvider;
     }
 
     private DiscreteUncertaintyStateSpace buildUncertaintyStateSpace(UncertaintyRepository uncertaintyRepo,
@@ -78,7 +83,8 @@ public class PcmRelExperienceSimulationRunner<A, V> implements ExperienceSimulat
         var config = deriveConfigFrom(pcmState);
         var uncertaintyStates = deriveUncertaintyStates(pcmState.getPerceivedEnvironmentalState());
         return UncertaintyBasedReliabilityPrediction.predictGiven(uncertaintyStates, config,
-                probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup);
+                probabilityDistributionRegistry, probabilityDistributionFactory, parameterParser, probDistRepoLookup,
+                seedProvider);
     }
 
     private UncertaintyBasedReliabilityPredictionConfig deriveConfigFrom(PcmSelfAdaptiveSystemState<A, V> pcmState) {

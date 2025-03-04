@@ -31,7 +31,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.palladiosimulator.simexp.ui.workflow.preferences.KubernetesPreferencesPage"
-            id="org.palladiosimulator.simexp.ui.workflow.page1"
+            id="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
             name="SimExp">
       </page>
    </extension>
@@ -42,5 +42,4 @@
       </initializer>
    </extension>
    
-
 </plugin>

@@ -10,6 +10,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Field;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Literal;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Operation;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
@@ -56,6 +57,10 @@ public class ExpressionCalculator implements IExpressionCalculator {
     }
 
     private Object caseExpression(Expression expression) {
+        if (expression instanceof Literal literal) {
+            return getLiteralValue(literal);
+        }
+
         Field field = expression.getFieldRef();
         if (field != null) {
             return getFieldValue(field);

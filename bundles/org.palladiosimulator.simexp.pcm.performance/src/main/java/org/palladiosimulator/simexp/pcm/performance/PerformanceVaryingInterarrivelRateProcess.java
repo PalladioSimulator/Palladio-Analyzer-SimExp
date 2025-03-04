@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.pcm.performance;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,16 +39,14 @@ import org.palladiosimulator.simexp.pcm.perceiption.PerceivedValueConverter;
 import org.palladiosimulator.simexp.pcm.util.ExperimentRunner;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import de.uka.ipd.sdq.probfunction.math.IContinousPDF;
 import de.uka.ipd.sdq.probfunction.math.apache.impl.PDFFactory;
 import de.uka.ipd.sdq.stoex.StoexPackage;
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 import tools.mdsd.probdist.api.random.ISeedProvider;
+import tools.mdsd.probdist.api.random.ISeedable;
 
-public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> {
+public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, R> implements ISeedable {
 
     private static final Logger LOGGER = Logger.getLogger(PerformanceVaryingInterarrivelRateProcess.class.getName());
 
@@ -78,6 +77,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
     private final ProbabilityMassFunction<State> initialDist;
     private final ConditionalInputValueUtil<CategoricalValue> conditionalInputValueUtil = new ConditionalInputValueUtil<>();
 
+    private boolean initialized = false;
     private SampleDumper sampleDumper = null;
 
     public PerformanceVaryingInterarrivelRateProcess(DynamicBayesianNetwork<CategoricalValue> dbn,
@@ -103,6 +103,12 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
         this.envProcess = createEnvironmentalProcess(dbn);
     }
 
+    @Override
+    public void init(Optional<ISeedProvider> seedProvider) {
+        initialized = true;
+        initialDist.init(seedProvider);
+    }
+
     private Function<ExperimentRunner, EObject> retrieveInterArrivalTimeRandomVariableHandler() {
         return expRunner -> {
             // TODO exception handling
@@ -116,6 +122,9 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
     }
 
     public EnvironmentProcess<A, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
+        if (!initialized) {
+            throw new RuntimeException("not initialized");
+        }
         return envProcess;
     }
 
@@ -212,7 +221,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
                 }
             }
         }
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 
     private EnvironmentalState<List<InputValue<CategoricalValue>>> asPcmEnvironmentalState(
@@ -227,7 +236,7 @@ public class PerformanceVaryingInterarrivelRateProcess<A, Aa extends Action<A>, 
 
     private PerceivedValue<List<InputValue<CategoricalValue>>> asPerceivedValue(
             List<InputValue<CategoricalValue>> sample) {
-        Map<String, String> attributeMap = Maps.newHashMap();
+        Map<String, String> attributeMap = new HashMap<>();
         attributeMap.put(PCM_SPECIFICATION_ATTRIBUTE, WORKLOAD_VARIABLE);
         PerceivedSelectedInputValues perceivedValue = new PerceivedSelectedInputValues(sample, attributeMap);
         return perceivedValue;

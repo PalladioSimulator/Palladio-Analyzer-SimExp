@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.List;
 
-import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public interface IEAEvolutionStatusReceiver {
     /**
@@ -13,5 +13,5 @@ public interface IEAEvolutionStatusReceiver {
      * @param fitness
      *            the fitness of the given optimization values
      */
-    void reportStatus(List<OptimizableValue<?>> optimizableValues, double fitness);
+    void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness);
 }

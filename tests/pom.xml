@@ -22,6 +22,8 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.tests</module>
 		<module>org.palladiosimulator.simexp.model.strategy.tests</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer.tests</module>
+		<module>org.palladiosimulator.simexp.pcm.modelled.tests</module>
+		<module>org.palladiosimulator.simexp.workflow.tests</module>
 	</modules>
 	
 </project>

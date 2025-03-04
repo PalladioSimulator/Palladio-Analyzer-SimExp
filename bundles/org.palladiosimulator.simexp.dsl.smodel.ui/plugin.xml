@@ -78,9 +78,10 @@
 	<extension
 			point="org.eclipse.ui.preferencePages">
 		<page
-			class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
-			id="org.palladiosimulator.simexp.dsl.smodel.Smodel"
-			name="Smodel">
+        category="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
+        class="org.palladiosimulator.simexp.dsl.smodel.ui.SmodelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+        id="org.palladiosimulator.simexp.dsl.smodel.Smodel"
+        name="Smodel">
 			<keywordReference id="org.palladiosimulator.simexp.dsl.smodel.ui.keyword_Smodel"/>
 		</page>
 		<page

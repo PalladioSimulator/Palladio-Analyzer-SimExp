@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Action;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ActionCall;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
@@ -27,13 +28,15 @@ public class SModelInterpreterTest {
     private IFieldValueProvider fvp;
     @Mock
     private IFieldValueProvider envVariableValueProvider;
+    @Mock
+    private OptimizableValueProvider optimizableValueProvider;
 
     @Before
     public void setUp() {
         initMocks(this);
         smodel = SmodelFactory.eINSTANCE.createSmodel();
         smodelCreator = new SmodelCreator();
-        interpreter = new SmodelInterpreter(smodel, fvp, envVariableValueProvider);
+        interpreter = new SmodelInterpreter(smodel, fvp, envVariableValueProvider, optimizableValueProvider);
     }
 
     @Test
