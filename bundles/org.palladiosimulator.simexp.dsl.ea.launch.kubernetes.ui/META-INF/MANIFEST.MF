@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-17
