@@ -179,10 +179,10 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
             Optional<Integer> steadyFitness = Optional
                 .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
-            Optional<Double> mutationRate = Optional
-                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.MUTATION_RATE));
-            Optional<Double> crossoverRate = Optional
-                .ofNullable((Double) launchConfigurationParams.get(SimulationConstants.CROSSOVER_RATE));
+            Optional<Double> mutationRate = extractOptionalDouble(launchConfigurationParams,
+                    SimulationConstants.MUTATION_RATE);
+            Optional<Double> crossoverRate = extractOptionalDouble(launchConfigurationParams,
+                    SimulationConstants.CROSSOVER_RATE);
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
                     maxGenerations, steadyFitness, mutationRate, crossoverRate);
 
@@ -197,6 +197,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         }
 
         return workflowConfiguration;
+    }
+
+    private Optional<Double> extractOptionalDouble(Map<String, Object> launchConfigurationParams, String key) {
+        String stringValue = (String) launchConfigurationParams.get(key);
+        if (stringValue == null) {
+            return Optional.empty();
+        }
+        double value = Double.parseDouble(stringValue);
+        return Optional.of(value);
     }
 
     @Override
