@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.ui
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.ui
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.ui
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-17

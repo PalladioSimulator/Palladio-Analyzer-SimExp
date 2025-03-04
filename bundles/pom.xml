@@ -60,6 +60,7 @@
 		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.ui</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>
