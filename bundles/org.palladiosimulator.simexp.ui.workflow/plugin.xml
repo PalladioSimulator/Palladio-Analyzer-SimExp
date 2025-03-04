@@ -27,5 +27,13 @@
             type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
       </launchConfigurationTabGroup>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
+            id="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
+            name="SimExp">
+      </page>
+   </extension>
 
 </plugin>
