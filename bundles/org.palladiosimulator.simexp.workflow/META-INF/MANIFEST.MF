@@ -32,5 +32,4 @@ Require-Bundle: org.palladiosimulator.analyzer.workflow,
 Export-Package: org.palladiosimulator.simexp.workflow.api,
  org.palladiosimulator.simexp.workflow.config,
  org.palladiosimulator.simexp.workflow.launcher,
- org.palladiosimulator.simexp.workflow.preferences,
  org.palladiosimulator.simexp.workflow.trafo

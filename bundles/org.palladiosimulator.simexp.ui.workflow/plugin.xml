@@ -30,16 +30,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.palladiosimulator.simexp.ui.workflow.preferences.KubernetesPreferencesPage"
+            class="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
             id="org.palladiosimulator.simexp.ui.workflow.preferences.SimExpPreferencePage"
             name="SimExp">
       </page>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.palladiosimulator.simexp.ui.workflow.preferences.KubernetesPreferenceInitializer">
-      </initializer>
-   </extension>
-   
 </plugin>

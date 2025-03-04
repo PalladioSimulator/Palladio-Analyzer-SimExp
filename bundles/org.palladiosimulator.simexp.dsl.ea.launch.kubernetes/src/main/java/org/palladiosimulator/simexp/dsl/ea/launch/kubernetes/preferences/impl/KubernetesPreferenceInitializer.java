@@ -1,9 +1,9 @@
-package org.palladiosimulator.simexp.dsl.ea.api.preferences.impl;
+package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.impl;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.osgi.service.prefs.Preferences;
-import org.palladiosimulator.simexp.dsl.ea.api.preferences.KubernetesPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 
 public class KubernetesPreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -11,7 +11,7 @@ public class KubernetesPreferenceInitializer extends AbstractPreferenceInitializ
     public void initializeDefaultPreferences() {
         Preferences defaults = DefaultScope.INSTANCE.getNode(KubernetesPreferenceConstants.ID);
 
-        // defaults.put(KubernetesPreferenceConstants.MySTRING1, "default string");
+        defaults.put(KubernetesPreferenceConstants.CLUSTER_URL, "http://something");
     }
 
 }

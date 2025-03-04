@@ -2,10 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="org.palladiosimulator.simexp.dsl.ea.api"
+         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes"
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.palladiosimulator.simexp.dsl.ea.api.preferences.impl.EAPreferenceInitializer">
+            class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.impl.KubernetesPreferenceInitializer">
       </initializer>
    </extension>
 
