@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.palladiosimulator.simexp.dsl.ea.api"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.palladiosimulator.simexp.dsl.ea.api.preferences.impl.EAPreferenceInitializer">
+      </initializer>
+      <initializer
+            class="org.palladiosimulator.simexp.dsl.ea.api.preferences.impl.KubernetesPreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
