@@ -12,6 +12,7 @@ import org.eclipse.core.databinding.conversion.text.StringToNumberConverter;
 import org.eclipse.core.databinding.observable.sideeffect.ISideEffect;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.SelectObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
@@ -28,6 +29,9 @@ import org.eclipse.swt.widgets.Text;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.ConfigurationProperties;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
@@ -142,18 +146,25 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
     @Override
     protected void doInitializeFrom(ILaunchConfigurationWorkingCopy configuration, DataBindingContext ctx) {
-        initializeConfigFrom(configuration, ctx);
-        initializeLimitsFrom(configuration, ctx);
+        SelectObservableValue<ModelledOptimizationType> modelledOptimizationTypeTarget = modelledOptimizerProvider
+            .getModelledOptimizationType();
+        ControllableValidator.Enabled isEAEnabled = new EnumEnabler<>(ModelledOptimizationType.EVOLUTIONARY_ALGORITHM,
+                modelledOptimizationTypeTarget);
+
+        initializeConfigFrom(configuration, ctx, isEAEnabled);
+        initializeLimitsFrom(configuration, ctx, isEAEnabled);
     }
 
-    private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
+    private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {
         IObservableValue<String> popSizeTarget = WidgetProperties.text(SWT.Modify)
             .observe(textPopulationSize);
         IObservableValue<Integer> popSizeModel = ConfigurationProperties.integer(SimulationConstants.POPULATION_SIZE)
             .observe(configuration);
         UpdateValueStrategy<String, Integer> popSizeUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        popSizeUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Population size", 1));
+        IValidator<Integer> popSizeValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Population size", 1), isEAEnabled);
+        popSizeUpdateStrategy.setBeforeSetValidator(popSizeValidator);
         Binding popSizeBindValue = ctx.bindValue(popSizeTarget, popSizeModel, popSizeUpdateStrategy, null);
         ControlDecorationSupport.create(popSizeBindValue, SWT.TOP | SWT.RIGHT);
 
@@ -164,7 +175,9 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> t2mMutationRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        t2mMutationRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Mutation rate", 0.0, true));
+        IValidator<Double> mutationRateValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Mutation rate", 0.0, true), isEAEnabled);
+        t2mMutationRateUpdateStrategy.setBeforeSetValidator(mutationRateValidator);
         t2mMutationRateUpdateStrategy
             .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_MUTTATION_RATE), false));
         UpdateValueStrategy<Double, String> m2tMutationRateUpdateStrategy = new UpdateValueStrategy<>(
@@ -185,7 +198,9 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> t2mCrossOverRateUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        t2mCrossOverRateUpdateStrategy.setBeforeSetValidator(new MinNumberValidator<>("Crossover rate", 0.0, true));
+        IValidator<Double> crossOverRateValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Crossover rate", 0.0, true), isEAEnabled);
+        t2mCrossOverRateUpdateStrategy.setBeforeSetValidator(crossOverRateValidator);
         t2mCrossOverRateUpdateStrategy
             .setConverter(StringToNumberConverter.toDouble(new DecimalFormat(PATTERN_CROSSOVER_RATE), false));
         UpdateValueStrategy<Double, String> m2tCrossOverRateUpdateStrategy = new UpdateValueStrategy<>(
@@ -200,7 +215,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         ControlDecorationSupport.create(crossOverRateBindValue, SWT.TOP | SWT.RIGHT);
     }
 
-    private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx) {
+    private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {
         IObservableValue<String> maxGenTarget = WidgetProperties.text(SWT.Modify)
             .observe(textMaxGenerations);
         IObservableValue<Integer> maxGenModel = ConfigurationProperties
