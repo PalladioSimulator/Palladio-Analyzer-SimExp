@@ -3,11 +3,15 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.dsl.ea.api.preferences.EADispatcherType;
+import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
@@ -25,6 +29,16 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizerLaunchFactory implements ILaunchFactory {
     public static final int HANDLE_VALUE = 10;
+
+    private final IPreferencesService preferencesService;
+
+    public EAOptimizerLaunchFactory() {
+        this(Platform.getPreferencesService());
+    }
+
+    EAOptimizerLaunchFactory(IPreferencesService preferencesService) {
+        this.preferencesService = preferencesService;
+    }
 
     @Override
     public int canHandle(IWorkflowConfiguration config) {
@@ -59,8 +73,14 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
-        return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory,
-                resourcePath);
+        String dispatcherStr = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
+                "", null);
+        EADispatcherType dispatcher = EADispatcherType.valueOf(dispatcherStr);
+        if (dispatcher == EADispatcherType.LOCAl) {
+            return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory,
+                    resourcePath);
+        }
+        throw new RuntimeException(String.format("dispatcher not supported: %s", dispatcherStr));
     }
 
 }
