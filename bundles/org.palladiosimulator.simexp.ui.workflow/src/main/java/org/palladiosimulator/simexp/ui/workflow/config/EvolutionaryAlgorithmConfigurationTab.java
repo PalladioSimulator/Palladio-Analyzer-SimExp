@@ -221,10 +221,13 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         IObservableValue<Integer> maxGenModel = ConfigurationProperties
             .integer(SimulationConstants.MAX_GENERATIONS, false)
             .observe(configuration);
-        UpdateValueStrategy<String, Integer> customMaxGenUpdateStrategy = new UpdateValueStrategy<>(
+        UpdateValueStrategy<String, Integer> maxGenUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        customMaxGenUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
-        Binding maxGenBindValue = ctx.bindValue(maxGenTarget, maxGenModel, customMaxGenUpdateStrategy, null);
+        IValidator<Integer> maxGenValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Max generations", 1, true), isEAEnabled);
+        maxGenUpdateStrategy.setBeforeSetValidator(maxGenValidator);
+        maxGenUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
+        Binding maxGenBindValue = ctx.bindValue(maxGenTarget, maxGenModel, maxGenUpdateStrategy, null);
         ControlDecorationSupport.create(maxGenBindValue, SWT.TOP | SWT.RIGHT);
 
         IObservableValue<String> steadyFitnessTarget = WidgetProperties.text(SWT.Modify)
@@ -234,6 +237,9 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Integer> steadyFitnessUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
+        IValidator<Integer> steadyFitnessValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Steady fitness", 1, true), isEAEnabled);
+        steadyFitnessUpdateStrategy.setBeforeSetValidator(steadyFitnessValidator);
         steadyFitnessUpdateStrategy.setConverter(StringToNumberConverter.toInteger(false));
         Binding steadyFitnessBindValue = ctx.bindValue(steadyFitnessTarget, steadyFitnessModel,
                 steadyFitnessUpdateStrategy, null);
