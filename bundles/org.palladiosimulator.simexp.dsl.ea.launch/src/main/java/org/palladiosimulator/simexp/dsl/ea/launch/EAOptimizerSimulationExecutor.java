@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;

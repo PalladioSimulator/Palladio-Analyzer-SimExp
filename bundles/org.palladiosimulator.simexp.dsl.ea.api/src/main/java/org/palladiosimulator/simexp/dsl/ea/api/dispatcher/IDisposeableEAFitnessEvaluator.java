@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.evaluate;
+package org.palladiosimulator.simexp.dsl.ea.api.dispatcher;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 
