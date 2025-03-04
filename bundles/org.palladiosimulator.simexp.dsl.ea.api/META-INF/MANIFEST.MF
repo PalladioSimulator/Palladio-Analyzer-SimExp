@@ -5,6 +5,7 @@ Bundle-Name: org.palladiosimulator.simexp.dsl.ea.api
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Export-Package: org.palladiosimulator.simexp.dsl.ea.api,
+ org.palladiosimulator.simexp.dsl.ea.api.dispatcher,
  org.palladiosimulator.simexp.dsl.ea.api.preferences
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
  org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",

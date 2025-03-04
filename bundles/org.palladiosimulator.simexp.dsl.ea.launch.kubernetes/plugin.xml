@@ -8,5 +8,11 @@
             class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.impl.KubernetesPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.palladiosimulator.simexp.dsl.ea.api.dispatcher">
+      <dispatcher
+            class="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.KubernetesDispatcherProvider">
+      </dispatcher>
+   </extension>
 
 </plugin>

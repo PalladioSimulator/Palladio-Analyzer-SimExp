@@ -6,6 +6,7 @@ Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes;singl
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Export-Package: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
+ org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17

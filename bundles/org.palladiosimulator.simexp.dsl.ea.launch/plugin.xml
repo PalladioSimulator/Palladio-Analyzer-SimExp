@@ -7,5 +7,11 @@
             class="org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory">
       </factory>
    </extension>
+   <extension
+         point="org.palladiosimulator.simexp.dsl.ea.api.dispatcher">
+      <dispatcher
+            class="org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.LocalDispatcherProvider">
+      </dispatcher>
+   </extension>
 
 </plugin>

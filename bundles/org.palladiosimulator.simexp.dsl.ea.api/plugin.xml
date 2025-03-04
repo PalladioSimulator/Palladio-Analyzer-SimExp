@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.palladiosimulator.simexp.dsl.ea.api.dispatcher" name="EvolutionaryAlgorithmDispatcher" schema="schema/org.palladiosimulator.simexp.dsl.ea.api.dispatcher.exsd"/>
    <extension
          id="org.palladiosimulator.simexp.dsl.ea.api"
          point="org.eclipse.core.runtime.preferences">

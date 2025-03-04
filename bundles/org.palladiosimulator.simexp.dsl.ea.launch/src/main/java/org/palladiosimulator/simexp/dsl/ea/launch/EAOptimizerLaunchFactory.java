@@ -10,7 +10,6 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.dsl.ea.api.preferences.EADispatcherType;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
@@ -75,8 +74,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
             Factory modelLoaderFactory, Path resourcePath) {
         String dispatcherStr = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
                 "", null);
-        EADispatcherType dispatcher = EADispatcherType.valueOf(dispatcherStr);
-        if (dispatcher == EADispatcherType.LOCAl) {
+        if (dispatcherStr.equals("Loacl")) {
             return new LocalEAFitnessEvaluator(config, launchDescriptionProvider, seedProvider, modelLoaderFactory,
                     resourcePath);
         }
