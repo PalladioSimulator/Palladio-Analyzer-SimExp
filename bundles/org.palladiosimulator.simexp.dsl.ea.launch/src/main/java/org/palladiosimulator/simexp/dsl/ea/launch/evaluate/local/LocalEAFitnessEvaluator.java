@@ -61,6 +61,10 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
+    public void init() {
+    }
+
+    @Override
     public void dispose() {
         executor.shutdown();
         try {

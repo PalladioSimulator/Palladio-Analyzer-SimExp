@@ -23,6 +23,10 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     }
 
     @Override
+    public void init() {
+    }
+
+    @Override
     public void dispose() {
     }
 
