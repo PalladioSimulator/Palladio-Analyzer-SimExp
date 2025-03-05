@@ -1,9 +1,12 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -13,6 +16,10 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
@@ -24,6 +31,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
+
     private final IPreferencesService preferencesService;
 
     public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config,
@@ -53,12 +61,29 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
                 .map(ObjectMeta::getName)
                 .forEach(LOGGER::info);
 
-            evaluatorClient.process(this);
+            evaluateWithRabbitMQ(client, evaluatorClient);
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
             LOGGER.info("done");
+        }
+    }
+
+    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient)
+            throws IOException, TimeoutException {
+        String rabbiteMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
+        URL rabbiteMQURL = new URL(rabbiteMQString);
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(rabbiteMQURL.getHost());
+        factory.setPort(rabbiteMQURL.getPort());
+
+        LOGGER.info("Connecting to RabbitMQ...");
+        try (Connection conn = factory.newConnection()) {
+            LOGGER.info("Connected to RabbitMQ");
+            try (Channel channel = conn.createChannel()) {
+                evaluatorClient.process(this);
+            }
         }
     }
 
