@@ -105,10 +105,12 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         LOGGER.info("Queues deleted");
 
         boolean durable = true;
+        boolean exclusive = false;
+        boolean autoDelete = false;
         Map<String, Object> outArguments = new HashMap<>();
         outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
-        channel.queueDeclare(outQueueName, durable, false, false, outArguments);
-        channel.queueDeclare(inQueueName, durable, false, false, null);
+        channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
+        channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
     }
 
     private String getPreference(String key) {
