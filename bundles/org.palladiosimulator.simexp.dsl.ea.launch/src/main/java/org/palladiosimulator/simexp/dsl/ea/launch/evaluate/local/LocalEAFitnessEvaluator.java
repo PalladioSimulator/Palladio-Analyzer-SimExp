@@ -33,7 +33,7 @@ import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
-    protected static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
+    private static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
 
     private final IModelledWorkflowConfiguration config;
     private final LaunchDescriptionProvider launchDescriptionProvider;
