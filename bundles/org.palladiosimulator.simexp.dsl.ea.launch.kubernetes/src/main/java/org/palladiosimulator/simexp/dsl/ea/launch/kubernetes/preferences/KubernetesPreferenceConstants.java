@@ -3,6 +3,9 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences;
 public interface KubernetesPreferenceConstants {
     static final String ID = "org.palladiosimulator.simexp.dsl.ea.launch.kubernetes";
 
-    static final String CLUSTER_URL = "cluster url";
-    static final String API_TOKEN = "api token";
+    static final String CLUSTER_URL = "Cluster URL";
+    static final String API_TOKEN = "API token";
+
+    static final String RABBIT_MQ_URL = "RabbitMQ URL";
+    static final String INTERNAL_RABBIT_MQ_URL = "Internal RabbitMQ URL";
 }

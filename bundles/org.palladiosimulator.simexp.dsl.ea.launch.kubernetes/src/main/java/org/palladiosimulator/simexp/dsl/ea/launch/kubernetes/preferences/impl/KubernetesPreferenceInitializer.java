@@ -1,12 +1,19 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.impl;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.osgi.service.prefs.Preferences;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 
 public class KubernetesPreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override
     public void initializeDefaultPreferences() {
-        // Preferences defaults = DefaultScope.INSTANCE.getNode(KubernetesPreferenceConstants.ID);
-    }
+        Preferences defaults = DefaultScope.INSTANCE.getNode(KubernetesPreferenceConstants.ID);
 
+        defaults.put(KubernetesPreferenceConstants.CLUSTER_URL, "https://localhost:8001");
+
+        defaults.put(KubernetesPreferenceConstants.RABBIT_MQ_URL, "https://localhost:32001");
+        defaults.put(KubernetesPreferenceConstants.INTERNAL_RABBIT_MQ_URL, "https://10.0.0.10:32001");
+    }
 }
