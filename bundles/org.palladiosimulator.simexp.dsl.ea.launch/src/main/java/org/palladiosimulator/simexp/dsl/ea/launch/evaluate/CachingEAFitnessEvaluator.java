@@ -45,13 +45,11 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     }
 
     @Override
-    public void init() {
-        delegate.init();
-    }
-
-    @Override
-    public void dispose() {
-        cache.clear();
-        delegate.dispose();
+    public void evaluate(EvaluatorClient client) {
+        try {
+            delegate.evaluate(client);
+        } finally {
+            cache.clear();
+        }
     }
 }

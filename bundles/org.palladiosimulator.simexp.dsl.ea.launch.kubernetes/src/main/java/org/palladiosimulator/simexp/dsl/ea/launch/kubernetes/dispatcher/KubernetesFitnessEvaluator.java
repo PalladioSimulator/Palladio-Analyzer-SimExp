@@ -33,7 +33,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     }
 
     @Override
-    public void init() {
+    public void evaluate(EvaluatorClient evaluatorClient) {
         String clusterURL = getPreference(KubernetesPreferenceConstants.CLUSTER_URL);
         String apiToken = getPreference(KubernetesPreferenceConstants.API_TOKEN);
         Config config = new ConfigBuilder().withMasterUrl(clusterURL)
@@ -53,6 +53,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
                 .map(ObjectMeta::getName)
                 .forEach(LOGGER::info);
 
+            evaluatorClient.process(this);
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
@@ -63,10 +65,6 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     private String getPreference(String key) {
         String value = preferencesService.getString(KubernetesPreferenceConstants.ID, key, "", null);
         return value;
-    }
-
-    @Override
-    public void dispose() {
     }
 
     @Override
