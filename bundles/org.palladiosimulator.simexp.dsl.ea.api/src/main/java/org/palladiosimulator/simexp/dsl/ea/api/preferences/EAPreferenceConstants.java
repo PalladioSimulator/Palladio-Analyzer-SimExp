@@ -5,4 +5,6 @@ public interface EAPreferenceConstants {
 
     static final String DISPATCHER = "eaDispatcher";
 
+    static final String DEFAULT_DISPATCHER = "Local";
+
 }

@@ -11,6 +11,6 @@ public class EAPreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         Preferences defaults = DefaultScope.INSTANCE.getNode(EAPreferenceConstants.ID);
 
-        defaults.put(EAPreferenceConstants.DISPATCHER, "Local");
+        defaults.put(EAPreferenceConstants.DISPATCHER, EAPreferenceConstants.DEFAULT_DISPATCHER);
     }
 }

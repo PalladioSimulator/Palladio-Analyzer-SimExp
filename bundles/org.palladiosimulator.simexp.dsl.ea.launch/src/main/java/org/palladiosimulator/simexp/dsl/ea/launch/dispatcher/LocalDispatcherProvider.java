@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -17,7 +18,7 @@ public class LocalDispatcherProvider implements IDispatcherProvider {
 
     @Override
     public String getName() {
-        return "Local";
+        return EAPreferenceConstants.DEFAULT_DISPATCHER;
     }
 
     @Override
