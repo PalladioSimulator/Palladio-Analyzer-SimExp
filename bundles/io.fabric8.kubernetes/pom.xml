@@ -53,7 +53,22 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <!--includeArtifactIds>kubernetes-client</includeArtifactIds-->
+              <includeArtifactIds>
+              annotations,
+              jackson-annotations,jackson-core,jackson-databind,jackson-dataformat-yaml,jackson-datatype-jsr310,
+              javax.annotation-api,
+              kotlin-stdlib, 
+              kubernetes-client, kubernetes-client-api, 
+              kubernetes-model-admissionregistration, kubernetes-model-apiextensions, kubernetes-model-apps,
+			  kubernetes-model-autoscaling, kubernetes-model-batch, kubernetes-model-certificates, kubernetes-model-common,
+			  kubernetes-model-coordination, kubernetes-model-core, kubernetes-model-discovery, kubernetes-model-events, 
+              kubernetes-model-extensions, kubernetes-model-flowcontrol, kubernetes-model-gatewayapi, kubernetes-model-metrics,
+              kubernetes-model-networking, kubernetes-model-node, kubernetes-model-policy, kubernetes-model-rbac,
+              kubernetes-model-resource, kubernetes-model-scheduling, kubernetes-model-storageclass,
+              snakeyaml-engine,
+              kubernetes-httpclient-okhttp, okhttp, okio, okio-jvm,
+
+              </includeArtifactIds>
               <outputDirectory>${basedir}/lib</outputDirectory>
               <stripVersion>true</stripVersion>
               <overWriteReleases>true</overWriteReleases>
