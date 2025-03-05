@@ -21,18 +21,6 @@
    </requires>
 
    <plugin
-         id="io.fabric8.kubernetes"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-		
-   <plugin
-         id="com.rabbitmq.client"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.palladiosimulator.simexp.distribution.apache"
          download-size="0"
          install-size="0"
@@ -272,12 +260,6 @@
 
    <plugin
          id="io.jenetics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
