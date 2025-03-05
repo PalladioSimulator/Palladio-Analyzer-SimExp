@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.perceiption.PcmModelChange;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 public class PcmSelfAdaptiveSystemState<A, V> extends SelfAdaptiveSystemState<PCMInstance, A, V> {
 

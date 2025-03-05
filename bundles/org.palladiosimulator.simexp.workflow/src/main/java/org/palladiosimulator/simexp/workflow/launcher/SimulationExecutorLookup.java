@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
