@@ -72,13 +72,13 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
 
     private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient)
             throws IOException, TimeoutException {
-        String rabbiteMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
-        URL rabbiteMQURL = new URL(rabbiteMQString);
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbiteMQURL.getHost());
-        factory.setPort(rabbiteMQURL.getPort());
+        String rabbitMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
+        URL rabbitMQURL = new URL(rabbitMQString);
 
         LOGGER.info("Connecting to RabbitMQ...");
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(rabbitMQURL.getHost());
+        factory.setPort(rabbitMQURL.getPort());
         try (Connection conn = factory.newConnection()) {
             LOGGER.info("Connected to RabbitMQ");
             try (Channel channel = conn.createChannel()) {
