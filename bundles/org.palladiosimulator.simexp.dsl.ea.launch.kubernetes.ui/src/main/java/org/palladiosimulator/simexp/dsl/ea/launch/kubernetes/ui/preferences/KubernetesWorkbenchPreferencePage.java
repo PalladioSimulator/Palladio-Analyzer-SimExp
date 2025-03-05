@@ -25,7 +25,7 @@ public class KubernetesWorkbenchPreferencePage extends FieldEditorPreferencePage
         addField(new StringFieldEditor(KubernetesPreferenceConstants.CLUSTER_URL,
                 KubernetesPreferenceConstants.CLUSTER_URL, getFieldEditorParent()));
         addField(new StringFieldEditor(KubernetesPreferenceConstants.API_TOKEN, KubernetesPreferenceConstants.API_TOKEN,
-                getFieldEditorParent()));
+                75, 15, StringFieldEditor.VALIDATE_ON_KEY_STROKE, getFieldEditorParent()));
 
         addField(new StringFieldEditor(KubernetesPreferenceConstants.RABBIT_MQ_URL,
                 KubernetesPreferenceConstants.RABBIT_MQ_URL, getFieldEditorParent()));
