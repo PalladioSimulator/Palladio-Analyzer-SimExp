@@ -3,9 +3,12 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
@@ -82,9 +85,30 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         try (Connection conn = factory.newConnection()) {
             LOGGER.info("Connected to RabbitMQ");
             try (Channel channel = conn.createChannel()) {
-                evaluatorClient.process(this);
+                setupQueues(channel);
+                evaluateWithMessageChannel(client, channel, evaluatorClient);
             }
         }
+    }
+
+    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient)
+            throws IOException {
+        evaluatorClient.process(this);
+    }
+
+    private void setupQueues(Channel channel) throws IOException {
+        String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
+        String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        LOGGER.info("Deleting queues ...");
+        channel.queueDelete(inQueueName);
+        channel.queueDelete(outQueueName);
+        LOGGER.info("Queues deleted");
+
+        boolean durable = true;
+        Map<String, Object> outArguments = new HashMap<>();
+        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        channel.queueDeclare(outQueueName, durable, false, false, outArguments);
+        channel.queueDeclare(inQueueName, durable, false, false, null);
     }
 
     private String getPreference(String key) {

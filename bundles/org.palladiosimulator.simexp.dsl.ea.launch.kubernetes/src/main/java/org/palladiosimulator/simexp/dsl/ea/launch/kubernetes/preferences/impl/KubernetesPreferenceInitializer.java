@@ -15,5 +15,8 @@ public class KubernetesPreferenceInitializer extends AbstractPreferenceInitializ
 
         defaults.put(KubernetesPreferenceConstants.RABBIT_MQ_URL, "https://localhost:32001");
         defaults.put(KubernetesPreferenceConstants.INTERNAL_RABBIT_MQ_URL, "https://10.0.0.10:32001");
+
+        defaults.put(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT, "simexp-queue-task");
+        defaults.put(KubernetesPreferenceConstants.RABBIT_QUEUE_IN, "simexp-queue-answer");
     }
 }

@@ -31,6 +31,10 @@ public class KubernetesWorkbenchPreferencePage extends FieldEditorPreferencePage
                 KubernetesPreferenceConstants.RABBIT_MQ_URL, getFieldEditorParent()));
         addField(new StringFieldEditor(KubernetesPreferenceConstants.INTERNAL_RABBIT_MQ_URL,
                 KubernetesPreferenceConstants.INTERNAL_RABBIT_MQ_URL, getFieldEditorParent()));
+        addField(new StringFieldEditor(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT,
+                KubernetesPreferenceConstants.RABBIT_QUEUE_OUT, getFieldEditorParent()));
+        addField(new StringFieldEditor(KubernetesPreferenceConstants.RABBIT_QUEUE_IN,
+                KubernetesPreferenceConstants.RABBIT_QUEUE_IN, getFieldEditorParent()));
     }
 
 }
