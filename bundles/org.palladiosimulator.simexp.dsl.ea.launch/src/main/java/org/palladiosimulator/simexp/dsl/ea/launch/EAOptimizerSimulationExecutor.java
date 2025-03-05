@@ -37,7 +37,6 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
 
     @Override
     public void dispose() {
-        fitnessEvaluator.dispose();
     }
 
     @Override
@@ -93,9 +92,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
         IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
         LOGGER.info("EA optimization initialization");
         fitnessEvaluator.init();
-        LOGGER.info("EA optimization start");
-        optimizationResult = optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
-        LOGGER.info("EA optimization end");
+        try {
+            LOGGER.info("EA optimization start");
+            optimizationResult = optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
+            LOGGER.info("EA optimization end");
+        } finally {
+            fitnessEvaluator.dispose();
+        }
     }
 
     @Override
