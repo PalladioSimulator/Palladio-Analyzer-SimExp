@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -22,7 +23,8 @@ public class KubernetesDispatcherProvider implements IDispatcherProvider {
     public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
-        // TODO Auto-generated method stub
-        return null;
+        IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;
+        return new KubernetesFitnessEvaluator(modelledConfig, launchDescriptionProvider, seedProvider,
+                modelLoaderFactory, resourcePath);
     }
 }
