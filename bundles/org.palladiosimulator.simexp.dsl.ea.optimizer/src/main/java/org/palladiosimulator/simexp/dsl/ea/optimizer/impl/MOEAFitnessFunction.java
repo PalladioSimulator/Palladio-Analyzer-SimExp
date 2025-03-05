@@ -13,16 +13,16 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelIntegerChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableIntegerChromoNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.ext.moea.Vec;
 
-public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<double[]>> {
+public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Vec<double[]>> {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
@@ -30,25 +30,26 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         .synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
-    private final OptimizableNormalizer optimizableNormalizer;
+    private final OptimizableIntegerChromoNormalizer optimizableNormalizer;
 
     private double penaltyForInvalids = 0.0;
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
+    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableIntegerChromoNormalizer optimizableNormalizer) {
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer,
-            double penaltyForInvalids) {
+    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableIntegerChromoNormalizer optimizableNormalizer, double penaltyForInvalids) {
         this(fitnessEvaluator, optimizableNormalizer);
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
     @Override
-    public Vec<double[]> apply(Genotype<BitGene> genotype) {
-        List<SmodelBitChromosome> chromosomes = extracted(genotype);
-        for (SmodelBitChromosome currentChromo : chromosomes) {
+    public Vec<double[]> apply(Genotype<IntegerGene> genotype) {
+        List<SmodelIntegerChromosome> chromosomes = extracted(genotype);
+        for (SmodelIntegerChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
                 return Vec.of(penaltyForInvalids);
             }
@@ -71,13 +72,13 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         return synchronizedSetOfEvaluatedOptimizable.size();
     }
 
-    private List<SmodelBitChromosome> extracted(Genotype<BitGene> genotype) {
-        List<SmodelBitChromosome> chromosomes = new ArrayList<>();
-        genotype.forEach(new Consumer<Chromosome<BitGene>>() {
+    private List<SmodelIntegerChromosome> extracted(Genotype<IntegerGene> genotype) {
+        List<SmodelIntegerChromosome> chromosomes = new ArrayList<>();
+        genotype.forEach(new Consumer<Chromosome<IntegerGene>>() {
 
             @Override
-            public void accept(Chromosome<BitGene> chromosome) {
-                chromosomes.add((SmodelBitChromosome) chromosome);
+            public void accept(Chromosome<IntegerGene> chromosome) {
+                chromosomes.add((SmodelIntegerChromosome) chromosome);
             }
         });
         return chromosomes;

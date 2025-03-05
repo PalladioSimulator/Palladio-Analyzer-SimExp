@@ -14,14 +14,14 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelIntegerChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableIntegerChromoNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
-import io.jenetics.BitGene;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.engine.Engine;
 import io.jenetics.ext.moea.Vec;
 
@@ -57,11 +57,12 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         ////// to phenotype
-        OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
-        Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
+        OptimizableIntegerChromoNormalizer normalizer = new OptimizableIntegerChromoNormalizer(
+                optimizableProvider.getExpressionCalculator());
+        Genotype<IntegerGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<BitGene, Vec<double[]>> engine;
+        final Engine<IntegerGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction;
         if (config.penaltyForInvalids()
             .isPresent()) {
@@ -80,13 +81,13 @@ public class EAOptimizer implements IEAOptimizer {
                 config);
     }
 
-    private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
-            OptimizableNormalizer normalizer) {
+    private Genotype<IntegerGene> buildGenotype(IOptimizableProvider optimizableProvider,
+            OptimizableIntegerChromoNormalizer normalizer) {
         List<Optimizable> optimizableList = new ArrayList<>();
         optimizableProvider.getOptimizables()
             .forEach(o -> optimizableList.add(o));
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
-        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        List<SmodelIntegerChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
+        Genotype<IntegerGene> genotype = Genotype.of(normalizedOptimizables);
         return genotype;
     }
 

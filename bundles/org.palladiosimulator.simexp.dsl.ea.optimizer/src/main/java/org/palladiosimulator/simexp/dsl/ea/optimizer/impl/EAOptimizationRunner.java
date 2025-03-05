@@ -9,12 +9,12 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelIntegerChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableIntegerChromoNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-import io.jenetics.BitGene;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionStream;
@@ -32,16 +32,16 @@ public class EAOptimizationRunner {
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<BitGene, Vec<double[]>> engine, IEAConfig config) {
-        Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
+            OptimizableIntegerChromoNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
+            final Engine<IntegerGene, Vec<double[]>> engine, IEAConfig config) {
+        Genotype<IntegerGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
                 genotypeInstance);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
+        EvolutionStream<IntegerGene, Vec<double[]>> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
@@ -52,7 +52,7 @@ public class EAOptimizationRunner {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-        ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
+        ISeq<Phenotype<IntegerGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 
@@ -67,17 +67,17 @@ public class EAOptimizationRunner {
             .fitness()
             .data()[0];
 
-        Phenotype<BitGene, Vec<double[]>>[] phenotypes = result.stream()
+        Phenotype<IntegerGene, Vec<double[]>>[] phenotypes = result.stream()
             .toArray(Phenotype[]::new);
 
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<BitGene, Vec<double[]>> currentPheno : phenotypes) {
-            List<SmodelBitChromosome> chromosomes = new ArrayList<>();
+        for (Phenotype<IntegerGene, Vec<double[]>> currentPheno : phenotypes) {
+            List<SmodelIntegerChromosome> chromosomes = new ArrayList<>();
             for (int i = 0; i < currentPheno.genotype()
                 .length(); i++) {
-                SmodelBitChromosome currentChromosome = currentPheno.genotype()
+                SmodelIntegerChromosome currentChromosome = currentPheno.genotype()
                     .get(i)
-                    .as(SmodelBitChromosome.class);
+                    .as(SmodelIntegerChromosome.class);
                 chromosomes.add(currentChromosome);
             }
             paretoFront.add(normalizer.toOptimizableValues(chromosomes));

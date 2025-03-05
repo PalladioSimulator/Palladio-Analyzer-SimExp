@@ -3,11 +3,10 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import java.util.concurrent.Executor;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 
-import io.jenetics.BitGene;
 import io.jenetics.Crossover;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.Mutator;
 import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
@@ -41,11 +40,10 @@ public class EAOptimizationEngineBuilder {
             .orElse(DEFAULT_CROSSOVER_RATE);
     }
 
-    public Engine<BitGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
-            Executor executor) {
+    public Engine<IntegerGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction,
+            Genotype<IntegerGene> genotype, Executor executor) {
 
-        Builder<BitGene, Vec<double[]>> builder = Engine
-            .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
+        Builder<IntegerGene, Vec<double[]>> builder = Engine.builder(fitnessFunction::apply, genotype)
             .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
@@ -56,9 +54,9 @@ public class EAOptimizationEngineBuilder {
         return builder.build();
     }
 
-    private Builder<BitGene, Vec<double[]>> addAlterers(Builder<BitGene, Vec<double[]>> builder) {
-        Mutator<BitGene, Vec<double[]>> mutator = new Mutator<>();
-        Crossover<BitGene, Vec<double[]>> crossover = new UniformCrossover<>();
+    private Builder<IntegerGene, Vec<double[]>> addAlterers(Builder<IntegerGene, Vec<double[]>> builder) {
+        Mutator<IntegerGene, Vec<double[]>> mutator = new Mutator<>();
+        Crossover<IntegerGene, Vec<double[]>> crossover = new UniformCrossover<>();
         if (config.mutationRate()
             .isPresent()) {
             mutator = new Mutator<>(config.mutationRate()

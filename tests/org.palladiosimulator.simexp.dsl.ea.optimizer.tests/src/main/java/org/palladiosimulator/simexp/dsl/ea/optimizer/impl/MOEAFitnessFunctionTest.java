@@ -20,16 +20,15 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelIntegerChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableIntegerChromoNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
-import io.jenetics.BitGene;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.ext.moea.Vec;
+import io.jenetics.util.IntRange;
 
 public class MOEAFitnessFunctionTest {
 
@@ -37,7 +36,7 @@ public class MOEAFitnessFunctionTest {
     IEAFitnessEvaluator fitnessEvaluator;
 
     @Mock
-    OptimizableNormalizer normalizer;
+    OptimizableIntegerChromoNormalizer normalizer;
 
     @Mock
     Optimizable optimizable;
@@ -57,9 +56,8 @@ public class MOEAFitnessFunctionTest {
     @Test
     public void testApply() {
         // Arrange
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
+        SmodelIntegerChromosome chromosome = SmodelIntegerChromosome.of(IntRange.of(0, 3), optimizable);
+        Genotype<IntegerGene> genotype = Genotype.of(chromosome);
         OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
@@ -86,9 +84,8 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testHandleInterruptedException() throws InterruptedException, ExecutionException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
+        SmodelIntegerChromosome chromosome = SmodelIntegerChromosome.of(IntRange.of(0, 3), optimizable);
+        Genotype<IntegerGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(new InterruptedException("This is a test"));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
@@ -100,9 +97,8 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testHandleExecutionException() throws InterruptedException, ExecutionException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
+        SmodelIntegerChromosome chromosome = SmodelIntegerChromosome.of(IntRange.of(0, 3), optimizable);
+        Genotype<IntegerGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
@@ -112,21 +108,20 @@ public class MOEAFitnessFunctionTest {
         assertEquals(0.0, fitness.data()[0], 0.00001);
     }
 
-    @Test
-    public void testInvalidChromosome() throws InterruptedException, ExecutionException {
-        SmodelBitset smodelBitset = new SmodelBitset(4);
-        smodelBitset.set(3);
-        smodelBitset.set(2);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
-        when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
-
-        Vec<double[]> fitness = fitnessFunction.apply(genotype);
-
-        assertEquals(0.0, fitness.data()[0], 0.00001);
-    }
+//    @Test
+//    public void testBigChromosome() throws InterruptedException, ExecutionException {
+//        Function<? super Random, SmodelIntegerChromosome> func = (Random r) -> {
+//            return SmodelIntegerChromosome.of(IntRange.of(0, 100), optimizable);
+//        };
+//        SmodelIntegerChromosome chromosome = RandomRegistry.with(new Random(42), func);
+//        Genotype<IntegerGene> genotype = Genotype.of(chromosome);
+//        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
+//        when(fitnessFuture.get()).thenThrow(executionException);
+//        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+//
+//        Vec<double[]> fitness = fitnessFunction.apply(genotype);
+//
+//        assertEquals(0.0, fitness.data()[0], 0.00001);
+//    }
 
 }
