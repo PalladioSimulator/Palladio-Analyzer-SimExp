@@ -66,8 +66,7 @@
               kubernetes-model-networking, kubernetes-model-node, kubernetes-model-policy, kubernetes-model-rbac,
               kubernetes-model-resource, kubernetes-model-scheduling, kubernetes-model-storageclass,
               snakeyaml-engine,
-              kubernetes-httpclient-okhttp, okhttp, okio, okio-jvm,
-
+              kubernetes-httpclient-okhttp, okhttp, okio, okio-jvm
               </includeArtifactIds>
               <outputDirectory>${basedir}/lib</outputDirectory>
               <stripVersion>true</stripVersion>
