@@ -8,43 +8,37 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="lib/kubernetes-client.jar" sourcepath="lib/kubernetes-client-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/kubernetes-client-api.jar" sourcepath="lib/kubernetes-client-api-sources.jar"/>
-	
-	<classpathentry kind="lib" path="lib/kubernetes-model-admissionregistration.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-apiextensions.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-apps.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-autoscaling.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-batch.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-certificates.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-common.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-coordination.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-core.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-discovery.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-events.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-extensions.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-flowcontrol.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-gatewayapi.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-metrics.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-networking.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-node.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-policy.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-rbac.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-resource.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-scheduling.jar"/>
-	<classpathentry kind="lib" path="lib/kubernetes-model-storageclass.jar"/>
-
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-admissionregistration.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-apiextensions.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-apps.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-autoscaling.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-batch.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-certificates.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-common.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-coordination.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-discovery.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-events.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-extensions.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-flowcontrol.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-gatewayapi.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-metrics.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-networking.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-node.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-policy.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-rbac.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-resource.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-scheduling.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/kubernetes-model-storageclass.jar"/>
 	<classpathentry kind="lib" path="lib/snakeyaml-engine.jar"/>
-	
 	<classpathentry kind="lib" path="lib/jackson-core.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-datatype-jsr310.jar"/>
-	
 	<classpathentry kind="lib" path="lib/kubernetes-httpclient-okhttp.jar"/>
 	<classpathentry kind="lib" path="lib/okhttp.jar"/>
 	<classpathentry kind="lib" path="lib/okio.jar"/>
 	<classpathentry kind="lib" path="lib/okio-jvm.jar"/>
-	
 	<classpathentry kind="lib" path="lib/kotlin-stdlib.jar"/>
-	
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

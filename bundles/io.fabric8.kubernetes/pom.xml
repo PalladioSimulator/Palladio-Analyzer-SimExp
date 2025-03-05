@@ -21,6 +21,19 @@
   <dependencies>
     <dependency>
 		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client-api</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client-api</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+        <classifier>sources</classifier>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+		<groupId>io.fabric8</groupId>
 		<artifactId>kubernetes-client</artifactId>
         <version>${fabric8-kubernetes-version}</version>
 		<scope>provided</scope>
