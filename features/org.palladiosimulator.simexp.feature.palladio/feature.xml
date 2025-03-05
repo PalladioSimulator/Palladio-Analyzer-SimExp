@@ -26,7 +26,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="de.uka.ipd.sdq.workflow.mdsd.blackboard"
          download-size="0"
@@ -40,7 +40,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="de.uka.ipd.sdq.workflow.logging.console"
          download-size="0"
@@ -54,7 +54,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="de.uka.ipd.sdq.workflow"
          download-size="0"
@@ -358,6 +358,13 @@
 
    <plugin
          id="org.palladiosimulator.commons.stoex"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.uka.ipd.sdq.errorhandling.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
