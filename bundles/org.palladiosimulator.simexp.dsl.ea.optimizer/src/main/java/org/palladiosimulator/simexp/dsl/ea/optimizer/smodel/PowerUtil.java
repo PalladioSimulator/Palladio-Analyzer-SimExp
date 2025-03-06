@@ -9,6 +9,9 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 public class PowerUtil {
+
+    private static final int PRECISION_DECIMAL = 7;
+
     private final IExpressionCalculator expressionCalculator;
 
     public PowerUtil(IExpressionCalculator expressionCalculator) {
@@ -61,7 +64,8 @@ public class PowerUtil {
         double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
         double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
         double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
-        int power = (int) Math.floor((endValue - startValue) / stepSize);
+        int power = (int) Math.floor(Math.round(((endValue - startValue) / stepSize) * Math.pow(10, PRECISION_DECIMAL))
+                / Math.pow(10, PRECISION_DECIMAL));
         return power;
     }
 
