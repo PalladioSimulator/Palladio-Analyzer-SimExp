@@ -33,7 +33,7 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Vec<double[
             .map(g -> g.as(SmodelBitChromosome.class))
             .collect(Collectors.toList());
         List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(chromosomes);
-        double fitness = result.bestFitness()
+        double fitness = phenotype.fitness()
             .data()[0];
         evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
     }

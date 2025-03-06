@@ -85,7 +85,7 @@ public class EAOptimizer implements IEAOptimizer {
         List<Optimizable> optimizableList = new ArrayList<>();
         optimizableProvider.getOptimizables()
             .forEach(o -> optimizableList.add(o));
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
+        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalizedAndRemoveSingleValuedChromosomes(optimizableList);
         Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
         return genotype;
     }

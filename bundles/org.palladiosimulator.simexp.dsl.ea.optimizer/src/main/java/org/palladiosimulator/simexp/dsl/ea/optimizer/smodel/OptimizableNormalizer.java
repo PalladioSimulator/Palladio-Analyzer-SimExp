@@ -30,7 +30,7 @@ public class OptimizableNormalizer {
         singleValueOptimizables = new ArrayList<>();
     }
 
-    public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
+    public List<SmodelBitChromosome> toNormalizedAndRemoveSingleValuedChromosomes(List<Optimizable> optimizables) {
         List<SmodelBitChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
             .peek(c -> saveIfLengthIsZero(c))
@@ -45,7 +45,7 @@ public class OptimizableNormalizer {
         }
     }
 
-    public SmodelBitChromosome toNormalized(Optimizable optimizable) {
+    SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
             int power = powerUtil.getPowerSet(setBounds);
