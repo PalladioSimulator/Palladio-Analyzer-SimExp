@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.workflow.jobs;
 
 import org.eclipse.debug.core.ILaunch;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 
 import de.uka.ipd.sdq.workflow.jobs.ICompositeJob;
 import de.uka.ipd.sdq.workflow.jobs.SequentialBlackboardInteractingJob;

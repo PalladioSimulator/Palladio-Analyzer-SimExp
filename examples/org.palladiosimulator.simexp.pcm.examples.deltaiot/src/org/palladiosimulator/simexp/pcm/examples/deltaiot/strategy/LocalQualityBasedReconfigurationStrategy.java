@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.Transm
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 

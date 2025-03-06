@@ -27,7 +27,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;

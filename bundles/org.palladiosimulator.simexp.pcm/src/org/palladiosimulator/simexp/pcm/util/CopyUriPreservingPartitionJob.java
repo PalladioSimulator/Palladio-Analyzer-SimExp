@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.pcm.util;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.palladiosimulator.analyzer.workflow.blackboard.PCMResourceSetPartition;
+import org.palladiosimulator.analyzer.workflow.core.blackboard.PCMResourceSetPartition;
 import org.palladiosimulator.experimentautomation.application.jobs.CopyPartitionJob;
 
 import de.uka.ipd.sdq.workflow.jobs.JobFailedException;

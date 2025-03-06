@@ -1,18 +1,21 @@
-package org.palladiosimulator.simexp.workflow.config;
+package org.palladiosimulator.simexp.workflow.api;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
+import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
