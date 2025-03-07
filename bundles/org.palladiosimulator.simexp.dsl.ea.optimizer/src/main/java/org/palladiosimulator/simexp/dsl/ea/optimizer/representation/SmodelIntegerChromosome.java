@@ -46,6 +46,11 @@ public class SmodelIntegerChromosome extends IntegerChromosome {
     }
 
     @Override
+    public IntegerChromosome newInstance(final ISeq<IntegerGene> genes) {
+        return new SmodelIntegerChromosome(genes, lengthRange(), optimizable, max, numOfValues);
+    }
+
+    @Override
     public SmodelIntegerChromosome newInstance() {
 
         IntegerChromosome integerChromosome = IntegerChromosome.of(0, max);
