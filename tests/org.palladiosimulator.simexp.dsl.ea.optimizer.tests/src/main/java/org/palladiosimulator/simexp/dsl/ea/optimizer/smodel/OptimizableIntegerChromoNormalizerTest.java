@@ -200,7 +200,7 @@ public class OptimizableIntegerChromoNormalizerTest {
                 singleValueBounds);
         List<Optimizable> optimizableList = List.of(twoValuesOptimizable, singleValueOptimizable);
 
-        List<SmodelIntegerChromosome> normalized = optimizableNormalizer.toNormalized(optimizableList);
+        List<SmodelIntegerChromosome> normalized = optimizableNormalizer.toNormalizedAndRemoveSingleValuedChromosomes(optimizableList);
 
         assertEquals(2, normalized.size());
         assertEquals(twoValuesOptimizable, normalized.get(0)
@@ -317,7 +317,7 @@ public class OptimizableIntegerChromoNormalizerTest {
                 singleValueBounds);
         List<Optimizable> optimizableList = List.of(twoValuesOptimizable, singleValueOptimizable);
         Function<? super Random, List<SmodelIntegerChromosome>> func = (Random r) -> {
-            return optimizableNormalizer.toNormalized(optimizableList);
+            return optimizableNormalizer.toNormalizedAndRemoveSingleValuedChromosomes(optimizableList);
         };
         List<SmodelIntegerChromosome> normalized = RandomRegistry.with(new Random(42), func);
 
@@ -369,7 +369,7 @@ public class OptimizableIntegerChromoNormalizerTest {
         optimizables.add(intOptimizable);
 
         // Act
-        List<SmodelIntegerChromosome> parsedOptimizables = optimizableNormalizer.toNormalized(optimizables);
+        List<SmodelIntegerChromosome> parsedOptimizables = optimizableNormalizer.toNormalizedAndRemoveSingleValuedChromosomes(optimizables);
 
         // Assert
         SmodelIntegerChromosome firstOptimizable = parsedOptimizables.get(0);

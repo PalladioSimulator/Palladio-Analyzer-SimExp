@@ -57,9 +57,14 @@
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter</module>
 		<module>org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
+		<module>io.fabric8.kubernetes</module>
+		<module>com.rabbitmq.client</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch.kubernetes</module>
+		<module>org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui</module>
 
 		<module>org.palladiosimulator.simexp.pcm.performability</module>		
 		<module>org.palladiosimulator.simexp.pcm.performance</module>

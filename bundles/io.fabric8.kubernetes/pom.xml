@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.palladiosimulator.simexp</groupId>
+    <artifactId>bundles</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>io.fabric8.kubernetes</artifactId>
+  <version>7.0.0-SNAPSHOT</version>
+  
+  <packaging>eclipse-plugin</packaging>
+
+  <properties>
+    <fabric8-kubernetes-version>7.0.0</fabric8-kubernetes-version>
+  </properties>
+	
+  <dependencies>
+    <dependency>
+		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client-api</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client-api</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+        <classifier>sources</classifier>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+		<groupId>io.fabric8</groupId>
+		<artifactId>kubernetes-client</artifactId>
+        <version>${fabric8-kubernetes-version}</version>
+        <classifier>sources</classifier>
+		<scope>provided</scope>
+    </dependency>
+	<dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-httpclient-okhttp</artifactId>
+      <version>${fabric8-kubernetes-version}</version>
+  	  <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>
+              annotations,
+              jackson-annotations,jackson-core,jackson-databind,jackson-dataformat-yaml,jackson-datatype-jsr310,
+              javax.annotation-api,
+              kotlin-stdlib, 
+              kubernetes-client, kubernetes-client-api, 
+              kubernetes-model-admissionregistration, kubernetes-model-apiextensions, kubernetes-model-apps,
+			  kubernetes-model-autoscaling, kubernetes-model-batch, kubernetes-model-certificates, kubernetes-model-common,
+			  kubernetes-model-coordination, kubernetes-model-core, kubernetes-model-discovery, kubernetes-model-events, 
+              kubernetes-model-extensions, kubernetes-model-flowcontrol, kubernetes-model-gatewayapi, kubernetes-model-metrics,
+              kubernetes-model-networking, kubernetes-model-node, kubernetes-model-policy, kubernetes-model-rbac,
+              kubernetes-model-resource, kubernetes-model-scheduling, kubernetes-model-storageclass,
+              snakeyaml-engine,
+              kubernetes-httpclient-okhttp, okhttp, okio, okio-jvm
+              </includeArtifactIds>
+              <outputDirectory>${basedir}/lib</outputDirectory>
+              <stripVersion>true</stripVersion>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

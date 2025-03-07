@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.palladiosimulator.simexp.feature.dsl.ea.kubernetes"
+      label="SimExp DSL EA kubernetes feature"
+      version="1.0.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.palladiosimulator.license.epl2" version="1.0.0"/>
+   </requires>
+
+   <plugin
+         id="io.fabric8.kubernetes"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+		
+   <plugin
+         id="com.rabbitmq.client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

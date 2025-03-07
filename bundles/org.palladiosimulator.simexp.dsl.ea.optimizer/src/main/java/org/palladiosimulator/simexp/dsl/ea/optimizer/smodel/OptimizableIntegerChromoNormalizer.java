@@ -33,7 +33,7 @@ public class OptimizableIntegerChromoNormalizer {
 
     }
 
-    public List<SmodelIntegerChromosome> toNormalized(List<Optimizable> optimizables) {
+    public List<SmodelIntegerChromosome> toNormalizedAndRemoveSingleValuedChromosomes(List<Optimizable> optimizables) {
         List<SmodelIntegerChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
             .peek(c -> saveIfLengthIsZero(c))

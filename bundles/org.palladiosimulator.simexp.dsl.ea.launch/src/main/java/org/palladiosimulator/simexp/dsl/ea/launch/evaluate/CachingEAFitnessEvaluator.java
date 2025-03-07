@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
@@ -44,8 +45,11 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     }
 
     @Override
-    public void dispose() {
-        cache.clear();
-        delegate.dispose();
+    public void evaluate(EvaluatorClient client) {
+        try {
+            delegate.evaluate(client);
+        } finally {
+            cache.clear();
+        }
     }
 }

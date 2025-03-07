@@ -7,6 +7,7 @@ xtend-gen/*
 edp2/
 .ipynb_checkpoints/
 **__pycache__**
+**/plugin.xml_gen
 
 # Package Files #
 *.jar
