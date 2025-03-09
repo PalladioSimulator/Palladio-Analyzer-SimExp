@@ -59,6 +59,11 @@ public class EAOptimizationRunner {
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);
 
+        return createEAResult(normalizer, result);
+    }
+
+    private EAResult createEAResult(OptimizableIntegerChromoNormalizer normalizer,
+            ISeq<Phenotype<IntegerGene, Vec<double[]>>> result) {
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
         double bestFitness = result.stream()
