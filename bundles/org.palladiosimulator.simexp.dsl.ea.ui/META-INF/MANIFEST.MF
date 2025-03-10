@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.ui
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.ui
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
+ org.eclipse.ui;bundle-version="3.201.200",
+ org.apache.log4j;bundle-version="1.2.15",
+ org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.ui;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-17

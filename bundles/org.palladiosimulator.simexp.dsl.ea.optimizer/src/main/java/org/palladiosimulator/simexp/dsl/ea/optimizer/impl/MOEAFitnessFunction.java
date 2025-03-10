@@ -26,15 +26,23 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
-    private static Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
+    private Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
         .synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
 
+    private double penaltyForInvalids = 0.0;
+
     public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
+    }
+
+    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer,
+            double penaltyForInvalids) {
+        this(fitnessEvaluator, optimizableNormalizer);
+        this.penaltyForInvalids = penaltyForInvalids;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         for (SmodelBitChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return Vec.of(0.0);
+                return Vec.of(penaltyForInvalids);
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -51,14 +59,12 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         try {
             Optional<Double> optionalFitness = fitnessFuture.get();
 
-            // TODO nbruening: handle empty
-            double fitness = optionalFitness.get();
+            double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
             return Vec.of(fitness);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(String.format("%s -> return fitness of 0.0", e.getMessage()), e);
+            LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
+            return Vec.of(penaltyForInvalids);
         }
-
-        return Vec.of(0.0);
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {

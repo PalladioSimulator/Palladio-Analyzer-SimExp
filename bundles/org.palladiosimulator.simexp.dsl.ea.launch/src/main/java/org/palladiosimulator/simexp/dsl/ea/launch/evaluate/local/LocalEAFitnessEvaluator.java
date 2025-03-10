@@ -21,19 +21,19 @@ import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult
 import org.palladiosimulator.edp2.impl.RepositoryManager;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
+import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
-import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
-    protected static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
+    private static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
 
     private final IModelledWorkflowConfiguration config;
     private final LaunchDescriptionProvider launchDescriptionProvider;
@@ -61,7 +61,15 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
-    public void dispose() {
+    public void evaluate(EvaluatorClient evaluatorClient) {
+        try {
+            evaluatorClient.process(this);
+        } finally {
+            dispose();
+        }
+    }
+
+    private void dispose() {
         executor.shutdown();
         try {
             executor.awaitTermination(10, TimeUnit.SECONDS);

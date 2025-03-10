@@ -22,6 +22,14 @@ public class ConfigurationProperties {
         return new ConfigurationIntegerProperty(key, isPrimitive);
     }
 
+    public static IValueProperty<ILaunchConfiguration, Double> value(String key) {
+        return value(key, true);
+    }
+
+    public static IValueProperty<ILaunchConfiguration, Double> value(String key, boolean isPrimitive) {
+        return new ConfigurationDoubleProperty(key, isPrimitive);
+    }
+
     public static <E extends Enum<E>> IValueProperty<ILaunchConfiguration, E> enummeration(String key,
             Class<E> enumType) {
         return new ConfigurationEnumProperty<>(key, enumType);

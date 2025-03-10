@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMLaunchConfigurationDelegate;
+import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMLaunchConfigurationDelegate;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
@@ -39,11 +39,12 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.jobs.SimExpAnalyzerRootJob;
 
 import de.uka.ipd.sdq.workflow.jobs.IJob;
@@ -52,7 +53,7 @@ import de.uka.ipd.sdq.workflow.logging.console.StreamsProxyAppender;
 import tools.mdsd.probdist.api.random.FixedSeedProvider;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
+public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimExpWorkflowConfiguration> {
 
     private static final Logger LOGGER = Logger.getLogger(SimExpLauncher.class.getName());
 
@@ -173,10 +174,22 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
                 seedProvider = Optional.of(new FixedSeedProvider(customSeed));
             }
 
+            int populationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            Optional<Integer> maxGenerations = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
+            Optional<Integer> steadyFitness = Optional
+                .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
+            Optional<Double> mutationRate = extractOptionalDouble(launchConfigurationParams,
+                    SimulationConstants.MUTATION_RATE);
+            Optional<Double> crossoverRate = extractOptionalDouble(launchConfigurationParams,
+                    SimulationConstants.CROSSOVER_RATE);
+            EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
+                    maxGenerations, steadyFitness, mutationRate, crossoverRate);
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
-                    prismConfig, environmentalModels, simulationParameters, seedProvider);
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
@@ -184,6 +197,15 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
         }
 
         return workflowConfiguration;
+    }
+
+    private Optional<Double> extractOptionalDouble(Map<String, Object> launchConfigurationParams, String key) {
+        String stringValue = (String) launchConfigurationParams.get(key);
+        if (stringValue == null) {
+            return Optional.empty();
+        }
+        double value = Double.parseDouble(stringValue);
+        return Optional.of(value);
     }
 
     @Override
@@ -234,7 +256,7 @@ public class SimExpLauncher extends AbstractPCMLaunchConfigurationDelegate<SimEx
     }
 
     @Override
-    protected ArrayList<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
+    protected List<LoggerAppenderStruct> setupLogging(Level logLevel) throws CoreException {
         // String layout = Level.DEBUG == logLevel ? DETAILED_LOG_PATTERN : SHORT_LOG_PATTERN;
         String layout = "%d{ABSOLUTE} %-5p [%-10t] [%F:%L]: %m%n";
         // ArrayList<LoggerAppenderStruct> loggerList = super.setupLogging(Level.DEBUG);

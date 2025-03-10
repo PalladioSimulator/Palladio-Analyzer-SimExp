@@ -18,11 +18,13 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -80,6 +82,7 @@ public class EAOptimizationRunnerTest {
             }
 
         });
+        IEAConfig config = new ConfigHelper(10, 0.2, 0.2, 7, 50);
 
         optimizableNormalizer = new OptimizableNormalizer(expressionCalculator);
 
@@ -89,10 +92,11 @@ public class EAOptimizationRunnerTest {
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<BitGene> genotype = Genotype
             .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
-        Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder().buildEngine(fitnessFunction, genotype,
-                10, Runnable::run, 5, 5, 0.2, 0.2);
+        Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder(config).buildEngine(fitnessFunction,
+                genotype, Runnable::run);
         optFunction = r -> {
-            return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, fitnessFunction, engine);
+            return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, fitnessFunction, engine,
+                    config);
         };
     }
 
@@ -101,8 +105,8 @@ public class EAOptimizationRunnerTest {
 
         EAResult runOptimization = RandomRegistry.with(new Random(42), optFunction);
 
-        assertEquals(95.0, runOptimization.getFitness(), DELTA);
-        assertEquals(95, (int) runOptimization.getOptimizableValuesList()
+        assertEquals(99.0, runOptimization.getFitness(), DELTA);
+        assertEquals(99, (int) runOptimization.getOptimizableValuesList()
             .get(0)
             .get(0)
             .getValue());

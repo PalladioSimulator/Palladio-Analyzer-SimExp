@@ -5,11 +5,12 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.modelled.config.IOptimizedConfiguration;
+import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
 import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
-import org.palladiosimulator.simexp.workflow.config.SimExpWorkflowConfiguration;
 
 public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfiguration
         implements IOptimizedConfiguration {
@@ -38,10 +39,14 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
                     .toString(),
                         configuration.getDynamicModelURI()
                             .toString()),
-                configuration.getSimulationParameters(), configuration.getSeedProvider());
+                configuration.getSimulationParameters(), configuration.getSeedProvider(),
+                new EvolutionaryAlgorithmConfiguration(configuration.getPopulationSize(),
+                        configuration.getMaxGenerations(), configuration.getSteadyFitness(),
+                        configuration.getMutationRate(), configuration.getCrossoverRate()));
         this.optimizableValues = optimizableValues;
     }
 
+    @Override
     public List<OptimizableValue<?>> getOptimizableValues() {
         return optimizableValues;
     }

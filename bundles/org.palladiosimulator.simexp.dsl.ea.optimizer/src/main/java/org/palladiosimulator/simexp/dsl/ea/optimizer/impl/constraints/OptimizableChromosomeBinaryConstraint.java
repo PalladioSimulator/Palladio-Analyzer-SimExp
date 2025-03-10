@@ -47,10 +47,6 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
         }
         Phenotype<BitGene, Vec<double[]>> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
 
-        if (!test(repairedIndividual)) {
-            throw new RuntimeException("Repaired phenotype is still broken");
-        }
-
         return repairedIndividual;
     }
 

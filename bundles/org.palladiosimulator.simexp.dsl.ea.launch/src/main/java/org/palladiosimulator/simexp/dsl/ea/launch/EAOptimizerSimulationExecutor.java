@@ -11,29 +11,33 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 
 public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvolutionStatusReceiver {
     private static final Logger LOGGER = Logger.getLogger(EAOptimizerSimulationExecutor.class);
 
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
+    private final IEvolutionaryAlgorithmConfiguration configuration;
 
     private EAResult optimizationResult;
 
-    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator) {
+    public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
+            IEvolutionaryAlgorithmConfiguration configuration) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
+        this.configuration = configuration;
     }
 
     @Override
     public void dispose() {
-        fitnessEvaluator.dispose();
     }
 
     @Override
@@ -80,16 +84,24 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        IEAConfig eaConfig = new EAConfig();
+        IEAConfig eaConfig = new EAConfig(configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }
 
     private void runOptimization(IEAOptimizer optimizer) {
-        IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
-        LOGGER.info("EA optimization running...");
-        optimizationResult = optimizer.optimize(optimizableProvider, fitnessEvaluator, this);
-        LOGGER.info("EA optimization finished...");
+        final IOptimizableProvider optimizableProvider = new OptimizableProvider(smodel);
+        LOGGER.info("EA optimization initialization");
+        fitnessEvaluator.evaluate(new IDisposeableEAFitnessEvaluator.EvaluatorClient() {
+
+            @Override
+            public void process(IEAFitnessEvaluator evaluator) {
+                LOGGER.info("EA optimization start");
+                optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
+                        EAOptimizerSimulationExecutor.this);
+                LOGGER.info("EA optimization end");
+            }
+        });
     }
 
     @Override

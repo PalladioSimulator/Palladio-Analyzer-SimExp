@@ -13,7 +13,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.param.reconfigurationp
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy.MoteContext.WirelessLink;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import com.google.common.collect.Maps;
 

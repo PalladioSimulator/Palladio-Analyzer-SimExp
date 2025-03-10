@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
@@ -16,6 +17,8 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionStream;
+import io.jenetics.engine.Limits;
 import io.jenetics.ext.moea.MOEA;
 import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
@@ -23,12 +26,14 @@ import io.jenetics.util.IntRange;
 
 public class EAOptimizationRunner {
 
+    private static final int DEFAULT_MAX_GENERATIONS = 100;
+    private static final int DEFAULT_STEADY_FITNESS_GENERATION_NUMBER = 7;
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
             OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<BitGene, Vec<double[]>> engine) {
+            final Engine<BitGene, Vec<double[]>> engine, IEAConfig config) {
         Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
@@ -36,10 +41,18 @@ public class EAOptimizationRunner {
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        ISeq<Phenotype<BitGene, Vec<double[]>>> result = engine.stream()
-            .limit(bySteadyFitness(7))
-            .limit(100)
-            .peek(reporter)
+        EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
 

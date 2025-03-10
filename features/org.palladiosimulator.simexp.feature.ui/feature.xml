@@ -35,6 +35,20 @@
          unpack="false"/>
 
    <plugin
+         id="org.palladiosimulator.simexp.dsl.ea.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.palladiosimulator.simexp.pcm.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.palladiosimulator.simexp.pcm.binding"
          download-size="0"
          install-size="0"

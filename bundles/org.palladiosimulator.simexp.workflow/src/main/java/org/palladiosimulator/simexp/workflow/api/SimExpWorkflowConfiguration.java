@@ -1,17 +1,21 @@
-package org.palladiosimulator.simexp.workflow.config;
+package org.palladiosimulator.simexp.workflow.api;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.URI;
-import org.palladiosimulator.analyzer.workflow.configurations.AbstractPCMWorkflowRunConfiguration;
+import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
+import org.palladiosimulator.simexp.workflow.config.MonitorConfiguration;
+import org.palladiosimulator.simexp.workflow.config.PrismConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -38,13 +42,15 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final List<String> monitorNames;
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
+    private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels,
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
-            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider) {
+            SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
+            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -78,6 +84,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
 
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
+        this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
     }
 
     @Override
@@ -164,5 +171,30 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
+    }
+
+    @Override
+    public int getPopulationSize() {
+        return evolutionaryAlgorithmConfiguration.getPopulationSize();
+    }
+
+    @Override
+    public Optional<Integer> getMaxGenerations() {
+        return evolutionaryAlgorithmConfiguration.getMaxGenerations();
+    }
+
+    @Override
+    public Optional<Integer> getSteadyFitness() {
+        return evolutionaryAlgorithmConfiguration.getSteadyFitness();
+    }
+
+    @Override
+    public Optional<Double> getMutationRate() {
+        return evolutionaryAlgorithmConfiguration.getMutationRate();
+    }
+
+    @Override
+    public Optional<Double> getCrossoverRate() {
+        return evolutionaryAlgorithmConfiguration.getCrossoverRate();
     }
 }

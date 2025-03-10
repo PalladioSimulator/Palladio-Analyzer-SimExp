@@ -20,23 +20,23 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
 public class OptimizableNormalizer {
     private final PowerUtil powerUtil;
-
     private final IExpressionCalculator expressionCalculator;
 
     private List<SmodelBitChromosome> singleValueOptimizables;
 
     public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
-        this.powerUtil = new PowerUtil();
+        this.powerUtil = new PowerUtil(expressionCalculator);
         this.expressionCalculator = expressionCalculator;
         singleValueOptimizables = new ArrayList<>();
     }
 
     public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
-        return optimizables.stream()
+        List<SmodelBitChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
             .peek(c -> saveIfLengthIsZero(c))
             .filter(c -> c.length() > 0)
             .collect(Collectors.toList());
+        return chromosomes;
     }
 
     private synchronized void saveIfLengthIsZero(SmodelBitChromosome chromosome) {
@@ -48,8 +48,8 @@ public class OptimizableNormalizer {
     public SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
-            int minLength = powerUtil.minBitSizeForPower(setBounds.getValues()
-                .size());
+            int power = powerUtil.getPowerSet(setBounds);
+            int minLength = powerUtil.minBitSizeForPower(power);
             return toNormalizedSet(optimizable, setBounds.getValues()
                 .size(), minLength);
         }
@@ -108,21 +108,13 @@ public class OptimizableNormalizer {
     }
 
     private SmodelBitChromosome toNormalizedRangeInt(Optimizable optimizable, RangeBounds rangeBounds) {
-        int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
-        int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
-        int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
-
-        int power = (endValue - startValue) / stepSize;
+        int power = powerUtil.getPowerRangeInt(rangeBounds);
         int minLength = powerUtil.minBitSizeForPower(power);
         return toNormalizedSet(optimizable, power, minLength);
     }
 
     private SmodelBitChromosome toNormalizedRangeDouble(Optimizable optimizable, RangeBounds rangeBounds) {
-        double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
-        double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
-        double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
-
-        int power = (int) Math.floor((endValue - startValue) / stepSize);
+        int power = powerUtil.getPowerRangeDouble(rangeBounds);
         int minLength = powerUtil.minBitSizeForPower(power);
         return toNormalizedSet(optimizable, power, minLength);
     }

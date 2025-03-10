@@ -20,7 +20,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvi
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import com.google.common.collect.Maps;
 

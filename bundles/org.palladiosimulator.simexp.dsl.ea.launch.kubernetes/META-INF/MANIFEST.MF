@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes;singleton:=true
+Bundle-Vendor: My Company
+Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
+ org.apache.log4j;bundle-version="1.2.19",
+ io.fabric8.kubernetes;bundle-version="7.0.0",
+ com.rabbitmq.client;bundle-version="5.22.0",
+ org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0",
+ tools.mdsd.probdist.api;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.pcm.examples;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.pcm.util;
 
-import org.palladiosimulator.analyzer.workflow.ConstantsContainer;
+import org.palladiosimulator.analyzer.workflow.core.ConstantsContainer;
 
 public class PcmSimulatedExperienceConstants {
 
