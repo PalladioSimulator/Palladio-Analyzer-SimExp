@@ -65,10 +65,7 @@ public class SmodelBitChromosome extends BitChromosome {
     public SmodelBitChromosome newInstance(final ISeq<BitGene> genes) {
         requireNonNull(genes, "Genes");
         if (genes.isEmpty()) {
-            // TODO nbruening: Deal with this!
-            throw new IllegalArgumentException("The genes sequence must contain at least one gene.");
-//            LOGGER.error("Encountered a chromosome with no genes: " + this
-//                    + " \n This chromosome will be punished with the penalty fitness.");
+            LOGGER.error("Encountered a chromosome with no genes: " + this);
         }
 
         final SmodelBitChromosome chromosome = new SmodelBitChromosome(getOptimizable(), Bits.newArray(genes.length()),
@@ -83,7 +80,7 @@ public class SmodelBitChromosome extends BitChromosome {
             }
         }
 
-        chromosome._p = (double) ones / (double) genes.length();
+        chromosome._p = ones > 0 ? (double) ones / (double) genes.length() : 0;
         return chromosome;
     }
 
