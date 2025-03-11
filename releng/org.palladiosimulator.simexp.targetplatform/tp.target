@@ -18,6 +18,10 @@
 			<unit id="com.ibm.icu" version="67.1.0.v20200706-1749"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+		<repository location="https://download.eclipse.org/tools/orbit/downloads/2021-12/"/>
+			<unit id="com.ibm.icu" version="67.1.0.v20200706-1749"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository"/>
 			<unit id="org.assertj" version="3.20.2.v20210706-1104"/>
 			<unit id="org.assertj.source" version="3.20.2.v20210706-1104"/>
@@ -32,6 +36,11 @@
 			<unit id="com.fasterxml.jackson.core.jackson-annotations" version="0.0.0"/>
 			<unit id="com.fasterxml.jackson.core.jackson-core" version="0.0.0"/>
 			<unit id="com.fasterxml.jackson.core.jackson-databind" version="0.0.0"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
+			<unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
+			<unit id="org.aopalliance" version="1.0.0.v20220404-1927"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>

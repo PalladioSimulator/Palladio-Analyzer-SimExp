@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.pcm.examples.performability.AbstractNodeReco
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.performability.PerformabilityStrategyConstants;
 import org.palladiosimulator.simexp.pcm.examples.performability.RepositoryModelUpdater;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 import tools.mdsd.probdist.api.entity.CategoricalValue;
 

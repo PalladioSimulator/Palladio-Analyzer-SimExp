@@ -18,3 +18,4 @@ edp2/
 hs_err_pid*
 
 **/.polyglot.*
+**/plugin.xml_gen

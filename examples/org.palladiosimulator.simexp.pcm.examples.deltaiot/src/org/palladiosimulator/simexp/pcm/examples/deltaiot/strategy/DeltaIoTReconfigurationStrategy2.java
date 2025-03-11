@@ -28,7 +28,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurati
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
 import org.palladiosimulator.simexp.pcm.state.PcmSelfAdaptiveSystemState;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.solver.models.PCMInstance;
+import org.palladiosimulator.solver.core.models.PCMInstance;
 
 public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
 
