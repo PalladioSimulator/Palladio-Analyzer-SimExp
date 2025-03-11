@@ -42,7 +42,7 @@ public class SmodelIntegerChromosome extends IntegerChromosome {
         }
 
         return new SmodelIntegerChromosome(ISeq.of(genes), IntRange.of(1), optimizable, intRange.max(),
-                intRange.size());
+                intRange.size() + 1);
     }
 
     @Override
