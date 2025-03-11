@@ -2,8 +2,8 @@ modelName = "ModelledNStepLoadbalancerStratgy";
 
 //const double lowerThreshold = 0.3;
 //const double upperThreshold = 2.0;
-optimizable double[0.1, 1, 0.01] lowerThreshold;
-optimizable double[0.5, 8, 0.01] upperDelta;
+optimizable double[0.1, 1, 0.1] lowerThreshold;
+optimizable double[0.5, 2, 0.1] upperDelta;
 
 probe double responseTime : monitorId = "_LQcqIMltEeSsG6YHnSxiuA"; // System Response Time : "Usage Scenario: overloadUsageScenario";
 
