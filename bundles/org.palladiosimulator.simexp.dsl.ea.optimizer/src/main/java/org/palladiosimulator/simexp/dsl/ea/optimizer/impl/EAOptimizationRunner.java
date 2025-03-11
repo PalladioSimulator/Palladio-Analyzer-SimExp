@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import static io.jenetics.engine.Limits.bySteadyFitness;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +40,8 @@ public class EAOptimizationRunner {
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
-        if (config.steadyFitness()
-            .isPresent()) {
-            evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
-                .get()));
-        }
-        if (config.maxGenerations()
-            .isPresent()) {
-            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
-                .get()));
-        }
+        evolutionStream = addPrimaryTerminationCondition(config, evolutionStream);
+        evolutionStream = addMaxGenerations(config, evolutionStream);
         ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
             .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
@@ -84,6 +74,26 @@ public class EAOptimizationRunner {
         }
 
         return new EAResult(bestFitness, paretoFront);
+    }
+
+    private EvolutionStream<BitGene, Vec<double[]>> addPrimaryTerminationCondition(IEAConfig config,
+            EvolutionStream<BitGene, Vec<double[]>> evolutionStream) {
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        return evolutionStream;
+    }
+
+    private EvolutionStream<BitGene, Vec<double[]>> addMaxGenerations(IEAConfig config,
+            EvolutionStream<BitGene, Vec<double[]>> evolutionStream) {
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        return evolutionStream;
     }
 
 }
