@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
+import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
@@ -119,6 +120,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 currentResourceFolder);
 
         LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));
+        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+        LOGGER.info(String.format("evaluate: %s", optimizableValueToString.asString(optimizableValues)));
         SimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
