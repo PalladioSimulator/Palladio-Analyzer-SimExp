@@ -39,7 +39,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final IModelledWorkflowConfiguration config;
     private final LaunchDescriptionProvider launchDescriptionProvider;
     private final Optional<ISeedProvider> seedProvider;
-    private final Factory modelLoaderFactory;
     private final ExecutorService executor;
     private final Path resourcePath;
     private final ClassLoader classloader;
@@ -52,7 +51,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         this.config = config;
         this.launchDescriptionProvider = launchDescriptionProvider;
         this.seedProvider = seedProvider;
-        this.modelLoaderFactory = modelLoaderFactory;
         this.executor = Executors.newFixedThreadPool(1,
                 new BasicThreadFactory.Builder().namingPattern("local-ea-thread-%d")
                     .build());
