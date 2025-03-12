@@ -23,6 +23,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
+import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
@@ -38,7 +39,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final IModelledWorkflowConfiguration config;
     private final LaunchDescriptionProvider launchDescriptionProvider;
     private final Optional<ISeedProvider> seedProvider;
-    private final Factory modelLoaderFactory;
     private final ExecutorService executor;
     private final Path resourcePath;
     private final ClassLoader classloader;
@@ -51,7 +51,6 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         this.config = config;
         this.launchDescriptionProvider = launchDescriptionProvider;
         this.seedProvider = seedProvider;
-        this.modelLoaderFactory = modelLoaderFactory;
         this.executor = Executors.newFixedThreadPool(1,
                 new BasicThreadFactory.Builder().namingPattern("local-ea-thread-%d")
                     .build());
@@ -119,6 +118,8 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                 currentResourceFolder);
 
         LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));
+        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+        LOGGER.info(String.format("evaluate: %s", optimizableValueToString.asString(optimizableValues)));
         SimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
