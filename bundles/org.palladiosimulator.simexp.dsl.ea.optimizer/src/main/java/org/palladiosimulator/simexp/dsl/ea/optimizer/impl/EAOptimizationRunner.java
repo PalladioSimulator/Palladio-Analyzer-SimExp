@@ -32,8 +32,6 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizationRunner {
 
-    private static final int DEFAULT_MAX_GENERATIONS = 100;
-    private static final int DEFAULT_STEADY_FITNESS_GENERATION_NUMBER = 7;
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     @SuppressWarnings("unchecked")
@@ -48,7 +46,6 @@ public class EAOptimizationRunner {
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
-
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
@@ -59,9 +56,9 @@ public class EAOptimizationRunner {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-
         Stream<EvolutionResult<BitGene, Vec<double[]>>> effectiveStream = evolutionStream.peek(reporter)
             .peek(paretoStatistics);
+
         final ISeq<Phenotype<BitGene, Vec<double[]>>> result;
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
@@ -69,7 +66,8 @@ public class EAOptimizationRunner {
         } else {
             long seed = seedProvider.get()
                 .getLong();
-            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(MOEA.toParetoSet(IntRange.of(1, 10))));
+            result = RandomRegistry.with(new Random(seed),
+                    r -> effectiveStream.collect(MOEA.toParetoSet(IntRange.of(1, 10))));
         }
 
         LOGGER.info("EA finished...");
