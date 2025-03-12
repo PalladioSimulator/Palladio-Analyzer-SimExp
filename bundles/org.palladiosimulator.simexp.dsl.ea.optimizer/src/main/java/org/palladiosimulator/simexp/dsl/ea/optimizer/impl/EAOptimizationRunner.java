@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -60,14 +61,15 @@ public class EAOptimizationRunner {
             .peek(paretoStatistics);
 
         final ISeq<Phenotype<BitGene, Vec<double[]>>> result;
+        Collector<EvolutionResult<BitGene, Vec<double[]>>, ?, ISeq<Phenotype<BitGene, Vec<double[]>>>> paretoCollector = MOEA
+            .toParetoSet(IntRange.of(1, 10));
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
-            result = effectiveStream.collect(MOEA.toParetoSet(IntRange.of(1, 10)));
+            result = effectiveStream.collect(paretoCollector);
         } else {
             long seed = seedProvider.get()
                 .getLong();
-            result = RandomRegistry.with(new Random(seed),
-                    r -> effectiveStream.collect(MOEA.toParetoSet(IntRange.of(1, 10))));
+            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
         }
 
         LOGGER.info("EA finished...");
