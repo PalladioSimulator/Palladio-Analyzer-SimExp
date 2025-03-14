@@ -53,7 +53,7 @@ public class PowerUtil {
         int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
         int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
         int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
-        int power = (endValue - startValue) / stepSize;
+        int power = Math.round(((endValue * 1000000) - (startValue * 1000000)) / (stepSize * 1000000));
         return power;
     }
 
@@ -61,7 +61,7 @@ public class PowerUtil {
         double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
         double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
         double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
-        int power = (int) Math.floor((endValue - startValue) / stepSize);
+        int power = (int) Math.round(((endValue * 1000000) - (startValue * 1000000)) / (stepSize * 1000000));
         return power;
     }
 
