@@ -4,7 +4,6 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -18,8 +17,6 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
-import io.jenetics.engine.EvolutionResult;
-import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
 import io.jenetics.util.ISeq;
@@ -36,10 +33,8 @@ public class EAOptimizationRunner {
             IEAConfig config) {
         Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
-        //TODO nbruening: Wieder eigene statistics
-//        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
-//                genotypeInstance);
-        Consumer<? super EvolutionResult<BitGene, Double>> paretoStatistics = EvolutionStatistics.ofNumber();
+        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
+                genotypeInstance);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
