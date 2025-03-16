@@ -36,7 +36,6 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.engine.Engine;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.RandomRegistry;
 
 public class EAOptimizationRunnerTest {
@@ -73,12 +72,12 @@ public class EAOptimizationRunnerTest {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         objectUnderTest = new EAOptimizationRunner();
-        when(fitnessFunction.apply(any())).then(new Answer<Vec<double[]>>() {
+        when(fitnessFunction.apply(any())).then(new Answer<Double>() {
             @Override
-            public Vec<double[]> answer(InvocationOnMock invocation) throws Throwable {
+            public Double answer(InvocationOnMock invocation) throws Throwable {
                 SmodelBitChromosome as = (SmodelBitChromosome) invocation.getArgument(0, Genotype.class)
                     .chromosome();
-                return Vec.of(new double[] { as.intValue() });
+                return (double) as.intValue();
             }
 
         });
@@ -92,8 +91,8 @@ public class EAOptimizationRunnerTest {
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<BitGene> genotype = Genotype
             .of(SmodelBitChromosome.of(smodelBitset, optimizable, 100, new BinaryBitInterpreter()));
-        Engine<BitGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder(config).buildEngine(fitnessFunction,
-                genotype, Runnable::run);
+        Engine<BitGene, Double> engine = new EAOptimizationEngineBuilder(config).buildEngine(fitnessFunction, genotype,
+                Runnable::run);
         optFunction = r -> {
             return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, fitnessFunction, engine,
                     config);

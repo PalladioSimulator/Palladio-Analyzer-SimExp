@@ -16,9 +16,7 @@ import io.jenetics.util.IntRange;
 
 public class ParetoSetCollector {
 
-    public Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> create() {
-//        Collector<EvolutionResult<?, Vec<Object>>, ?, ISeq<Phenotype<?, Vec<Object>>>> paretoSet = MOEA
-//            .toParetoSet(IntRange.of(0, 10));
+    public static Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> create() {
 
         Comparator<Double> dominance = (Double a, Double b) -> Vec.of(a)
             .dominance(Vec.of(b));

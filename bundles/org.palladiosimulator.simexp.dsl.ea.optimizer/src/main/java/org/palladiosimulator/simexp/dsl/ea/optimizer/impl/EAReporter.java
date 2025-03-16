@@ -13,9 +13,8 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
-import io.jenetics.ext.moea.Vec;
 
-public class EAReporter implements Consumer<EvolutionResult<BitGene, Vec<double[]>>> {
+public class EAReporter implements Consumer<EvolutionResult<BitGene, Double>> {
     private final IEAEvolutionStatusReceiver evolutionStatusReceiver;
     private final OptimizableNormalizer normalizer;
 
@@ -24,17 +23,18 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Vec<double[
         this.normalizer = normalizer;
     }
 
+    // remove
     @Override
-    public void accept(EvolutionResult<BitGene, Vec<double[]>> result) {
+    public void accept(EvolutionResult<BitGene, Double> result) {
         long generation = result.generation();
-        Phenotype<BitGene, Vec<double[]>> phenotype = result.bestPhenotype();
+        Phenotype<BitGene, Double> phenotype = result.bestPhenotype();
         Genotype<BitGene> genotype = phenotype.genotype();
         List<SmodelBitChromosome> chromosomes = genotype.stream()
             .map(g -> g.as(SmodelBitChromosome.class))
             .collect(Collectors.toList());
         List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(chromosomes);
-        double fitness = result.bestFitness()
-            .data()[0];
+        double fitness = result.bestFitness();
         evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
     }
+
 }

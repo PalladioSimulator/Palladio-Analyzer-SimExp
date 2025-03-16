@@ -23,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.engine.Engine;
-import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizer implements IEAOptimizer {
 
@@ -61,7 +60,7 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<BitGene, Vec<double[]>> engine;
+        final Engine<BitGene, Double> engine;
         MOEAFitnessFunction fitnessFunction;
         if (config.penaltyForInvalids()
             .isPresent()) {

@@ -4,6 +4,7 @@ import static io.jenetics.engine.Limits.bySteadyFitness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -17,12 +18,11 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
+import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
-import io.jenetics.ext.moea.MOEA;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
-import io.jenetics.util.IntRange;
 
 public class EAOptimizationRunner {
 
@@ -32,16 +32,18 @@ public class EAOptimizationRunner {
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<BitGene, Vec<double[]>> engine, IEAConfig config) {
+            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction, final Engine<BitGene, Double> engine,
+            IEAConfig config) {
         Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
-        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
-                genotypeInstance);
+        //TODO nbruening: Wieder eigene statistics
+//        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
+//                genotypeInstance);
+        Consumer<? super EvolutionResult<BitGene, Double>> paretoStatistics = EvolutionStatistics.ofNumber();
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
+        EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
@@ -52,9 +54,9 @@ public class EAOptimizationRunner {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-        ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
+        ISeq<Phenotype<BitGene, Double>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
-            .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
+            .collect(ParetoSetCollector.create());
 
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);
@@ -64,14 +66,13 @@ public class EAOptimizationRunner {
         double bestFitness = result.stream()
             .findFirst()
             .get()
-            .fitness()
-            .data()[0];
+            .fitness();
 
-        Phenotype<BitGene, Vec<double[]>>[] phenotypes = result.stream()
+        Phenotype<BitGene, Double>[] phenotypes = result.stream()
             .toArray(Phenotype[]::new);
 
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<BitGene, Vec<double[]>> currentPheno : phenotypes) {
+        for (Phenotype<BitGene, Double> currentPheno : phenotypes) {
             List<SmodelBitChromosome> chromosomes = new ArrayList<>();
             for (int i = 0; i < currentPheno.genotype()
                 .length(); i++) {

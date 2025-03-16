@@ -13,7 +13,6 @@ import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
-import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizationEngineBuilder {
 
@@ -41,10 +40,10 @@ public class EAOptimizationEngineBuilder {
             .orElse(DEFAULT_CROSSOVER_RATE);
     }
 
-    public Engine<BitGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
+    public Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             Executor executor) {
 
-        Builder<BitGene, Vec<double[]>> builder = Engine
+        Builder<BitGene, Double> builder = Engine
             .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
             .populationSize(config.populationSize())
             .executor(executor)
@@ -56,9 +55,9 @@ public class EAOptimizationEngineBuilder {
         return builder.build();
     }
 
-    private Builder<BitGene, Vec<double[]>> addAlterers(Builder<BitGene, Vec<double[]>> builder) {
-        Mutator<BitGene, Vec<double[]>> mutator = new Mutator<>();
-        Crossover<BitGene, Vec<double[]>> crossover = new UniformCrossover<>();
+    private Builder<BitGene, Double> addAlterers(Builder<BitGene, Double> builder) {
+        Mutator<BitGene, Double> mutator = new Mutator<>();
+        Crossover<BitGene, Double> crossover = new UniformCrossover<>();
         if (config.mutationRate()
             .isPresent()) {
             mutator = new Mutator<>(config.mutationRate()

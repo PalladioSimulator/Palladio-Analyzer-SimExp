@@ -20,9 +20,8 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
-import io.jenetics.ext.moea.Vec;
 
-public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<double[]>> {
+public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
@@ -46,11 +45,11 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
     }
 
     @Override
-    public Vec<double[]> apply(Genotype<BitGene> genotype) {
+    public Double apply(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         for (SmodelBitChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return Vec.of(penaltyForInvalids);
+                return penaltyForInvalids;
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -60,10 +59,10 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return Vec.of(fitness);
+            return fitness;
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return Vec.of(penaltyForInvalids);
+            return penaltyForInvalids;
         }
     }
 
