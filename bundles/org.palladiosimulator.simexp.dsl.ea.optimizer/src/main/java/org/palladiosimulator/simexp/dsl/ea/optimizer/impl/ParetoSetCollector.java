@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 
-import io.jenetics.BitGene;
+import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.ext.moea.ElementComparator;
@@ -16,7 +16,7 @@ import io.jenetics.util.IntRange;
 
 public class ParetoSetCollector {
 
-    public static Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> create() {
+    public static Collector<EvolutionResult<IntegerGene, Double>, ?, ISeq<Phenotype<IntegerGene, Double>>> create() {
 
         Comparator<Double> dominance = (Double a, Double b) -> Vec.of(a)
             .dominance(Vec.of(b));
@@ -25,7 +25,7 @@ public class ParetoSetCollector {
             .distance(Vec.of(b), index);
         ToIntFunction<Double> dimension = (Double value) -> 1;
 
-        return MOEA.toParetoSet(IntRange.of(3, 10), dominance, elementComparator, distance, dimension);
+        return MOEA.toParetoSet(IntRange.of(1, 10), dominance, elementComparator, distance, dimension);
 
     }
 
