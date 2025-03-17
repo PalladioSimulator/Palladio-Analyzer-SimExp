@@ -25,6 +25,11 @@ public class ExpressionCalculator implements IExpressionCalculator {
     }
 
     @Override
+    public double getEpsilon() {
+        return epsilon;
+    }
+
+    @Override
     public boolean calculateBoolean(Expression expression) {
         Object value = caseExpression(expression);
         return (boolean) value;
