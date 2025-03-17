@@ -40,6 +40,8 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
@@ -135,8 +137,14 @@ public class EAOptimizerTest {
 
     @Test
     public void simpleDoubleOptimizableRangeTest() {
-        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.0,
-                20.0, 1.0);
+        DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.0);
+        DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(20.0);
+        DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(1.0);
+        when(calculator.calculateDouble(lowerBoundDouble)).thenReturn(lowerBoundDouble.getValue());
+        when(calculator.calculateDouble(upperBoundDouble)).thenReturn(upperBoundDouble.getValue());
+        when(calculator.calculateDouble(stepDouble)).thenReturn(stepDouble.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBoundDouble, upperBoundDouble,
+                stepDouble);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
@@ -172,10 +180,13 @@ public class EAOptimizerTest {
 
     @Test
     public void mediumDoubleOptimizableRangeTest() {
-        double lowerBound = 0.0;
-        double upperBound = 100.0;
-        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
-                lowerBound, upperBound, 1.0);
+        DoubleLiteral lowerBound = smodelCreator.createDoubleLiteral(0.0);
+        DoubleLiteral upperBound = smodelCreator.createDoubleLiteral(100.0);
+        DoubleLiteral step = smodelCreator.createDoubleLiteral(1.0);
+        when(calculator.calculateDouble(lowerBound)).thenReturn(lowerBound.getValue());
+        when(calculator.calculateDouble(upperBound)).thenReturn(upperBound.getValue());
+        when(calculator.calculateDouble(step)).thenReturn(step.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBound, upperBound, step);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
@@ -211,12 +222,14 @@ public class EAOptimizerTest {
 
     @Test
     public void largeDoubleOptimizableRangeTest() {
-        double lowerBound = 0.0;
-        double upperBound = 1000.0;
-        double stepSize = 1.0;
-        double estimatedOptimumFitness = 998.0;
-        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
-                lowerBound, upperBound, stepSize);
+        DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.0);
+        DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(1000.0);
+        DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(1.0);
+        when(calculator.calculateDouble(lowerBoundDouble)).thenReturn(lowerBoundDouble.getValue());
+        when(calculator.calculateDouble(upperBoundDouble)).thenReturn(upperBoundDouble.getValue());
+        when(calculator.calculateDouble(stepDouble)).thenReturn(stepDouble.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBoundDouble, upperBoundDouble,
+                stepDouble);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
@@ -244,8 +257,14 @@ public class EAOptimizerTest {
 
     @Test
     public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
-        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.15,
-                10.0, 0.5);
+        DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.15);
+        DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(10.0);
+        DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(0.5);
+        when(calculator.calculateDouble(lowerBoundDouble)).thenReturn(lowerBoundDouble.getValue());
+        when(calculator.calculateDouble(upperBoundDouble)).thenReturn(upperBoundDouble.getValue());
+        when(calculator.calculateDouble(stepDouble)).thenReturn(stepDouble.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBoundDouble, upperBoundDouble,
+                stepDouble);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
@@ -744,13 +763,22 @@ public class EAOptimizerTest {
 
     @Test
     public void integerDoubleOptimizableRangeTest() {
-        int upperBoundInteger = 20;
-        RangeBounds intRangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0,
-                upperBoundInteger, 1);
+        IntLiteral lowerBound = smodelCreator.createIntLiteral(0);
+        IntLiteral upperBound = smodelCreator.createIntLiteral(20);
+        IntLiteral step = smodelCreator.createIntLiteral(1);
+        when(calculator.calculateInteger(lowerBound)).thenReturn(lowerBound.getValue());
+        when(calculator.calculateInteger(upperBound)).thenReturn(upperBound.getValue());
+        when(calculator.calculateInteger(step)).thenReturn(step.getValue());
+        RangeBounds intRangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBound, upperBound, step);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, intRangeBound);
-        double upperBoundDouble = 20.0;
-        RangeBounds doubleRangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator,
-                0.0, upperBoundDouble, 1.0);
+        DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.0);
+        DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(20.0);
+        DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(1.0);
+        when(calculator.calculateDouble(lowerBoundDouble)).thenReturn(lowerBoundDouble.getValue());
+        when(calculator.calculateDouble(upperBoundDouble)).thenReturn(upperBoundDouble.getValue());
+        when(calculator.calculateDouble(stepDouble)).thenReturn(stepDouble.getValue());
+        RangeBounds doubleRangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBoundDouble, upperBoundDouble,
+                stepDouble);
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleRangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(intOptimizable, doubleOptimizable));
         when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
