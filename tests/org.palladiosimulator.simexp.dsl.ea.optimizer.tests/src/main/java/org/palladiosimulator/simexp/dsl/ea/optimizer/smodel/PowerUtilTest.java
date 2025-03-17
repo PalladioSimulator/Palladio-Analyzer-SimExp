@@ -1,15 +1,30 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class PowerUtilTest {
+    private static final double DOUBLE_EPSILON = 1e-15;
+
     private PowerUtil powerUtil;
+    private SmodelCreator smodelCreator;
+
+    private IntLiteral startLiteralInt;
+    private IntLiteral stopLiteralInt;
+    private IntLiteral stepLiteralInt;
+    private DoubleLiteral startLiteralDouble;
+    private DoubleLiteral stopLiteralDouble;
+    private DoubleLiteral stepLiteralDouble;
 
     @Mock
     private IExpressionCalculator calculator;
@@ -17,6 +32,24 @@ public class PowerUtilTest {
     @Before
     public void setUp() {
         initMocks(this);
+        smodelCreator = new SmodelCreator();
+
+        when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+
+        startLiteralInt = smodelCreator.createIntLiteral(1);
+        stopLiteralInt = smodelCreator.createIntLiteral(3);
+        stepLiteralInt = smodelCreator.createIntLiteral(1);
+        when(calculator.calculateInteger(startLiteralInt)).thenReturn(startLiteralInt.getValue());
+        when(calculator.calculateInteger(stopLiteralInt)).thenReturn(stopLiteralInt.getValue());
+        when(calculator.calculateInteger(stepLiteralInt)).thenReturn(stepLiteralInt.getValue());
+
+        startLiteralDouble = smodelCreator.createDoubleLiteral(1.0);
+        stopLiteralDouble = smodelCreator.createDoubleLiteral(3.0);
+        stepLiteralDouble = smodelCreator.createDoubleLiteral(1.0);
+        when(calculator.calculateDouble(startLiteralDouble)).thenReturn(startLiteralDouble.getValue());
+        when(calculator.calculateDouble(stopLiteralDouble)).thenReturn(stopLiteralDouble.getValue());
+        when(calculator.calculateDouble(stepLiteralDouble)).thenReturn(stepLiteralDouble.getValue());
+
         powerUtil = new PowerUtil(calculator);
     }
 
@@ -47,4 +80,113 @@ public class PowerUtilTest {
 
         assertEquals(3, actualMinBitSize);
     }
+
+    @Test
+    public void testGetPowerRangeClosedClosedIntStep1() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedClosed(startLiteralInt, stopLiteralInt,
+                stepLiteralInt);
+
+        int actualPower = powerUtil.getPowerRangeInt(rangeBounds);
+
+        assertEquals(3, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeClosedClosedIntStep3() {
+        stopLiteralInt = smodelCreator.createIntLiteral(5);
+        stepLiteralInt = smodelCreator.createIntLiteral(3);
+        when(calculator.calculateInteger(stopLiteralInt)).thenReturn(stopLiteralInt.getValue());
+        when(calculator.calculateInteger(stepLiteralInt)).thenReturn(stepLiteralInt.getValue());
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedClosed(startLiteralInt, stopLiteralInt,
+                stepLiteralInt);
+
+        int actualPower = powerUtil.getPowerRangeInt(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeClosedOpenInt() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedOpen(startLiteralInt, stopLiteralInt,
+                stepLiteralInt);
+
+        int actualPower = powerUtil.getPowerRangeInt(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeOpenOpenInt() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsOpenOpen(startLiteralInt, stopLiteralInt,
+                stepLiteralInt);
+
+        int actualPower = powerUtil.getPowerRangeInt(rangeBounds);
+
+        assertEquals(1, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeOpenClosedInt() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsOpenClosed(startLiteralInt, stopLiteralInt,
+                stepLiteralInt);
+
+        int actualPower = powerUtil.getPowerRangeInt(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeClosedClosedDoubleStep1() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedClosed(startLiteralDouble, stopLiteralDouble,
+                stepLiteralDouble);
+
+        int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
+
+        assertEquals(3, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeClosedClosedDoubleStep3() {
+        stopLiteralDouble = smodelCreator.createDoubleLiteral(5.0);
+        stepLiteralDouble = smodelCreator.createDoubleLiteral(3.0);
+        when(calculator.calculateDouble(stopLiteralDouble)).thenReturn(stopLiteralDouble.getValue());
+        when(calculator.calculateDouble(stepLiteralDouble)).thenReturn(stepLiteralDouble.getValue());
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedClosed(startLiteralDouble, stopLiteralDouble,
+                stepLiteralDouble);
+
+        int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeClosedOpenDouble() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsClosedOpen(startLiteralDouble, stopLiteralDouble,
+                stepLiteralDouble);
+
+        int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeOpenOpenDouble() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsOpenOpen(startLiteralDouble, stopLiteralDouble,
+                stepLiteralDouble);
+
+        int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
+
+        assertEquals(1, actualPower);
+    }
+
+    @Test
+    public void testGetPowerRangeOpenClosedDouble() {
+        RangeBounds rangeBounds = smodelCreator.createRangeBoundsOpenClosed(startLiteralDouble, stopLiteralDouble,
+                stepLiteralDouble);
+
+        int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
+
+        assertEquals(2, actualPower);
+    }
+
 }
