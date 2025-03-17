@@ -12,7 +12,6 @@ import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
-import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizationEngineBuilder {
 
@@ -40,10 +39,10 @@ public class EAOptimizationEngineBuilder {
             .orElse(DEFAULT_CROSSOVER_RATE);
     }
 
-    public Engine<IntegerGene, Vec<double[]>> buildEngine(MOEAFitnessFunction fitnessFunction,
-            Genotype<IntegerGene> genotype, Executor executor) {
+    public Engine<IntegerGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<IntegerGene> genotype,
+            Executor executor) {
 
-        Builder<IntegerGene, Vec<double[]>> builder = Engine.builder(fitnessFunction::apply, genotype)
+        Builder<IntegerGene, Double> builder = Engine.builder(fitnessFunction::apply, genotype)
             .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
@@ -54,9 +53,9 @@ public class EAOptimizationEngineBuilder {
         return builder.build();
     }
 
-    private Builder<IntegerGene, Vec<double[]>> addAlterers(Builder<IntegerGene, Vec<double[]>> builder) {
-        Mutator<IntegerGene, Vec<double[]>> mutator = new Mutator<>();
-        Crossover<IntegerGene, Vec<double[]>> crossover = new UniformCrossover<>();
+    private Builder<IntegerGene, Double> addAlterers(Builder<IntegerGene, Double> builder) {
+        Mutator<IntegerGene, Double> mutator = new Mutator<>();
+        Crossover<IntegerGene, Double> crossover = new UniformCrossover<>();
         if (config.mutationRate()
             .isPresent()) {
             mutator = new Mutator<>(config.mutationRate()

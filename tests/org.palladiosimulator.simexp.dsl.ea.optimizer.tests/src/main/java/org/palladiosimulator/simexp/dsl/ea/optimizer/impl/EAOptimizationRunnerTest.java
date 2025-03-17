@@ -72,12 +72,12 @@ public class EAOptimizationRunnerTest {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         objectUnderTest = new EAOptimizationRunner();
-        when(fitnessFunction.apply(any())).then(new Answer<Vec<double[]>>() {
+        when(fitnessFunction.apply(any())).then(new Answer<Double>() {
             @Override
-            public Vec<double[]> answer(InvocationOnMock invocation) throws Throwable {
+            public Double answer(InvocationOnMock invocation) throws Throwable {
                 SmodelIntegerChromosome as = (SmodelIntegerChromosome) invocation.getArgument(0, Genotype.class)
                     .chromosome();
-                return Vec.of(new double[] { as.intValue() });
+                return (double) as.intValue();
             }
 
         });
@@ -90,7 +90,7 @@ public class EAOptimizationRunnerTest {
                 expressionCalculator, 0, 100, 1);
         optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         Genotype<IntegerGene> genotype = Genotype.of(SmodelIntegerChromosome.of(intRange, optimizable));
-        Engine<IntegerGene, Vec<double[]>> engine = new EAOptimizationEngineBuilder(config).buildEngine(fitnessFunction,
+        Engine<IntegerGene, Double> engine = new EAOptimizationEngineBuilder(config).buildEngine(fitnessFunction,
                 genotype, Runnable::run);
         optFunction = r -> {
             return objectUnderTest.runOptimization(statusReceiver, optimizableNormalizer, fitnessFunction, engine,

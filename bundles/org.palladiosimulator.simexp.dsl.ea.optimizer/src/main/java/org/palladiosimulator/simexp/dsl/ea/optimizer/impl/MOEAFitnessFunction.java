@@ -19,10 +19,11 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
+<<<<<<< HEAD
 import io.jenetics.IntegerGene;
 import io.jenetics.ext.moea.Vec;
 
-public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Vec<double[]>> {
+public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Double> {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
@@ -47,11 +48,11 @@ public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Vec<
     }
 
     @Override
-    public Vec<double[]> apply(Genotype<IntegerGene> genotype) {
+    public Double apply(Genotype<IntegerGene> genotype) {
         List<SmodelIntegerChromosome> chromosomes = extracted(genotype);
         for (SmodelIntegerChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return Vec.of(penaltyForInvalids);
+                return penaltyForInvalids;
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -61,10 +62,10 @@ public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Vec<
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return Vec.of(fitness);
+            return fitness;
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return Vec.of(penaltyForInvalids);
+            return penaltyForInvalids;
         }
     }
 

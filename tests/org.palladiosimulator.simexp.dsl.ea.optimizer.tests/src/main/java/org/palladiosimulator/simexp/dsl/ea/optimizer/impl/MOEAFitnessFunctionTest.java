@@ -27,7 +27,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.Genotype;
 import io.jenetics.IntegerGene;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.IntRange;
 
 public class MOEAFitnessFunctionTest {
@@ -71,10 +70,10 @@ public class MOEAFitnessFunctionTest {
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
 
         // Act
-        Vec<double[]> fitness = fitnessFunction.apply(genotype);
+        Double fitness = fitnessFunction.apply(genotype);
 
         // Assert
-        assertEquals(50.0, fitness.data()[0], 0.00001);
+        assertEquals(50.0, fitness, 0.00001);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
@@ -90,9 +89,9 @@ public class MOEAFitnessFunctionTest {
         when(fitnessFuture.get()).thenThrow(new InterruptedException("This is a test"));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
 
-        Vec<double[]> fitness = fitnessFunction.apply(genotype);
+        Double fitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness.data()[0], 0.00001);
+        assertEquals(0.0, fitness, 0.00001);
     }
 
     @Test
@@ -103,9 +102,9 @@ public class MOEAFitnessFunctionTest {
         when(fitnessFuture.get()).thenThrow(executionException);
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
 
-        Vec<double[]> fitness = fitnessFunction.apply(genotype);
+        Double fitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness.data()[0], 0.00001);
+        assertEquals(0.0, fitness, 0.00001);
     }
 
 //    @Test
@@ -119,7 +118,7 @@ public class MOEAFitnessFunctionTest {
 //        when(fitnessFuture.get()).thenThrow(executionException);
 //        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
 //
-//        Vec<double[]> fitness = fitnessFunction.apply(genotype);
+//        Double fitness = fitnessFunction.apply(genotype);
 //
 //        assertEquals(0.0, fitness.data()[0], 0.00001);
 //    }

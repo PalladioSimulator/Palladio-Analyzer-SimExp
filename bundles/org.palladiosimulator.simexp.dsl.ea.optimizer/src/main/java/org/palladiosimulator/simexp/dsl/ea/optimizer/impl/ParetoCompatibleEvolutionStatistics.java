@@ -12,11 +12,10 @@ import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.ISeq;
 
-public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionResult<IntegerGene, Vec<double[]>>> {
+public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionResult<IntegerGene, Double>> {
 
     private static final int ROUNDING_CONSTANT = 100000;
     private EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics = EvolutionStatistics.ofNumber();
@@ -29,12 +28,11 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
     }
 
     @Override
-    public void accept(EvolutionResult<IntegerGene, Vec<double[]>> t) {
+    public void accept(EvolutionResult<IntegerGene, Double> t) {
         List<Phenotype<IntegerGene, Double>> phenoList = new ArrayList<>();
-        for (Phenotype<IntegerGene, Vec<double[]>> phenotype : t.population()) {
+        for (Phenotype<IntegerGene, Double> phenotype : t.population()) {
             Phenotype<IntegerGene, Double> of = Phenotype.of(phenotype.genotype(), 0);
-            Phenotype<IntegerGene, Double> finishedPheno = of.withFitness(phenotype.fitness()
-                .data()[0]);
+            Phenotype<IntegerGene, Double> finishedPheno = of.withFitness(phenotype.fitness());
             phenoList.add(finishedPheno);
         }
         ISeq<Phenotype<IntegerGene, Double>> popSeq = ISeq.of(phenoList);

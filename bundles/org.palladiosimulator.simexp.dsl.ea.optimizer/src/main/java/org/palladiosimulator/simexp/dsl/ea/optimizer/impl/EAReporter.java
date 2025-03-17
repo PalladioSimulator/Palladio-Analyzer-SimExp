@@ -13,9 +13,8 @@ import io.jenetics.Genotype;
 import io.jenetics.IntegerGene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
-import io.jenetics.ext.moea.Vec;
 
-public class EAReporter implements Consumer<EvolutionResult<IntegerGene, Vec<double[]>>> {
+public class EAReporter implements Consumer<EvolutionResult<IntegerGene, Double>> {
     private final IEAEvolutionStatusReceiver evolutionStatusReceiver;
     private final OptimizableIntegerChromoNormalizer normalizer;
 
@@ -25,18 +24,19 @@ public class EAReporter implements Consumer<EvolutionResult<IntegerGene, Vec<dou
         this.normalizer = normalizer;
     }
 
+    // remove
     @Override
-    public void accept(EvolutionResult<IntegerGene, Vec<double[]>> result) {
+    public void accept(EvolutionResult<IntegerGene, Double> result) {
         long generation = result.generation();
 
-        Phenotype<IntegerGene, Vec<double[]>> phenotype = result.bestPhenotype();
+        Phenotype<IntegerGene, Double> phenotype = result.bestPhenotype();
         Genotype<IntegerGene> genotype = phenotype.genotype();
         List<SmodelIntegerChromosome> chromosomes = genotype.stream()
             .map(g -> g.as(SmodelIntegerChromosome.class))
             .collect(Collectors.toList());
         List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(chromosomes);
-        double fitness = phenotype.fitness()
-            .data()[0];
+        double fitness = result.bestFitness();
         evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
     }
+
 }

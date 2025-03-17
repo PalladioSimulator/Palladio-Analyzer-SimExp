@@ -261,12 +261,12 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(9.15, result.getFitness(), 0.00001);
+        assertEquals(9.65, result.getFitness(), 0.00001);
         OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
             .get(0)
             .get(0);
         assertEquals(optimizable, optimizableValue.getOptimizable());
-        assertEquals(9.15, optimizableValue.getValue());
+        assertEquals(9.65, optimizableValue.getValue());
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 

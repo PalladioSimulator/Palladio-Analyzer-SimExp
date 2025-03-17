@@ -19,10 +19,7 @@ import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
-import io.jenetics.ext.moea.MOEA;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
-import io.jenetics.util.IntRange;
 
 public class EAOptimizationRunner {
 
@@ -33,15 +30,14 @@ public class EAOptimizationRunner {
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
             OptimizableIntegerChromoNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<IntegerGene, Vec<double[]>> engine, IEAConfig config) {
+            final Engine<IntegerGene, Double> engine, IEAConfig config) {
         Genotype<IntegerGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
                 genotypeInstance);
-
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
+        EvolutionStream<IntegerGene, Double> evolutionStream = engine.stream();
 
-        EvolutionStream<IntegerGene, Vec<double[]>> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
@@ -52,9 +48,9 @@ public class EAOptimizationRunner {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-        ISeq<Phenotype<IntegerGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
+        ISeq<Phenotype<IntegerGene, Double>> result = evolutionStream.peek(reporter)
             .peek(paretoStatistics)
-            .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
+            .collect(ParetoSetCollector.create());
 
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);
@@ -63,20 +59,19 @@ public class EAOptimizationRunner {
     }
 
     private EAResult createEAResult(OptimizableIntegerChromoNormalizer normalizer,
-            ISeq<Phenotype<IntegerGene, Vec<double[]>>> result) {
+            ISeq<Phenotype<IntegerGene, Double>> result) {
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
         double bestFitness = result.stream()
             .findFirst()
             .get()
-            .fitness()
-            .data()[0];
+            .fitness();
 
-        Phenotype<IntegerGene, Vec<double[]>>[] phenotypes = result.stream()
+        Phenotype<IntegerGene, Double>[] phenotypes = result.stream()
             .toArray(Phenotype[]::new);
 
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<IntegerGene, Vec<double[]>> currentPheno : phenotypes) {
+        for (Phenotype<IntegerGene, Double> currentPheno : phenotypes) {
             List<SmodelIntegerChromosome> chromosomes = new ArrayList<>();
             for (int i = 0; i < currentPheno.genotype()
                 .length(); i++) {

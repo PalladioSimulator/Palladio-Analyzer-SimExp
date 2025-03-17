@@ -23,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import io.jenetics.Genotype;
 import io.jenetics.IntegerGene;
 import io.jenetics.engine.Engine;
-import io.jenetics.ext.moea.Vec;
 
 public class EAOptimizer implements IEAOptimizer {
 
@@ -62,7 +61,7 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<IntegerGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<IntegerGene, Vec<double[]>> engine;
+        final Engine<IntegerGene, Double> engine;
         MOEAFitnessFunction fitnessFunction;
         if (config.penaltyForInvalids()
             .isPresent()) {
