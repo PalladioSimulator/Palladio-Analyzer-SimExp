@@ -3,8 +3,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
@@ -156,13 +154,7 @@ public class OptimizableNormalizer {
                 .collect(Collectors.toList());
         }
         if (bounds instanceof RangeBounds rangeBounds) {
-            int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
-            int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
-            int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
-            return IntStream.iterate(startValue, n -> n + stepSize)
-                .takeWhile(n -> n < endValue)
-                .boxed()
-                .collect(Collectors.toList());
+            return powerUtil.getValueListInt(rangeBounds);
         }
         throw new RuntimeException("invalid bounds: " + bounds);
     }
@@ -176,13 +168,7 @@ public class OptimizableNormalizer {
                 .collect(Collectors.toList());
         }
         if (bounds instanceof RangeBounds rangeBounds) {
-            double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
-            double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
-            double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
-            return DoubleStream.iterate(startValue, n -> n + stepSize)
-                .takeWhile(n -> n < endValue)
-                .boxed()
-                .collect(Collectors.toList());
+            return powerUtil.getValueListDouble(rangeBounds);
         }
         throw new RuntimeException("invalid bounds: " + bounds);
     }

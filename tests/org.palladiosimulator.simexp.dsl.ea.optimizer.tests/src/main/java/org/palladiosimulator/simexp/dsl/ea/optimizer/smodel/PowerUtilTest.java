@@ -1,8 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -187,6 +190,37 @@ public class PowerUtilTest {
         int actualPower = powerUtil.getPowerRangeDouble(rangeBounds);
 
         assertEquals(2, actualPower);
+    }
+
+    @Test
+    public void testGetValueListInteger() {
+        IntLiteral lowerBound = smodelCreator.createIntLiteral(0);
+        IntLiteral upperBound = smodelCreator.createIntLiteral(5);
+        IntLiteral step = smodelCreator.createIntLiteral(1);
+        when(calculator.calculateInteger(lowerBound)).thenReturn(lowerBound.getValue());
+        when(calculator.calculateInteger(upperBound)).thenReturn(upperBound.getValue());
+        when(calculator.calculateInteger(step)).thenReturn(step.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBound, upperBound, step);
+
+        List<Integer> actualValueList = powerUtil.getValueListInt(rangeBound);
+
+        assertThat(actualValueList).containsExactly(1, 2, 3, 4, 5);
+    }
+
+    @Test
+    public void testGetValueListDouble() {
+        DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.15);
+        DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(5.0);
+        DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(0.5);
+        when(calculator.calculateDouble(lowerBoundDouble)).thenReturn(lowerBoundDouble.getValue());
+        when(calculator.calculateDouble(upperBoundDouble)).thenReturn(upperBoundDouble.getValue());
+        when(calculator.calculateDouble(stepDouble)).thenReturn(stepDouble.getValue());
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsOpenClosed(lowerBoundDouble, upperBoundDouble,
+                stepDouble);
+
+        List<Double> actualValueList = powerUtil.getValueListDouble(rangeBound);
+
+        assertThat(actualValueList).containsExactly(0.65, 1.15, 1.65, 2.15, 2.65, 3.15, 3.65, 4.15, 4.65);
     }
 
 }

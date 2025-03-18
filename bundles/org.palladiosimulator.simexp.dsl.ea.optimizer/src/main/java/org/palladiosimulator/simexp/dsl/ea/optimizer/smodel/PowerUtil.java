@@ -57,6 +57,16 @@ public class PowerUtil {
     }
 
     public int getPowerRangeInt(RangeBounds rangeBounds) {
+        List<Integer> values = getValueListInt(rangeBounds);
+        return values.size();
+    }
+
+    public int getPowerRangeDouble(RangeBounds rangeBounds) {
+        List<Double> values = getValueListDouble(rangeBounds);
+        return values.size();
+    }
+
+    public List<Integer> getValueListInt(RangeBounds rangeBounds) {
         int startValue = expressionCalculator.calculateInteger(rangeBounds.getStartValue());
         int endValue = expressionCalculator.calculateInteger(rangeBounds.getEndValue());
         int stepSize = expressionCalculator.calculateInteger(rangeBounds.getStepSize());
@@ -72,10 +82,10 @@ public class PowerUtil {
         }
         List<Integer> values = stream.boxed()
             .collect(Collectors.toList());
-        return values.size();
+        return values;
     }
 
-    public int getPowerRangeDouble(RangeBounds rangeBounds) {
+    public List<Double> getValueListDouble(RangeBounds rangeBounds) {
         double startValue = expressionCalculator.calculateDouble(rangeBounds.getStartValue());
         double endValue = expressionCalculator.calculateDouble(rangeBounds.getEndValue());
         double stepSize = expressionCalculator.calculateDouble(rangeBounds.getStepSize());
@@ -91,7 +101,6 @@ public class PowerUtil {
         }
         List<Double> values = stream.boxed()
             .collect(Collectors.toList());
-        return values.size();
+        return values;
     }
-
 }
