@@ -19,9 +19,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
-<<<<<<< HEAD
 import io.jenetics.IntegerGene;
-import io.jenetics.ext.moea.Vec;
 
 public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Double> {
 
