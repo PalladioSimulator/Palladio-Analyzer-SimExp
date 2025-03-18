@@ -57,18 +57,20 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         ////// to phenotype
-        OptimizableNormalizer normalizer = new OptimizableNormalizer(optimizableProvider.getExpressionCalculator());
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        OptimizableNormalizer normalizer = new OptimizableNormalizer(expressionCalculator);
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
         final Engine<BitGene, Vec<double[]>> engine;
         MOEAFitnessFunction fitnessFunction;
+        double epsilon = expressionCalculator.getEpsilon();
         if (config.penaltyForInvalids()
             .isPresent()) {
-            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer, config.penaltyForInvalids()
+            fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer, config.penaltyForInvalids()
                 .get());
         } else {
-            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+            fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer);
         }
 
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);
