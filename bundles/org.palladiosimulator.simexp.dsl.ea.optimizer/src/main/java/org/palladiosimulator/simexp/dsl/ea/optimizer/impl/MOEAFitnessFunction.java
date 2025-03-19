@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.PrecisionDoubleVec;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -31,17 +32,20 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
+    private final double epsilon;
 
     private double penaltyForInvalids = 0.0;
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableNormalizer optimizableNormalizer) {
+        this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer,
-            double penaltyForInvalids) {
-        this(fitnessEvaluator, optimizableNormalizer);
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableNormalizer optimizableNormalizer, double penaltyForInvalids) {
+        this(epsilon, fitnessEvaluator, optimizableNormalizer);
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
@@ -50,7 +54,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         for (SmodelBitChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return Vec.of(penaltyForInvalids);
+                return of(penaltyForInvalids);
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -60,11 +64,15 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Vec<doub
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return Vec.of(fitness);
+            return of(fitness);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return Vec.of(penaltyForInvalids);
+            return of(penaltyForInvalids);
         }
+    }
+
+    private Vec<double[]> of(final double... array) {
+        return new PrecisionDoubleVec(epsilon, array);
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {

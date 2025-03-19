@@ -106,11 +106,8 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         try {
             Map<String, Object> launchConfigurationParams = configuration.getAttributes();
 
-            if (LOGGER.isDebugEnabled()) {
-                for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
-                    LOGGER.debug(
-                            String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
-                }
+            for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
+                LOGGER.info(String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
             }
 
             String simulatorTypeStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATOR_TYPE);
