@@ -64,8 +64,9 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
             return round(fitness);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return round(penaltyForInvalids);
+            Double roundedPenalty = round(penaltyForInvalids);
+            LOGGER.error(String.format("%s -> return penalty fitness of " + roundedPenalty, e.getMessage()), e);
+            return roundedPenalty;
         }
     }
 
