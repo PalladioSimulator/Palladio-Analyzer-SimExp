@@ -36,8 +36,8 @@ import org.palladiosimulator.simexp.workflow.trafo.ITrafoNameProvider;
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
 
 public class SimExpConfigurationTab extends BaseLaunchConfigurationTab implements IModelledOptimizerProvider {
-    public static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
-    public static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
+    private static final String PLUGIN_ID = "org.palladiosimulator.analyzer.workflow";
+    private static final String CONFIGURATION_TAB_IMAGE_PATH = "icons/configuration_tab.gif";
 
     private final TransformationConfiguration transformationConfiguration;
     private final SimulatorConfiguration simulatorConfiguration;

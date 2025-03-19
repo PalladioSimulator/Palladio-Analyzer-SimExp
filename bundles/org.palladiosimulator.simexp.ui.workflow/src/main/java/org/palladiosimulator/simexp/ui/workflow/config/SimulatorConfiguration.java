@@ -67,9 +67,11 @@ public class SimulatorConfiguration {
     private WritableList<String> propertyFilesTarget;
 
     public void createControl(Composite parent, DataBindingContext ctx, ModifyListener modifyListener) {
-        Composite simulationParent = new Composite(parent, SWT.BORDER);
+        Composite simulationParent = new Composite(parent, SWT.NONE);
         simulationParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        simulationParent.setLayout(new GridLayout(2, false));
+        GridLayout containerLayout = new GridLayout(2, false);
+        containerLayout.marginWidth = 0;
+        simulationParent.setLayout(containerLayout);
 
         Composite simulationEngineContainer = new Composite(simulationParent, SWT.NONE);
         simulationEngineContainer.setLayoutData(new GridData(SWT.None, SWT.TOP, false, true));
