@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import static io.jenetics.engine.Limits.bySteadyFitness;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +39,7 @@ public class EAOptimizationRunner {
         EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
-            evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
-                .get()));
+            evolutionStream = evolutionStream.limit(Limits.byPopulationConvergence(0.0001));
         }
         if (config.maxGenerations()
             .isPresent()) {
