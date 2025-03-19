@@ -22,10 +22,12 @@ public interface SimulationConstants {
     static final String SIMULATION_ENGINE = "Simulation Engine";
     static final String QUALITY_OBJECTIVE = "Quality Objective";
     static final String TRANSFORMATIONS_ACTIVE = "TransformationsActive";
+    static final String REWARD_TYPE = "Reward Type";
 
     static final String MODELLED_OPTIMIZATION_TYPE = "ModelledOptimizationType";
 
     static final SimulatorType DEFAULT_SIMULATOR_TYPE = SimulatorType.MODELLED;
+    static final RewardType DEFAULT_REWARD_TYPE = RewardType.EXPECTED;
     static final SimulationEngine DEFAULT_SIMULATION_ENGINE = SimulationEngine.PCM;
     static final QualityObjective DEFAULT_QUALITY_OBJECTIVE = QualityObjective.PERFORMANCE;
 

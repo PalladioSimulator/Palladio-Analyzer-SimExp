@@ -2,6 +2,10 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -15,14 +19,15 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
 import io.jenetics.util.ISeq;
+import io.jenetics.util.RandomRegistry;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizationRunner {
 
-    private static final int DEFAULT_MAX_GENERATIONS = 100;
-    private static final int DEFAULT_STEADY_FITNESS_GENERATION_NUMBER = 7;
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     @SuppressWarnings("unchecked")
@@ -46,9 +51,21 @@ public class EAOptimizationRunner {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-        ISeq<Phenotype<BitGene, Double>> result = evolutionStream.peek(reporter)
-            .peek(paretoStatistics)
-            .collect(ParetoSetCollector.create());
+
+        Stream<EvolutionResult<BitGene, Double>> effectiveStream = evolutionStream.peek(reporter)
+            .peek(paretoStatistics);
+
+        final ISeq<Phenotype<BitGene, Double>> result;
+        Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> paretoCollector = ParetoSetCollector
+            .create();
+        Optional<ISeedProvider> seedProvider = config.getSeedProvider();
+        if (seedProvider.isEmpty()) {
+            result = effectiveStream.collect(paretoCollector);
+        } else {
+            long seed = seedProvider.get()
+                .getLong();
+            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
+        }
 
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);

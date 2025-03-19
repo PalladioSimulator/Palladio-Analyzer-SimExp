@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.PrecisionDoubleVec;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -20,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
+import io.jenetics.ext.moea.Vec;
 
 public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
 
@@ -30,17 +32,20 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
+    private final double epsilon;
 
     private double penaltyForInvalids = 0.0;
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer) {
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableNormalizer optimizableNormalizer) {
+        this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator, OptimizableNormalizer optimizableNormalizer,
-            double penaltyForInvalids) {
-        this(fitnessEvaluator, optimizableNormalizer);
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+            OptimizableNormalizer optimizableNormalizer, double penaltyForInvalids) {
+        this(epsilon, fitnessEvaluator, optimizableNormalizer);
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
@@ -64,6 +69,10 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
             LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
             return penaltyForInvalids;
         }
+    }
+
+    private Vec<double[]> of(final double... array) {
+        return new PrecisionDoubleVec(epsilon, array);
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {

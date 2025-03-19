@@ -92,7 +92,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(1);
@@ -107,7 +107,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(1);
@@ -122,7 +122,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
@@ -137,7 +137,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
@@ -154,7 +154,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(bitset, optimizable, 9, new BinaryBitInterpreter());
@@ -169,7 +169,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(10);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(4);
         bitset.set(0);
@@ -194,7 +194,7 @@ public class SmodelBitChromosomeTest {
         DoubleLiteral start = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral end = smodelCreator.createDoubleLiteral(1);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1);
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         optimizable = smodelCreator.createOptimizable("optimizable", DataType.DOUBLE, bounds);
         SmodelBitset bitset = new SmodelBitset(8);
         bitset.set(0);

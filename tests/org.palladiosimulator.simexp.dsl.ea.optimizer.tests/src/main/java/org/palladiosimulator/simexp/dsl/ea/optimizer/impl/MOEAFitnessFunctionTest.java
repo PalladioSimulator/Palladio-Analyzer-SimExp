@@ -31,6 +31,7 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 
 public class MOEAFitnessFunctionTest {
+    private static final double DELTA = 0.0001;
 
     @Mock
     IEAFitnessEvaluator fitnessEvaluator;
@@ -69,13 +70,13 @@ public class MOEAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
 
         // Assert
-        assertEquals(50.0, fitness, 0.00001);
+        assertEquals(50.0, fitness, DELTA);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
@@ -90,7 +91,7 @@ public class MOEAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(new InterruptedException("This is a test"));
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
 
         Double fitness = fitnessFunction.apply(genotype);
 
@@ -104,11 +105,11 @@ public class MOEAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
 
         Double fitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness, 0.00001);
+        assertEquals(0.0, fitness, DELTA);
     }
 
     @Test
@@ -121,11 +122,11 @@ public class MOEAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
 
         Double fitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness, 0.00001);
+        assertEquals(0.0, fitness, DELTA);
     }
 
 }

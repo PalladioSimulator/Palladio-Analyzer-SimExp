@@ -16,12 +16,17 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.util.SmodelDataTypeSwitch;
 
 public class ExpressionCalculator implements IExpressionCalculator {
-    private final ISmodelConfig smodelConfig;
+    private final double epsilon;
     private final IFieldValueProvider fieldValueProvider;
 
     public ExpressionCalculator(ISmodelConfig smodelConfig, IFieldValueProvider fieldValueProvider) {
-        this.smodelConfig = smodelConfig;
+        this.epsilon = smodelConfig.getEpsilon();
         this.fieldValueProvider = fieldValueProvider;
+    }
+
+    @Override
+    public double getEpsilon() {
+        return epsilon;
     }
 
     @Override
@@ -145,7 +150,6 @@ public class ExpressionCalculator implements IExpressionCalculator {
         if ((left instanceof Double) || (right instanceof Double)) {
             Number leftDouble = (Number) left;
             Number rightDouble = (Number) right;
-            double epsilon = smodelConfig.getEpsilon();
             return Precision.compareTo(leftDouble.doubleValue(), rightDouble.doubleValue(), epsilon) == 0;
         }
         return left.equals(right);
