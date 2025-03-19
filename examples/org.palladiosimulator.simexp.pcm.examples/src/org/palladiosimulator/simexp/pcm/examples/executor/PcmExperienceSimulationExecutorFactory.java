@@ -15,7 +15,11 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.staticmodel.GroundProbabilisticNetwork;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
+import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -24,6 +28,7 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
@@ -92,6 +97,19 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     protected SimulatedExperienceAccessor getAccessor() {
         return accessor;
+    }
+
+    protected TotalRewardCalculation createRewardCalculation(String policyId) {
+        RewardType rewardType = workflowConfiguration.getRewardType();
+        String simulationID = getSimulationParameters().getSimulationID();
+        switch (rewardType) {
+        case EXPECTED:
+            return new ExpectedRewardEvaluator(getAccessor());
+        case ACCUMULATED:
+            String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationID, policyId);
+            return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
+        }
+        throw new RuntimeException("unknown reward type: " + rewardType);
     }
 
     protected Optional<ISeedProvider> getSeedProvider() {

@@ -12,7 +12,9 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
@@ -131,9 +133,22 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
     }
+
+    @Override
+    protected TotalRewardCalculation createRewardCalculation(String policyId) {
+        RewardType rewardType = getWorkflowConfiguration().getRewardType();
+        switch (rewardType) {
+        case EXPECTED:
+            return new ExpectedRewardEvaluator(getAccessor());
+        case ACCUMULATED:
+            return PerformabilityEvaluator.of(getAccessor());
+        }
+        throw new RuntimeException("unknown reward type: " + rewardType);
+    }
+
 }

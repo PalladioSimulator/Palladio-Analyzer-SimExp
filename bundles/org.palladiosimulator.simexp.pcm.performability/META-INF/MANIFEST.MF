@@ -30,7 +30,8 @@ Require-Bundle: org.apache.log4j;bundle-version="1.2.19",
  org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
  org.palladiosimulator.simexp.dsl.smodel.api;bundle-version="0.1.0",
- org.palladiosimulator.simexp.service;bundle-version="1.0.0"
+ org.palladiosimulator.simexp.service;bundle-version="1.0.0",
+ org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.performability
 Bundle-ActivationPolicy: lazy
