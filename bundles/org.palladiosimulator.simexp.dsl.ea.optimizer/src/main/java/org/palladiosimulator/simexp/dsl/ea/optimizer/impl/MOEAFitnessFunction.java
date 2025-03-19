@@ -13,7 +13,6 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.PrecisionDoubleVec;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -21,7 +20,6 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
-import io.jenetics.ext.moea.Vec;
 
 public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
 
@@ -54,7 +52,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         for (SmodelBitChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return penaltyForInvalids;
+                return round(penaltyForInvalids);
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -64,15 +62,16 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return fitness;
+            return round(fitness);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return penaltyForInvalids;
+            return round(penaltyForInvalids);
         }
     }
 
-    private Vec<double[]> of(final double... array) {
-        return new PrecisionDoubleVec(epsilon, array);
+    private Double round(final Double number) {
+        double multiplicator = (long) (1.0 / epsilon);
+        return Math.round(number * multiplicator) / multiplicator;
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {

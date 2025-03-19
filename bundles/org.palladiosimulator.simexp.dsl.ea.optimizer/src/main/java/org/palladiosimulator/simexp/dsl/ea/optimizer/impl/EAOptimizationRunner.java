@@ -44,7 +44,7 @@ public class EAOptimizationRunner {
         EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
-            evolutionStream = evolutionStream.limit(Limits.byPopulationConvergence(0.0001));
+            evolutionStream = evolutionStream.limit(Limits.byPopulationConvergence(0.00001));
         }
         if (config.maxGenerations()
             .isPresent()) {
