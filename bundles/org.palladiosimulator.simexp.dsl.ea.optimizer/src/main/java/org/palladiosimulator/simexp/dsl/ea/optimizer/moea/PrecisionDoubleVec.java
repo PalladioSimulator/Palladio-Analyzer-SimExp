@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
 
 import static java.lang.String.format;
 
@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.math3.util.Precision;
 
 import io.jenetics.ext.moea.ElementComparator;
@@ -17,21 +19,24 @@ public class PrecisionDoubleVec implements Vec<double[]>, Serializable {
     private static final long serialVersionUID = 2L;
 
     private final double epsilon;
-    private final double[] _data;
+    private final double[] data;
 
     public PrecisionDoubleVec(double epsilon, double[] data) {
+        if (data.length <= 0) {
+            throw new IllegalArgumentException("Array length must greater zero.");
+        }
         this.epsilon = epsilon;
-        _data = data;
+        this.data = data;
     }
 
     @Override
     public double[] data() {
-        return _data;
+        return data;
     }
 
     @Override
     public int length() {
-        return _data.length;
+        return data.length;
     }
 
     @Override
@@ -63,7 +68,7 @@ public class PrecisionDoubleVec implements Vec<double[]>, Serializable {
         return Pareto.dominance(u, v, u.length, (a, b, i) -> compareDouble(a[i], b[i]));
     }
 
-    private int compareDouble(double a, double b) {
+    int compareDouble(double a, double b) {
         return Precision.compareTo(a, b, epsilon);
     }
 
@@ -75,17 +80,30 @@ public class PrecisionDoubleVec implements Vec<double[]>, Serializable {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(_data);
+        return new HashCodeBuilder(31, 17).append(epsilon)
+            .append(data)
+            .toHashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return obj == this
-                || obj instanceof PrecisionDoubleVec && Arrays.equals(((PrecisionDoubleVec) obj)._data, _data);
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        PrecisionDoubleVec rhs = (PrecisionDoubleVec) obj;
+        return new EqualsBuilder().append(epsilon, rhs.epsilon)
+            .append(data, rhs.data)
+            .isEquals();
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(_data);
+        return Arrays.toString(data);
     }
 }

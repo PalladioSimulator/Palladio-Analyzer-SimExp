@@ -5,14 +5,15 @@ Bundle-Name: org.palladiosimulator.simexp.dsl.ea.optimizer
 Bundle-Vendor: My Company
 Bundle-Version: 0.1.0.qualifier
 Export-Package: org.palladiosimulator.simexp.dsl.ea.optimizer
-Require-Bundle: org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
- org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0",
+Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.33.0",
  org.apache.log4j;bundle-version="1.2.19",
- org.palladiosimulator.simexp.dsl.smodel.interpreter,
+ org.apache.commons.lang3;bundle-version="3.1.0",
+ org.apache.commons.math3;bundle-version="3.6.1",
  io.jenetics;bundle-version="6.3.0",
- org.eclipse.emf.ecore;bundle-version="2.33.0",
- tools.mdsd.probdist.api;bundle-version="1.0.0",
- org.apache.commons.math3;bundle-version="3.6.1"
+ org.palladiosimulator.simexp.dsl.smodel;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0",
+ org.palladiosimulator.simexp.dsl.smodel.interpreter,
+ tools.mdsd.probdist.api;bundle-version="1.0.0"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.optimizer
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
