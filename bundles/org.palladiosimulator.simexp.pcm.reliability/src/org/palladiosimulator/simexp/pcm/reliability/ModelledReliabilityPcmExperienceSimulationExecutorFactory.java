@@ -16,7 +16,6 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -156,7 +155,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
                 getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);

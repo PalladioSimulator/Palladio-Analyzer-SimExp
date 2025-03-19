@@ -14,7 +14,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -173,9 +172,7 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 
-//        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
-//            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);
