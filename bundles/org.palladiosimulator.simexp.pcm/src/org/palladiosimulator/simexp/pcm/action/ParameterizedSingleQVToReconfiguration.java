@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.palladiosimulator.simulizar.reconfiguration.IReconfigurationEngine;
+import org.palladiosimulator.simulizar.core.reconfiguration.IReconfigurationEngine;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;

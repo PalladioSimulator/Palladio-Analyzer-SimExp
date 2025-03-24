@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
-import org.palladiosimulator.simulizar.reconfiguration.IReconfigurationEngine;
+import org.palladiosimulator.simulizar.core.reconfiguration.IReconfigurationEngine;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
