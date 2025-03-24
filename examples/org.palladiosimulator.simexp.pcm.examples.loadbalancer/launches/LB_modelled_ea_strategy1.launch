@@ -8,6 +8,7 @@
     <intAttribute key="NumberOfSimulationsPerRun" value="10"/>
     <intAttribute key="PopulationSize" value="10"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
+    <stringAttribute key="Reward Type" value="EXPECTED"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="LB_modelled_ea_strategy1-10_10_10_0.8_0.01_12max"/>
     <stringAttribute key="Simulator Type" value="MODELLED"/>
