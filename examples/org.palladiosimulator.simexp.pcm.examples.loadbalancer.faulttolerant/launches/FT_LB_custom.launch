@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
+    <stringAttribute key="ModelledOptimizationType" value="EVOLUTIONARY_ALGORITHM"/>
     <intAttribute key="NumberOfRuns" value="1"/>
     <intAttribute key="NumberOfSimulationsPerRun" value="20"/>
+    <intAttribute key="PopulationSize" value="1"/>
     <stringAttribute key="Quality Objective" value="PERFORMABILITY"/>
+    <stringAttribute key="Reward Type" value="ACCUMULATED"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="FT_LB_custom"/>
     <stringAttribute key="Simulator Type" value="CUSTOM"/>
