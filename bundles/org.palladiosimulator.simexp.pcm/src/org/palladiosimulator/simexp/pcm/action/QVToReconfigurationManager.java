@@ -14,8 +14,8 @@ import org.palladiosimulator.simexp.pcm.action.impl.QVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.impl.QvtoModelTransformationSearch;
 import org.palladiosimulator.simexp.pcm.config.ITransformationConfiguration;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simulizar.core.runconfig.SimuLizarWorkflowConfiguration;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
-import org.palladiosimulator.simulizar.runconfig.SimuLizarWorkflowConfiguration;
 import org.palladiosimulator.simulizar.utils.PCMPartitionManager;
 
 import com.google.common.collect.Lists;
