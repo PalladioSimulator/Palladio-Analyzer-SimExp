@@ -3,7 +3,9 @@
     <stringAttribute key="ModelledOptimizationType" value="SIMPLE"/>
     <intAttribute key="NumberOfRuns" value="1"/>
     <intAttribute key="NumberOfSimulationsPerRun" value="20"/>
+    <intAttribute key="PopulationSize" value="0"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
+    <stringAttribute key="Reward Type" value="EXPECTED"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
     <stringAttribute key="SimulationID" value="LB_modelled"/>
     <stringAttribute key="Simulator Type" value="MODELLED"/>

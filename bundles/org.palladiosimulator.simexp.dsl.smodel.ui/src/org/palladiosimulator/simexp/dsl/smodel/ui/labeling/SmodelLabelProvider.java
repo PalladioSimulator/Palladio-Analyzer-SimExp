@@ -30,6 +30,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Probe;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.ProbeAdressingKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StartKind;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.StopKind;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.StringLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Variable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
@@ -131,7 +133,12 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
 
     public String text(RangeBounds bounds) {
         StringBuilder sb = new StringBuilder();
-        sb.append("[start=");
+        if (bounds.getStart() == StartKind.CLOSED) {
+            sb.append("[");
+        } else {
+            sb.append("(");
+        }
+        sb.append("start=");
         Expression startValue = bounds.getStartValue();
         if (startValue != null) {
             sb.append(getText(startValue));
@@ -146,7 +153,11 @@ public class SmodelLabelProvider extends DefaultEObjectLabelProvider {
         if (stepSize != null) {
             sb.append(getText(stepSize));
         }
-        sb.append("]");
+        if (bounds.getStop() == StopKind.CLOSED) {
+            sb.append("]");
+        } else {
+            sb.append(")");
+        }
         return sb.toString();
     }
 

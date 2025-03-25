@@ -8,6 +8,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.core.configurations.AbstractPCMWorkflowRunConfiguration;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
@@ -31,6 +32,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final ModelledOptimizationType modelledOptimizationType;
     private final SimulatorType simulatorType;
     private final SimulationEngine simulationEngine;
+    private final RewardType rewardType;
     private final Set<String> transformationNames;
     private final QualityObjective qualityObjective;
     private final URI experimentsFile;
@@ -45,7 +47,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
-            Set<String> transformationNames, QualityObjective qualityObjective,
+            RewardType rewardType, Set<String> transformationNames, QualityObjective qualityObjective,
             ArchitecturalModelsWorkflowConfiguration architecturalModels,
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
@@ -61,6 +63,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
          */
         this.simulatorType = simulatorType;
         this.simulationEngine = simulationEngine;
+        this.rewardType = rewardType;
         this.transformationNames = transformationNames;
         this.qualityObjective = qualityObjective;
         this.setUsageModelFile(architecturalModels.getUsageModelFile());
@@ -117,6 +120,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public SimulationEngine getSimulationEngine() {
         return simulationEngine;
+    }
+
+    @Override
+    public RewardType getRewardType() {
+        return rewardType;
     }
 
     @Override

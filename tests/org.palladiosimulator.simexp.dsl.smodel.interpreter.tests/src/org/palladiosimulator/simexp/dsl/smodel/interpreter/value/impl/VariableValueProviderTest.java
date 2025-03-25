@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.IFieldValueProvider;
@@ -37,7 +38,8 @@ public class VariableValueProviderTest {
 
     private SmodelCreator smodelCreator;
 
-    public VariableValueProviderTest() {
+    @Before
+    public void setUp() {
         initMocks(this);
         when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
         smodelCreator = new SmodelCreator();

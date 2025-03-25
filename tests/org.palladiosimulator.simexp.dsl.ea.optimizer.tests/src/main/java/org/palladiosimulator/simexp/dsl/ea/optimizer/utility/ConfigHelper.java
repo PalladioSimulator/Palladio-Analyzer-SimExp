@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 
+import tools.mdsd.probdist.api.random.ISeedProvider;
+
 public class ConfigHelper implements IEAConfig {
 
     private int populationSize = 80;
@@ -54,6 +56,11 @@ public class ConfigHelper implements IEAConfig {
 
     @Override
     public Optional<Double> penaltyForInvalids() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<ISeedProvider> getSeedProvider() {
         return Optional.empty();
     }
 

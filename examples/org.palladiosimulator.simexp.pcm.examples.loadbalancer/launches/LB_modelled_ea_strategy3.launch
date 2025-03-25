@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
-    <stringAttribute key="ModelledOptimizationType" value="SIMPLE"/>
-    <intAttribute key="NumberOfRuns" value="1"/>
-    <intAttribute key="NumberOfSimulationsPerRun" value="2"/>
-    <intAttribute key="PopulationSize" value="0"/>
+    <stringAttribute key="CrossoverRate" value="0.800000"/>
+    <intAttribute key="MaxGenerations" value="12"/>
+    <stringAttribute key="ModelledOptimizationType" value="EVOLUTIONARY_ALGORITHM"/>
+    <stringAttribute key="MutationRate" value="0.010000"/>
+    <intAttribute key="NumberOfRuns" value="10"/>
+    <intAttribute key="NumberOfSimulationsPerRun" value="10"/>
+    <intAttribute key="PopulationSize" value="10"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
     <stringAttribute key="Reward Type" value="EXPECTED"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
-    <stringAttribute key="SimulationID" value="LB_custom"/>
-    <stringAttribute key="Simulator Type" value="CUSTOM"/>
-    <setAttribute key="TransformationsActive"/>
+    <stringAttribute key="SimulationID" value="LB_modelled_ea_strategy3-10_10_10_0.8_0.01_12max"/>
+    <stringAttribute key="Simulator Type" value="MODELLED"/>
+    <setAttribute key="TransformationsActive">
+        <setEntry value="EA_Step1Outsource"/>
+        <setEntry value="EA_Step1ScaleIn"/>
+    </setAttribute>
     <stringAttribute key="allocationFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/loadbalancer_on_iaas.allocation"/>
     <stringAttribute key="dynamicModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerEnvironmentalDynamics.dynamicmodel"/>
     <stringAttribute key="experimentsFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/experiments/simexp.experiments"/>
@@ -18,7 +24,7 @@
         <listEntry value="System Response Time"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
-    <stringAttribute key="smodelFile" value=""/>
+    <stringAttribute key="smodelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/strategies/ea/NStepLoadBalancerStrategy_3.smodel"/>
     <stringAttribute key="staticModelFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/environment/LoadBalancerNonTemporalEnvironment.staticmodel"/>
     <stringAttribute key="usageFile" value="platform:/resource/org.palladiosimulator.simexp.pcm.examples.loadbalancer/overload.usagemodel"/>
 </launchConfiguration>

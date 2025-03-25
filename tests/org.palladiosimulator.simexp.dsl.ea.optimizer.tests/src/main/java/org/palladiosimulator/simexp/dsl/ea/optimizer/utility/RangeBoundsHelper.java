@@ -16,7 +16,7 @@ public class RangeBoundsHelper {
         DoubleLiteral upperBoundLiteral = smodelCreator.createDoubleLiteral(upperBound);
         DoubleLiteral stepSizeLiteral = smodelCreator.createDoubleLiteral(stepSize);
 
-        RangeBounds rangeBound = smodelCreator.createRangeBounds(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsClosedOpen(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
 
         when(calculator.calculateDouble(lowerBoundLiteral)).thenReturn(lowerBound);
         when(calculator.calculateDouble(upperBoundLiteral)).thenReturn(upperBound);
@@ -30,7 +30,7 @@ public class RangeBoundsHelper {
         IntLiteral upperBoundLiteral = smodelCreator.createIntLiteral(upperBound);
         IntLiteral stepSizeLiteral = smodelCreator.createIntLiteral(stepSize);
 
-        RangeBounds rangeBound = smodelCreator.createRangeBounds(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
+        RangeBounds rangeBound = smodelCreator.createRangeBoundsClosedOpen(lowerBoundLiteral, upperBoundLiteral, stepSizeLiteral);
 
         when(calculator.calculateInteger(lowerBoundLiteral)).thenReturn(lowerBound);
         when(calculator.calculateInteger(upperBoundLiteral)).thenReturn(upperBound);

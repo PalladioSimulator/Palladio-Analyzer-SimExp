@@ -15,7 +15,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
@@ -163,9 +162,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 
-//        TotalRewardCalculation rewardCalculation = SimulatedExperienceEvaluator
-//            .of(getSimulationParameters().getSimulationID(), sampleSpaceId);
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
         return executor;

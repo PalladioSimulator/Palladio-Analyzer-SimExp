@@ -18,7 +18,7 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
 
     public OptimizableSimExpWorkflowConfiguration(SimExpWorkflowConfiguration configuration,
             List<OptimizableValue<?>> optimizableValues) {
-        super(configuration.getSimulatorType(), configuration.getSimulationEngine(),
+        super(configuration.getSimulatorType(), configuration.getSimulationEngine(), configuration.getRewardType(),
                 configuration.getTransformationNames(), configuration.getQualityObjective(),
                 new ArchitecturalModelsWorkflowConfiguration(configuration.getAllocationFiles(),
                         configuration.getUsageModelFile(), configuration.getExperimentsURI()

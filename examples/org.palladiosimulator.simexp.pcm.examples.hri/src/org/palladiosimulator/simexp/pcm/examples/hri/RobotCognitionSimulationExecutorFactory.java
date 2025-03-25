@@ -15,7 +15,6 @@ import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.pcm.usagemodel.UsageScenario;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
@@ -128,7 +127,7 @@ public class RobotCognitionSimulationExecutorFactory
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        TotalRewardCalculation rewardCalculation = new ExpectedRewardEvaluator(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, experimentProvider);

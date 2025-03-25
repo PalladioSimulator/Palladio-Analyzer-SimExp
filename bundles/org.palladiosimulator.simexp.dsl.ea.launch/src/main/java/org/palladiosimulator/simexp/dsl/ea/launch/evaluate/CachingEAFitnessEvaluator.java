@@ -1,16 +1,15 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.evaluate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
@@ -26,23 +25,15 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     @Override
     public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) {
         Future<Optional<Double>> future = cache.get(optimizableValues);
+        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         if (future == null) {
-            LOGGER.info(String.format("cache miss: %s", asString(optimizableValues)));
+            LOGGER.info(String.format("cache miss: %s", optimizableValueToString.asString(optimizableValues)));
             future = delegate.calcFitness(optimizableValues);
             cache.put(optimizableValues, future);
         } else {
-            LOGGER.info(String.format("cache hit: %s", asString(optimizableValues)));
+            LOGGER.info(String.format("cache hit: %s", optimizableValueToString.asString(optimizableValues)));
         }
         return future;
-    }
-
-    private String asString(List<OptimizableValue<?>> optimizableValues) {
-        List<String> entries = new ArrayList<>();
-        for (OptimizableValue<?> ov : optimizableValues) {
-            entries.add(String.format("%s: %s", ov.getOptimizable()
-                .getName(), ov.getValue()));
-        }
-        return StringUtils.join(entries, ",");
     }
 
     private class EvaluatorClientDelegate implements EvaluatorClient {

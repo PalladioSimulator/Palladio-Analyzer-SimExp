@@ -2,6 +2,10 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -15,17 +19,18 @@ import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
 import io.jenetics.ext.moea.MOEA;
 import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.IntRange;
+import io.jenetics.util.RandomRegistry;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizationRunner {
 
-    private static final int DEFAULT_MAX_GENERATIONS = 100;
-    private static final int DEFAULT_STEADY_FITNESS_GENERATION_NUMBER = 7;
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
     @SuppressWarnings("unchecked")
@@ -40,11 +45,24 @@ public class EAOptimizationRunner {
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
         EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
+
         evolutionStream = addPrimaryTerminationCondition(config, evolutionStream);
         evolutionStream = addMaxGenerations(config, evolutionStream);
-        ISeq<Phenotype<BitGene, Vec<double[]>>> result = evolutionStream.peek(reporter)
-            .peek(paretoStatistics)
-            .collect(MOEA.toParetoSet(IntRange.of(1, 10)));
+
+        Stream<EvolutionResult<BitGene, Vec<double[]>>> effectiveStream = evolutionStream.peek(reporter)
+            .peek(paretoStatistics);
+
+        final ISeq<Phenotype<BitGene, Vec<double[]>>> result;
+        Collector<EvolutionResult<BitGene, Vec<double[]>>, ?, ISeq<Phenotype<BitGene, Vec<double[]>>>> paretoCollector = MOEA
+            .toParetoSet(IntRange.of(1, 10));
+        Optional<ISeedProvider> seedProvider = config.getSeedProvider();
+        if (seedProvider.isEmpty()) {
+            result = effectiveStream.collect(paretoCollector);
+        } else {
+            long seed = seedProvider.get()
+                .getLong();
+            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
+        }
 
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);
