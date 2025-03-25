@@ -20,14 +20,13 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Engine;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
 
 public class OptimizationEngineBuilderTest {
 
     private Genotype<BitGene> genotype;
 
-    private Phenotype<BitGene, Vec<double[]>> phenotype;
+    private Phenotype<BitGene, Double> phenotype;
 
     @Mock
     private MOEAFitnessFunction fitnessFunction;
@@ -48,12 +47,11 @@ public class OptimizationEngineBuilderTest {
         int populationSize = 500;
         IEAConfig config = new ConfigHelper(populationSize, 0.2, 0.5, 7, 50);
         EAOptimizationEngineBuilder optimizationEngineBuilder = new EAOptimizationEngineBuilder(config);
-        ISeq<Phenotype<BitGene, Vec<double[]>>> phenoSeq = ISeq.of(phenotype);
-        double[] returnArray = { 0.0 };
-        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(Vec.of(returnArray));
+        ISeq<Phenotype<BitGene, Double>> phenoSeq = ISeq.of(phenotype);
+        when(fitnessFunction.apply(ArgumentMatchers.any())).thenReturn(0.0);
 
         // Act
-        Engine<BitGene, Vec<double[]>> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
+        Engine<BitGene, Double> engine = optimizationEngineBuilder.buildEngine(fitnessFunction, genotype,
                 Runnable::run);
 
         // Assert

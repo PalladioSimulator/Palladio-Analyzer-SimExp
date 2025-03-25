@@ -1,7 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import static io.jenetics.engine.Limits.bySteadyFitness;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,10 +22,7 @@ import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
-import io.jenetics.ext.moea.MOEA;
-import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
-import io.jenetics.util.IntRange;
 import io.jenetics.util.RandomRegistry;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -37,8 +32,8 @@ public class EAOptimizationRunner {
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
-            final Engine<BitGene, Vec<double[]>> engine, IEAConfig config) {
+            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction, final Engine<BitGene, Double> engine,
+            IEAConfig config) {
         Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
@@ -46,23 +41,15 @@ public class EAOptimizationRunner {
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 
-        EvolutionStream<BitGene, Vec<double[]>> evolutionStream = engine.stream();
-        if (config.steadyFitness()
-            .isPresent()) {
-            evolutionStream = evolutionStream.limit(bySteadyFitness(config.steadyFitness()
-                .get()));
-        }
-        if (config.maxGenerations()
-            .isPresent()) {
-            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
-                .get()));
-        }
-        Stream<EvolutionResult<BitGene, Vec<double[]>>> effectiveStream = evolutionStream.peek(reporter)
+        EvolutionStream<BitGene, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
+        evolutionStream = addDirectTerminationCriterion(config, evolutionStream);
+
+        Stream<EvolutionResult<BitGene, Double>> effectiveStream = evolutionStream.peek(reporter)
             .peek(paretoStatistics);
 
-        final ISeq<Phenotype<BitGene, Vec<double[]>>> result;
-        Collector<EvolutionResult<BitGene, Vec<double[]>>, ?, ISeq<Phenotype<BitGene, Vec<double[]>>>> paretoCollector = MOEA
-            .toParetoSet(IntRange.of(1, 10));
+        final ISeq<Phenotype<BitGene, Double>> result;
+        Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> paretoCollector = ParetoSetCollector
+            .create();
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
             result = effectiveStream.collect(paretoCollector);
@@ -80,14 +67,13 @@ public class EAOptimizationRunner {
         double bestFitness = result.stream()
             .findFirst()
             .get()
-            .fitness()
-            .data()[0];
+            .fitness();
 
-        Phenotype<BitGene, Vec<double[]>>[] phenotypes = result.stream()
+        Phenotype<BitGene, Double>[] phenotypes = result.stream()
             .toArray(Phenotype[]::new);
 
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<BitGene, Vec<double[]>> currentPheno : phenotypes) {
+        for (Phenotype<BitGene, Double> currentPheno : phenotypes) {
             List<SmodelBitChromosome> chromosomes = new ArrayList<>();
             for (int i = 0; i < currentPheno.genotype()
                 .length(); i++) {
@@ -100,6 +86,27 @@ public class EAOptimizationRunner {
         }
 
         return new EAResult(bestFitness, paretoFront);
+    }
+
+    private EvolutionStream<BitGene, Double> addDirectTerminationCriterion(IEAConfig config,
+            EvolutionStream<BitGene, Double> evolutionStream) {
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        return evolutionStream;
+    }
+
+    private EvolutionStream<BitGene, Double> addDerivedTerminationCriterion(final Engine<BitGene, Double> engine,
+            IEAConfig config) {
+        EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        return evolutionStream;
     }
 
 }

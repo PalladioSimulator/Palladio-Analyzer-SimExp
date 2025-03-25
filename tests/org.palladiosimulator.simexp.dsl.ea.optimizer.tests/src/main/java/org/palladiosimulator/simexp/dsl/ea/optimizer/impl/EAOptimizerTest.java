@@ -214,6 +214,34 @@ public class EAOptimizerTest {
     }
 
     @Test
+    public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
+        RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.15,
+                10.0, 0.5);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+        when(fitnessEvaluator.calcFitness(any(List.class))).thenAnswer(new Answer<Future<Optional<Double>>>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+
+        });
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        assertEquals(9.65, result.getFitness(), 0.00001);
+        OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
+            .get(0)
+            .get(0);
+        assertEquals(optimizable, optimizableValue.getOptimizable());
+        assertEquals(9.65, optimizableValue.getValue());
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+    }
+
+    @Test
     public void simpleDoubleOptimizableSetTest() {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 9.0, 9.0), calculator);
@@ -935,7 +963,7 @@ public class EAOptimizerTest {
         LOGGER.info("Maximum Fitness: " + maximumFitness);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(941.171864, result.getFitness(), 0.00001);
+        assertEquals(941.1719, result.getFitness(), 0.00001);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(21)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
