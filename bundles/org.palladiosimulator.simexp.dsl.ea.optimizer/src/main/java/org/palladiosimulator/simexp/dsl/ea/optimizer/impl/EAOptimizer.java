@@ -53,22 +53,24 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("EA running...");
 
         int overallPower = calculateComplexity(optimizableProvider);
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         ////// to phenotype
-        OptimizableIntegerChromoNormalizer normalizer = new OptimizableIntegerChromoNormalizer(
-                optimizableProvider.getExpressionCalculator());
+        OptimizableIntegerChromoNormalizer normalizer = new OptimizableIntegerChromoNormalizer(expressionCalculator);
         Genotype<IntegerGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
         final Engine<IntegerGene, Double> engine;
         MOEAFitnessFunction fitnessFunction;
+
+        double epsilon = expressionCalculator.getEpsilon();
         if (config.penaltyForInvalids()
             .isPresent()) {
-            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer, config.penaltyForInvalids()
+            fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer, config.penaltyForInvalids()
                 .get());
         } else {
-            fitnessFunction = new MOEAFitnessFunction(fitnessEvaluator, normalizer);
+            fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer);
         }
 
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);

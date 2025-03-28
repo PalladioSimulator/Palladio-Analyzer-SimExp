@@ -32,6 +32,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelFileTypeConstants;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.QualityObjective;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
@@ -106,17 +107,16 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         try {
             Map<String, Object> launchConfigurationParams = configuration.getAttributes();
 
-            if (LOGGER.isDebugEnabled()) {
-                for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
-                    LOGGER.debug(
-                            String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
-                }
+            for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
+                LOGGER.info(String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
             }
 
             String simulatorTypeStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATOR_TYPE);
             SimulatorType simulatorType = SimulatorType.valueOf(simulatorTypeStr);
             String simulationEngineStr = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ENGINE);
             SimulationEngine simulationEngine = SimulationEngine.valueOf(simulationEngineStr);
+            String rewardTypeStr = (String) launchConfigurationParams.get(SimulationConstants.REWARD_TYPE);
+            RewardType rewardType = RewardType.valueOf(rewardTypeStr);
             Set<String> transformationNames = configuration.getAttribute(SimulationConstants.TRANSFORMATIONS_ACTIVE,
                     Collections.emptySet());
             String modelledOptimizationTypeStr = (String) launchConfigurationParams
@@ -187,7 +187,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
                     maxGenerations, steadyFitness, mutationRate, crossoverRate);
 
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
-            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine,
+            workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, rewardType,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
                     prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig);
         } catch (CoreException e) {

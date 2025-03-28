@@ -70,7 +70,7 @@ public class SimpleOptimizedConfigurationTest {
 
     @Test
     public void testGetOptimizableValueRangeInt() {
-        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createIntLiteral(1),
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createIntLiteral(1),
                 smodelCreator.createIntLiteral(2), smodelCreator.createIntLiteral(1));
         Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.INT, bounds);
 
@@ -81,7 +81,7 @@ public class SimpleOptimizedConfigurationTest {
 
     @Test
     public void testGetOptimizableValueRangeDouble() {
-        RangeBounds bounds = smodelCreator.createRangeBounds(smodelCreator.createDoubleLiteral(1.0),
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createDoubleLiteral(1.0),
                 smodelCreator.createDoubleLiteral(2.0), smodelCreator.createDoubleLiteral(1.0));
         Optimizable optimizable = smodelCreator.createOptimizable("opt", DataType.DOUBLE, bounds);
 

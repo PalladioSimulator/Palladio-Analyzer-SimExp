@@ -11,7 +11,9 @@ import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
@@ -130,11 +132,23 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
-        TotalRewardCalculation rewardCalculation = PerformabilityEvaluator.of(getAccessor());
+        TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
         return executor;
+    }
+
+    @Override
+    protected TotalRewardCalculation createRewardCalculation(String policyId) {
+        RewardType rewardType = getWorkflowConfiguration().getRewardType();
+        switch (rewardType) {
+        case EXPECTED:
+            return new ExpectedRewardEvaluator(getAccessor());
+        case ACCUMULATED:
+            return PerformabilityEvaluator.of(getAccessor());
+        }
+        throw new RuntimeException("unknown reward type: " + rewardType);
     }
 
 }

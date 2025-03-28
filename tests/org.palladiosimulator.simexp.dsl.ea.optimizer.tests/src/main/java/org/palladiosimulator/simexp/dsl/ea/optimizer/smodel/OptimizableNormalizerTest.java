@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import io.jenetics.util.RandomRegistry;
 
 public class OptimizableNormalizerTest {
+    private static final double DOUBLE_EPSILON = 1e-15;
 
     private final List<Integer> smallIntList = List.of(1, 3, 7, 3, 8, 2, 9);
 
@@ -57,6 +58,7 @@ public class OptimizableNormalizerTest {
     @Before
     public void setUp() {
         initMocks(this);
+        when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
         optimizableNormalizer = new OptimizableNormalizer(calculator);
         setBoundsHelper = new SetBoundsHelper();
         smodelCreator = new SmodelCreator();
@@ -160,7 +162,7 @@ public class OptimizableNormalizerTest {
         when(calculator.calculateInteger(start)).thenReturn(start.getValue());
         when(calculator.calculateInteger(end)).thenReturn(end.getValue());
         when(calculator.calculateInteger(step)).thenReturn(step.getValue());
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsClosedOpen(start, end, step);
         Optimizable optimizable = smodelCreator.createOptimizable("intRangeOptimizable", DataType.INT, bounds);
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);
@@ -176,7 +178,7 @@ public class OptimizableNormalizerTest {
         when(calculator.calculateDouble(start)).thenReturn(start.getValue());
         when(calculator.calculateDouble(end)).thenReturn(end.getValue());
         when(calculator.calculateDouble(step)).thenReturn(step.getValue());
-        RangeBounds bounds = smodelCreator.createRangeBounds(start, end, step);
+        RangeBounds bounds = smodelCreator.createRangeBoundsOpenClosed(start, end, step);
         Optimizable optimizable = smodelCreator.createOptimizable("doubleRangeOptimizable", DataType.DOUBLE, bounds);
 
         SmodelBitChromosome actualChromosome = optimizableNormalizer.toNormalized(optimizable);

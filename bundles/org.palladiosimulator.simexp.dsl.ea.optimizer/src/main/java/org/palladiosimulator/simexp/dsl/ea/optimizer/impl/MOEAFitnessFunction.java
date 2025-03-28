@@ -29,19 +29,22 @@ public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Doub
         .synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
+
     private final OptimizableIntegerChromoNormalizer optimizableNormalizer;
+    private final double epsilon;
 
     private double penaltyForInvalids = 0.0;
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator,
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
             OptimizableIntegerChromoNormalizer optimizableNormalizer) {
+        this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
-    public MOEAFitnessFunction(IEAFitnessEvaluator fitnessEvaluator,
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
             OptimizableIntegerChromoNormalizer optimizableNormalizer, double penaltyForInvalids) {
-        this(fitnessEvaluator, optimizableNormalizer);
+        this(epsilon, fitnessEvaluator, optimizableNormalizer);
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
@@ -50,7 +53,7 @@ public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Doub
         List<SmodelIntegerChromosome> chromosomes = extracted(genotype);
         for (SmodelIntegerChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
-                return penaltyForInvalids;
+                return round(penaltyForInvalids);
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
@@ -60,11 +63,17 @@ public class MOEAFitnessFunction implements Function<Genotype<IntegerGene>, Doub
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return fitness;
+            return round(fitness);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(String.format("%s -> return penalty fitness of " + penaltyForInvalids, e.getMessage()), e);
-            return penaltyForInvalids;
+            Double roundedPenalty = round(penaltyForInvalids);
+            LOGGER.error(String.format("%s -> return penalty fitness of " + roundedPenalty, e.getMessage()), e);
+            return roundedPenalty;
         }
+    }
+
+    private Double round(final Double number) {
+        double multiplicator = (long) (1.0 / epsilon);
+        return Math.round(number * multiplicator) / multiplicator;
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {
