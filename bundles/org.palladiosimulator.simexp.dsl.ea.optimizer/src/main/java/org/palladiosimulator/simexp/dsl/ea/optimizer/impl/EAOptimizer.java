@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Crossover;
+import io.jenetics.EliteSelector;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -111,7 +112,8 @@ public class EAOptimizer implements IEAOptimizer {
         Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
-            .survivorsSelector(new TournamentSelector<>(config.survivorTournamentSize()))
+            .survivorsSelector(
+                    new EliteSelector<BitGene, Double>(new TournamentSelector<>(config.survivorTournamentSize())))
             .offspringSelector(new TournamentSelector<>(config.offspringTournamentSize()));
 
         builder = addAlterers(builder);
