@@ -1,0 +1,23 @@
+﻿CoordMode("Mouse", "Window")
+WinActivate("runtime-SimExp-ma_bruening-ea")
+
+Sleep(50)
+MouseMove(1021,433)
+Sleep(50)
+Click()
+Sleep(10)
+Send("{f5}")
+
+ToolTip("Clicking here")
+Sleep(50)
+MouseMove(150, 67)
+Sleep(50)
+Click()
+Sleep(500)
+ToolTip()
+
+; MouseMove(411,421)
+MouseMove(490, 430)
+Sleep(50)
+Click()
+Sleep(1000)
