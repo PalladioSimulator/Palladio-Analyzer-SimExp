@@ -16,6 +16,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
+import io.jenetics.EliteSelector;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
@@ -58,7 +59,7 @@ public class OptimizationEngineBuilderTest {
         engine.eval(phenoSeq);
         verify(fitnessFunction).apply(genotype);
         assertEquals(populationSize, engine.populationSize());
-        assertEquals(TournamentSelector.class, engine.survivorsSelector()
+        assertEquals(EliteSelector.class, engine.survivorsSelector()
             .getClass());
         assertEquals(TournamentSelector.class, engine.offspringSelector()
             .getClass());
