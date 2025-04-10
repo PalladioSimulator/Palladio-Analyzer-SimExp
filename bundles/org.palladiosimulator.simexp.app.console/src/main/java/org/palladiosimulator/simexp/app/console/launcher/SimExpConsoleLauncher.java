@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.palladiosimulator.simexp.app.console.workflow.ConsoleWorkflow;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimExpLauncher;
 
@@ -24,7 +25,7 @@ public class SimExpConsoleLauncher extends SimExpLauncher {
         IJob workflowJob = createWorkflowJob(workflowConfiguration, launch);
         WorkflowExceptionHandler exceptionHandler = createExceptionHandler(workflowConfiguration.isInteractive());
         MDSDBlackboard blackboard = createBlackboard();
-        return new BlackboardBasedWorkflow<>(workflowJob, monitor, exceptionHandler, blackboard);
+        return new ConsoleWorkflow(workflowJob, monitor, exceptionHandler, blackboard);
     }
 
     @Override
