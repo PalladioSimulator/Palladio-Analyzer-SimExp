@@ -35,6 +35,7 @@ Require-Bundle: org.eclipse.debug.core;bundle-version="3.20.0",
  de.uka.ipd.sdq.workflow.logging.console;bundle-version="5.2.1",
  de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.1"
 Export-Package: org.palladiosimulator.simexp.workflow.api,
+ org.palladiosimulator.simexp.workflow.api.job,
  org.palladiosimulator.simexp.workflow.config,
  org.palladiosimulator.simexp.workflow.launcher,
  org.palladiosimulator.simexp.workflow.trafo
