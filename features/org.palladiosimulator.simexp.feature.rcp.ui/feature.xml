@@ -287,13 +287,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.emf.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.bidi"
          download-size="0"
          install-size="0"
@@ -846,28 +839,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.sirius"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.sirius.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.sirius.common.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.sirius.ext.base"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -881,21 +853,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.sirius.ext.emf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.sirius.ext.emf.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.sirius.ext.emf.tx"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -917,13 +875,6 @@
 
    <plugin
          id="org.eclipse.sirius.ext.swt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.sirius.model"
          download-size="0"
          install-size="0"
          version="0.0.0"
