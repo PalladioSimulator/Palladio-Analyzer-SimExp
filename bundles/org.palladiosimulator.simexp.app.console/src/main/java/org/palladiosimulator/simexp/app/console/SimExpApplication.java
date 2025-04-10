@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.log4j.BasicConfigurator;
@@ -28,7 +27,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -112,15 +110,10 @@ public class SimExpApplication implements IApplication {
                     arguments.getProjectName()));
         }
 
-        ILaunchConfigurationWorkingCopy launchConfigWorkingCopy = launchConfiguration.getWorkingCopy();
-        Map<String, ? extends Object> launchAttributes = launchConfiguration.getAttributes();
-        launchConfigWorkingCopy.setAttributes(launchAttributes); // launchAttributes is a
-                                                                 // Map<String,String>
-        ILaunchConfiguration newLaunchConfig = launchConfigWorkingCopy.doSave();
         String launchMode = ILaunchManager.RUN_MODE;
-        logger.info(String.format("launching experiment: %s", launchConfigWorkingCopy.getName()));
-        newLaunchConfig.launch(launchMode, new NullProgressMonitor(), false, false);
-        logger.info(String.format("experiment finished: %s", launchConfigWorkingCopy.getName()));
+        logger.info(String.format("launching experiment: %s", launchConfiguration.getName()));
+        launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
+        logger.info(String.format("experiment finished: %s", launchConfiguration.getName()));
     }
 
     private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)
