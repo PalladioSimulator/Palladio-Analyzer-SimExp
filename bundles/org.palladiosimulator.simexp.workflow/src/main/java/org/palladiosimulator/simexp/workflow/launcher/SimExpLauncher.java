@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.workflow.launcher;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -210,15 +210,32 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
 
     @Override
     protected List<LoggerAppenderStruct> configureLogging(ILaunchConfiguration configuration) throws CoreException {
-        Path simulationLogFolder = getSimulationLogFolder();
+        // Level logLevel = getLogLevel(configuration);
 
+        final Appender customAppender;
         try {
-            Files.createDirectories(simulationLogFolder);
-        } catch (IOException e) {
+            customAppender = createAppender(configuration);
+        } catch (Exception e) {
             IStatus status = new Status(IStatus.ERROR, "org.palladiosimulator.simexp.workflow", 0, e.getMessage(), e);
             throw new CoreException(status);
         }
 
+        Level logLevel = Level.INFO;
+        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
+        for (LoggerAppenderStruct entry : appenders) {
+            Logger entryLogger = entry.getLogger();
+            entryLogger.addAppender(customAppender);
+            StreamsProxyAppender appender = entry.getAppender();
+            appender.setThreshold(Level.INFO);
+        }
+        return appenders;
+    }
+
+    protected Appender createAppender(ILaunchConfiguration configuration) throws Exception {
+        FileAppender fa = new FileAppender();
+        fa.setName("SimulationLogger");
+        Path simulationLogFolder = getSimulationLogFolder();
+        Files.createDirectories(simulationLogFolder);
         Map<String, Object> launchConfigurationParams = configuration.getAttributes();
         String simulationId = (String) launchConfigurationParams.get(SimulationConstants.SIMULATION_ID);
 
@@ -227,23 +244,11 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         String currentDateTime = dateFormat.format(currentDate);
         String simulationFileName = String.format("%s_%s.log", simulationId, currentDateTime);
         Path simulationLogFile = simulationLogFolder.resolve(simulationFileName);
-
-        FileAppender fa = new FileAppender();
-        fa.setName("SimulationLogger");
         fa.setFile(simulationLogFile.toString());
         fa.setLayout(new PatternLayout("%d %-5p [%-10t] [%F:%L]: %m%n"));
         fa.setThreshold(Level.DEBUG);
         fa.activateOptions();
-        // Level logLevel = getLogLevel(configuration);
-        Level logLevel = Level.INFO;
-        List<LoggerAppenderStruct> appenders = setupLogging(logLevel);
-        for (LoggerAppenderStruct entry : appenders) {
-            Logger entryLogger = entry.getLogger();
-            entryLogger.addAppender(fa);
-            StreamsProxyAppender appender = entry.getAppender();
-            appender.setThreshold(Level.INFO);
-        }
-        return appenders;
+        return fa;
     }
 
     private Path getSimulationLogFolder() {
