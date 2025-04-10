@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
@@ -69,6 +68,9 @@ public class SimExpApplication implements IApplication {
             ie.value = 1;
             inValues.intValues.add(ie);
 
+            OptimizableValues values = new OptimizableValues();
+            writeOptimizeableValues(values, arguments.getOptimizables());
+
             // writeOptimizeableValues(inValues, arguments.getOptimizables());
             OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
 
@@ -103,7 +105,7 @@ public class SimExpApplication implements IApplication {
     }
 
     private void launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
-            throws CoreException {
+            throws CoreException, InterruptedException {
         ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, arguments.getLaunchConfig());
         if (launchConfiguration == null) {
             throw new RuntimeException(String.format("launch config %s not found in: %s", arguments.getLaunchConfig(),
@@ -115,8 +117,10 @@ public class SimExpApplication implements IApplication {
         launchConfigWorkingCopy.setAttributes(launchAttributes); // launchAttributes is a
                                                                  // Map<String,String>
         ILaunchConfiguration newLaunchConfig = launchConfigWorkingCopy.doSave();
-        String launchMode = null;
-        ILaunch launch = newLaunchConfig.launch(launchMode, new NullProgressMonitor(), true);
+        String launchMode = ILaunchManager.RUN_MODE;
+        logger.info(String.format("launching experiment: %s", launchConfigWorkingCopy.getName()));
+        newLaunchConfig.launch(launchMode, new NullProgressMonitor(), false, false);
+        logger.info(String.format("experiment finished: %s", launchConfigWorkingCopy.getName()));
     }
 
     private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)
