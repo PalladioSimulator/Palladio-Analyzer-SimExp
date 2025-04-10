@@ -9,6 +9,12 @@ Require-Bundle: org.eclipse.equinox.app;bundle-version="1.6.200",
  org.eclipse.core.resources,
  org.eclipse.debug.core,
  com.google.gson;bundle-version="2.8.2",
+ de.uka.ipd.sdq.workflow;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.launchconfig.core;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.mdsd.core;bundle-version="5.2.1",
+ org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.logging.console;bundle-version="5.2.1",
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0"
 Automatic-Module-Name: org.palladiosimulator.simexp.app.console
 Bundle-RequiredExecutionEnvironment: JavaSE-17

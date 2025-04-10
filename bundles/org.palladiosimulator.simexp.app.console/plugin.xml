@@ -13,5 +13,15 @@
          </run>
       </application>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.palladiosimulator.simexp.app.console.launcher.SimExpConsoleLauncher"
+            id="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1"
+            modes="run, debug"
+            name="SimExp Analyzer"
+            public="true">
+      </launchConfigurationType>
+   </extension>
 
 </plugin>
