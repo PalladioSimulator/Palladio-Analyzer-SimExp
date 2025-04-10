@@ -3,8 +3,10 @@ package org.palladiosimulator.core.simulation;
 import java.util.Collections;
 import java.util.List;
 
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
+
 public interface SimulationExecutor {
-    static class SimulationResult {
+    static class SimulationResult implements ISimulationResult {
         private final double totalReward;
         private final String rewardDescription;
 
