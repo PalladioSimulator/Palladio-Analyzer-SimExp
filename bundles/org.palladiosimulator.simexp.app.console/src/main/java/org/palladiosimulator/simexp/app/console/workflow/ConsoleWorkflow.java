@@ -13,6 +13,8 @@ import de.uka.ipd.sdq.workflow.mdsd.blackboard.MDSDBlackboard;
 public class ConsoleWorkflow extends BlackboardBasedWorkflow<MDSDBlackboard> {
     private final IJob mainJob;
 
+    private ISimulationResult simulationResult;
+
     public ConsoleWorkflow(IJob job, IProgressMonitor monitor, WorkflowExceptionHandler handler,
             MDSDBlackboard blackboard) {
         super(job, monitor, handler, blackboard);
@@ -22,9 +24,14 @@ public class ConsoleWorkflow extends BlackboardBasedWorkflow<MDSDBlackboard> {
 
     @Override
     public void run() {
+        simulationResult = null;
         super.run();
         IRootJob rootJob = findRootJob(mainJob);
-        ISimulationResult simulationResult = rootJob.getRootJobResult();
+        simulationResult = rootJob.getRootJobResult();
+    }
+
+    public ISimulationResult getSimulationResult() {
+        return simulationResult;
     }
 
     private IRootJob findRootJob(IJob job) {

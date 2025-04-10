@@ -26,11 +26,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.palladiosimulator.simexp.app.console.launcher.ISimulationLaunch;
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
 import com.google.gson.Gson;
 
@@ -77,7 +80,9 @@ public class SimExpApplication implements IApplication {
                 .getLaunchManager();
 
             IProject project = prepareSimulation(instancePath, arguments);
-            launchSimulation(launchManager, project, arguments);
+            ISimulationResult simulationResult = launchSimulation(launchManager, project, arguments);
+            simulationResult.getClass();
+            // ToDo: write simulationResult
 
         } catch (Exception e) {
             logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
@@ -102,7 +107,7 @@ public class SimExpApplication implements IApplication {
         }
     }
 
-    private void launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
+    private ISimulationResult launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
             throws CoreException, InterruptedException {
         ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, arguments.getLaunchConfig());
         if (launchConfiguration == null) {
@@ -111,9 +116,12 @@ public class SimExpApplication implements IApplication {
         }
 
         String launchMode = ILaunchManager.RUN_MODE;
-        logger.info(String.format("launching experiment: %s", launchConfiguration.getName()));
-        launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
+        logger.info(String.format("experiment start: %s", launchConfiguration.getName()));
+        ILaunch launch = launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
         logger.info(String.format("experiment finished: %s", launchConfiguration.getName()));
+        ISimulationLaunch simulationLaunch = (ISimulationLaunch) launch;
+        ISimulationResult simulationResult = simulationLaunch.getSimulationResult();
+        return simulationResult;
     }
 
     private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)
