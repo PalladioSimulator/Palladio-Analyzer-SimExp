@@ -15,6 +15,7 @@ public interface SimulationExecutor {
             this.rewardDescription = rewardDescription;
         }
 
+        @Override
         public double getTotalReward() {
             return totalReward;
         }
