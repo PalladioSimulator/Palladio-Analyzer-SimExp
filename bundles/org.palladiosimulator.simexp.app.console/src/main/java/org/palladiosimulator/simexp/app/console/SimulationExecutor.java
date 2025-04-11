@@ -55,7 +55,7 @@ public class SimulationExecutor {
             OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
 
             IProject project = prepareSimulation(instancePath, arguments);
-            ISimulationResult simulationResult = launchSimulation(launchManager, project, arguments);
+            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments);
             return new ConsoleSimulationResult(simulationResult.getTotalReward());
         } catch (Exception e) {
             LOGGER.error("simulation failed", e);
@@ -101,7 +101,7 @@ public class SimulationExecutor {
         return project;
     }
 
-    private ISimulationResult launchSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
+    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
             throws CoreException, InterruptedException {
         String launchConfigName = arguments.getLaunchConfig();
         ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
@@ -111,9 +111,9 @@ public class SimulationExecutor {
         }
 
         String launchMode = ILaunchManager.RUN_MODE;
-        LOGGER.info(String.format("experiment start: %s", launchConfiguration.getName()));
+        LOGGER.info(String.format("experiment start:  %s", launchConfiguration.getName()));
         ILaunch launch = launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
-        LOGGER.info(String.format("experiment finished: %s", launchConfiguration.getName()));
+        LOGGER.info(String.format("experiment finish: %s", launchConfiguration.getName()));
         ISimulationLaunch simulationLaunch = (ISimulationLaunch) launch;
         ISimulationResult simulationResult = simulationLaunch.getSimulationResult();
         return simulationResult;
