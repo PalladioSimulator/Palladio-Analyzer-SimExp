@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.app.console;
+package org.palladiosimulator.simexp.app.console.simulation;
 
 public class ConsoleSimulationResult {
     public final double reward;

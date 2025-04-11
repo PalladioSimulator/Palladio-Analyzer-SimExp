@@ -1,19 +1,19 @@
-package org.palladiosimulator.simexp.app.console;
+package org.palladiosimulator.simexp.app.console.simulation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OptimizableValues {
     public abstract static class Entry {
-        String name;
+        public String name;
     }
 
     public static class StringEntry extends Entry {
-        String value;
+        public String value;
     }
 
     public static class IntEntry extends Entry {
-        int value;
+        public int value;
     }
 
     public List<StringEntry> stringValues;

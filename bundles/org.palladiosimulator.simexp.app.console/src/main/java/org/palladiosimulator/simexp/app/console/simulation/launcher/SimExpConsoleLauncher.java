@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.app.console.launcher;
+package org.palladiosimulator.simexp.app.console.simulation.launcher;
 
 import java.util.Enumeration;
 
@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
-import org.palladiosimulator.simexp.app.console.workflow.ConsoleWorkflow;
+import org.palladiosimulator.simexp.app.console.simulation.workflow.ConsoleWorkflow;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimExpLauncher;

@@ -20,6 +20,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues;
+import org.palladiosimulator.simexp.app.console.simulation.SimulationExecutor;
 
 import com.google.gson.Gson;
 

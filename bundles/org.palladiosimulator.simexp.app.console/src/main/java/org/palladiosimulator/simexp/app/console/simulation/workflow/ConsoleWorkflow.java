@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.app.console.workflow;
+package org.palladiosimulator.simexp.app.console.simulation.workflow;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;

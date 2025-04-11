@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.app.console;
+package org.palladiosimulator.simexp.app.console.simulation;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -20,7 +20,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.palladiosimulator.simexp.app.console.launcher.ISimulationLaunch;
+import org.palladiosimulator.simexp.app.console.Arguments;
+import org.palladiosimulator.simexp.app.console.simulation.launcher.ISimulationLaunch;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
 import com.google.gson.Gson;

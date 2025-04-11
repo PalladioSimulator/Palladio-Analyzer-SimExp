@@ -1,11 +1,11 @@
-package org.palladiosimulator.simexp.app.console.launcher;
+package org.palladiosimulator.simexp.app.console.simulation.launcher;
 
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
-public class SimulationLaunch extends Launch implements ISimulationLaunch {
+class SimulationLaunch extends Launch implements ISimulationLaunch {
     private final ISimulationResultProvider simulationResultProvider;
 
     public SimulationLaunch(ILaunchConfiguration launchConfiguration, String mode, ISourceLocator locator,
