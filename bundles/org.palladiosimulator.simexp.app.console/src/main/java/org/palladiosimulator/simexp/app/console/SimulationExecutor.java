@@ -24,14 +24,18 @@ import org.palladiosimulator.simexp.app.console.launcher.ISimulationLaunch;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class SimulationExecutor {
     private final static Logger LOGGER = Logger.getLogger(SimulationExecutor.class);
 
     private final ILaunchManager launchManager;
+    private final Gson gson;
 
     public SimulationExecutor(ILaunchManager launchManager) {
         this.launchManager = launchManager;
+        this.gson = new GsonBuilder().setPrettyPrinting()
+            .create();
     }
 
     public void runSimulation(Arguments arguments, Path instancePath, Path resultFile) throws IOException {
@@ -41,7 +45,6 @@ public class SimulationExecutor {
 
     private void writeResult(ConsoleSimulationResult result, Path resultFile) throws IOException {
         try (Writer writer = Files.newBufferedWriter(resultFile, StandardCharsets.UTF_8)) {
-            Gson gson = new Gson();
             gson.toJson(result, writer);
         }
     }
@@ -62,7 +65,6 @@ public class SimulationExecutor {
 
     private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
         try (Reader reader = Files.newBufferedReader(optimizablesPath, StandardCharsets.UTF_8)) {
-            Gson gson = new Gson();
             OptimizableValues value = gson.fromJson(reader, OptimizableValues.class);
             return value;
         }
