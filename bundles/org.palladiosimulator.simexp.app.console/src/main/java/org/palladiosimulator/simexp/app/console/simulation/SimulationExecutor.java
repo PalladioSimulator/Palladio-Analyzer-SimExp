@@ -35,7 +35,8 @@ public class SimulationExecutor {
 
     public SimulationExecutor(ILaunchManager launchManager) {
         this.launchManager = launchManager;
-        this.gson = new GsonBuilder().setPrettyPrinting()
+        this.gson = new GsonBuilder().serializeNulls()
+            .setPrettyPrinting()
             .create();
     }
 

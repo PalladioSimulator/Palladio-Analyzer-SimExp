@@ -1,18 +1,18 @@
 package org.palladiosimulator.simexp.app.console.simulation;
 
 public class ConsoleSimulationResult {
-    public final double reward;
+    public final Double reward;
     public final String error;
 
     public ConsoleSimulationResult(double reward) {
-        this(reward, "");
+        this(reward, null);
     }
 
     public ConsoleSimulationResult(String error) {
-        this(0.0, error);
+        this(null, error);
     }
 
-    ConsoleSimulationResult(double reward, String error) {
+    ConsoleSimulationResult(Double reward, String error) {
         this.reward = reward;
         this.error = error;
     }
