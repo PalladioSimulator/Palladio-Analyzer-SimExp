@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.pcm.modelled;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
@@ -68,6 +69,11 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
     protected IOptimizedConfiguration getOptimizedConfiguration(IModelledWorkflowConfiguration config, Smodel smodel) {
         if (config instanceof IOptimizedConfiguration optimizedConfiguration) {
             return optimizedConfiguration;
+        }
+
+        Map<String, Object> optimizedValues = config.getOptimizedValues();
+        if (optimizedValues != null) {
+            return new OptimizedConfiguration(smodel, optimizedValues);
         }
 
         return new SimpleOptimizedConfiguration(smodel);

@@ -1,6 +1,8 @@
 package org.palladiosimulator.simexp.app.console.simulation.launcher;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
@@ -9,10 +11,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.IntEntry;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.StringEntry;
 import org.palladiosimulator.simexp.app.console.simulation.workflow.ConsoleWorkflow;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimExpLauncher;
+
+import com.google.gson.Gson;
 
 import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
 import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
@@ -41,6 +49,25 @@ public class SimExpConsoleLauncher extends SimExpLauncher
     @Override
     protected WorkflowExceptionHandler createExceptionHandler(boolean interactive) {
         return new WorkflowExceptionHandler(true);
+    }
+
+    @Override
+    protected Map<String, Object> getOptimizedValues(ILaunchConfiguration configuration) throws CoreException {
+        if (!configuration.hasAttribute(SimulationConstants.OPTIMIZED_VALUES)) {
+            return null;
+        }
+
+        String jsonValues = configuration.getAttribute(SimulationConstants.OPTIMIZED_VALUES, "");
+        Gson gson = new Gson();
+        OptimizableValues optimizableValues = gson.fromJson(jsonValues, OptimizableValues.class);
+        Map<String, Object> optimizedValues = new HashMap<>();
+        for (StringEntry entry : optimizableValues.stringValues) {
+            optimizedValues.put(entry.name, entry.value);
+        }
+        for (IntEntry entry : optimizableValues.intValues) {
+            optimizedValues.put(entry.name, entry.value);
+        }
+        return optimizedValues;
     }
 
     @Override

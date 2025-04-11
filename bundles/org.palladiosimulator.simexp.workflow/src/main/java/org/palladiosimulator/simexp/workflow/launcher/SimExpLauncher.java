@@ -186,10 +186,12 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
                     maxGenerations, steadyFitness, mutationRate, crossoverRate);
 
+            Map<String, Object> optimizedValues = getOptimizedValues(configuration);
+
             /** FIXME: split workflow configuraiton based on simulation type: PCM, PRISM */
             workflowConfiguration = new SimExpWorkflowConfiguration(simulatorType, simulationEngine, rewardType,
                     transformationNames, qualityObjective, architecturalModels, modelledOptimizationType, monitors,
-                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig);
+                    prismConfig, environmentalModels, simulationParameters, seedProvider, eaConfig, optimizedValues);
         } catch (CoreException e) {
             LOGGER.error(
                     "Failed to read workflow configuration from passed launch configuration. Please check the provided launch configuration",
@@ -197,6 +199,10 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         }
 
         return workflowConfiguration;
+    }
+
+    protected Map<String, Object> getOptimizedValues(ILaunchConfiguration configuration) throws CoreException {
+        return null;
     }
 
     private Optional<Double> extractOptionalDouble(Map<String, Object> launchConfigurationParams, String key) {

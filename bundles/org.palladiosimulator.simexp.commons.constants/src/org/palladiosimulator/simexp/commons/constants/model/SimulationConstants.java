@@ -32,4 +32,6 @@ public interface SimulationConstants {
     static final QualityObjective DEFAULT_QUALITY_OBJECTIVE = QualityObjective.PERFORMANCE;
 
     static final ModelledOptimizationType DEFAULT_MODELLED_OPTIMIZATION_TYPE = ModelledOptimizationType.SIMPLE;
+
+    static final String OPTIMIZED_VALUES = "optimizedValues";
 }

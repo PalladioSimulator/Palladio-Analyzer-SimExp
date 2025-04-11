@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.workflow.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     private final SimulationParameters simulationParameters;
     private final Optional<ISeedProvider> seedProvider;
     private final IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration;
+    private final Map<String, Object> optimizedValues;
 
     public SimExpWorkflowConfiguration(SimulatorType simulatorType, SimulationEngine simulationEngine,
             RewardType rewardType, Set<String> transformationNames, QualityObjective qualityObjective,
@@ -52,7 +54,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
             ModelledOptimizationType modelledOptimizationType, MonitorConfiguration monitors,
             PrismConfiguration prismConfiguration, EnvironmentalModelsWorkflowConfiguration environmentalModels,
             SimulationParameters simulationParameters, Optional<ISeedProvider> seedProvider,
-            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration) {
+            IEvolutionaryAlgorithmConfiguration evolutionaryAlgorithmConfiguration,
+            Map<String, Object> optimizedValues) {
 
         /**
          * workaround: allocation files are required by the parent class
@@ -88,6 +91,7 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
         this.simulationParameters = simulationParameters;
         this.seedProvider = seedProvider;
         this.evolutionaryAlgorithmConfiguration = evolutionaryAlgorithmConfiguration;
+        this.optimizedValues = optimizedValues;
     }
 
     @Override
@@ -204,5 +208,10 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     @Override
     public Optional<Double> getCrossoverRate() {
         return evolutionaryAlgorithmConfiguration.getCrossoverRate();
+    }
+
+    @Override
+    public Map<String, Object> getOptimizedValues() {
+        return optimizedValues;
     }
 }

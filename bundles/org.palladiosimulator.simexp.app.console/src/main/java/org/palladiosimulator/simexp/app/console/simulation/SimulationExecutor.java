@@ -19,9 +19,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.palladiosimulator.simexp.app.console.Arguments;
 import org.palladiosimulator.simexp.app.console.simulation.launcher.ISimulationLaunch;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
 import com.google.gson.Gson;
@@ -54,21 +56,12 @@ public class SimulationExecutor {
 
     private ConsoleSimulationResult doRunSimulation(Arguments arguments, Path instancePath) {
         try {
-            OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
             IProject project = prepareSimulation(instancePath, arguments);
-            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments,
-                    optimizableValues);
+            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments);
             return new ConsoleSimulationResult(simulationResult.getTotalReward());
         } catch (Exception e) {
             LOGGER.error("simulation failed", e);
             return new ConsoleSimulationResult(e.getMessage());
-        }
-    }
-
-    private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
-        try (Reader reader = Files.newBufferedReader(optimizablesPath, StandardCharsets.UTF_8)) {
-            OptimizableValues value = gson.fromJson(reader, OptimizableValues.class);
-            return value;
         }
     }
 
@@ -103,17 +96,9 @@ public class SimulationExecutor {
         return project;
     }
 
-    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments,
-            OptimizableValues optimizableValues) throws CoreException, InterruptedException {
-        String launchConfigName = arguments.getLaunchConfig();
-        ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
-        if (launchConfiguration == null) {
-            throw new RuntimeException(
-                    String.format("launch config %s not found in: %s", launchConfigName, arguments.getProjectName()));
-        }
-
-        // TODO: pass optimizables to launch delegate
-
+    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
+            throws CoreException, IOException {
+        ILaunchConfiguration launchConfiguration = getLaunchConfiguration(launchManager, arguments);
         String launchMode = ILaunchManager.RUN_MODE;
         LOGGER.info(String.format("experiment start:  %s", launchConfiguration.getName()));
         ILaunch launch = launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
@@ -121,6 +106,30 @@ public class SimulationExecutor {
         ISimulationLaunch simulationLaunch = (ISimulationLaunch) launch;
         ISimulationResult simulationResult = simulationLaunch.getSimulationResult();
         return simulationResult;
+    }
+
+    private ILaunchConfiguration getLaunchConfiguration(ILaunchManager launchManager, Arguments arguments)
+            throws CoreException, IOException {
+        String launchConfigName = arguments.getLaunchConfig();
+        ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
+        if (launchConfiguration == null) {
+            throw new RuntimeException(
+                    String.format("launch config %s not found in: %s", launchConfigName, arguments.getProjectName()));
+        }
+
+        ILaunchConfigurationWorkingCopy workingLaunchConfig = launchConfiguration.getWorkingCopy();
+        OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
+        String jsonValues = gson.toJson(optimizableValues);
+        workingLaunchConfig.setAttribute(SimulationConstants.OPTIMIZED_VALUES, jsonValues);
+
+        return workingLaunchConfig;
+    }
+
+    private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
+        try (Reader reader = Files.newBufferedReader(optimizablesPath, StandardCharsets.UTF_8)) {
+            OptimizableValues value = gson.fromJson(reader, OptimizableValues.class);
+            return value;
+        }
     }
 
     private ILaunchConfiguration findLaunchConfiguration(ILaunchManager launchManager, String launchConfigName)

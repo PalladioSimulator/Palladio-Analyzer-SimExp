@@ -54,7 +54,7 @@ public class SimpleOptimizedConfiguration implements IOptimizedConfiguration {
         }
     }
 
-    private OptimizableValue<Boolean> getOptimizableValueBool(Optimizable optimizable) {
+    protected OptimizableValue<Boolean> getOptimizableValueBool(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds) {
             SetBounds setBounds = (SetBounds) bounds;
@@ -66,7 +66,7 @@ public class SimpleOptimizedConfiguration implements IOptimizedConfiguration {
         throw new RuntimeException("unsupported bounds: " + bounds);
     }
 
-    private OptimizableValue<String> getOptimizableValueString(Optimizable optimizable) {
+    protected OptimizableValue<String> getOptimizableValueString(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds) {
             SetBounds setBounds = (SetBounds) bounds;
@@ -78,7 +78,7 @@ public class SimpleOptimizedConfiguration implements IOptimizedConfiguration {
         throw new RuntimeException("unsupported bounds: " + bounds);
     }
 
-    private OptimizableValue<Integer> getOptimizableValueInt(Optimizable optimizable) {
+    protected OptimizableValue<Integer> getOptimizableValueInt(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds) {
             SetBounds setBounds = (SetBounds) bounds;
@@ -96,7 +96,7 @@ public class SimpleOptimizedConfiguration implements IOptimizedConfiguration {
         throw new RuntimeException("unsupported bounds: " + bounds);
     }
 
-    private OptimizableValue<Double> getOptimizableValueDouble(Optimizable optimizable) {
+    protected OptimizableValue<Double> getOptimizableValueDouble(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds) {
             SetBounds setBounds = (SetBounds) bounds;
