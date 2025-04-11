@@ -39,8 +39,9 @@ public class SimulationExecutor {
             .create();
     }
 
-    public void runSimulation(Arguments arguments, Path instancePath, Path resultFile) throws IOException {
+    public void runSimulation(Arguments arguments, Path instancePath) throws IOException {
         ConsoleSimulationResult result = doRunSimulation(arguments, instancePath);
+        Path resultFile = instancePath.resolve(arguments.getResultFile());
         writeResult(result, resultFile);
     }
 
@@ -51,12 +52,11 @@ public class SimulationExecutor {
     }
 
     private ConsoleSimulationResult doRunSimulation(Arguments arguments, Path instancePath) {
-        // TODO: pass to launch delegate
         try {
             OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
-
             IProject project = prepareSimulation(instancePath, arguments);
-            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments);
+            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments,
+                    optimizableValues);
             return new ConsoleSimulationResult(simulationResult.getTotalReward());
         } catch (Exception e) {
             LOGGER.error("simulation failed", e);
@@ -102,14 +102,16 @@ public class SimulationExecutor {
         return project;
     }
 
-    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
-            throws CoreException, InterruptedException {
+    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments,
+            OptimizableValues optimizableValues) throws CoreException, InterruptedException {
         String launchConfigName = arguments.getLaunchConfig();
         ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
         if (launchConfiguration == null) {
             throw new RuntimeException(
                     String.format("launch config %s not found in: %s", launchConfigName, arguments.getProjectName()));
         }
+
+        // TODO: pass optimizables to launch delegate
 
         String launchMode = ILaunchManager.RUN_MODE;
         LOGGER.info(String.format("experiment start:  %s", launchConfiguration.getName()));

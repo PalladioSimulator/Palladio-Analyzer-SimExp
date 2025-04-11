@@ -41,7 +41,6 @@ public class SimExpApplication implements IApplication {
 
         IPath instanceLocation = Platform.getLocation();
         Path instancePath = Paths.get(instanceLocation.toOSString());
-        Path resultFile = instancePath.resolve("result.json");
         logger.info(String.format("instance path: %s", instancePath));
         try {
             Arguments arguments = parseCommandLine();
@@ -55,7 +54,7 @@ public class SimExpApplication implements IApplication {
                 .getLaunchManager();
 
             SimulationExecutor simulationExecutor = new SimulationExecutor(launchManager);
-            simulationExecutor.runSimulation(arguments, instancePath, resultFile);
+            simulationExecutor.runSimulation(arguments, instancePath);
         } catch (Exception e) {
             logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
         } finally {
