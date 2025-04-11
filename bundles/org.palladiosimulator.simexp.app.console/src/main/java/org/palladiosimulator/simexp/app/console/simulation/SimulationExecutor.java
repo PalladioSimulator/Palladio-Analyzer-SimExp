@@ -44,7 +44,7 @@ public class SimulationExecutor {
 
     public void runSimulation(Arguments arguments, Path instancePath) throws IOException {
         ConsoleSimulationResult result = doRunSimulation(arguments, instancePath);
-        Path resultFile = instancePath.resolve(arguments.getResultFile());
+        Path resultFile = resolvePath(arguments.getResultFile(), instancePath);
         writeResult(result, resultFile);
     }
 
@@ -57,7 +57,7 @@ public class SimulationExecutor {
     private ConsoleSimulationResult doRunSimulation(Arguments arguments, Path instancePath) {
         try {
             IProject project = prepareSimulation(instancePath, arguments);
-            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments);
+            ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments, instancePath);
             return new ConsoleSimulationResult(simulationResult.getTotalReward());
         } catch (Exception e) {
             LOGGER.error("simulation failed", e);
@@ -96,9 +96,9 @@ public class SimulationExecutor {
         return project;
     }
 
-    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments)
-            throws CoreException, IOException {
-        ILaunchConfiguration launchConfiguration = getLaunchConfiguration(launchManager, arguments);
+    private ISimulationResult executeSimulation(ILaunchManager launchManager, IProject project, Arguments arguments,
+            Path instancePath) throws CoreException, IOException {
+        ILaunchConfiguration launchConfiguration = getLaunchConfiguration(launchManager, arguments, instancePath);
         String launchMode = ILaunchManager.RUN_MODE;
         LOGGER.info(String.format("experiment start:  %s", launchConfiguration.getName()));
         ILaunch launch = launchConfiguration.launch(launchMode, new NullProgressMonitor(), false, false);
@@ -108,8 +108,8 @@ public class SimulationExecutor {
         return simulationResult;
     }
 
-    private ILaunchConfiguration getLaunchConfiguration(ILaunchManager launchManager, Arguments arguments)
-            throws CoreException, IOException {
+    private ILaunchConfiguration getLaunchConfiguration(ILaunchManager launchManager, Arguments arguments,
+            Path instancePath) throws CoreException, IOException {
         String launchConfigName = arguments.getLaunchConfig();
         ILaunchConfiguration launchConfiguration = findLaunchConfiguration(launchManager, launchConfigName);
         if (launchConfiguration == null) {
@@ -118,11 +118,19 @@ public class SimulationExecutor {
         }
 
         ILaunchConfigurationWorkingCopy workingLaunchConfig = launchConfiguration.getWorkingCopy();
-        OptimizableValues optimizableValues = readOptimizeableValues(arguments.getOptimizables());
+        Path optimizablesPath = resolvePath(arguments.getOptimizables(), instancePath);
+        OptimizableValues optimizableValues = readOptimizeableValues(optimizablesPath);
         String jsonValues = gson.toJson(optimizableValues);
         workingLaunchConfig.setAttribute(SimulationConstants.OPTIMIZED_VALUES, jsonValues);
 
         return workingLaunchConfig;
+    }
+
+    private Path resolvePath(Path path, Path instancePath) {
+        if (path.isAbsolute()) {
+            return path;
+        }
+        return instancePath.resolve(path);
     }
 
     private OptimizableValues readOptimizeableValues(Path optimizablesPath) throws IOException {
