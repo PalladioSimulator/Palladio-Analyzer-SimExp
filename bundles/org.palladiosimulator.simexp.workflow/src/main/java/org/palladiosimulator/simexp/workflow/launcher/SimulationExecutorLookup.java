@@ -65,7 +65,7 @@ public class SimulationExecutorLookup {
         Pair<ILaunchFactory, Integer> maxPair = candidates.stream()
             .filter(p -> p.getRight() < maxLevel)
             .max(Comparator.comparing(p -> p.getRight()))
-            .orElse(null);
+            .orElseThrow(() -> new RuntimeException("no launch configuration found"));
         return maxPair.getKey();
     }
 
