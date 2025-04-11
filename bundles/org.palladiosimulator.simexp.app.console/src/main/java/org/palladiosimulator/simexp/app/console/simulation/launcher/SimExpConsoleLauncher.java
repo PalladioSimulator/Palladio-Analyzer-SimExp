@@ -12,6 +12,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.BoolEntry;
+import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.DoubleEntry;
 import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.IntEntry;
 import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues.StringEntry;
 import org.palladiosimulator.simexp.app.console.simulation.workflow.ConsoleWorkflow;
@@ -61,10 +63,16 @@ public class SimExpConsoleLauncher extends SimExpLauncher
         Gson gson = new Gson();
         OptimizableValues optimizableValues = gson.fromJson(jsonValues, OptimizableValues.class);
         Map<String, Object> optimizedValues = new HashMap<>();
+        for (BoolEntry entry : optimizableValues.boolValues) {
+            optimizedValues.put(entry.name, entry.value);
+        }
         for (StringEntry entry : optimizableValues.stringValues) {
             optimizedValues.put(entry.name, entry.value);
         }
         for (IntEntry entry : optimizableValues.intValues) {
+            optimizedValues.put(entry.name, entry.value);
+        }
+        for (DoubleEntry entry : optimizableValues.doubleValues) {
             optimizedValues.put(entry.name, entry.value);
         }
         return optimizedValues;
