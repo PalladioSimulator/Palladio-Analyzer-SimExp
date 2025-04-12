@@ -95,6 +95,8 @@ public class SimExpApplication implements IApplication {
         ca.setThreshold(Level.DEBUG);
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure(ca);
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.setLevel(Level.INFO);
     }
 
     private void init() {
