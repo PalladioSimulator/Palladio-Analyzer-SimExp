@@ -1,10 +1,7 @@
 package org.palladiosimulator.simexp.app.console;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -20,10 +17,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
-import org.palladiosimulator.simexp.app.console.simulation.OptimizableValues;
 import org.palladiosimulator.simexp.app.console.simulation.SimulationExecutor;
-
-import com.google.gson.Gson;
 
 public class SimExpApplication implements IApplication {
     private Logger logger;
@@ -46,9 +40,6 @@ public class SimExpApplication implements IApplication {
             Arguments arguments = parseCommandLine();
             validateCommandLine(arguments);
 
-            // TODO: remove
-            writeOptimizeableValues(arguments.getOptimizables());
-
             // Also registers for open project events.
             ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -61,23 +52,6 @@ public class SimExpApplication implements IApplication {
             logger.info("SimExp finished");
         }
         return IApplication.EXIT_OK;
-    }
-
-    private void writeOptimizeableValues(Path optimizablesPath) throws IOException {
-        OptimizableValues values = new OptimizableValues();
-        OptimizableValues.StringEntry se = new OptimizableValues.StringEntry();
-        se.name = "str";
-        se.value = "s";
-        values.stringValues.add(se);
-        OptimizableValues.IntEntry ie = new OptimizableValues.IntEntry();
-        ie.name = "int";
-        ie.value = 1;
-        values.intValues.add(ie);
-
-        try (Writer writer = Files.newBufferedWriter(optimizablesPath, StandardCharsets.UTF_8)) {
-            Gson gson = new Gson();
-            gson.toJson(values, writer);
-        }
     }
 
     private void validateCommandLine(Arguments arguments) {
