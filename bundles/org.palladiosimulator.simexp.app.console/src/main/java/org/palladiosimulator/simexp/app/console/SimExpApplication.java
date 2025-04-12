@@ -28,15 +28,14 @@ public class SimExpApplication implements IApplication {
         logger = Logger.getLogger(SimExpApplication.class);
 
         logger.info("SimExp running...");
-        init();
-        if (!lockInstanceLocation()) {
-            return IApplication.EXIT_OK;
-        }
-
-        IPath instanceLocation = Platform.getLocation();
-        Path instancePath = Paths.get(instanceLocation.toOSString());
-        logger.info(String.format("instance path: %s", instancePath));
         try {
+            if (!init()) {
+                return IApplication.EXIT_OK;
+            }
+
+            IPath instanceLocation = Platform.getLocation();
+            Path instancePath = Paths.get(instanceLocation.toOSString());
+            logger.info(String.format("instance path: %s", instancePath));
             Arguments arguments = parseCommandLine();
             validateCommandLine(arguments);
 
@@ -99,8 +98,9 @@ public class SimExpApplication implements IApplication {
         rootLogger.setLevel(Level.INFO);
     }
 
-    private void init() {
+    private boolean init() throws IOException {
         registerTerminationHandlers();
+        return lockInstanceLocation();
     }
 
     private void registerTerminationHandlers() {
