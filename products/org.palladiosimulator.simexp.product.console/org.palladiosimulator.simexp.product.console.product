@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SimExp" uid="org.palladiosimulator.simexp.product.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="true">
+<product name="SimExp" uid="org.palladiosimulator.simexp.product.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
    <configIni use="default">
    </configIni>
@@ -31,17 +31,16 @@
 
    <features>
       <feature id="org.eclipse.e4.rcp"/>
-      <feature id="org.palladiosimulator.simexp.feature.rcp"/>
-      <feature id="org.palladiosimulator.simexp.feature.palladio"/>
-      <feature id="org.palladiosimulator.simexp.feature"/>
       <feature id="org.palladiosimulator.simexp.feature.console"/>
-      <feature id="org.palladiosimulator.thirdpartywrapper.feature"/>
-      <feature id="org.palladiosimulator.simexp.feature.rcp.ui"/>
+      <feature id="org.palladiosimulator.simexp.feature.palladio"/>
       <feature id="org.palladiosimulator.simexp.feature.palladio.ui"/>
-      <feature id="org.palladiosimulator.simexp.feature.ui"/>
+      <feature id="org.palladiosimulator.simexp.feature.rcp"/>
+      <feature id="org.palladiosimulator.simexp.feature.rcp.ui"/>
+      <feature id="org.palladiosimulator.thirdpartywrapper.feature"/>
    </features>
 
    <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
    </configurations>
 
