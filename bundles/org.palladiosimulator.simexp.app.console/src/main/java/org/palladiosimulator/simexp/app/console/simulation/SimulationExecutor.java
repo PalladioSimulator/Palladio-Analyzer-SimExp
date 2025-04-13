@@ -68,12 +68,12 @@ public class SimulationExecutor {
     private IProject prepareSimulation(Path instancePath, Arguments arguments)
             throws InvocationTargetException, InterruptedException, CoreException {
         Path projectPath = instancePath.resolve(arguments.getProjectName());
-        LOGGER.info(String.format("open: %s", projectPath));
         IProject project = openProject(projectPath);
         return project;
     }
 
     private IProject openProject(Path projectPath) throws CoreException {
+        LOGGER.info(String.format("open project: %s", projectPath));
         // it is acceptable to use the ResourcesPlugin class
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IProject project = workspace.getRoot()
