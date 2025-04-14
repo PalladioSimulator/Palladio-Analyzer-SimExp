@@ -3,12 +3,17 @@
 
 <product name="SimExp" uid="org.palladiosimulator.simexp.product.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
+
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_US --launcher.suppressErrors -consoleLog
+      <programArgs>-nl en_US --launcher.suppressErrors -consoleLog
       </programArgs>
+      <programArgsLin>-os linux -ws gtk -arch x86_64
+      </programArgsLin>
+      <programArgsWin>-os win32 -ws win32 -arch x86_64
+      </programArgsWin>
       <vmArgs>-XX:+UseG1GC
 -XX:+UseStringDeduplication
 -Xmx12g
@@ -17,14 +22,18 @@
       </vmArgsMac>
    </launcherArgs>
 
+   <windowImages/>
+
    <launcher name="simexp">
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
