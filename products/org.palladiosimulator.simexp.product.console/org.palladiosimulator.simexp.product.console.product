@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_US -consoleLog
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl en_US --launcher.suppressErrors -consoleLog
       </programArgs>
       <vmArgs>-XX:+UseG1GC
 -XX:+UseStringDeduplication
