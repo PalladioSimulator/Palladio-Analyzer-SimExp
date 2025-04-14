@@ -1,5 +1,5 @@
 {
 	"architecture": "linux.gtk.x86_64",
 	"folder": "x86_64",
-	"binaryExtension": ""
+	"executable": "prism"
 }

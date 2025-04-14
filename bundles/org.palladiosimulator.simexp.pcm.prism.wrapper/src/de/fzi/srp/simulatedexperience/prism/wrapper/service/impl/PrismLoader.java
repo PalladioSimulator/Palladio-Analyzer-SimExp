@@ -34,7 +34,7 @@ public enum PrismLoader {
     private class LibraryList {
         public String architecture;
         public String folder;
-        public String binaryExtension;
+        public String executable;
     }
 
     public synchronized Path load() {
@@ -65,7 +65,8 @@ public enum PrismLoader {
             PathUtils.copyDirectory(folderPath, workspacePrismOsPath, StandardCopyOption.REPLACE_EXISTING);
 
             Path prismBinPath = workspacePrismOsPath.resolve("bin");
-            Path prismExe = prismBinPath.resolve(String.format("prism%s", libraryList.binaryExtension));
+            Path prismExe = prismBinPath.resolve(libraryList.executable);
+
             return prismExe;
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
