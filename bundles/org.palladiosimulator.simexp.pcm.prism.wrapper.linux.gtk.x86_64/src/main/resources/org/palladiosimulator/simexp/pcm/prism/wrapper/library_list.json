@@ -1,5 +1,6 @@
 {
 	"architecture": "linux.gtk.x86_64",
 	"folder": "x86_64",
-	"executable": "prism"
+	"executable": "prism",
+	"posixPermissions": "rwxr-x---"
 }
