@@ -36,14 +36,21 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             return;
         }
 
-        LOGGER.info(String.format("received answer %d/%d [%s] reward: %s (%s)", count, taskCount, result.id,
-                result.reward, result.error));
+        String description = getRewardDescription(result);
+        LOGGER.info(String.format("received answer %d/%d [%s] reward: %s", count, taskCount, result.id, description));
 
         if (StringUtils.isNotEmpty(result.error)) {
             future.setResult(Optional.empty());
         } else {
             future.setResult(Optional.of(result.reward));
         }
+    }
+
+    private String getRewardDescription(JobResult result) {
+        if (StringUtils.isNotEmpty(result.error)) {
+            String.format("n/a (%s)", result.error);
+        }
+        return String.format("%s", result.reward);
     }
 
 }
