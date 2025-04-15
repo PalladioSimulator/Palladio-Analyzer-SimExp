@@ -60,7 +60,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
             .setContextClassLoader(classloader);
         try {
             OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
-            LOGGER.info(String.format("evaluate: %s", optimizableValueToString.asString(optimizableValues)));
             JobTask task = createTask(optimizableValues);
             Gson logGson = new GsonBuilder().serializeNulls()
                 .setPrettyPrinting()
@@ -70,7 +69,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
             SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
             }, Optional.empty());
-            sendTask(task);
+            sendTask(task, optimizableValueToString.asString(optimizableValues));
             taskManager.newTask(task.id, future);
             return future;
         } finally {
@@ -102,13 +101,13 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         return String.format("Task %d", count++);
     }
 
-    private void sendTask(JobTask task) throws IOException {
+    private void sendTask(JobTask task, String description) throws IOException {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
             .create();
 
         String message = gson.toJson(task);
         channel.basicPublish("", outQueueName, null, message.getBytes(StandardCharsets.UTF_8));
-        LOGGER.info(String.format("Sent task: %s", task.id));
+        LOGGER.info(String.format("Sent task: %s [%s]", task.id, description));
     }
 
     private WorkspaceEntry createProjectArchive(Path projectFolder) throws IOException {
