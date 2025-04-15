@@ -13,7 +13,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     private Map<String, SettableFutureTask<Optional<Double>>> outstandingTasks;
 
-    private int counter = 0;
+    private int receivedCount = 0;
+    private int taskCount = 0;
 
     public TaskManager() {
         this.outstandingTasks = new HashMap<>();
@@ -21,21 +22,22 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     @Override
     public synchronized void newTask(String taskId, SettableFutureTask<Optional<Double>> task) {
+        taskCount++;
         outstandingTasks.put(taskId, task);
     }
 
     @Override
     public synchronized void taskCompleted(String taskId, JobResult result) {
-        int count = ++counter;
+        int count = ++receivedCount;
 
-        LOGGER.info(String.format("received answer %d [%s] reward: %s (%s)", count, result.id, result.reward,
-                result.error));
-
-        SettableFutureTask<Optional<Double>> future = outstandingTasks.get(taskId);
+        SettableFutureTask<Optional<Double>> future = outstandingTasks.remove(taskId);
         if (future == null) {
-            LOGGER.error(String.format("received unknown task: %s", taskId));
+            LOGGER.error(String.format("received unknown answer: %s", taskId));
             return;
         }
+
+        LOGGER.info(String.format("received answer %d/%d [%s] reward: %s (%s)", count, taskCount, result.id,
+                result.reward, result.error));
 
         if (StringUtils.isNotEmpty(result.error)) {
             // TODO: use on error value
