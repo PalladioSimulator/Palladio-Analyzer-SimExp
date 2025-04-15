@@ -60,6 +60,9 @@
 		<module>org.palladiosimulator.simexp.dsl.ea.api</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.ui</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.launch</module>
+
+		<module>org.palladiosimulator.simexp.console.api</module>
+
 		<module>io.jenetics</module>
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer</module>
 		<module>io.fabric8.kubernetes</module>

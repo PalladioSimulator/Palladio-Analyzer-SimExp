@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.console.api
+Bundle-SymbolicName: org.palladiosimulator.simexp.console.api
+Automatic-Module-Name: org.palladiosimulator.simexp.console.api
+Bundle-Version: 0.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
