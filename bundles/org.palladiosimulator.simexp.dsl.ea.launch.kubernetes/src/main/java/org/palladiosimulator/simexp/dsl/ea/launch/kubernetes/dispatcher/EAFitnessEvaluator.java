@@ -38,14 +38,17 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final ITaskManager taskManager;
     private final Channel channel;
     private final String outQueueName;
+    private final List<Path> projectPaths;
     private final ClassLoader classloader;
 
     private int count = 0;
 
-    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, ClassLoader classloader) {
+    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, List<Path> projectPaths,
+            ClassLoader classloader) {
         this.taskManager = taskManager;
         this.channel = channel;
         this.outQueueName = outQueueName;
+        this.projectPaths = projectPaths;
         this.classloader = classloader;
     }
 
@@ -77,10 +80,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     }
 
     private JobTask createTask(List<OptimizableValue<?>> optimizableValues) throws IOException {
-        Path projectFolder = Paths.get(
-                "/home/zd745/develop/palladio/simexp-ea/Palladio-Analyzer-SimExp/examples/org.palladiosimulator.simexp.pcm.examples.deltaiot");
-        WorkspaceEntry projectArchive = createProjectArchive(projectFolder);
-
         WorkspaceEntry fileEntry = createFile(
                 Paths.get("/mnt/develop/zd745/palladio/tmp/kubernetes/kubernetes_client/log4j2.xml"));
 
@@ -90,7 +89,10 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         task.workspaceArgument = "-w";
         Integer duration = 10;
         task.command = String.format("/app/sim_test.sh -d %d", duration);
-        task.workspaceEntries.add(projectArchive);
+        for (Path projectFolder : projectPaths) {
+            WorkspaceEntry projectArchive = createProjectArchive(projectFolder);
+            task.workspaceEntries.add(projectArchive);
+        }
         task.workspaceEntries.add(fileEntry);
         task.launcherName = "deltaiot";
         return task;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
 
+    private final IModelledWorkflowConfiguration config;
     private final IPreferencesService preferencesService;
     private final ClassLoader classloader;
 
@@ -47,6 +49,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
+        this.config = config;
         this.preferencesService = preferencesService;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
@@ -102,7 +105,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             DeploymentDispatcher dispatcher = new DeploymentDispatcher(client);
             String brokerUrl = buildBrokerURL();
             String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
-            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, classloader);
+            List<Path> projectPaths = getProjectPaths(config);
+            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, projectPaths, classloader);
             dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                 @Override
@@ -145,6 +149,17 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
         channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
         channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
+    }
+
+    private List<Path> getProjectPaths(IModelledWorkflowConfiguration config) {
+        List<Path> projectPaths = new ArrayList<>();
+
+        // TODO:
+        Path projectFolder = Paths.get(
+                "/home/zd745/develop/palladio/simexp-ea/Palladio-Analyzer-SimExp/examples/org.palladiosimulator.simexp.pcm.examples.deltaiot");
+        projectPaths.add(projectFolder);
+
+        return projectPaths;
     }
 
     private String getPreference(String key) {
