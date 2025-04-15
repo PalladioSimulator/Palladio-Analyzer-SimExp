@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,13 +24,20 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.OptimizableValues.BoolEntry;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.OptimizableValues.DoubleEntry;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.OptimizableValues.IntEntry;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher.OptimizableValues.StringEntry;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobTask.WorkspaceEntry;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
 import com.rabbitmq.client.Channel;
 
 public class EAFitnessEvaluator implements IEAFitnessEvaluator {
@@ -79,20 +87,18 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     }
 
     private JobTask createTask(List<OptimizableValue<?>> optimizableValues) throws IOException {
-        WorkspaceEntry fileEntry = createFile(
-                Paths.get("/mnt/develop/zd745/palladio/tmp/kubernetes/kubernetes_client/log4j2.xml"));
-
         JobTask task = new JobTask();
         task.id = getTaskId();
         task.workspacePath = "/workspace";
         task.workspaceArgument = "-w";
         Integer duration = 10;
         task.command = String.format("/app/sim_test.sh -d %d", duration);
+        WorkspaceEntry optimizableFileEntry = createOptimizableFile(optimizableValues);
+        task.workspaceEntries.add(optimizableFileEntry);
         for (Path projectFolder : projectPaths) {
             WorkspaceEntry projectArchive = createProjectArchive(projectFolder);
             task.workspaceEntries.add(projectArchive);
         }
-        task.workspaceEntries.add(fileEntry);
         task.launcherName = "deltaiot";
         return task;
     }
@@ -120,6 +126,44 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         byte[] projectArchive = bos.toByteArray();
         return new WorkspaceEntry(WorkspaceEntry.Kind.ARCHIVE, projectFolder.getFileName()
             .toString(), "bz2", projectArchive);
+    }
+
+    private WorkspaceEntry createOptimizableFile(List<OptimizableValue<?>> optimizableValues) throws IOException {
+        Path optimizableFile = Paths.get("optimizableValues.json");
+        OptimizableValues values = convertToJsonStructure(optimizableValues);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Gson gson = new Gson();
+        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(bos, StandardCharsets.UTF_8))) {
+            gson.toJson(values, OptimizableValues.class, writer);
+        }
+        byte[] content = bos.toByteArray();
+        return new WorkspaceEntry(WorkspaceEntry.Kind.FILE, optimizableFile.getFileName()
+            .toString(), "", content);
+    }
+
+    private OptimizableValues convertToJsonStructure(List<OptimizableValue<?>> optimizableValues) {
+        OptimizableValues values = new OptimizableValues();
+        for (OptimizableValue<?> value : optimizableValues) {
+            Optimizable optimizable = value.getOptimizable();
+            DataType dataType = optimizable.getDataType();
+            switch (dataType) {
+            case BOOL:
+                values.boolValues.add(new BoolEntry(optimizable.getName(), (Boolean) value.getValue()));
+                break;
+            case STRING:
+                values.stringValues.add(new StringEntry(optimizable.getName(), (String) value.getValue()));
+                break;
+            case INT:
+                values.intValues.add(new IntEntry(optimizable.getName(), (Integer) value.getValue()));
+                break;
+            case DOUBLE:
+                values.doubleValues.add(new DoubleEntry(optimizable.getName(), (Double) value.getValue()));
+                break;
+            default:
+                throw new RuntimeException("Unsupported type: " + dataType);
+            }
+        }
+        return values;
     }
 
     private WorkspaceEntry createFile(Path path) throws IOException {
