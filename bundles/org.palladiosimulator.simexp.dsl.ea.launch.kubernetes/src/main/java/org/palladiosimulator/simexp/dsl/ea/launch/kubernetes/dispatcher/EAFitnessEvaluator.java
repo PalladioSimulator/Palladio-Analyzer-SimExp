@@ -21,6 +21,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobTask;
@@ -50,13 +51,14 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
     @Override
     public Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException {
-        JobTask task = createTask(optimizableValues);
-
         ClassLoader oldContextClassLoader = Thread.currentThread()
             .getContextClassLoader();
         Thread.currentThread()
             .setContextClassLoader(classloader);
         try {
+            OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+            LOGGER.info(String.format("evaluate: %s", optimizableValueToString.asString(optimizableValues)));
+            JobTask task = createTask(optimizableValues);
             Gson logGson = new GsonBuilder().serializeNulls()
                 .setPrettyPrinting()
                 .create();
