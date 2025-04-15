@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.app.console.simulation;
+package org.palladiosimulator.simexp.console.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +10,38 @@ public class OptimizableValues {
 
     public static class BoolEntry extends Entry {
         public boolean value;
+
+        public BoolEntry(String name, boolean value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     public static class StringEntry extends Entry {
         public String value;
+
+        public StringEntry(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     public static class IntEntry extends Entry {
         public int value;
+
+        public IntEntry(String name, int value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     public static class DoubleEntry extends Entry {
         public double value;
+
+        public DoubleEntry(String name, double value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     public List<BoolEntry> boolValues;

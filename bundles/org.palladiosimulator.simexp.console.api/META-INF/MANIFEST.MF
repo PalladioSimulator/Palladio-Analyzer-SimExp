@@ -4,4 +4,5 @@ Bundle-Name: org.palladiosimulator.simexp.console.api
 Bundle-SymbolicName: org.palladiosimulator.simexp.console.api
 Automatic-Module-Name: org.palladiosimulator.simexp.console.api
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.console.api
 Bundle-RequiredExecutionEnvironment: JavaSE-17
