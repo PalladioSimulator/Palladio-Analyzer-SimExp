@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.evaluate;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,8 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     }
 
     @Override
-    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) {
+    public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues)
+            throws IOException {
         Future<Optional<Double>> future = cache.get(optimizableValues);
         OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         if (future == null) {

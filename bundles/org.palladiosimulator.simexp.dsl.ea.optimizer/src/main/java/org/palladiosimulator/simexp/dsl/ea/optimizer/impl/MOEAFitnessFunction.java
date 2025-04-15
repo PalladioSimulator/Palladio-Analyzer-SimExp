@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,13 +58,13 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
         synchronizedSetOfEvaluatedOptimizable.add(optimizableValues);
-        Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
         try {
+            Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
             return round(fitness);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | IOException e) {
             Double roundedPenalty = round(penaltyForInvalids);
             LOGGER.error(String.format("%s -> return penalty fitness of " + roundedPenalty, e.getMessage()), e);
             return roundedPenalty;

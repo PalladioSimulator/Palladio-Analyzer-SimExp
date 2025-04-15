@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -59,7 +60,7 @@ public class MOEAFitnessFunctionTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testApply() {
+    public void testApply() throws IOException {
         // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
@@ -89,7 +90,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testHandleInterruptedException() throws InterruptedException, ExecutionException {
+    public void testHandleInterruptedException() throws InterruptedException, ExecutionException, IOException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -104,7 +105,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testHandleExecutionException() throws InterruptedException, ExecutionException {
+    public void testHandleExecutionException() throws InterruptedException, ExecutionException, IOException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -118,7 +119,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testInvalidChromosome() throws InterruptedException, ExecutionException {
+    public void testInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
         SmodelBitset smodelBitset = new SmodelBitset(4);
         smodelBitset.set(3);
         smodelBitset.set(2);
@@ -135,7 +136,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testRoundingApply() {
+    public void testRoundingApply() throws IOException {
         // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
@@ -165,7 +166,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testRoundingApplyMimimumDelta() {
+    public void testRoundingApplyMimimumDelta() throws IOException {
         // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
@@ -196,7 +197,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException {
+    public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
         SmodelBitset smodelBitset = new SmodelBitset(4);
         smodelBitset.set(3);
         smodelBitset.set(2);

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.api;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -18,6 +19,6 @@ public interface IEAFitnessEvaluator {
      *            the optimizables to evaluate
      * @return a future receiving the fitness of the provided {@link Optimizable} values
      */
-    Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues);
+    Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException;
 
 }

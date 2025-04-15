@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,7 +106,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void simpleBooleanOptimizableSetTest() {
+    public void simpleBooleanOptimizableSetTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -137,7 +138,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumDoubleOptimizableRangeTest() {
+    public void mediumDoubleOptimizableRangeTest() throws IOException {
         DoubleLiteral lowerBound = smodelCreator.createDoubleLiteral(0.0);
         DoubleLiteral upperBound = smodelCreator.createDoubleLiteral(100.0);
         DoubleLiteral step = smodelCreator.createDoubleLiteral(1.0);
@@ -179,7 +180,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void largeDoubleOptimizableRangeTest() {
+    public void largeDoubleOptimizableRangeTest() throws IOException {
         DoubleLiteral lowerBoundDouble = smodelCreator.createDoubleLiteral(0.0);
         DoubleLiteral upperBoundDouble = smodelCreator.createDoubleLiteral(1000.0);
         DoubleLiteral stepDouble = smodelCreator.createDoubleLiteral(1.0);
@@ -214,7 +215,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void doubleOptimizableRangeTestWithNonNaturalNumbers() {
+    public void doubleOptimizableRangeTestWithNonNaturalNumbers() throws IOException {
         RangeBounds rangeBound = new RangeBoundsHelper().initializeDoubleRangeBound(smodelCreator, calculator, 0.15,
                 10.0, 0.5);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, rangeBound);
@@ -242,7 +243,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void simpleDoubleOptimizableSetTest() {
+    public void simpleDoubleOptimizableSetTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
                 List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 9.0, 9.0), calculator);
 
@@ -288,7 +289,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumDoubleOptimizableSetTest() {
+    public void mediumDoubleOptimizableSetTest() throws IOException {
         List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
                 64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5);
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
@@ -315,7 +316,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void largeDoubleOptimizableSetTest() {
+    public void largeDoubleOptimizableSetTest() throws IOException {
         List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
                 64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5, 68.0490, 13.9377, 22.8356, 62.6662, 80.6995,
                 24.6583, 20.1058, 86.7853, 5.9211, 34.0451, 86.9018, 57.0348, 64.3853, 53.8212, 27.0908, 27.7072,
@@ -352,7 +353,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void simpleStringOptimizableSetTest() {
+    public void simpleStringOptimizableSetTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
                 List.of("Hello", "World", "!", "How", "are", "youuuu", "abcdef"), calculator);
 
@@ -407,7 +408,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumStringOptimizableSetTest() {
+    public void mediumStringOptimizableSetTest() throws IOException {
         List<String> listOfDoubles = List.of("Nq06", "6xmPSfJtRKU0", "", "LZ4JyxP", "3TA", "AOEf1JPoQyVStrg5YK", "dm",
                 "bdxtTmlypfap", "qT0wClBAC5zjgv0A4rTq", "nbwCQhv", "5beIQ16f0Vu7t", "ycqRYzeeDcBLaM3", "BOL1ngaNk",
                 "vuhHk", "7b1m7oM84ujmmpoG", "zXiKgr8f13", "pzxf9iEPA3qocBiEzo", "0A78Gr", "Ru8wa7c2mv4f",
@@ -436,7 +437,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void largeStringOptimizableSetTest() {
+    public void largeStringOptimizableSetTest() throws IOException {
         List<String> listOfDoubles = List.of("aOHxv9wds0Rq4mnXHlmX46", "W7PhffqBEBditr",
                 "KfKtcRnBQyIIXb4LTOh1c3pmm8nmzND6L7tkhu", "EKuKumON10ZKSX7zxOi",
                 "0F4DUScGfteSJuJY2gw7L1RQ0Xh7uL5W9uT9cUDX", "kkF5nrs4XJEsoMBUGm6A", "Fs0jR6BWoKsSNre1cx2PqVHDu",
@@ -505,7 +506,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void simpleIntegerOptimizableRangeTest() {
+    public void simpleIntegerOptimizableRangeTest() throws IOException {
         RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 20,
                 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
@@ -532,7 +533,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumIntegerOptimizableRangeTest() {
+    public void mediumIntegerOptimizableRangeTest() throws IOException {
         double estimatedOptimumFitness = 99.0;
         RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 100,
                 1);
@@ -559,7 +560,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void largeIntegerOptimizableRangeTest() {
+    public void largeIntegerOptimizableRangeTest() throws IOException {
         int lowerBound = 0;
         int upperBound = 100000;
         RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator,
@@ -588,7 +589,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void simpleIntegerOptimizableSetTestWithParetoEfficientElements() {
+    public void simpleIntegerOptimizableSetTestWithParetoEfficientElements() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9, 9),
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
@@ -629,7 +630,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumIntegerOptimizableSetTest() {
+    public void mediumIntegerOptimizableSetTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(4, 31, 84, 90, 40, 80, 28, 69, 74, 69, 29, 83, 31, 53, 35, 42, 80, 52, 85, 16), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
@@ -655,7 +656,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void mediumIntegerOptimizableSetTestWithNegativeNumbers() {
+    public void mediumIntegerOptimizableSetTestWithNegativeNumbers() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(4, -31, 84, -90, 40, -80, 28, 69, 74, 69, 29, 83, -31, 53, 35, -42, 80, 52, 85, -16),
                 calculator);
@@ -682,7 +683,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void largeIntegerOptimizableSetTest() {
+    public void largeIntegerOptimizableSetTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(72, 57, 13, 25, 40, 8, 67, 49, 90, 58, 3, 27, 44, 91, 96, 39, 70, 20, 85, 78, 19, 34, 42, 95,
                         10, 87, 50, 4, 16, 61, 98, 88, 77, 23, 84, 63, 45, 33, 9, 56, 81, 18, 92, 31, 26, 5, 65, 60, 75,
@@ -714,7 +715,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerDoubleOptimizableRangeTest() {
+    public void integerDoubleOptimizableRangeTest() throws IOException {
         IntLiteral lowerBound = smodelCreator.createIntLiteral(0);
         IntLiteral upperBound = smodelCreator.createIntLiteral(20);
         IntLiteral step = smodelCreator.createIntLiteral(1);
@@ -788,7 +789,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerDoubleOptimizableSetTest() {
+    public void integerDoubleOptimizableSetTest() throws IOException {
         SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(1, 3, 7, 3, 8, 2, 9), calculator);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, integerSetBound);
@@ -817,7 +818,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerBooleanOptimizableSetTest() {
+    public void integerBooleanOptimizableSetTest() throws IOException {
         SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(1, 3, 7, 3, 8, 2, 9), calculator);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, integerSetBound);
@@ -846,7 +847,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerBooleanDoubleOptimizableSetTest() {
+    public void integerBooleanDoubleOptimizableSetTest() throws IOException {
         SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
                 List.of(1, 3, 7, 3, 8, 2, 9), calculator);
         Optimizable intOptimizable = smodelCreator.createOptimizable("test", DataType.INT, integerSetBound);
@@ -885,7 +886,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void manySuboptimizablesOptimizableSetTest() {
+    public void manySuboptimizablesOptimizableSetTest() throws IOException {
         Random r = new Random(42);
         Map<Optimizable, Object> optimizables = new LinkedHashMap();
         for (int i = 0; i < 15; i++) {

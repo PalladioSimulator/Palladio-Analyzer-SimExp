@@ -127,7 +127,6 @@
          version="27.1.0.v20190517-1946"
          unpack="false"/>
 
-
    <plugin
          id="com.google.guava"
          download-size="0"
@@ -842,6 +841,13 @@
 
    <plugin
          id="org.eclipse.sirius.ext.emf.tx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tukaani.xz"
          download-size="0"
          install-size="0"
          version="0.0.0"
