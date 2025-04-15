@@ -20,6 +20,9 @@ import org.eclipse.osgi.service.datalocation.Location;
 import org.palladiosimulator.simexp.app.console.simulation.SimulationExecutor;
 
 public class SimExpApplication implements IApplication {
+    private static final Integer EXIT_FAILURE_INIT = Integer.valueOf(1);
+    public static final Integer EXIT_FAILURE = Integer.valueOf(2);
+
     private Logger logger;
 
     @Override
@@ -30,7 +33,7 @@ public class SimExpApplication implements IApplication {
         logger.info("SimExp running...");
         try {
             if (!init()) {
-                return IApplication.EXIT_OK;
+                return EXIT_FAILURE_INIT;
             }
 
             IPath instanceLocation = Platform.getLocation();
@@ -45,12 +48,13 @@ public class SimExpApplication implements IApplication {
 
             SimulationExecutor simulationExecutor = new SimulationExecutor(launchManager);
             simulationExecutor.runSimulation(arguments, instancePath);
+            return IApplication.EXIT_OK;
         } catch (Exception e) {
             logger.error(String.format("exception running: %s", getClass().getSimpleName()), e);
         } finally {
             logger.info("SimExp finished");
         }
-        return IApplication.EXIT_OK;
+        return EXIT_FAILURE;
     }
 
     private void validateCommandLine(Arguments arguments) {
