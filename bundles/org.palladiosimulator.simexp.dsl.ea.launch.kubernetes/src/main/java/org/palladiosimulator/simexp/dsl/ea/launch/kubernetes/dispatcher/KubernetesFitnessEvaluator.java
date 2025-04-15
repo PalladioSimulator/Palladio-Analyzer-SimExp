@@ -40,6 +40,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
 
     private final IPreferencesService preferencesService;
+    private final ClassLoader classloader;
 
     private EAFitnessEvaluator fitnessEvaluator;
 
@@ -47,6 +48,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
         this.preferencesService = preferencesService;
+        this.classloader = Thread.currentThread()
+            .getContextClassLoader();
     }
 
     @Override
@@ -89,7 +92,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
 
     private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient)
             throws IOException {
-        TaskReceiver taskReceiver = new TaskReceiver(channel);
+        TaskReceiver taskReceiver = new TaskReceiver(channel, classloader);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
         boolean autoAck = false;
         channel.basicConsume(inQueueName, autoAck, "answerConsumer", taskReceiver);
@@ -99,7 +102,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             DeploymentDispatcher dispatcher = new DeploymentDispatcher(client);
             String brokerUrl = buildBrokerURL();
             String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
-            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName);
+            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, classloader);
             dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                 @Override

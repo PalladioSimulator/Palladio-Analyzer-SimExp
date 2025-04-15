@@ -20,11 +20,13 @@ public class TaskReceiver extends DefaultConsumer {
 
     private final Map<String, JobResult> answers;
     private final List<ITaskConsumer> taskConsumers;
+    private final ClassLoader classloader;
 
-    public TaskReceiver(Channel channel) {
+    public TaskReceiver(Channel channel, ClassLoader classloader) {
         super(channel);
         this.answers = new HashMap<>();
         this.taskConsumers = new ArrayList<>();
+        this.classloader = classloader;
     }
 
     public synchronized void registerTaskConsumer(ITaskConsumer taskConsumer) {
@@ -38,17 +40,26 @@ public class TaskReceiver extends DefaultConsumer {
     @Override
     public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
             throws IOException {
-        long deliveryTag = envelope.getDeliveryTag();
-        String message = new String(body, StandardCharsets.UTF_8);
-        LOGGER.debug(String.format("received message tag %d: %s", deliveryTag, message));
-        Gson gson = new Gson();
-        JobResult answer = gson.fromJson(message, JobResult.class);
-        if (answers.containsKey(answer.id)) {
-            throw new RuntimeException("already received: %s" + answer.id);
+        ClassLoader oldContextClassLoader = Thread.currentThread()
+            .getContextClassLoader();
+        Thread.currentThread()
+            .setContextClassLoader(classloader);
+        try {
+            long deliveryTag = envelope.getDeliveryTag();
+            String message = new String(body, StandardCharsets.UTF_8);
+            LOGGER.debug(String.format("received message tag %d: %s", deliveryTag, message));
+            Gson gson = new Gson();
+            JobResult answer = gson.fromJson(message, JobResult.class);
+            if (answers.containsKey(answer.id)) {
+                throw new RuntimeException("already received: %s" + answer.id);
+            }
+            answers.put(answer.id, answer);
+            notifyConsumers(answer.id, answer);
+            getChannel().basicAck(deliveryTag, false);
+        } finally {
+            Thread.currentThread()
+                .setContextClassLoader(oldContextClassLoader);
         }
-        answers.put(answer.id, answer);
-        notifyConsumers(answer.id, answer);
-        getChannel().basicAck(deliveryTag, false);
     }
 
     private void notifyConsumers(String answerId, JobResult result) {

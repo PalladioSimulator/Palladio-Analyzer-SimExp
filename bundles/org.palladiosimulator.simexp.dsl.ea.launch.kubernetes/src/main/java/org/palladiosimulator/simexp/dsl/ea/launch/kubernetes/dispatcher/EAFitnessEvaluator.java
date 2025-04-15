@@ -37,29 +37,41 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final ITaskManager taskManager;
     private final Channel channel;
     private final String outQueueName;
+    private final ClassLoader classloader;
 
     private int count = 0;
 
-    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName) {
+    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.channel = channel;
         this.outQueueName = outQueueName;
+        this.classloader = classloader;
     }
 
     @Override
     public Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException {
         JobTask task = createTask(optimizableValues);
-        Gson logGson = new GsonBuilder().serializeNulls()
-            .setPrettyPrinting()
-            .create();
-        String logMessage = logGson.toJson(task);
-        LOGGER.debug(String.format("created task %s: '%s'", task.id, logMessage));
 
-        SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
-        }, Optional.empty());
-        sendTask(task);
-        taskManager.newTask(task.id, future);
-        return future;
+        ClassLoader oldContextClassLoader = Thread.currentThread()
+            .getContextClassLoader();
+        Thread.currentThread()
+            .setContextClassLoader(classloader);
+        try {
+            Gson logGson = new GsonBuilder().serializeNulls()
+                .setPrettyPrinting()
+                .create();
+            String logMessage = logGson.toJson(task);
+            LOGGER.debug(String.format("created task %s: '%s'", task.id, logMessage));
+
+            SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
+            }, Optional.empty());
+            sendTask(task);
+            taskManager.newTask(task.id, future);
+            return future;
+        } finally {
+            Thread.currentThread()
+                .setContextClassLoader(oldContextClassLoader);
+        }
     }
 
     private JobTask createTask(List<OptimizableValue<?>> optimizableValues) throws IOException {
