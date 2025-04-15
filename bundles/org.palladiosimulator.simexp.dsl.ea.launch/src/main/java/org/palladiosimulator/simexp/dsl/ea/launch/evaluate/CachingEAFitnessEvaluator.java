@@ -18,24 +18,36 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
 
     private final IDisposeableEAFitnessEvaluator delegate;
     private final Map<List<OptimizableValue<?>>, Future<Optional<Double>>> cache = new HashMap<>();
+    private final ClassLoader classloader;
 
     public CachingEAFitnessEvaluator(IDisposeableEAFitnessEvaluator delegate) {
         this.delegate = delegate;
+        this.classloader = Thread.currentThread()
+            .getContextClassLoader();
     }
 
     @Override
     public synchronized Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues)
             throws IOException {
-        Future<Optional<Double>> future = cache.get(optimizableValues);
-        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
-        if (future == null) {
-            LOGGER.info(String.format("cache miss: %s", optimizableValueToString.asString(optimizableValues)));
-            future = delegate.calcFitness(optimizableValues);
-            cache.put(optimizableValues, future);
-        } else {
-            LOGGER.info(String.format("cache hit: %s", optimizableValueToString.asString(optimizableValues)));
+        ClassLoader oldContextClassLoader = Thread.currentThread()
+            .getContextClassLoader();
+        Thread.currentThread()
+            .setContextClassLoader(classloader);
+        try {
+            Future<Optional<Double>> future = cache.get(optimizableValues);
+            OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+            if (future == null) {
+                LOGGER.info(String.format("cache miss: %s", optimizableValueToString.asString(optimizableValues)));
+                future = delegate.calcFitness(optimizableValues);
+                cache.put(optimizableValues, future);
+            } else {
+                LOGGER.info(String.format("cache hit: %s", optimizableValueToString.asString(optimizableValues)));
+            }
+            return future;
+        } finally {
+            Thread.currentThread()
+                .setContextClassLoader(oldContextClassLoader);
         }
-        return future;
     }
 
     private class EvaluatorClientDelegate implements EvaluatorClient {
