@@ -22,12 +22,12 @@ public class KubernetesDispatcherProvider implements IDispatcherProvider {
     }
 
     @Override
-    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config,
+    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;
         IPreferencesService preferencesService = Platform.getPreferencesService();
-        return new KubernetesFitnessEvaluator(modelledConfig, launchDescriptionProvider, seedProvider,
+        return new KubernetesFitnessEvaluator(modelledConfig, launcherName, launchDescriptionProvider, seedProvider,
                 modelLoaderFactory, resourcePath, preferencesService);
     }
 }

@@ -14,7 +14,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public interface ILaunchFactory {
     int canHandle(IWorkflowConfiguration config);
 
-    SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
+    SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath)
             throws CoreException;

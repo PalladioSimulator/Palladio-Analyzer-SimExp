@@ -37,13 +37,13 @@ public class DispatcherLookup {
     }
 
     public IDisposeableEAFitnessEvaluator createEvaluator(String dispatcherName, IWorkflowConfiguration config,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, Path resourcePath) throws CoreException {
+            String launcherName, LaunchDescriptionProvider launchDescriptionProvider,
+            Optional<ISeedProvider> seedProvider, Factory modelLoaderFactory, Path resourcePath) throws CoreException {
         List<IDispatcherProvider> providers = lookupProvider(registry);
         for (IDispatcherProvider provider : providers) {
             if (dispatcherName.equals(provider.getName())) {
-                IDisposeableEAFitnessEvaluator evaluator = provider.createEvaluator(config, launchDescriptionProvider,
-                        seedProvider, modelLoaderFactory, resourcePath);
+                IDisposeableEAFitnessEvaluator evaluator = provider.createEvaluator(config, launcherName,
+                        launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
                 return evaluator;
             }
         }

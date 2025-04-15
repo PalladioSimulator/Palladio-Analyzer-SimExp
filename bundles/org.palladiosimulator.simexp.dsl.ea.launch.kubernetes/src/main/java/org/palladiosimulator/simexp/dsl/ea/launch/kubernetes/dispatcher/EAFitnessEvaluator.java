@@ -46,16 +46,18 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final ITaskManager taskManager;
     private final Channel channel;
     private final String outQueueName;
+    private final String launcherName;
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
 
     private int count = 0;
 
-    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, List<Path> projectPaths,
-            ClassLoader classloader) {
+    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, String launcherName,
+            List<Path> projectPaths, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.channel = channel;
         this.outQueueName = outQueueName;
+        this.launcherName = launcherName;
         this.projectPaths = projectPaths;
         this.classloader = classloader;
     }
@@ -99,7 +101,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
             WorkspaceEntry projectArchive = createProjectArchive(projectFolder);
             task.workspaceEntries.add(projectArchive);
         }
-        task.launcherName = "deltaiot";
+        task.launcherName = launcherName;
         return task;
     }
 

@@ -39,7 +39,7 @@ public class CustomFaultTolerantLoadBalancingLaunchFactory implements ILaunchFac
     }
 
     @Override
-    public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
+    public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;

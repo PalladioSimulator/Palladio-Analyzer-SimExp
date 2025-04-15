@@ -37,6 +37,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(LocalEAFitnessEvaluator.class);
 
     private final IModelledWorkflowConfiguration config;
+    private final String launcherName;
     private final LaunchDescriptionProvider launchDescriptionProvider;
     private final Optional<ISeedProvider> seedProvider;
     private final ExecutorService executor;
@@ -45,10 +46,11 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
 
     private int counter = 0;
 
-    public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config,
+    public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
         this.config = config;
+        this.launcherName = launcherName;
         this.launchDescriptionProvider = launchDescriptionProvider;
         this.seedProvider = seedProvider;
         this.executor = Executors.newFixedThreadPool(1,
@@ -114,7 +116,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         }
         SimulatedExperienceAccessor accessor = new CsvAccessor(currentResourceFolder);
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
-                optimizableSimExpWorkflowConfiguration, launchDescriptionProvider, seedProvider, accessor,
+                optimizableSimExpWorkflowConfiguration, launcherName, launchDescriptionProvider, seedProvider, accessor,
                 currentResourceFolder);
 
         LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));

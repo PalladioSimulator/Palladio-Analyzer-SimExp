@@ -41,14 +41,16 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
 
     private final IModelledWorkflowConfiguration config;
+    private final String launcherName;
     private final IPreferencesService preferencesService;
     private final ClassLoader classloader;
 
     private EAFitnessEvaluator fitnessEvaluator;
 
-    public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config,
+    public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
+        this.launcherName = launcherName;
         this.config = config;
         this.preferencesService = preferencesService;
         this.classloader = Thread.currentThread()
@@ -106,7 +108,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             String brokerUrl = buildBrokerURL();
             String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
             List<Path> projectPaths = getProjectPaths(config);
-            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, projectPaths, classloader);
+            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, launcherName, projectPaths,
+                    classloader);
             dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                 @Override

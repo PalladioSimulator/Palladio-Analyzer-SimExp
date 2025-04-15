@@ -55,7 +55,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     }
 
     @Override
-    public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config,
+    public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath)
             throws CoreException {
@@ -65,19 +65,19 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
+                launcherName, launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
                 (IEvolutionaryAlgorithmWorkflowConfiguration) config);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, Path resourcePath) throws CoreException {
+            String launcherName, LaunchDescriptionProvider launchDescriptionProvider,
+            Optional<ISeedProvider> seedProvider, Factory modelLoaderFactory, Path resourcePath) throws CoreException {
         String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
                 "", null);
         DispatcherLookup dispatcherLookup = new DispatcherLookup();
-        return dispatcherLookup.createEvaluator(dispatchername, config, launchDescriptionProvider, seedProvider,
-                modelLoaderFactory, resourcePath);
+        return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, launchDescriptionProvider,
+                seedProvider, modelLoaderFactory, resourcePath);
     }
 }

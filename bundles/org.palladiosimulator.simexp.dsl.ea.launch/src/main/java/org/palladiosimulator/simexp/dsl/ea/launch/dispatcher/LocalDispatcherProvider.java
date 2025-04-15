@@ -22,12 +22,12 @@ public class LocalDispatcherProvider implements IDispatcherProvider {
     }
 
     @Override
-    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config,
+    public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;
-        return new LocalEAFitnessEvaluator(modelledConfig, launchDescriptionProvider, seedProvider, modelLoaderFactory,
-                resourcePath);
+        return new LocalEAFitnessEvaluator(modelledConfig, launcherName, launchDescriptionProvider, seedProvider,
+                modelLoaderFactory, resourcePath);
     }
 
 }

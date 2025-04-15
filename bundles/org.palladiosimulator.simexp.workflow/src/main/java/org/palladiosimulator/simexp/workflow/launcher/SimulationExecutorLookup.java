@@ -33,7 +33,7 @@ public class SimulationExecutorLookup {
         this.maxLevel = maxLevel;
     }
 
-    public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config,
+    public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             SimulatedExperienceAccessor accessor, Path resourcePath) throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -42,7 +42,7 @@ public class SimulationExecutorLookup {
         ILaunchFactory launchFactory = selectCandidate(candidates, maxLevel);
         if (launchFactory != null) {
             PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
-            return launchFactory.createSimulationExecutor(config, launchDescriptionProvider, seedProvider,
+            return launchFactory.createSimulationExecutor(config, launcherName, launchDescriptionProvider, seedProvider,
                     modelLoaderFactory, accessor, resourcePath);
         }
 

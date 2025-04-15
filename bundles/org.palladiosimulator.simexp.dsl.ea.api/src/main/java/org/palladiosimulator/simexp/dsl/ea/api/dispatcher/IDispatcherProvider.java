@@ -12,7 +12,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public interface IDispatcherProvider {
     String getName();
 
-    IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config,
+    IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath);
 }

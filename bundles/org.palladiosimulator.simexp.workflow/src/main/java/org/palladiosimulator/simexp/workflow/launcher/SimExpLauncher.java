@@ -71,8 +71,10 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             Path resourcePath = getResourcePath(simulationID);
             Files.createDirectories(resourcePath);
             SimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
+            String launcherName = launch.getLaunchConfiguration()
+                .getName();
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
-                    launchDescriptionProvider, seedProvider, accessor, resourcePath);
+                    launcherName, launchDescriptionProvider, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
