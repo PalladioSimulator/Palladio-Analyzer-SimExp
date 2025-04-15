@@ -30,8 +30,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import io.fabric8.kubernetes.api.model.Node;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -59,22 +57,11 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             .withOauthToken(apiToken)
             .withTrustCerts(true)
             .build();
-        LOGGER.info(String.format("Connecting to kubernetes cluster at: %s", clusterURL));
+        LOGGER.info(String.format("Connecting to kubernetes at: %s", clusterURL));
         try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
             .build()) {
-            LOGGER.info("connected");
-
-            LOGGER.info("nodes:");
-            client.nodes()
-                .list()
-                .getItems()
-                .stream()
-                .map(Node::getMetadata)
-                .map(ObjectMeta::getName)
-                .forEach(LOGGER::info);
-
+            LOGGER.info("Connected to kubernetes");
             evaluateWithRabbitMQ(client, evaluatorClient);
-
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
