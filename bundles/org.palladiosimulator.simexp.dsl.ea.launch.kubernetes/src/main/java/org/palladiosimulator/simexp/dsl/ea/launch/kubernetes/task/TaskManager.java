@@ -40,8 +40,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
                 result.reward, result.error));
 
         if (StringUtils.isNotEmpty(result.error)) {
-            // TODO: use on error value
-            future.setResult(Optional.of(0.0));
+            future.setResult(Optional.empty());
         } else {
             future.setResult(Optional.of(result.reward));
         }
