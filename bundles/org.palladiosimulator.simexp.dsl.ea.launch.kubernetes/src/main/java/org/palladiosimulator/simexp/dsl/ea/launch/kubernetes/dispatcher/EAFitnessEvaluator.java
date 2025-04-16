@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.CachingWorkspaceEntryFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IWorkspaceEntryFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobTask;
@@ -33,6 +34,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final String launcherName;
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
+    private final IWorkspaceEntryFactory workspaceEntryFactory;
 
     private int count = 0;
 
@@ -44,6 +46,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         this.launcherName = launcherName;
         this.projectPaths = projectPaths;
         this.classloader = classloader;
+        this.workspaceEntryFactory = new CachingWorkspaceEntryFactory(new WorkspaceEntryFactory());
     }
 
     @Override
@@ -98,7 +101,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         task.command = String.format("/simexp/simexp %s", StringUtils.join(arguments, " "));
         // task.command = "/usr/bin/sleep 300";
 
-        IWorkspaceEntryFactory workspaceEntryFactory = new WorkspaceEntryFactory();
         WorkspaceEntry optimizableFileEntry = workspaceEntryFactory.createOptimizableFile(optimizableValues);
         task.workspaceEntries.add(optimizableFileEntry);
         for (Path projectFolder : projectPaths) {
