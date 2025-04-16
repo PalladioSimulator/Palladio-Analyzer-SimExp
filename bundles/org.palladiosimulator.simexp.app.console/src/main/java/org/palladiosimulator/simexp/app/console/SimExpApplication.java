@@ -104,7 +104,7 @@ public class SimExpApplication implements IApplication {
 
     private boolean init() throws IOException {
         registerTerminationHandlers();
-        return lockInstanceLocation();
+        return lockWorkspace();
     }
 
     private void registerTerminationHandlers() {
@@ -117,13 +117,13 @@ public class SimExpApplication implements IApplication {
         });
     }
 
-    private boolean lockInstanceLocation() throws IOException {
-        Location configLocation = Platform.getConfigurationLocation();
-        String instancePath = configLocation.getURL()
+    private boolean lockWorkspace() throws IOException {
+        Location location = Platform.getInstanceLocation();
+        String path = location.getURL()
             .getPath();
-        logger.debug(String.format("configuration path: %s", instancePath));
-        if (!configLocation.lock()) {
-            logger.error("application is already running");
+        logger.debug(String.format("workspace path: %s", path));
+        if (!location.lock()) {
+            logger.error("workspace is already in use");
             return false;
         }
         return true;
