@@ -48,15 +48,16 @@ public class EAOptimizationRunner {
             .peek(paretoStatistics);
 
         final ISeq<Phenotype<BitGene, Double>> result;
-        Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> paretoCollector = ParetoSetCollector
-            .create();
+
+        Collector<EvolutionResult<BitGene, Double>, ?, Phenotype<BitGene, Double>> collector = EvolutionResult
+            .toBestPhenotype();
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
-            result = effectiveStream.collect(paretoCollector);
+            result = ISeq.of(effectiveStream.collect(collector));
         } else {
             long seed = seedProvider.get()
                 .getLong();
-            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
+            result = RandomRegistry.with(new Random(seed), r -> ISeq.of(effectiveStream.collect(collector)));
         }
 
         LOGGER.info("EA finished...");
