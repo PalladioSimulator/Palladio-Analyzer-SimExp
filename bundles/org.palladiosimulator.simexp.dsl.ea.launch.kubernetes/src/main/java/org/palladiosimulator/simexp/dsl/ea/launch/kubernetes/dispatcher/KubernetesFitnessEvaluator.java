@@ -6,17 +6,27 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
@@ -155,14 +165,29 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     }
 
     private List<Path> getProjectPaths(IModelledWorkflowConfiguration config) {
-        List<Path> projectPaths = new ArrayList<>();
+        URI experiments = config.getExperimentsURI();
+        URI staticModel = config.getStaticModelURI();
+        URI dynamicModel = config.getDynamicModelURI();
+        URI smodel = config.getSmodelURI();
+        List<URI> uris = Arrays.asList(experiments, staticModel, dynamicModel, smodel);
 
-        // TODO:
-        Path projectFolder = Paths.get(
-                "/home/zd745/develop/palladio/simexp-ea/Palladio-Analyzer-SimExp/examples/org.palladiosimulator.simexp.pcm.examples.deltaiot");
-        projectPaths.add(projectFolder);
-
+        List<Path> projectPaths = uris.stream()
+            .filter(Objects::nonNull)
+            .map(u -> getProjectPath(u))
+            .distinct()
+            .collect(Collectors.toList());
         return projectPaths;
+    }
+
+    private Path getProjectPath(URI uri) {
+        String platformResourcePath = uri.toPlatformString(true);
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceRoot workspaceRoot = workspace.getRoot();
+        IResource memberResource = workspaceRoot.findMember(platformResourcePath);
+        IProject project = memberResource.getProject();
+        IPath projectLocation = project.getLocation();
+        String osProjectPath = projectLocation.toOSString();
+        return Paths.get(osProjectPath);
     }
 
     private String getPreference(String key) {
