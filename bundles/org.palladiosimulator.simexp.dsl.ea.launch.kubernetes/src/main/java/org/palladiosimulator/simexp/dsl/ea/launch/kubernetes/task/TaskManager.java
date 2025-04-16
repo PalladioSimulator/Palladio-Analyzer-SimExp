@@ -48,7 +48,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     private String getRewardDescription(JobResult result) {
         if (StringUtils.isNotEmpty(result.error)) {
-            String.format("n/a (%s)", result.error);
+            return String.format("<null> (%s)", result.error);
         }
         return String.format("%s", result.reward);
     }
