@@ -8,10 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -20,6 +23,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.console.api.OptimizableValues;
 import org.palladiosimulator.simexp.console.api.OptimizableValues.BoolEntry;
@@ -93,16 +97,34 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         JobTask task = new JobTask();
         task.id = getTaskId();
         task.workspacePath = "/workspace";
-        task.workspaceArgument = "-w";
-        Integer duration = 10;
-        task.command = String.format("/app/sim_test.sh -d %d", duration);
+        /*
+         * task.workspaceArgument = "-w"; Integer duration = 10; task.command =
+         * String.format("/app/sim_test.sh -d %d", duration);
+         */
+
+        task.workspaceArgument = "-data";
+        List<String> arguments = new ArrayList<>();
+        arguments.add("-resultFile");
+        arguments.add("result.json");
+        arguments.add("-optimizablesFile");
+        arguments.add("optimizableValues.json");
+        arguments.add("-launchConfig");
+        arguments.add(launcherName);
+        for (Path projectFolder : projectPaths) {
+            arguments.add("-projectName");
+            String projectName = projectFolder.getFileName()
+                .toString();
+            arguments.add(projectName);
+        }
+        task.command = String.format("/simexp/simexp %s", StringUtils.join(arguments, " "));
+        // task.command = "/usr/bin/sleep 300";
+
         WorkspaceEntry optimizableFileEntry = createOptimizableFile(optimizableValues);
         task.workspaceEntries.add(optimizableFileEntry);
         for (Path projectFolder : projectPaths) {
             WorkspaceEntry projectArchive = createProjectArchive(projectFolder);
             task.workspaceEntries.add(projectArchive);
         }
-        task.launcherName = launcherName;
         return task;
     }
 
@@ -117,18 +139,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         String message = gson.toJson(task);
         channel.basicPublish("", outQueueName, null, message.getBytes(StandardCharsets.UTF_8));
         LOGGER.info(String.format("Sent task: %s [%s]", task.id, description));
-    }
-
-    private WorkspaceEntry createProjectArchive(Path projectFolder) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try (TarArchiveOutputStream tar = new TarArchiveOutputStream(new BZip2CompressorOutputStream(bos))) {
-            PathMatcher pathMatcher = projectFolder.getFileSystem()
-                .getPathMatcher("glob:**/target");
-            addFileToTarGz(tar, projectFolder, Paths.get(""), pathMatcher);
-        }
-        byte[] projectArchive = bos.toByteArray();
-        return new WorkspaceEntry(WorkspaceEntry.Kind.ARCHIVE, projectFolder.getFileName()
-            .toString(), "bz2", projectArchive);
     }
 
     private WorkspaceEntry createOptimizableFile(List<OptimizableValue<?>> optimizableValues) throws IOException {
@@ -181,30 +191,59 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
             .toString(), "", fileEntry);
     }
 
-    private void addFileToTarGz(TarArchiveOutputStream tar, Path path, Path base, PathMatcher ignoreMatcher)
+    private WorkspaceEntry createProjectArchive(Path projectFolder) throws IOException {
+        LOGGER.info(String.format("create tar archive for: %s", projectFolder));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FileSystem fileSystem = projectFolder.getFileSystem();
+        List<PathMatcher> pathMatchers = Arrays.asList(fileSystem.getPathMatcher("glob:**/target"),
+                fileSystem.getPathMatcher("glob:**/bin"));
+        try (TarArchiveOutputStream tar = new TarArchiveOutputStream(new BZip2CompressorOutputStream(bos))) {
+            tar.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
+            File[] children = projectFolder.toFile()
+                .listFiles();
+            for (File child : children) {
+                addFileToTarGz(tar, child.toPath(), Paths.get(""), pathMatchers);
+            }
+        }
+        byte[] projectArchive = bos.toByteArray();
+        return new WorkspaceEntry(WorkspaceEntry.Kind.ARCHIVE, projectFolder.getFileName()
+            .toString(), "bz2", projectArchive);
+    }
+
+    private void addFileToTarGz(TarArchiveOutputStream tar, Path path, Path base, List<PathMatcher> ignoreMatchers)
             throws IOException {
         Path entryName = base.resolve(path.getFileName());
-        ArchiveEntry tarEntry = tar.createArchiveEntry(path, entryName.getFileName()
-            .toString());
+        ArchiveEntry tarEntry = tar.createArchiveEntry(path, entryName.toString());
         tar.putArchiveEntry(tarEntry);
         if (Files.isRegularFile(path)) {
+            LOGGER.debug(String.format("add tar entry %s -> %s", entryName, path));
             try (InputStream is = Files.newInputStream(path)) {
                 IOUtils.copy(is, tar);
                 tar.closeArchiveEntry();
             }
         } else {
             tar.closeArchiveEntry();
+            LOGGER.debug(String.format("add tar dir entry %s -> %s", entryName, path));
             File[] children = path.toFile()
                 .listFiles();
             if (children != null) {
                 for (File child : children) {
                     Path childPath = child.toPath();
-                    if (!ignoreMatcher.matches(childPath)) {
-                        addFileToTarGz(tar, childPath.toAbsolutePath(), entryName, ignoreMatcher);
+                    if (!ignorePath(childPath, ignoreMatchers)) {
+                        addFileToTarGz(tar, childPath.toAbsolutePath(), entryName, ignoreMatchers);
                     }
                 }
             }
         }
+    }
+
+    private boolean ignorePath(Path path, List<PathMatcher> ignoreMatchers) {
+        for (PathMatcher ignoreMatcher : ignoreMatchers) {
+            if (ignoreMatcher.matches(path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
