@@ -34,5 +34,4 @@ public class JobTask {
     public String workspacePath;
     public String workspaceArgument;
     public List<WorkspaceEntry> workspaceEntries = new ArrayList<>();
-    public String launcherName;
 }
