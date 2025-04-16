@@ -3,7 +3,6 @@
 
 <product name="SimExp" uid="org.palladiosimulator.simexp.product.console" application="org.palladiosimulator.simexp.app.console.app" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
-
    <configIni use="default">
    </configIni>
 
@@ -30,10 +29,9 @@
       </win>
    </launcher>
 
-
    <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17</linux>
    </vm>
-
 
    <plugins>
    </plugins>
