@@ -114,7 +114,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         try {
             TaskManager taskManager = new TaskManager();
             taskReceiver.registerTaskConsumer(taskManager);
-            String imageRegistryUrl = "10.0.0.10:30500";
+            String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
+            URL imageRegistryUrl = new URL(imageRegistryStr);
             DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
             String brokerUrl = buildBrokerURL();
             String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);

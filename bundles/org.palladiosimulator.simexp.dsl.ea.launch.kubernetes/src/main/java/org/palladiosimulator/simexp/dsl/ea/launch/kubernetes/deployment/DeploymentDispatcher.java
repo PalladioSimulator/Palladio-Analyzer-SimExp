@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,15 +35,15 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
 
     private final KubernetesClient client;
     private final String namespace;
-    private final String imageRegistryUrl;
+    private final URL imageRegistryUrl;
 
     private final ClassLoader classloader;
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String imageRegistryUrl) {
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl) {
         this(classloader, client, imageRegistryUrl, "default");
     }
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String imageRegistryUrl,
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl,
             String namespace) {
         this.classloader = classloader;
         this.client = client;
@@ -139,7 +140,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
 
         Container container = new ContainerBuilder().withName("simexp")
-            .withImage(String.format("%s/simexp_console", imageRegistryUrl))
+            .withImage(String.format("%s:%s/simexp_console", imageRegistryUrl.getHost(), imageRegistryUrl.getPort()))
             .withImagePullPolicy("Always")
             .withEnv(
                     // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
