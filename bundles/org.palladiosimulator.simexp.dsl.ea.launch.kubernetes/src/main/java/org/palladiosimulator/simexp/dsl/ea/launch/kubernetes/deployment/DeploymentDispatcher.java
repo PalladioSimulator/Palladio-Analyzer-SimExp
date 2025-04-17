@@ -52,7 +52,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
             try {
                 DeploymentScaler scaler = new DeploymentScaler(classloader, client, namespace);
-                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 1, 30, TimeUnit.SECONDS);
+                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 60, 30, TimeUnit.SECONDS);
                 try {
                     runnable.run();
                 } finally {
@@ -93,17 +93,13 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withEffect("NoExecute")
             .build();
 
-        // int availableCPUCores = getAvailableCPUCores();
-        int availableCPUCores = 1;
-        LOGGER.info(String.format("available cores: %d", availableCPUCores));
-
         Map<String, String> labels = Collections.singletonMap("app", "simexp");
         Deployment deployment = new DeploymentBuilder().withNewMetadata()
             .withName("simexp")
             .withLabels(labels)
             .endMetadata()
             .withNewSpec()
-            .withReplicas(availableCPUCores)
+            .withReplicas(1)
             .withNewSelector()
             .withMatchLabels(labels)
             .endSelector()

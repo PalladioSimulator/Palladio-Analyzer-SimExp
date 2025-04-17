@@ -27,6 +27,8 @@ public class DeploymentScaler implements Runnable {
             .setContextClassLoader(classloader);
         try {
             adjustReplicaCount();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         } finally {
             Thread.currentThread()
                 .setContextClassLoader(oldContextClassLoader);
