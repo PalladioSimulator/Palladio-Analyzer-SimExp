@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -13,11 +12,6 @@ import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.LocalObjectReferenceBuilder;
-import io.fabric8.kubernetes.api.model.Node;
-import io.fabric8.kubernetes.api.model.NodeCondition;
-import io.fabric8.kubernetes.api.model.NodeSpec;
-import io.fabric8.kubernetes.api.model.NodeStatus;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
@@ -92,65 +86,16 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         }
     }
 
-    private String getRole(Node node) {
-        ObjectMeta metadata = node.getMetadata();
-        Map<String, String> labels = metadata.getLabels();
-        for (Map.Entry<String, String> entry : labels.entrySet()) {
-            if (entry.getKey()
-                .startsWith("node-role.kubernetes.io/")) {
-                String role = entry.getKey()
-                    .substring("node-role.kubernetes.io/".length());
-                return role;
-            }
-        }
-        return "unknown";
-    }
-
-    private boolean isWorker(Node node) {
-        String role = getRole(node);
-        if (role.equalsIgnoreCase("worker")) {
-            return true;
-        }
-        return false;
-    }
-
-    private int nodeCPUCores(Node node) {
-        NodeStatus status = node.getStatus();
-        Quantity cpuCount = status.getCapacity()
-            .get("cpu");
-        return Integer.valueOf(cpuCount.getAmount());
-    }
-
-    private boolean isReady(Node node) {
-        NodeStatus status = node.getStatus();
-        List<NodeCondition> conditions = status.getConditions();
-        for (NodeCondition condition : conditions) {
-            if (condition.getType()
-                .equals("Ready")) {
-                if (condition.getStatus()
-                    .equals("True")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean isSchedulable(Node node) {
-        NodeSpec spec = node.getSpec();
-        boolean isCordoned = Boolean.TRUE.equals(spec.getUnschedulable());
-        return !isCordoned;
-    }
-
     private int getWorkerCPUCores() {
+        NodeInfo nodeInfo = new NodeInfo();
         Integer sum = client.nodes()
             .list()
             .getItems()
             .stream()
-            .filter(this::isWorker)
-            .filter(this::isReady)
-            .filter(this::isSchedulable)
-            .mapToInt(this::nodeCPUCores)
+            .filter(n -> nodeInfo.isWorker(n))
+            .filter(n -> nodeInfo.isReady(n))
+            .filter(n -> nodeInfo.isSchedulable(n))
+            .mapToInt(n -> nodeInfo.nodeCPUCores(n))
             .sum();
         return sum;
     }
