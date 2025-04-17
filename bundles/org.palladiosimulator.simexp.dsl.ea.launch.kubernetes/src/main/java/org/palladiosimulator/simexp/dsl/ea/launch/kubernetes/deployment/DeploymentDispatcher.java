@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -24,84 +28,51 @@ import io.fabric8.kubernetes.api.model.VolumeMountBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
 
 public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     private static final Logger LOGGER = Logger.getLogger(DeploymentDispatcher.class);
 
     private final KubernetesClient client;
     private final String namespace;
-    /*
-     * private final ReentrantLock lock = new ReentrantLock(); private final Condition
-     * terminateCondition = lock.newCondition();
-     * 
-     * private boolean shutdown = false;
-     */
+    private final ClassLoader classloader;
 
-    public DeploymentDispatcher(KubernetesClient client) {
-        this(client, "default");
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client) {
+        this(classloader, client, "default");
     }
 
-    public DeploymentDispatcher(KubernetesClient client, String namespace) {
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String namespace) {
+        this.classloader = classloader;
         this.client = client;
         this.namespace = namespace;
     }
 
     public void dispatch(String brokerUrl, String outQueue, String inQueue, Runnable runnable) throws IOException {
-        Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         try {
-            runnable.run();
-            // waitForShutdown();
+            Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
+            try {
+                DeploymentScaler scaler = new DeploymentScaler(classloader, client, namespace);
+                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 1, 30, TimeUnit.SECONDS);
+                try {
+                    runnable.run();
+                } finally {
+                    scalerFuture.cancel(false);
+                }
+            } finally {
+                removeDeployment(deployment);
+            }
         } finally {
-            removeDeployment(deployment);
+            LOGGER.info("shutdown deployment monitor");
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                throw new IOException(e.getMessage(), e);
+            }
+            LOGGER.info("shutt down deployment monitor");
         }
-    }
-
-    /*
-     * @Override public void shutdown() { LOGGER.info("signal shutdown"); lock.lock(); try {
-     * shutdown = true; terminateCondition.signalAll(); } finally { lock.unlock(); } }
-     * 
-     * private void waitForShutdown() throws IOException { LOGGER.info("wait for shutdown");
-     * lock.lock(); try { while (!shutdown) { if (!terminateCondition.await(30, TimeUnit.SECONDS)) {
-     * // adjustReplicaCount(); } } LOGGER.info("shut down"); } catch (InterruptedException e) {
-     * throw new IOException(e); } finally { lock.unlock(); } }
-     */
-
-    private void adjustReplicaCount() {
-        int availableCPUCores = Math.max(1, getAvailableCPUCores());
-        LOGGER.debug(String.format("available cores:  %d", availableCPUCores));
-
-        RollableScalableResource<Deployment> deploymentResource = client.apps()
-            .deployments()
-            .inNamespace(namespace)
-            .withName("simexp");
-        Deployment deployment = deploymentResource.get();
-        Integer replicas = deployment.getStatus()
-            .getReplicas();
-        LOGGER.debug(String.format("current replicas: %d", replicas));
-
-        if (availableCPUCores != replicas) {
-            LOGGER.info(String.format("adjust replicas from: %d to %d", replicas, availableCPUCores));
-            deploymentResource.scale(availableCPUCores);
-        }
-    }
-
-    private int getWorkerCPUCores() {
-        NodeInfo nodeInfo = new NodeInfo();
-        Integer sum = client.nodes()
-            .list()
-            .getItems()
-            .stream()
-            .filter(n -> nodeInfo.isWorker(n))
-            .filter(n -> nodeInfo.isReady(n))
-            .filter(n -> nodeInfo.isSchedulable(n))
-            .mapToInt(n -> nodeInfo.nodeCPUCores(n))
-            .sum();
-        return sum;
-    }
-
-    private int getAvailableCPUCores() {
-        return getWorkerCPUCores() - 4;
     }
 
     private Deployment createDeployment(String brokerUrl, String outQueue, String inQueue) {

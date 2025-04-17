@@ -114,7 +114,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         try {
             TaskManager taskManager = new TaskManager();
             taskReceiver.registerTaskConsumer(taskManager);
-            DeploymentDispatcher dispatcher = new DeploymentDispatcher(client);
+            DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client);
             String brokerUrl = buildBrokerURL();
             String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
             List<Path> projectPaths = getProjectPaths(config);
