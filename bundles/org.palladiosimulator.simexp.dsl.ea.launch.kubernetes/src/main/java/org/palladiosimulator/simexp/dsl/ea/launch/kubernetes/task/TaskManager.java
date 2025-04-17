@@ -24,12 +24,14 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         }
     }
 
+    private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
 
     private int receivedCount = 0;
     private int taskCount = 0;
 
-    public TaskManager() {
+    public TaskManager(IResultLogger resultLogger) {
+        this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
     }
 
@@ -54,6 +56,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         LOGGER.info(String.format("received answer %d/%d [%s] reward: %s", count, taskCount, result.id, description));
 
         SettableFutureTask<Optional<Double>> future = taskInfo.future;
+        resultLogger.log(taskInfo.optimizableValues, result);
         if (StringUtils.isNotEmpty(result.error)) {
             future.setResult(Optional.empty());
         } else {

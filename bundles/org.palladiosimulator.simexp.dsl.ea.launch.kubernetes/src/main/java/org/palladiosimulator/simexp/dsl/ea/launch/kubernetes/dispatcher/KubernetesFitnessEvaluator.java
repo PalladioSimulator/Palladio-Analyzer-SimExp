@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
@@ -114,23 +116,31 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         boolean autoAck = false;
         channel.basicConsume(inQueueName, autoAck, "answerConsumer", taskReceiver);
         try {
-            TaskManager taskManager = new TaskManager();
-            taskReceiver.registerTaskConsumer(taskManager);
-            String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
-            URL imageRegistryUrl = new URL(imageRegistryStr);
-            DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
-            String brokerUrl = buildBrokerURL();
-            String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
-            List<Path> projectPaths = getProjectPaths(config);
-            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, launcherName, projectPaths,
-                    classloader);
-            dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
+            Path csvResourcePath = resourcePath.resolve("kubernetes")
+                .resolve("simulation_result.csv");
+            Files.createDirectories(csvResourcePath.getParent());
+            CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
+            try {
+                TaskManager taskManager = new TaskManager(resultLogger);
+                taskReceiver.registerTaskConsumer(taskManager);
+                String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
+                URL imageRegistryUrl = new URL(imageRegistryStr);
+                DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
+                String brokerUrl = buildBrokerURL();
+                String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
+                List<Path> projectPaths = getProjectPaths(config);
+                fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, launcherName,
+                        projectPaths, classloader);
+                dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
-                @Override
-                public void run() {
-                    evaluatorClient.process(KubernetesFitnessEvaluator.this);
-                }
-            });
+                    @Override
+                    public void run() {
+                        evaluatorClient.process(KubernetesFitnessEvaluator.this);
+                    }
+                });
+            } finally {
+                resultLogger.dispose();
+            }
         } finally {
             channel.basicCancel("answerConsumer");
         }
