@@ -17,7 +17,7 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class CsvResultLogger implements IResultLogger {
     private static final Logger LOGGER = Logger.getLogger(CsvResultLogger.class);
-    private static final String[] HEADERS = { "TaskId", "Reward", "Error", "Values" };
+    private static final String[] HEADERS = { "TaskId", "Values", "Reward", "Error", "ExecutorId" };
 
     private final Path csvPath;
 
@@ -36,7 +36,7 @@ public class CsvResultLogger implements IResultLogger {
             try (CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
                 OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
                 String values = optimizableValueToString.asString(optimizableValues);
-                printer.printRecord(result.id, result.reward, result.error, values);
+                printer.printRecord(result.id, values, result.reward, result.error, result.executor_id);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
