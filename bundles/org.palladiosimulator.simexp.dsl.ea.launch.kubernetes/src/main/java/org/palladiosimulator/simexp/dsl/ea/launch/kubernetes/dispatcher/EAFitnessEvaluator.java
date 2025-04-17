@@ -98,7 +98,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
                 .toString();
             arguments.add(projectName);
         }
-        task.command = String.format("/simexp/simexp %s", StringUtils.join(arguments, " "));
+        task.command = String.format("/simexp/simexp_console %s", StringUtils.join(arguments, " "));
         // task.command = "/usr/bin/sleep 300";
 
         WorkspaceEntry optimizableFileEntry = workspaceEntryFactory.createOptimizableFile(optimizableValues);

@@ -23,7 +23,7 @@
 
    <windowImages/>
 
-   <launcher name="simexp">
+   <launcher name="simexp_console">
       <win useIco="false">
          <bmp/>
       </win>
