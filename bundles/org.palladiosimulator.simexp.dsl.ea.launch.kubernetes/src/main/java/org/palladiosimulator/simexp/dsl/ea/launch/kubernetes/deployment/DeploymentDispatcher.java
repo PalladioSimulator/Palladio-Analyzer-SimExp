@@ -34,15 +34,19 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
 
     private final KubernetesClient client;
     private final String namespace;
+    private final String imageRegistryUrl;
+
     private final ClassLoader classloader;
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client) {
-        this(classloader, client, "default");
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String imageRegistryUrl) {
+        this(classloader, client, imageRegistryUrl, "default");
     }
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String namespace) {
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, String imageRegistryUrl,
+            String namespace) {
         this.classloader = classloader;
         this.client = client;
+        this.imageRegistryUrl = imageRegistryUrl;
         this.namespace = namespace;
     }
 
@@ -135,7 +139,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
 
         Container container = new ContainerBuilder().withName("simexp")
-            .withImage("10.0.0.10:30500/simexp_console")
+            .withImage(String.format("%s/simexp_console", imageRegistryUrl))
             .withImagePullPolicy("Always")
             .withEnv(
                     // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
