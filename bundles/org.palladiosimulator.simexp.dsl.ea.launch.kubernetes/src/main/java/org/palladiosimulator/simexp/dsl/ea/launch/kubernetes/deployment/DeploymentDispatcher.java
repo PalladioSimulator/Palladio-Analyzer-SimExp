@@ -223,7 +223,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
 
         Container container = new ContainerBuilder().withName("simexp")
-            .withImage("10.0.0.10:30500/dep-simexp")
+            .withImage("10.0.0.10:30500/simexp_console")
             .withImagePullPolicy("Always")
             .withEnv(
                     // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
