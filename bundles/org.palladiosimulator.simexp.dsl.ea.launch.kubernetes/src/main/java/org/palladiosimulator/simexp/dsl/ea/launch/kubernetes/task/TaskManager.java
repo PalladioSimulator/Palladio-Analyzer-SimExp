@@ -43,10 +43,13 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     }
 
     @Override
-    public synchronized void taskCompleted(String taskId, JobResult result) {
-        int count = ++receivedCount;
-
-        TaskInfo taskInfo = outstandingTasks.remove(taskId);
+    public void taskCompleted(String taskId, JobResult result) {
+        final int count;
+        final TaskInfo taskInfo;
+        synchronized (this) {
+            count = ++receivedCount;
+            taskInfo = outstandingTasks.remove(taskId);
+        }
         if (taskInfo == null) {
             LOGGER.error(String.format("received unknown answer: %s", taskId));
             return;
