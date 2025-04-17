@@ -4,7 +4,7 @@ public class JobResult {
     public String id;
     public String executor_id;
     public int tag;
-    public double reward;
+    public Double reward;
     public String error;
     public int return_code;
 }

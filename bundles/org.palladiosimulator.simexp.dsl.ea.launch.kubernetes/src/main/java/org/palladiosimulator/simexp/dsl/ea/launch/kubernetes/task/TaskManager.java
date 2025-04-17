@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -60,7 +59,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
         SettableFutureTask<Optional<Double>> future = taskInfo.future;
         resultLogger.log(taskInfo.optimizableValues, result);
-        if (StringUtils.isNotEmpty(result.error)) {
+        if (result.reward == null) {
             future.setResult(Optional.empty());
         } else {
             future.setResult(Optional.of(result.reward));
@@ -68,7 +67,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     }
 
     private String getRewardDescription(JobResult result) {
-        if (StringUtils.isNotEmpty(result.error)) {
+        if (result.reward == null) {
             return String.format("<null> (%s)", result.error);
         }
         return String.format("%s", result.reward);
