@@ -52,6 +52,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
+    private final Path resourcePath;
     private final IPreferencesService preferencesService;
     private final ClassLoader classloader;
 
@@ -62,6 +63,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
         this.launcherName = launcherName;
         this.config = config;
+        this.resourcePath = resourcePath;
         this.preferencesService = preferencesService;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();

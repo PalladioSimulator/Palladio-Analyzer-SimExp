@@ -67,7 +67,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
             SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
             }, Optional.empty());
             sendTask(task, optimizableValueToString.asString(optimizableValues));
-            taskManager.newTask(task.id, future);
+            taskManager.newTask(task.id, future, optimizableValues);
             return future;
         } finally {
             Thread.currentThread()
