@@ -27,7 +27,7 @@ public class KubernetesDispatcherProvider implements IDispatcherProvider {
             Factory modelLoaderFactory, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;
         IPreferencesService preferencesService = Platform.getPreferencesService();
-        return new KubernetesFitnessEvaluator(modelledConfig, launcherName, launchDescriptionProvider, seedProvider,
+        return new KubernetesDispatcher(modelledConfig, launcherName, launchDescriptionProvider, seedProvider,
                 modelLoaderFactory, resourcePath, preferencesService);
     }
 }

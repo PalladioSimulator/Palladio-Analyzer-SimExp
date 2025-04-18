@@ -49,8 +49,8 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
-    private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
+public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
+    private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
@@ -60,7 +60,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
 
     private EAFitnessEvaluator fitnessEvaluator;
 
-    public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config, String launcherName,
+    public KubernetesDispatcher(IModelledWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
         this.launcherName = launcherName;
@@ -135,7 +135,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
 
                     @Override
                     public void run() {
-                        evaluatorClient.process(KubernetesFitnessEvaluator.this);
+                        evaluatorClient.process(KubernetesDispatcher.this);
                     }
                 });
             } finally {
