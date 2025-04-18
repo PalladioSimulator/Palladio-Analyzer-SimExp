@@ -114,6 +114,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             throws IOException {
         TaskReceiver taskReceiver = new TaskReceiver(channel, classloader);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
         boolean autoAck = false;
         channel.basicConsume(inQueueName, autoAck, "answerConsumer", taskReceiver);
         try {
@@ -123,15 +124,15 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
             try {
                 TaskManager taskManager = new TaskManager(resultLogger);
+                TaskSender taskSender = new TaskSender(channel, outQueueName);
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
                 URL imageRegistryUrl = new URL(imageRegistryStr);
                 DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
                 String brokerUrl = buildBrokerURL();
-                String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
                 List<Path> projectPaths = getProjectPaths(config);
-                fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, launcherName,
-                        projectPaths, classloader);
+                fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
+                        classloader);
                 dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                     @Override

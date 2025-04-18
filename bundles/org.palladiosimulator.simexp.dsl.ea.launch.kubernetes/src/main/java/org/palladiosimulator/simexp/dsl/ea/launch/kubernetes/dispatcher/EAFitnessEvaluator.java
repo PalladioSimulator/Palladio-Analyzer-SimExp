@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +22,12 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rabbitmq.client.Channel;
 
 public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(EAFitnessEvaluator.class);
 
     private final ITaskManager taskManager;
-    private final Channel channel;
-    private final String outQueueName;
+    private final ITaskSender taskSender;
     private final String launcherName;
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
@@ -38,11 +35,10 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
     private int count = 0;
 
-    public EAFitnessEvaluator(ITaskManager taskManager, Channel channel, String outQueueName, String launcherName,
+    public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender, String launcherName,
             List<Path> projectPaths, ClassLoader classloader) {
         this.taskManager = taskManager;
-        this.channel = channel;
-        this.outQueueName = outQueueName;
+        this.taskSender = taskSender;
         this.launcherName = launcherName;
         this.projectPaths = projectPaths;
         this.classloader = classloader;
@@ -66,7 +62,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
             SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
             }, Optional.empty());
-            sendTask(task, optimizableValueToString.asString(optimizableValues));
+            taskSender.sendTask(task, optimizableValueToString.asString(optimizableValues));
             taskManager.newTask(task.id, future, optimizableValues);
             return future;
         } finally {
@@ -112,14 +108,5 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
     private synchronized String getTaskId() {
         return String.format("Task %d", count++);
-    }
-
-    private void sendTask(JobTask task, String description) throws IOException {
-        Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
-            .create();
-
-        String message = gson.toJson(task);
-        channel.basicPublish("", outQueueName, null, message.getBytes(StandardCharsets.UTF_8));
-        LOGGER.info(String.format("Sent task: %s [%s]", task.id, description));
     }
 }
