@@ -100,6 +100,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitMQURL.getHost());
         factory.setPort(rabbitMQURL.getPort());
+        factory.setRequestedHeartbeat(60);
         try (Connection conn = factory.newConnection()) {
             LOGGER.info("Connected to RabbitMQ");
             try (Channel channel = conn.createChannel()) {
