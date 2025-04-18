@@ -57,7 +57,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
             try {
                 DeploymentScaler scaler = new DeploymentScaler(classloader, client, namespace);
-                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 60, 30, TimeUnit.SECONDS);
+                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 60, 60, TimeUnit.SECONDS);
                 try {
                     runnable.run();
                 } finally {

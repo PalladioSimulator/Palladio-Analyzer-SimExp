@@ -37,7 +37,7 @@ public class DeploymentScaler implements Runnable {
 
     private void adjustReplicaCount() {
         int availableCPUCores = Math.max(1, getAvailableCPUCores());
-        LOGGER.info(String.format("available cores:  %d", availableCPUCores));
+        LOGGER.debug(String.format("available cores:  %d", availableCPUCores));
 
         RollableScalableResource<Deployment> deploymentResource = client.apps()
             .deployments()
@@ -46,7 +46,7 @@ public class DeploymentScaler implements Runnable {
         Deployment deployment = deploymentResource.get();
         Integer replicas = deployment.getStatus()
             .getReplicas();
-        LOGGER.info(String.format("current replicas: %d", replicas));
+        LOGGER.debug(String.format("current replicas: %d", replicas));
 
         if (availableCPUCores != replicas) {
             LOGGER.info(String.format("adjust replicas from: %d to %d", replicas, availableCPUCores));
