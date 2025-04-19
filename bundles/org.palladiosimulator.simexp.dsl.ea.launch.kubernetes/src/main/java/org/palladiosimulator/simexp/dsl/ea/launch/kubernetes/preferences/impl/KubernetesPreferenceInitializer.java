@@ -19,5 +19,6 @@ public class KubernetesPreferenceInitializer extends AbstractPreferenceInitializ
 
         defaults.put(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT, "simexp-queue-task");
         defaults.put(KubernetesPreferenceConstants.RABBIT_QUEUE_IN, "simexp-queue-answer");
+        defaults.putInt(KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT, 14);
     }
 }

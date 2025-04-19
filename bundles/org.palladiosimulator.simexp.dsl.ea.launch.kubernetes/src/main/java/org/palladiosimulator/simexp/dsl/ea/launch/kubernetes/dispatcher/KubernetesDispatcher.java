@@ -166,6 +166,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private void setupQueues(Channel channel) throws IOException {
         String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        int consumerTimeout = preferencesService.getInt(KubernetesPreferenceConstants.ID,
+                KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT, 14, null);
+
         LOGGER.info("Deleting queues ...");
         channel.queueDelete(inQueueName);
         channel.queueDelete(outQueueName);
@@ -175,7 +178,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         boolean exclusive = false;
         boolean autoDelete = false;
         Map<String, Object> outArguments = new HashMap<>();
-        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(14, TimeUnit.HOURS));
+        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(consumerTimeout, TimeUnit.HOURS));
         channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
         channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
     }
