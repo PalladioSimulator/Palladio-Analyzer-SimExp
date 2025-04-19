@@ -107,6 +107,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     }
 
     private synchronized String getTaskId() {
-        return String.format("Task %d", count++);
+        return String.format("Task %d", ++count);
     }
 }
