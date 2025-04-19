@@ -175,7 +175,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         boolean exclusive = false;
         boolean autoDelete = false;
         Map<String, Object> outArguments = new HashMap<>();
-        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(14, TimeUnit.HOURS));
         channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
         channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
     }
