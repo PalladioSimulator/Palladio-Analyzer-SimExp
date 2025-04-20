@@ -2,9 +2,11 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
@@ -25,6 +27,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
+    private final Set<String> startedTasks;
 
     private int receivedCount = 0;
     private int taskCount = 0;
@@ -32,6 +35,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     public TaskManager(IResultLogger resultLogger) {
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
+        this.startedTasks = new HashSet<>();
     }
 
     @Override
@@ -42,11 +46,31 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     }
 
     @Override
+    public void taskStarted(String taskId, JobResult result) {
+        final int received;
+        final int started;
+        final int created;
+        synchronized (this) {
+            startedTasks.add(taskId);
+            received = receivedCount;
+            started = startedTasks.size();
+            created = taskCount;
+        }
+        LOGGER.info(String.format("task started %d/%d/%d [%s] by %s (redelivered: %s)", received, started, created,
+                result.id, result.executor_id, result.redelivered));
+    }
+
+    @Override
     public void taskCompleted(String taskId, JobResult result) {
-        final int count;
+        final int received;
+        final int started;
+        final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
-            count = ++receivedCount;
+            startedTasks.remove(taskId);
+            received = ++receivedCount;
+            created = taskCount;
+            started = startedTasks.size();
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo == null) {
@@ -55,7 +79,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         }
 
         String description = getRewardDescription(result);
-        LOGGER.info(String.format("received answer %d/%d [%s] reward: %s", count, taskCount, result.id, description));
+        LOGGER.info(String.format("task completed %d/%d/%d [%s] by %s reward: %s", received, started, created,
+                result.id, result.executor_id, description));
 
         SettableFutureTask<Optional<Double>> future = taskInfo.future;
         resultLogger.log(taskInfo.optimizableValues, result);
