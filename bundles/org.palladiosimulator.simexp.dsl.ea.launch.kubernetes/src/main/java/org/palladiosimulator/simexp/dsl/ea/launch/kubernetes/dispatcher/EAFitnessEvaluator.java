@@ -10,7 +10,6 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.CachingWorkspaceEntryFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskManager;
@@ -52,7 +51,6 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         Thread.currentThread()
             .setContextClassLoader(classloader);
         try {
-            OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
             JobTask task = createTask(optimizableValues);
             Gson logGson = new GsonBuilder().serializeNulls()
                 .setPrettyPrinting()
@@ -62,7 +60,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
             SettableFutureTask<Optional<Double>> future = new SettableFutureTask<>(() -> {
             }, Optional.empty());
-            taskSender.sendTask(task, optimizableValueToString.asString(optimizableValues));
+            taskSender.sendTask(task);
             taskManager.newTask(task.id, future, optimizableValues);
             return future;
         } finally {

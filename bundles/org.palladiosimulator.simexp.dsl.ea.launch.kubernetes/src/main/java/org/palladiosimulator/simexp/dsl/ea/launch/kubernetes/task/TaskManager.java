@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -39,10 +40,22 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     }
 
     @Override
-    public synchronized void newTask(String taskId, SettableFutureTask<Optional<Double>> task,
+    public void newTask(String taskId, SettableFutureTask<Optional<Double>> task,
             List<OptimizableValue<?>> optimizableValues) {
-        taskCount++;
-        outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
+        final int received;
+        final int started;
+        final int created;
+        synchronized (this) {
+            taskCount++;
+            outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
+            received = receivedCount;
+            started = startedTasks.size();
+            created = taskCount;
+        }
+        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+        String description = optimizableValueToString.asString(optimizableValues);
+        String tasksStatus = getTasksStatus("created", received, started, created);
+        LOGGER.info(String.format("%s [%s]: %s", tasksStatus, taskId, description));
     }
 
     @Override

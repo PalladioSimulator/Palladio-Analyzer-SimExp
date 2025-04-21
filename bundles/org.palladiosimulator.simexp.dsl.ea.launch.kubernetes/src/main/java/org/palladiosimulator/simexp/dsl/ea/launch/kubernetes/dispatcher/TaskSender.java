@@ -22,13 +22,13 @@ public class TaskSender implements ITaskSender {
     }
 
     @Override
-    public void sendTask(JobTask task, String description) throws IOException {
+    public void sendTask(JobTask task) throws IOException {
         Gson gson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class, new ByteArrayToBase64TypeAdapter())
             .create();
 
         String message = gson.toJson(task);
         channel.basicPublish("", outQueueName, null, message.getBytes(StandardCharsets.UTF_8));
-        LOGGER.info(String.format("Sent task: %s [%s]", task.id, description));
+        LOGGER.debug(String.format("sent task: %s", task.id));
     }
 
 }
