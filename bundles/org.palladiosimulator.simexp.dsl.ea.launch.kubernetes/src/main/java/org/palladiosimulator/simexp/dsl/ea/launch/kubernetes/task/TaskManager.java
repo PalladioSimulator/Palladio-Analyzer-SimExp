@@ -56,8 +56,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             started = startedTasks.size();
             created = taskCount;
         }
-        LOGGER.info(String.format("task started %d/%d/%d [%s] by %s (redelivered: %s)", received, started, created,
-                result.id, result.executor_id, result.redelivered));
+        String tasksStatus = getTasksStatus("started", received, started, created);
+        LOGGER.info(String.format("%s [%s] by %s (redelivered: %s)", tasksStatus, result.id, result.executor_id,
+                result.redelivered));
     }
 
     @Override
@@ -78,9 +79,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             return;
         }
 
+        String tasksStatus = getTasksStatus("completed", received, started, created);
         String description = getRewardDescription(result);
-        LOGGER.info(String.format("task completed %d/%d/%d [%s] by %s reward: %s", received, started, created,
-                result.id, result.executor_id, description));
+        LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksStatus, result.id, result.executor_id, description));
 
         SettableFutureTask<Optional<Double>> future = taskInfo.future;
         resultLogger.log(taskInfo.optimizableValues, result);
@@ -89,6 +90,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         } else {
             future.setResult(Optional.of(result.reward));
         }
+    }
+
+    private String getTasksStatus(String status, int received, int started, int created) {
+        String tasksStatus = String.format("task %s %d/%d/%d", status, started, received, created);
+        return tasksStatus;
     }
 
     private String getRewardDescription(JobResult result) {
