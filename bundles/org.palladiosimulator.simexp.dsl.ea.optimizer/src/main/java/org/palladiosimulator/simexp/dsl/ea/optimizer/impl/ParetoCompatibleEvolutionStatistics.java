@@ -19,10 +19,10 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
 
     private static final int ROUNDING_CONSTANT = 100000;
     private EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics = EvolutionStatistics.ofNumber();
-    private MOEAFitnessFunction fitnessFunction;
+    private EAFitnessFunction fitnessFunction;
     private Genotype<BitGene> genotype;
 
-    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype) {
+    public ParetoCompatibleEvolutionStatistics(EAFitnessFunction fitnessFunction, Genotype<BitGene> genotype) {
         this.fitnessFunction = fitnessFunction;
         this.genotype = genotype;
     }

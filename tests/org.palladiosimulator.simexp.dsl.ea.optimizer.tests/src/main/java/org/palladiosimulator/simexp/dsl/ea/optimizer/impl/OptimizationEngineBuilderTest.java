@@ -29,7 +29,7 @@ public class OptimizationEngineBuilderTest {
     private Phenotype<BitGene, Double> phenotype;
 
     @Mock
-    private MOEAFitnessFunction fitnessFunction;
+    private EAFitnessFunction fitnessFunction;
 
     @Mock
     private Executor executor;
