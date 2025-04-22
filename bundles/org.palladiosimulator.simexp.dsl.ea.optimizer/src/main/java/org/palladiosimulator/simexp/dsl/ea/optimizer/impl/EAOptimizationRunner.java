@@ -32,7 +32,7 @@ public class EAOptimizationRunner {
 
     @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction, final Engine<BitGene, Double> engine,
+            OptimizableNormalizer normalizer, EAFitnessFunction fitnessFunction, final Engine<BitGene, Double> engine,
             IEAConfig config) {
         Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
             .newInstance();
@@ -62,6 +62,10 @@ public class EAOptimizationRunner {
         LOGGER.info("EA finished...");
         LOGGER.info(paretoStatistics);
 
+        return determineResult(normalizer, result);
+    }
+
+    private EAResult determineResult(OptimizableNormalizer normalizer, final ISeq<Phenotype<BitGene, Double>> result) {
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
         double bestFitness = result.stream()

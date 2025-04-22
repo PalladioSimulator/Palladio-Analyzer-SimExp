@@ -22,12 +22,11 @@ import io.jenetics.BitGene;
 import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 
-public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
+public class EAFitnessFunction implements Function<Genotype<BitGene>, Double> {
 
-    private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
+    private static final Logger LOGGER = Logger.getLogger(EAFitnessFunction.class);
 
-    private Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
-        .synchronizedSet(new HashSet<>());
+    private Set<Genotype> synchronizedSetOfEvaluatedOptimizable = Collections.synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
@@ -35,14 +34,14 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
 
     private double penaltyForInvalids = 0.0;
 
-    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+    public EAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
             OptimizableNormalizer optimizableNormalizer) {
         this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
     }
 
-    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
+    public EAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
             OptimizableNormalizer optimizableNormalizer, double penaltyForInvalids) {
         this(epsilon, fitnessEvaluator, optimizableNormalizer);
         this.penaltyForInvalids = penaltyForInvalids;
@@ -50,14 +49,15 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
 
     @Override
     public Double apply(Genotype<BitGene> genotype) {
+        synchronizedSetOfEvaluatedOptimizable.add(genotype);
         List<SmodelBitChromosome> chromosomes = extracted(genotype);
         for (SmodelBitChromosome currentChromo : chromosomes) {
             if (!currentChromo.isValid()) {
                 return round(penaltyForInvalids);
             }
         }
+
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
-        synchronizedSetOfEvaluatedOptimizable.add(optimizableValues);
         try {
             Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
             Optional<Double> optionalFitness = fitnessFuture.get();

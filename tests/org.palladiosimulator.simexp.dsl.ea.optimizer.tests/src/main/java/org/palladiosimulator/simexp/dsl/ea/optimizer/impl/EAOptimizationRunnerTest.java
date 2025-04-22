@@ -46,7 +46,7 @@ public class EAOptimizationRunnerTest {
     private IEAEvolutionStatusReceiver statusReceiver;
 
     @Mock
-    private MOEAFitnessFunction fitnessFunction;
+    private EAFitnessFunction fitnessFunction;
 
     @Mock
     private IExpressionCalculator expressionCalculator;
