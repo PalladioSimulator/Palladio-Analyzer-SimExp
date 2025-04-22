@@ -119,6 +119,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withImagePullSecrets(new LocalObjectReferenceBuilder().withName("cred-simexp-registry")
                 .build())
             .withTolerations(toleration)
+            .withRestartPolicy("Never")
             .endSpec()
             .endTemplate()
             .endSpec()
