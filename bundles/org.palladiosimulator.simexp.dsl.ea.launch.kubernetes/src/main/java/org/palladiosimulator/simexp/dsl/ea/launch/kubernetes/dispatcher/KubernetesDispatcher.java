@@ -31,6 +31,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
@@ -83,7 +84,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
             .build()) {
             LOGGER.info("Connected to kubernetes");
-            evaluateWithRabbitMQ(client, evaluatorClient);
+            try (PodRestartObserver pro = new PodRestartObserver(client)) {
+                evaluateWithRabbitMQ(client, evaluatorClient);
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
