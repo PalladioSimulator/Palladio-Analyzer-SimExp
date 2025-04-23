@@ -10,6 +10,10 @@ public class Counter<T> {
         countMap.put(item, countMap.getOrDefault(item, 0) + 1);
     }
 
+    public void remove(T item) {
+        countMap.remove(item);
+    }
+
     public int size() {
         return countMap.size();
     }

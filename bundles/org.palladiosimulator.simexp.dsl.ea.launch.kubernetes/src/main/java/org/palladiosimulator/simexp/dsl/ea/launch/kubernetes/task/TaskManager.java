@@ -133,6 +133,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
             }
             completed = ++receivedCount;
             started = startedTasks.size();
+            abortedTasks.remove(taskId);
             aborted = abortedTasks.size();
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);

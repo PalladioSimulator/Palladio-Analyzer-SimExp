@@ -19,10 +19,12 @@ import io.fabric8.kubernetes.client.WatcherException;
 public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(PodRestartObserver.class);
 
+    private final ClassLoader classloader;
     private final Watch watch;
     private final List<IPodRestartListener> listeners = new ArrayList<>();
 
-    public PodRestartObserver(KubernetesClient client) {
+    public PodRestartObserver(ClassLoader classloader, KubernetesClient client) {
+        this.classloader = classloader;
         LOGGER.info("pod restart observer start");
         watch = client.pods()
             .inNamespace("default")
@@ -52,19 +54,11 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
             if (restartCount > 0) {
                 String podName = pod.getMetadata()
                     .getName();
-                LOGGER.warn(
-                        "Pod " + podName + " container " + status.getName() + " restarted " + restartCount + " times.");
+                LOGGER.warn(String.format("%s: pod %s restarted %d times", action, podName, restartCount));
                 ContainerState lastState = status.getLastState();
                 final Reason reason;
                 if (lastState != null) {
                     ContainerStateTerminated terminated = lastState.getTerminated();
-                    /*
-                     * if (terminated != null) { LOGGER.warn( "Container " + status.getName() +
-                     * " last terminated at: " + terminated.getFinishedAt());
-                     * LOGGER.warn("Exit code: " + terminated.getExitCode()); LOGGER.warn("Reason: "
-                     * + terminated.getReason()); LOGGER.warn("Message: " +
-                     * terminated.getMessage()); }
-                     */
                     reason = getReason(terminated);
                 } else {
                     reason = getReason(null);
@@ -93,8 +87,20 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
         synchronized (this) {
             tempListeners = new ArrayList<>(listeners);
         }
-        for (IPodRestartListener listener : tempListeners) {
-            listener.onRestart(podName, reason);
+
+        ClassLoader oldContextClassLoader = Thread.currentThread()
+            .getContextClassLoader();
+        Thread.currentThread()
+            .setContextClassLoader(classloader);
+        try {
+            for (IPodRestartListener listener : tempListeners) {
+                listener.onRestart(podName, reason);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            Thread.currentThread()
+                .setContextClassLoader(oldContextClassLoader);
         }
     }
 }

@@ -84,7 +84,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
             .build()) {
             LOGGER.info("Connected to kubernetes");
-            try (PodRestartObserver restartObserver = new PodRestartObserver(client)) {
+            try (PodRestartObserver restartObserver = new PodRestartObserver(classloader, client)) {
                 evaluateWithRabbitMQ(client, evaluatorClient, restartObserver);
             }
         } catch (Exception e) {
