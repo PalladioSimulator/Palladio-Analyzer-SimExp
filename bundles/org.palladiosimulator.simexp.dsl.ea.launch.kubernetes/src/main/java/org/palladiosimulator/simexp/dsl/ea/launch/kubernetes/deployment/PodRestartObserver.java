@@ -64,6 +64,7 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
                     reason = getReason(null);
                 }
                 notifyListeners(podName, reason);
+                break;
             }
         }
     }
