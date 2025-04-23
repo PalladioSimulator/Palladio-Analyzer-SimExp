@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Co
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotNullValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
@@ -228,6 +229,9 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> errorDefaultUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
+        IValidator<Double> errorDefaultValidator = new ControllableValidator<>(new NotNullValidator<>("Value on error"),
+                isEAEnabled);
+        errorDefaultUpdateStrategy.setBeforeSetValidator(errorDefaultValidator);
         Binding errorDefaultBindValue = ctx.bindValue(errorDefaultTarget, errorDefaultModel, errorDefaultUpdateStrategy,
                 null);
         ControlDecorationSupport.create(errorDefaultBindValue, SWT.TOP | SWT.RIGHT);
