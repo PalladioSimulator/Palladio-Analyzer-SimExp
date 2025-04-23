@@ -119,7 +119,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withImagePullSecrets(new LocalObjectReferenceBuilder().withName("cred-simexp-registry")
                 .build())
             .withTolerations(toleration)
-            .withRestartPolicy("Never")
+            // .withRestartPolicy("Never")
             .endSpec()
             .endTemplate()
             .endSpec()
@@ -136,7 +136,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     private Container createContainer(String brokerUrl, String outQueue, String inQueue, VolumeMount volumeMount) {
         Map<String, Quantity> reqMap = new HashMap<>();
         reqMap.put("cpu", new Quantity("0.9"));
-        // reqMap.put("memory", new Quantity("1500Mi"))
+        // reqMap.put("memory", new Quantity("2Gi"))
         ResourceRequirements reqs = new ResourceRequirementsBuilder().withRequests(reqMap)
             .build();
 
