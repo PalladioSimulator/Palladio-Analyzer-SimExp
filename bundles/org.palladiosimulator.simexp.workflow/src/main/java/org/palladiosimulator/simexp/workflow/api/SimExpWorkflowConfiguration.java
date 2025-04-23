@@ -186,6 +186,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
+    public double getErrorDefault() {
+        return evolutionaryAlgorithmConfiguration.getErrorDefault();
+    }
+
+    @Override
     public int getPopulationSize() {
         return evolutionaryAlgorithmConfiguration.getPopulationSize();
     }

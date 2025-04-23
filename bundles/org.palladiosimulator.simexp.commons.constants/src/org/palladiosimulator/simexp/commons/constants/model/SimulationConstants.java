@@ -15,6 +15,7 @@ public interface SimulationConstants {
     static final String STEADY_FITNESS = "SteadyFitness";
     static final String MUTATION_RATE = "MutationRate";
     static final String CROSSOVER_RATE = "CrossoverRate";
+    static final String ERROR_DEFAULT = "ErrorDefault";
 
     static final int DEFAULT_POPULATION_SIZE = 100;
 

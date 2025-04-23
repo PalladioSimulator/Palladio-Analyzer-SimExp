@@ -52,6 +52,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textSteadyFitness;
     private Text textMutationRate;
     private Text textCrossoverRate;
+    private Text textErrorDefault;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -118,6 +119,12 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textCrossoverRate = new Text(container, SWT.BORDER);
         textCrossoverRate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textCrossoverRate.addModifyListener(modifyListener);
+
+        Label errorDefaultLabel = new Label(container, SWT.NONE);
+        errorDefaultLabel.setText("Value on error:");
+        textErrorDefault = new Text(container, SWT.BORDER);
+        textErrorDefault.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textErrorDefault.addModifyListener(modifyListener);
     }
 
     private void createLimits(Composite parent, ModifyListener modifyListener) {
@@ -213,6 +220,17 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         Binding crossOverRateBindValue = ctx.bindValue(crossOverRateTarget, crossOverRateModel,
                 t2mCrossOverRateUpdateStrategy, m2tCrossOverRateUpdateStrategy);
         ControlDecorationSupport.create(crossOverRateBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> errorDefaultTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textErrorDefault);
+        IObservableValue<Double> errorDefaultModel = ConfigurationProperties
+            .value(SimulationConstants.ERROR_DEFAULT, true)
+            .observe(configuration);
+        UpdateValueStrategy<String, Double> errorDefaultUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        Binding errorDefaultBindValue = ctx.bindValue(errorDefaultTarget, errorDefaultModel, errorDefaultUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(errorDefaultBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {
