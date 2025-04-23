@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +51,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
+    private final Counter<String> abortedTasks;
     private final Map<String, PodInfo> pods;
 
     private int receivedCount = 0;
@@ -61,33 +61,37 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
+        this.abortedTasks = new Counter<>();
         this.pods = new HashMap<>();
     }
 
     @Override
     public void newTask(String taskId, SettableFutureTask<Optional<Double>> task,
             List<OptimizableValue<?>> optimizableValues) {
-        final int received;
+        final int completed;
         final int started;
+        final int aborted;
         final int created;
         synchronized (this) {
             taskCount++;
             outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
-            received = receivedCount;
+            completed = receivedCount;
             started = startedTasks.size();
+            aborted = abortedTasks.size();
             created = taskCount;
         }
         OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         String description = optimizableValueToString.asString(optimizableValues);
-        String tasksStatus = getTasksStatus("created", received, started, created);
+        String tasksStatus = getTasksStatus("created", completed, started, aborted, created);
         LOGGER.info(String.format("%s [%s]: %s", tasksStatus, taskId, description));
     }
 
     @Override
     public void taskStarted(String taskId, JobResult result) {
         String podName = getPodName(result.executor_id);
-        final int received;
+        final int completed;
         final int started;
+        final int aborted;
         final int created;
         synchronized (this) {
             startedTasks.add(taskId);
@@ -97,11 +101,12 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
                 pods.put(podName, podInfo);
             }
             podInfo.addTask(taskId);
-            received = receivedCount;
+            completed = receivedCount;
             started = startedTasks.size();
+            aborted = abortedTasks.size();
             created = taskCount;
         }
-        String tasksStatus = getTasksStatus("started", received, started, created);
+        String tasksStatus = getTasksStatus("started", completed, started, aborted, created);
         LOGGER.info(String.format("%s [%s] by %s (redelivered: %s)", tasksStatus, result.id, result.executor_id,
                 result.redelivered));
     }
@@ -115,8 +120,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
     @Override
     public void taskCompleted(String taskId, JobResult result) {
         String podName = getPodName(result.executor_id);
-        final int received;
+        final int completed;
         final int started;
+        final int aborted;
         final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
@@ -125,9 +131,10 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
             if (podInfo != null) {
                 podInfo.removeTask(taskId);
             }
-            received = ++receivedCount;
-            created = taskCount;
+            completed = ++receivedCount;
             started = startedTasks.size();
+            aborted = abortedTasks.size();
+            created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo == null) {
@@ -135,7 +142,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
             return;
         }
 
-        String tasksStatus = getTasksStatus("completed", received, started, created);
+        String tasksStatus = getTasksStatus("completed", completed, started, aborted, created);
         String description = getRewardDescription(result);
         LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksStatus, result.id, result.executor_id, description));
 
@@ -148,8 +155,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         }
     }
 
-    private String getTasksStatus(String status, int received, int started, int created) {
-        String tasksStatus = String.format("task %s %d/%d/%d", status, started, received, created);
+    private String getTasksStatus(String status, int completed, int started, int aborted, int created) {
+        String tasksStatus = String.format("task %s %d/%d/(%d)/%d", status, started, completed, aborted, created);
         return tasksStatus;
     }
 
@@ -162,26 +169,34 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
 
     @Override
     public void onRestart(String podName, Reason reason) {
-        final int received;
+        final int completed;
         final int started;
+        final int aborted;
         final int created;
-        final Set<String> tasks;
+        final String tasksDescription;
         synchronized (this) {
             PodInfo podInfo = pods.get(podName);
             if (podInfo != null) {
-                tasks = new HashSet<>(podInfo.getTasks());
+                Set<String> tasks = new HashSet<>(podInfo.getTasks());
                 podInfo.getTasks()
                     .clear();
                 tasks.stream()
                     .forEach(t -> startedTasks.remove(t));
+                tasks.stream()
+                    .forEach(t -> abortedTasks.add(t));
+                List<String> entries = tasks.stream()
+                    .map(t -> String.format("%s:%d", t, abortedTasks.get(t)))
+                    .toList();
+                tasksDescription = StringUtils.join(entries, ",");
             } else {
-                tasks = Collections.emptySet();
+                tasksDescription = "";
             }
-            received = receivedCount;
-            created = taskCount;
             started = startedTasks.size();
+            aborted = abortedTasks.size();
+            completed = receivedCount;
+            created = taskCount;
         }
-        String tasksStatus = getTasksStatus("aborted", received, started, created);
-        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, StringUtils.join(tasks, ","), podName, reason));
+        String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
+        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, tasksDescription, podName, reason));
     }
 }
