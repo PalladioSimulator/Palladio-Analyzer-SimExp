@@ -169,9 +169,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         synchronized (this) {
             PodInfo podInfo = pods.get(podName);
             if (podInfo != null) {
-                tasks = podInfo.getTasks();
+                tasks = new HashSet<>(podInfo.getTasks());
                 podInfo.getTasks()
                     .clear();
+                tasks.stream()
+                    .forEach(t -> startedTasks.remove(t));
             } else {
                 tasks = Collections.emptySet();
             }
@@ -179,7 +181,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
             created = taskCount;
             started = startedTasks.size();
         }
-        String tasksStatus = getTasksStatus("pod restart", received, started, created);
+        String tasksStatus = getTasksStatus("aborted", received, started, created);
         LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, StringUtils.join(tasks, ","), podName, reason));
     }
 }
