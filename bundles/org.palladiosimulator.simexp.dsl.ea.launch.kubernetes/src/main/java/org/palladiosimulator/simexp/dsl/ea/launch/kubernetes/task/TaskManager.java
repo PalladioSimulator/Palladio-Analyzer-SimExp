@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,12 +9,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.IPodRestartListener;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class TaskManager implements ITaskManager, ITaskConsumer {
+public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartListener {
     private static final Logger LOGGER = Logger.getLogger(TaskManager.class);
 
     private static class TaskInfo {
@@ -26,9 +29,30 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         }
     }
 
+    private static class PodInfo {
+        private final Set<String> tasks;
+
+        public PodInfo() {
+            this.tasks = new HashSet<>();
+        }
+
+        public void addTask(String taskId) {
+            getTasks().add(taskId);
+        }
+
+        public void removeTask(String taskId) {
+            getTasks().remove(taskId);
+        }
+
+        public Set<String> getTasks() {
+            return tasks;
+        }
+    }
+
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
+    private final Map<String, PodInfo> pods;
 
     private int receivedCount = 0;
     private int taskCount = 0;
@@ -37,6 +61,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
+        this.pods = new HashMap<>();
     }
 
     @Override
@@ -60,11 +85,18 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     @Override
     public void taskStarted(String taskId, JobResult result) {
+        String podName = getPodName(result.executor_id);
         final int received;
         final int started;
         final int created;
         synchronized (this) {
             startedTasks.add(taskId);
+            PodInfo podInfo = pods.get(podName);
+            if (podInfo == null) {
+                podInfo = new PodInfo();
+                pods.put(podName, podInfo);
+            }
+            podInfo.addTask(taskId);
             received = receivedCount;
             started = startedTasks.size();
             created = taskCount;
@@ -74,14 +106,25 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
                 result.redelivered));
     }
 
+    private String getPodName(String executor_id) {
+        // node02:default.simexp-c6f6d95f4-8b9f8
+        String[] tokens = executor_id.split(".");
+        return tokens[1];
+    }
+
     @Override
     public void taskCompleted(String taskId, JobResult result) {
+        String podName = getPodName(result.executor_id);
         final int received;
         final int started;
         final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
             startedTasks.remove(taskId);
+            PodInfo podInfo = pods.get(podName);
+            if (podInfo != null) {
+                podInfo.removeTask(taskId);
+            }
             received = ++receivedCount;
             created = taskCount;
             started = startedTasks.size();
@@ -117,4 +160,26 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         return String.format("%s", result.reward);
     }
 
+    @Override
+    public void onRestart(String podName, Reason reason) {
+        final int received;
+        final int started;
+        final int created;
+        final Set<String> tasks;
+        synchronized (this) {
+            PodInfo podInfo = pods.get(podName);
+            if (podInfo != null) {
+                tasks = podInfo.getTasks();
+                podInfo.getTasks()
+                    .clear();
+            } else {
+                tasks = Collections.emptySet();
+            }
+            received = receivedCount;
+            created = taskCount;
+            started = startedTasks.size();
+        }
+        String tasksStatus = getTasksStatus("pod restart", received, started, created);
+        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, StringUtils.join(tasks, ","), podName, reason));
+    }
 }

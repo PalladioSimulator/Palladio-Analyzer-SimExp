@@ -84,8 +84,8 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
             .build()) {
             LOGGER.info("Connected to kubernetes");
-            try (PodRestartObserver pro = new PodRestartObserver(client)) {
-                evaluateWithRabbitMQ(client, evaluatorClient);
+            try (PodRestartObserver restartObserver = new PodRestartObserver(client)) {
+                evaluateWithRabbitMQ(client, evaluatorClient, restartObserver);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -94,8 +94,8 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
         }
     }
 
-    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient)
-            throws IOException, TimeoutException {
+    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException, TimeoutException {
         String rabbitMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
         URL rabbitMQURL = new URL(rabbitMQString);
 
@@ -108,13 +108,13 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             LOGGER.info("Connected to RabbitMQ");
             try (Channel channel = conn.createChannel()) {
                 setupQueues(channel);
-                evaluateWithMessageChannel(client, channel, evaluatorClient);
+                evaluateWithMessageChannel(client, channel, evaluatorClient, restartObserver);
             }
         }
     }
 
-    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient)
-            throws IOException {
+    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException {
         TaskReceiver taskReceiver = new TaskReceiver(channel, classloader);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
         String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
@@ -129,6 +129,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 TaskManager taskManager = new TaskManager(resultLogger);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
                 taskReceiver.registerTaskConsumer(taskManager);
+                restartObserver.addListener(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
                 URL imageRegistryUrl = new URL(imageRegistryStr);
                 DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
