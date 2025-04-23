@@ -106,9 +106,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
                 result.redelivered));
     }
 
-    private String getPodName(String executor_id) {
+    String getPodName(String executor_id) {
         // node02:default.simexp-c6f6d95f4-8b9f8
-        String[] tokens = executor_id.split(".");
+        String[] tokens = executor_id.split("\\.");
         return tokens[1];
     }
 
