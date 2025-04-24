@@ -5,7 +5,7 @@ import java.util.Optional;
 public interface IEvolutionaryAlgorithmConfiguration {
     int getPopulationSize();
 
-    double getErrorDefault();
+    double getErrorReward();
 
     Optional<Integer> getMaxGenerations();
 

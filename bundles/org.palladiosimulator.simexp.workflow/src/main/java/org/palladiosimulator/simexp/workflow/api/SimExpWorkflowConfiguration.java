@@ -186,8 +186,8 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
-    public double getErrorDefault() {
-        return evolutionaryAlgorithmConfiguration.getErrorDefault();
+    public double getErrorReward() {
+        return evolutionaryAlgorithmConfiguration.getErrorReward();
     }
 
     @Override

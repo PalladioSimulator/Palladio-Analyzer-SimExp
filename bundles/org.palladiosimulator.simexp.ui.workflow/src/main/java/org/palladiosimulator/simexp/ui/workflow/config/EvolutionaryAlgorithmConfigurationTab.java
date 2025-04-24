@@ -53,7 +53,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textSteadyFitness;
     private Text textMutationRate;
     private Text textCrossoverRate;
-    private Text textErrorDefault;
+    private Text textErrorReward;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -123,9 +123,9 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
         Label errorDefaultLabel = new Label(container, SWT.NONE);
         errorDefaultLabel.setText("Reward on error:");
-        textErrorDefault = new Text(container, SWT.BORDER);
-        textErrorDefault.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        textErrorDefault.addModifyListener(modifyListener);
+        textErrorReward = new Text(container, SWT.BORDER);
+        textErrorReward.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textErrorReward.addModifyListener(modifyListener);
     }
 
     private void createLimits(Composite parent, ModifyListener modifyListener) {
@@ -222,19 +222,19 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
                 t2mCrossOverRateUpdateStrategy, m2tCrossOverRateUpdateStrategy);
         ControlDecorationSupport.create(crossOverRateBindValue, SWT.TOP | SWT.RIGHT);
 
-        IObservableValue<String> errorDefaultTarget = WidgetProperties.text(SWT.Modify)
-            .observe(textErrorDefault);
-        IObservableValue<Double> errorDefaultModel = ConfigurationProperties
-            .value(SimulationConstants.ERROR_DEFAULT, true)
+        IObservableValue<String> errorRewardTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textErrorReward);
+        IObservableValue<Double> errorRewardModel = ConfigurationProperties
+            .value(SimulationConstants.ERROR_REWARD, true)
             .observe(configuration);
-        UpdateValueStrategy<String, Double> errorDefaultUpdateStrategy = new UpdateValueStrategy<>(
+        UpdateValueStrategy<String, Double> errorRewardUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        IValidator<Double> errorDefaultValidator = new ControllableValidator<>(
+        IValidator<Double> errorRewardValidator = new ControllableValidator<>(
                 new NotNullValidator<>("Reward on error"), isEAEnabled);
-        errorDefaultUpdateStrategy.setBeforeSetValidator(errorDefaultValidator);
-        Binding errorDefaultBindValue = ctx.bindValue(errorDefaultTarget, errorDefaultModel, errorDefaultUpdateStrategy,
+        errorRewardUpdateStrategy.setBeforeSetValidator(errorRewardValidator);
+        Binding errorRewardBindValue = ctx.bindValue(errorRewardTarget, errorRewardModel, errorRewardUpdateStrategy,
                 null);
-        ControlDecorationSupport.create(errorDefaultBindValue, SWT.TOP | SWT.RIGHT);
+        ControlDecorationSupport.create(errorRewardBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {

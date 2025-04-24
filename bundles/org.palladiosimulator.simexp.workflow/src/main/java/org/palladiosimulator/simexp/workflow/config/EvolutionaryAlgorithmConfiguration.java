@@ -29,7 +29,7 @@ public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorith
     }
 
     @Override
-    public double getErrorDefault() {
+    public double getErrorReward() {
         return errorDefault;
     }
 
