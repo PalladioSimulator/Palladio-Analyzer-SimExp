@@ -75,7 +75,7 @@ public class MOEAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
@@ -111,7 +111,7 @@ public class MOEAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         Double fitness = fitnessFunction.apply(genotype);
 
@@ -128,7 +128,7 @@ public class MOEAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         Double fitness = fitnessFunction.apply(genotype);
 
@@ -151,7 +151,7 @@ public class MOEAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
@@ -182,7 +182,7 @@ public class MOEAFitnessFunctionTest {
             fail();
         }
         double smallEpsilon = 0.0000000000001;
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer);
+        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);

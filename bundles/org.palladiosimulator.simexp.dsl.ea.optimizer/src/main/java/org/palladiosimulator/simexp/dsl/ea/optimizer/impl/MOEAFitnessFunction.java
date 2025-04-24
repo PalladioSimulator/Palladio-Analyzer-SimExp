@@ -32,19 +32,13 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
     private final double epsilon;
-
-    private double penaltyForInvalids = 0.0;
-
-    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
-            OptimizableNormalizer optimizableNormalizer) {
-        this.epsilon = epsilon;
-        this.fitnessEvaluator = fitnessEvaluator;
-        this.optimizableNormalizer = optimizableNormalizer;
-    }
+    private final double penaltyForInvalids;
 
     public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
             OptimizableNormalizer optimizableNormalizer, double penaltyForInvalids) {
-        this(epsilon, fitnessEvaluator, optimizableNormalizer);
+        this.epsilon = epsilon;
+        this.fitnessEvaluator = fitnessEvaluator;
+        this.optimizableNormalizer = optimizableNormalizer;
         this.penaltyForInvalids = penaltyForInvalids;
     }
 
