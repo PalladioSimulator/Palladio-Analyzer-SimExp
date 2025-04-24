@@ -124,6 +124,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final boolean consideredFailed;
         final TaskInfo taskInfo;
         synchronized (this) {
+            startedTasks.remove(taskId);
             started = startedTasks.size();
             completed = receivedCount;
             abortedTasks.add(taskId);
