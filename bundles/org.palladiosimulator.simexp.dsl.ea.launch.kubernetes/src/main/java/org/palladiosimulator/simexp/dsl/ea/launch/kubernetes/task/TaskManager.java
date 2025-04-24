@@ -121,6 +121,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int started;
         final int aborted;
         final int created;
+        final int abortionCount;
         final boolean consideredFailed;
         final TaskInfo taskInfo;
         synchronized (this) {
@@ -130,14 +131,16 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             abortedTasks.add(taskId);
             aborted = abortedTasks.size();
             created = taskCount;
-            consideredFailed = abortedTasks.get(taskId) >= MAX_ABORTIONS;
+            abortionCount = abortedTasks.get(taskId);
+            consideredFailed = abortionCount >= MAX_ABORTIONS;
             if (consideredFailed) {
                 taskInfo = outstandingTasks.remove(taskId);
             } else {
                 taskInfo = outstandingTasks.get(taskId);
             }
         }
-        String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
+        String status = String.format("aborted (#%d)", abortionCount);
+        String tasksStatus = getTasksStatus(status, completed, started, aborted, created);
         LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
         if (consideredFailed && (taskInfo != null)) {
             LOGGER.info(String.format("too many abortions for %s -> permanent failure", taskId));
