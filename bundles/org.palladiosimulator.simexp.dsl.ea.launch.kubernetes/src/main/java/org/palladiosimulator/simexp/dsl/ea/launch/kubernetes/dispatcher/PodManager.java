@@ -67,7 +67,7 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
     }
 
     @Override
-    public void onRestart(String nodeName, String podName, Reason reason, int restartCount) {
+    public void onRestart(String nodeName, String podName, String reason, int restartCount) {
         final List<String> tasks;
         final boolean newRestart;
         synchronized (this) {
@@ -103,14 +103,14 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
         }
     }
 
-    private void handleAffectedTasks(String nodeName, String podName, Reason reason, List<String> tasks) {
+    private void handleAffectedTasks(String nodeName, String podName, String reason, List<String> tasks) {
         for (String taskId : tasks) {
             LOGGER.warn(String.format("abort task: %s", taskId));
             JobResult result = new JobResult();
             result.id = taskId;
             result.status = Status.ABORT;
             result.executor_id = String.format("%s:default.%s", nodeName, podName);
-            result.error = reason.name();
+            result.error = reason;
             notifyConsumers(taskId, result);
         }
     }

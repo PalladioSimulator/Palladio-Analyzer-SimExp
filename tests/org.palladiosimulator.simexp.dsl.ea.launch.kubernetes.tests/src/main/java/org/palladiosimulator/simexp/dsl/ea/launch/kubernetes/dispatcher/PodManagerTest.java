@@ -11,7 +11,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.IPodRestartListener.Reason;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskConsumer;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 
@@ -39,7 +38,7 @@ public class PodManagerTest {
 
     @Test
     public void testOnRestartUnknownPod() {
-        podManager.onRestart("n", "p", Reason.OOMKilled, 1);
+        podManager.onRestart("n", "p", "OOMKilled", 1);
 
         verify(taskConsumer, never()).taskAborted(eq("t"), any(JobResult.class));
     }
@@ -50,7 +49,7 @@ public class PodManagerTest {
         result.executor_id = "n:default.p";
         podManager.taskStarted("t", result);
 
-        podManager.onRestart("n", "p", Reason.OOMKilled, 1);
+        podManager.onRestart("n", "p", "OOMKilled", 1);
 
         verify(taskConsumer).taskAborted(eq("t"), any(JobResult.class));
     }
@@ -60,9 +59,9 @@ public class PodManagerTest {
         JobResult result = new JobResult();
         result.executor_id = "n:default.p";
         podManager.taskStarted("t", result);
-        podManager.onRestart("n", "p", Reason.OOMKilled, 1);
+        podManager.onRestart("n", "p", "OOMKilled", 1);
 
-        podManager.onRestart("n", "p", Reason.OOMKilled, 2);
+        podManager.onRestart("n", "p", "OOMKilled", 2);
 
         verify(taskConsumer, times(1)).taskAborted(eq("t"), any(JobResult.class));
     }

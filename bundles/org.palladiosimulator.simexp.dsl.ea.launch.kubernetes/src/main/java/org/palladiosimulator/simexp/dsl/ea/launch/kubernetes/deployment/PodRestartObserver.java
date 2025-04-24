@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.IPodRestartListener.Reason;
 
 import io.fabric8.kubernetes.api.model.ContainerState;
 import io.fabric8.kubernetes.api.model.ContainerStateTerminated;
@@ -63,24 +62,15 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
         int restartCount = status.getRestartCount();
         if (restartCount > 0) {
             ContainerState lastState = status.getLastState();
-            final Reason reason;
+            final String reason;
             if (lastState != null) {
                 ContainerStateTerminated terminated = lastState.getTerminated();
-                reason = getReason(terminated);
+                reason = terminated.getReason();
             } else {
-                reason = getReason(null);
+                reason = "unknown";
             }
             notifyListeners(nodeName, podName, reason, restartCount);
         }
-    }
-
-    private Reason getReason(ContainerStateTerminated terminated) {
-        if (terminated != null) {
-            if ("OOMKilled".equals(terminated.getReason())) {
-                return Reason.OOMKilled;
-            }
-        }
-        return Reason.UNKNOWN;
     }
 
     @Override
@@ -88,7 +78,7 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
         LOGGER.error("pod restart observer closed due to error", e);
     }
 
-    private void notifyListeners(String nodeName, String podName, Reason reason, int restartCount) {
+    private void notifyListeners(String nodeName, String podName, String reason, int restartCount) {
         final List<IPodRestartListener> tempListeners;
         synchronized (this) {
             tempListeners = new ArrayList<>(listeners);
