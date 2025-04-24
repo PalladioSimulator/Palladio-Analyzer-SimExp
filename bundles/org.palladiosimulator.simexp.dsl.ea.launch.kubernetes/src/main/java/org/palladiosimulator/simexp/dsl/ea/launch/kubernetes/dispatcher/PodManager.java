@@ -39,6 +39,10 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
             return result;
         }
 
+        public List<String> copyTasks() {
+            return new ArrayList<>(tasks);
+        }
+
         public int getRestartCount() {
             return restartCount;
         }
@@ -70,14 +74,16 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
             PodInfo podInfo = podInfos.get(podName);
             if (podInfo == null) {
                 tasks = null;
-            } else {
-                tasks = podInfo.popTasks();
-            }
-            if (restartCount > podInfo.getRestartCount()) {
-                podInfo.setRestartCount(restartCount);
-                newRestart = true;
-            } else {
                 newRestart = false;
+            } else {
+                if (restartCount > podInfo.getRestartCount()) {
+                    tasks = podInfo.popTasks();
+                    podInfo.setRestartCount(restartCount);
+                    newRestart = true;
+                } else {
+                    tasks = podInfo.copyTasks();
+                    newRestart = false;
+                }
             }
         }
         ClassLoader oldContextClassLoader = Thread.currentThread()
@@ -86,10 +92,10 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
             .setContextClassLoader(classloader);
         try {
             if (newRestart) {
-                LOGGER.warn(String.format("handle restart of pod %s count %d", podName, restartCount));
+                LOGGER.warn(String.format("handle restart %d of pod %s", restartCount, podName));
                 handleAffectedTasks(nodeName, podName, reason, tasks);
             } else {
-                LOGGER.warn(String.format("old restart for pod %s count %d", podName, restartCount));
+                LOGGER.warn(String.format("ignore restart %d of pod %s", restartCount, podName));
             }
         } finally {
             Thread.currentThread()
@@ -156,7 +162,6 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
     }
 
     String getPodName(String executor_id) {
-        // node02:default.simexp-c6f6d95f4-8b9f8
         String[] tokens = executor_id.split("\\.");
         return tokens[1];
     }
