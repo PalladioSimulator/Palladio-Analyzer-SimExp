@@ -5,5 +5,5 @@ public interface IPodRestartListener {
         UNKNOWN, OOMKilled;
     }
 
-    void onRestart(String podName, Reason reason);
+    void onRestart(String nodeName, String podName, Reason reason, int restartCount);
 }

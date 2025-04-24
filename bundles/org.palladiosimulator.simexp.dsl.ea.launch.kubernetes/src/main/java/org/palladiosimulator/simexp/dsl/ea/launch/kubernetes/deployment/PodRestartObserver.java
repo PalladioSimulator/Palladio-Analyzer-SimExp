@@ -50,20 +50,32 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
 
     @Override
     public void eventReceived(Action action, Pod pod) {
-        String podName = pod.getMetadata()
-            .getName();
-        PodStatus podStatus = pod.getStatus();
-        List<ContainerStatus> statuses = podStatus.getContainerStatuses();
-        LOGGER.warn(String.format("pod %s event: %s status %s(%s) count: %d", podName, action, podStatus.getMessage(),
-                podStatus.getReason(), statuses.size()));
-        for (ListIterator<ContainerStatus> it = statuses.listIterator(); it.hasNext();) {
-            int index = it.nextIndex();
-            ContainerStatus status = it.next();
-            checkRestart(podName, index, status);
+        ClassLoader oldContextClassLoader = Thread.currentThread()
+            .getContextClassLoader();
+        Thread.currentThread()
+            .setContextClassLoader(classloader);
+        try {
+
+            String podName = pod.getMetadata()
+                .getName();
+            String nodeName = pod.getSpec()
+                .getNodeName();
+            PodStatus podStatus = pod.getStatus();
+            List<ContainerStatus> statuses = podStatus.getContainerStatuses();
+            LOGGER.warn(String.format("pod %s event: %s status %s(%s) count: %d", podName, action,
+                    podStatus.getMessage(), podStatus.getReason(), statuses.size()));
+            for (ListIterator<ContainerStatus> it = statuses.listIterator(); it.hasNext();) {
+                int index = it.nextIndex();
+                ContainerStatus status = it.next();
+                checkRestart(nodeName, podName, index, status);
+            }
+        } finally {
+            Thread.currentThread()
+                .setContextClassLoader(oldContextClassLoader);
         }
     }
 
-    private void checkRestart(String podName, int index, ContainerStatus status) {
+    private void checkRestart(String nodeName, String podName, int index, ContainerStatus status) {
         int restartCount = status.getRestartCount();
         if (restartCount > 0) {
             ContainerState lastState = status.getLastState();
@@ -81,7 +93,7 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
             String containerState = getContainerState(status);
             LOGGER.warn(String.format("pod %s, container %s restarted (state %s) at %s %d times (index: %d)", podName,
                     containerName, containerState, terminatedAt, restartCount, index));
-            notifyListeners(podName, reason);
+            notifyListeners(nodeName, podName, reason, restartCount);
         }
     }
 
@@ -129,25 +141,17 @@ public class PodRestartObserver implements Watcher<Pod>, AutoCloseable {
         LOGGER.error("pod restart observer closed due to error", e);
     }
 
-    private void notifyListeners(String podName, Reason reason) {
+    private void notifyListeners(String nodeName, String podName, Reason reason, int restartCount) {
         final List<IPodRestartListener> tempListeners;
         synchronized (this) {
             tempListeners = new ArrayList<>(listeners);
         }
-
-        ClassLoader oldContextClassLoader = Thread.currentThread()
-            .getContextClassLoader();
-        Thread.currentThread()
-            .setContextClassLoader(classloader);
         try {
             for (IPodRestartListener listener : tempListeners) {
-                listener.onRestart(podName, reason);
+                listener.onRestart(nodeName, podName, reason, restartCount);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-        } finally {
-            Thread.currentThread()
-                .setContextClassLoader(oldContextClassLoader);
         }
     }
 }

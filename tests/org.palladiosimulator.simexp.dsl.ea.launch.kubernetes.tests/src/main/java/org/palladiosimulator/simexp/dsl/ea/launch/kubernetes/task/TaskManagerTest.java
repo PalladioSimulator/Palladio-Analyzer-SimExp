@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;
@@ -21,10 +20,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testGetPodName() {
-        String actualPodName = taskManager.getPodName("node02:default.simexp-c6f6d95f4-8b9f8");
+    public void dummy() {
 
-        assertEquals("simexp-c6f6d95f4-8b9f8", actualPodName);
     }
-
 }

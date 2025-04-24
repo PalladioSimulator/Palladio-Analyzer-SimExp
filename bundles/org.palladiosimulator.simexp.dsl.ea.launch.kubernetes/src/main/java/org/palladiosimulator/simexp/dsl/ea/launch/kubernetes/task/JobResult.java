@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 public class JobResult {
     public enum Status {
-        START, COMPLETE;
+        START, COMPLETE, ABORT;
     };
 
     public String id;

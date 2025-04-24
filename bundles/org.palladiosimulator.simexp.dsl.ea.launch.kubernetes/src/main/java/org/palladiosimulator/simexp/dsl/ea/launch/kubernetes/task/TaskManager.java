@@ -8,15 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.IPodRestartListener;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartListener {
+public class TaskManager implements ITaskManager, ITaskConsumer {
     private static final Logger LOGGER = Logger.getLogger(TaskManager.class);
+    private static final int MAX_ABORTIONS = 3;
 
     private static class TaskInfo {
         public final SettableFutureTask<Optional<Double>> future;
@@ -28,31 +27,10 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         }
     }
 
-    private static class PodInfo {
-        private final Set<String> tasks;
-
-        public PodInfo() {
-            this.tasks = new HashSet<>();
-        }
-
-        public void addTask(String taskId) {
-            getTasks().add(taskId);
-        }
-
-        public void removeTask(String taskId) {
-            getTasks().remove(taskId);
-        }
-
-        public Set<String> getTasks() {
-            return tasks;
-        }
-    }
-
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
     private final Counter<String> abortedTasks;
-    private final Map<String, PodInfo> pods;
 
     private int receivedCount = 0;
     private int taskCount = 0;
@@ -62,7 +40,6 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
         this.abortedTasks = new Counter<>();
-        this.pods = new HashMap<>();
     }
 
     @Override
@@ -75,8 +52,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         synchronized (this) {
             taskCount++;
             outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
-            completed = receivedCount;
             started = startedTasks.size();
+            completed = receivedCount;
             aborted = abortedTasks.size();
             created = taskCount;
         }
@@ -88,21 +65,14 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
 
     @Override
     public void taskStarted(String taskId, JobResult result) {
-        String podName = getPodName(result.executor_id);
         final int completed;
         final int started;
         final int aborted;
         final int created;
         synchronized (this) {
             startedTasks.add(taskId);
-            PodInfo podInfo = pods.get(podName);
-            if (podInfo == null) {
-                podInfo = new PodInfo();
-                pods.put(podName, podInfo);
-            }
-            podInfo.addTask(taskId);
-            completed = receivedCount;
             started = startedTasks.size();
+            completed = receivedCount;
             aborted = abortedTasks.size();
             created = taskCount;
         }
@@ -111,15 +81,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
                 result.redelivered));
     }
 
-    String getPodName(String executor_id) {
-        // node02:default.simexp-c6f6d95f4-8b9f8
-        String[] tokens = executor_id.split("\\.");
-        return tokens[1];
-    }
-
     @Override
     public void taskCompleted(String taskId, JobResult result) {
-        String podName = getPodName(result.executor_id);
         final int completed;
         final int started;
         final int aborted;
@@ -127,12 +90,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         final TaskInfo taskInfo;
         synchronized (this) {
             startedTasks.remove(taskId);
-            PodInfo podInfo = pods.get(podName);
-            if (podInfo != null) {
-                podInfo.removeTask(taskId);
-            }
-            completed = ++receivedCount;
             started = startedTasks.size();
+            completed = ++receivedCount;
             abortedTasks.remove(taskId);
             aborted = abortedTasks.size();
             created = taskCount;
@@ -156,6 +115,37 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
         }
     }
 
+    @Override
+    public void taskAborted(String taskId, JobResult result) {
+        final int completed;
+        final int started;
+        final int aborted;
+        final int created;
+        final boolean consideredFailed;
+        final TaskInfo taskInfo;
+        synchronized (this) {
+            started = startedTasks.size();
+            completed = receivedCount;
+            abortedTasks.add(taskId);
+            aborted = abortedTasks.size();
+            created = taskCount;
+            consideredFailed = abortedTasks.get(taskId) >= MAX_ABORTIONS;
+            if (consideredFailed) {
+                taskInfo = outstandingTasks.remove(taskId);
+            } else {
+                taskInfo = outstandingTasks.get(taskId);
+            }
+        }
+        String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
+        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
+        if (consideredFailed && (taskInfo != null)) {
+            LOGGER.info(String.format("too many abortions for %s -> permanent failure", taskId));
+            SettableFutureTask<Optional<Double>> future = taskInfo.future;
+            resultLogger.log(taskInfo.optimizableValues, result);
+            future.setResult(Optional.empty());
+        }
+    }
+
     private String getTasksStatus(String status, int completed, int started, int aborted, int created) {
         String tasksStatus = String.format("task %s %d/%d/(%d)/%d", status, started, completed, aborted, created);
         return tasksStatus;
@@ -166,38 +156,5 @@ public class TaskManager implements ITaskManager, ITaskConsumer, IPodRestartList
             return String.format("<null> (%s)", result.error);
         }
         return String.format("%s", result.reward);
-    }
-
-    @Override
-    public void onRestart(String podName, Reason reason) {
-        final int completed;
-        final int started;
-        final int aborted;
-        final int created;
-        final String tasksDescription;
-        synchronized (this) {
-            PodInfo podInfo = pods.get(podName);
-            if (podInfo != null) {
-                Set<String> tasks = new HashSet<>(podInfo.getTasks());
-                podInfo.getTasks()
-                    .clear();
-                tasks.stream()
-                    .forEach(t -> startedTasks.remove(t));
-                tasks.stream()
-                    .forEach(t -> abortedTasks.add(t));
-                List<String> entries = tasks.stream()
-                    .map(t -> String.format("%s:%d", t, abortedTasks.get(t)))
-                    .toList();
-                tasksDescription = StringUtils.join(entries, ",");
-            } else {
-                tasksDescription = "";
-            }
-            started = startedTasks.size();
-            aborted = abortedTasks.size();
-            completed = receivedCount;
-            created = taskCount;
-        }
-        String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
-        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, tasksDescription, podName, reason));
     }
 }
