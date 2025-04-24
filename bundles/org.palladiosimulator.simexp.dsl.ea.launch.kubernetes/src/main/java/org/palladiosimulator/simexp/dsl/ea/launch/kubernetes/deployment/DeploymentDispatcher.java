@@ -2,8 +2,10 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,6 +18,7 @@ import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
+import io.fabric8.kubernetes.api.model.HostPathVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.LocalObjectReferenceBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
@@ -83,15 +86,28 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     private Deployment createDeployment(String brokerUrl, String outQueue, String inQueue) {
         LOGGER.info("create deployment");
 
-        VolumeMount volumeMount = new VolumeMountBuilder().withMountPath("/workspace")
+        List<VolumeMount> volumeMounts = new ArrayList<>();
+        List<Volume> volumes = new ArrayList<>();
+        VolumeMount volumeMountTimeZone = new VolumeMountBuilder().withMountPath("/etc/localtime")
+            .withName("timezone")
+            .build();
+        volumeMounts.add(volumeMountTimeZone);
+        VolumeMount volumeMountWorkspace = new VolumeMountBuilder().withMountPath("/workspace")
             .withName("workspace")
             .build();
-        Volume volume = new VolumeBuilder().withName(volumeMount.getName())
+        volumeMounts.add(volumeMountWorkspace);
+        Volume volumeTimeZone = new VolumeBuilder().withName(volumeMountTimeZone.getName())
+            .withHostPath(new HostPathVolumeSourceBuilder().withPath("/usr/share/zoneinfo/Europe/Berlin")
+                .build())
+            .build();
+        volumes.add(volumeTimeZone);
+        Volume volumeWorkspace = new VolumeBuilder().withName(volumeMountWorkspace.getName())
             .withEmptyDir(new EmptyDirVolumeSourceBuilder().withNewSizeLimit("1Gi")
                 .build())
             .build();
+        volumes.add(volumeWorkspace);
 
-        Container container = createContainer(brokerUrl, outQueue, inQueue, volumeMount);
+        Container container = createContainer(brokerUrl, outQueue, inQueue, volumeMounts);
 
         Toleration toleration = new TolerationBuilder().withKey("remote")
             .withOperator("Exists")
@@ -115,7 +131,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withNewSpec()
             .withServiceAccount("node-query-sa")
             .withContainers(container)
-            .withVolumes(volume)
+            .withVolumes(volumes)
             .withImagePullSecrets(new LocalObjectReferenceBuilder().withName("cred-simexp-registry")
                 .build())
             .withTolerations(toleration)
@@ -133,7 +149,8 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         return deploymentResource;
     }
 
-    private Container createContainer(String brokerUrl, String outQueue, String inQueue, VolumeMount volumeMount) {
+    private Container createContainer(String brokerUrl, String outQueue, String inQueue,
+            List<VolumeMount> volumeMounts) {
         Map<String, Quantity> reqMap = new HashMap<>();
         reqMap.put("cpu", new Quantity("0.9"));
         reqMap.put("memory", new Quantity("2Gi"));
@@ -176,7 +193,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                         .endValueFrom()
                         .build())
             .withResources(reqs)
-            .withVolumeMounts(volumeMount)
+            .withVolumeMounts(volumeMounts)
             .build();
         return container;
     }
