@@ -104,10 +104,6 @@ public class PodManager implements IPodRestartListener, ITaskConsumer {
     }
 
     private void handleAffectedTasks(String nodeName, String podName, Reason reason, List<String> tasks) {
-        if (tasks == null) {
-            LOGGER.warn(String.format("unknown pod: %s", podName));
-            return;
-        }
         for (String taskId : tasks) {
             LOGGER.warn(String.format("abort task: %s", taskId));
             JobResult result = new JobResult();
