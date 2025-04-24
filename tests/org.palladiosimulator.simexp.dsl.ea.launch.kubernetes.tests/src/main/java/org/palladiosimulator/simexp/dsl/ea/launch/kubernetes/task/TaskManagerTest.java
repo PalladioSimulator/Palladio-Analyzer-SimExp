@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -85,7 +86,7 @@ public class TaskManagerTest {
 
         taskManager.taskAborted("t", result);
 
-        verify(task).setResult(captor.capture());
+        verify(task, times(1)).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
         assertThat(capturedArgument).isEmpty();
     }
