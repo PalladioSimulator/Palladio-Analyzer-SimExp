@@ -122,7 +122,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textCrossoverRate.addModifyListener(modifyListener);
 
         Label errorDefaultLabel = new Label(container, SWT.NONE);
-        errorDefaultLabel.setText("Value on error:");
+        errorDefaultLabel.setText("Reward on error:");
         textErrorDefault = new Text(container, SWT.BORDER);
         textErrorDefault.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textErrorDefault.addModifyListener(modifyListener);
@@ -229,8 +229,8 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> errorDefaultUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        IValidator<Double> errorDefaultValidator = new ControllableValidator<>(new NotNullValidator<>("Value on error"),
-                isEAEnabled);
+        IValidator<Double> errorDefaultValidator = new ControllableValidator<>(
+                new NotNullValidator<>("Reward on error"), isEAEnabled);
         errorDefaultUpdateStrategy.setBeforeSetValidator(errorDefaultValidator);
         Binding errorDefaultBindValue = ctx.bindValue(errorDefaultTarget, errorDefaultModel, errorDefaultUpdateStrategy,
                 null);
