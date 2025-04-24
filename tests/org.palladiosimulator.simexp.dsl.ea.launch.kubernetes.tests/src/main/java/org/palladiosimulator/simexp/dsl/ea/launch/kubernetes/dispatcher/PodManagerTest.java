@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -39,6 +40,8 @@ public class PodManagerTest {
     @Test
     public void testOnRestartUnknownPod() {
         podManager.onRestart("n", "p", Reason.OOMKilled, 1);
+
+        verify(taskConsumer, never()).taskAborted(eq("t"), any(JobResult.class));
     }
 
     @Test
