@@ -55,8 +55,8 @@ public class ConfigHelper implements IEAConfig {
     }
 
     @Override
-    public Optional<Double> penaltyForInvalids() {
-        return Optional.empty();
+    public double penaltyForInvalids() {
+        return 0.0;
     }
 
     @Override

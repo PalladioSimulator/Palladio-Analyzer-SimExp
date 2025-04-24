@@ -63,14 +63,7 @@ public class EAOptimizer implements IEAOptimizer {
         ///// setup EA
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);
         double epsilon = expressionCalculator.getEpsilon();
-        final double penaltyForInvalids;
-        if (config.penaltyForInvalids()
-            .isPresent()) {
-            penaltyForInvalids = config.penaltyForInvalids()
-                .get();
-        } else {
-            penaltyForInvalids = 0.0;
-        }
+        final double penaltyForInvalids = config.penaltyForInvalids();
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer,
                 penaltyForInvalids);
         Engine<BitGene, Double> engine = builder.buildEngine(fitnessFunction, genotype, executor);
