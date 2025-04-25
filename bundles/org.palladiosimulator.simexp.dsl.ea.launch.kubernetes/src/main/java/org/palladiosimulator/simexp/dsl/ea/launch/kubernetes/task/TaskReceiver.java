@@ -14,18 +14,25 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-public class TaskReceiver extends DefaultConsumer {
+public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(TaskReceiver.class);
 
     private final Gson gson;
     private final List<ITaskConsumer> taskConsumers;
     private final ClassLoader classloader;
 
-    public TaskReceiver(Channel channel, ClassLoader classloader) {
+    public TaskReceiver(Channel channel, String queueName, ClassLoader classloader) throws IOException {
         super(channel);
         this.gson = new Gson();
         this.taskConsumers = new ArrayList<>();
         this.classloader = classloader;
+        boolean autoAck = false;
+        channel.basicConsume(queueName, autoAck, "answerConsumer", this);
+    }
+
+    @Override
+    public void close() throws IOException {
+        getChannel().basicCancel("answerConsumer");
     }
 
     public synchronized void registerTaskConsumer(ITaskConsumer taskConsumer) {

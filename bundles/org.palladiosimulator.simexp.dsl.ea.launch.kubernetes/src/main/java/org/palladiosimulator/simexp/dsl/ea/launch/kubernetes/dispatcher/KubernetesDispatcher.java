@@ -115,12 +115,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
 
     private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient,
             PodRestartObserver restartObserver) throws IOException {
-        TaskReceiver taskReceiver = new TaskReceiver(channel, classloader);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
         String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
-        boolean autoAck = false;
-        channel.basicConsume(inQueueName, autoAck, "answerConsumer", taskReceiver);
-        try {
+        try (TaskReceiver taskReceiver = new TaskReceiver(channel, inQueueName, classloader)) {
             Path csvResourcePath = resourcePath.resolve("kubernetes")
                 .resolve("simulation_result.csv");
             Files.createDirectories(csvResourcePath.getParent());
@@ -150,8 +147,6 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             } finally {
                 resultLogger.dispose();
             }
-        } finally {
-            channel.basicCancel("answerConsumer");
         }
     }
 
