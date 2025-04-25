@@ -9,6 +9,7 @@ public class JobResult {
     public String executor_id;
     public int tag;
     public boolean redelivered;
+    public int delivery_count;
     public Status status;
     public Double reward;
     public String error;

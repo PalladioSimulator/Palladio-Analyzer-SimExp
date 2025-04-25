@@ -15,7 +15,6 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class TaskManager implements ITaskManager, ITaskConsumer {
     private static final Logger LOGGER = Logger.getLogger(TaskManager.class);
-    private static final int MAX_ABORTIONS = 3;
 
     private static class TaskInfo {
         public final SettableFutureTask<Optional<Double>> future;
@@ -30,7 +29,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
-    private final Counter<String> abortedTasks;
+    private final Set<String> abortedTasks;
 
     private int receivedCount = 0;
     private int taskCount = 0;
@@ -39,7 +38,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
-        this.abortedTasks = new Counter<>();
+        this.abortedTasks = new HashSet<>();
     }
 
     @Override
@@ -77,8 +76,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             created = taskCount;
         }
         String tasksStatus = getTasksStatus("started", completed, started, aborted, created);
-        LOGGER.info(String.format("%s [%s] by %s (redelivered: %s)", tasksStatus, result.id, result.executor_id,
-                result.redelivered));
+        LOGGER.info(String.format("%s [%s] by %s (redelivered: %s %d)", tasksStatus, result.id, result.executor_id,
+                result.redelivered, result.delivery_count));
     }
 
     @Override
@@ -121,8 +120,6 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int started;
         final int aborted;
         final int created;
-        final int abortionCount;
-        final boolean consideredFailed;
         final TaskInfo taskInfo;
         synchronized (this) {
             startedTasks.remove(taskId);
@@ -131,22 +128,16 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             abortedTasks.add(taskId);
             aborted = abortedTasks.size();
             created = taskCount;
-            abortionCount = abortedTasks.get(taskId);
-            consideredFailed = abortionCount >= MAX_ABORTIONS;
-            if (consideredFailed) {
-                taskInfo = outstandingTasks.remove(taskId);
-            } else {
-                taskInfo = outstandingTasks.get(taskId);
-            }
+            taskInfo = outstandingTasks.remove(taskId);
         }
-        String status = String.format("aborted (#%d)", abortionCount);
-        String tasksStatus = getTasksStatus(status, completed, started, aborted, created);
-        LOGGER.info(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
-        if (consideredFailed && (taskInfo != null)) {
-            LOGGER.info(String.format("too many abortions for %s -> permanent failure", taskId));
+        if (taskInfo != null) {
+            String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
+            LOGGER.warn(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
             SettableFutureTask<Optional<Double>> future = taskInfo.future;
             resultLogger.log(taskInfo.optimizableValues, result);
             future.setResult(Optional.empty());
+        } else {
+            LOGGER.warn(String.format("aborted task [%s] already completed/aborted", taskId));
         }
     }
 

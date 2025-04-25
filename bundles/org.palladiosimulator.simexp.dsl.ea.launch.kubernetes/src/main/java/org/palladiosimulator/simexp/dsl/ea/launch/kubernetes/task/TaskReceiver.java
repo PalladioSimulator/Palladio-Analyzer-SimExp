@@ -53,6 +53,8 @@ public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
             JobResult answer = gson.fromJson(message, JobResult.class);
             notifyConsumers(answer.id, answer);
             getChannel().basicAck(deliveryTag, false);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         } finally {
             Thread.currentThread()
                 .setContextClassLoader(oldContextClassLoader);
@@ -67,6 +69,8 @@ public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
         for (ITaskConsumer consumer : consumers) {
             if (result.status == Status.START) {
                 consumer.taskStarted(answerId, result);
+            } else if (result.status == Status.ABORT) {
+                consumer.taskAborted(answerId, result);
             } else if (result.status == Status.COMPLETE) {
                 consumer.taskCompleted(answerId, result);
             }

@@ -123,12 +123,8 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             Files.createDirectories(csvResourcePath.getParent());
             CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
             try {
-                PodManager podManager = new PodManager(classloader);
-                restartObserver.addListener(podManager);
                 TaskManager taskManager = new TaskManager(resultLogger);
-                podManager.registerTaskConsumer(taskManager);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
-                taskReceiver.registerTaskConsumer(podManager);
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
                 URL imageRegistryUrl = new URL(imageRegistryStr);
