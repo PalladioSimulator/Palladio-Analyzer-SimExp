@@ -189,7 +189,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseVariableWithValueRange() throws Exception {
+    public void parseWithValueRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double[1.0, 2.0, 0.1) values;
                 if (values==0.0) {}
@@ -205,7 +205,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseVariableWithWrongValue() throws Exception {
+    public void parseWithWrongValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{true} list;
                 """;
@@ -217,7 +217,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseNonNumberVariableWithRange() throws Exception {
+    public void parseNonNumberWithRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool[true, false, true] range;
                 """;
