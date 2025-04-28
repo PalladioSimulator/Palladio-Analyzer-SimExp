@@ -54,6 +54,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textMutationRate;
     private Text textCrossoverRate;
     private Text textErrorReward;
+    private Text textMemoryUsage;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -95,6 +96,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
         createConfig(simContainer, modifyListener);
         createLimits(simContainer, modifyListener);
+        createResources(simContainer, modifyListener);
     }
 
     private void createConfig(Composite parent, ModifyListener modifyListener) {
@@ -147,9 +149,23 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textSteadyFitness.addModifyListener(modifyListener);
     }
 
+    private void createResources(Composite parent, ModifyListener modifyListener) {
+        Group container = new Group(parent, SWT.NONE);
+        container.setText("Resources");
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        container.setLayout(new GridLayout(2, false));
+
+        Label memoryUsageLabel = new Label(container, SWT.NONE);
+        memoryUsageLabel.setText("Memory usage:");
+        textMemoryUsage = new Text(container, SWT.BORDER);
+        textMemoryUsage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textMemoryUsage.addModifyListener(modifyListener);
+    }
+
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(SimulationConstants.POPULATION_SIZE, SimulationConstants.DEFAULT_POPULATION_SIZE);
+        configuration.setAttribute(SimulationConstants.MEMORY_USAGE, SimulationConstants.DEFAULT_MEMORY_USAGE);
     }
 
     @Override
@@ -161,6 +177,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
 
         initializeConfigFrom(configuration, ctx, isEAEnabled);
         initializeLimitsFrom(configuration, ctx, isEAEnabled);
+        initializeResourcesFrom(configuration, ctx, isEAEnabled);
     }
 
     private void initializeConfigFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {
@@ -229,8 +246,8 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
             .observe(configuration);
         UpdateValueStrategy<String, Double> errorRewardUpdateStrategy = new UpdateValueStrategy<>(
                 UpdateValueStrategy.POLICY_CONVERT);
-        IValidator<Double> errorRewardValidator = new ControllableValidator<>(
-                new NotNullValidator<>("Reward on error"), isEAEnabled);
+        IValidator<Double> errorRewardValidator = new ControllableValidator<>(new NotNullValidator<>("Reward on error"),
+                isEAEnabled);
         errorRewardUpdateStrategy.setBeforeSetValidator(errorRewardValidator);
         Binding errorRewardBindValue = ctx.bindValue(errorRewardTarget, errorRewardModel, errorRewardUpdateStrategy,
                 null);
@@ -266,6 +283,22 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         Binding steadyFitnessBindValue = ctx.bindValue(steadyFitnessTarget, steadyFitnessModel,
                 steadyFitnessUpdateStrategy, null);
         ControlDecorationSupport.create(steadyFitnessBindValue, SWT.TOP | SWT.RIGHT);
+    }
+
+    private void initializeResourcesFrom(ILaunchConfiguration configuration, DataBindingContext ctx,
+            Enabled isEAEnabled) {
+        IObservableValue<String> memoryUsageTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textMemoryUsage);
+        IObservableValue<Integer> memoryUsageModel = ConfigurationProperties.integer(SimulationConstants.MEMORY_USAGE)
+            .observe(configuration);
+        UpdateValueStrategy<String, Integer> memoryUsageUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        IValidator<Integer> memoryUsageValidator = new ControllableValidator<>(
+                new MinNumberValidator<>("Memory usage", 1), isEAEnabled);
+        memoryUsageUpdateStrategy.setBeforeSetValidator(memoryUsageValidator);
+        Binding memoryUsageBindValue = ctx.bindValue(memoryUsageTarget, memoryUsageModel, memoryUsageUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(memoryUsageBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     @Override

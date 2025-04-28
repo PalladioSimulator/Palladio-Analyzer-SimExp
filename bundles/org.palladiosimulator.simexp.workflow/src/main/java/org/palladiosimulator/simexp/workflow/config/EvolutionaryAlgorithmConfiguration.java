@@ -11,16 +11,18 @@ public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorith
     private final Optional<Integer> steadyFitness;
     private final Optional<Double> mutationRate;
     private final Optional<Double> crossoverRate;
+    private final int memoryUsage;
 
     public EvolutionaryAlgorithmConfiguration(int eaPopulationSize, double errorDefault,
             Optional<Integer> maxGenerations, Optional<Integer> steadyFitness, Optional<Double> mutationRate,
-            Optional<Double> crossoverRate) {
+            Optional<Double> crossoverRate, int memoryUsage) {
         this.populationSize = eaPopulationSize;
         this.errorDefault = errorDefault;
         this.maxGenerations = maxGenerations;
         this.steadyFitness = steadyFitness;
         this.mutationRate = mutationRate;
         this.crossoverRate = crossoverRate;
+        this.memoryUsage = memoryUsage;
     }
 
     @Override
@@ -51,5 +53,10 @@ public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorith
     @Override
     public Optional<Double> getCrossoverRate() {
         return crossoverRate;
+    }
+
+    @Override
+    public int getMemoryUsage() {
+        return memoryUsage;
     }
 }

@@ -216,6 +216,11 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
+    public int getMemoryUsage() {
+        return evolutionaryAlgorithmConfiguration.getMemoryUsage();
+    }
+
+    @Override
     public Map<String, Object> getOptimizedValues() {
         return optimizedValues;
     }

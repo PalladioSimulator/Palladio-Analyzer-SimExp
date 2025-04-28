@@ -43,7 +43,7 @@ public class OptimizableSimExpWorkflowConfiguration extends SimExpWorkflowConfig
                 new EvolutionaryAlgorithmConfiguration(configuration.getPopulationSize(),
                         configuration.getErrorReward(), configuration.getMaxGenerations(),
                         configuration.getSteadyFitness(), configuration.getMutationRate(),
-                        configuration.getCrossoverRate()),
+                        configuration.getCrossoverRate(), configuration.getMemoryUsage()),
                 configuration.getOptimizedValues());
         this.optimizableValues = optimizableValues;
     }

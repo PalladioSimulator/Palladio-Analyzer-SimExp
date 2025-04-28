@@ -14,4 +14,6 @@ public interface IEvolutionaryAlgorithmConfiguration {
     Optional<Double> getMutationRate();
 
     Optional<Double> getCrossoverRate();
+
+    int getMemoryUsage();
 }

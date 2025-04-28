@@ -16,8 +16,10 @@ public interface SimulationConstants {
     static final String MUTATION_RATE = "MutationRate";
     static final String CROSSOVER_RATE = "CrossoverRate";
     static final String ERROR_REWARD = "ErrorReward";
+    static final String MEMORY_USAGE = "MEMORY_USAGE";
 
     static final int DEFAULT_POPULATION_SIZE = 100;
+    static final int DEFAULT_MEMORY_USAGE = 2;
 
     static final String SIMULATOR_TYPE = "Simulator Type";
     static final String SIMULATION_ENGINE = "Simulation Engine";

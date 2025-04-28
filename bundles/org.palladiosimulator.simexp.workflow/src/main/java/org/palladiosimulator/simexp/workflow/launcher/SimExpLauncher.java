@@ -186,8 +186,9 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
                     SimulationConstants.MUTATION_RATE);
             Optional<Double> crossoverRate = extractOptionalDouble(launchConfigurationParams,
                     SimulationConstants.CROSSOVER_RATE);
+            int memoryUsage = (Integer) launchConfigurationParams.get(SimulationConstants.MEMORY_USAGE);
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
-                    errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate);
+                    errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate, memoryUsage);
 
             Map<String, Object> optimizedValues = getOptimizedValues(configuration);
 
