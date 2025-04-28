@@ -156,7 +156,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         container.setLayout(new GridLayout(2, false));
 
         Label memoryUsageLabel = new Label(container, SWT.NONE);
-        memoryUsageLabel.setText("Memory usage:");
+        memoryUsageLabel.setText("Memory usage (GiB):");
         textMemoryUsage = new Text(container, SWT.BORDER);
         textMemoryUsage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textMemoryUsage.addModifyListener(modifyListener);
