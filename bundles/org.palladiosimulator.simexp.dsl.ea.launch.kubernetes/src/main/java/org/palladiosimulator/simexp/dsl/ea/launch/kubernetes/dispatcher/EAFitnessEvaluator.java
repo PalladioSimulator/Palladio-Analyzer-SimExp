@@ -31,17 +31,24 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
     private final IWorkspaceEntryFactory workspaceEntryFactory;
+    private final int parallelism;
 
     private int count = 0;
 
     public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender, String launcherName,
-            List<Path> projectPaths, ClassLoader classloader) {
+            List<Path> projectPaths, int parallelism, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.taskSender = taskSender;
         this.launcherName = launcherName;
         this.projectPaths = projectPaths;
+        this.parallelism = parallelism;
         this.classloader = classloader;
         this.workspaceEntryFactory = new CachingWorkspaceEntryFactory(new WorkspaceEntryFactory());
+    }
+
+    @Override
+    public int getParallelism() {
+        return parallelism;
     }
 
     @Override

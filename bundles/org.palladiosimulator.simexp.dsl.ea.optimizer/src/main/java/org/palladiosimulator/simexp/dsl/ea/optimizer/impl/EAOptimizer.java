@@ -37,9 +37,10 @@ public class EAOptimizer implements IEAOptimizer {
     @Override
     public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-        return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver,
-                ForkJoinPool.commonPool());
-
+        int parallelism = Math.max(ForkJoinPool.getCommonPoolParallelism(), fitnessEvaluator.getParallelism());
+        LOGGER.info(String.format("the fitness evaluator has an parallelism of: %d", parallelism));
+        ForkJoinPool executor = new ForkJoinPool(parallelism);
+        return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
     }
 
     EAResult optimizeSingleThread(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,

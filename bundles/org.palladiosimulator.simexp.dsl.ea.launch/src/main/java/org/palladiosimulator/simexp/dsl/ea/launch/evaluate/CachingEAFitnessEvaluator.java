@@ -72,4 +72,9 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
             cache.clear();
         }
     }
+
+    @Override
+    public int getParallelism() {
+        return delegate.getParallelism();
+    }
 }

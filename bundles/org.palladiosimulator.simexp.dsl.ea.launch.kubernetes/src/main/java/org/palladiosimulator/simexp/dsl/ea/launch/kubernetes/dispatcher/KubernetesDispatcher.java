@@ -31,6 +31,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
@@ -131,8 +132,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
                 String brokerUrl = buildBrokerURL();
                 List<Path> projectPaths = getProjectPaths(config);
+                int parallelism = getRawCPUCores(client);
                 fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
-                        classloader);
+                        parallelism, classloader);
                 dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                     @Override
@@ -144,6 +146,18 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 resultLogger.dispose();
             }
         }
+    }
+
+    private int getRawCPUCores(KubernetesClient client) {
+        NodeInfo nodeInfo = new NodeInfo();
+        Integer sum = client.nodes()
+            .list()
+            .getItems()
+            .stream()
+            .filter(n -> nodeInfo.isWorker(n))
+            .mapToInt(n -> nodeInfo.nodeCPUCores(n))
+            .sum();
+        return sum;
     }
 
     private String buildBrokerURL() throws MalformedURLException {
@@ -211,6 +225,11 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private String getPreference(String key) {
         String value = preferencesService.getString(KubernetesPreferenceConstants.ID, key, "", null);
         return value;
+    }
+
+    @Override
+    public int getParallelism() {
+        return fitnessEvaluator.getParallelism();
     }
 
     @Override

@@ -62,6 +62,11 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     }
 
     @Override
+    public int getParallelism() {
+        return 1;
+    }
+
+    @Override
     public void evaluate(EvaluatorClient evaluatorClient) {
         try {
             evaluatorClient.process(this);

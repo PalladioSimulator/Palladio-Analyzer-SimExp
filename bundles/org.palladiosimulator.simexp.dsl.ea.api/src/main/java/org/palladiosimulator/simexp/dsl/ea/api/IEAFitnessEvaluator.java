@@ -21,4 +21,10 @@ public interface IEAFitnessEvaluator {
      */
     Future<Optional<Double>> calcFitness(List<OptimizableValue<?>> optimizableValues) throws IOException;
 
+    /**
+     * Returns the parallelism provided by the evaluator.
+     * 
+     * @return the parallelism of the evaluator
+     */
+    int getParallelism();
 }
