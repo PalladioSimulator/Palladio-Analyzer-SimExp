@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.Kuberne
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -135,7 +136,8 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 int parallelism = getRawCPUCores(client);
                 fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
                         parallelism, classloader);
-                dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
+                int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
+                dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, new Runnable() {
 
                     @Override
                     public void run() {
