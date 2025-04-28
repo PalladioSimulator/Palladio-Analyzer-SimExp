@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -40,7 +41,14 @@ public class EAOptimizer implements IEAOptimizer {
         int parallelism = Math.max(ForkJoinPool.getCommonPoolParallelism(), fitnessEvaluator.getParallelism());
         LOGGER.info(String.format("the fitness evaluator has an parallelism of: %d", parallelism));
         ForkJoinPool executor = new ForkJoinPool(parallelism);
-        return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
+        try {
+            return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
+        } finally {
+            LOGGER.info("shut down executor service");
+            executor.shutdown();
+            executor.awaitQuiescence(10, TimeUnit.SECONDS);
+            LOGGER.info("executor service shutt down ");
+        }
     }
 
     EAResult optimizeSingleThread(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
