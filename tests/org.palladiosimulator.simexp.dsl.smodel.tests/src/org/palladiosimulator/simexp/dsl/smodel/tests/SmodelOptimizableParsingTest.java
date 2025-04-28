@@ -189,7 +189,23 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseWithValueRange() throws Exception {
+    public void parseWithValueRangeInt() throws Exception {
+        String sb = SmodelTestUtil.MODEL_NAME_LINE + """
+                optimizable int[1, 2, 1) values;
+                if (values==0.0) {}
+                """;
+
+        Smodel model = parserHelper.parse(sb);
+
+        validationTestHelper.assertNoIssues(model);
+        RangeBounds expectedBounds = smodelCreator.createRangeBoundsClosedOpen(smodelCreator.createIntLiteral(1),
+                smodelCreator.createIntLiteral(2), smodelCreator.createIntLiteral(1));
+        Optimizable expectedOptimizable = smodelCreator.createOptimizable("values", DataType.INT, expectedBounds);
+        assertThat(model.getOptimizables()).containsExactly(expectedOptimizable);
+    }
+
+    @Test
+    public void parseWithValueRangeDouble() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double[1.0, 2.0, 0.1) values;
                 if (values==0.0) {}
