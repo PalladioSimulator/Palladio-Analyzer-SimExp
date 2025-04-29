@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.26.100",
  org.palladiosimulator.simexp.core;bundle-version="1.0.0",
  org.palladiosimulator.simexp.service;bundle-version="1.0.0",
  org.palladiosimulator.simexp.core.store.csv;bundle-version="1.0.0",
- org.palladiosimulator.edp2;bundle-version="5.2.1"
+ org.palladiosimulator.edp2;bundle-version="5.2.1",
+ org.apache.commons.csv;bundle-version="1.8.0"
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17

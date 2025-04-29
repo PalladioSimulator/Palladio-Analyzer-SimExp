@@ -68,7 +68,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
                 launcherName, launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
-                (IEvolutionaryAlgorithmWorkflowConfiguration) config);
+                (IEvolutionaryAlgorithmWorkflowConfiguration) config, resourcePath);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

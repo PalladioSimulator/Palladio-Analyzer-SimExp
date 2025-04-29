@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.csv.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -32,12 +34,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     private EAResult optimizationResult;
 
     public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
-            IEvolutionaryAlgorithmWorkflowConfiguration configuration) {
+            IEvolutionaryAlgorithmWorkflowConfiguration configuration, Path resourcePath) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
         this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
         eaEvolutionStatusReceiverDispatcher.addReceiver(this);
+        eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(resourcePath));
     }
 
     @Override
