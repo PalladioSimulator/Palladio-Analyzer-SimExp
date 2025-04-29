@@ -15,6 +15,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -26,6 +27,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
+    private final EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher;
 
     private EAResult optimizationResult;
 
@@ -34,6 +36,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
+        this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
+        eaEvolutionStatusReceiverDispatcher.addReceiver(this);
     }
 
     @Override
@@ -98,7 +102,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor, IEAEvo
             public void process(IEAFitnessEvaluator evaluator) {
                 LOGGER.info("EA optimization start");
                 optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
-                        EAOptimizerSimulationExecutor.this);
+                        eaEvolutionStatusReceiverDispatcher);
                 LOGGER.info("EA optimization end");
             }
         });
