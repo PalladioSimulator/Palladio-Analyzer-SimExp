@@ -31,7 +31,7 @@ public class SmodelOptimizableParsingTest {
     private SmodelCreator smodelCreator;
 
     @Test
-    public void parseSingleBoolVariable() throws Exception {
+    public void parseBoolSetSingle() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true} condition;
                 if (condition) {}
@@ -46,7 +46,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseSingleIntVariable() throws Exception {
+    public void parseIntSetSingle() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1} count;
                 if (count==0) {}
@@ -61,7 +61,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseSingleDoubleVariable() throws Exception {
+    public void parseDoubleSetSingle() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double{1.0} number;
                 if (number==0.0) {}
@@ -76,7 +76,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseSingleStringVariable() throws Exception {
+    public void parseStringSetSingle() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"word"} word;
                 if (word=="") {}
@@ -109,7 +109,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseBoolVarSet() throws Exception {
+    public void parseBoolSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool{true,false} vName;
                 if (vName) {}
@@ -125,7 +125,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseIntVarSet() throws Exception {
+    public void parseIntSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int{1,3} vName;
                 if (vName==0) {}
@@ -141,7 +141,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseDoubleVarSet() throws Exception {
+    public void parseDoubleSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double{1.0,3.0} vName;
                 if (vName==0.0) {}
@@ -157,7 +157,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseStringVarSet() throws Exception {
+    public void parseStringSet() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{"s1","s2"} vName;
                 if (vName=="") {}
@@ -173,7 +173,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseIntVarRange() throws Exception {
+    public void parseIntRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable int[1,2,1) vName;
                 if (vName==0) {}
@@ -189,7 +189,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseVariableWithValueRange() throws Exception {
+    public void parseDoubleRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable double[1.0, 2.0, 0.1) values;
                 if (values==0.0) {}
@@ -205,7 +205,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseVariableWithWrongValue() throws Exception {
+    public void parseStringWrongValue() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable string{true} list;
                 """;
@@ -217,7 +217,7 @@ public class SmodelOptimizableParsingTest {
     }
 
     @Test
-    public void parseNonNumberVariableWithRange() throws Exception {
+    public void parseBoolRange() throws Exception {
         String sb = SmodelTestUtil.MODEL_NAME_LINE + """
                 optimizable bool[true, false, true] range;
                 """;
