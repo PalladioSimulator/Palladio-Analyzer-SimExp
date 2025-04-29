@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.csv;
+package org.palladiosimulator.simexp.dsl.ea.launch.log;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -14,13 +14,13 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class GenerationLogger implements IEAEvolutionStatusReceiver {
-    private static final Logger LOGGER = Logger.getLogger(GenerationLogger.class);
+public class GenerationCSVWriter implements IEAEvolutionStatusReceiver {
+    private static final Logger LOGGER = Logger.getLogger(GenerationCSVWriter.class);
     private static final String[] HEADERS = { "Generation", "Reward", "Values" };
 
     private final Path csvPath;
 
-    public GenerationLogger(Path csvFolder) {
+    public GenerationCSVWriter(Path csvFolder) {
         this.csvPath = csvFolder.resolve("generations.csv");
     }
 
