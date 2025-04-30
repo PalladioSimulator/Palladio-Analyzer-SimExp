@@ -33,5 +33,6 @@ public class JobTask {
 
     public String workspacePath;
     public String workspaceArgument;
+    public String extraArguments;
     public List<WorkspaceEntry> workspaceEntries = new ArrayList<>();
 }

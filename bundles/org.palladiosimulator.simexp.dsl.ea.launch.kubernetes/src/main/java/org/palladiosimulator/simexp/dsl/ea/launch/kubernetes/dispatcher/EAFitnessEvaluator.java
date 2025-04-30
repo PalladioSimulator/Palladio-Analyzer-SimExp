@@ -99,6 +99,10 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
                 .toString();
             arguments.add(projectName);
         }
+        List<String> extraArguments = new ArrayList<>();
+        extraArguments.add("-vmargs");
+        extraArguments.add("-Duser.timezone=Europe/Berlin");
+        task.extraArguments = StringUtils.join(extraArguments, " ");
         task.command = String.format("/simexp/simexp_console %s", StringUtils.join(arguments, " "));
         // task.command = "/usr/bin/sleep 300";
 
