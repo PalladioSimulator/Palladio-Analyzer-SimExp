@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -54,7 +55,6 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
-    private static final String TIME_ZONE = "Europe/Berlin";
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
@@ -131,13 +131,15 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
                 URL imageRegistryUrl = new URL(imageRegistryStr);
+                String timeZone = TimeZone.getDefault()
+                    .getID();
                 DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl,
-                        TIME_ZONE);
+                        timeZone);
                 String brokerUrl = buildBrokerURL();
                 List<Path> projectPaths = getProjectPaths(config);
                 int parallelism = getRawCPUCores(client);
-                fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
-                        TIME_ZONE, parallelism, classloader);
+                fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths, timeZone,
+                        parallelism, classloader);
                 int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
                 dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, new Runnable() {
 
