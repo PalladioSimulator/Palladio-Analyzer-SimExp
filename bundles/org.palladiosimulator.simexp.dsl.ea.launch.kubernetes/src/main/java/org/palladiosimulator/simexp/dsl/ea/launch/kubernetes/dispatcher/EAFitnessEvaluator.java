@@ -31,16 +31,18 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
     private final IWorkspaceEntryFactory workspaceEntryFactory;
+    private final String timeZone;
     private final int parallelism;
 
     private int count = 0;
 
     public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender, String launcherName,
-            List<Path> projectPaths, int parallelism, ClassLoader classloader) {
+            List<Path> projectPaths, String timeZone, int parallelism, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.taskSender = taskSender;
         this.launcherName = launcherName;
         this.projectPaths = projectPaths;
+        this.timeZone = timeZone;
         this.parallelism = parallelism;
         this.classloader = classloader;
         this.workspaceEntryFactory = new CachingWorkspaceEntryFactory(new WorkspaceEntryFactory());
@@ -101,7 +103,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
         }
         List<String> extraArguments = new ArrayList<>();
         extraArguments.add("-vmargs");
-        extraArguments.add("-Duser.timezone=Europe/Berlin");
+        extraArguments.add(String.format("-Duser.timezone=%s", timeZone));
         task.extraArguments = StringUtils.join(extraArguments, " ");
         task.command = String.format("/simexp/simexp_console %s", StringUtils.join(arguments, " "));
         // task.command = "/usr/bin/sleep 300";

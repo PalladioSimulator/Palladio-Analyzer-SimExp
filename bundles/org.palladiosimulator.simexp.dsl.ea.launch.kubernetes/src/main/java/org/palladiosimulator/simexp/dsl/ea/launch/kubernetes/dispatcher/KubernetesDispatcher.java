@@ -54,6 +54,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
+    private static final String TIME_ZONE = "Europe/Berlin";
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
@@ -130,12 +131,13 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
                 URL imageRegistryUrl = new URL(imageRegistryStr);
-                DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
+                DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl,
+                        TIME_ZONE);
                 String brokerUrl = buildBrokerURL();
                 List<Path> projectPaths = getProjectPaths(config);
                 int parallelism = getRawCPUCores(client);
                 fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
-                        parallelism, classloader);
+                        TIME_ZONE, parallelism, classloader);
                 int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
                 dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, new Runnable() {
 

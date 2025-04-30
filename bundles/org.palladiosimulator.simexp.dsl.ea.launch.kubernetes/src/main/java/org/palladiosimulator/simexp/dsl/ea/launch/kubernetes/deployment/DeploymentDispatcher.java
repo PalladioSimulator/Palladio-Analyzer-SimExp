@@ -39,18 +39,20 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     private final KubernetesClient client;
     private final String namespace;
     private final URL imageRegistryUrl;
-
+    private final String timeZone;
     private final ClassLoader classloader;
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl) {
-        this(classloader, client, imageRegistryUrl, "default");
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl,
+            String timeZone) {
+        this(classloader, client, imageRegistryUrl, timeZone, "default");
     }
 
-    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl,
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl, String timeZone,
             String namespace) {
         this.classloader = classloader;
         this.client = client;
         this.imageRegistryUrl = imageRegistryUrl;
+        this.timeZone = timeZone;
         this.namespace = namespace;
     }
 
@@ -98,7 +100,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
         volumeMounts.add(volumeMountWorkspace);
         Volume volumeTimeZone = new VolumeBuilder().withName(volumeMountTimeZone.getName())
-            .withHostPath(new HostPathVolumeSourceBuilder().withPath("/usr/share/zoneinfo/Europe/Berlin")
+            .withHostPath(new HostPathVolumeSourceBuilder().withPath(String.format("/usr/share/zoneinfo/%s", timeZone))
                 .build())
             .build();
         volumes.add(volumeTimeZone);
