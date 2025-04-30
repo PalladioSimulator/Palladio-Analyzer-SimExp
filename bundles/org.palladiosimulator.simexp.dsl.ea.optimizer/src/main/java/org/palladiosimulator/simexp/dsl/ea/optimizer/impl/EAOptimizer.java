@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -38,16 +39,21 @@ public class EAOptimizer implements IEAOptimizer {
     @Override
     public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-        int parallelism = Math.max(ForkJoinPool.getCommonPoolParallelism(), fitnessEvaluator.getParallelism());
+        int parallelism = Math.max(Runtime.getRuntime()
+            .availableProcessors(), fitnessEvaluator.getParallelism());
         LOGGER.info(String.format("the fitness evaluator has an parallelism of: %d", parallelism));
-        ForkJoinPool executor = new ForkJoinPool(parallelism);
+        ExecutorService executor = Executors.newFixedThreadPool(parallelism);
         try {
             return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
         } finally {
             LOGGER.info("shut down executor service");
             executor.shutdown();
-            executor.awaitQuiescence(10, TimeUnit.SECONDS);
-            LOGGER.info("executor service shutt down ");
+            try {
+                executor.awaitTermination(10, TimeUnit.SECONDS);
+                LOGGER.info("executor service shutt down");
+            } catch (InterruptedException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
