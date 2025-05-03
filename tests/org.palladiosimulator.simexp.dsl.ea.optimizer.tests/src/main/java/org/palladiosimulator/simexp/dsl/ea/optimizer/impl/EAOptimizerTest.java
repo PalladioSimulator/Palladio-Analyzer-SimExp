@@ -202,16 +202,16 @@ public class EAOptimizerTest {
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(991.0, result.getFitness(), DELTA);
+        assertEquals(999.0, result.getFitness(), DELTA);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
         OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
             .get(0)
             .get(0);
         assertEquals(optimizable, optimizableValue.getOptimizable());
-        assertEquals(991.0, optimizableValue.getValue());
+        assertEquals(999.0, optimizableValue.getValue());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+        verify(statusReceiver, times(12)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -376,11 +376,11 @@ public class EAOptimizerTest {
             .get(0)
             .get(0)
             .getOptimizable());
-        assertEquals("abcdef", result.getOptimizableValuesList()
+        assertEquals("youuuu", result.getOptimizableValuesList()
             .get(0)
             .get(0)
             .getValue());
-        assertEquals("youuuu", result.getOptimizableValuesList()
+        assertEquals("abcdef", result.getOptimizableValuesList()
             .get(1)
             .get(0)
             .getValue());
@@ -396,8 +396,8 @@ public class EAOptimizerTest {
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
                 0.00001);
-        List<String> expectedBestGenotypesFitnessEvolution = List.of("abcdef", "youuuu", "youuuu", "youuuu", "youuuu",
-                "abcdef", "abcdef");
+        List<String> expectedBestGenotypesFitnessEvolution = List.of("youuuu", "youuuu", "youuuu", "youuuu", "youuuu",
+                "youuuu", "youuuu");
         assertArrayEquals(expectedBestGenotypesFitnessEvolution.stream()
             .toArray(),
                 optimizableListCaptor.getAllValues()
@@ -585,7 +585,7 @@ public class EAOptimizerTest {
             .get(0)
             .get(0)
             .getOptimizable());
-        verify(statusReceiver, times(10)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+        verify(statusReceiver, times(11)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -711,7 +711,7 @@ public class EAOptimizerTest {
             .get(0)
             .get(0)
             .getOptimizable());
-        verify(statusReceiver, times(8)).reportStatus(any(Long.class), any(List.class), any(Double.class));
+        verify(statusReceiver, times(7)).reportStatus(any(Long.class), any(List.class), any(Double.class));
     }
 
     @Test
@@ -756,10 +756,10 @@ public class EAOptimizerTest {
             .get(1)
             .getOptimizable());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(8)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
+        verify(statusReceiver, times(10)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
                 captor.capture());
         List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(37.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0);
+        List<Double> expectedFitnessEvolution = List.of(37.0, 37.0, 37.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0);
         assertArrayEquals(expectedFitnessEvolution.stream()
             .mapToDouble(Double::doubleValue)
             .toArray(),
@@ -768,7 +768,8 @@ public class EAOptimizerTest {
                     .toArray(),
                 0.00001);
         List<Optimizable> expectedBestGenotypesFirstOptimizable = List.of(intOptimizable, intOptimizable,
-                intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable);
+                intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable,
+                intOptimizable, intOptimizable);
         assertArrayEquals(expectedBestGenotypesFirstOptimizable.stream()
             .toArray(),
                 optimizableListCaptor.getAllValues()
@@ -778,7 +779,7 @@ public class EAOptimizerTest {
                     .toArray());
         List<Optimizable> expectedBestGenotypesSecondOptimizable = List.of(doubleOptimizable, doubleOptimizable,
                 doubleOptimizable, doubleOptimizable, doubleOptimizable, doubleOptimizable, doubleOptimizable,
-                doubleOptimizable);
+                doubleOptimizable, doubleOptimizable, doubleOptimizable);
         assertArrayEquals(expectedBestGenotypesSecondOptimizable.stream()
             .toArray(),
                 optimizableListCaptor.getAllValues()
@@ -964,12 +965,12 @@ public class EAOptimizerTest {
         LOGGER.info("Maximum Fitness: " + maximumFitness);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(941.1719, result.getFitness(), 0.00001);
+        assertEquals(928.4449, result.getFitness(), 0.00001);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(21)).reportStatus(any(Long.class), any(List.class), captor.capture());
+        verify(statusReceiver, times(44)).reportStatus(any(Long.class), any(List.class), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
 
-        assertEquals(941.17186, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(928.4449, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     private String generateRandomString(Random r, int length) {
