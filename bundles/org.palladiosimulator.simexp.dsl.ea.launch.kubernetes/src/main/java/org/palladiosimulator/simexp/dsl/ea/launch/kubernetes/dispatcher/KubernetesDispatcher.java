@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.dispatcher;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,7 +29,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
@@ -47,21 +50,23 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
-public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
-    private static final Logger LOGGER = Logger.getLogger(KubernetesFitnessEvaluator.class);
+public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
+    private static final Logger LOGGER = Logger.getLogger(KubernetesDispatcher.class);
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
+    private final Path resourcePath;
     private final IPreferencesService preferencesService;
     private final ClassLoader classloader;
 
     private EAFitnessEvaluator fitnessEvaluator;
 
-    public KubernetesFitnessEvaluator(IModelledWorkflowConfiguration config, String launcherName,
+    public KubernetesDispatcher(IModelledWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
         this.launcherName = launcherName;
         this.config = config;
+        this.resourcePath = resourcePath;
         this.preferencesService = preferencesService;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
@@ -79,7 +84,9 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         try (KubernetesClient client = new KubernetesClientBuilder().withConfig(config)
             .build()) {
             LOGGER.info("Connected to kubernetes");
-            evaluateWithRabbitMQ(client, evaluatorClient);
+            try (PodRestartObserver restartObserver = new PodRestartObserver(client)) {
+                evaluateWithRabbitMQ(client, evaluatorClient, restartObserver);
+            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
@@ -87,8 +94,8 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         }
     }
 
-    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient)
-            throws IOException, TimeoutException {
+    private void evaluateWithRabbitMQ(KubernetesClient client, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException, TimeoutException {
         String rabbitMQString = getPreference(KubernetesPreferenceConstants.RABBIT_MQ_URL);
         URL rabbitMQURL = new URL(rabbitMQString);
 
@@ -96,37 +103,53 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitMQURL.getHost());
         factory.setPort(rabbitMQURL.getPort());
+        factory.setRequestedHeartbeat(60);
         try (Connection conn = factory.newConnection()) {
             LOGGER.info("Connected to RabbitMQ");
             try (Channel channel = conn.createChannel()) {
                 setupQueues(channel);
-                evaluateWithMessageChannel(client, channel, evaluatorClient);
+                evaluateWithMessageChannel(client, channel, evaluatorClient, restartObserver);
             }
         }
     }
 
-    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient)
-            throws IOException {
+    private void evaluateWithMessageChannel(KubernetesClient client, Channel channel, EvaluatorClient evaluatorClient,
+            PodRestartObserver restartObserver) throws IOException {
         TaskReceiver taskReceiver = new TaskReceiver(channel, classloader);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
         boolean autoAck = false;
         channel.basicConsume(inQueueName, autoAck, "answerConsumer", taskReceiver);
         try {
-            TaskManager taskManager = new TaskManager();
-            taskReceiver.registerTaskConsumer(taskManager);
-            DeploymentDispatcher dispatcher = new DeploymentDispatcher(client);
-            String brokerUrl = buildBrokerURL();
-            String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
-            List<Path> projectPaths = getProjectPaths(config);
-            fitnessEvaluator = new EAFitnessEvaluator(taskManager, channel, outQueueName, launcherName, projectPaths,
-                    classloader);
-            dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
+            Path csvResourcePath = resourcePath.resolve("kubernetes")
+                .resolve("simulation_result.csv");
+            Files.createDirectories(csvResourcePath.getParent());
+            CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
+            try {
+                PodManager podManager = new PodManager(classloader);
+                restartObserver.addListener(podManager);
+                TaskManager taskManager = new TaskManager(resultLogger);
+                podManager.registerTaskConsumer(taskManager);
+                TaskSender taskSender = new TaskSender(channel, outQueueName);
+                taskReceiver.registerTaskConsumer(podManager);
+                taskReceiver.registerTaskConsumer(taskManager);
+                String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
+                URL imageRegistryUrl = new URL(imageRegistryStr);
+                DeploymentDispatcher dispatcher = new DeploymentDispatcher(classloader, client, imageRegistryUrl);
+                String brokerUrl = buildBrokerURL();
+                List<Path> projectPaths = getProjectPaths(config);
+                fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths,
+                        classloader);
+                dispatcher.dispatch(brokerUrl, outQueueName, inQueueName, new Runnable() {
 
-                @Override
-                public void run() {
-                    evaluatorClient.process(KubernetesFitnessEvaluator.this);
-                }
-            });
+                    @Override
+                    public void run() {
+                        evaluatorClient.process(KubernetesDispatcher.this);
+                    }
+                });
+            } finally {
+                resultLogger.dispose();
+            }
         } finally {
             channel.basicCancel("answerConsumer");
         }
@@ -150,6 +173,9 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
     private void setupQueues(Channel channel) throws IOException {
         String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
+        int consumerTimeout = preferencesService.getInt(KubernetesPreferenceConstants.ID,
+                KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT, 14, null);
+
         LOGGER.info("Deleting queues ...");
         channel.queueDelete(inQueueName);
         channel.queueDelete(outQueueName);
@@ -159,7 +185,7 @@ public class KubernetesFitnessEvaluator implements IDisposeableEAFitnessEvaluato
         boolean exclusive = false;
         boolean autoDelete = false;
         Map<String, Object> outArguments = new HashMap<>();
-        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        outArguments.put("x-consumer-timeout", TimeUnit.MILLISECONDS.convert(consumerTimeout, TimeUnit.HOURS));
         channel.queueDeclare(outQueueName, durable, exclusive, autoDelete, outArguments);
         channel.queueDeclare(inQueueName, durable, exclusive, autoDelete, null);
     }

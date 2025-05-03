@@ -17,5 +17,5 @@ public interface IEAConfig {
 
     Optional<Double> crossoverRate();
 
-    Optional<Double> penaltyForInvalids();
+    double penaltyForInvalids();
 }

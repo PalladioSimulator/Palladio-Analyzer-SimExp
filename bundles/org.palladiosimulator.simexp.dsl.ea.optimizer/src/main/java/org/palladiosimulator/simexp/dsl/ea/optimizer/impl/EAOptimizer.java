@@ -61,20 +61,12 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        final Engine<BitGene, Double> engine;
-        EAFitnessFunction fitnessFunction;
-        double epsilon = expressionCalculator.getEpsilon();
-        if (config.penaltyForInvalids()
-            .isPresent()) {
-            fitnessFunction = new EAFitnessFunction(epsilon, fitnessEvaluator, normalizer, config.penaltyForInvalids()
-                .get());
-        } else {
-            fitnessFunction = new EAFitnessFunction(epsilon, fitnessEvaluator, normalizer);
-        }
-
         EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);
-
-        engine = builder.buildEngine(fitnessFunction, genotype, executor);
+        double epsilon = expressionCalculator.getEpsilon();
+        final double penaltyForInvalids = config.penaltyForInvalids();
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(epsilon, fitnessEvaluator, normalizer,
+                penaltyForInvalids);
+        Engine<BitGene, Double> engine = builder.buildEngine(fitnessFunction, genotype, executor);
 
         //// run optimization
         return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine,

@@ -177,6 +177,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             }
 
             int populationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            double errorReward = extractDouble(launchConfigurationParams, SimulationConstants.ERROR_REWARD);
             Optional<Integer> maxGenerations = Optional
                 .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
             Optional<Integer> steadyFitness = Optional
@@ -186,7 +187,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             Optional<Double> crossoverRate = extractOptionalDouble(launchConfigurationParams,
                     SimulationConstants.CROSSOVER_RATE);
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
-                    maxGenerations, steadyFitness, mutationRate, crossoverRate);
+                    errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate);
 
             Map<String, Object> optimizedValues = getOptimizedValues(configuration);
 
@@ -205,6 +206,14 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
 
     protected Map<String, Object> getOptimizedValues(ILaunchConfiguration configuration) throws CoreException {
         return null;
+    }
+
+    private double extractDouble(Map<String, Object> launchConfigurationParams, String key) {
+        Optional<Double> optional = extractOptionalDouble(launchConfigurationParams, key);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("empty: " + key);
+        }
+        return optional.get();
     }
 
     private Optional<Double> extractOptionalDouble(Map<String, Object> launchConfigurationParams, String key) {

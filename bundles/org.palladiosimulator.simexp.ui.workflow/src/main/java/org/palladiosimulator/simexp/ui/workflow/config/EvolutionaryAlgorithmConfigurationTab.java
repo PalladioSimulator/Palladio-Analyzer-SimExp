@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.Co
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.ControllableValidator.Enabled;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.EnumEnabler;
 import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.MinNumberValidator;
+import org.palladiosimulator.simexp.ui.workflow.config.databinding.validation.NotNullValidator;
 import org.palladiosimulator.simexp.ui.workflow.config.debug.BaseLaunchConfigurationTab;
 
 import de.uka.ipd.sdq.workflow.launchconfig.ImageRegistryHelper;
@@ -52,6 +53,7 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     private Text textSteadyFitness;
     private Text textMutationRate;
     private Text textCrossoverRate;
+    private Text textErrorReward;
 
     public EvolutionaryAlgorithmConfigurationTab(DataBindingContext ctx,
             IModelledOptimizerProvider modelledOptimizerProvider) {
@@ -118,6 +120,12 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         textCrossoverRate = new Text(container, SWT.BORDER);
         textCrossoverRate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         textCrossoverRate.addModifyListener(modifyListener);
+
+        Label errorDefaultLabel = new Label(container, SWT.NONE);
+        errorDefaultLabel.setText("Reward on error:");
+        textErrorReward = new Text(container, SWT.BORDER);
+        textErrorReward.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        textErrorReward.addModifyListener(modifyListener);
     }
 
     private void createLimits(Composite parent, ModifyListener modifyListener) {
@@ -213,6 +221,20 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
         Binding crossOverRateBindValue = ctx.bindValue(crossOverRateTarget, crossOverRateModel,
                 t2mCrossOverRateUpdateStrategy, m2tCrossOverRateUpdateStrategy);
         ControlDecorationSupport.create(crossOverRateBindValue, SWT.TOP | SWT.RIGHT);
+
+        IObservableValue<String> errorRewardTarget = WidgetProperties.text(SWT.Modify)
+            .observe(textErrorReward);
+        IObservableValue<Double> errorRewardModel = ConfigurationProperties
+            .value(SimulationConstants.ERROR_REWARD, true)
+            .observe(configuration);
+        UpdateValueStrategy<String, Double> errorRewardUpdateStrategy = new UpdateValueStrategy<>(
+                UpdateValueStrategy.POLICY_CONVERT);
+        IValidator<Double> errorRewardValidator = new ControllableValidator<>(
+                new NotNullValidator<>("Reward on error"), isEAEnabled);
+        errorRewardUpdateStrategy.setBeforeSetValidator(errorRewardValidator);
+        Binding errorRewardBindValue = ctx.bindValue(errorRewardTarget, errorRewardModel, errorRewardUpdateStrategy,
+                null);
+        ControlDecorationSupport.create(errorRewardBindValue, SWT.TOP | SWT.RIGHT);
     }
 
     private void initializeLimitsFrom(ILaunchConfiguration configuration, DataBindingContext ctx, Enabled isEAEnabled) {

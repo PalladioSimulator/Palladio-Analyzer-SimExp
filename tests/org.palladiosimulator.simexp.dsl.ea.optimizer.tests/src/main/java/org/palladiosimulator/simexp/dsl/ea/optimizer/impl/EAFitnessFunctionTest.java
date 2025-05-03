@@ -75,7 +75,7 @@ public class EAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
@@ -111,7 +111,7 @@ public class EAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         Double fitness = fitnessFunction.apply(genotype);
 
@@ -127,7 +127,7 @@ public class EAFitnessFunctionTest {
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         Double fitness = fitnessFunction.apply(genotype);
 
@@ -150,7 +150,7 @@ public class EAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
@@ -181,7 +181,7 @@ public class EAFitnessFunctionTest {
             fail();
         }
         double smallEpsilon = 0.0000000000001;
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
         // Act
         Double fitness = fitnessFunction.apply(genotype);
@@ -248,7 +248,7 @@ public class EAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
         fitnessFunction.apply(firstGenotype);
         fitnessFunction.apply(secondGenotype);
 
@@ -283,7 +283,7 @@ public class EAFitnessFunctionTest {
             e.printStackTrace();
             fail();
         }
-        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer);
+        EAFitnessFunction fitnessFunction = new EAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
         fitnessFunction.apply(firstGenotype);
         fitnessFunction.apply(secondGenotype);
 

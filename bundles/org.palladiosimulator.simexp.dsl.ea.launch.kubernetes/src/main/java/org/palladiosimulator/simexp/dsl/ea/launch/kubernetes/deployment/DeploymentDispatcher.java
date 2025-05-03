@@ -1,10 +1,16 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -12,12 +18,8 @@ import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
+import io.fabric8.kubernetes.api.model.HostPathVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.LocalObjectReferenceBuilder;
-import io.fabric8.kubernetes.api.model.Node;
-import io.fabric8.kubernetes.api.model.NodeCondition;
-import io.fabric8.kubernetes.api.model.NodeSpec;
-import io.fabric8.kubernetes.api.model.NodeStatus;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
@@ -30,156 +32,87 @@ import io.fabric8.kubernetes.api.model.VolumeMountBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
 
 public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     private static final Logger LOGGER = Logger.getLogger(DeploymentDispatcher.class);
 
     private final KubernetesClient client;
     private final String namespace;
-    /*
-     * private final ReentrantLock lock = new ReentrantLock(); private final Condition
-     * terminateCondition = lock.newCondition();
-     * 
-     * private boolean shutdown = false;
-     */
+    private final URL imageRegistryUrl;
 
-    public DeploymentDispatcher(KubernetesClient client) {
-        this(client, "default");
+    private final ClassLoader classloader;
+
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl) {
+        this(classloader, client, imageRegistryUrl, "default");
     }
 
-    public DeploymentDispatcher(KubernetesClient client, String namespace) {
+    public DeploymentDispatcher(ClassLoader classloader, KubernetesClient client, URL imageRegistryUrl,
+            String namespace) {
+        this.classloader = classloader;
         this.client = client;
+        this.imageRegistryUrl = imageRegistryUrl;
         this.namespace = namespace;
     }
 
     public void dispatch(String brokerUrl, String outQueue, String inQueue, Runnable runnable) throws IOException {
-        Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         try {
-            runnable.run();
-            // waitForShutdown();
-        } finally {
-            removeDeployment(deployment);
-        }
-    }
-
-    /*
-     * @Override public void shutdown() { LOGGER.info("signal shutdown"); lock.lock(); try {
-     * shutdown = true; terminateCondition.signalAll(); } finally { lock.unlock(); } }
-     * 
-     * private void waitForShutdown() throws IOException { LOGGER.info("wait for shutdown");
-     * lock.lock(); try { while (!shutdown) { if (!terminateCondition.await(30, TimeUnit.SECONDS)) {
-     * // adjustReplicaCount(); } } LOGGER.info("shut down"); } catch (InterruptedException e) {
-     * throw new IOException(e); } finally { lock.unlock(); } }
-     */
-
-    private void adjustReplicaCount() {
-        int availableCPUCores = Math.max(1, getAvailableCPUCores());
-        LOGGER.debug(String.format("available cores:  %d", availableCPUCores));
-
-        RollableScalableResource<Deployment> deploymentResource = client.apps()
-            .deployments()
-            .inNamespace(namespace)
-            .withName("simexp");
-        Deployment deployment = deploymentResource.get();
-        Integer replicas = deployment.getStatus()
-            .getReplicas();
-        LOGGER.debug(String.format("current replicas: %d", replicas));
-
-        if (availableCPUCores != replicas) {
-            LOGGER.info(String.format("adjust replicas from: %d to %d", replicas, availableCPUCores));
-            deploymentResource.scale(availableCPUCores);
-        }
-    }
-
-    private String getRole(Node node) {
-        ObjectMeta metadata = node.getMetadata();
-        Map<String, String> labels = metadata.getLabels();
-        for (Map.Entry<String, String> entry : labels.entrySet()) {
-            if (entry.getKey()
-                .startsWith("node-role.kubernetes.io/")) {
-                String role = entry.getKey()
-                    .substring("node-role.kubernetes.io/".length());
-                return role;
-            }
-        }
-        return "unknown";
-    }
-
-    private boolean isWorker(Node node) {
-        String role = getRole(node);
-        if (role.equalsIgnoreCase("worker")) {
-            return true;
-        }
-        return false;
-    }
-
-    private int nodeCPUCores(Node node) {
-        NodeStatus status = node.getStatus();
-        Quantity cpuCount = status.getCapacity()
-            .get("cpu");
-        return Integer.valueOf(cpuCount.getAmount());
-    }
-
-    private boolean isReady(Node node) {
-        NodeStatus status = node.getStatus();
-        List<NodeCondition> conditions = status.getConditions();
-        for (NodeCondition condition : conditions) {
-            if (condition.getType()
-                .equals("Ready")) {
-                if (condition.getStatus()
-                    .equals("True")) {
-                    return true;
+            Deployment deployment = createDeployment(brokerUrl, outQueue, inQueue);
+            try {
+                DeploymentScaler scaler = new DeploymentScaler(classloader, client, namespace);
+                ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 60, 60, TimeUnit.SECONDS);
+                try {
+                    runnable.run();
+                } finally {
+                    scalerFuture.cancel(false);
                 }
+            } finally {
+                removeDeployment(deployment);
             }
+        } finally {
+            LOGGER.info("shutdown deployment monitor");
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                throw new IOException(e.getMessage(), e);
+            }
+            LOGGER.info("shutt down deployment monitor");
         }
-        return false;
-    }
-
-    private boolean isSchedulable(Node node) {
-        NodeSpec spec = node.getSpec();
-        boolean isCordoned = Boolean.TRUE.equals(spec.getUnschedulable());
-        return !isCordoned;
-    }
-
-    private int getWorkerCPUCores() {
-        Integer sum = client.nodes()
-            .list()
-            .getItems()
-            .stream()
-            .filter(this::isWorker)
-            .filter(this::isReady)
-            .filter(this::isSchedulable)
-            .mapToInt(this::nodeCPUCores)
-            .sum();
-        return sum;
-    }
-
-    private int getAvailableCPUCores() {
-        return getWorkerCPUCores() - 4;
     }
 
     private Deployment createDeployment(String brokerUrl, String outQueue, String inQueue) {
         LOGGER.info("create deployment");
 
-        VolumeMount volumeMount = new VolumeMountBuilder().withMountPath("/workspace")
+        List<VolumeMount> volumeMounts = new ArrayList<>();
+        List<Volume> volumes = new ArrayList<>();
+        VolumeMount volumeMountTimeZone = new VolumeMountBuilder().withMountPath("/etc/localtime")
+            .withName("timezone")
+            .build();
+        volumeMounts.add(volumeMountTimeZone);
+        VolumeMount volumeMountWorkspace = new VolumeMountBuilder().withMountPath("/workspace")
             .withName("workspace")
             .build();
-        Volume volume = new VolumeBuilder().withName(volumeMount.getName())
+        volumeMounts.add(volumeMountWorkspace);
+        Volume volumeTimeZone = new VolumeBuilder().withName(volumeMountTimeZone.getName())
+            .withHostPath(new HostPathVolumeSourceBuilder().withPath("/usr/share/zoneinfo/Europe/Berlin")
+                .build())
+            .build();
+        volumes.add(volumeTimeZone);
+        Volume volumeWorkspace = new VolumeBuilder().withName(volumeMountWorkspace.getName())
             .withEmptyDir(new EmptyDirVolumeSourceBuilder().withNewSizeLimit("1Gi")
                 .build())
             .build();
+        volumes.add(volumeWorkspace);
 
-        Container container = createContainer(brokerUrl, outQueue, inQueue, volumeMount);
+        Container container = createContainer(brokerUrl, outQueue, inQueue, volumeMounts);
 
         Toleration toleration = new TolerationBuilder().withKey("remote")
             .withOperator("Exists")
             .withEffect("NoExecute")
             .build();
-
-        // int availableCPUCores = getAvailableCPUCores();
-        int availableCPUCores = 1;
-        LOGGER.info(String.format("available cores: %d", availableCPUCores));
 
         Map<String, String> labels = Collections.singletonMap("app", "simexp");
         Deployment deployment = new DeploymentBuilder().withNewMetadata()
@@ -187,7 +120,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withLabels(labels)
             .endMetadata()
             .withNewSpec()
-            .withReplicas(availableCPUCores)
+            .withReplicas(1)
             .withNewSelector()
             .withMatchLabels(labels)
             .endSelector()
@@ -198,10 +131,11 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withNewSpec()
             .withServiceAccount("node-query-sa")
             .withContainers(container)
-            .withVolumes(volume)
+            .withVolumes(volumes)
             .withImagePullSecrets(new LocalObjectReferenceBuilder().withName("cred-simexp-registry")
                 .build())
             .withTolerations(toleration)
+            // .withRestartPolicy("Never")
             .endSpec()
             .endTemplate()
             .endSpec()
@@ -215,15 +149,16 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         return deploymentResource;
     }
 
-    private Container createContainer(String brokerUrl, String outQueue, String inQueue, VolumeMount volumeMount) {
+    private Container createContainer(String brokerUrl, String outQueue, String inQueue,
+            List<VolumeMount> volumeMounts) {
         Map<String, Quantity> reqMap = new HashMap<>();
         reqMap.put("cpu", new Quantity("0.9"));
-        // reqMap.put("memory", new Quantity("1500Mi"))
+        reqMap.put("memory", new Quantity("2Gi"));
         ResourceRequirements reqs = new ResourceRequirementsBuilder().withRequests(reqMap)
             .build();
 
         Container container = new ContainerBuilder().withName("simexp")
-            .withImage("10.0.0.10:30500/simexp_console")
+            .withImage(String.format("%s:%s/simexp_console", imageRegistryUrl.getHost(), imageRegistryUrl.getPort()))
             .withImagePullPolicy("Always")
             .withEnv(
                     // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
@@ -258,7 +193,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                         .endValueFrom()
                         .build())
             .withResources(reqs)
-            .withVolumeMounts(volumeMount)
+            .withVolumeMounts(volumeMounts)
             .build();
         return container;
     }

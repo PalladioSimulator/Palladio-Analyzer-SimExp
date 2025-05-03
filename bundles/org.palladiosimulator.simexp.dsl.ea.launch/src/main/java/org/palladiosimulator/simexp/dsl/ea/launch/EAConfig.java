@@ -47,8 +47,8 @@ public class EAConfig implements IEAConfig {
     }
 
     @Override
-    public Optional<Double> penaltyForInvalids() {
-        return Optional.empty();
+    public double penaltyForInvalids() {
+        return configuration.getErrorReward();
     }
 
 }
