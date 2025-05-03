@@ -7,6 +7,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.Optimizabl
 
 import io.jenetics.BitGene;
 import io.jenetics.Crossover;
+import io.jenetics.EliteSelector;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.TournamentSelector;
@@ -15,6 +16,8 @@ import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
 
 public class EAOptimizationEngineBuilder {
+
+    private static final int ELITE_SELECTION_SIZE = 1;
 
     private static final int SURVIVOR_SELECTOR_TOURNAMENT_SIZE = 5;
 
@@ -33,7 +36,8 @@ public class EAOptimizationEngineBuilder {
             .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
             .populationSize(config.populationSize())
             .executor(executor)
-            .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
+            .survivorsSelector(new EliteSelector<BitGene, Double>(ELITE_SELECTION_SIZE,
+                    new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE)))
             .offspringSelector(new TournamentSelector<>(OFFSPRING_SELECTOR_TOURNAMENT_SIZE));
 
         builder = addAlterers(builder);
