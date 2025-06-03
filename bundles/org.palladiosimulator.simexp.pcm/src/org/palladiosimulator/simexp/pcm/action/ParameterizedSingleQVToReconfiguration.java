@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
+import org.palladiosimulator.simulizar.core.reconfiguration.IReconfigurationEngine;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
 import de.uka.ipd.sdq.scheduler.resources.active.IResourceTableManager;
@@ -19,7 +19,7 @@ public class ParameterizedSingleQVToReconfiguration extends SingleQVToReconfigur
     }
 
     @Override
-    protected boolean executeTransformation(QVTOReconfigurator qvtoReconf, QvtoModelTransformation transformation,
+    protected boolean executeTransformation(IReconfigurationEngine qvtoReconf, QvtoModelTransformation transformation,
             IResourceTableManager resourceTableManager) {
         List<QvtoModelTransformation> actions = Collections.singletonList(transformation);
         boolean succeded = qvtoReconf.runExecute(actions, null, resourceTableManager, parameters);
