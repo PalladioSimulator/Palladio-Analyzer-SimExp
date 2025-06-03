@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
+import org.palladiosimulator.simulizar.core.reconfiguration.IReconfigurationEngine;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QvtoModelTransformation;
 
@@ -48,7 +49,7 @@ public class SingleQVToReconfiguration extends BaseQVToReconfiguration implement
         }
     }
 
-    protected boolean executeTransformation(QVTOReconfigurator qvtoReconf, QvtoModelTransformation transformation,
+    protected boolean executeTransformation(IReconfigurationEngine qvtoReconf, QvtoModelTransformation transformation,
             IResourceTableManager resourceTableManager) {
         List<QvtoModelTransformation> actions = Collections.singletonList(transformation);
         boolean succeded = qvtoReconf.runExecute(actions, null, resourceTableManager);

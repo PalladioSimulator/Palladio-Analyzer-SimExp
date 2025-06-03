@@ -4,7 +4,8 @@ Bundle-Name: Pcm
 Bundle-SymbolicName: org.palladiosimulator.simexp.pcm
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.palladiosimulator.simexp.pcm.Activator
-Require-Bundle: com.google.guava;bundle-version="21.0.0",
+Require-Bundle: org.eclipse.debug.core;bundle-version="3.20.100",
+ com.google.guava;bundle-version="21.0.0",
  org.eclipse.m2m.qvt.oml;bundle-version="3.7.0",
  org.eclipse.emf.compare;bundle-version="3.5.2",
  org.apache.commons.lang3;bundle-version="3.1.0",
@@ -19,7 +20,7 @@ Require-Bundle: com.google.guava;bundle-version="21.0.0",
  org.palladiosimulator.experimentautomation.application.tooladapter.simulizar.model;bundle-version="1.0.0",
  de.uka.ipd.sdq.simulation;bundle-version="4.1.0",
  de.uka.ipd.sdq.simulation.core;bundle-version="5.2.1",
- org.palladiosimulator.analyzer.workflow;bundle-version="1.0.1",
+ org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.1",
  org.palladiosimulator.edp2.datastream;bundle-version="1.0.0",
  org.palladiosimulator.simexp.core,
  org.palladiosimulator.simexp.environmentaldynamics,
