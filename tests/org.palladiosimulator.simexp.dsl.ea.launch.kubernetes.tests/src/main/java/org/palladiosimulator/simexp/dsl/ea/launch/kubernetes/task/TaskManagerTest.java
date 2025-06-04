@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -13,7 +12,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
@@ -73,7 +71,9 @@ public class TaskManagerTest {
 
         taskManager.taskAborted("t", result);
 
-        verify(task, never()).setResult(ArgumentMatchers.<Optional<Double>> any());
+        verify(task).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).isEmpty();
     }
 
     @Test
