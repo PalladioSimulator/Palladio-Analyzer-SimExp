@@ -58,7 +58,7 @@ public class TaskManagerTest {
 
         taskManager.taskCompleted("t", result);
 
-        verify(task).setResult(captor.capture());
+        verify(task, times(1)).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
         assertThat(capturedArgument).isEmpty();
     }
@@ -71,7 +71,7 @@ public class TaskManagerTest {
 
         taskManager.taskAborted("t", result);
 
-        verify(task).setResult(captor.capture());
+        verify(task, times(1)).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
         assertThat(capturedArgument).isEmpty();
     }
