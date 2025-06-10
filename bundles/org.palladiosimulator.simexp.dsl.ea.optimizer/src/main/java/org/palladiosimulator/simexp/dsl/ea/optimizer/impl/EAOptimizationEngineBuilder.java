@@ -15,29 +15,13 @@ import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
 
 public class EAOptimizationEngineBuilder {
-
-    private static final int DEFAULT_POPULATION_SIZE = 80;
-
-    private static final double DEFAULT_MUTATION_RATE = 0.0125;
-
-    private static final double DEFAULT_CROSSOVER_RATE = 0.8;
-
     private static final int SURVIVOR_SELECTOR_TOURNAMENT_SIZE = 5;
-
     private static final int OFFSPRING_SELECTOR_TOURNAMENT_SIZE = 5;
-
-    private final double crossoverRate;
-
-    private final double mutationRate;
 
     private IEAConfig config;
 
     public EAOptimizationEngineBuilder(IEAConfig config) {
         this.config = config;
-        mutationRate = config.mutationRate()
-            .orElse(DEFAULT_MUTATION_RATE);
-        crossoverRate = config.crossoverRate()
-            .orElse(DEFAULT_CROSSOVER_RATE);
     }
 
     public Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
