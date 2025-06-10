@@ -3,11 +3,15 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -20,11 +24,19 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChr
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
+import io.jenetics.Phenotype;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
+import io.jenetics.engine.EvolutionStream;
+import io.jenetics.engine.Limits;
+import io.jenetics.util.ISeq;
+import io.jenetics.util.RandomRegistry;
+import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizer implements IEAOptimizer {
 
@@ -59,8 +71,6 @@ public class EAOptimizer implements IEAOptimizer {
 
     EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
-        LOGGER.info("EA running...");
-
         int overallPower = calculateComplexity(optimizableProvider);
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
@@ -77,9 +87,7 @@ public class EAOptimizer implements IEAOptimizer {
                 penaltyForInvalids);
         Engine<BitGene, Double> engine = builder.buildEngine(fitnessFunction, genotype, executor);
 
-        //// run optimization
-        return new EAOptimizationRunner().runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine,
-                config);
+        return runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine);
     }
 
     private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
@@ -103,6 +111,84 @@ public class EAOptimizer implements IEAOptimizer {
         Integer overallPower = powers.stream()
             .reduce(1, (a, b) -> a * b);
         return overallPower;
+    }
+
+    private EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
+            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
+            final Engine<BitGene, Double> engine) {
+        LOGGER.info("EA running...");
+        Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
+            .newInstance();
+        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
+                genotypeInstance);
+
+        EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
+
+        EvolutionStream<BitGene, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
+        evolutionStream = addDirectTerminationCriterion(config, evolutionStream);
+
+        Stream<EvolutionResult<BitGene, Double>> effectiveStream = evolutionStream.peek(reporter)
+            .peek(paretoStatistics);
+
+        final ISeq<Phenotype<BitGene, Double>> result;
+        Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> paretoCollector = ParetoSetCollector
+            .create();
+        Optional<ISeedProvider> seedProvider = config.getSeedProvider();
+        if (seedProvider.isEmpty()) {
+            result = effectiveStream.collect(paretoCollector);
+        } else {
+            long seed = seedProvider.get()
+                .getLong();
+            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
+        }
+
+        LOGGER.info("EA finished...");
+        LOGGER.info(paretoStatistics);
+
+        // all pareto efficient optimizables have the same fitness, so just take
+        // the fitness from the first phenotype
+        double bestFitness = result.stream()
+            .findFirst()
+            .get()
+            .fitness();
+
+        List<Phenotype<BitGene, Double>> phenotypes = result.stream()
+            .toList();
+        List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
+        for (Phenotype<BitGene, Double> currentPheno : phenotypes) {
+            List<SmodelBitChromosome> chromosomes = new ArrayList<>();
+            for (int i = 0; i < currentPheno.genotype()
+                .length(); i++) {
+                SmodelBitChromosome currentChromosome = currentPheno.genotype()
+                    .get(i)
+                    .as(SmodelBitChromosome.class);
+                chromosomes.add(currentChromosome);
+            }
+            paretoFront.add(normalizer.toOptimizableValues(chromosomes));
+        }
+
+        return new EAResult(bestFitness, paretoFront);
+    }
+
+    private EvolutionStream<BitGene, Double> addDirectTerminationCriterion(IEAConfig config,
+            EvolutionStream<BitGene, Double> evolutionStream) {
+        if (config.maxGenerations()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
+                .get()));
+        }
+        return evolutionStream;
+    }
+
+    private EvolutionStream<BitGene, Double> addDerivedTerminationCriterion(final Engine<BitGene, Double> engine,
+            IEAConfig config) {
+        EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
+        if (config.steadyFitness()
+            .isPresent()) {
+            evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
+                .get()));
+        }
+        return evolutionStream;
     }
 
 }
