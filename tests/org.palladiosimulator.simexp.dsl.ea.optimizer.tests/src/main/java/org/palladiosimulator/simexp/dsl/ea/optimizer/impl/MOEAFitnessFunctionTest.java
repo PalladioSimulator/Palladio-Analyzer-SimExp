@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,7 +55,7 @@ public class MOEAFitnessFunctionTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testApply() throws IOException {
+    public void testApply() throws IOException, InterruptedException, ExecutionException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -64,12 +63,7 @@ public class MOEAFitnessFunctionTest {
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
-        try {
-            when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            fail();
-        }
+        when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
@@ -129,7 +123,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testRoundingApply() throws IOException {
+    public void testRoundingApply() throws IOException, InterruptedException, ExecutionException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -137,12 +131,7 @@ public class MOEAFitnessFunctionTest {
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
-        try {
-            when(fitnessFuture.get()).thenReturn(Optional.of(50.12345678901234567890123456789));
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            fail();
-        }
+        when(fitnessFuture.get()).thenReturn(Optional.of(50.12345678901234567890123456789));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
@@ -156,7 +145,7 @@ public class MOEAFitnessFunctionTest {
     }
 
     @Test
-    public void testRoundingApplyMimimumDelta() throws IOException {
+    public void testRoundingApplyMimimumDelta() throws IOException, InterruptedException, ExecutionException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -164,12 +153,7 @@ public class MOEAFitnessFunctionTest {
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
-        try {
-            when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            fail();
-        }
+        when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
