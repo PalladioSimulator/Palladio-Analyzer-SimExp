@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -44,7 +43,7 @@ public class PowerUtil {
             case DOUBLE:
                 return getPowerRangeDouble(rangeBounds);
             default:
-                throw new OptimizableProcessingException("Unsupported type: " + dataType);
+                throw new RuntimeException("Unsupported type: " + dataType);
             }
         }
 

@@ -3,7 +3,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.OptimizableProcessingException;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
@@ -49,7 +48,7 @@ public class OptimizableNormalizer {
             case DOUBLE:
                 return toNormalizedRangeDouble(optimizable, rangeBounds);
             default:
-                throw new OptimizableProcessingException("Unsupported type: " + dataType);
+                throw new RuntimeException("Unsupported type: " + dataType);
             }
         }
 
@@ -75,7 +74,7 @@ public class OptimizableNormalizer {
         case STRING:
             return toOptimizableString(optimizable, chromosome);
         default:
-            throw new OptimizableProcessingException("Unsupported type: " + dataType);
+            throw new RuntimeException("Unsupported type: " + dataType);
         }
     }
 
