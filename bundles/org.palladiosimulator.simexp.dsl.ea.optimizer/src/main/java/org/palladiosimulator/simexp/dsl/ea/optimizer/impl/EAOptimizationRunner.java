@@ -30,7 +30,6 @@ public class EAOptimizationRunner {
 
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
 
-    @SuppressWarnings("unchecked")
     public EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
             OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction, final Engine<BitGene, Double> engine,
             IEAConfig config) {
@@ -69,9 +68,8 @@ public class EAOptimizationRunner {
             .get()
             .fitness();
 
-        Phenotype<BitGene, Double>[] phenotypes = result.stream()
-            .toArray(Phenotype[]::new);
-
+        List<Phenotype<BitGene, Double>> phenotypes = result.stream()
+            .toList();
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
         for (Phenotype<BitGene, Double> currentPheno : phenotypes) {
             List<SmodelBitChromosome> chromosomes = new ArrayList<>();
