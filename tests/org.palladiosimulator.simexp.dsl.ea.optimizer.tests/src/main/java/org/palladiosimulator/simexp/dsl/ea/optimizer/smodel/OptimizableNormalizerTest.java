@@ -186,7 +186,7 @@ public class OptimizableNormalizerTest {
 
         List<SmodelBitChromosome> normalized = optimizableNormalizer.toNormalized(optimizableList);
 
-        assertEquals(1, normalized.size());
+        assertEquals(2, normalized.size());
         assertEquals(twoValuesOptimizable, normalized.get(0)
             .getOptimizable());
     }

@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,27 +19,16 @@ public class OptimizableNormalizer {
     private final PowerUtil powerUtil;
     private final IExpressionCalculator expressionCalculator;
 
-    private List<SmodelBitChromosome> singleValueOptimizables;
-
     public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
         this.powerUtil = new PowerUtil(expressionCalculator);
         this.expressionCalculator = expressionCalculator;
-        singleValueOptimizables = new ArrayList<>();
     }
 
     public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
         List<SmodelBitChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
-            .peek(c -> saveIfLengthIsZero(c))
-            .filter(c -> c.length() > 0)
             .collect(Collectors.toList());
         return chromosomes;
-    }
-
-    private synchronized void saveIfLengthIsZero(SmodelBitChromosome chromosome) {
-        if (chromosome.length() == 0) {
-            singleValueOptimizables.add(chromosome);
-        }
     }
 
     public SmodelBitChromosome toNormalized(Optimizable optimizable) {
@@ -50,6 +38,7 @@ public class OptimizableNormalizer {
             int minLength = powerUtil.minBitSizeForPower(power);
             return toNormalizedSet(optimizable, setBounds.getValues()
                 .size(), minLength);
+
         }
 
         if (bounds instanceof RangeBounds rangeBounds) {
@@ -68,20 +57,9 @@ public class OptimizableNormalizer {
     }
 
     public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
-        List<OptimizableValue<?>> optimizableValuesFromChromosomes = chromosomes.stream()
+        return chromosomes.stream()
             .map(c -> toOptimizable(c))
             .collect(Collectors.toList());
-
-        addSingleValueOptimizablesIfNotContained(optimizableValuesFromChromosomes);
-        return optimizableValuesFromChromosomes;
-    }
-
-    public synchronized void addSingleValueOptimizablesIfNotContained(
-            List<OptimizableValue<?>> optimizableValuesFromChromosomes) {
-        singleValueOptimizables.forEach(o -> {
-            OptimizableValue<?> optimizable = toOptimizable(o);
-            optimizableValuesFromChromosomes.add(optimizable);
-        });
     }
 
     public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
