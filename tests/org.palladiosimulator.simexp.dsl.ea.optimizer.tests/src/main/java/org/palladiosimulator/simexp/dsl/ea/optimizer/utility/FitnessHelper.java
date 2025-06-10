@@ -11,9 +11,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
-import io.jenetics.internal.collection.ArrayISeq;
-import io.jenetics.internal.collection.Empty.EmptyISeq;
-
 public class FitnessHelper {
 
     @SuppressWarnings("rawtypes")
@@ -52,42 +49,26 @@ public class FitnessHelper {
 
     @SuppressWarnings("rawtypes")
     private Double getNextFitness(List<OptimizableValue> optimizableValues) {
-        double value = 0;
+        double currentFitness = 0;
 
         for (OptimizableValue singleOptimizableValue : optimizableValues) {
-            Object apply = singleOptimizableValue.getValue();
+            Object optimizeableValue = singleOptimizableValue.getValue();
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
 
-            // TODO nbruening: Remove Seq support?
-            if (apply instanceof ArrayISeq arraySeq) {
-                if (arraySeq.size() == 1) {
-                    for (Object element : arraySeq.array) {
-                        if (optimizableDataType == DataType.INT) {
-                            value += (Integer) element;
-                        } else if (optimizableDataType == DataType.DOUBLE) {
-                            value += (Double) element;
-                        } else if (optimizableDataType == DataType.STRING) {
-                            value += ((String) element).length();
-                        }
-
-                    }
-                }
-            } else if (apply instanceof EmptyISeq emptySeq) {
-                // do nothing
-            } else if (optimizableDataType == DataType.DOUBLE) {
-                if (apply != null)
-                    value += (Double) apply;
+            if (optimizableDataType == DataType.DOUBLE) {
+                if (optimizeableValue != null)
+                    currentFitness += (Double) optimizeableValue;
             } else if (optimizableDataType == DataType.INT) {
-                if (apply != null)
-                    value += (Integer) apply;
+                if (optimizeableValue != null)
+                    currentFitness += (Integer) optimizeableValue;
             } else if (optimizableDataType == DataType.BOOL) {
-                if ((apply != null) && ((Boolean) apply)) {
-                    value += 50;
+                if ((optimizeableValue != null) && ((Boolean) optimizeableValue)) {
+                    currentFitness += 50;
                 }
             } else if (optimizableDataType == DataType.STRING) {
-                if (apply != null) {
-                    value += ((String) apply).length();
+                if (optimizeableValue != null) {
+                    currentFitness += ((String) optimizeableValue).length();
                 }
             }
 
@@ -96,7 +77,7 @@ public class FitnessHelper {
             }
         }
 
-        return value;
+        return currentFitness;
     }
 
 }
