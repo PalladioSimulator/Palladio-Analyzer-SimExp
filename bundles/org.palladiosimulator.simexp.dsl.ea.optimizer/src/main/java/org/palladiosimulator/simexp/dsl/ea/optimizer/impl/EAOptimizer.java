@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -78,42 +77,29 @@ public class EAOptimizer implements IEAOptimizer {
 
     EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
-        int overallPower = calculateComplexity(optimizableProvider);
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        PowerUtil powerUtil = new PowerUtil(expressionCalculator);
+        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
+        int overallPower = powerUtil.calculateComplexity(optimizables);
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
-        ////// to phenotype
-        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        // To genotype
         OptimizableNormalizer normalizer = new OptimizableNormalizer(expressionCalculator);
-        Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
+        Genotype<BitGene> genotype = buildGenotype(optimizables, normalizer);
 
-        ///// setup EA
+        // Setup EA
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer,
                 penaltyForInvalids);
         Engine<BitGene, Double> engine = buildEngine(fitnessFunction, genotype, executor);
 
+        // Run EA
         return runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine);
     }
 
-    private int calculateComplexity(IOptimizableProvider optimizableProvider) {
-        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
-        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
-        PowerUtil powerUtil = new PowerUtil(expressionCalculator);
-        List<Integer> powers = optimizables.stream()
-            .map(o -> powerUtil.getPower(o))
-            .filter(p -> p > 1)
-            .collect(Collectors.toList());
-        Integer overallPower = powers.stream()
-            .reduce(1, (a, b) -> a * b);
-        return overallPower;
-    }
-
-    private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
-            OptimizableNormalizer normalizer) {
-        List<Optimizable> optimizableList = new ArrayList<>();
-        optimizableProvider.getOptimizables()
-            .forEach(o -> optimizableList.add(o));
+    private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, OptimizableNormalizer normalizer) {
+        List<Optimizable> optimizableList = new ArrayList<>(optimizables);
         List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
         Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
         return genotype;

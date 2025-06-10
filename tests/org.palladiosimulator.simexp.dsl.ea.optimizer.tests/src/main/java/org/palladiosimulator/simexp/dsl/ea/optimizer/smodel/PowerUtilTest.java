@@ -5,15 +5,21 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class PowerUtilTest {
@@ -21,6 +27,7 @@ public class PowerUtilTest {
 
     private PowerUtil powerUtil;
     private SmodelCreator smodelCreator;
+    private SetBoundsHelper setBoundsHelper;
 
     private IntLiteral startLiteralInt;
     private IntLiteral stopLiteralInt;
@@ -36,6 +43,7 @@ public class PowerUtilTest {
     public void setUp() {
         initMocks(this);
         smodelCreator = new SmodelCreator();
+        setBoundsHelper = new SetBoundsHelper();
 
         when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
 
@@ -216,4 +224,47 @@ public class PowerUtilTest {
         assertThat(actualValueList).containsExactly(0.65, 1.15, 1.65, 2.15, 2.65, 3.15, 3.65, 4.15, 4.65);
     }
 
+    @Test
+    public void testCalculateComplexityBool() {
+        SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
+        Collection<Optimizable> optimizables = Arrays.asList(optimizable);
+
+        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+
+        assertEquals(2, actualComplexity);
+    }
+
+    @Test
+    public void testCalculateComplexityInt() {
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 2, 3), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
+        Collection<Optimizable> optimizables = Arrays.asList(optimizable);
+
+        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+
+        assertEquals(3, actualComplexity);
+    }
+
+    @Test
+    public void testCalculateComplexityDouble() {
+        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, List.of(1.0, 2.0), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
+        Collection<Optimizable> optimizables = Arrays.asList(optimizable);
+
+        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+
+        assertEquals(2, actualComplexity);
+    }
+
+    @Test
+    public void testCalculateComplexityString() {
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, List.of("123"), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
+        Collection<Optimizable> optimizables = Arrays.asList(optimizable);
+
+        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+
+        assertEquals(1, actualComplexity);
+    }
 }

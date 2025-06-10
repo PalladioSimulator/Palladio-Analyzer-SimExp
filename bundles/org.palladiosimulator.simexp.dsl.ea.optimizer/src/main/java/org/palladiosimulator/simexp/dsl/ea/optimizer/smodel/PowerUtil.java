@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -102,4 +103,15 @@ public class PowerUtil {
             .collect(Collectors.toList());
         return values;
     }
+
+    public int calculateComplexity(Collection<Optimizable> optimizables) {
+        List<Integer> powers = optimizables.stream()
+            .map(o -> getPower(o))
+            .filter(p -> p > 1)
+            .toList();
+        Integer overallPower = powers.stream()
+            .reduce(1, (a, b) -> a * b);
+        return overallPower;
+    }
+
 }
