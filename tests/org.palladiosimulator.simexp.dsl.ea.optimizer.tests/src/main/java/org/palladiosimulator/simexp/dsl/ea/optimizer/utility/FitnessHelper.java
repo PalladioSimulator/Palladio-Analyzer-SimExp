@@ -13,10 +13,9 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 public class FitnessHelper {
 
-    @SuppressWarnings("rawtypes")
     public Future<Optional<Double>> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
-        List<OptimizableValue> optimizableValues = invocation.getArgument(0);
-        Optional<Double> fitnessValue = Optional.of(getNextFitness(optimizableValues));
+        List<OptimizableValue<?>> optimizableValues = invocation.getArgument(0);
+        Optional<Double> fitnessValue = Optional.of(getCurrentFitness(optimizableValues));
         return new Future<>() {
 
             @Override
@@ -47,11 +46,10 @@ public class FitnessHelper {
         };
     }
 
-    @SuppressWarnings("rawtypes")
-    private Double getNextFitness(List<OptimizableValue> optimizableValues) {
+    double getCurrentFitness(List<OptimizableValue<?>> optimizableValues) {
         double currentFitness = 0;
 
-        for (OptimizableValue singleOptimizableValue : optimizableValues) {
+        for (OptimizableValue<?> singleOptimizableValue : optimizableValues) {
             Object optimizeableValue = singleOptimizableValue.getValue();
             DataType optimizableDataType = singleOptimizableValue.getOptimizable()
                 .getDataType();
