@@ -362,7 +362,6 @@ public class OptimizableNormalizerTest {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeBoolean() {
         SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
@@ -374,7 +373,6 @@ public class OptimizableNormalizerTest {
         checkBooleanGenotype(genotype);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeIntegerSet() {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, smallIntList, calculator);
@@ -443,7 +441,6 @@ public class OptimizableNormalizerTest {
         });
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testToGenotypeString() {
         SetBounds setBounds = new SetBoundsHelper().initializeStringSetBound(smodelCreator,
