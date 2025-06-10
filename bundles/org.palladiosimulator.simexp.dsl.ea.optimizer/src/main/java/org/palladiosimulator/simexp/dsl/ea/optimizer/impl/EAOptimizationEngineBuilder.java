@@ -40,18 +40,24 @@ public class EAOptimizationEngineBuilder {
     }
 
     private Builder<BitGene, Double> addAlterers(Builder<BitGene, Double> builder) {
-        Mutator<BitGene, Double> mutator = new Mutator<>();
-        Crossover<BitGene, Double> crossover = new UniformCrossover<>();
+        final Mutator<BitGene, Double> mutator;
         if (config.mutationRate()
             .isPresent()) {
             mutator = new Mutator<>(config.mutationRate()
                 .get());
+        } else {
+            mutator = new Mutator<>();
         }
+
+        final Crossover<BitGene, Double> crossover;
         if (config.crossoverRate()
             .isPresent()) {
             crossover = new UniformCrossover<>(config.crossoverRate()
                 .get());
+        } else {
+            crossover = new UniformCrossover<>();
         }
+
         return builder.alterers(mutator, crossover);
     }
 
