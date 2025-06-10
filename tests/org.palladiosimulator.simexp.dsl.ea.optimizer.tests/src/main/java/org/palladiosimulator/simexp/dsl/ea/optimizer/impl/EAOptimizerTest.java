@@ -74,7 +74,7 @@ public class EAOptimizerTest {
     private Answer<Future<Optional<Double>>> fitnessAnswer;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
@@ -86,6 +86,7 @@ public class EAOptimizerTest {
                 return fitnessHelper.getFitnessFunctionAsFuture(invocation);
             }
         };
+        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         setBoundsHelper = new SetBoundsHelper();
 
@@ -103,7 +104,6 @@ public class EAOptimizerTest {
         SetBounds setBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult eaResult = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -132,7 +132,6 @@ public class EAOptimizerTest {
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -170,10 +169,8 @@ public class EAOptimizerTest {
     public void stringTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
                 List.of("Hello", "World", "!", "How", "are", "youuuu", "abcdef"), calculator);
-
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -221,7 +218,6 @@ public class EAOptimizerTest {
                 1);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -242,7 +238,6 @@ public class EAOptimizerTest {
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -280,7 +275,6 @@ public class EAOptimizerTest {
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -308,7 +302,6 @@ public class EAOptimizerTest {
         Optimizable doubleOptimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound);
         when(optimizableProvider.getOptimizables())
             .thenReturn(List.of(intOptimizable, boolOptimizable, doubleOptimizable));
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
@@ -344,7 +337,6 @@ public class EAOptimizerTest {
                 Collections.singletonList("single"), calculator);
         optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), "single");
         when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
