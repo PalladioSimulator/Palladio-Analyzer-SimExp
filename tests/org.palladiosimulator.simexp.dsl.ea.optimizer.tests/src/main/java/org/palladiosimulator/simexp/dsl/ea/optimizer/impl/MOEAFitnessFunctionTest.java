@@ -39,19 +39,15 @@ public class MOEAFitnessFunctionTest {
     private static final double TOO_LONG_FLOATING_POINT_NUMBER = 0.123456789;
 
     @Mock
-    IEAFitnessEvaluator fitnessEvaluator;
-
+    private IEAFitnessEvaluator fitnessEvaluator;
     @Mock
-    OptimizableNormalizer normalizer;
-
+    private OptimizableNormalizer normalizer;
     @Mock
-    Optimizable optimizable;
-
+    private Optimizable optimizable;
     @Mock
-    Future<Optional<Double>> fitnessFuture;
-
+    private Future<Optional<Double>> fitnessFuture;
     @Mock
-    ExecutionException executionException;
+    private ExecutionException executionException;
 
     @Before
     public void setUp() {
@@ -61,7 +57,6 @@ public class MOEAFitnessFunctionTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testApply() throws IOException {
-        // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -77,11 +72,9 @@ public class MOEAFitnessFunctionTest {
         }
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
-        // Act
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        // Assert
-        assertEquals(50.0, fitness, DELTA);
+        assertEquals(50.0, actualFitness, DELTA);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
@@ -99,9 +92,9 @@ public class MOEAFitnessFunctionTest {
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer,
                 TOO_LONG_FLOATING_POINT_NUMBER);
 
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.1235, fitness, 0.00001);
+        assertEquals(0.1235, actualFitness, 0.00001);
     }
 
     @Test
@@ -113,9 +106,9 @@ public class MOEAFitnessFunctionTest {
         when(fitnessFuture.get()).thenThrow(executionException);
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness, DELTA);
+        assertEquals(0.0, actualFitness, DELTA);
     }
 
     @Test
@@ -130,14 +123,13 @@ public class MOEAFitnessFunctionTest {
         when(fitnessFuture.get()).thenThrow(executionException);
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, fitness, DELTA);
+        assertEquals(0.0, actualFitness, DELTA);
     }
 
     @Test
     public void testRoundingApply() throws IOException {
-        // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -153,11 +145,9 @@ public class MOEAFitnessFunctionTest {
         }
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
-        // Act
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        // Assert
-        assertEquals(50.1235, fitness, DELTA);
+        assertEquals(50.1235, actualFitness, DELTA);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
@@ -167,7 +157,6 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testRoundingApplyMimimumDelta() throws IOException {
-        // Arrange
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
@@ -184,11 +173,9 @@ public class MOEAFitnessFunctionTest {
         double smallEpsilon = 0.0000000000001;
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
-        // Act
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        // Assert
-        assertEquals(50.12345678901234, fitness, smallEpsilon);
+        assertEquals(50.12345678901234, actualFitness, smallEpsilon);
         ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
@@ -209,8 +196,8 @@ public class MOEAFitnessFunctionTest {
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer,
                 TOO_LONG_FLOATING_POINT_NUMBER);
 
-        Double fitness = fitnessFunction.apply(genotype);
+        double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.1235, fitness, DELTA);
+        assertEquals(0.1235, actualFitness, DELTA);
     }
 }
