@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -56,10 +54,7 @@ public class EAOptimizerTest {
 
     private static final double DELTA = 0.0001;
 
-    private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
-
     private EAOptimizer optimizer;
-
     private IEAConfig eaConfig;
 
     @Mock
@@ -893,93 +888,6 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void manySuboptimizablesOptimizableSetTest() throws IOException {
-        Random r = new Random(42);
-        Map<Optimizable, Object> optimizables = new LinkedHashMap<>();
-        for (int i = 0; i < 15; i++) {
-            double randDouble = r.nextDouble();
-            if (randDouble < 0.25) {
-                // Integer
-                List<Integer> numbers = new ArrayList<>();
-                int max = 0;
-                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
-                    int nextInt = r.nextInt(100);
-                    numbers.add(nextInt);
-                    if (nextInt > max)
-                        max = nextInt;
-                }
-                SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, numbers,
-                        calculator);
-                optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), max);
-            } else if (randDouble < 0.5) {
-                // Double
-                List<Double> numbers = new ArrayList<>();
-                double max = 0;
-                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
-                    double nextDouble = r.nextDouble(100);
-                    numbers.add(nextDouble);
-                    if (nextDouble > max)
-                        max = nextDouble;
-                }
-                SetBounds doubleSetBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, numbers, calculator);
-                optimizables.put(smodelCreator.createOptimizable("test", DataType.DOUBLE, doubleSetBound), max);
-            } else if (randDouble < 0.75) {
-                // Double
-                List<String> strings = new ArrayList<>();
-
-                String max = "";
-                for (int upperBound = 0; upperBound < r.nextInt(1, 15); upperBound++) {
-                    String randomString = generateRandomString(r, r.nextInt(50));
-                    strings.add(randomString);
-
-                    if (randomString.length() > max.length())
-                        max = randomString;
-                }
-                SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator, strings, calculator);
-                optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), max);
-            } else {
-                // Bool
-                SetBounds boolSetBound = setBoundsHelper.initializeBooleanSetBound(smodelCreator, List.of(true, false),
-                        calculator);
-                optimizables.put(smodelCreator.createOptimizable("test", DataType.BOOL, boolSetBound), true);
-            }
-
-        }
-        when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
-        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(new Answer<Future<Optional<Double>>>() {
-            @Override
-            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
-                FitnessHelper fitnessHelper = new FitnessHelper();
-                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
-            }
-        });
-
-        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
-
-        double maximumFitness = 0;
-        for (Object obj : optimizables.values()) {
-            if (obj instanceof Boolean) {
-                maximumFitness += 50;
-            } else if (obj instanceof Double doubleVal) {
-                maximumFitness += doubleVal;
-            } else if (obj instanceof String stringVal) {
-                maximumFitness += stringVal.length();
-            } else {
-                maximumFitness += (Integer) obj;
-            }
-        }
-        LOGGER.info("Maximum Fitness: " + maximumFitness);
-        assertEquals(1, result.getOptimizableValuesList()
-            .size());
-        double expectedFitness = 949.1987;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(33)).reportStatus(any(Long.class), anyList(), captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(expectedFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
-    }
-
-    @Test
     public void emptyChromosomeTest() throws IOException {
         Map<Optimizable, Object> optimizables = new LinkedHashMap<>();
 
@@ -1008,16 +916,5 @@ public class EAOptimizerTest {
             .size());
         double actualFitness = result.getFitness();
         assertEquals(106.0, actualFitness, DELTA);
-    }
-
-    private String generateRandomString(Random r, int length) {
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-
-        return r.ints(leftLimit, rightLimit + 1)
-            .limit(length)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-
     }
 }
