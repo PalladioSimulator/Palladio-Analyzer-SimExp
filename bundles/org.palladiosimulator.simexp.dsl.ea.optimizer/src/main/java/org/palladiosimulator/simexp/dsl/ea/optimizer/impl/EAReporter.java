@@ -23,7 +23,6 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Double>> {
         this.normalizer = normalizer;
     }
 
-    // remove
     @Override
     public void accept(EvolutionResult<BitGene, Double> result) {
         long generation = result.generation();
