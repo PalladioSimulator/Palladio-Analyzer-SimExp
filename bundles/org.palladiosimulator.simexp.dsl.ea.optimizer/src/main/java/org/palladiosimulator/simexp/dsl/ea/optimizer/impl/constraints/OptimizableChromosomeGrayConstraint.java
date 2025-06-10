@@ -31,7 +31,7 @@ public class OptimizableChromosomeGrayConstraint implements Constraint<BitGene, 
 
     @Override
     public Phenotype<BitGene, Double> repair(Phenotype<BitGene, Double> individual, long generation) {
-        List<Chromosome<BitGene>> chromosomes = new ArrayList();
+        List<Chromosome<BitGene>> chromosomes = new ArrayList<>();
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
