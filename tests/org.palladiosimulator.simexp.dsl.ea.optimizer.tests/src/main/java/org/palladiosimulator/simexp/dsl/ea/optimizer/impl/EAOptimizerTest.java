@@ -194,14 +194,15 @@ public class EAOptimizerTest {
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(991.0, result.getFitness(), DELTA);
+        double expectedFitness = 991.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
         OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
             .get(0)
             .get(0);
         assertEquals(optimizable, optimizableValue.getOptimizable());
-        assertEquals(991.0, optimizableValue.getValue());
+        assertEquals(expectedFitness, optimizableValue.getValue());
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), any(Double.class));
     }
 
@@ -224,19 +225,21 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(9.65, result.getFitness(), 0.00001);
+        double expectedFitness = 9.65;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         OptimizableValue<?> optimizableValue = result.getOptimizableValuesList()
             .get(0)
             .get(0);
         assertEquals(optimizable, optimizableValue.getOptimizable());
-        assertEquals(9.65, optimizableValue.getValue());
+        assertEquals(expectedFitness, optimizableValue.getValue());
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), any(Double.class));
     }
 
     @Test
     public void simpleDoubleOptimizableSetTest() throws IOException {
+        double expectedFitness = 9.0;
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
-                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 9.0, 9.0), calculator);
+                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, expectedFitness, expectedFitness, expectedFitness), calculator);
 
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -252,24 +255,25 @@ public class EAOptimizerTest {
 
         assertEquals(3, result.getOptimizableValuesList()
             .size());
-        assertEquals(9.0, result.getFitness(), 0.00001);
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
         assertEquals(optimizable, optimizableValuesList.get(0)
             .get(0)
             .getOptimizable());
-        assertEquals(9.0, optimizableValuesList.get(0)
+        assertEquals(expectedFitness, optimizableValuesList.get(0)
             .get(0)
             .getValue());
-        assertEquals(9.0, optimizableValuesList.get(1)
+        assertEquals(expectedFitness, optimizableValuesList.get(1)
             .get(0)
             .getValue());
-        assertEquals(9.0, optimizableValuesList.get(2)
+        assertEquals(expectedFitness, optimizableValuesList.get(2)
             .get(0)
             .getValue());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), captor.capture());
         List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0);
+        List<Double> expectedFitnessEvolution = List.of(expectedFitness, expectedFitness, expectedFitness,
+                expectedFitness, expectedFitness, expectedFitness, expectedFitness);
         assertArrayEquals(expectedFitnessEvolution.stream()
             .mapToDouble(Double::doubleValue)
             .toArray(),
@@ -281,8 +285,9 @@ public class EAOptimizerTest {
 
     @Test
     public void mediumDoubleOptimizableSetTest() throws IOException {
-        List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0, 99.999, 64.0,
-                64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5);
+        double expectedFitness = 99.999;
+        List<Double> listOfDoubles = List.of(1.0, 2.0, 5.0, 6.5, 8.73651, 9.0, 27.83727462, 13.573, 1.0,
+                expectedFitness, 64.0, 64.43, 99.99, 23.4, 45.4, 88.56, 93.22, 22.0, 19.34, 85.5);
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -298,7 +303,7 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(99.999, result.getFitness(), 0.00001);
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -319,7 +324,7 @@ public class EAOptimizerTest {
                 58.9597, 12.3699, 22.6720, 13.3816, 18.1779, 76.0132, 68.7411, 53.7471, 25.1162, 49.0425, 56.1356,
                 48.7245, 57.4270, 34.4016, 66.3356, 11.9550, 69.6338, 60.0229, 93.9973, 43.7552, 30.0767, 55.4601,
                 24.8844, 7.9797, 35.4908, 77.2986, 80.9350, 1.8039);
-        double expectedOptimumFitness = 99.99;
+        double expectedFitness = 99.99;
         SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, listOfDoubles, calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
@@ -335,7 +340,7 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(expectedOptimumFitness, result.getFitness(), 0.00001);
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -419,7 +424,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(20.0, result.getFitness(), 0.00001);
+        double expectedFitness = 20.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -488,7 +494,8 @@ public class EAOptimizerTest {
 
         assertEquals(3, result.getOptimizableValuesList()
             .size());
-        assertEquals(40.0, result.getFitness(), 0.00001);
+        double expectedFitness = 40.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -515,7 +522,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(19.0, result.getFitness(), 0.00001);
+        double expectedFitness = 19.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -568,7 +576,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(99839.0, result.getFitness(), 0.00001);
+        double expectedFitness = 99839.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -594,7 +603,8 @@ public class EAOptimizerTest {
 
         List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
         assertEquals(2, optimizableValuesList.size());
-        assertEquals(9.0, result.getFitness(), 0.00001);
+        double expectedFitness = 9.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, optimizableValuesList.get(0)
             .get(0)
             .getOptimizable());
@@ -607,14 +617,15 @@ public class EAOptimizerTest {
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), captor.capture());
         List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0);
+        List<Double> expectedFitnessEvolution = List.of(expectedFitness, expectedFitness, expectedFitness,
+                expectedFitness, expectedFitness, expectedFitness, expectedFitness);
         assertArrayEquals(expectedFitnessEvolution.stream()
             .mapToDouble(Double::doubleValue)
             .toArray(),
                 fitnessEvolutionValues.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
-                0.00001);
+                DELTA);
     }
 
     @Test
@@ -635,7 +646,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(90.0, result.getFitness(), 0.00001);
+        double expectedFitness = 90.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -662,7 +674,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(85.0, result.getFitness(), 0.00001);
+        double expectedFitness = 85.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(optimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -734,7 +747,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(38.0, result.getFitness(), DELTA);
+        double expectedFitness = 38.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(intOptimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -747,14 +761,15 @@ public class EAOptimizerTest {
         verify(statusReceiver, times(8)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
                 captor.capture());
         List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(37.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0, 38.0);
+        List<Double> expectedFitnessEvolution = List.of(37.0, expectedFitness, expectedFitness, expectedFitness,
+                expectedFitness, expectedFitness, expectedFitness, expectedFitness);
         assertArrayEquals(expectedFitnessEvolution.stream()
             .mapToDouble(Double::doubleValue)
             .toArray(),
                 fitnessEvolutionValues.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
-                0.00001);
+                DELTA);
         List<Optimizable> expectedBestGenotypesFirstOptimizable = List.of(intOptimizable, intOptimizable,
                 intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable, intOptimizable);
         assertArrayEquals(expectedBestGenotypesFirstOptimizable.stream()
@@ -797,7 +812,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(18.0, result.getFitness(), 0.00001);
+        double expectedFitness = 18.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(intOptimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -826,7 +842,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(59.0, result.getFitness(), 0.00001);
+        double expectedFitness = 59.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(intOptimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
@@ -859,14 +876,16 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(68.0, result.getFitness(), 0.00001);
+        double expectedFitness = 68.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         assertEquals(intOptimizable, result.getOptimizableValuesList()
             .get(0)
             .get(0)
             .getOptimizable());
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), captor.capture());
-        Double[] expectedBestGenotypesFitnessEvolution = new Double[] { 68.0, 68.0, 68.0, 68.0, 68.0, 68.0, 68.0 };
+        Double[] expectedBestGenotypesFitnessEvolution = new Double[] { expectedFitness, expectedFitness,
+                expectedFitness, expectedFitness, expectedFitness, expectedFitness, expectedFitness };
         assertArrayEquals(expectedBestGenotypesFitnessEvolution, captor.getAllValues()
             .stream()
             .toArray());
@@ -952,12 +971,12 @@ public class EAOptimizerTest {
         LOGGER.info("Maximum Fitness: " + maximumFitness);
         assertEquals(1, result.getOptimizableValuesList()
             .size());
-        assertEquals(949.1987, result.getFitness(), DELTA);
+        double expectedFitness = 949.1987;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
         verify(statusReceiver, times(33)).reportStatus(any(Long.class), anyList(), captor.capture());
         List<Double> capturedValues = captor.getAllValues();
-
-        assertEquals(949.1987, capturedValues.get(capturedValues.size() - 1), DELTA);
+        assertEquals(expectedFitness, capturedValues.get(capturedValues.size() - 1), DELTA);
     }
 
     @Test
