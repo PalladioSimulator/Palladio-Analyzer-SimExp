@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
@@ -28,9 +29,14 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
+import io.jenetics.Crossover;
 import io.jenetics.Genotype;
+import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
+import io.jenetics.TournamentSelector;
+import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
+import io.jenetics.engine.Engine.Builder;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
@@ -39,8 +45,9 @@ import io.jenetics.util.RandomRegistry;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizer implements IEAOptimizer {
-
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
+    private final static int SURVIVOR_SELECTOR_TOURNAMENT_SIZE = 5;
+    private final static int OFFSPRING_SELECTOR_TOURNAMENT_SIZE = 5;
 
     private IEAConfig config;
 
@@ -80,24 +87,13 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<BitGene> genotype = buildGenotype(optimizableProvider, normalizer);
 
         ///// setup EA
-        EAOptimizationEngineBuilder builder = new EAOptimizationEngineBuilder(config);
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer,
                 penaltyForInvalids);
-        Engine<BitGene, Double> engine = builder.buildEngine(fitnessFunction, genotype, executor);
+        Engine<BitGene, Double> engine = buildEngine(fitnessFunction, genotype, executor);
 
         return runOptimization(evolutionStatusReceiver, normalizer, fitnessFunction, engine);
-    }
-
-    private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
-            OptimizableNormalizer normalizer) {
-        List<Optimizable> optimizableList = new ArrayList<>();
-        optimizableProvider.getOptimizables()
-            .forEach(o -> optimizableList.add(o));
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
-        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
-        return genotype;
     }
 
     private int calculateComplexity(IOptimizableProvider optimizableProvider) {
@@ -111,6 +107,52 @@ public class EAOptimizer implements IEAOptimizer {
         Integer overallPower = powers.stream()
             .reduce(1, (a, b) -> a * b);
         return overallPower;
+    }
+
+    private Genotype<BitGene> buildGenotype(IOptimizableProvider optimizableProvider,
+            OptimizableNormalizer normalizer) {
+        List<Optimizable> optimizableList = new ArrayList<>();
+        optimizableProvider.getOptimizables()
+            .forEach(o -> optimizableList.add(o));
+        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
+        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        return genotype;
+    }
+
+    private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
+            Executor executor) {
+        Builder<BitGene, Double> builder = Engine
+            .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
+            .populationSize(config.populationSize())
+            .executor(executor)
+            .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
+            .offspringSelector(new TournamentSelector<>(OFFSPRING_SELECTOR_TOURNAMENT_SIZE));
+
+        builder = addAlterers(builder);
+
+        return builder.build();
+    }
+
+    private Builder<BitGene, Double> addAlterers(Builder<BitGene, Double> builder) {
+        final Mutator<BitGene, Double> mutator;
+        if (config.mutationRate()
+            .isPresent()) {
+            mutator = new Mutator<>(config.mutationRate()
+                .get());
+        } else {
+            mutator = new Mutator<>();
+        }
+
+        final Crossover<BitGene, Double> crossover;
+        if (config.crossoverRate()
+            .isPresent()) {
+            crossover = new UniformCrossover<>(config.crossoverRate()
+                .get());
+        } else {
+            crossover = new UniformCrossover<>();
+        }
+
+        return builder.alterers(mutator, crossover);
     }
 
     private EAResult runOptimization(IEAEvolutionStatusReceiver evolutionStatusReceiver,
@@ -142,7 +184,7 @@ public class EAOptimizer implements IEAOptimizer {
             result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
         }
 
-        LOGGER.info("EA finished...");
+        LOGGER.info("EA finished");
         LOGGER.info(paretoStatistics);
 
         // all pareto efficient optimizables have the same fitness, so just take
@@ -190,5 +232,4 @@ public class EAOptimizer implements IEAOptimizer {
         }
         return evolutionStream;
     }
-
 }
