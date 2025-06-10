@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.palladiosimulator.simexp.ui.workflow.launchConfigurationType1">
     <stringAttribute key="CrossoverRate" value="0.800000"/>
+    <stringAttribute key="ErrorReward" value="0.000000"/>
+    <intAttribute key="MEMORY_USAGE" value="8"/>
     <intAttribute key="MaxGenerations" value="12"/>
     <stringAttribute key="ModelledOptimizationType" value="EVOLUTIONARY_ALGORITHM"/>
     <stringAttribute key="MutationRate" value="0.010000"/>
-    <intAttribute key="NumberOfRuns" value="10"/>
-    <intAttribute key="NumberOfSimulationsPerRun" value="10"/>
-    <intAttribute key="PopulationSize" value="10"/>
+    <intAttribute key="NumberOfRuns" value="50"/>
+    <intAttribute key="NumberOfSimulationsPerRun" value="100"/>
+    <intAttribute key="PopulationSize" value="100"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
     <stringAttribute key="Reward Type" value="EXPECTED"/>
     <stringAttribute key="Simulation Engine" value="PCM"/>
-    <stringAttribute key="SimulationID" value="LB_modelled_ea_strategy1-10_10_10_0.8_0.01_12max"/>
+    <stringAttribute key="SimulationID" value="LB_modelled_ea_strategy1"/>
     <stringAttribute key="Simulator Type" value="MODELLED"/>
     <setAttribute key="TransformationsActive">
         <setEntry value="Step1Outsource"/>
