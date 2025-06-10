@@ -17,7 +17,7 @@ public class SetBoundsHelper {
 
     public SetBounds initializeIntegerSetBound(SmodelCreator smodelCreator, List<Integer> elementsInSet,
             IExpressionCalculator calculator) {
-        List<IntLiteral> intLiterals = new ArrayList();
+        List<IntLiteral> intLiterals = new ArrayList<>();
         for (Integer element : elementsInSet) {
             IntLiteral elementLiteral = smodelCreator.createIntLiteral(element);
             intLiterals.add(elementLiteral);
@@ -29,7 +29,7 @@ public class SetBoundsHelper {
 
     public SetBounds initializeDoubleSetBound(SmodelCreator smodelCreator, List<Double> elementsInSet,
             IExpressionCalculator calculator) {
-        List<DoubleLiteral> doubleLiterals = new ArrayList();
+        List<DoubleLiteral> doubleLiterals = new ArrayList<>();
         for (Double element : elementsInSet) {
             DoubleLiteral elementLiteral = smodelCreator.createDoubleLiteral(element);
             doubleLiterals.add(elementLiteral);
@@ -41,7 +41,7 @@ public class SetBoundsHelper {
 
     public SetBounds initializeBooleanSetBound(SmodelCreator smodelCreator, List<Boolean> elementsInSet,
             IExpressionCalculator calculator) {
-        List<BoolLiteral> boolLiterals = new ArrayList();
+        List<BoolLiteral> boolLiterals = new ArrayList<>();
         for (Boolean element : elementsInSet) {
             BoolLiteral elementLiteral = smodelCreator.createBoolLiteral(element);
             boolLiterals.add(elementLiteral);
