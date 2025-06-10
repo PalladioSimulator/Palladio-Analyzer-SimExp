@@ -163,7 +163,7 @@ public class EAOptimizerTest {
                 fitnessEvolutionValues.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
-                0.00001);
+                DELTA);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class EAOptimizerTest {
                 fitnessEvolutionValues.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
-                0.00001);
+                DELTA);
     }
 
     @Test
@@ -386,7 +386,7 @@ public class EAOptimizerTest {
                 fitnessEvolutionValues.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray(),
-                0.00001);
+                DELTA);
         List<String> expectedBestGenotypesFitnessEvolution = List.of("abcdef", "youuuu", "youuuu", "youuuu", "youuuu",
                 "abcdef", "abcdef");
         assertArrayEquals(expectedBestGenotypesFitnessEvolution.stream()
