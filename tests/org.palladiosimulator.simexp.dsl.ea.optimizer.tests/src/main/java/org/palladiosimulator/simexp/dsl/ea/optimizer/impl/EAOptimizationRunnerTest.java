@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -44,28 +43,21 @@ public class EAOptimizationRunnerTest {
 
     @Mock
     private IEAEvolutionStatusReceiver statusReceiver;
-
     @Mock
     private MOEAFitnessFunction fitnessFunction;
-
     @Mock
     private IExpressionCalculator expressionCalculator;
-
     @Captor
     private ArgumentCaptor<List<OptimizableValue<?>>> optimizableListCaptor;
-
     @Captor
-    ArgumentCaptor<Double> fitnessCaptor;
+    private ArgumentCaptor<Double> fitnessCaptor;
 
     private EAOptimizationRunner objectUnderTest;
 
     private OptimizableNormalizer optimizableNormalizer;
-
     private SmodelCreator smodelCreator;
-
     private Optimizable optimizable;
-
-    private Function<? super Random, EAResult> optFunction;
+    private Function<Random, EAResult> optFunction;
 
     @Before
     public void setUp() {
@@ -101,7 +93,6 @@ public class EAOptimizationRunnerTest {
 
     @Test
     public void testOptimizationEAResult() {
-
         EAResult runOptimization = RandomRegistry.with(new Random(42), optFunction);
 
         assertEquals(99.0, runOptimization.getFitness(), DELTA);
@@ -114,19 +105,4 @@ public class EAOptimizationRunnerTest {
             .get(0)
             .getOptimizable());
     }
-
-    public void testOptimizationEvolutionStatusReceiver() {
-
-        EAResult runOptimization = RandomRegistry.with(new Random(42), optFunction);
-
-        verify(statusReceiver).reportStatus(any(Long.class), optimizableListCaptor.capture(), fitnessCaptor.capture());
-        optimizableListCaptor.getAllValues()
-            .get(0);
-
-        // TODO nbruening: Hier noch den Test vervollständigen
-
-//        optimizableListCaptor.getAllValues().get()
-
-    }
-
 }
