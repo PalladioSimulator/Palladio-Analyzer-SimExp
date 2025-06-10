@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -49,6 +50,8 @@ public class MOEAFitnessFunctionTest {
     private ExecutionException executionException;
     @Mock
     private OptimizableValue<Double> optimizableValue;
+    @Captor
+    private ArgumentCaptor<List<OptimizableValue<?>>> captor;
 
     @Before
     public void setUp() {
@@ -90,7 +93,7 @@ public class MOEAFitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.1235, actualFitness, 0.00001);
+        assertEquals(0.1235, actualFitness, DELTA);
     }
 
     @Test
@@ -138,7 +141,6 @@ public class MOEAFitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertEquals(50.1235, actualFitness, DELTA);
-        ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
@@ -160,7 +162,6 @@ public class MOEAFitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertEquals(50.12345678901234, actualFitness, smallEpsilon);
-        ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
