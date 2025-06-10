@@ -47,6 +47,8 @@ public class MOEAFitnessFunctionTest {
     private Future<Optional<Double>> fitnessFuture;
     @Mock
     private ExecutionException executionException;
+    @Mock
+    private OptimizableValue<Double> optimizableValue;
 
     @Before
     public void setUp() {
@@ -127,7 +129,6 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
@@ -149,7 +150,6 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
             .thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
