@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -965,6 +968,37 @@ public class EAOptimizerTest {
         List<Double> capturedValues = captor.getAllValues();
 
         assertEquals(949.1987, capturedValues.get(capturedValues.size() - 1), DELTA);
+    }
+
+    @Test
+    public void emptyChromosomeTest() throws IOException {
+        Map<Optimizable, Object> optimizables = new LinkedHashMap<>();
+
+        int maxInt = 100;
+        List<Integer> ints = IntStream.rangeClosed(1, maxInt)
+            .boxed()
+            .toList();
+        SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, ints, calculator);
+        optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), maxInt);
+
+        SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
+                Collections.singletonList("single"), calculator);
+        optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), "single");
+        when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
+        when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(new Answer<Future<Optional<Double>>>() {
+            @Override
+            public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {
+                FitnessHelper fitnessHelper = new FitnessHelper();
+                return fitnessHelper.getFitnessFunctionAsFuture(invocation);
+            }
+        });
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        assertEquals(1, result.getOptimizableValuesList()
+            .size());
+        double actualFitness = result.getFitness();
+        assertEquals(106.0, actualFitness, DELTA);
     }
 
     private String generateRandomString(Random r, int length) {
