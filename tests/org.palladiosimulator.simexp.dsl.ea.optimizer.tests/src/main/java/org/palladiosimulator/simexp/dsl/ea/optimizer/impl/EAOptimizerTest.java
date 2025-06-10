@@ -36,7 +36,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
@@ -65,13 +64,10 @@ public class EAOptimizerTest {
 
     @Mock
     private IEAEvolutionStatusReceiver statusReceiver;
-
     @Mock
     private IEAFitnessEvaluator fitnessEvaluator;
-
     @Mock
     private IOptimizableProvider optimizableProvider;
-
     @Mock
     private IExpressionCalculator calculator;
 
@@ -79,11 +75,8 @@ public class EAOptimizerTest {
     private ArgumentCaptor<List<OptimizableValue<?>>> optimizableListCaptor;
 
     private SmodelCreator smodelCreator;
-
     private ThreadLocal<Random> threadLocalRandom;
-
-    private Function<? super Random, EAResult> optFunction;
-
+    private Function<Random, EAResult> optFunction;
     private SetBoundsHelper setBoundsHelper;
 
     @Before
@@ -95,17 +88,14 @@ public class EAOptimizerTest {
 
         setBoundsHelper = new SetBoundsHelper();
 
-        threadLocalRandom = ThreadLocal.withInitial(() -> {
-            RandomRegistry.random(new Random(42));
-            return new Random(42);
-        });
+        threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
 
         optFunction = r -> {
             return optimizer.optimizeSingleThread(optimizableProvider, fitnessEvaluator, statusReceiver);
         };
-        EAOptimizerFactory eaOptimizerFactory = new EAOptimizerFactory();
         eaConfig = new ConfigHelper(80, 0.01, 0.8, 7, 100);
-        optimizer = (EAOptimizer) eaOptimizerFactory.create(eaConfig);
+
+        optimizer = new EAOptimizer(eaConfig);
     }
 
     @Test
