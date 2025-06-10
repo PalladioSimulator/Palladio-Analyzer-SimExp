@@ -57,13 +57,7 @@ public class EAOptimizer implements IEAOptimizer {
         }
     }
 
-    EAResult optimizeSingleThread(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
-            IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-        return internalOptimize(optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, Runnable::run);
-
-    }
-
-    private EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+    EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         LOGGER.info("EA running...");
 

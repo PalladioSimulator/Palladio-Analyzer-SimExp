@@ -92,7 +92,7 @@ public class EAOptimizerTest {
 
         threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
         optFunction = r -> {
-            return optimizer.optimizeSingleThread(optimizableProvider, fitnessEvaluator, statusReceiver);
+            return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
         };
         eaConfig = new ConfigHelper(80, 0.01, 0.8, 7, 100);
 
