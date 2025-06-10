@@ -14,10 +14,8 @@ public class SmodelBitChromosome extends BitChromosome {
     private static final long serialVersionUID = 1L;
 
     private final Optimizable optimizable;
-
-    private int numOfValues;
-
-    private BitInterpreter bitInterpreter;
+    private final int numOfValues;
+    private final BitInterpreter bitInterpreter;
 
     protected SmodelBitChromosome(Optimizable optimizable, byte[] bits, int length, int numOfValues,
             BitInterpreter bitInterpreter) {

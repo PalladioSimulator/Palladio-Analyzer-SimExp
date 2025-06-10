@@ -5,7 +5,7 @@ import java.util.BitSet;
 public class SmodelBitset extends FixedSizeBitSet {
     private static final long serialVersionUID = 1L;
 
-    private BitInterpreter bitInterpreter;
+    private final BitInterpreter bitInterpreter;
 
     public SmodelBitset(int nbits, BitInterpreter bitInterpreter) {
         super(nbits);
