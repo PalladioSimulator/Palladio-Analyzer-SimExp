@@ -1,11 +1,9 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
