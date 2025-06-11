@@ -14,14 +14,9 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
     @Override
     public boolean test(Phenotype<BitGene, Double> individual) {
         Genotype<BitGene> genotype = individual.genotype();
-
-        for (int i = 0; i < genotype.length(); i++) {
-            if (!genotype.get(i)
-                .isValid()) {
-                return false;
-            }
+        if (!genotype.isValid()) {
+            return false;
         }
-
         return true;
     }
 
