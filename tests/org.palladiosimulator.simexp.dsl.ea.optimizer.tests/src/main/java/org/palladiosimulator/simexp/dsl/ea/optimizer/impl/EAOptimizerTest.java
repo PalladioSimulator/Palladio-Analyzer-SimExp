@@ -167,6 +167,24 @@ public class EAOptimizerTest {
     }
 
     @Test
+    public void stringTest() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator, List.of("Hello", "123456"),
+                calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 6.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> l.get(0)
+            .getValue()
+            .toString())
+            .containsExactlyInAnyOrder("123456");
+    }
+
+    @Test
     public void stringMultipleParetoOptimalElementsTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
                 List.of("Hello", "World", "!", "How", "are", "youuuu", "abcdef"), calculator);
