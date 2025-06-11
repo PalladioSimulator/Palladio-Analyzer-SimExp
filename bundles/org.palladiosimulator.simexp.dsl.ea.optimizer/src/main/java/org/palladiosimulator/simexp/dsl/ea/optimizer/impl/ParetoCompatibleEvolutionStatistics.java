@@ -6,12 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-
 import io.jenetics.BitGene;
-import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
@@ -25,15 +20,12 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
 
     private final EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics;
     private final MOEAFitnessFunction fitnessFunction;
-    private final Genotype<BitGene> genotype;
-    private final PowerUtil powerUtil;
+    private final long overallPower;
 
-    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
-            PowerUtil powerUtil) {
+    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, long overallPower) {
         this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
-        this.genotype = genotype;
-        this.powerUtil = powerUtil;
+        this.overallPower = overallPower;
     }
 
     @Override
@@ -56,11 +48,6 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
                 + "+---------------------------------------------------------------------------+\n");
-        List<Optimizable> optimizables = genotype.stream()
-            .map(g -> g.as(SmodelBitChromosome.class))
-            .map(c -> c.getOptimizable())
-            .toList();
-        long overallPower = powerUtil.calculateComplexity(optimizables);
         String result = formatResult(fitnessFunction.getNumberOfUniqueFitnessEvaluations(), overallPower);
         stringBuilder.append(format(CPATTERN, "Evaluated:", result));
 
