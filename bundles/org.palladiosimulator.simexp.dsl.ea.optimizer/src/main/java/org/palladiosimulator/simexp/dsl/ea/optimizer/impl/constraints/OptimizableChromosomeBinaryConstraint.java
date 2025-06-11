@@ -25,17 +25,16 @@ public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene
         Genotype<BitGene> genotype = individual.genotype();
 
         for (int i = 0; i < genotype.length(); i++) {
-            if (!genotype.get(i)
-                .isValid()) {
-                Chromosome<BitGene> chromosome = genotype.get(i);
-                Chromosome<BitGene> newInstance;
+            Chromosome<BitGene> chromosome = genotype.get(i);
+            if (!chromosome.isValid()) {
+                Chromosome<BitGene> newChromosome;
                 do {
-                    newInstance = chromosome.newInstance();
-                } while (!newInstance.isValid());
+                    newChromosome = chromosome.newInstance();
+                } while (!newChromosome.isValid());
 
-                chromosomes.add(newInstance);
+                chromosomes.add(newChromosome);
             } else {
-                chromosomes.add(genotype.get(i));
+                chromosomes.add(chromosome);
             }
         }
         Phenotype<BitGene, Double> repairedIndividual = Phenotype.of(Genotype.of(chromosomes), 0);
