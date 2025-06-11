@@ -23,8 +23,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
-    private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections
-        .synchronizedSet(new HashSet<>());
+    private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final OptimizableNormalizer optimizableNormalizer;
@@ -36,19 +35,18 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
         this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.optimizableNormalizer = optimizableNormalizer;
-        this.penaltyForInvalids = penaltyForInvalids;
+        this.penaltyForInvalids = round(penaltyForInvalids);
     }
 
     @Override
     public Double apply(Genotype<BitGene> genotype) {
+        if (!genotype.isValid()) {
+            return penaltyForInvalids;
+        }
+
         List<SmodelBitChromosome> chromosomes = genotype.stream()
             .map(c -> (SmodelBitChromosome) c)
             .toList();
-        for (SmodelBitChromosome chromosome : chromosomes) {
-            if (!chromosome.isValid()) {
-                return round(penaltyForInvalids);
-            }
-        }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
         evaluatedOptimizables.add(optimizableValues);
         try {
