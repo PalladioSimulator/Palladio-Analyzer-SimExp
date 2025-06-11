@@ -19,7 +19,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
@@ -65,8 +64,7 @@ public class MOEAFitnessFunctionTest {
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
         OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
-        when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
-            .thenReturn(List.of(optimizableValue));
+        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
@@ -132,8 +130,7 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
-            .thenReturn(List.of(optimizableValue));
+        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(50.12345678901234567890123456789));
         MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
@@ -152,8 +149,7 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(normalizer.toOptimizableValues(Mockito.argThat(s -> s.contains(chromosome))))
-            .thenReturn(List.of(optimizableValue));
+        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;

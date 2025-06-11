@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -27,10 +26,7 @@ public class EAReporter implements Consumer<EvolutionResult<BitGene, Double>> {
         long generation = result.generation();
         Phenotype<BitGene, Double> phenotype = result.bestPhenotype();
         Genotype<BitGene> genotype = phenotype.genotype();
-        List<SmodelBitChromosome> chromosomes = genotype.stream()
-            .map(g -> g.as(SmodelBitChromosome.class))
-            .toList();
-        List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(chromosomes);
+        List<OptimizableValue<?>> optimizables = normalizer.toOptimizableValues(genotype);
         double fitness = result.bestFitness();
         evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
     }

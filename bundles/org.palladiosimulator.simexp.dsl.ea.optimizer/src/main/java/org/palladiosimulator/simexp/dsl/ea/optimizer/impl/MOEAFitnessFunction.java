@@ -12,7 +12,6 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -44,10 +43,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
             return penaltyForInvalids;
         }
 
-        List<SmodelBitChromosome> chromosomes = genotype.stream()
-            .map(c -> (SmodelBitChromosome) c)
-            .toList();
-        List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
+        List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(genotype);
         evaluatedOptimizables.add(optimizableValues);
         try {
             Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);

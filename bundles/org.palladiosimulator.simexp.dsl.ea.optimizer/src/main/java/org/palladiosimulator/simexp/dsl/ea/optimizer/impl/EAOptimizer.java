@@ -20,7 +20,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -100,8 +99,7 @@ public class EAOptimizer implements IEAOptimizer {
 
     private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, OptimizableNormalizer normalizer) {
         List<Optimizable> optimizableList = new ArrayList<>(optimizables);
-        List<SmodelBitChromosome> normalizedOptimizables = normalizer.toNormalized(optimizableList);
-        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        Genotype<BitGene> genotype = normalizer.toGenotype(optimizableList);
         return genotype;
     }
 
@@ -181,16 +179,10 @@ public class EAOptimizer implements IEAOptimizer {
         List<Phenotype<BitGene, Double>> phenotypes = result.stream()
             .toList();
         List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<BitGene, Double> currentPheno : phenotypes) {
-            List<SmodelBitChromosome> chromosomes = new ArrayList<>();
-            for (int i = 0; i < currentPheno.genotype()
-                .length(); i++) {
-                SmodelBitChromosome currentChromosome = currentPheno.genotype()
-                    .get(i)
-                    .as(SmodelBitChromosome.class);
-                chromosomes.add(currentChromosome);
-            }
-            paretoFront.add(normalizer.toOptimizableValues(chromosomes));
+        for (Phenotype<BitGene, Double> phenotype : phenotypes) {
+            Genotype<BitGene> genotype = phenotype.genotype();
+            List<OptimizableValue<?>> optimizableValues = normalizer.toOptimizableValues(genotype);
+            paretoFront.add(optimizableValues);
         }
 
         return new EAResult(bestFitness, paretoFront);

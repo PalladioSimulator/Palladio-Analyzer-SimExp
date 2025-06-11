@@ -14,6 +14,9 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 
+import io.jenetics.BitGene;
+import io.jenetics.Genotype;
+
 public class OptimizableNormalizer {
     private final PowerUtil powerUtil;
     private final IExpressionCalculator expressionCalculator;
@@ -23,14 +26,20 @@ public class OptimizableNormalizer {
         this.expressionCalculator = expressionCalculator;
     }
 
-    public List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
+    public Genotype<BitGene> toGenotype(List<Optimizable> optimizables) {
+        List<SmodelBitChromosome> normalizedOptimizables = toNormalized(optimizables);
+        Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
+        return genotype;
+    }
+
+    List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
         List<SmodelBitChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
             .collect(Collectors.toList());
         return chromosomes;
     }
 
-    public SmodelBitChromosome toNormalized(Optimizable optimizable) {
+    SmodelBitChromosome toNormalized(Optimizable optimizable) {
         Bounds bounds = optimizable.getValues();
         if (bounds instanceof SetBounds setBounds) {
             int power = powerUtil.getPowerSet(setBounds);
@@ -55,13 +64,20 @@ public class OptimizableNormalizer {
         throw new RuntimeException("invalid bounds: " + bounds);
     }
 
-    public List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
+    public List<OptimizableValue<?>> toOptimizableValues(Genotype<BitGene> genotype) {
+        List<SmodelBitChromosome> chromosomes = genotype.stream()
+            .map(g -> g.as(SmodelBitChromosome.class))
+            .toList();
+        return toOptimizableValues(chromosomes);
+    }
+
+    List<OptimizableValue<?>> toOptimizableValues(List<SmodelBitChromosome> chromosomes) {
         return chromosomes.stream()
             .map(c -> toOptimizable(c))
             .collect(Collectors.toList());
     }
 
-    public OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
+    OptimizableValue<?> toOptimizable(SmodelBitChromosome chromosome) {
         Optimizable optimizable = chromosome.getOptimizable();
         DataType dataType = optimizable.getDataType();
         switch (dataType) {
