@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -57,13 +56,11 @@ public class MOEAFitnessFunctionTest {
         initMocks(this);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testApply() throws IOException, InterruptedException, ExecutionException {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        OptimizableValue<Double> optimizableValue = mock(OptimizableValue.class);
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
@@ -72,7 +69,6 @@ public class MOEAFitnessFunctionTest {
         double actualFitness = fitnessFunction.apply(genotype);
 
         assertEquals(50.0, actualFitness, DELTA);
-        ArgumentCaptor<List<OptimizableValue<?>>> captor = ArgumentCaptor.forClass(List.class);
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
