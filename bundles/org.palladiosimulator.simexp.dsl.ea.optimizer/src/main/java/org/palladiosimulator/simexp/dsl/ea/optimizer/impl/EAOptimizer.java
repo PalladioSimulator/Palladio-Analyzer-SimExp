@@ -145,9 +145,6 @@ public class EAOptimizer implements IEAOptimizer {
             OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
             final Engine<BitGene, Double> engine) {
         LOGGER.info("EA running...");
-        // TODO: remove
-        Genotype<BitGene> genotypeInstance = engine.genotypeFactory()
-            .newInstance();
         ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
                 overallPower);
 

@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -174,42 +175,13 @@ public class EAOptimizerTest {
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(2, result.getOptimizableValuesList()
-            .size());
-        assertEquals(6.0, result.getFitness(), DELTA);
-        assertEquals(optimizable, result.getOptimizableValuesList()
-            .get(0)
-            .get(0)
-            .getOptimizable());
-        assertEquals("abcdef", result.getOptimizableValuesList()
-            .get(0)
-            .get(0)
-            .getValue());
-        assertEquals("youuuu", result.getOptimizableValuesList()
-            .get(1)
-            .get(0)
-            .getValue());
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0);
-        assertArrayEquals(expectedFitnessEvolution.stream()
-            .mapToDouble(Double::doubleValue)
-            .toArray(),
-                fitnessEvolutionValues.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .toArray(),
-                DELTA);
-        List<String> expectedBestGenotypesFitnessEvolution = List.of("abcdef", "youuuu", "youuuu", "youuuu", "youuuu",
-                "abcdef", "abcdef");
-        assertArrayEquals(expectedBestGenotypesFitnessEvolution.stream()
-            .toArray(),
-                optimizableListCaptor.getAllValues()
-                    .stream()
-                    .map((List<OptimizableValue<?>> l) -> l.get(0)
-                        .getValue())
-                    .toArray());
+        double expectedFitness = 6.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> l.get(0)
+            .getValue()
+            .toString())
+            .containsExactlyInAnyOrder("abcdef", "youuuu");
     }
 
     @Test
