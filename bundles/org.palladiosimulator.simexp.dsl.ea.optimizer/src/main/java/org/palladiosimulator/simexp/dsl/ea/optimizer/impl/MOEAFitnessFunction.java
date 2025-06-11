@@ -1,7 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.log4j.Logger;
@@ -19,14 +17,13 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.OptimizableNormalize
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.BitGene;
-import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 
 public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
-    private Set<List<OptimizableValue<?>>> synchronizedSetOfEvaluatedOptimizable = Collections
+    private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections
         .synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
@@ -44,14 +41,16 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
 
     @Override
     public Double apply(Genotype<BitGene> genotype) {
-        List<SmodelBitChromosome> chromosomes = extracted(genotype);
-        for (SmodelBitChromosome currentChromo : chromosomes) {
-            if (!currentChromo.isValid()) {
+        List<SmodelBitChromosome> chromosomes = genotype.stream()
+            .map(c -> (SmodelBitChromosome) c)
+            .toList();
+        for (SmodelBitChromosome chromosome : chromosomes) {
+            if (!chromosome.isValid()) {
                 return round(penaltyForInvalids);
             }
         }
         List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(chromosomes);
-        synchronizedSetOfEvaluatedOptimizable.add(optimizableValues);
+        evaluatedOptimizables.add(optimizableValues);
         try {
             Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
             Optional<Double> optionalFitness = fitnessFuture.get();
@@ -71,19 +70,6 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
     }
 
     public long getNumberOfUniqueFitnessEvaluations() {
-        return synchronizedSetOfEvaluatedOptimizable.size();
+        return evaluatedOptimizables.size();
     }
-
-    private List<SmodelBitChromosome> extracted(Genotype<BitGene> genotype) {
-        List<SmodelBitChromosome> chromosomes = new ArrayList<>();
-        genotype.forEach(new Consumer<Chromosome<BitGene>>() {
-
-            @Override
-            public void accept(Chromosome<BitGene> chromosome) {
-                chromosomes.add((SmodelBitChromosome) chromosome);
-            }
-        });
-        return chromosomes;
-    }
-
 }
