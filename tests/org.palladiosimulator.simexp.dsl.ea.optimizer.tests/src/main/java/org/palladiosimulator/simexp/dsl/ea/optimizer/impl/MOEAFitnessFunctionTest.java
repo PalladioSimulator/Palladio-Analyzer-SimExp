@@ -31,10 +31,10 @@ import io.jenetics.Genotype;
 
 public class MOEAFitnessFunctionTest {
     private static final double BIG_TOO_LONG_FLOATING_POINT_NUMBER = 50.12345678901234567890123456789;
-
     private static final double DELTA = 0.0001;
-
     private static final double TOO_LONG_FLOATING_POINT_NUMBER = 0.123456789;
+
+    private MOEAFitnessFunction fitnessFunction;
 
     @Mock
     private IEAFitnessEvaluator fitnessEvaluator;
@@ -51,20 +51,25 @@ public class MOEAFitnessFunctionTest {
     @Captor
     private ArgumentCaptor<List<OptimizableValue<?>>> captor;
 
+    private SmodelBitChromosome chromosome;
+    private Genotype<BitGene> genotype;
+
     @Before
-    public void setUp() {
+    public void setUp() throws IOException, InterruptedException, ExecutionException {
         initMocks(this);
+
+        chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4, new BinaryBitInterpreter());
+        genotype = Genotype.of(chromosome);
+
+        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
+        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
+
+        fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
     }
 
     @Test
     public void testApply() throws IOException, InterruptedException, ExecutionException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(50.0));
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -77,27 +82,16 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testHandleInterruptedException() throws InterruptedException, ExecutionException, IOException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(new InterruptedException("This is a test"));
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer,
-                TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.1235, actualFitness, DELTA);
+        assertEquals(0.0, actualFitness, DELTA);
     }
 
     @Test
     public void testHandleExecutionException() throws InterruptedException, ExecutionException, IOException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -112,9 +106,7 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -123,13 +115,7 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testRoundingApply() throws IOException, InterruptedException, ExecutionException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(50.12345678901234567890123456789));
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -142,14 +128,9 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testRoundingApplyMimimumDelta() throws IOException, InterruptedException, ExecutionException {
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -168,10 +149,8 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
         when(fitnessFuture.get()).thenThrow(executionException);
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer,
-                TOO_LONG_FLOATING_POINT_NUMBER);
+        fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
