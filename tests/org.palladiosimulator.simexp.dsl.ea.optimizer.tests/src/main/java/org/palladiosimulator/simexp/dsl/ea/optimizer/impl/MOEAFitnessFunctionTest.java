@@ -19,13 +19,11 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.BinaryBitInterpreter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitset;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
+import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 
@@ -48,15 +46,16 @@ public class MOEAFitnessFunctionTest {
     private OptimizableValue<Double> optimizableValue;
     @Captor
     private ArgumentCaptor<List<OptimizableValue<?>>> captor;
+    @Mock
+    private BitChromosome chromosome;
 
-    private SmodelBitChromosome chromosome;
     private Genotype<BitGene> genotype;
 
     @Before
     public void setUp() throws IOException, InterruptedException, ExecutionException {
         initMocks(this);
 
-        chromosome = SmodelBitChromosome.of(new SmodelBitset(3), optimizable, 4, new BinaryBitInterpreter());
+        when(chromosome.isValid()).thenReturn(true);
         genotype = Genotype.of(chromosome);
 
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
@@ -98,12 +97,7 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
-        SmodelBitset smodelBitset = new SmodelBitset(4);
-        smodelBitset.set(3);
-        smodelBitset.set(2);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
+        when(chromosome.isValid()).thenReturn(false);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -140,12 +134,7 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
-        SmodelBitset smodelBitset = new SmodelBitset(4);
-        smodelBitset.set(3);
-        smodelBitset.set(2);
-        SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
-                new BinaryBitInterpreter());
-        Genotype<BitGene> genotype = Genotype.of(chromosome);
+        when(chromosome.isValid()).thenReturn(false);
         fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
