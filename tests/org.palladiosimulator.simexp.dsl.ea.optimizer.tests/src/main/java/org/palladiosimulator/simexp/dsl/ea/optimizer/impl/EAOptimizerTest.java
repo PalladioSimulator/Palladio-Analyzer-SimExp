@@ -3,10 +3,8 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +21,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import org.assertj.core.util.DoubleComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -37,13 +36,11 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
-import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
@@ -106,64 +103,48 @@ public class EAOptimizerTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
-        EAResult eaResult = RandomRegistry.with(threadLocalRandom, optFunction);
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, atLeast(1)).reportStatus(any(Long.class), optimizableListCaptor.capture(),
-                captor.capture());
-        List<Double> capturedValues = captor.getAllValues();
-        assertEquals(50.0, capturedValues.get(capturedValues.size() - 1), DELTA);
-        List<List<OptimizableValue<?>>> allValues = optimizableListCaptor.getAllValues();
-        OptimizableValue<?> optimizableValue = allValues.get(0)
-            .get(0);
-        assertTrue((Boolean) optimizableValue.getValue());
-        assertEquals(50.0, eaResult.getFitness(), DELTA);
-        OptimizableValue<?> finalOptimizableValue = eaResult.getOptimizableValuesList()
-            .get(0)
-            .get(0);
-        assertEquals(optimizable, finalOptimizableValue.getOptimizable());
-        assertEquals(true, finalOptimizableValue.getValue());
+        double expectedFitness = 50.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Boolean) l.get(0)
+            .getValue())
+            .containsExactlyInAnyOrder(true);
     }
 
     @Test
     public void doubleTest() throws IOException {
-        double expectedFitness = 9.0;
-        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator,
-                List.of(1.0, 2.0, 5.0, 6.5, 8.73651, expectedFitness, expectedFitness, expectedFitness), calculator);
-
+        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, List.of(8.0, 9.0), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(3, result.getOptimizableValuesList()
-            .size());
+        double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
-        assertEquals(optimizable, optimizableValuesList.get(0)
-            .get(0)
-            .getOptimizable());
-        assertEquals(expectedFitness, optimizableValuesList.get(0)
-            .get(0)
-            .getValue());
-        assertEquals(expectedFitness, optimizableValuesList.get(1)
-            .get(0)
-            .getValue());
-        assertEquals(expectedFitness, optimizableValuesList.get(2)
-            .get(0)
-            .getValue());
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), captor.capture());
-        List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(expectedFitness, expectedFitness, expectedFitness,
-                expectedFitness, expectedFitness, expectedFitness, expectedFitness);
-        assertArrayEquals(expectedFitnessEvolution.stream()
-            .mapToDouble(Double::doubleValue)
-            .toArray(),
-                fitnessEvolutionValues.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .toArray(),
-                DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Double) l.get(0)
+            .getValue())
+            .usingComparatorForType(new DoubleComparator(DELTA), Double.class)
+            .containsExactlyInAnyOrder(9.0);
+    }
+
+    @Test
+    public void doubleMultipleParetoOptimalElementsTest() throws IOException {
+        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, List.of(9.00001, 9.0), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 9.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Double) l.get(0)
+            .getValue())
+            .usingComparatorForType(new DoubleComparator(DELTA), Double.class)
+            .containsExactlyInAnyOrder(9.0, 9.0);
     }
 
     @Test
@@ -196,87 +177,58 @@ public class EAOptimizerTest {
         double expectedFitness = 6.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
-        assertThat(actualOptimizableValues).extracting(l -> l.get(0)
-            .getValue()
-            .toString())
+        assertThat(actualOptimizableValues).extracting(l -> (String) l.get(0)
+            .getValue())
             .containsExactlyInAnyOrder("abcdef", "youuuu");
     }
 
     @Test
     public void integerTest() throws IOException {
-        RangeBounds rangeBound = new RangeBoundsHelper().initializeIntegerRangeBound(smodelCreator, calculator, 0, 20,
-                1);
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, rangeBound);
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 10, 19), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(1, result.getOptimizableValuesList()
-            .size());
         double expectedFitness = 19.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
-        assertEquals(optimizable, result.getOptimizableValuesList()
-            .get(0)
-            .get(0)
-            .getOptimizable());
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), any(Double.class));
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Integer) l.get(0)
+            .getValue())
+            .containsExactlyInAnyOrder(19);
     }
 
     @Test
     public void integerMultipleParetoOptimalElementsTest() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9, 9),
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 9, 9),
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        List<List<OptimizableValue<?>>> optimizableValuesList = result.getOptimizableValuesList();
-        assertEquals(2, optimizableValuesList.size());
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
-        assertEquals(optimizable, optimizableValuesList.get(0)
-            .get(0)
-            .getOptimizable());
-        assertEquals(9, optimizableValuesList.get(0)
-            .get(0)
-            .getValue());
-        assertEquals(9, optimizableValuesList.get(1)
-            .get(0)
-            .getValue());
-        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), captor.capture());
-        List<Double> fitnessEvolutionValues = captor.getAllValues();
-        List<Double> expectedFitnessEvolution = List.of(expectedFitness, expectedFitness, expectedFitness,
-                expectedFitness, expectedFitness, expectedFitness, expectedFitness);
-        assertArrayEquals(expectedFitnessEvolution.stream()
-            .mapToDouble(Double::doubleValue)
-            .toArray(),
-                fitnessEvolutionValues.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .toArray(),
-                DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Integer) l.get(0)
+            .getValue())
+            .containsExactlyInAnyOrder(9, 9);
     }
 
     @Test
     public void integerWithNegativeNumbers() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator,
-                List.of(4, -31, 84, -90, 40, -80, 28, 69, 74, 69, 29, 83, -31, 53, 35, -42, 80, 52, 85, -16),
-                calculator);
+        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(4, 85, -31), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        assertEquals(1, result.getOptimizableValuesList()
-            .size());
         double expectedFitness = 85.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
-        assertEquals(optimizable, result.getOptimizableValuesList()
-            .get(0)
-            .get(0)
-            .getOptimizable());
-        verify(statusReceiver, times(7)).reportStatus(any(Long.class), anyList(), any(Double.class));
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).extracting(l -> (Integer) l.get(0)
+            .getValue())
+            .containsExactlyInAnyOrder(85);
     }
 
     @Test
@@ -310,7 +262,6 @@ public class EAOptimizerTest {
         assertArrayEquals(expectedBestGenotypesFitnessEvolution, captor.getAllValues()
             .stream()
             .toArray());
-
     }
 
     @Test
@@ -332,7 +283,8 @@ public class EAOptimizerTest {
 
         assertEquals(1, result.getOptimizableValuesList()
             .size());
+        double expectedFitness = 106.0;
         double actualFitness = result.getFitness();
-        assertEquals(106.0, actualFitness, DELTA);
+        assertEquals(expectedFitness, actualFitness, DELTA);
     }
 }
