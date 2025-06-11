@@ -35,7 +35,7 @@ public class OptimizableNormalizer {
     List<SmodelBitChromosome> toNormalized(List<Optimizable> optimizables) {
         List<SmodelBitChromosome> chromosomes = optimizables.stream()
             .map(o -> toNormalized(o))
-            .collect(Collectors.toList());
+            .toList();
         return chromosomes;
     }
 
@@ -144,7 +144,7 @@ public class OptimizableNormalizer {
             return setBounds.getValues()
                 .stream()
                 .map(e -> expressionCalculator.calculateInteger(e))
-                .collect(Collectors.toList());
+                .toList();
         }
         if (bounds instanceof RangeBounds rangeBounds) {
             return powerUtil.getValueListInt(rangeBounds);
@@ -158,7 +158,7 @@ public class OptimizableNormalizer {
             return setBounds.getValues()
                 .stream()
                 .map(e -> expressionCalculator.calculateDouble(e))
-                .collect(Collectors.toList());
+                .toList();
         }
         if (bounds instanceof RangeBounds rangeBounds) {
             return powerUtil.getValueListDouble(rangeBounds);
@@ -172,7 +172,7 @@ public class OptimizableNormalizer {
             return setBounds.getValues()
                 .stream()
                 .map(e -> expressionCalculator.calculateBoolean(e))
-                .collect(Collectors.toList());
+                .toList();
         }
         throw new RuntimeException("invalid bounds: " + bounds);
     }
@@ -183,7 +183,7 @@ public class OptimizableNormalizer {
             return setBounds.getValues()
                 .stream()
                 .map(e -> expressionCalculator.calculateString(e))
-                .collect(Collectors.toList());
+                .toList();
         }
         throw new RuntimeException("invalid bounds: " + bounds);
     }

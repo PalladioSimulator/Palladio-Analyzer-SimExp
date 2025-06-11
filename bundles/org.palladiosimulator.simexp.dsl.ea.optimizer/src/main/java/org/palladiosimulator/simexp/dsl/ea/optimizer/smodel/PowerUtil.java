@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
@@ -81,7 +80,7 @@ public class PowerUtil {
             stream = stream.filter(n -> n != endValue);
         }
         List<Integer> values = stream.boxed()
-            .collect(Collectors.toList());
+            .toList();
         return values;
     }
 
@@ -100,7 +99,7 @@ public class PowerUtil {
             stream = stream.filter(n -> Math.abs(n - endValue) >= epsilon);
         }
         List<Double> values = stream.boxed()
-            .collect(Collectors.toList());
+            .toList();
         return values;
     }
 
