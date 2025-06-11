@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -17,12 +19,15 @@ import io.jenetics.util.ISeq;
 
 public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionResult<BitGene, Double>> {
 
-    private static final int ROUNDING_CONSTANT = 100000;
-    private EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics = EvolutionStatistics.ofNumber();
-    private MOEAFitnessFunction fitnessFunction;
-    private Genotype<BitGene> genotype;
+    private final static int ROUNDING_CONSTANT = 100000;
+    private final static String CPATTERN = "| %22s %-51s|\n";
+
+    private final EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics;
+    private final MOEAFitnessFunction fitnessFunction;
+    private final Genotype<BitGene> genotype;
 
     public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype) {
+        this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
         this.genotype = genotype;
     }
@@ -44,21 +49,23 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
 
     @Override
     public String toString() {
-        double percentageVisited = (((double) fitnessFunction.getNumberOfUniqueFitnessEvaluations())
-                / (double) getNumberOfCombinationsInOptimizableSpace()) * 100;
-        percentageVisited = Math.floor(percentageVisited * ROUNDING_CONSTANT) / ROUNDING_CONSTANT;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
                 + "+---------------------------------------------------------------------------+\n");
-        stringBuilder.append("| Evaluated:    ");
-        stringBuilder.append(fitnessFunction.getNumberOfUniqueFitnessEvaluations());
-        stringBuilder.append("   of    ");
-        stringBuilder.append(getNumberOfCombinationsInOptimizableSpace());
-        stringBuilder.append("    that's   ");
-        stringBuilder.append(percentageVisited + " %");
-        stringBuilder.append("                         |\n");
+        String result = formatResult(fitnessFunction.getNumberOfUniqueFitnessEvaluations(),
+                getNumberOfCombinationsInOptimizableSpace());
+        stringBuilder.append(format(CPATTERN, "Evaluated:", result));
+
         stringBuilder.append("+---------------------------------------------------------------------------+\n");
         return evolutionStatistics.toString() + "\n" + stringBuilder.toString();
+    }
+
+    private String formatResult(long uniqueFitnessEvaluations, long combinationsInOptimizableSpace) {
+        double percentageVisited = (((double) uniqueFitnessEvaluations) / (double) combinationsInOptimizableSpace)
+                * 100;
+        percentageVisited = Math.floor(percentageVisited * ROUNDING_CONSTANT) / ROUNDING_CONSTANT;
+        return String.format("%d of %d (%.0f%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
+                percentageVisited);
     }
 
     private long getNumberOfCombinationsInOptimizableSpace() {
