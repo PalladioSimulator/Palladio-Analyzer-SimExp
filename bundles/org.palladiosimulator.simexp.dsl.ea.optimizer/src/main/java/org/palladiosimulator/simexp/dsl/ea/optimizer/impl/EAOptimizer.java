@@ -175,15 +175,9 @@ public class EAOptimizer implements IEAOptimizer {
             .findFirst()
             .get()
             .fitness();
-
-        List<Phenotype<BitGene, Double>> phenotypes = result.stream()
+        List<List<OptimizableValue<?>>> paretoFront = result.stream()
+            .map(p -> normalizer.toOptimizableValues(p.genotype()))
             .toList();
-        List<List<OptimizableValue<?>>> paretoFront = new ArrayList<>();
-        for (Phenotype<BitGene, Double> phenotype : phenotypes) {
-            Genotype<BitGene> genotype = phenotype.genotype();
-            List<OptimizableValue<?>> optimizableValues = normalizer.toOptimizableValues(genotype);
-            paretoFront.add(optimizableValues);
-        }
 
         return new EAResult(bestFitness, paretoFront);
     }
