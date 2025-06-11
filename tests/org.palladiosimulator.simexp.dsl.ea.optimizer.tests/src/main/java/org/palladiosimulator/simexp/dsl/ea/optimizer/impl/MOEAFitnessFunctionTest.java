@@ -45,8 +45,6 @@ public class MOEAFitnessFunctionTest {
     @Mock
     private Future<Optional<Double>> fitnessFuture;
     @Mock
-    private ExecutionException executionException;
-    @Mock
     private OptimizableValue<Double> optimizableValue;
     @Captor
     private ArgumentCaptor<List<OptimizableValue<?>>> captor;
@@ -91,7 +89,7 @@ public class MOEAFitnessFunctionTest {
 
     @Test
     public void testHandleExecutionException() throws InterruptedException, ExecutionException, IOException {
-        when(fitnessFuture.get()).thenThrow(executionException);
+        when(fitnessFuture.get()).thenThrow(new ExecutionException("", null));
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -106,7 +104,6 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessFuture.get()).thenThrow(executionException);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -149,7 +146,6 @@ public class MOEAFitnessFunctionTest {
         SmodelBitChromosome chromosome = SmodelBitChromosome.of(smodelBitset, optimizable, 4,
                 new BinaryBitInterpreter());
         Genotype<BitGene> genotype = Genotype.of(chromosome);
-        when(fitnessFuture.get()).thenThrow(executionException);
         fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
