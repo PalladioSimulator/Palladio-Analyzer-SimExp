@@ -167,7 +167,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void stringTest() throws IOException {
+    public void stringMultipleParetoOptimalElementsTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
                 List.of("Hello", "World", "!", "How", "are", "youuuu", "abcdef"), calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
@@ -205,7 +205,7 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerWithParetoEfficientElements() throws IOException {
+    public void integerMultipleParetoOptimalElementsTest() throws IOException {
         SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 2, 9, 9),
                 calculator);
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
