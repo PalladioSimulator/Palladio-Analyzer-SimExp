@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
-import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
@@ -25,11 +26,14 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
     private final EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics;
     private final MOEAFitnessFunction fitnessFunction;
     private final Genotype<BitGene> genotype;
+    private final PowerUtil powerUtil;
 
-    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype) {
+    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
+            PowerUtil powerUtil) {
         this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
         this.genotype = genotype;
+        this.powerUtil = powerUtil;
     }
 
     @Override
@@ -52,8 +56,12 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
                 + "+---------------------------------------------------------------------------+\n");
-        String result = formatResult(fitnessFunction.getNumberOfUniqueFitnessEvaluations(),
-                getNumberOfCombinationsInOptimizableSpace());
+        List<Optimizable> optimizables = genotype.stream()
+            .map(g -> g.as(SmodelBitChromosome.class))
+            .map(c -> c.getOptimizable())
+            .toList();
+        long overallPower = powerUtil.calculateComplexity(optimizables);
+        String result = formatResult(fitnessFunction.getNumberOfUniqueFitnessEvaluations(), overallPower);
         stringBuilder.append(format(CPATTERN, "Evaluated:", result));
 
         stringBuilder.append("+---------------------------------------------------------------------------+\n");
@@ -67,14 +75,4 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
         return String.format("%d of %d (%.0f%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
                 percentageVisited);
     }
-
-    private long getNumberOfCombinationsInOptimizableSpace() {
-        long numOfCombinations = 1;
-        for (int i = 0; i < genotype.length(); i++) {
-            Chromosome<BitGene> currentChromosome = genotype.get(i);
-            numOfCombinations = numOfCombinations * ((SmodelBitChromosome) currentChromosome).getNumOfValues();
-        }
-        return numOfCombinations;
-    }
-
 }
