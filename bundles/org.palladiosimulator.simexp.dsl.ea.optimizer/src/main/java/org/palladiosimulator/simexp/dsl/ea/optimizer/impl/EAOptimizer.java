@@ -106,9 +106,8 @@ public class EAOptimizer implements IEAOptimizer {
 
     private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             Executor executor) {
-        Factory<Genotype<BitGene>> constraintFactory = new ForceValidConstraint().constrain(genotype);
-        Builder<BitGene, Double> builder = Engine
-            .builder(fitnessFunction::apply, constraintFactory)
+        Factory<Genotype<BitGene>> constraintFactory = new ForceValidConstraint<BitGene>().constrain(genotype);
+        Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))

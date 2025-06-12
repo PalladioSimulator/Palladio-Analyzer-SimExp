@@ -17,7 +17,7 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 
 public class ForceValidConstraintTest {
-    private ForceValidConstraint objectUnderTest;
+    private ForceValidConstraint<BitGene> objectUnderTest;
 
     @Mock
     private Optimizable optimizable;
@@ -37,7 +37,7 @@ public class ForceValidConstraintTest {
         genotype = Genotype.of(chromosome);
         phenotype = Phenotype.of(genotype, 0);
 
-        objectUnderTest = new ForceValidConstraint();
+        objectUnderTest = new ForceValidConstraint<>();
     }
 
     @Test
