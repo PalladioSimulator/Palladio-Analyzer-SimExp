@@ -93,7 +93,7 @@ public class EAOptimizer implements IEAOptimizer {
         // Setup EA
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
-        MOEAFitnessFunction fitnessFunction = new MOEAFitnessFunction(epsilon, fitnessEvaluator, normalizer,
+        MOEAFitnessFunction<BitGene> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, normalizer,
                 penaltyForInvalids);
         Engine<BitGene, Double> engine = buildEngine(fitnessFunction, genotype, executor);
 
@@ -107,8 +107,8 @@ public class EAOptimizer implements IEAOptimizer {
         return genotype;
     }
 
-    private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
-            Executor executor) {
+    private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction<BitGene> fitnessFunction,
+            Genotype<BitGene> genotype, Executor executor) {
         Factory<Genotype<BitGene>> constraintFactory = new ForceValidConstraint<BitGene>().constrain(genotype);
         Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
@@ -144,12 +144,13 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private EAResult runOptimization(long overallPower, IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            ITranscoder<BitGene> normalizer, MOEAFitnessFunction fitnessFunction,
+            ITranscoder<BitGene> normalizer, MOEAFitnessFunction<BitGene> fitnessFunction,
             final Engine<BitGene, Double> engine) {
         LOGGER.info("EA running...");
-        ParetoEvolutionStatistics paretoStatistics = new ParetoEvolutionStatistics(fitnessFunction, overallPower);
+        ParetoEvolutionStatistics<BitGene> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction,
+                overallPower);
 
-        EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
+        EAReporter<BitGene> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
 
         EvolutionStream<BitGene, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
         evolutionStream = addDirectTerminationCriterion(config, evolutionStream);

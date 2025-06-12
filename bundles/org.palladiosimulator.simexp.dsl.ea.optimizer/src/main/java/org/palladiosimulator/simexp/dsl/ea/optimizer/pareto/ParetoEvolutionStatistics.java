@@ -6,39 +6,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.jenetics.BitGene;
+import io.jenetics.Gene;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.ISeq;
 
-public class ParetoEvolutionStatistics implements Consumer<EvolutionResult<BitGene, Double>> {
+public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer<EvolutionResult<G, Double>> {
 
     private final static int ROUNDING_CONSTANT = 100000;
     private final static String CPATTERN = "| %22s %-51s|\n";
 
     private final EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics;
-    private final MOEAFitnessFunction fitnessFunction;
+    private final MOEAFitnessFunction<G> fitnessFunction;
     private final long overallPower;
 
-    public ParetoEvolutionStatistics(MOEAFitnessFunction fitnessFunction, long overallPower) {
+    public ParetoEvolutionStatistics(MOEAFitnessFunction<G> fitnessFunction, long overallPower) {
         this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
         this.overallPower = overallPower;
     }
 
     @Override
-    public void accept(EvolutionResult<BitGene, Double> t) {
-        List<Phenotype<BitGene, Double>> phenoList = new ArrayList<>();
-        for (Phenotype<BitGene, Double> phenotype : t.population()) {
-            Phenotype<BitGene, Double> of = Phenotype.of(phenotype.genotype(), 0);
-            Phenotype<BitGene, Double> finishedPheno = of.withFitness(phenotype.fitness());
+    public void accept(EvolutionResult<G, Double> t) {
+        List<Phenotype<G, Double>> phenoList = new ArrayList<>();
+        for (Phenotype<G, Double> phenotype : t.population()) {
+            Phenotype<G, Double> of = Phenotype.of(phenotype.genotype(), 0);
+            Phenotype<G, Double> finishedPheno = of.withFitness(phenotype.fitness());
             phenoList.add(finishedPheno);
         }
-        ISeq<Phenotype<BitGene, Double>> popSeq = ISeq.of(phenoList);
+        ISeq<Phenotype<G, Double>> popSeq = ISeq.of(phenoList);
 
-        EvolutionResult<BitGene, Double> modifiedResult = EvolutionResult.of(t.optimize(), popSeq, t.generation(),
+        EvolutionResult<G, Double> modifiedResult = EvolutionResult.of(t.optimize(), popSeq, t.generation(),
                 t.totalGenerations(), t.durations(), t.killCount(), t.invalidCount(), t.alterCount());
         evolutionStatistics.accept(modifiedResult);
     }

@@ -15,22 +15,22 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-import io.jenetics.BitGene;
+import io.jenetics.Gene;
 import io.jenetics.Genotype;
 
-public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> {
+public class MOEAFitnessFunction<G extends Gene<?, G>> implements Function<Genotype<G>, Double> {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
     private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
-    private final ITranscoder<BitGene> transcoder;
+    private final ITranscoder<G> transcoder;
     private final double epsilon;
     private final double penaltyForInvalids;
 
-    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
-            ITranscoder<BitGene> transcoder, double penaltyForInvalids) {
+    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator, ITranscoder<G> transcoder,
+            double penaltyForInvalids) {
         this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
         this.transcoder = transcoder;
@@ -38,7 +38,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
     }
 
     @Override
-    public Double apply(Genotype<BitGene> genotype) {
+    public Double apply(Genotype<G> genotype) {
         if (!genotype.isValid()) {
             return penaltyForInvalids;
         }

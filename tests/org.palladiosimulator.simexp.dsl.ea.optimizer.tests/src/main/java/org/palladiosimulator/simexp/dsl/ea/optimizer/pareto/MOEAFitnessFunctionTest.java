@@ -32,7 +32,7 @@ public class MOEAFitnessFunctionTest {
     private static final double DELTA = 0.0001;
     private static final double TOO_LONG_FLOATING_POINT_NUMBER = 0.123456789;
 
-    private MOEAFitnessFunction fitnessFunction;
+    private MOEAFitnessFunction<BitGene> fitnessFunction;
 
     @Mock
     private IEAFitnessEvaluator fitnessEvaluator;
@@ -61,7 +61,7 @@ public class MOEAFitnessFunctionTest {
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
 
-        fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new MOEAFitnessFunction<>(DELTA, fitnessEvaluator, normalizer, 0.0);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class MOEAFitnessFunctionTest {
     public void testRoundingApplyMimimumDelta() throws IOException, InterruptedException, ExecutionException {
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
-        fitnessFunction = new MOEAFitnessFunction(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new MOEAFitnessFunction<>(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -135,7 +135,7 @@ public class MOEAFitnessFunctionTest {
     @Test
     public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
         when(chromosome.isValid()).thenReturn(false);
-        fitnessFunction = new MOEAFitnessFunction(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
+        fitnessFunction = new MOEAFitnessFunction<>(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
