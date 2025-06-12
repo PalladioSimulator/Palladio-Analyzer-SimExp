@@ -19,7 +19,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
@@ -37,7 +37,7 @@ public class MOEAFitnessFunctionTest {
     @Mock
     private IEAFitnessEvaluator fitnessEvaluator;
     @Mock
-    private OptimizableNormalizer normalizer;
+    private ITranscoder<BitGene> normalizer;
     @Mock
     private Optimizable optimizable;
     @Mock

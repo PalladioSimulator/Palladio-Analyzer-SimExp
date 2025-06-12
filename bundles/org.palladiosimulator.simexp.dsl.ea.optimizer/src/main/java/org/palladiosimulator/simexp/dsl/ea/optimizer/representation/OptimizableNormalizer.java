@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.representation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -15,7 +16,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 
-public class OptimizableNormalizer {
+public class OptimizableNormalizer implements ITranscoder<BitGene> {
     private final PowerUtil powerUtil;
     private final IExpressionCalculator expressionCalculator;
 
@@ -24,6 +25,7 @@ public class OptimizableNormalizer {
         this.expressionCalculator = expressionCalculator;
     }
 
+    @Override
     public Genotype<BitGene> toGenotype(List<Optimizable> optimizables) {
         List<SmodelBitChromosome> normalizedOptimizables = toNormalized(optimizables);
         Genotype<BitGene> genotype = Genotype.of(normalizedOptimizables);
@@ -62,6 +64,7 @@ public class OptimizableNormalizer {
         throw new RuntimeException("invalid bounds: " + bounds);
     }
 
+    @Override
     public List<OptimizableValue<?>> toOptimizableValues(Genotype<BitGene> genotype) {
         List<SmodelBitChromosome> chromosomes = genotype.stream()
             .map(g -> g.as(SmodelBitChromosome.class))

@@ -101,7 +101,7 @@ public class EAOptimizer implements IEAOptimizer {
         return runOptimization(overallPower, evolutionStatusReceiver, normalizer, fitnessFunction, engine);
     }
 
-    private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, OptimizableNormalizer normalizer) {
+    private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, ITranscoder<BitGene> normalizer) {
         List<Optimizable> optimizableList = new ArrayList<>(optimizables);
         Genotype<BitGene> genotype = normalizer.toGenotype(optimizableList);
         return genotype;
@@ -144,11 +144,10 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private EAResult runOptimization(long overallPower, IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
+            ITranscoder<BitGene> normalizer, MOEAFitnessFunction fitnessFunction,
             final Engine<BitGene, Double> engine) {
         LOGGER.info("EA running...");
-        ParetoEvolutionStatistics paretoStatistics = new ParetoEvolutionStatistics(fitnessFunction,
-                overallPower);
+        ParetoEvolutionStatistics paretoStatistics = new ParetoEvolutionStatistics(fitnessFunction, overallPower);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
 

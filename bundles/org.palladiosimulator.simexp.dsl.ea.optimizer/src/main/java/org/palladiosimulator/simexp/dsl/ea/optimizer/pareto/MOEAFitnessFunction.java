@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.BitGene;
@@ -25,15 +25,15 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
     private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
     private final IEAFitnessEvaluator fitnessEvaluator;
-    private final OptimizableNormalizer optimizableNormalizer;
+    private final ITranscoder<BitGene> transcoder;
     private final double epsilon;
     private final double penaltyForInvalids;
 
     public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator,
-            OptimizableNormalizer optimizableNormalizer, double penaltyForInvalids) {
+            ITranscoder<BitGene> transcoder, double penaltyForInvalids) {
         this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;
-        this.optimizableNormalizer = optimizableNormalizer;
+        this.transcoder = transcoder;
         this.penaltyForInvalids = round(penaltyForInvalids);
     }
 
@@ -43,7 +43,7 @@ public class MOEAFitnessFunction implements Function<Genotype<BitGene>, Double> 
             return penaltyForInvalids;
         }
 
-        List<OptimizableValue<?>> optimizableValues = optimizableNormalizer.toOptimizableValues(genotype);
+        List<OptimizableValue<?>> optimizableValues = transcoder.toOptimizableValues(genotype);
         evaluatedOptimizables.add(optimizableValues);
         try {
             Future<Optional<Double>> fitnessFuture = fitnessEvaluator.calcFitness(optimizableValues);
