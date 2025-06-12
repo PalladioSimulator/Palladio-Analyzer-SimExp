@@ -38,6 +38,7 @@ import io.jenetics.engine.Engine.Builder;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
+import io.jenetics.util.Factory;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 import tools.mdsd.probdist.api.random.ISeedProvider;
@@ -105,8 +106,9 @@ public class EAOptimizer implements IEAOptimizer {
 
     private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             Executor executor) {
+        Factory<Genotype<BitGene>> constraintFactory = new OptimizableChromosomeBinaryConstraint().constrain(genotype);
         Builder<BitGene, Double> builder = Engine
-            .builder(fitnessFunction::apply, new OptimizableChromosomeBinaryConstraint().constrain(genotype))
+            .builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
