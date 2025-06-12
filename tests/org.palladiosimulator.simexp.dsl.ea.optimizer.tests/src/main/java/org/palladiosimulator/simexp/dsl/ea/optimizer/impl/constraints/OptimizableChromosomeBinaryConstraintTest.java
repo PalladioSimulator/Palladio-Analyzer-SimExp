@@ -9,10 +9,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.SmodelBitChromosome;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
+import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 
@@ -22,9 +22,9 @@ public class OptimizableChromosomeBinaryConstraintTest {
     @Mock
     private Optimizable optimizable;
     @Mock
-    private SmodelBitChromosome chromosome;
+    private Chromosome<BitGene> chromosome;
     @Mock
-    private SmodelBitChromosome newChromosome;
+    private Chromosome<BitGene> newChromosome;
 
     private Genotype<BitGene> genotype;
     private Phenotype<BitGene, Double> phenotype;
