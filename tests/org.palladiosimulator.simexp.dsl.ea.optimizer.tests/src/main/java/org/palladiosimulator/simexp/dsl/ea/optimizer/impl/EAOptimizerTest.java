@@ -278,10 +278,10 @@ public class EAOptimizerTest {
             .boxed()
             .toList();
         SetBounds integerSetBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, ints, calculator);
-        optimizables.put(smodelCreator.createOptimizable("test", DataType.INT, integerSetBound), maxInt);
+        optimizables.put(smodelCreator.createOptimizable("int", DataType.INT, integerSetBound), maxInt);
         SetBounds stringSetBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
                 Collections.singletonList("single"), calculator);
-        optimizables.put(smodelCreator.createOptimizable("test", DataType.STRING, stringSetBound), "single");
+        optimizables.put(smodelCreator.createOptimizable("str", DataType.STRING, stringSetBound), "single");
         when(optimizableProvider.getOptimizables()).thenReturn(optimizables.keySet());
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
