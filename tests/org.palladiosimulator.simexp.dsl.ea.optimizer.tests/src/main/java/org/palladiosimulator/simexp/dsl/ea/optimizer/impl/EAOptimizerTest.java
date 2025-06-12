@@ -33,11 +33,13 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.RangeBounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
@@ -66,6 +68,7 @@ public class EAOptimizerTest {
     private ThreadLocal<Random> threadLocalRandom;
     private Function<Random, EAResult> optFunction;
     private SetBoundsHelper setBoundsHelper;
+    private RangeBoundsHelper rangeBoundsHelper;
     private Answer<Future<Optional<Double>>> fitnessAnswer;
 
     @Before
@@ -84,6 +87,7 @@ public class EAOptimizerTest {
         when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
 
         setBoundsHelper = new SetBoundsHelper();
+        rangeBoundsHelper = new RangeBoundsHelper();
 
         threadLocalRandom = ThreadLocal.withInitial(() -> new Random(42));
         optFunction = r -> {
@@ -190,9 +194,9 @@ public class EAOptimizerTest {
     }
 
     @Test
-    public void integerTest() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 10, 19), calculator);
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
+    public void integerSetTest() throws IOException {
+        SetBounds bound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 10, 19), calculator);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, bound);
         when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
@@ -204,6 +208,23 @@ public class EAOptimizerTest {
             .map(v -> v.getValue())
             .toList())
             .containsExactlyInAnyOrder(List.of(19));
+    }
+
+    @Test
+    public void integerRangeTest() throws IOException {
+        RangeBounds bound = rangeBoundsHelper.initializeIntegerRangeBound(smodelCreator, calculator, 0, 10, 1);
+        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, bound);
+        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
+
+        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
+
+        double expectedFitness = 9.0;
+        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
+        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
+            .map(v -> v.getValue())
+            .toList())
+            .containsExactlyInAnyOrder(List.of(9));
     }
 
     @Test
@@ -273,7 +294,7 @@ public class EAOptimizerTest {
     @Test
     public void emptyChromosomeTest() throws IOException {
         Map<Optimizable, Object> optimizables = new LinkedHashMap<>();
-        int maxInt = 100;
+        int maxInt = 10;
         List<Integer> ints = IntStream.rangeClosed(1, maxInt)
             .boxed()
             .toList();
@@ -286,12 +307,12 @@ public class EAOptimizerTest {
 
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
-        double expectedFitness = 106.0;
+        double expectedFitness = 16.0;
         assertEquals(expectedFitness, result.getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getOptimizableValuesList();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
-            .containsExactlyInAnyOrder(List.of(100, "single"));
+            .containsExactlyInAnyOrder(List.of(10, "single"));
     }
 }
