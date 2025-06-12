@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
