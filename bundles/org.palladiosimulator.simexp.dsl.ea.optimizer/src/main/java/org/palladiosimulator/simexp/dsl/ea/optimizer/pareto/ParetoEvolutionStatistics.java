@@ -13,7 +13,7 @@ import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.ISeq;
 
-public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionResult<BitGene, Double>> {
+public class ParetoEvolutionStatistics implements Consumer<EvolutionResult<BitGene, Double>> {
 
     private final static int ROUNDING_CONSTANT = 100000;
     private final static String CPATTERN = "| %22s %-51s|\n";
@@ -22,7 +22,7 @@ public class ParetoCompatibleEvolutionStatistics implements Consumer<EvolutionRe
     private final MOEAFitnessFunction fitnessFunction;
     private final long overallPower;
 
-    public ParetoCompatibleEvolutionStatistics(MOEAFitnessFunction fitnessFunction, long overallPower) {
+    public ParetoEvolutionStatistics(MOEAFitnessFunction fitnessFunction, long overallPower) {
         this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
         this.overallPower = overallPower;

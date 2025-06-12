@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoCompatibleEvolutionStatistics;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvolutionStatistics;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
@@ -147,7 +147,7 @@ public class EAOptimizer implements IEAOptimizer {
             OptimizableNormalizer normalizer, MOEAFitnessFunction fitnessFunction,
             final Engine<BitGene, Double> engine) {
         LOGGER.info("EA running...");
-        ParetoCompatibleEvolutionStatistics paretoStatistics = new ParetoCompatibleEvolutionStatistics(fitnessFunction,
+        ParetoEvolutionStatistics paretoStatistics = new ParetoEvolutionStatistics(fitnessFunction,
                 overallPower);
 
         EAReporter reporter = new EAReporter(evolutionStatusReceiver, normalizer);
