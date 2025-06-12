@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValid
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvolutionStatistics;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableBitNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -87,7 +87,7 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         // To genotype
-        OptimizableNormalizer normalizer = new OptimizableNormalizer(expressionCalculator);
+        OptimizableBitNormalizer normalizer = new OptimizableBitNormalizer(expressionCalculator);
         Genotype<BitGene> genotype = buildGenotype(optimizables, normalizer);
 
         // Setup EA

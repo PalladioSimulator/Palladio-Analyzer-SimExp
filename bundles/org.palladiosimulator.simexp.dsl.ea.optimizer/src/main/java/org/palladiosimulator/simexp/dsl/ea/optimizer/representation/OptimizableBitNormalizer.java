@@ -16,11 +16,11 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SetBounds;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 
-public class OptimizableNormalizer implements ITranscoder<BitGene> {
+public class OptimizableBitNormalizer implements ITranscoder<BitGene> {
     private final PowerUtil powerUtil;
     private final IExpressionCalculator expressionCalculator;
 
-    public OptimizableNormalizer(IExpressionCalculator expressionCalculator) {
+    public OptimizableBitNormalizer(IExpressionCalculator expressionCalculator) {
         this.powerUtil = new PowerUtil(expressionCalculator);
         this.expressionCalculator = expressionCalculator;
     }

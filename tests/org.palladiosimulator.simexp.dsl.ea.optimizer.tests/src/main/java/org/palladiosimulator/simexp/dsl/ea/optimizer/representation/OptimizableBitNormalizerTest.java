@@ -29,12 +29,12 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 import io.jenetics.util.RandomRegistry;
 
-public class OptimizableNormalizerTest {
+public class OptimizableBitNormalizerTest {
     private static final double DOUBLE_EPSILON = 1e-15;
 
     private final List<Integer> smallIntList = List.of(1, 3, 7, 3, 8, 2, 9);
 
-    private OptimizableNormalizer optimizableNormalizer;
+    private OptimizableBitNormalizer optimizableNormalizer;
 
     private SmodelCreator smodelCreator;
 
@@ -56,7 +56,7 @@ public class OptimizableNormalizerTest {
     public void setUp() {
         initMocks(this);
         when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
-        optimizableNormalizer = new OptimizableNormalizer(calculator);
+        optimizableNormalizer = new OptimizableBitNormalizer(calculator);
         setBoundsHelper = new SetBoundsHelper();
         smodelCreator = new SmodelCreator();
     }
