@@ -16,8 +16,8 @@ import io.jenetics.Chromosome;
 import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 
-public class OptimizableChromosomeBinaryConstraintTest {
-    private OptimizableChromosomeBinaryConstraint objectUnderTest;
+public class ForceValidConstraintTest {
+    private ForceValidConstraint objectUnderTest;
 
     @Mock
     private Optimizable optimizable;
@@ -37,7 +37,7 @@ public class OptimizableChromosomeBinaryConstraintTest {
         genotype = Genotype.of(chromosome);
         phenotype = Phenotype.of(genotype, 0);
 
-        objectUnderTest = new OptimizableChromosomeBinaryConstraint();
+        objectUnderTest = new ForceValidConstraint();
     }
 
     @Test

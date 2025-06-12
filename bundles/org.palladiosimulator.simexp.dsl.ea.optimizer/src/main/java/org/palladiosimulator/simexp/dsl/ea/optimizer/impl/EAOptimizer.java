@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.OptimizableChromosomeBinaryConstraint;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -106,7 +106,7 @@ public class EAOptimizer implements IEAOptimizer {
 
     private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction fitnessFunction, Genotype<BitGene> genotype,
             Executor executor) {
-        Factory<Genotype<BitGene>> constraintFactory = new OptimizableChromosomeBinaryConstraint().constrain(genotype);
+        Factory<Genotype<BitGene>> constraintFactory = new ForceValidConstraint().constrain(genotype);
         Builder<BitGene, Double> builder = Engine
             .builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())

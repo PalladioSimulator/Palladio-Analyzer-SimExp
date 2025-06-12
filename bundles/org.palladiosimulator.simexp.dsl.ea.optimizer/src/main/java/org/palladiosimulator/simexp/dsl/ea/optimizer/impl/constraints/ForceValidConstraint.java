@@ -9,7 +9,7 @@ import io.jenetics.Genotype;
 import io.jenetics.Phenotype;
 import io.jenetics.engine.Constraint;
 
-public class OptimizableChromosomeBinaryConstraint implements Constraint<BitGene, Double> {
+public class ForceValidConstraint implements Constraint<BitGene, Double> {
 
     @Override
     public boolean test(Phenotype<BitGene, Double> individual) {
