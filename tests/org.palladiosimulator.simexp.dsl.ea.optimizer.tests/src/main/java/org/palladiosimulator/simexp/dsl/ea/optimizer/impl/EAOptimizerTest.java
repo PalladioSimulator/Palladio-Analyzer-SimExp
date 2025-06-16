@@ -26,6 +26,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -93,7 +94,7 @@ public class EAOptimizerTest {
         optFunction = r -> {
             return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
         };
-        when(eaConfig.populationSize()).thenReturn(80);
+        when(eaConfig.populationSize()).thenReturn(SimulationConstants.DEFAULT_POPULATION_SIZE);
         when(eaConfig.mutationRate()).thenReturn(Optional.of(0.01));
         when(eaConfig.crossoverRate()).thenReturn(Optional.of(0.8));
         when(eaConfig.steadyFitness()).thenReturn(Optional.of(7));
