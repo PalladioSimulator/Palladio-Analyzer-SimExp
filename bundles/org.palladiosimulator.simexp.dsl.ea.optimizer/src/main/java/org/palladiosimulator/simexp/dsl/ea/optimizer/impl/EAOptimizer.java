@@ -139,11 +139,10 @@ public class EAOptimizer implements IEAOptimizer {
             MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
 
-        EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
-
         EvolutionStream<G, Double> evolutionStream = engine.stream();
         evolutionStream = addTerminationConditions(evolutionStream, config);
 
+        EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
         Stream<EvolutionResult<G, Double>> resultStream = evolutionStream.peek(reporter)
             .peek(statistics);
 
