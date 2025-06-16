@@ -19,8 +19,8 @@ public interface SimulationConstants {
     static final String MEMORY_USAGE = "MEMORY_USAGE";
 
     static final int DEFAULT_POPULATION_SIZE = 100;
-    static final double DEFAULT_MUTATION_RATE = 0.01;
-    static final double DEFAULT_CROSSOVER_RATE = 0.8;
+    static final double DEFAULT_MUTATION_RATE = 0.15;
+    static final double DEFAULT_CROSSOVER_RATE = 0.2;
     static final int DEFAULT_SURVIVOR_TOURNAMENT_SIZE = 5;
     static final int DEFAULT_OFFSPRING_TOURNAMENT_SIZE = 5;
     static final int DEFAULT_MEMORY_USAGE = 2;
