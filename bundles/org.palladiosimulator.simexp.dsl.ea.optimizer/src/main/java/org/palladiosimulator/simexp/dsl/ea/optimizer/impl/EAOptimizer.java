@@ -84,11 +84,19 @@ public class EAOptimizer implements IEAOptimizer {
         int overallPower = powerUtil.calculateComplexity(optimizables);
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
-        // To genotype
         ITranscoder<BitGene> transcoder = new OptimizableBitNormalizer(expressionCalculator);
+        return doOptimize(transcoder, overallPower, optimizableProvider, fitnessEvaluator, evolutionStatusReceiver,
+                executor);
+    }
+
+    private EAResult doOptimize(ITranscoder<BitGene> transcoder, int overallPower,
+            IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
+        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         Genotype<BitGene> genotype = buildGenotype(optimizables, transcoder);
 
         // Setup EA
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
         MOEAFitnessFunction<BitGene> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
