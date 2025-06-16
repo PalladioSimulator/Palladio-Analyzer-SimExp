@@ -6,4 +6,9 @@ public interface IEAParameter {
     double mutationRate();
 
     double crossoverRate();
+
+    int survivorTournamentSize();
+
+    int offspringTournamentSize();
+
 }

@@ -13,7 +13,6 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -112,8 +111,8 @@ public class EAOptimizer implements IEAOptimizer {
         Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
-            .survivorsSelector(new TournamentSelector<>(SimulationConstants.DEFAULT_SURVIVOR_TOURNAMENT_SIZE))
-            .offspringSelector(new TournamentSelector<>(SimulationConstants.DEFAULT_OFFSPRING_TOURNAMENT_SIZE));
+            .survivorsSelector(new TournamentSelector<>(config.survivorTournamentSize()))
+            .offspringSelector(new TournamentSelector<>(config.offspringTournamentSize()));
 
         builder = addAlterers(builder);
 

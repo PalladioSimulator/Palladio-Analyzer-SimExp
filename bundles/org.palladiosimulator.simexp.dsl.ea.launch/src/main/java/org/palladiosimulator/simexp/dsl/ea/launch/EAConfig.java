@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 
 import java.util.Optional;
 
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 
@@ -24,6 +25,16 @@ public class EAConfig implements IEAConfig {
     @Override
     public int populationSize() {
         return configuration.getPopulationSize();
+    }
+
+    @Override
+    public int survivorTournamentSize() {
+        return SimulationConstants.DEFAULT_SURVIVOR_TOURNAMENT_SIZE;
+    }
+
+    @Override
+    public int offspringTournamentSize() {
+        return SimulationConstants.DEFAULT_OFFSPRING_TOURNAMENT_SIZE;
     }
 
     @Override

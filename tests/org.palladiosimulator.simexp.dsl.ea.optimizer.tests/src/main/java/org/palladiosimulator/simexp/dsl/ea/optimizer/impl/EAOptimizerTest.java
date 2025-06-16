@@ -97,6 +97,8 @@ public class EAOptimizerTest {
         when(eaConfig.populationSize()).thenReturn(SimulationConstants.DEFAULT_POPULATION_SIZE);
         when(eaConfig.mutationRate()).thenReturn(SimulationConstants.DEFAULT_MUTATION_RATE);
         when(eaConfig.crossoverRate()).thenReturn(SimulationConstants.DEFAULT_CROSSOVER_RATE);
+        when(eaConfig.survivorTournamentSize()).thenReturn(SimulationConstants.DEFAULT_SURVIVOR_TOURNAMENT_SIZE);
+        when(eaConfig.offspringTournamentSize()).thenReturn(SimulationConstants.DEFAULT_OFFSPRING_TOURNAMENT_SIZE);
         when(eaConfig.steadyFitness()).thenReturn(Optional.empty());
         when(eaConfig.maxGenerations()).thenReturn(Optional.of(20));
 
