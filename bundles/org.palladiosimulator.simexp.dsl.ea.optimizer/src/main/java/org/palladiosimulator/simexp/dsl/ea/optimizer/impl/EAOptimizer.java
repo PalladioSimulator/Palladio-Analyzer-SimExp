@@ -24,16 +24,16 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValid
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvolutionStatistics;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableBitNormalizer;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
-import io.jenetics.BitGene;
 import io.jenetics.Crossover;
 import io.jenetics.Gene;
 import io.jenetics.Genotype;
+import io.jenetics.IntegerGene;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
@@ -81,7 +81,7 @@ public class EAOptimizer implements IEAOptimizer {
     EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
-        ITranscoder<BitGene> transcoder = new OptimizableBitNormalizer(expressionCalculator);
+        ITranscoder<IntegerGene> transcoder = new OptimizableIntNormalizer(expressionCalculator);
         return doOptimize(transcoder, optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
     }
 
