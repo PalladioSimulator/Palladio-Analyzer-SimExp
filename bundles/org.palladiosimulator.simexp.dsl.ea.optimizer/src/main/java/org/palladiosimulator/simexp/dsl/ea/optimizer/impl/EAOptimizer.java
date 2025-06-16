@@ -122,7 +122,7 @@ public class EAOptimizer implements IEAOptimizer {
     private Builder<BitGene, Double> addAlterers(Builder<BitGene, Double> builder) {
         Mutator<BitGene, Double> mutator = new Mutator<>(config.mutationRate());
         Crossover<BitGene, Double> crossover = new UniformCrossover<>(config.crossoverRate());
-        return builder.alterers(mutator, crossover);
+        return builder.alterers(crossover, mutator);
     }
 
     private EAResult runOptimization(long overallPower, IEAEvolutionStatusReceiver evolutionStatusReceiver,
