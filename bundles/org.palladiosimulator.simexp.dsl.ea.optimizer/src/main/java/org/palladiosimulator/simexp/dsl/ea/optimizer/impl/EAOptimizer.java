@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -80,32 +81,30 @@ public class EAOptimizer implements IEAOptimizer {
     EAResult internalOptimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
-        PowerUtil powerUtil = new PowerUtil(expressionCalculator);
+        ITranscoder<BitGene> transcoder = new OptimizableBitNormalizer(expressionCalculator);
+        return doOptimize(transcoder, optimizableProvider, fitnessEvaluator, evolutionStatusReceiver, executor);
+    }
+
+    private <G extends Gene<?, G>> EAResult doOptimize(ITranscoder<G> transcoder,
+            IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
+        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
+        PowerUtil powerUtil = new PowerUtil(expressionCalculator);
         int overallPower = powerUtil.calculateComplexity(optimizables);
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
-        ITranscoder<BitGene> transcoder = new OptimizableBitNormalizer(expressionCalculator);
-        return doOptimize(transcoder, overallPower, optimizableProvider, fitnessEvaluator, evolutionStatusReceiver,
-                executor);
-    }
-
-    private <G extends Gene<?, G>> EAResult doOptimize(ITranscoder<G> transcoder, int overallPower,
-            IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
-            IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
-        Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
-        Genotype<G> genotype = buildGenotype(optimizables, transcoder);
-
         // Setup EA
-        IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
+        Genotype<G> genotype = buildGenotype(optimizables, transcoder);
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
         MOEAFitnessFunction<G> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
         Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
+        ParetoEvolutionStatistics<G> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction, overallPower);
 
         // Run EA
-        return runOptimization(overallPower, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
+        return runOptimization(paretoStatistics, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
     }
 
     private <G extends Gene<?, G>> Genotype<G> buildGenotype(Collection<Optimizable> optimizables,
@@ -135,11 +134,10 @@ public class EAOptimizer implements IEAOptimizer {
         return builder.alterers(crossover, mutator);
     }
 
-    private <G extends Gene<?, G>> EAResult runOptimization(long overallPower,
+    private <G extends Gene<?, G>> EAResult runOptimization(Consumer<EvolutionResult<G, Double>> statistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
             MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
-        ParetoEvolutionStatistics<G> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction, overallPower);
 
         EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
 
@@ -147,7 +145,7 @@ public class EAOptimizer implements IEAOptimizer {
         evolutionStream = addDirectTerminationCriterion(config, evolutionStream);
 
         Stream<EvolutionResult<G, Double>> effectiveStream = evolutionStream.peek(reporter)
-            .peek(paretoStatistics);
+            .peek(statistics);
 
         final ISeq<Phenotype<G, Double>> result;
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
@@ -162,7 +160,7 @@ public class EAOptimizer implements IEAOptimizer {
         }
 
         LOGGER.info("EA finished");
-        LOGGER.info(paretoStatistics);
+        LOGGER.info(statistics);
 
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
