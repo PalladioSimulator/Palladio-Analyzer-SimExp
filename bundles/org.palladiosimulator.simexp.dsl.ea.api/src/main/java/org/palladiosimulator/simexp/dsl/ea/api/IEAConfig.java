@@ -9,13 +9,13 @@ public interface IEAConfig {
 
     int populationSize();
 
+    double mutationRate();
+
+    double crossoverRate();
+
     Optional<Integer> maxGenerations();
 
     Optional<Integer> steadyFitness();
-
-    Optional<Double> mutationRate();
-
-    Optional<Double> crossoverRate();
 
     double penaltyForInvalids();
 }

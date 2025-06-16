@@ -95,8 +95,8 @@ public class EAOptimizerTest {
             return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
         };
         when(eaConfig.populationSize()).thenReturn(SimulationConstants.DEFAULT_POPULATION_SIZE);
-        when(eaConfig.mutationRate()).thenReturn(Optional.of(SimulationConstants.DEFAULT_MUTATION_RATE));
-        when(eaConfig.crossoverRate()).thenReturn(Optional.of(SimulationConstants.DEFAULT_CROSSOVER_RATE));
+        when(eaConfig.mutationRate()).thenReturn(SimulationConstants.DEFAULT_MUTATION_RATE);
+        when(eaConfig.crossoverRate()).thenReturn(SimulationConstants.DEFAULT_CROSSOVER_RATE);
         when(eaConfig.steadyFitness()).thenReturn(Optional.empty());
         when(eaConfig.maxGenerations()).thenReturn(Optional.of(20));
 

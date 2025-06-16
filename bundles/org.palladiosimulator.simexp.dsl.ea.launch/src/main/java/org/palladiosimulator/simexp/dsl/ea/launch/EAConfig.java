@@ -37,12 +37,12 @@ public class EAConfig implements IEAConfig {
     }
 
     @Override
-    public Optional<Double> mutationRate() {
+    public double mutationRate() {
         return configuration.getMutationRate();
     }
 
     @Override
-    public Optional<Double> crossoverRate() {
+    public double crossoverRate() {
         return configuration.getCrossoverRate();
     }
 

@@ -7,13 +7,13 @@ public interface IEvolutionaryAlgorithmConfiguration {
 
     double getErrorReward();
 
+    double getMutationRate();
+
+    double getCrossoverRate();
+
     Optional<Integer> getMaxGenerations();
 
     Optional<Integer> getSteadyFitness();
-
-    Optional<Double> getMutationRate();
-
-    Optional<Double> getCrossoverRate();
 
     int getMemoryUsage();
 }

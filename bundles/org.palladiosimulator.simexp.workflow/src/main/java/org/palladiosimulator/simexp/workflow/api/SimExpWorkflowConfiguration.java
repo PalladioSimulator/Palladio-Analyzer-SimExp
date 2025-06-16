@@ -206,12 +206,12 @@ public class SimExpWorkflowConfiguration extends AbstractPCMWorkflowRunConfigura
     }
 
     @Override
-    public Optional<Double> getMutationRate() {
+    public double getMutationRate() {
         return evolutionaryAlgorithmConfiguration.getMutationRate();
     }
 
     @Override
-    public Optional<Double> getCrossoverRate() {
+    public double getCrossoverRate() {
         return evolutionaryAlgorithmConfiguration.getCrossoverRate();
     }
 

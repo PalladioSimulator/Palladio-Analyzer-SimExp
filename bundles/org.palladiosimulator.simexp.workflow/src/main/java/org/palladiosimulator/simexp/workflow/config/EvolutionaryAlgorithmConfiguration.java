@@ -6,16 +6,16 @@ import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfigurati
 
 public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorithmConfiguration {
     private final int populationSize;
+    private final double mutationRate;
+    private final double crossoverRate;
     private final double errorDefault;
     private final Optional<Integer> maxGenerations;
     private final Optional<Integer> steadyFitness;
-    private final Optional<Double> mutationRate;
-    private final Optional<Double> crossoverRate;
     private final int memoryUsage;
 
     public EvolutionaryAlgorithmConfiguration(int eaPopulationSize, double errorDefault,
-            Optional<Integer> maxGenerations, Optional<Integer> steadyFitness, Optional<Double> mutationRate,
-            Optional<Double> crossoverRate, int memoryUsage) {
+            Optional<Integer> maxGenerations, Optional<Integer> steadyFitness, double mutationRate,
+            double crossoverRate, int memoryUsage) {
         this.populationSize = eaPopulationSize;
         this.errorDefault = errorDefault;
         this.maxGenerations = maxGenerations;
@@ -46,12 +46,12 @@ public class EvolutionaryAlgorithmConfiguration implements IEvolutionaryAlgorith
     }
 
     @Override
-    public Optional<Double> getMutationRate() {
+    public double getMutationRate() {
         return mutationRate;
     }
 
     @Override
-    public Optional<Double> getCrossoverRate() {
+    public double getCrossoverRate() {
         return crossoverRate;
     }
 

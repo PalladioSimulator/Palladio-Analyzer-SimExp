@@ -177,15 +177,13 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             }
 
             int populationSize = (Integer) launchConfigurationParams.get(SimulationConstants.POPULATION_SIZE);
+            double mutationRate = extractDouble(launchConfigurationParams, SimulationConstants.MUTATION_RATE);
+            double crossoverRate = extractDouble(launchConfigurationParams, SimulationConstants.CROSSOVER_RATE);
             double errorReward = extractDouble(launchConfigurationParams, SimulationConstants.ERROR_REWARD);
             Optional<Integer> maxGenerations = Optional
                 .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.MAX_GENERATIONS));
             Optional<Integer> steadyFitness = Optional
                 .ofNullable((Integer) launchConfigurationParams.get(SimulationConstants.STEADY_FITNESS));
-            Optional<Double> mutationRate = extractOptionalDouble(launchConfigurationParams,
-                    SimulationConstants.MUTATION_RATE);
-            Optional<Double> crossoverRate = extractOptionalDouble(launchConfigurationParams,
-                    SimulationConstants.CROSSOVER_RATE);
             int memoryUsage = (Integer) launchConfigurationParams.get(SimulationConstants.MEMORY_USAGE);
             EvolutionaryAlgorithmConfiguration eaConfig = new EvolutionaryAlgorithmConfiguration(populationSize,
                     errorReward, maxGenerations, steadyFitness, mutationRate, crossoverRate, memoryUsage);
