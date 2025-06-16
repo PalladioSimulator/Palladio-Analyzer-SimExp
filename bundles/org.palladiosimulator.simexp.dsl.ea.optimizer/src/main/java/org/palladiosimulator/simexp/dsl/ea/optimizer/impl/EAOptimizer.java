@@ -142,10 +142,9 @@ public class EAOptimizer implements IEAOptimizer {
         EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
 
         EvolutionStream<G, Double> evolutionStream = engine.stream();
-        evolutionStream = addDerivedTerminationCriterion(evolutionStream, config);
-        evolutionStream = addDirectTerminationCriterion(evolutionStream, config);
+        evolutionStream = addTerminationConditions(evolutionStream, config);
 
-        Stream<EvolutionResult<G, Double>> effectiveStream = evolutionStream.peek(reporter)
+        Stream<EvolutionResult<G, Double>> resultStream = evolutionStream.peek(reporter)
             .peek(statistics);
 
         final ISeq<Phenotype<G, Double>> result;
@@ -153,11 +152,11 @@ public class EAOptimizer implements IEAOptimizer {
             .create();
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
-            result = effectiveStream.collect(paretoCollector);
+            result = resultStream.collect(paretoCollector);
         } else {
             long seed = seedProvider.get()
                 .getLong();
-            result = RandomRegistry.with(new Random(seed), r -> effectiveStream.collect(paretoCollector));
+            result = RandomRegistry.with(new Random(seed), r -> resultStream.collect(paretoCollector));
         }
 
         LOGGER.info("EA finished");
@@ -176,18 +175,13 @@ public class EAOptimizer implements IEAOptimizer {
         return new EAResult(bestFitness, paretoFront);
     }
 
-    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDirectTerminationCriterion(
+    private <G extends Gene<?, G>> EvolutionStream<G, Double> addTerminationConditions(
             EvolutionStream<G, Double> evolutionStream, IEAConfig config) {
         if (config.maxGenerations()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
                 .get()));
         }
-        return evolutionStream;
-    }
-
-    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDerivedTerminationCriterion(
-            EvolutionStream<G, Double> evolutionStream, IEAConfig config) {
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
