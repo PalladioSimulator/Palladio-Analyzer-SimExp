@@ -85,18 +85,18 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         // To genotype
-        OptimizableBitNormalizer normalizer = new OptimizableBitNormalizer(expressionCalculator);
-        Genotype<BitGene> genotype = buildGenotype(optimizables, normalizer);
+        ITranscoder<BitGene> transcoder = new OptimizableBitNormalizer(expressionCalculator);
+        Genotype<BitGene> genotype = buildGenotype(optimizables, transcoder);
 
         // Setup EA
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
-        MOEAFitnessFunction<BitGene> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, normalizer,
+        MOEAFitnessFunction<BitGene> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
         Engine<BitGene, Double> engine = buildEngine(fitnessFunction, genotype, executor);
 
         // Run EA
-        return runOptimization(overallPower, evolutionStatusReceiver, normalizer, fitnessFunction, engine);
+        return runOptimization(overallPower, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
     }
 
     private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, ITranscoder<BitGene> normalizer) {
