@@ -31,7 +31,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.ConfigHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
@@ -50,8 +49,9 @@ public class EAOptimizerTest {
     private static final double DELTA = 0.0001;
 
     private EAOptimizer optimizer;
-    private IEAConfig eaConfig;
 
+    @Mock
+    private IEAConfig eaConfig;
     @Mock
     private IEAEvolutionStatusReceiver statusReceiver;
     @Mock
@@ -93,7 +93,11 @@ public class EAOptimizerTest {
         optFunction = r -> {
             return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
         };
-        eaConfig = new ConfigHelper(80, 0.01, 0.8, 7, 100);
+        when(eaConfig.populationSize()).thenReturn(80);
+        when(eaConfig.mutationRate()).thenReturn(Optional.of(0.01));
+        when(eaConfig.crossoverRate()).thenReturn(Optional.of(0.8));
+        when(eaConfig.steadyFitness()).thenReturn(Optional.of(7));
+        when(eaConfig.maxGenerations()).thenReturn(Optional.of(100));
 
         optimizer = new EAOptimizer(eaConfig);
     }
