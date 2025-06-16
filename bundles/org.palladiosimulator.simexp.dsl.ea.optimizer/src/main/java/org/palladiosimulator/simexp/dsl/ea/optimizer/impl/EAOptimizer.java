@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
 import io.jenetics.BitGene;
 import io.jenetics.Crossover;
+import io.jenetics.Gene;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.Phenotype;
@@ -89,34 +90,35 @@ public class EAOptimizer implements IEAOptimizer {
                 executor);
     }
 
-    private EAResult doOptimize(ITranscoder<BitGene> transcoder, int overallPower,
+    private <G extends Gene<?, G>> EAResult doOptimize(ITranscoder<G> transcoder, int overallPower,
             IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, Executor executor) {
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
-        Genotype<BitGene> genotype = buildGenotype(optimizables, transcoder);
+        Genotype<G> genotype = buildGenotype(optimizables, transcoder);
 
         // Setup EA
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
-        MOEAFitnessFunction<BitGene> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
+        MOEAFitnessFunction<G> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
-        Engine<BitGene, Double> engine = buildEngine(fitnessFunction, genotype, executor);
+        Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
 
         // Run EA
         return runOptimization(overallPower, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
     }
 
-    private Genotype<BitGene> buildGenotype(Collection<Optimizable> optimizables, ITranscoder<BitGene> normalizer) {
+    private <G extends Gene<?, G>> Genotype<G> buildGenotype(Collection<Optimizable> optimizables,
+            ITranscoder<G> normalizer) {
         List<Optimizable> optimizableList = new ArrayList<>(optimizables);
-        Genotype<BitGene> genotype = normalizer.toGenotype(optimizableList);
+        Genotype<G> genotype = normalizer.toGenotype(optimizableList);
         return genotype;
     }
 
-    private Engine<BitGene, Double> buildEngine(MOEAFitnessFunction<BitGene> fitnessFunction,
-            Genotype<BitGene> genotype, Executor executor) {
-        Factory<Genotype<BitGene>> constraintFactory = new ForceValidConstraint<BitGene>().constrain(genotype);
-        Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
+    private <G extends Gene<?, G>> Engine<G, Double> buildEngine(MOEAFitnessFunction<G> fitnessFunction,
+            Genotype<G> genotype, Executor executor) {
+        Factory<Genotype<G>> constraintFactory = new ForceValidConstraint<G>().constrain(genotype);
+        Builder<G, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
             .survivorsSelector(new TournamentSelector<>(config.survivorTournamentSize()))
@@ -127,29 +129,28 @@ public class EAOptimizer implements IEAOptimizer {
         return builder.build();
     }
 
-    private Builder<BitGene, Double> addAlterers(Builder<BitGene, Double> builder) {
-        Mutator<BitGene, Double> mutator = new Mutator<>(config.mutationRate());
-        Crossover<BitGene, Double> crossover = new UniformCrossover<>(config.crossoverRate());
+    private <G extends Gene<?, G>> Builder<G, Double> addAlterers(Builder<G, Double> builder) {
+        Mutator<G, Double> mutator = new Mutator<>(config.mutationRate());
+        Crossover<G, Double> crossover = new UniformCrossover<>(config.crossoverRate());
         return builder.alterers(crossover, mutator);
     }
 
-    private EAResult runOptimization(long overallPower, IEAEvolutionStatusReceiver evolutionStatusReceiver,
-            ITranscoder<BitGene> normalizer, MOEAFitnessFunction<BitGene> fitnessFunction,
-            final Engine<BitGene, Double> engine) {
+    private <G extends Gene<?, G>> EAResult runOptimization(long overallPower,
+            IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
+            MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
-        ParetoEvolutionStatistics<BitGene> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction,
-                overallPower);
+        ParetoEvolutionStatistics<G> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction, overallPower);
 
-        EAReporter<BitGene> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
+        EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
 
-        EvolutionStream<BitGene, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
+        EvolutionStream<G, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
         evolutionStream = addDirectTerminationCriterion(config, evolutionStream);
 
-        Stream<EvolutionResult<BitGene, Double>> effectiveStream = evolutionStream.peek(reporter)
+        Stream<EvolutionResult<G, Double>> effectiveStream = evolutionStream.peek(reporter)
             .peek(paretoStatistics);
 
-        final ISeq<Phenotype<BitGene, Double>> result;
-        Collector<EvolutionResult<BitGene, Double>, ?, ISeq<Phenotype<BitGene, Double>>> paretoCollector = ParetoSetCollector
+        final ISeq<Phenotype<G, Double>> result;
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
             .create();
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         if (seedProvider.isEmpty()) {
@@ -176,8 +177,8 @@ public class EAOptimizer implements IEAOptimizer {
         return new EAResult(bestFitness, paretoFront);
     }
 
-    private EvolutionStream<BitGene, Double> addDirectTerminationCriterion(IEAConfig config,
-            EvolutionStream<BitGene, Double> evolutionStream) {
+    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDirectTerminationCriterion(IEAConfig config,
+            EvolutionStream<G, Double> evolutionStream) {
         if (config.maxGenerations()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
@@ -186,9 +187,9 @@ public class EAOptimizer implements IEAOptimizer {
         return evolutionStream;
     }
 
-    private EvolutionStream<BitGene, Double> addDerivedTerminationCriterion(final Engine<BitGene, Double> engine,
-            IEAConfig config) {
-        EvolutionStream<BitGene, Double> evolutionStream = engine.stream();
+    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDerivedTerminationCriterion(
+            final Engine<G, Double> engine, IEAConfig config) {
+        EvolutionStream<G, Double> evolutionStream = engine.stream();
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
