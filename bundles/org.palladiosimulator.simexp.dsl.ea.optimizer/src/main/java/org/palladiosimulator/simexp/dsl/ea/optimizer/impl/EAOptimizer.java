@@ -13,6 +13,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
@@ -48,10 +49,8 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAOptimizer implements IEAOptimizer {
     private final static Logger LOGGER = Logger.getLogger(EAOptimizer.class);
-    private final static int SURVIVOR_SELECTOR_TOURNAMENT_SIZE = 5;
-    private final static int OFFSPRING_SELECTOR_TOURNAMENT_SIZE = 5;
 
-    private IEAConfig config;
+    private final IEAConfig config;
 
     public EAOptimizer(IEAConfig config) {
         this.config = config;
@@ -113,8 +112,8 @@ public class EAOptimizer implements IEAOptimizer {
         Builder<BitGene, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
             .populationSize(config.populationSize())
             .executor(executor)
-            .survivorsSelector(new TournamentSelector<>(SURVIVOR_SELECTOR_TOURNAMENT_SIZE))
-            .offspringSelector(new TournamentSelector<>(OFFSPRING_SELECTOR_TOURNAMENT_SIZE));
+            .survivorsSelector(new TournamentSelector<>(SimulationConstants.DEFAULT_SURVIVOR_TOURNAMENT_SIZE))
+            .offspringSelector(new TournamentSelector<>(SimulationConstants.DEFAULT_OFFSPRING_TOURNAMENT_SIZE));
 
         builder = addAlterers(builder);
 
