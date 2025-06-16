@@ -141,8 +141,9 @@ public class EAOptimizer implements IEAOptimizer {
 
         EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
 
-        EvolutionStream<G, Double> evolutionStream = addDerivedTerminationCriterion(engine, config);
-        evolutionStream = addDirectTerminationCriterion(config, evolutionStream);
+        EvolutionStream<G, Double> evolutionStream = engine.stream();
+        evolutionStream = addDerivedTerminationCriterion(evolutionStream, config);
+        evolutionStream = addDirectTerminationCriterion(evolutionStream, config);
 
         Stream<EvolutionResult<G, Double>> effectiveStream = evolutionStream.peek(reporter)
             .peek(statistics);
@@ -175,8 +176,8 @@ public class EAOptimizer implements IEAOptimizer {
         return new EAResult(bestFitness, paretoFront);
     }
 
-    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDirectTerminationCriterion(IEAConfig config,
-            EvolutionStream<G, Double> evolutionStream) {
+    private <G extends Gene<?, G>> EvolutionStream<G, Double> addDirectTerminationCriterion(
+            EvolutionStream<G, Double> evolutionStream, IEAConfig config) {
         if (config.maxGenerations()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.byFixedGeneration(config.maxGenerations()
@@ -186,8 +187,7 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private <G extends Gene<?, G>> EvolutionStream<G, Double> addDerivedTerminationCriterion(
-            final Engine<G, Double> engine, IEAConfig config) {
-        EvolutionStream<G, Double> evolutionStream = engine.stream();
+            EvolutionStream<G, Double> evolutionStream, IEAConfig config) {
         if (config.steadyFitness()
             .isPresent()) {
             evolutionStream = evolutionStream.limit(Limits.bySteadyFitness(config.steadyFitness()
