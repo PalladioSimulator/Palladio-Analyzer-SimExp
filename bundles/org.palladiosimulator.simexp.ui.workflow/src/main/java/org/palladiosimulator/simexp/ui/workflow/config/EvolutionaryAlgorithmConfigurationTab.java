@@ -165,6 +165,10 @@ public class EvolutionaryAlgorithmConfigurationTab extends BaseLaunchConfigurati
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(SimulationConstants.POPULATION_SIZE, SimulationConstants.DEFAULT_POPULATION_SIZE);
+        configuration.setAttribute(SimulationConstants.MUTATION_RATE,
+                Double.toString(SimulationConstants.DEFAULT_MUTATION_RATE));
+        configuration.setAttribute(SimulationConstants.CROSSOVER_RATE,
+                Double.toString(SimulationConstants.DEFAULT_CROSSOVER_RATE));
         configuration.setAttribute(SimulationConstants.MEMORY_USAGE, SimulationConstants.DEFAULT_MEMORY_USAGE);
     }
 
