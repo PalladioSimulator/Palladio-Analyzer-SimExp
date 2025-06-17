@@ -75,7 +75,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
-        detailDescription.add("Optimizable values:");
+        detailDescription.add(String.format("Pareto optimal values %d:", optimizablesList.size()));
         for (final ListIterator<List<OptimizableValue<?>>> it = optimizablesList.listIterator(); it.hasNext();) {
             List<OptimizableValue<?>> optimizables = it.next();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
