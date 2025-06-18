@@ -30,6 +30,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
     private final Set<String> abortedTasks;
+    private final Set<String> failedTasks;
 
     private int receivedCount = 0;
     private int taskCount = 0;
@@ -39,6 +40,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
         this.abortedTasks = new HashSet<>();
+        this.failedTasks = new HashSet<>();
     }
 
     @Override
@@ -47,6 +49,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int completed;
         final int started;
         final int aborted;
+        final int failed;
         final int created;
         synchronized (this) {
             taskCount++;
@@ -54,11 +57,12 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             started = startedTasks.size();
             completed = receivedCount;
             aborted = abortedTasks.size();
+            failed = failedTasks.size();
             created = taskCount;
         }
         OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         String description = optimizableValueToString.asString(optimizableValues);
-        String tasksStatus = getTasksStatus("created", completed, started, aborted, created);
+        String tasksStatus = getTasksStatus("created", completed, started, aborted, failed, created);
         LOGGER.info(String.format("%s [%s]: %s", tasksStatus, taskId, description));
     }
 
@@ -67,15 +71,17 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int completed;
         final int started;
         final int aborted;
+        final int failed;
         final int created;
         synchronized (this) {
             startedTasks.add(taskId);
             started = startedTasks.size();
             completed = receivedCount;
             aborted = abortedTasks.size();
+            failed = failedTasks.size();
             created = taskCount;
         }
-        String tasksStatus = getTasksStatus("started", completed, started, aborted, created);
+        String tasksStatus = getTasksStatus("started", completed, started, aborted, failed, created);
         LOGGER.info(String.format("%s [%s] by %s (redelivered: %s %d)", tasksStatus, result.id, result.executor_id,
                 result.redelivered, result.delivery_count));
     }
@@ -85,14 +91,21 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int completed;
         final int started;
         final int aborted;
+        final int failed;
         final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
             startedTasks.remove(taskId);
             started = startedTasks.size();
-            completed = ++receivedCount;
+            if (result.reward != null) {
+                completed = ++receivedCount;
+            } else {
+                completed = receivedCount;
+                failedTasks.add(taskId);
+            }
             abortedTasks.remove(taskId);
             aborted = abortedTasks.size();
+            failed = failedTasks.size();
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
@@ -101,7 +114,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             return;
         }
 
-        String tasksStatus = getTasksStatus("completed", completed, started, aborted, created);
+        String tasksStatus = getTasksStatus("completed", completed, started, aborted, failed, created);
         String description = getRewardDescription(result);
         LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksStatus, result.id, result.executor_id, description));
 
@@ -119,6 +132,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int completed;
         final int started;
         final int aborted;
+        final int failed;
         final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
@@ -127,11 +141,12 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             completed = receivedCount;
             abortedTasks.add(taskId);
             aborted = abortedTasks.size();
+            failed = failedTasks.size();
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo != null) {
-            String tasksStatus = getTasksStatus("aborted", completed, started, aborted, created);
+            String tasksStatus = getTasksStatus("aborted", completed, started, aborted, failed, created);
             LOGGER.warn(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
             SettableFutureTask<Optional<Double>> future = taskInfo.future;
             resultLogger.log(taskInfo.optimizableValues, result);
@@ -141,8 +156,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         }
     }
 
-    private String getTasksStatus(String status, int completed, int started, int aborted, int created) {
-        String tasksStatus = String.format("task %s %d/%d/(%d)/%d", status, started, completed, aborted, created);
+    private String getTasksStatus(String status, int completed, int started, int aborted, int failed, int created) {
+        String tasksStatus = String.format("task %s %d / %d|%d|%d / %d", status, started, completed, failed, aborted,
+                created);
         return tasksStatus;
     }
 
