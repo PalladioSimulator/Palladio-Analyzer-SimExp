@@ -1,7 +1,10 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.ui.preferences;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -35,6 +38,12 @@ public class KubernetesWorkbenchPreferencePage extends FieldEditorPreferencePage
                 KubernetesPreferenceConstants.RABBIT_QUEUE_OUT, getFieldEditorParent()));
         addField(new StringFieldEditor(KubernetesPreferenceConstants.RABBIT_QUEUE_IN,
                 KubernetesPreferenceConstants.RABBIT_QUEUE_IN, getFieldEditorParent()));
+        IntegerFieldEditor consumerTimeoutEditor = new IntegerFieldEditor(
+                KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT,
+                KubernetesPreferenceConstants.RABBIT_CONSUMER_TIMEOUT + " (h)", getFieldEditorParent());
+        int week_hours = (int) TimeUnit.DAYS.toHours(7);
+        consumerTimeoutEditor.setValidRange(1, week_hours);
+        addField(consumerTimeoutEditor);
     }
 
 }
