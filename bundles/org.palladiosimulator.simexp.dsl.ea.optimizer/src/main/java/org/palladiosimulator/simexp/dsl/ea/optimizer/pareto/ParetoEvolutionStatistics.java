@@ -2,6 +2,10 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import static java.lang.String.format;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,9 +24,9 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer
 
     private final EvolutionStatistics<Double, DoubleMomentStatistics> evolutionStatistics;
     private final MOEAFitnessFunction<G> fitnessFunction;
-    private final long overallPower;
+    private final BigInteger overallPower;
 
-    public ParetoEvolutionStatistics(MOEAFitnessFunction<G> fitnessFunction, long overallPower) {
+    public ParetoEvolutionStatistics(MOEAFitnessFunction<G> fitnessFunction, BigInteger overallPower) {
         this.evolutionStatistics = EvolutionStatistics.ofNumber();
         this.fitnessFunction = fitnessFunction;
         this.overallPower = overallPower;
@@ -55,16 +59,23 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer
         return evolutionStatistics.toString() + "\n" + stringBuilder.toString();
     }
 
-    private String formatResult(long uniqueFitnessEvaluations, long combinationsInOptimizableSpace) {
+    private String formatResult(long uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
         String percentageVisited = toRoundedString(uniqueFitnessEvaluations, combinationsInOptimizableSpace);
-        return String.format("%d of %d (%s%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
+        return String.format("%d of %s (%s%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
                 percentageVisited);
     }
 
-    String toRoundedString(long uniqueFitnessEvaluations, long combinationsInOptimizableSpace) {
-        double percentageVisited = (((double) uniqueFitnessEvaluations) / (double) combinationsInOptimizableSpace)
-                * 100;
-        percentageVisited = Math.floor(percentageVisited * ROUNDING_CONSTANT) / ROUNDING_CONSTANT;
-        return String.format("%.0f", percentageVisited);
+    String toRoundedString(long uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
+        BigDecimal actualEvaluations = BigDecimal.valueOf(uniqueFitnessEvaluations);
+        BigDecimal totalCombinations = new BigDecimal(combinationsInOptimizableSpace);
+        BigDecimal percentageVisited = actualEvaluations.divide(totalCombinations)
+            .multiply(BigDecimal.valueOf(100));
+        BigDecimal rounded = percentageVisited.round(new MathContext(ROUNDING_CONSTANT));
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(0);
+        df.setGroupingUsed(false);
+        String fraction = df.format(rounded);
+        return fraction;
     }
 }

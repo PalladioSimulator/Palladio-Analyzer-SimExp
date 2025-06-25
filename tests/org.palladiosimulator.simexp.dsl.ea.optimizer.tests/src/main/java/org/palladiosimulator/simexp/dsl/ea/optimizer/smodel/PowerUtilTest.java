@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -230,9 +232,9 @@ public class PowerUtilTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.BOOL, setBound);
         Collection<Optimizable> optimizables = Arrays.asList(optimizable);
 
-        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+        BigInteger actualComplexity = powerUtil.calculateComplexity(optimizables);
 
-        assertEquals(2, actualComplexity);
+        assertThat(actualComplexity).isEqualTo(2);
     }
 
     @Test
@@ -241,9 +243,9 @@ public class PowerUtilTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         Collection<Optimizable> optimizables = Arrays.asList(optimizable);
 
-        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+        BigInteger actualComplexity = powerUtil.calculateComplexity(optimizables);
 
-        assertEquals(3, actualComplexity);
+        assertThat(actualComplexity).isEqualTo(3);
     }
 
     @Test
@@ -252,9 +254,9 @@ public class PowerUtilTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         Collection<Optimizable> optimizables = Arrays.asList(optimizable);
 
-        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+        BigInteger actualComplexity = powerUtil.calculateComplexity(optimizables);
 
-        assertEquals(2, actualComplexity);
+        assertThat(actualComplexity).isEqualTo(2);
     }
 
     @Test
@@ -263,8 +265,24 @@ public class PowerUtilTest {
         Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
         Collection<Optimizable> optimizables = Arrays.asList(optimizable);
 
-        int actualComplexity = powerUtil.calculateComplexity(optimizables);
+        BigInteger actualComplexity = powerUtil.calculateComplexity(optimizables);
 
-        assertEquals(1, actualComplexity);
+        assertThat(actualComplexity).isEqualTo(1);
+    }
+
+    @Test
+    public void regressionCalculateComplexityMaxInt() {
+        List<Integer> ints = List.of(1, 2, 3, 4, 5, 6);
+        List<Optimizable> optimizables = new ArrayList<>();
+        for (int i = 0; i < 32; ++i) {
+            SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, ints, calculator);
+            Optimizable optimizable = smodelCreator.createOptimizable(String.format("oi_%02d", i), DataType.INT,
+                    setBound);
+            optimizables.add(optimizable);
+        }
+
+        BigInteger actualComplexity = powerUtil.calculateComplexity(optimizables);
+
+        assertThat(actualComplexity).isEqualTo(new BigInteger("7958661109946400884391936"));
     }
 }

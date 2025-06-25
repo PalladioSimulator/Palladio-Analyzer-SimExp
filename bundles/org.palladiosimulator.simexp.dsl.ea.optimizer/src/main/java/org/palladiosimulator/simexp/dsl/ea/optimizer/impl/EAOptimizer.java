@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -92,7 +93,7 @@ public class EAOptimizer implements IEAOptimizer {
         IExpressionCalculator expressionCalculator = optimizableProvider.getExpressionCalculator();
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         PowerUtil powerUtil = new PowerUtil(expressionCalculator);
-        int overallPower = powerUtil.calculateComplexity(optimizables);
+        BigInteger overallPower = powerUtil.calculateComplexity(optimizables);
         LOGGER.info(String.format("optimizeable search space: %d", overallPower));
 
         // Setup EA

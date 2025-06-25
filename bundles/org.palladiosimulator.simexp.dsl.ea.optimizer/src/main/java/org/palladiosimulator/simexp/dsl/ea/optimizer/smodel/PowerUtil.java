@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.smodel;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.DoubleStream;
@@ -103,14 +104,14 @@ public class PowerUtil {
         return values;
     }
 
-    public int calculateComplexity(Collection<Optimizable> optimizables) {
+    public BigInteger calculateComplexity(Collection<Optimizable> optimizables) {
         List<Integer> powers = optimizables.stream()
             .map(o -> getPower(o))
             .filter(p -> p > 1)
             .toList();
-        Integer overallPower = powers.stream()
-            .reduce(1, (a, b) -> a * b);
+        BigInteger overallPower = powers.stream()
+            .map(i -> BigInteger.valueOf(i))
+            .reduce(BigInteger.valueOf(1), (a, b) -> a.multiply(b));
         return overallPower;
     }
-
 }
