@@ -52,21 +52,22 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
                 + "+---------------------------------------------------------------------------+\n");
-        String result = formatResult(fitnessFunction.getNumberOfUniqueFitnessEvaluations(), overallPower);
+        BigInteger fitnessEvaluationCount = BigInteger.valueOf(fitnessFunction.getNumberOfUniqueFitnessEvaluations());
+        String result = formatResult(fitnessEvaluationCount, overallPower);
         stringBuilder.append(format(CPATTERN, "Evaluated:", result));
 
         stringBuilder.append("+---------------------------------------------------------------------------+\n");
         return evolutionStatistics.toString() + "\n" + stringBuilder.toString();
     }
 
-    private String formatResult(long uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
+    private String formatResult(BigInteger uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
         String percentageVisited = toRoundedString(uniqueFitnessEvaluations, combinationsInOptimizableSpace);
         return String.format("%d of %s (%s%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
                 percentageVisited);
     }
 
-    String toRoundedString(long uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
-        BigDecimal actualEvaluations = BigDecimal.valueOf(uniqueFitnessEvaluations);
+    String toRoundedString(BigInteger uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
+        BigDecimal actualEvaluations = new BigDecimal(uniqueFitnessEvaluations);
         BigDecimal totalCombinations = new BigDecimal(combinationsInOptimizableSpace);
         BigDecimal percentageVisited = actualEvaluations.divide(totalCombinations)
             .multiply(BigDecimal.valueOf(100));

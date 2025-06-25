@@ -26,14 +26,14 @@ public class ParetoEvolutionStatisticsTest {
 
     @Test
     public void testToRoundedString1() {
-        String actualRoundedString = statistics.toRoundedString(1, BigInteger.valueOf(100));
+        String actualRoundedString = statistics.toRoundedString(BigInteger.valueOf(1), BigInteger.valueOf(100));
 
         assertThat(actualRoundedString).isEqualTo("1");
     }
 
     @Test
     public void testToRoundedString100() {
-        String actualRoundedString = statistics.toRoundedString(100, BigInteger.valueOf(100));
+        String actualRoundedString = statistics.toRoundedString(BigInteger.valueOf(100), BigInteger.valueOf(100));
 
         assertThat(actualRoundedString).isEqualTo("100");
     }
