@@ -94,12 +94,15 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int failed;
         final int created;
         final TaskInfo taskInfo;
+        final String statusString;
         synchronized (this) {
             startedTasks.remove(taskId);
             started = startedTasks.size();
             if (result.reward != null) {
+                statusString = "completed";
                 completed = ++receivedCount;
             } else {
+                statusString = "failed";
                 completed = receivedCount;
                 failedTasks.add(taskId);
             }
@@ -114,7 +117,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             return;
         }
 
-        String tasksStatus = getTasksStatus("completed", completed, started, aborted, failed, created);
+        String tasksStatus = getTasksStatus(statusString, completed, started, aborted, failed, created);
         String description = getRewardDescription(result);
         LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksStatus, result.id, result.executor_id, description));
 
