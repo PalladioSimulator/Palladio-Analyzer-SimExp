@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -94,7 +95,9 @@ public class EAOptimizer implements IEAOptimizer {
         Collection<Optimizable> optimizables = optimizableProvider.getOptimizables();
         PowerUtil powerUtil = new PowerUtil(expressionCalculator);
         BigInteger overallPower = powerUtil.calculateComplexity(optimizables);
-        LOGGER.info(String.format("optimizeable search space: %d", overallPower));
+        DecimalFormat df = new DecimalFormat();
+        df.setGroupingUsed(true);
+        LOGGER.info(String.format("optimizeable search space: %s", df.format(overallPower)));
 
         // Setup EA
         Genotype<G> genotype = buildGenotype(optimizables, transcoder);
