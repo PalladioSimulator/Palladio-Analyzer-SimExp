@@ -56,10 +56,15 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer
     }
 
     private String formatResult(long uniqueFitnessEvaluations, long combinationsInOptimizableSpace) {
+        String percentageVisited = toRoundedString(uniqueFitnessEvaluations, combinationsInOptimizableSpace);
+        return String.format("%d of %d (%s%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
+                percentageVisited);
+    }
+
+    String toRoundedString(long uniqueFitnessEvaluations, long combinationsInOptimizableSpace) {
         double percentageVisited = (((double) uniqueFitnessEvaluations) / (double) combinationsInOptimizableSpace)
                 * 100;
         percentageVisited = Math.floor(percentageVisited * ROUNDING_CONSTANT) / ROUNDING_CONSTANT;
-        return String.format("%d of %d (%.0f%%)", uniqueFitnessEvaluations, combinationsInOptimizableSpace,
-                percentageVisited);
+        return String.format("%.0f", percentageVisited);
     }
 }
