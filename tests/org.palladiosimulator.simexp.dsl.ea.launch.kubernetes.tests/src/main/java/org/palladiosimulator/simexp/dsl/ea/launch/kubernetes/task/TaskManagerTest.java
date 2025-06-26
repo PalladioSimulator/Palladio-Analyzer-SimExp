@@ -50,7 +50,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testTaskCompletedNoReward() {
+    public void testTaskFailed() {
         List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
         taskManager.newTask("t", task, optimizableValues);
         JobResult result = new JobResult();
@@ -89,5 +89,31 @@ public class TaskManagerTest {
         verify(task, times(1)).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
         assertThat(capturedArgument).isEmpty();
+    }
+
+    @Test
+    public void testTaskCompletedAfterQueueTimeout() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result1 = new JobResult();
+        result1.redelivered = false;
+        result1.delivery_count = 0;
+        taskManager.taskStarted("t", result1);
+        JobResult result2 = new JobResult();
+        result2.redelivered = true;
+        result2.delivery_count = 1;
+        taskManager.taskStarted("t", result2);
+        JobResult result3 = new JobResult();
+        result3.reward = 1.0;
+        taskManager.taskCompleted("t", result3);
+
+        JobResult result4 = new JobResult();
+        result4.reward = 2.0;
+        taskManager.taskCompleted("t", result4);
+
+        verify(task).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).hasValue(result3.reward);
+        verify(resultLogger, times(1)).log(optimizableValues, result3);
     }
 }
