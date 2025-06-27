@@ -43,8 +43,38 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         this.failedTasks = new HashSet<>();
     }
 
+    static class TaskState {
+        public final String state;
+        public final int completed;
+        public final int started;
+        public final int aborted;
+        public final int failed;
+        public final int created;
+        public final TaskInfo taskInfo;
+
+        public TaskState(String state, int completed, int started, int aborted, int failed, int created,
+                TaskInfo taskInfo) {
+            this.state = state;
+            this.completed = completed;
+            this.started = started;
+            this.aborted = aborted;
+            this.failed = failed;
+            this.created = created;
+            this.taskInfo = taskInfo;
+        }
+    }
+
     @Override
     public void newTask(String taskId, SettableFutureTask<Optional<Double>> task,
+            List<OptimizableValue<?>> optimizableValues) {
+        TaskState taskState = onTaskCreated(taskId, task, optimizableValues);
+        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+        String description = optimizableValueToString.asString(optimizableValues);
+        String tasksDescription = getTasksDescription(taskState);
+        LOGGER.info(String.format("%s [%s]: %s", tasksDescription, taskId, description));
+    }
+
+    TaskState onTaskCreated(String taskId, SettableFutureTask<Optional<Double>> task,
             List<OptimizableValue<?>> optimizableValues) {
         final int completed;
         final int started;
@@ -60,14 +90,18 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             failed = failedTasks.size();
             created = taskCount;
         }
-        OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
-        String description = optimizableValueToString.asString(optimizableValues);
-        String tasksStatus = getTasksStatus("created", completed, started, aborted, failed, created);
-        LOGGER.info(String.format("%s [%s]: %s", tasksStatus, taskId, description));
+        return new TaskState("created", completed, started, aborted, failed, created, null);
     }
 
     @Override
     public void taskStarted(String taskId, JobResult result) {
+        TaskState taskState = onTaskStarted(taskId, result);
+        String tasksDescription = getTasksDescription(taskState);
+        LOGGER.info(String.format("%s [%s] by %s (redelivered: %s %d)", tasksDescription, result.id, result.executor_id,
+                result.redelivered, result.delivery_count));
+    }
+
+    TaskState onTaskStarted(String taskId, JobResult result) {
         final int completed;
         final int started;
         final int aborted;
@@ -81,13 +115,32 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             failed = failedTasks.size();
             created = taskCount;
         }
-        String tasksStatus = getTasksStatus("started", completed, started, aborted, failed, created);
-        LOGGER.info(String.format("%s [%s] by %s (redelivered: %s %d)", tasksStatus, result.id, result.executor_id,
-                result.redelivered, result.delivery_count));
+        return new TaskState("started", completed, started, aborted, failed, created, null);
     }
 
     @Override
     public void taskCompleted(String taskId, JobResult result) {
+        TaskState taskState = onTaskCompleted(taskId, result);
+        if (taskState.taskInfo == null) {
+            LOGGER.error(String.format("received unknown answer: %s", taskId));
+            return;
+        }
+
+        String tasksDescription = getTasksDescription(taskState);
+        String description = getRewardDescription(result);
+        LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksDescription, result.id, result.executor_id,
+                description));
+
+        SettableFutureTask<Optional<Double>> future = taskState.taskInfo.future;
+        resultLogger.log(taskState.taskInfo.optimizableValues, result);
+        if (result.reward == null) {
+            future.setResult(Optional.empty());
+        } else {
+            future.setResult(Optional.of(result.reward));
+        }
+    }
+
+    TaskState onTaskCompleted(String taskId, JobResult result) {
         final int completed;
         final int started;
         final int aborted;
@@ -112,26 +165,25 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
-        if (taskInfo == null) {
-            LOGGER.error(String.format("received unknown answer: %s", taskId));
-            return;
-        }
-
-        String tasksStatus = getTasksStatus(statusString, completed, started, aborted, failed, created);
-        String description = getRewardDescription(result);
-        LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksStatus, result.id, result.executor_id, description));
-
-        SettableFutureTask<Optional<Double>> future = taskInfo.future;
-        resultLogger.log(taskInfo.optimizableValues, result);
-        if (result.reward == null) {
-            future.setResult(Optional.empty());
-        } else {
-            future.setResult(Optional.of(result.reward));
-        }
+        return new TaskState(statusString, completed, started, aborted, failed, created, taskInfo);
     }
 
     @Override
     public void taskAborted(String taskId, JobResult result) {
+        TaskState taskState = onTaskAborted(taskId, result);
+        if (taskState.taskInfo != null) {
+            String tasksDescription = getTasksDescription(taskState);
+            LOGGER
+                .warn(String.format("%s [%s] by %s (%s)", tasksDescription, taskId, result.executor_id, result.error));
+            SettableFutureTask<Optional<Double>> future = taskState.taskInfo.future;
+            resultLogger.log(taskState.taskInfo.optimizableValues, result);
+            future.setResult(Optional.empty());
+        } else {
+            LOGGER.warn(String.format("aborted task [%s] already completed/aborted", taskId));
+        }
+    }
+
+    TaskState onTaskAborted(String taskId, JobResult result) {
         final int completed;
         final int started;
         final int aborted;
@@ -148,20 +200,12 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
-        if (taskInfo != null) {
-            String tasksStatus = getTasksStatus("aborted", completed, started, aborted, failed, created);
-            LOGGER.warn(String.format("%s [%s] by %s (%s)", tasksStatus, taskId, result.executor_id, result.error));
-            SettableFutureTask<Optional<Double>> future = taskInfo.future;
-            resultLogger.log(taskInfo.optimizableValues, result);
-            future.setResult(Optional.empty());
-        } else {
-            LOGGER.warn(String.format("aborted task [%s] already completed/aborted", taskId));
-        }
+        return new TaskState("aborted", completed, started, aborted, failed, created, taskInfo);
     }
 
-    private String getTasksStatus(String status, int completed, int started, int aborted, int failed, int created) {
-        String tasksStatus = String.format("task %s %d / %d|%d|%d / %d", status, started, completed, failed, aborted,
-                created);
+    private String getTasksDescription(TaskState taskState) {
+        String tasksStatus = String.format("task %s %d / %d|%d|%d / %d", taskState.state, taskState.started,
+                taskState.completed, taskState.failed, taskState.aborted, taskState.created);
         return tasksStatus;
     }
 
