@@ -130,14 +130,6 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         String description = getRewardDescription(result);
         LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksDescription, result.id, result.executor_id,
                 description));
-
-        SettableFutureTask<Optional<Double>> future = taskState.taskInfo.future;
-        resultLogger.log(taskState.taskInfo.optimizableValues, result);
-        if (result.reward == null) {
-            future.setResult(Optional.empty());
-        } else {
-            future.setResult(Optional.of(result.reward));
-        }
     }
 
     TaskState onTaskCompleted(String taskId, JobResult result) {
@@ -153,17 +145,30 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             started = startedTasks.size();
             if (result.reward != null) {
                 statusString = "completed";
-                completed = ++receivedCount;
             } else {
                 statusString = "failed";
-                completed = receivedCount;
                 failedTasks.add(taskId);
+            }
+            taskInfo = outstandingTasks.remove(taskId);
+            if ((result.reward != null) && (taskInfo != null)) {
+                completed = ++receivedCount;
+            } else {
+                completed = receivedCount;
             }
             abortedTasks.remove(taskId);
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = taskCount;
-            taskInfo = outstandingTasks.remove(taskId);
+
+        }
+        if (taskInfo != null) {
+            resultLogger.log(taskInfo.optimizableValues, result);
+            SettableFutureTask<Optional<Double>> future = taskInfo.future;
+            if (result.reward == null) {
+                future.setResult(Optional.empty());
+            } else {
+                future.setResult(Optional.of(result.reward));
+            }
         }
         return new TaskState(statusString, completed, started, aborted, failed, created, taskInfo);
     }
@@ -172,12 +177,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     public void taskAborted(String taskId, JobResult result) {
         TaskState taskState = onTaskAborted(taskId, result);
         if (taskState.taskInfo != null) {
-            String tasksDescription = getTasksDescription(taskState);
-            LOGGER
-                .warn(String.format("%s [%s] by %s (%s)", tasksDescription, taskId, result.executor_id, result.error));
-            SettableFutureTask<Optional<Double>> future = taskState.taskInfo.future;
-            resultLogger.log(taskState.taskInfo.optimizableValues, result);
-            future.setResult(Optional.empty());
+            String description = getTasksDescription(taskState);
+            LOGGER.warn(String.format("%s [%s] by %s (%s)", description, taskId, result.executor_id, result.error));
         } else {
             LOGGER.warn(String.format("aborted task [%s] already completed/aborted", taskId));
         }
@@ -199,6 +200,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             failed = failedTasks.size();
             created = taskCount;
             taskInfo = outstandingTasks.remove(taskId);
+        }
+        if (taskInfo != null) {
+            resultLogger.log(taskInfo.optimizableValues, result);
+            SettableFutureTask<Optional<Double>> future = taskInfo.future;
+            future.setResult(Optional.empty());
         }
         return new TaskState("aborted", completed, started, aborted, failed, created, taskInfo);
     }
