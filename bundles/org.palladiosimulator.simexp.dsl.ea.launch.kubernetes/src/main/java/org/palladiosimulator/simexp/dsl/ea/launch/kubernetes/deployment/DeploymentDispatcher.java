@@ -56,11 +56,11 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         this.namespace = namespace;
     }
 
-    public void dispatch(int memoryUsage, String brokerUrl, String outQueue, String inQueue, Runnable runnable)
-            throws IOException {
+    public void dispatch(int memoryUsage, String brokerUrl, String outQueue, String inQueue, int maxDelivery,
+            Runnable runnable) throws IOException {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         try {
-            Deployment deployment = createDeployment(memoryUsage, brokerUrl, outQueue, inQueue);
+            Deployment deployment = createDeployment(memoryUsage, brokerUrl, outQueue, inQueue, maxDelivery);
             try {
                 DeploymentScaler scaler = new DeploymentScaler(classloader, client, namespace);
                 ScheduledFuture<?> scalerFuture = executor.scheduleAtFixedRate(scaler, 60, 60, TimeUnit.SECONDS);
@@ -86,7 +86,8 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         }
     }
 
-    private Deployment createDeployment(int memoryUsage, String brokerUrl, String outQueue, String inQueue) {
+    private Deployment createDeployment(int memoryUsage, String brokerUrl, String outQueue, String inQueue,
+            int maxDelivery) {
         LOGGER.info("create deployment");
 
         List<VolumeMount> volumeMounts = new ArrayList<>();
@@ -110,7 +111,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
         volumes.add(volumeWorkspace);
 
-        Container container = createContainer(memoryUsage, brokerUrl, outQueue, inQueue, volumeMounts);
+        Container container = createContainer(memoryUsage, brokerUrl, outQueue, inQueue, volumeMounts, maxDelivery);
 
         Toleration toleration = new TolerationBuilder().withKey("remote")
             .withOperator("Exists")
@@ -153,7 +154,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     }
 
     private Container createContainer(int memoryUsage, String brokerUrl, String outQueue, String inQueue,
-            List<VolumeMount> volumeMounts) {
+            List<VolumeMount> volumeMounts, int maxDelivery) {
         Map<String, Quantity> reqMap = new HashMap<>();
         reqMap.put("cpu", new Quantity("0.9"));
         reqMap.put("memory", new Quantity(String.format("%dGi", memoryUsage)));
@@ -173,6 +174,9 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                         .build(),
                     new EnvVarBuilder().withName("QUEUE_OUT")
                         .withValue(inQueue)
+                        .build(),
+                    new EnvVarBuilder().withName("MAX_DELIVERY")
+                        .withValue(Integer.toString(maxDelivery))
                         .build(),
                     new EnvVarBuilder().withName("NODE_NAME")
                         .withNewValueFrom()

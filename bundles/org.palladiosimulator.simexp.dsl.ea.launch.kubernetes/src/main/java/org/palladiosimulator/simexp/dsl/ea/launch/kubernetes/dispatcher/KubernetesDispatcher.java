@@ -120,6 +120,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             PodRestartObserver restartObserver) throws IOException {
         String inQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_IN);
         String outQueueName = getPreference(KubernetesPreferenceConstants.RABBIT_QUEUE_OUT);
+        int maxDelivery = preferencesService.getInt(KubernetesPreferenceConstants.ID,
+                KubernetesPreferenceConstants.RABBIT_MAX_DELIVERY, 3, null);
+
         try (TaskReceiver taskReceiver = new TaskReceiver(channel, inQueueName, classloader)) {
             Path csvResourcePath = resourcePath.resolve("kubernetes")
                 .resolve("simulation_result.csv");
@@ -141,7 +144,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, launcherName, projectPaths, timeZone,
                         parallelism, classloader);
                 int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
-                dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, new Runnable() {
+                dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, maxDelivery, new Runnable() {
 
                     @Override
                     public void run() {

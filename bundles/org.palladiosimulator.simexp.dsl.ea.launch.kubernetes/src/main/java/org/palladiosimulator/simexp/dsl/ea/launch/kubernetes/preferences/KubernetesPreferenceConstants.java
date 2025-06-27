@@ -13,4 +13,5 @@ public interface KubernetesPreferenceConstants {
     static final String RABBIT_QUEUE_OUT = "RabbitMQ queue out";
     static final String RABBIT_QUEUE_IN = "RabbitMQ queue in";
     static final String RABBIT_CONSUMER_TIMEOUT = "RabbitMQ consumer timeout";
+    static final String RABBIT_MAX_DELIVERY = "RabbitMQ max delivery";
 }

@@ -44,6 +44,11 @@ public class KubernetesWorkbenchPreferencePage extends FieldEditorPreferencePage
         int week_hours = (int) TimeUnit.DAYS.toHours(7);
         consumerTimeoutEditor.setValidRange(1, week_hours);
         addField(consumerTimeoutEditor);
+
+        IntegerFieldEditor maxDeliveryEditor = new IntegerFieldEditor(KubernetesPreferenceConstants.RABBIT_MAX_DELIVERY,
+                KubernetesPreferenceConstants.RABBIT_MAX_DELIVERY, getFieldEditorParent());
+        maxDeliveryEditor.setValidRange(1, 10);
+        addField(maxDeliveryEditor);
     }
 
 }
