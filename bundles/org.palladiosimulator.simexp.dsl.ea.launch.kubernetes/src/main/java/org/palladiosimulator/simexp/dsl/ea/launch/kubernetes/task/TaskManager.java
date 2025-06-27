@@ -210,7 +210,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     }
 
     private String getTasksDescription(TaskState taskState) {
-        String tasksStatus = String.format("task %s %d / %d|%d|%d / %d", taskState.state, taskState.started,
+        int done = taskState.completed + taskState.failed + taskState.aborted;
+        String tasksStatus = String.format("task %s %d / %d(%d|%d|%d) / %d", taskState.state, taskState.started, done,
                 taskState.completed, taskState.failed, taskState.aborted, taskState.created);
         return tasksStatus;
     }
