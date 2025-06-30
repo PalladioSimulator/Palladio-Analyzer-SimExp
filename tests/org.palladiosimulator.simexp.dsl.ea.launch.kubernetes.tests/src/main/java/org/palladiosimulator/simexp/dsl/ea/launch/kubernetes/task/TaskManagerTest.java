@@ -37,17 +37,32 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testTaskCompletedReward() {
+    public void testTaskStart() {
         List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
         taskManager.newTask("t", task, optimizableValues);
         JobResult result = new JobResult();
+
+        TaskState actualTaskStatus = taskManager.onTaskStarted("t", result);
+
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(1);
+        assertThat(actualTaskStatus.completed).isEqualTo(0);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskStartAfterComplete() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
         result.reward = 1.0;
+        taskManager.onTaskCompleted("t", result);
 
-        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", result);
+        JobResult startResult = new JobResult();
+        TaskState actualTaskStatus = taskManager.onTaskStarted("t", startResult);
 
-        verify(task).setResult(captor.capture());
-        Optional<Double> capturedArgument = captor.getValue();
-        assertThat(capturedArgument).hasValue(result.reward);
         assertThat(actualTaskStatus.created).isEqualTo(1);
         assertThat(actualTaskStatus.started).isEqualTo(0);
         assertThat(actualTaskStatus.completed).isEqualTo(1);
@@ -56,13 +71,59 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testTaskFailed() {
+    public void testTaskCompleted() {
         List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
         taskManager.newTask("t", task, optimizableValues);
         JobResult result = new JobResult();
-        result.reward = null;
+        taskManager.taskStarted("t", result);
 
-        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", result);
+        JobResult completedResult = new JobResult();
+        completedResult.reward = 1.0;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completedResult);
+
+        verify(task).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).hasValue(completedResult.reward);
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(1);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskCompletedAfterAbort() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+        taskManager.taskAborted("t", result);
+
+        JobResult completeResult = new JobResult();
+        completeResult.reward = 1.0;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completeResult);
+
+        verify(task, times(1)).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).isEmpty();
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(0);
+        assertThat(actualTaskStatus.aborted).isEqualTo(1);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskCompletedAfterFailed() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+        taskManager.onTaskCompleted("t", result);
+
+        JobResult completeResult = new JobResult();
+        completeResult.reward = 1.0;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completeResult);
 
         verify(task, times(1)).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
@@ -75,10 +136,52 @@ public class TaskManagerTest {
     }
 
     @Test
+    public void testTaskFailed() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+
+        JobResult failedResult = new JobResult();
+        failedResult.reward = null;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", failedResult);
+
+        verify(task, times(1)).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).isEmpty();
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(0);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(1);
+    }
+
+    @Test
+    public void testTaskFailedAfterComplete() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+        result.reward = 1.0;
+        taskManager.onTaskCompleted("t", result);
+
+        JobResult failedResult = new JobResult();
+        failedResult.reward = null;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", failedResult);
+
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(1);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
     public void testTaskAbortedFirst() {
         List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
         taskManager.newTask("t", task, optimizableValues);
         JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
 
         TaskState actualTaskStatus = taskManager.onTaskAborted("t", result);
 
@@ -97,6 +200,7 @@ public class TaskManagerTest {
         List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
         taskManager.newTask("t", task, optimizableValues);
         JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
         taskManager.taskAborted("t", result);
         taskManager.taskAborted("t", result);
 
@@ -109,6 +213,26 @@ public class TaskManagerTest {
         assertThat(actualTaskStatus.started).isEqualTo(0);
         assertThat(actualTaskStatus.completed).isEqualTo(0);
         assertThat(actualTaskStatus.aborted).isEqualTo(1);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskAbortedAfterComplete() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+        result.reward = 1.0;
+        taskManager.onTaskCompleted("t", result);
+        taskManager.taskStarted("t", result);
+
+        JobResult abortResult = new JobResult();
+        TaskState actualTaskStatus = taskManager.onTaskAborted("t", abortResult);
+
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(1);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
         assertThat(actualTaskStatus.failed).isEqualTo(0);
     }
 

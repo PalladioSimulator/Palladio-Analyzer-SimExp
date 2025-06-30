@@ -29,16 +29,17 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Set<String> startedTasks;
+    private final Set<String> completedTasks;
     private final Set<String> abortedTasks;
     private final Set<String> failedTasks;
 
-    private int receivedCount = 0;
     private int taskCount = 0;
 
     public TaskManager(IResultLogger resultLogger) {
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashSet<>();
+        this.completedTasks = new HashSet<>();
         this.abortedTasks = new HashSet<>();
         this.failedTasks = new HashSet<>();
     }
@@ -85,7 +86,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             taskCount++;
             outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
             started = startedTasks.size();
-            completed = receivedCount;
+            completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = taskCount;
@@ -108,9 +109,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int failed;
         final int created;
         synchronized (this) {
-            startedTasks.add(taskId);
+            if (!completedTasks.contains(taskId)) {
+                startedTasks.add(taskId);
+            }
             started = startedTasks.size();
-            completed = receivedCount;
+            completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = taskCount;
@@ -143,19 +146,19 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         synchronized (this) {
             startedTasks.remove(taskId);
             started = startedTasks.size();
+            taskInfo = outstandingTasks.remove(taskId);
             if (result.reward != null) {
                 statusString = "completed";
+                if (taskInfo != null) {
+                    completedTasks.add(taskId);
+                }
             } else {
                 statusString = "failed";
-                failedTasks.add(taskId);
+                if (taskInfo != null) {
+                    failedTasks.add(taskId);
+                }
             }
-            taskInfo = outstandingTasks.remove(taskId);
-            if ((result.reward != null) && (taskInfo != null)) {
-                completed = ++receivedCount;
-            } else {
-                completed = receivedCount;
-            }
-            abortedTasks.remove(taskId);
+            completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = taskCount;
@@ -192,10 +195,12 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int created;
         final TaskInfo taskInfo;
         synchronized (this) {
-            startedTasks.remove(taskId);
+            boolean processed = !startedTasks.remove(taskId);
             started = startedTasks.size();
-            completed = receivedCount;
-            abortedTasks.add(taskId);
+            completed = completedTasks.size();
+            if (!processed) {
+                abortedTasks.add(taskId);
+            }
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = taskCount;
