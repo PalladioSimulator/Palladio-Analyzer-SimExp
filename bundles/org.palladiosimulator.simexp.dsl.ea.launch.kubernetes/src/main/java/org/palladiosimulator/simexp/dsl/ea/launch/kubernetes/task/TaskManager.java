@@ -33,7 +33,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     private final Set<String> abortedTasks;
     private final Set<String> failedTasks;
 
-    private int taskCount = 0;
+    private int createdCount = 0;
 
     public TaskManager(IResultLogger resultLogger) {
         this.resultLogger = resultLogger;
@@ -83,13 +83,13 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int failed;
         final int created;
         synchronized (this) {
-            taskCount++;
+            createdCount++;
             outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
             started = startedTasks.size();
             completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
-            created = taskCount;
+            created = createdCount;
         }
         return new TaskState("created", completed, started, aborted, failed, created, null);
     }
@@ -116,7 +116,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
-            created = taskCount;
+            created = createdCount;
         }
         return new TaskState("started", completed, started, aborted, failed, created, null);
     }
@@ -161,7 +161,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
-            created = taskCount;
+            created = createdCount;
 
         }
         if (taskInfo != null) {
@@ -203,7 +203,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             }
             aborted = abortedTasks.size();
             failed = failedTasks.size();
-            created = taskCount;
+            created = createdCount;
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo != null) {
