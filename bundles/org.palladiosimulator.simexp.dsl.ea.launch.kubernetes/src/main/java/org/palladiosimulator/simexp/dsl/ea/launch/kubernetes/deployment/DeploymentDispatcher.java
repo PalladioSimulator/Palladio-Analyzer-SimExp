@@ -176,7 +176,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                         .withValue(inQueue)
                         .build(),
                     new EnvVarBuilder().withName("MAX_DELIVERY")
-                        .withValue(Integer.toString(maxDelivery))
+                        .withValue(String.format("--max_delivery %d", maxDelivery))
                         .build(),
                     new EnvVarBuilder().withName("NODE_NAME")
                         .withNewValueFrom()
