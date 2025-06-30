@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EmptyDirVolumeSourceBuilder;
+import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.HostPathVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.LocalObjectReferenceBuilder;
@@ -111,7 +113,8 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
         volumes.add(volumeWorkspace);
 
-        Container container = createContainer(memoryUsage, brokerUrl, outQueue, inQueue, volumeMounts, maxDelivery);
+        List<EnvVar> environment = createEnvironment(brokerUrl, outQueue, inQueue, maxDelivery);
+        Container container = createContainer(memoryUsage, environment, volumeMounts);
 
         Toleration toleration = new TolerationBuilder().withKey("remote")
             .withOperator("Exists")
@@ -153,8 +156,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         return deploymentResource;
     }
 
-    private Container createContainer(int memoryUsage, String brokerUrl, String outQueue, String inQueue,
-            List<VolumeMount> volumeMounts, int maxDelivery) {
+    private Container createContainer(int memoryUsage, List<EnvVar> environment, List<VolumeMount> volumeMounts) {
         Map<String, Quantity> reqMap = new HashMap<>();
         reqMap.put("cpu", new Quantity("0.9"));
         reqMap.put("memory", new Quantity(String.format("%dGi", memoryUsage)));
@@ -164,45 +166,49 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
         Container container = new ContainerBuilder().withName("simexp")
             .withImage(String.format("%s:%s/simexp_console", imageRegistryUrl.getHost(), imageRegistryUrl.getPort()))
             .withImagePullPolicy("Always")
-            .withEnv(
-                    // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
-                    new EnvVarBuilder().withName("BROKER_URL")
-                        .withValue(brokerUrl)
-                        .build(),
-                    new EnvVarBuilder().withName("QUEUE_IN")
-                        .withValue(outQueue)
-                        .build(),
-                    new EnvVarBuilder().withName("QUEUE_OUT")
-                        .withValue(inQueue)
-                        .build(),
-                    new EnvVarBuilder().withName("MAX_DELIVERY")
-                        .withValue(String.format("--max_delivery %d", maxDelivery))
-                        .build(),
-                    new EnvVarBuilder().withName("NODE_NAME")
-                        .withNewValueFrom()
-                        .withNewFieldRef()
-                        .withFieldPath("spec.nodeName")
-                        .endFieldRef()
-                        .endValueFrom()
-                        .build(),
-                    new EnvVarBuilder().withName("POD_NAMESPACE")
-                        .withNewValueFrom()
-                        .withNewFieldRef()
-                        .withFieldPath("metadata.namespace")
-                        .endFieldRef()
-                        .endValueFrom()
-                        .build(),
-                    new EnvVarBuilder().withName("POD_NAME")
-                        .withNewValueFrom()
-                        .withNewFieldRef()
-                        .withFieldPath("metadata.name")
-                        .endFieldRef()
-                        .endValueFrom()
-                        .build())
+            .withEnv(environment)
             .withResources(reqs)
             .withVolumeMounts(volumeMounts)
             .build();
         return container;
+    }
+
+    private List<EnvVar> createEnvironment(String brokerUrl, String outQueue, String inQueue, int maxDelivery) {
+        return Arrays.asList(
+                // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
+                new EnvVarBuilder().withName("BROKER_URL")
+                    .withValue(brokerUrl)
+                    .build(),
+                new EnvVarBuilder().withName("QUEUE_IN")
+                    .withValue(outQueue)
+                    .build(),
+                new EnvVarBuilder().withName("QUEUE_OUT")
+                    .withValue(inQueue)
+                    .build(),
+                new EnvVarBuilder().withName("MAX_DELIVERY")
+                    .withValue(String.format("--max_delivery %d", maxDelivery))
+                    .build(),
+                new EnvVarBuilder().withName("NODE_NAME")
+                    .withNewValueFrom()
+                    .withNewFieldRef()
+                    .withFieldPath("spec.nodeName")
+                    .endFieldRef()
+                    .endValueFrom()
+                    .build(),
+                new EnvVarBuilder().withName("POD_NAMESPACE")
+                    .withNewValueFrom()
+                    .withNewFieldRef()
+                    .withFieldPath("metadata.namespace")
+                    .endFieldRef()
+                    .endValueFrom()
+                    .build(),
+                new EnvVarBuilder().withName("POD_NAME")
+                    .withNewValueFrom()
+                    .withNewFieldRef()
+                    .withFieldPath("metadata.name")
+                    .endFieldRef()
+                    .endValueFrom()
+                    .build());
     }
 
     private void removeDeployment(Deployment deployment) {
