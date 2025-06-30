@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -77,6 +78,41 @@ public class TaskManagerTest {
         JobResult result = new JobResult();
         taskManager.taskStarted("t", result);
 
+        JobResult completedResult = new JobResult();
+        completedResult.reward = 1.0;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completedResult);
+
+        verify(task).setResult(captor.capture());
+        Optional<Double> capturedArgument = captor.getValue();
+        assertThat(capturedArgument).hasValue(completedResult.reward);
+        assertThat(actualTaskStatus.created).isEqualTo(1);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(1);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskCompletedWithoutCreate() {
+        JobResult result = new JobResult();
+        taskManager.taskStarted("t", result);
+
+        JobResult completedResult = new JobResult();
+        completedResult.reward = 1.0;
+        TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completedResult);
+
+        verify(task, never()).setResult(captor.capture());
+        assertThat(actualTaskStatus.created).isEqualTo(0);
+        assertThat(actualTaskStatus.started).isEqualTo(0);
+        assertThat(actualTaskStatus.completed).isEqualTo(0);
+        assertThat(actualTaskStatus.aborted).isEqualTo(0);
+        assertThat(actualTaskStatus.failed).isEqualTo(0);
+    }
+
+    @Test
+    public void testTaskCompletedWithoutStart() {
+        List<OptimizableValue<?>> optimizableValues = new ArrayList<>();
+        taskManager.newTask("t", task, optimizableValues);
         JobResult completedResult = new JobResult();
         completedResult.reward = 1.0;
         TaskState actualTaskStatus = taskManager.onTaskCompleted("t", completedResult);
