@@ -148,9 +148,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             started = startedTasks.size();
             taskInfo = outstandingTasks.remove(taskId);
             if (result.reward != null) {
-                statusString = "completed";
                 if (taskInfo != null) {
+                    statusString = "completed";
                     completedTasks.add(taskId);
+                } else {
+                    statusString = "completed after abort";
                 }
             } else {
                 statusString = "failed";
