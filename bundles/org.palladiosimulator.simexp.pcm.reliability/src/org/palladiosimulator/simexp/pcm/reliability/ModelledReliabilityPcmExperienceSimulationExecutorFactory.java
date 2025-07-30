@@ -117,8 +117,6 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
             .get(0);
         SimulatedMeasurementSpecification reliabilitySpec = new PcmRelSimulatedMeasurementSpec(usageScenario);
         List<PcmMeasurementSpecification> pcmMeasurementSpecs = createSpecs(experiment);
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
-        simSpecs.add(reliabilitySpec);
 
         List<SimulatedMeasurementSpecification> joinedSpecs = new ArrayList<>();
         joinedSpecs.addAll(pcmMeasurementSpecs); // currently contains the performance related
@@ -135,7 +133,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         IOptimizedConfiguration optimizedConfiguration = getOptimizedConfiguration(getWorkflowConfiguration(), smodel);
         List<OptimizableValue<?>> optimizableValues = optimizedConfiguration.getOptimizableValues();
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider(optimizableValues);
-        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
+        Monitor monitor = new PcmMonitor(joinedSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider, optimizableValueProvider);
         beforeExecutionInitializables.add(() -> smodelInterpreter.reset());

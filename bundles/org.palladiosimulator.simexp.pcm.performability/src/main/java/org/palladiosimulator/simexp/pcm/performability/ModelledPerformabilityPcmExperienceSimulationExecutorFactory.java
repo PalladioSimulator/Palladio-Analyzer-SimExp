@@ -99,7 +99,6 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 qvtoReconfigurationManager);
         beforeExecutionInitializables.add(beforeExecutionInitializable);
 
-        List<SimulatedMeasurementSpecification> simSpecs = new ArrayList<>(pcmMeasurementSpecs);
         IModelsLookup modelsLookup = new ModelsLookup(experiment);
         PcmProbeValueProvider probeValueProvider = new PcmProbeValueProvider(modelsLookup);
         EnvironmentVariableValueProvider environmentVariableValueProvider = new EnvironmentVariableValueProvider(
@@ -107,7 +106,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         IOptimizedConfiguration optimizedConfiguration = getOptimizedConfiguration(getWorkflowConfiguration(), smodel);
         List<OptimizableValue<?>> optimizableValues = optimizedConfiguration.getOptimizableValues();
         OptimizableValueProvider optimizableValueProvider = new OptimizableValueProvider(optimizableValues);
-        Monitor monitor = new PcmMonitor(simSpecs, probeValueProvider, environmentVariableValueProvider);
+        Monitor monitor = new PcmMonitor(pcmMeasurementSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider, optimizableValueProvider);
         beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
