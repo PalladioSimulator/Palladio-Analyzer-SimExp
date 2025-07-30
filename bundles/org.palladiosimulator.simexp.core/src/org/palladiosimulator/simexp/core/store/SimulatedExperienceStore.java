@@ -51,7 +51,7 @@ public class SimulatedExperienceStore<A, R> {
         return findSimulatedExperience(simExp.getId()).isPresent();
     }
 
-    public Optional<SimulatedExperience> findSimulatedExperience(String id) {
+    private Optional<SimulatedExperience> findSimulatedExperience(String id) {
         try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
             Optional<SimulatedExperience> result = readAccessor.findSimulatedExperience(id);
             return result;
