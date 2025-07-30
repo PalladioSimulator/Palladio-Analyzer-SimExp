@@ -8,7 +8,8 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -30,13 +31,13 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     }
 
     protected final EnvironmentProcess<A, R, V> environmentalDynamics;
-    private final SimulatedExperienceStore<A, R> simulatedExperienceStore;
+    private final SimulatedExperienceAccessor accessor;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
-            SimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
+            SimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
         this.environmentalDynamics = environmentalDynamics;
-        this.simulatedExperienceStore = simulatedExperienceStore;
+        this.accessor = accessor;
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
@@ -114,8 +115,7 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
 
     private SelfAdaptiveSystemState<C, A, V> determineQuantifiedState(
             SelfAdaptiveSystemState<C, A, V> structuralState) {
-        Optional<SimulatedExperience> result = simulatedExperienceStore
-            .findSelfAdaptiveSystemState(structuralState.toString());
+        Optional<SimulatedExperience> result = findSelfAdaptiveSystemState(structuralState.toString());
         if (result.isPresent()) {
             LOGGER.info(
                     String.format("cache hit for state: %s -> re-use existing measuremnt", structuralState.toString()));
@@ -126,6 +126,13 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
         }
         structuralState.determineQuantifiedState();
         return structuralState;
+    }
+
+    private Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
+        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
+            Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
+            return result;
+        }
     }
 
     protected abstract SelfAdaptiveSystemState<C, A, V> determineStructuralState(NavigationContext<A> context);

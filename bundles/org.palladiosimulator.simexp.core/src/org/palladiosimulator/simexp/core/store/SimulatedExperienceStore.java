@@ -19,9 +19,13 @@ public class SimulatedExperienceStore<A, R> {
         this.accessor = accessor;
     }
 
+    public SimulatedExperienceAccessor getAccessor() {
+        return accessor;
+    }
+
     public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
+        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
             .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(toSimulatedExperience(trajectory));
         }
@@ -41,7 +45,7 @@ public class SimulatedExperienceStore<A, R> {
         }
 
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
-        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
+        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
             .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(simExp);
         }
@@ -52,15 +56,8 @@ public class SimulatedExperienceStore<A, R> {
     }
 
     private Optional<SimulatedExperience> findSimulatedExperience(String id) {
-        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
+        try (SimulatedExperienceReadAccessor readAccessor = getAccessor().createSimulatedExperienceReadAccessor()) {
             Optional<SimulatedExperience> result = readAccessor.findSimulatedExperience(id);
-            return result;
-        }
-    }
-
-    public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
-        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
-            Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
             return result;
         }
     }

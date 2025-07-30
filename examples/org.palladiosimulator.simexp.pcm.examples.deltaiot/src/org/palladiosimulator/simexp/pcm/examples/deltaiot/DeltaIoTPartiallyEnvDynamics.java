@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -33,12 +33,10 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess, Optional<ISeedProvider> seedProvider,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            SimulatedExperienceAccessor accessor, DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            Optional<ISeedProvider> seedProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(dbn, modelAccess, seedProvider);
-        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(simulatedExperienceStore,
-                simulationRunnerHolder);
+        this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(accessor, simulationRunnerHolder);
     }
 
     public SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> getEnvironmentProcess() {
@@ -46,10 +44,9 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     }
 
     private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createPartiallyEnvironmentalDrivenProcess(
-            SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            SimulationRunnerHolder simulationRunnerHolder) {
+            SimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
         return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>>(
-                envProcess, simulatedExperienceStore, simulationRunnerHolder) {
+                envProcess, accessor, simulationRunnerHolder) {
 
             class SNREquation {
 
