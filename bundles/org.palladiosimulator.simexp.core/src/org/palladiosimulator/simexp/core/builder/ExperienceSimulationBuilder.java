@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceN
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -51,7 +51,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private RewardEvaluator<R> rewardEvaluator = null;
     private Policy<A, Aa> policy = null;
     private EnvironmentProcess<A, R, V> envProcess = null;
-    private SimulatedExperienceStore<A, R> simulatedExperienceStore;
+    private ISimulatedExperienceStore<A, R> simulatedExperienceStore;
     private SimulationRunnerHolder simulationRunnerHolder;
     private boolean isHiddenProcess = false;
     private Optional<MarkovModel<A, R>> markovModel = Optional.empty();
@@ -230,7 +230,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     public class SelfAdaptiveSystemBuilder {
 
         public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<A, R, V> envProcess,
-                SimulatedExperienceStore<A, R> simulatedExperienceStore,
+                ISimulatedExperienceStore<A, R> simulatedExperienceStore,
                 SimulationRunnerHolder simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.simulatedExperienceStore = simulatedExperienceStore;

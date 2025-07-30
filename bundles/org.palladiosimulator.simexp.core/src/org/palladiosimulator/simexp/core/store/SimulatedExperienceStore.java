@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 
-public class SimulatedExperienceStore<A, R> {
+public class SimulatedExperienceStore<A, R> implements ISimulatedExperienceStore<A, R> {
 
     private final DescriptionProvider descriptionProvider;
     private final ISimulatedExperienceAccessor accessor;
@@ -19,10 +19,12 @@ public class SimulatedExperienceStore<A, R> {
         this.accessor = accessor;
     }
 
+    @Override
     public ISimulatedExperienceAccessor getAccessor() {
         return accessor;
     }
 
+    @Override
     public void store(Trajectory<A, R> trajectory) {
         SimulatedExperienceStoreDescription description = descriptionProvider.getDescription();
         try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
@@ -38,6 +40,7 @@ public class SimulatedExperienceStore<A, R> {
             .collect(Collectors.toList());
     }
 
+    @Override
     public void store(Sample<A, R> sample) {
         SimulatedExperience simExp = DefaultSimulatedExperience.of(sample);
         if (isAlreadyStored(simExp)) {
