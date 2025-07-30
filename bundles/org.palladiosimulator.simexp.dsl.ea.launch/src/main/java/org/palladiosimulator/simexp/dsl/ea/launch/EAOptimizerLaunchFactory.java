@@ -10,7 +10,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
@@ -57,7 +57,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            ModelLoader.Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath)
+            ModelLoader.Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath)
             throws CoreException {
         ModelLoader modelLoader = modelLoaderFactory.create();
         ModelledModelLoader modelledModelLoader = (ModelledModelLoader) modelLoader;

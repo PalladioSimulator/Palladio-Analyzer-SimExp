@@ -36,7 +36,7 @@ import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -70,7 +70,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             String simulationID = simulationParameters.getSimulationID();
             Path resourcePath = getResourcePath(simulationID);
             Files.createDirectories(resourcePath);
-            SimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
+            ISimulatedExperienceAccessor accessor = new CsvAccessor(resourcePath);
             String launcherName = launch.getLaunchConfiguration()
                 .getName();
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,

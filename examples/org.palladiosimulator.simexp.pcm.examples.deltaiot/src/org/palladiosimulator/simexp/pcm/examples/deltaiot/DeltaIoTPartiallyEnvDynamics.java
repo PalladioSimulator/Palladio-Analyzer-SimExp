@@ -15,7 +15,7 @@ import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
@@ -33,7 +33,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     private final SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> partiallyEnvProcess;
 
     public DeltaIoTPartiallyEnvDynamics(DynamicBayesianNetwork<CategoricalValue> dbn,
-            SimulatedExperienceAccessor accessor, DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            ISimulatedExperienceAccessor accessor, DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
             Optional<ISeedProvider> seedProvider, SimulationRunnerHolder simulationRunnerHolder) {
         super(dbn, modelAccess, seedProvider);
         this.partiallyEnvProcess = createPartiallyEnvironmentalDrivenProcess(accessor, simulationRunnerHolder);
@@ -44,7 +44,7 @@ public class DeltaIoTPartiallyEnvDynamics<R> extends DeltaIoTBaseEnvironemtalDyn
     }
 
     private SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>> createPartiallyEnvironmentalDrivenProcess(
-            SimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
+            ISimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
         return new SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, List<InputValue<CategoricalValue>>>(
                 envProcess, accessor, simulationRunnerHolder) {
 

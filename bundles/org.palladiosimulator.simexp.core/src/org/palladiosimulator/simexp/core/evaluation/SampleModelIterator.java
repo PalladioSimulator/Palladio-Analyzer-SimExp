@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 
 public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
@@ -14,12 +14,12 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
 
     private int iteration;
 
-    private SampleModelIterator(SimulatedExperienceAccessor accessor) {
+    private SampleModelIterator(ISimulatedExperienceAccessor accessor) {
         readAccessor = accessor.createSimulatedExperienceReadAccessor();
         this.iteration = 0;
     }
 
-    public static SampleModelIterator get(SimulatedExperienceAccessor accessor) {
+    public static SampleModelIterator get(ISimulatedExperienceAccessor accessor) {
         return new SampleModelIterator(accessor);
     }
 

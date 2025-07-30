@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 
 public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
 
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
 
-    private SimulatedExperienceEvaluator(SimulatedExperienceAccessor accessor) {
+    private SimulatedExperienceEvaluator(ISimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
-    public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor, String simulationId,
+    public static TotalRewardCalculation of(ISimulatedExperienceAccessor accessor, String simulationId,
             String sampleSpaceId) {
         return new SimulatedExperienceEvaluator(accessor);
     }

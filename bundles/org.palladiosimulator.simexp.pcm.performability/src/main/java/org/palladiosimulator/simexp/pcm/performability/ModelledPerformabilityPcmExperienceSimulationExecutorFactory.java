@@ -21,7 +21,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -69,7 +69,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
     public ModelledPerformabilityPcmExperienceSimulationExecutorFactory(
             IModelledPcmWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
                 resourcePath);
     }

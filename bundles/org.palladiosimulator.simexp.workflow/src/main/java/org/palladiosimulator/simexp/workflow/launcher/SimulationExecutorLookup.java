@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
 import org.palladiosimulator.simexp.workflow.api.ISimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
@@ -35,7 +35,7 @@ public class SimulationExecutorLookup {
 
     public SimulationExecutor lookupSimulationExecutor(ISimExpWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
-            SimulatedExperienceAccessor accessor, Path resourcePath) throws CoreException {
+            ISimulatedExperienceAccessor accessor, Path resourcePath) throws CoreException {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         List<ILaunchFactory> factories = lookupFactories(registry);
         List<Pair<ILaunchFactory, Integer>> candidates = createCandidates(config, factories);

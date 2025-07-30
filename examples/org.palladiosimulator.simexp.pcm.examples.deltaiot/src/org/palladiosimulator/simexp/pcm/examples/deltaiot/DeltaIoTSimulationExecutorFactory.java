@@ -20,7 +20,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -65,7 +65,7 @@ public class DeltaIoTSimulationExecutorFactory extends
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
                 resourcePath);
     }
@@ -89,7 +89,7 @@ public class DeltaIoTSimulationExecutorFactory extends
         DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         SimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore = getSimulatedExperienceStore();
-        SimulatedExperienceAccessor accessor = simulatedExperienceStore.getAccessor();
+        ISimulatedExperienceAccessor accessor = simulatedExperienceStore.getAccessor();
         DeltaIoTPartiallyEnvDynamics<Double> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, accessor, modelAccess,
                 getSeedProvider(), simulationRunnerHolder);
         SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p

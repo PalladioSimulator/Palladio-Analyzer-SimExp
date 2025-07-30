@@ -7,7 +7,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -37,7 +37,7 @@ public class CustomPrismSimulationExecutorLaunchFactory implements ILaunchFactor
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
+            Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         IPrismWorkflowConfiguration workflowConfiguration = (IPrismWorkflowConfiguration) config;
 //        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(

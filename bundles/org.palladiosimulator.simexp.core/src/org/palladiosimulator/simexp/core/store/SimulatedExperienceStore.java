@@ -12,14 +12,14 @@ import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Traj
 public class SimulatedExperienceStore<A, R> {
 
     private final DescriptionProvider descriptionProvider;
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
 
-    public SimulatedExperienceStore(SimulatedExperienceAccessor accessor, DescriptionProvider descriptionProvider) {
+    public SimulatedExperienceStore(ISimulatedExperienceAccessor accessor, DescriptionProvider descriptionProvider) {
         this.descriptionProvider = descriptionProvider;
         this.accessor = accessor;
     }
 
-    public SimulatedExperienceAccessor getAccessor() {
+    public ISimulatedExperienceAccessor getAccessor() {
         return accessor;
     }
 

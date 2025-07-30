@@ -1,6 +1,6 @@
 package org.palladiosimulator.simexp.core.store;
 
-public interface SimulatedExperienceAccessor {
+public interface ISimulatedExperienceAccessor {
     SimulatedExperienceWriteAccessor createSimulatedExperienceWriteAccessor(SimulatedExperienceStoreDescription desc);
 
     SimulatedExperienceReadAccessor createSimulatedExperienceReadAccessor();

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -36,7 +36,7 @@ public class ModelledPrismSimulationExecutorLaunchFactory implements ILaunchFact
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
             LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, SimulatedExperienceAccessor accessor, Path resourcePath) {
+            Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         IModelledPrismWorkflowConfiguration workflowConfiguration = (IModelledPrismWorkflowConfiguration) config;
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
         ModelledPrismPcmExperienceSimulationExecutorFactory factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(

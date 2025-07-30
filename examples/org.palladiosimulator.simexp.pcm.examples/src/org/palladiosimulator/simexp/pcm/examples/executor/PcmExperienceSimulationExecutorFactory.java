@@ -26,7 +26,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -66,13 +66,13 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     private final Optional<ISeedProvider> seedProvider;
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
     private final Path resourcePath;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
             SimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
-            Optional<ISeedProvider> seedProvider, SimulatedExperienceAccessor accessor, Path resourcePath) {
+            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.simulatedExperienceStore = simulatedExperienceStore;
@@ -95,7 +95,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return resourcePath;
     }
 
-    protected SimulatedExperienceAccessor getAccessor() {
+    protected ISimulatedExperienceAccessor getAccessor() {
         return accessor;
     }
 

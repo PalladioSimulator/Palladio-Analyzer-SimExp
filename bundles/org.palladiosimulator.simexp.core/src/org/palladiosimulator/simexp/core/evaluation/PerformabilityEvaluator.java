@@ -6,19 +6,19 @@ import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 
 public class PerformabilityEvaluator implements TotalRewardCalculation {
 
     private static final Logger LOGGER = Logger.getLogger(PerformabilityEvaluator.class.getName());
 
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
 
-    private PerformabilityEvaluator(SimulatedExperienceAccessor accessor) {
+    private PerformabilityEvaluator(ISimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
-    public static TotalRewardCalculation of(SimulatedExperienceAccessor accessor) {
+    public static TotalRewardCalculation of(ISimulatedExperienceAccessor accessor) {
         return new PerformabilityEvaluator(accessor);
     }
 

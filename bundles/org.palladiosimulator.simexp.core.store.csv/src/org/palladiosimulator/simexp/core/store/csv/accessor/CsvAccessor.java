@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.core.store.csv.accessor;
 
 import java.nio.file.Path;
 
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceWriteAccessor;
@@ -10,7 +10,7 @@ import org.palladiosimulator.simexp.core.store.csv.accessor.impl.CachingReadAcce
 import org.palladiosimulator.simexp.core.store.csv.accessor.impl.ReadAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.impl.WriteAccessor;
 
-public class CsvAccessor implements SimulatedExperienceAccessor {
+public class CsvAccessor implements ISimulatedExperienceAccessor {
     private final Path resourceFolder;
 
     public CsvAccessor(Path resourceFolder) {

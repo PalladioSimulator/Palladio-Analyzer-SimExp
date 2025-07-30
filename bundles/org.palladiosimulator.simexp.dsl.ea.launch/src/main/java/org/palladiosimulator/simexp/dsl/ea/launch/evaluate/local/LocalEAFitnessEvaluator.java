@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 import org.palladiosimulator.edp2.impl.RepositoryManager;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
@@ -119,7 +119,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
                     e);
             throw new CoreException(status);
         }
-        SimulatedExperienceAccessor accessor = new CsvAccessor(currentResourceFolder);
+        ISimulatedExperienceAccessor accessor = new CsvAccessor(currentResourceFolder);
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
                 optimizableSimExpWorkflowConfiguration, launcherName, launchDescriptionProvider, seedProvider, accessor,
                 currentResourceFolder);

@@ -8,7 +8,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
@@ -31,11 +31,11 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     }
 
     protected final EnvironmentProcess<A, R, V> environmentalDynamics;
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
-            SimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
+            ISimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
         this.environmentalDynamics = environmentalDynamics;
         this.accessor = accessor;
         this.simulationRunnerHolder = simulationRunnerHolder;

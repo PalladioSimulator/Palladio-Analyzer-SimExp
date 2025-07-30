@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.valuefunction.MonteCarloPrediction;
 import org.palladiosimulator.simexp.core.valuefunction.ValueFunction;
 
@@ -55,9 +55,9 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
     }
 
-    private final SimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceAccessor accessor;
 
-    public ExpectedRewardEvaluator(SimulatedExperienceAccessor accessor) {
+    public ExpectedRewardEvaluator(ISimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
     }
 
