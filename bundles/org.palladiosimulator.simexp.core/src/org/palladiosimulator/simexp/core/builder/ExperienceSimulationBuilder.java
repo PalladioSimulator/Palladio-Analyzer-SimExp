@@ -92,7 +92,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             .addSimulationRunner(getSimulationRunner())
             .sampleWith(buildMarkovSampler(seedProvider, sampleDumper))
             .build();
-        return ExperienceSimulator.createSimulator(config, simulatedExperienceStore, simulationRunnerHolder);
+        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     private void checkValidity() {

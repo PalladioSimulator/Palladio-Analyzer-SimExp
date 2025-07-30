@@ -19,7 +19,7 @@ public class ExperienceSimulator<C, A, R> {
     private final ISimulatedExperienceStore<A, R> simulatedExperienceStore;
     private final int numberOfRuns;
 
-    private ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
+    public ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
             ISimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
@@ -27,12 +27,6 @@ public class ExperienceSimulator<C, A, R> {
         this.beforeExecutionInitializations = config.getBeforeExecutionInitialization();
         simulationRunnerHolder.registerSimulationRunners(simulationRunners);
         this.simulatedExperienceStore = simulatedExperienceStore;
-    }
-
-    public static <S, A, R> ExperienceSimulator<S, A, R> createSimulator(
-            ExperienceSimulationConfiguration<S, A, R> config, ISimulatedExperienceStore<A, R> simulatedExperienceStore,
-            SimulationRunnerHolder simulationRunnerHolder) {
-        return new ExperienceSimulator<>(config, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     public void run() {
