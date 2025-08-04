@@ -51,12 +51,6 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
     }
 
     @Override
-    public boolean existTrajectoryAt(int index) {
-        Optional<List<SimulatedExperience>> trajectory = getTrajectoryAt(index);
-        return trajectory.isPresent();
-    }
-
-    @Override
     public Optional<List<SimulatedExperience>> getTrajectoryAt(int index) {
         // First line (header) has to be omitted
         index++;

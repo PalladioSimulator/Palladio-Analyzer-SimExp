@@ -10,7 +10,5 @@ public interface SimulatedExperienceReadAccessor extends BaseSimulatedExperience
 
     Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id);
 
-    boolean existTrajectoryAt(int iteration);
-
     Optional<List<SimulatedExperience>> getTrajectoryAt(int index);
 }

@@ -47,11 +47,6 @@ public class CachingReadAccessor implements SimulatedExperienceReadAccessor {
     }
 
     @Override
-    public boolean existTrajectoryAt(int iteration) {
-        return delegate.existTrajectoryAt(iteration);
-    }
-
-    @Override
     public Optional<List<SimulatedExperience>> getTrajectoryAt(int index) {
         return delegate.getTrajectoryAt(index);
     }
