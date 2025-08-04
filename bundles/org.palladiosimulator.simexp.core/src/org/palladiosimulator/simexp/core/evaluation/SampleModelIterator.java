@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.core.evaluation;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
@@ -31,8 +32,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
     @Override
     public List<SimulatedExperience> next() {
         if (hasNext() == false) {
-            // TODO exception handling
-            throw new RuntimeException("");
+            throw new NoSuchElementException();
         }
 
         Optional<List<SimulatedExperience>> traj = simulatedExperienceStore.getTrajectoryAt(iteration);
