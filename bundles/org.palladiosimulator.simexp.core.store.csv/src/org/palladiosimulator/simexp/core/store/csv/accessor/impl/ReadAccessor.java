@@ -52,14 +52,8 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
 
     @Override
     public boolean existTrajectoryAt(int index) {
-        try {
-            List<String> allRows = csvSampleReadHandler.getAllRows();
-            // First line (header) has to be omitted
-            index++;
-            return index < allRows.size();
-        } catch (IOException e) {
-            return false;
-        }
+        Optional<List<SimulatedExperience>> trajectory = getTrajectoryAt(index);
+        return trajectory.isPresent();
     }
 
     @Override
