@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.core.store;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,11 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
             SimulatedExperienceStoreDescription description) {
         this.description = description;
         this.accessor = accessor;
+    }
+
+    @Override
+    public Iterator<List<SimulatedExperience>> iterator() {
+        return new SampleModelIterator(this);
     }
 
     @Override

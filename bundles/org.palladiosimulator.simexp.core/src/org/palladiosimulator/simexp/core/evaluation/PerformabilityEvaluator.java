@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.core.evaluation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,7 +28,7 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
         double totalReward = 0;
 
         List<Double> responseTimes = new ArrayList<>();
-        SampleModelIterator iterator = SampleModelIterator.get(simulatedExperienceStore);
+        Iterator<List<SimulatedExperience>> iterator = simulatedExperienceStore.iterator();
 
         /**
          * total reward computation: aggregate data based on the performability metric, i.e.

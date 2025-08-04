@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.core.evaluation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
         private List<String> filterSampledInitials() {
             List<String> sampledInitials = new ArrayList<>();
-            SampleModelIterator iterator = SampleModelIterator.get(simulatedExperienceStore);
+            Iterator<List<SimulatedExperience>> iterator = simulatedExperienceStore.iterator();
             while (iterator.hasNext()) {
                 List<SimulatedExperience> next = iterator.next();
                 SimulatedExperience simExperience = next.get(0);
@@ -62,7 +63,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
     @Override
     public double computeTotalReward() {
-        SampleModelIterator iterator = SampleModelIterator.get(simulatedExperienceStore);
+        Iterator<List<SimulatedExperience>> iterator = simulatedExperienceStore.iterator();
         MonteCarloPrediction firstVisitEstimation = MonteCarloPrediction.firstVisitEstimation();
         ValueFunction valueFunction = firstVisitEstimation.estimate(iterator);
 

@@ -1,19 +1,18 @@
-package org.palladiosimulator.simexp.core.test;
+package org.palladiosimulator.simexp.core.valuefunction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.evaluation.SampleModelIterator;
-import org.palladiosimulator.simexp.core.valuefunction.MonteCarloPrediction;
-import org.palladiosimulator.simexp.core.valuefunction.ValueFunction;
 
 public class MonteCarloPredictionTest {
 
@@ -22,6 +21,8 @@ public class MonteCarloPredictionTest {
 
     private MonteCarloPrediction mcPrediction;
 
+    @Mock
+    private Iterator<List<SimulatedExperience>> iterator;
 
     @Before
     public void setUp() throws Exception {
@@ -31,16 +32,17 @@ public class MonteCarloPredictionTest {
 
     @Test
     public void testEstimateValueFunctionForTrajectories() {
-        SampleModelIterator sampleModel = testHelperCreateSampleTrajectories();
-        
+        Iterator<List<SimulatedExperience>> sampleModel = testHelperCreateSampleTrajectories();
+
         ValueFunction actual = mcPrediction.estimate(sampleModel);
-        
-        assertEquals(1.0, actual.getExpectedRewardFor("A").doubleValue(), DELTA);
-        assertEquals(-2.5, actual.getExpectedRewardFor("B").doubleValue(), DELTA);
+
+        assertEquals(1.0, actual.getExpectedRewardFor("A")
+            .doubleValue(), DELTA);
+        assertEquals(-2.5, actual.getExpectedRewardFor("B")
+            .doubleValue(), DELTA);
     }
-    
-    private SampleModelIterator testHelperCreateSampleTrajectories() {
-        SampleModelIterator sampleModel = Mockito.mock(SampleModelIterator.class);
+
+    private Iterator<List<SimulatedExperience>> testHelperCreateSampleTrajectories() {
         // Sampled trajectory1: ("A", 3), ("A", 2), ("B", -4), ("A", 4), ("B", -3)), terminate
         SimulatedExperience sample1 = Mockito.mock(SimulatedExperience.class);
         SimulatedExperience sample2 = Mockito.mock(SimulatedExperience.class);
@@ -63,7 +65,7 @@ public class MonteCarloPredictionTest {
         when(sample5.getReconfiguration()).thenReturn(RECONF_PATTERN);
         when(sample5.getReward()).thenReturn("-3.0");
         List<SimulatedExperience> traj1 = Arrays.asList(sample1, sample2, sample3, sample4, sample5);
-        
+
         // // Sampled trajectory2: ("B", -2), ("A", 3), ("B", -3), terminate
         SimulatedExperience sample6 = Mockito.mock(SimulatedExperience.class);
         SimulatedExperience sample7 = Mockito.mock(SimulatedExperience.class);
@@ -78,11 +80,11 @@ public class MonteCarloPredictionTest {
         when(sample8.getReconfiguration()).thenReturn(RECONF_PATTERN);
         when(sample8.getReward()).thenReturn("-3.0");
         List<SimulatedExperience> traj2 = Arrays.asList(sample6, sample7, sample8);
-        
+
         // two trajectory
-        when(sampleModel.hasNext()).thenReturn(true, true, false);
-        when(sampleModel.next()).thenReturn(traj1, traj2);
-        
-        return sampleModel;
+        when(iterator.hasNext()).thenReturn(true, true, false);
+        when(iterator.next()).thenReturn(traj1, traj2);
+
+        return iterator;
     }
 }

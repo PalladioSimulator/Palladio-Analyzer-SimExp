@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.core.evaluation;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,7 +24,7 @@ public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
     public double computeTotalReward() {
         double totalReward = 0;
 
-        SampleModelIterator iterator = SampleModelIterator.get(simulatedExperienceStore);
+        Iterator<List<SimulatedExperience>> iterator = simulatedExperienceStore.iterator();
         while (iterator.hasNext()) {
             List<SimulatedExperience> traj = iterator.next();
             totalReward += accumulateReward(traj.stream());

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.core.evaluation;
+package org.palladiosimulator.simexp.core.store;
 
 import java.util.Iterator;
 import java.util.List;
@@ -6,21 +6,16 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 
-public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
+class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
 
     private final ISimulatedExperienceStore simulatedExperienceStore;
 
     private int iteration;
 
-    private SampleModelIterator(ISimulatedExperienceStore simulatedExperienceStore) {
+    public SampleModelIterator(ISimulatedExperienceStore simulatedExperienceStore) {
         this.simulatedExperienceStore = simulatedExperienceStore;
         this.iteration = 0;
-    }
-
-    public static SampleModelIterator get(ISimulatedExperienceStore simulatedExperienceStore) {
-        return new SampleModelIterator(simulatedExperienceStore);
     }
 
     @Override
