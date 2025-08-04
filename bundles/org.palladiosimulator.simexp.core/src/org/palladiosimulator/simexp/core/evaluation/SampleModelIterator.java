@@ -40,9 +40,5 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
         iteration++;
 
         return traj.get();
-
-    }
-
-    public void terminate() {
     }
 }
