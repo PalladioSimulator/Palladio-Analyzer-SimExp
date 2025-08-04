@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.pcm.config.IModelledPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.provider.PrismMeasurementSpecificationProvider;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledExperienceSimulationExecutorFactory;
@@ -21,9 +21,9 @@ public abstract class ModelledPrismExperienceSimulationExecutorFactory<R extends
 
     public ModelledPrismExperienceSimulationExecutorFactory(IModelledPrismWorkflowConfiguration workflowConfiguration,
             ModelledModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
                 resourcePath);
     }
 

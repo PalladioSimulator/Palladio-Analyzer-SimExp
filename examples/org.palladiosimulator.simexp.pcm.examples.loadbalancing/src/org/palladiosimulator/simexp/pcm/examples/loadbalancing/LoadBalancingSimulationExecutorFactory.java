@@ -19,7 +19,7 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -49,9 +49,9 @@ public class LoadBalancingSimulationExecutorFactory
 
     public LoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, Integer> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, Integer> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
                 resourcePath);
     }
 
@@ -92,7 +92,7 @@ public class LoadBalancingSimulationExecutorFactory
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializables,
-                envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
+                envProcess, getTrajectoryStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
                 false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());

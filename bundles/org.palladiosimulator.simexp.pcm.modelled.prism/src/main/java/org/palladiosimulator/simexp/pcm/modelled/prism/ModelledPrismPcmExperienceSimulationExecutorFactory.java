@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.SmodelInterpreter;
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.mape.Monitor;
@@ -74,9 +74,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
                 resourcePath);
     }
 
@@ -86,8 +86,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
             DynamicBayesianNetwork<CategoricalValue> dbn, Smodel smodel) {
         DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess = new DeltaIoTModelAccess<>();
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
-        ISimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore = getSimulatedExperienceStore();
-        ISimulatedExperienceAccessor accessor = simulatedExperienceStore.getAccessor();
+        ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore = getTrajectoryStore();
+        ISimulatedExperienceAccessor accessor = trajectoryStore.getAccessor();
         DeltaIoTPartiallyEnvDynamics<Double> p = new DeltaIoTPartiallyEnvDynamics<>(dbn, accessor, modelAccess,
                 getSeedProvider(), simulationRunnerHolder);
         SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p
@@ -160,7 +160,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
-                beforeExecutionInitializables, null, simulatedExperienceStore, envProcess, reconfStrategy,
+                beforeExecutionInitializables, null, trajectoryStore, envProcess, reconfStrategy,
                 reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
                 getSeedProvider());
 

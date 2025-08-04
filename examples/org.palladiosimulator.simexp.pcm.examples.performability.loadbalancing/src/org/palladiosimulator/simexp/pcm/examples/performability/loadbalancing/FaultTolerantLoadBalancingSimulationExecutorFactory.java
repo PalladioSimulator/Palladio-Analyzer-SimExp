@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
@@ -63,9 +63,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
                 resourcePath);
     }
 
@@ -130,7 +130,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
-                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
+                getTrajectoryStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());

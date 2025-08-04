@@ -9,7 +9,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 
-public class SimulatedExperienceStore<A, R> implements ISimulatedExperienceStore<A, R> {
+public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
 
     private final SimulatedExperienceStoreDescription description;
     private final ISimulatedExperienceAccessor accessor;

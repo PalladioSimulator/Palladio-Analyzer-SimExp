@@ -27,7 +27,7 @@ import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
@@ -60,7 +60,7 @@ import tools.mdsd.probdist.model.basic.loader.BasicDistributionTypesLoader;
 public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V, T extends SimulatedMeasurementSpecification> {
     private final IWorkflowConfiguration workflowConfiguration;
     private final ModelLoader.Factory modelLoaderFactory;
-    private final ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore;
+    private final ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore;
     private final IProbabilityDistributionFactory<CategoricalValue> distributionFactory;
     private final IProbabilityDistributionRegistry<CategoricalValue> probabilityDistributionRegistry;
     private final ParameterParser parameterParser;
@@ -71,11 +71,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
-        this.simulatedExperienceStore = simulatedExperienceStore;
+        this.trajectoryStore = trajectoryStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
         this.accessor = accessor;
@@ -176,8 +176,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return parameterParser;
     }
 
-    protected ISimulatedExperienceStore<QVTOReconfigurator, R> getSimulatedExperienceStore() {
-        return simulatedExperienceStore;
+    protected ITrajectoryStore<QVTOReconfigurator, R> getTrajectoryStore() {
+        return trajectoryStore;
     }
 
     protected IProbabilityDistributionFactory<CategoricalValue> getDistributionFactory() {
@@ -202,7 +202,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             List<? extends SimulatedMeasurementSpecification> specs, List<ExperienceSimulationRunner> runners,
             SimulationParameters params, List<Initializable> beforeExecutionInitializables,
             EnvironmentProcess<QVTOReconfigurator, R, V> envProcess,
-            ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
             RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
@@ -225,7 +225,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .andOptionalExecutionBeforeEachRun(beforeExecutionInitializables)
             .done()
             .specifySelfAdaptiveSystemState()
-            .asEnvironmentalDrivenProcess(envProcess, simulatedExperienceStore, simulationRunnerHolder)
+            .asEnvironmentalDrivenProcess(envProcess, trajectoryStore, simulationRunnerHolder)
             .asPartiallyEnvironmentalDrivenProcess(navigator)
             .asHiddenProcess(hidden)
             .done()

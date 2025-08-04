@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -59,9 +59,9 @@ public class RobotCognitionSimulationExecutorFactory
 
     public RobotCognitionSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
             ModelLoader.Factory modelLoaderFactory,
-            ISimulatedExperienceStore<QVTOReconfigurator, Double> simulatedExperienceStore,
+            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
             Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, simulatedExperienceStore, seedProvider, accessor,
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
                 resourcePath);
     }
 
@@ -124,7 +124,7 @@ public class RobotCognitionSimulationExecutorFactory
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
-                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
+                getTrajectoryStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());

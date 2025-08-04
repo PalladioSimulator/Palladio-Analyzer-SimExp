@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Sample;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.samplemodel.Trajectory;
 import org.palladiosimulator.simexp.markovian.sampling.MarkovSampling;
@@ -16,17 +16,17 @@ public class ExperienceSimulator<C, A, R> {
     private final MarkovSampling<A, R> markovSampler;
     private final List<ExperienceSimulationRunner> simulationRunners;
     private final List<Initializable> beforeExecutionInitializations;
-    private final ISimulatedExperienceStore<A, R> simulatedExperienceStore;
+    private final ITrajectoryStore<A, R> trajectoryStore;
     private final int numberOfRuns;
 
     public ExperienceSimulator(ExperienceSimulationConfiguration<C, A, R> config,
-            ISimulatedExperienceStore<A, R> simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
+            ITrajectoryStore<A, R> trajectoryStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.numberOfRuns = config.getNumberOfRuns();
         this.markovSampler = config.getMarkovSampler();
         this.simulationRunners = config.getSimulationRunners();
         this.beforeExecutionInitializations = config.getBeforeExecutionInitialization();
         simulationRunnerHolder.registerSimulationRunners(simulationRunners);
-        this.simulatedExperienceStore = simulatedExperienceStore;
+        this.trajectoryStore = trajectoryStore;
     }
 
     public void run() {
@@ -51,8 +51,8 @@ public class ExperienceSimulator<C, A, R> {
     private void runExperienceSimulator() {
         Trajectory<A, R> traj = markovSampler.sampleTrajectory();
         for (Sample<A, R> each : traj.getSamplePath()) {
-            simulatedExperienceStore.store(each);
+            trajectoryStore.store(each);
         }
-        simulatedExperienceStore.store(traj);
+        trajectoryStore.store(traj);
     }
 }
