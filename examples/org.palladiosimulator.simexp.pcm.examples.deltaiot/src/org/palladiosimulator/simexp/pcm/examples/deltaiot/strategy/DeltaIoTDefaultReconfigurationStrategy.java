@@ -109,18 +109,21 @@ public class DeltaIoTDefaultReconfigurationStrategy
 
         MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
+            boolean powerChanging = false;
             for (WirelessLink eachLink : eachMote.links) {
                 if (customizer instanceof ITransmissionPowerReconfiguration) {
                     ITransmissionPowerReconfiguration transmissionPowerReconfiguration = (ITransmissionPowerReconfiguration) customizer;
                     if (eachLink.SNR > 0 && eachLink.transmissionPower > 0) {
+                        powerChanging = true;
                         decreaseTransmissionPower(eachMote.mote, eachLink, transmissionPowerReconfiguration);
                     } else if (eachLink.SNR < 0 && eachLink.transmissionPower < 15) {
+                        powerChanging = true;
                         increaseTransmissionPower(eachMote.mote, eachLink, transmissionPowerReconfiguration);
                     }
                 }
             }
 
-            if (eachMote.hasTwoLinks()) {
+            if (eachMote.hasTwoLinks() && !powerChanging) {
                 if (customizer instanceof IDistributionFactorReconfiguration) {
                     IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) customizer;
 
