@@ -70,15 +70,14 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final Path resourcePath;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
-            ModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
+            ModelLoader.Factory modelLoaderFactory, ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
         this.workflowConfiguration = workflowConfiguration;
         this.modelLoaderFactory = modelLoaderFactory;
         this.trajectoryStore = trajectoryStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
-        this.accessor = accessor;
+        this.accessor = trajectoryStore.getAccessor();
         this.resourcePath = resourcePath;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(

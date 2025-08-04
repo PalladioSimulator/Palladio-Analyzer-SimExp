@@ -46,7 +46,7 @@ public class CustomRobotCognitionLaunchFactory implements ILaunchFactory {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         RobotCognitionSimulationExecutorFactory factory = new RobotCognitionSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
-                seedProvider, accessor, resourcePath);
+                seedProvider, resourcePath);
         return factory.create();
     }
 

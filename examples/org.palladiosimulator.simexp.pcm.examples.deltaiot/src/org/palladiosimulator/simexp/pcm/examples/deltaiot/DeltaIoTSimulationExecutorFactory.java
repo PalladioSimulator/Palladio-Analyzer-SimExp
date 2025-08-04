@@ -63,11 +63,9 @@ public class DeltaIoTSimulationExecutorFactory extends
             + "/model/DeltaIoTReconfigurationParams.reconfigurationparams";
 
     public DeltaIoTSimulationExecutorFactory(IPrismWorkflowConfiguration workflowConfiguration,
-            ModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
-                resourcePath);
+            ModelLoader.Factory modelLoaderFactory, ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, resourcePath);
     }
 
     @Override

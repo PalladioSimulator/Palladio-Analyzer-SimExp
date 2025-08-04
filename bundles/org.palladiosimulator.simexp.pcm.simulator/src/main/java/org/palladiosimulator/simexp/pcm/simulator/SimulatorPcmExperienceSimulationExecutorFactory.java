@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -19,11 +18,9 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public abstract class SimulatorPcmExperienceSimulationExecutorFactory<R extends Number, V>
         extends PcmExperienceSimulationExecutorFactory<R, V, PcmMeasurementSpecification> {
     public SimulatorPcmExperienceSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
-                resourcePath);
+            ModelLoader.Factory modelLoaderFactory, ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, resourcePath);
     }
 
     @Override

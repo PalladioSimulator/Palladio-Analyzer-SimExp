@@ -49,7 +49,7 @@ public class ModelledPerformancePcmExperienceSimulationExecutorLaunchFactory imp
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
         ModelledPerformancePcmExperienceSimulationExecutorFactory factory = new ModelledPerformancePcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, modelledModelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, description), seedProvider, accessor, resourcePath);
+                new SimulatedExperienceStore<>(accessor, description), seedProvider, resourcePath);
         return factory.create();
     }
 

@@ -11,7 +11,6 @@ import org.palladiosimulator.envdyn.environment.dynamicmodel.DynamicBehaviourRep
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -31,11 +30,9 @@ public abstract class ModelledExperienceSimulationExecutorFactory<R extends Numb
         extends PcmExperienceSimulationExecutorFactory<R, V, T> {
 
     public ModelledExperienceSimulationExecutorFactory(IModelledWorkflowConfiguration workflowConfiguration,
-            ModelledModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
-                resourcePath);
+            ModelledModelLoader.Factory modelLoaderFactory, ITrajectoryStore<QVTOReconfigurator, R> trajectoryStore,
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, resourcePath);
     }
 
     @Override

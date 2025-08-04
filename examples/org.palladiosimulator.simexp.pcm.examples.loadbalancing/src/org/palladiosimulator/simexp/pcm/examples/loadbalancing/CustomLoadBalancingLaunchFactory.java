@@ -45,7 +45,7 @@ public class CustomLoadBalancingLaunchFactory implements ILaunchFactory {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
-                seedProvider, accessor, resourcePath);
+                seedProvider, resourcePath);
         return factory.create();
     }
 }

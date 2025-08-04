@@ -22,7 +22,6 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.util.Pair;
@@ -62,11 +61,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
     public static final String LOAD_BALANCER_ID = "_NvLi8AEmEeS7FKokKTKFow";
 
     public FaultTolerantLoadBalancingSimulationExecutorFactory(IPCMWorkflowConfiguration workflowConfiguration,
-            ModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
-                resourcePath);
+            ModelLoader.Factory modelLoaderFactory, ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
+            Optional<ISeedProvider> seedProvider, Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, resourcePath);
     }
 
     @Override

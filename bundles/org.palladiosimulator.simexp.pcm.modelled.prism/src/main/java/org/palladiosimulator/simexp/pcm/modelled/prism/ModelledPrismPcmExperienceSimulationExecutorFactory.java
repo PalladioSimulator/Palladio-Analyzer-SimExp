@@ -74,10 +74,9 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
     public ModelledPrismPcmExperienceSimulationExecutorFactory(
             IModelledPrismWorkflowConfiguration workflowConfiguration, ModelledModelLoader.Factory modelLoaderFactory,
-            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore,
-            Optional<ISeedProvider> seedProvider, ISimulatedExperienceAccessor accessor, Path resourcePath) {
-        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, accessor,
-                resourcePath);
+            ITrajectoryStore<QVTOReconfigurator, Double> trajectoryStore, Optional<ISeedProvider> seedProvider,
+            Path resourcePath) {
+        super(workflowConfiguration, modelLoaderFactory, trajectoryStore, seedProvider, resourcePath);
     }
 
     @Override
@@ -160,9 +159,8 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
-                beforeExecutionInitializables, null, trajectoryStore, envProcess, reconfStrategy,
-                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
-                getSeedProvider());
+                beforeExecutionInitializables, null, trajectoryStore, envProcess, reconfStrategy, reconfigurations,
+                evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,

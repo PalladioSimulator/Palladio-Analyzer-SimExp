@@ -41,7 +41,7 @@ public class ModelledPrismSimulationExecutorLaunchFactory implements ILaunchFact
         ModelledModelLoader.Factory modelledModelLoaderFactory = (ModelledModelLoader.Factory) modelLoaderFactory;
         ModelledPrismPcmExperienceSimulationExecutorFactory factory = new ModelledPrismPcmExperienceSimulationExecutorFactory(
                 workflowConfiguration, modelledModelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, description), seedProvider, accessor, resourcePath);
+                new SimulatedExperienceStore<>(accessor, description), seedProvider, resourcePath);
         return factory.create();
     }
 

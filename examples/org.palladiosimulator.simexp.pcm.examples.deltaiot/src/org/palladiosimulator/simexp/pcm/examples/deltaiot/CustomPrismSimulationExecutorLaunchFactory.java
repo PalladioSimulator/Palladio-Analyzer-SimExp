@@ -42,7 +42,7 @@ public class CustomPrismSimulationExecutorLaunchFactory implements ILaunchFactor
 //        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
-                seedProvider, accessor, resourcePath);
+                seedProvider, resourcePath);
         return factory.create();
     }
 

@@ -45,7 +45,7 @@ public class CustomFaultTolerantLoadBalancingLaunchFactory implements ILaunchFac
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         FaultTolerantLoadBalancingSimulationExecutorFactory factory = new FaultTolerantLoadBalancingSimulationExecutorFactory(
                 workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
-                seedProvider, accessor, resourcePath);
+                seedProvider, resourcePath);
         return factory.create();
     }
 
