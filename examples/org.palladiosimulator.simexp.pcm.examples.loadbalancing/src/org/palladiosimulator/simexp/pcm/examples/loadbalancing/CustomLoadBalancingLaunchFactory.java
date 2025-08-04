@@ -9,11 +9,11 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.simulator.config.IPCMWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -40,12 +40,12 @@ public class CustomLoadBalancingLaunchFactory implements ILaunchFactory {
 
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         IPCMWorkflowConfiguration workflowConfiguration = (IPCMWorkflowConfiguration) config;
         LoadBalancingSimulationExecutorFactory factory = new LoadBalancingSimulationExecutorFactory(
-                workflowConfiguration, modelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
+                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
+                seedProvider, accessor, resourcePath);
         return factory.create();
     }
 }

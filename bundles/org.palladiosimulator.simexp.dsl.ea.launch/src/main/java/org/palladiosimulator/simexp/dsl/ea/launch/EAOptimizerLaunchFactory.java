@@ -11,6 +11,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.commons.constants.model.ModelledOptimizationType;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
@@ -23,7 +24,6 @@ import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -56,7 +56,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
 
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath)
             throws CoreException {
         ModelLoader modelLoader = modelLoaderFactory.create();
@@ -65,19 +65,19 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launcherName, launchDescriptionProvider, seedProvider, modelLoaderFactory, resourcePath);
+                launcherName, description, seedProvider, modelLoaderFactory, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
                 (IEvolutionaryAlgorithmWorkflowConfiguration) config, resourcePath);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
-            String launcherName, LaunchDescriptionProvider launchDescriptionProvider,
-            Optional<ISeedProvider> seedProvider, Factory modelLoaderFactory, Path resourcePath) throws CoreException {
+            String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
+            Factory modelLoaderFactory, Path resourcePath) throws CoreException {
         String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
                 "", null);
         DispatcherLookup dispatcherLookup = new DispatcherLookup();
-        return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, launchDescriptionProvider,
-                seedProvider, modelLoaderFactory, resourcePath);
+        return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, description, seedProvider,
+                modelLoaderFactory, resourcePath);
     }
 }

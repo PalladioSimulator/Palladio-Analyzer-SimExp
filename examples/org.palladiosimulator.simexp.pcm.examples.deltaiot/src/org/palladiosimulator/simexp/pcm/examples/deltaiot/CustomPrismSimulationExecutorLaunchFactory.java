@@ -9,12 +9,12 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStore;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.pcm.config.IPrismWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
 import org.palladiosimulator.simexp.workflow.api.ILaunchFactory;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -36,13 +36,13 @@ public class CustomPrismSimulationExecutorLaunchFactory implements ILaunchFactor
 
     @Override
     public SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider descriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath) {
         IPrismWorkflowConfiguration workflowConfiguration = (IPrismWorkflowConfiguration) config;
 //        PcmModelLoader.Factory modelLoaderFactory = new PcmModelLoader.Factory();
         PcmExperienceSimulationExecutorFactory<? extends Number, ?, ? extends SimulatedMeasurementSpecification> factory = new DeltaIoTSimulationExecutorFactory(
-                workflowConfiguration, modelLoaderFactory,
-                new SimulatedExperienceStore<>(accessor, descriptionProvider), seedProvider, accessor, resourcePath);
+                workflowConfiguration, modelLoaderFactory, new SimulatedExperienceStore<>(accessor, description),
+                seedProvider, accessor, resourcePath);
         return factory.create();
     }
 

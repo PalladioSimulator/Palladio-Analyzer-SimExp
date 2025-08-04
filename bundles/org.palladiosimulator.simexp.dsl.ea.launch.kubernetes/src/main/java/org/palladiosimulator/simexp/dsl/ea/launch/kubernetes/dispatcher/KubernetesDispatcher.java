@@ -29,6 +29,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
@@ -41,7 +42,6 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -65,7 +65,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private EAFitnessEvaluator fitnessEvaluator;
 
     public KubernetesDispatcher(IModelledWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
         this.launcherName = launcherName;
         this.config = config;

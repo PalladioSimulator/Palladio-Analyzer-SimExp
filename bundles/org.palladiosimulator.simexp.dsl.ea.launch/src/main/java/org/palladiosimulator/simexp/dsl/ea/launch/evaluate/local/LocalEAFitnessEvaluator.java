@@ -20,6 +20,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 import org.palladiosimulator.edp2.impl.RepositoryManager;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
@@ -27,7 +28,6 @@ import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader.Factory;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimulationExecutorLookup;
 
@@ -38,7 +38,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
 
     private final IModelledWorkflowConfiguration config;
     private final String launcherName;
-    private final LaunchDescriptionProvider launchDescriptionProvider;
+    private final SimulatedExperienceStoreDescription description;
     private final Optional<ISeedProvider> seedProvider;
     private final ExecutorService executor;
     private final Path resourcePath;
@@ -47,11 +47,11 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private int counter = 0;
 
     public LocalEAFitnessEvaluator(IModelledWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             Factory modelLoaderFactory, Path resourcePath) {
         this.config = config;
         this.launcherName = launcherName;
-        this.launchDescriptionProvider = launchDescriptionProvider;
+        this.description = description;
         this.seedProvider = seedProvider;
         this.executor = Executors.newFixedThreadPool(1,
                 new BasicThreadFactory.Builder().namingPattern("local-ea-thread-%d")
@@ -121,7 +121,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         }
         ISimulatedExperienceAccessor accessor = new CsvAccessor(currentResourceFolder);
         SimulationExecutor effectiveSimulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(
-                optimizableSimExpWorkflowConfiguration, launcherName, launchDescriptionProvider, seedProvider, accessor,
+                optimizableSimExpWorkflowConfiguration, launcherName, description, seedProvider, accessor,
                 currentResourceFolder);
 
         LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));

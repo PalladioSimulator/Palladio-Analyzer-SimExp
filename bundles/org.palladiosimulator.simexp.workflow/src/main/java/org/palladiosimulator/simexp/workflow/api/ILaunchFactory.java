@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.eclipse.core.runtime.CoreException;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 
@@ -15,7 +16,7 @@ public interface ILaunchFactory {
     int canHandle(IWorkflowConfiguration config);
 
     SimulationExecutor createSimulationExecutor(IWorkflowConfiguration config, String launcherName,
-            LaunchDescriptionProvider launchDescriptionProvider, Optional<ISeedProvider> seedProvider,
+            SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
             ModelLoader.Factory modelLoaderFactory, ISimulatedExperienceAccessor accessor, Path resourcePath)
             throws CoreException;
 }

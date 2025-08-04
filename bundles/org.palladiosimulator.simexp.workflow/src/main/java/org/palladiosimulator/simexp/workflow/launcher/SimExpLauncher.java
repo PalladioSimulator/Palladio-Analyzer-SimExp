@@ -37,9 +37,9 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationEngine;
 import org.palladiosimulator.simexp.commons.constants.model.SimulatorType;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
-import org.palladiosimulator.simexp.workflow.api.LaunchDescriptionProvider;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -63,7 +63,8 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
         LOGGER.debug("Create SimExp workflow root job");
         try {
             SimulationParameters simulationParameters = config.getSimulationParameters();
-            LaunchDescriptionProvider launchDescriptionProvider = new LaunchDescriptionProvider(simulationParameters);
+            SimulatedExperienceStoreDescription description = new SimulatedExperienceStoreDescription(
+                    simulationParameters.getNumberOfSimulationsPerRun());
             Optional<ISeedProvider> seedProvider = config.getSeedProvider();
 
             SimulationExecutorLookup simulationExecutorLookup = new SimulationExecutorLookup();
@@ -74,7 +75,7 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             String launcherName = launch.getLaunchConfiguration()
                 .getName();
             SimulationExecutor simulationExecutor = simulationExecutorLookup.lookupSimulationExecutor(config,
-                    launcherName, launchDescriptionProvider, seedProvider, accessor, resourcePath);
+                    launcherName, description, seedProvider, accessor, resourcePath);
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
