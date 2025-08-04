@@ -78,8 +78,6 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
             if (simulationExecutor == null) {
                 throw new IllegalArgumentException("Unable to create simulation executor");
             }
-            String policyId = simulationExecutor.getPolicyId();
-            launchDescriptionProvider.setPolicyId(policyId);
             return new SimExpAnalyzerRootJob(config, simulationExecutor, launch);
         } catch (Exception e) {
             IStatus status = Status.error(e.getMessage(), e);

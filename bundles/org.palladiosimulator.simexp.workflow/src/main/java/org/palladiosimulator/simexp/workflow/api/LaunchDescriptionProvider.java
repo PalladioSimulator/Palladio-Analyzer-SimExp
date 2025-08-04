@@ -5,15 +5,10 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescripti
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 
 public class LaunchDescriptionProvider implements DescriptionProvider {
-    private final int horizon;
-
-    private SimulatedExperienceStoreDescription desc;
+    private final SimulatedExperienceStoreDescription desc;
 
     public LaunchDescriptionProvider(SimulationParameters simulationParameters) {
-        horizon = simulationParameters.getNumberOfSimulationsPerRun();
-    }
-
-    public void setPolicyId(String policyId) {
+        int horizon = simulationParameters.getNumberOfSimulationsPerRun();
         desc = new SimulatedExperienceStoreDescription(horizon);
     }
 
