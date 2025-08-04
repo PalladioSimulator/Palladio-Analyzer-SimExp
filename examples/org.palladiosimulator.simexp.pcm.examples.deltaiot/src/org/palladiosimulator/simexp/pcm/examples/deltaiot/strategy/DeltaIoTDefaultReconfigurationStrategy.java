@@ -85,7 +85,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
         MoteContextFilter moteFiler = new MoteContextFilter(knowledge);
         for (MoteContext eachMote : moteFiler.getAllMoteContexts()) {
             for (WirelessLink eachLink : eachMote.links) {
-                if (isPowerOptimal(eachLink) == false) {
+                if (needPowerAdaption(eachLink)) {
                     return true;
                 }
             }
@@ -181,7 +181,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
         }
     }
 
-    private boolean isPowerOptimal(WirelessLink link) {
+    private boolean needPowerAdaption(WirelessLink link) {
         return (link.SNR > 0 && link.transmissionPower > 0) || (link.SNR < 0 && link.transmissionPower < 15);
     }
 
