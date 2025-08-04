@@ -26,7 +26,6 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -66,7 +65,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
     private final ParameterParser parameterParser;
     private final IProbabilityDistributionRepositoryLookup probDistRepoLookup;
     private final Optional<ISeedProvider> seedProvider;
-    private final ISimulatedExperienceAccessor accessor;
     private final Path resourcePath;
 
     public PcmExperienceSimulationExecutorFactory(IWorkflowConfiguration workflowConfiguration,
@@ -77,7 +75,6 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         this.trajectoryStore = trajectoryStore;
         this.parameterParser = new DefaultParameterParser();
         this.seedProvider = seedProvider;
-        this.accessor = trajectoryStore.getAccessor();
         this.resourcePath = resourcePath;
 
         ProbabilityDistributionFactory defaultProbabilityDistributionFactory = new ProbabilityDistributionFactory(
@@ -94,19 +91,15 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return resourcePath;
     }
 
-    protected ISimulatedExperienceAccessor getAccessor() {
-        return accessor;
-    }
-
     protected TotalRewardCalculation createRewardCalculation(String policyId) {
         RewardType rewardType = workflowConfiguration.getRewardType();
         String simulationID = getSimulationParameters().getSimulationID();
         switch (rewardType) {
         case EXPECTED:
-            return new ExpectedRewardEvaluator(getAccessor());
+            return new ExpectedRewardEvaluator(trajectoryStore);
         case ACCUMULATED:
             String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationID, policyId);
-            return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
+            return SimulatedExperienceEvaluator.of(trajectoryStore, simulationID, sampleSpaceId);
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
     }

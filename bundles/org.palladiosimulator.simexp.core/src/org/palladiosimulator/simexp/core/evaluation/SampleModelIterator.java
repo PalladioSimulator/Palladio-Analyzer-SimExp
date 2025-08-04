@@ -5,27 +5,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 
 public class SampleModelIterator implements Iterator<List<SimulatedExperience>> {
 
-    private final SimulatedExperienceReadAccessor readAccessor;
+    private final ISimulatedExperienceStore simulatedExperienceStore;
 
     private int iteration;
 
-    private SampleModelIterator(ISimulatedExperienceAccessor accessor) {
-        readAccessor = accessor.createSimulatedExperienceReadAccessor();
+    private SampleModelIterator(ISimulatedExperienceStore simulatedExperienceStore) {
+        this.simulatedExperienceStore = simulatedExperienceStore;
         this.iteration = 0;
     }
 
-    public static SampleModelIterator get(ISimulatedExperienceAccessor accessor) {
-        return new SampleModelIterator(accessor);
+    public static SampleModelIterator get(ISimulatedExperienceStore simulatedExperienceStore) {
+        return new SampleModelIterator(simulatedExperienceStore);
     }
 
     @Override
     public boolean hasNext() {
-        Optional<List<SimulatedExperience>> trajectory = readAccessor.getTrajectoryAt(iteration);
+        Optional<List<SimulatedExperience>> trajectory = simulatedExperienceStore.getTrajectoryAt(iteration);
         return trajectory.isPresent();
     }
 
@@ -36,7 +35,7 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
             throw new RuntimeException("");
         }
 
-        Optional<List<SimulatedExperience>> traj = readAccessor.getTrajectoryAt(iteration);
+        Optional<List<SimulatedExperience>> traj = simulatedExperienceStore.getTrajectoryAt(iteration);
 
         iteration++;
 
@@ -45,7 +44,5 @@ public class SampleModelIterator implements Iterator<List<SimulatedExperience>> 
     }
 
     public void terminate() {
-        readAccessor.close();
     }
-
 }

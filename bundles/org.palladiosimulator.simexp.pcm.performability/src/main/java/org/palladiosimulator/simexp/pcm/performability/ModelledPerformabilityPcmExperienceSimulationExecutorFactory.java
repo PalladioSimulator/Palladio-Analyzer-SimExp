@@ -141,9 +141,9 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         RewardType rewardType = getWorkflowConfiguration().getRewardType();
         switch (rewardType) {
         case EXPECTED:
-            return new ExpectedRewardEvaluator(getAccessor());
+            return new ExpectedRewardEvaluator(getTrajectoryStore());
         case ACCUMULATED:
-            return PerformabilityEvaluator.of(getAccessor());
+            return PerformabilityEvaluator.of(getTrajectoryStore());
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
     }

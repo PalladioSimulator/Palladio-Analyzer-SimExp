@@ -4,26 +4,26 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 
 public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
 
-    private final ISimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceStore simulatedExperienceStore;
 
-    private SimulatedExperienceEvaluator(ISimulatedExperienceAccessor accessor) {
-        this.accessor = accessor;
+    private SimulatedExperienceEvaluator(ISimulatedExperienceStore simulatedExperienceStore) {
+        this.simulatedExperienceStore = simulatedExperienceStore;
     }
 
-    public static TotalRewardCalculation of(ISimulatedExperienceAccessor accessor, String simulationId,
+    public static TotalRewardCalculation of(ISimulatedExperienceStore simulatedExperienceStore, String simulationId,
             String sampleSpaceId) {
-        return new SimulatedExperienceEvaluator(accessor);
+        return new SimulatedExperienceEvaluator(simulatedExperienceStore);
     }
 
     @Override
     public double computeTotalReward() {
         double totalReward = 0;
 
-        SampleModelIterator iterator = SampleModelIterator.get(accessor);
+        SampleModelIterator iterator = SampleModelIterator.get(simulatedExperienceStore);
         while (iterator.hasNext()) {
             List<SimulatedExperience> traj = iterator.next();
             totalReward += accumulateReward(traj.stream());

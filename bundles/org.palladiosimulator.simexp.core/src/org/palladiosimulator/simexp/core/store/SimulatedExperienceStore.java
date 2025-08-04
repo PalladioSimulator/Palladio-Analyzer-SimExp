@@ -21,11 +21,6 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
     }
 
     @Override
-    public ISimulatedExperienceAccessor getAccessor() {
-        return accessor;
-    }
-
-    @Override
     public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
         try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
             Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
@@ -34,8 +29,16 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
     }
 
     @Override
+    public Optional<List<SimulatedExperience>> getTrajectoryAt(int index) {
+        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
+            Optional<List<SimulatedExperience>> result = readAccessor.getTrajectoryAt(index);
+            return result;
+        }
+    }
+
+    @Override
     public void store(Trajectory<A, R> trajectory) {
-        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
+        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
             .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(toSimulatedExperience(trajectory));
         }
@@ -55,7 +58,7 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
             return;
         }
 
-        try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
+        try (SimulatedExperienceWriteAccessor writeAccessor = accessor
             .createSimulatedExperienceWriteAccessor(description)) {
             writeAccessor.store(simExp);
         }
@@ -66,7 +69,7 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
     }
 
     private Optional<SimulatedExperience> findSimulatedExperience(String id) {
-        try (SimulatedExperienceReadAccessor readAccessor = getAccessor().createSimulatedExperienceReadAccessor()) {
+        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
             Optional<SimulatedExperience> result = readAccessor.findSimulatedExperience(id);
             return result;
         }
