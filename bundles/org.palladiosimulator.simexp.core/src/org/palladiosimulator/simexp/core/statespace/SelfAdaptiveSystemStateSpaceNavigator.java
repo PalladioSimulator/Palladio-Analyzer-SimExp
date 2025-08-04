@@ -8,8 +8,7 @@ import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
-import org.palladiosimulator.simexp.core.store.SimulatedExperienceReadAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
@@ -31,13 +30,13 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     }
 
     protected final EnvironmentProcess<A, R, V> environmentalDynamics;
-    private final ISimulatedExperienceAccessor accessor;
+    private final ISimulatedExperienceStore simulatedExperienceStore;
     private final SimulationRunnerHolder simulationRunnerHolder;
 
     protected SelfAdaptiveSystemStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
-            ISimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
+            ISimulatedExperienceStore simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
         this.environmentalDynamics = environmentalDynamics;
-        this.accessor = accessor;
+        this.simulatedExperienceStore = simulatedExperienceStore;
         this.simulationRunnerHolder = simulationRunnerHolder;
     }
 
@@ -129,10 +128,8 @@ public abstract class SelfAdaptiveSystemStateSpaceNavigator<C, A, R, V> extends 
     }
 
     private Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
-        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
-            Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
-            return result;
-        }
+        Optional<SimulatedExperience> result = simulatedExperienceStore.findSelfAdaptiveSystemState(id);
+        return result;
     }
 
     protected abstract SelfAdaptiveSystemState<C, A, V> determineStructuralState(NavigationContext<A> context);

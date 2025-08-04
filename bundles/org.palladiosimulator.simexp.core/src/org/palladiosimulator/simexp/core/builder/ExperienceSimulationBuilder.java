@@ -20,7 +20,6 @@ import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator.InitialSelfAdaptiveSystemStateCreator;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ITrajectoryStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction;
@@ -183,8 +182,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
     private StateSpaceNavigator<A> createInductiveStateSpaceNavigator() {
         if (envProcess != null) {
-            ISimulatedExperienceAccessor accessor = trajectoryStore.getAccessor();
-            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, accessor, simulationRunnerHolder);
+            return EnvironmentDrivenStateSpaceNavigator.with(envProcess, trajectoryStore, simulationRunnerHolder);
         }
         return navigator;
     }
@@ -230,8 +228,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     public class SelfAdaptiveSystemBuilder {
 
         public SelfAdaptiveSystemBuilder asEnvironmentalDrivenProcess(EnvironmentProcess<A, R, V> envProcess,
-                ITrajectoryStore<A, R> trajectoryStore,
-                SimulationRunnerHolder simulationRunnerHolder) {
+                ITrajectoryStore<A, R> trajectoryStore, SimulationRunnerHolder simulationRunnerHolder) {
             ExperienceSimulationBuilder.this.envProcess = envProcess;
             ExperienceSimulationBuilder.this.trajectoryStore = trajectoryStore;
             ExperienceSimulationBuilder.this.simulationRunnerHolder = simulationRunnerHolder;

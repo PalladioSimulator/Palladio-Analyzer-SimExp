@@ -7,7 +7,7 @@ import org.palladiosimulator.simexp.core.action.Reconfiguration;
 import org.palladiosimulator.simexp.core.state.ArchitecturalConfiguration;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
-import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
+import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.environmentaldynamics.entity.PerceivableEnvironmentalState;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
@@ -17,14 +17,15 @@ public class EnvironmentDrivenStateSpaceNavigator<C, A, R, V>
     private final static Logger LOGGER = Logger.getLogger(EnvironmentDrivenStateSpaceNavigator.class);
 
     private EnvironmentDrivenStateSpaceNavigator(EnvironmentProcess<A, R, V> environmentalDynamics,
-            ISimulatedExperienceAccessor accessor, SimulationRunnerHolder simulationRunnerHolder) {
-        super(environmentalDynamics, accessor, simulationRunnerHolder);
+            ISimulatedExperienceStore simulatedExperienceStore, SimulationRunnerHolder simulationRunnerHolder) {
+        super(environmentalDynamics, simulatedExperienceStore, simulationRunnerHolder);
     }
 
     public static <C, A, R, V> EnvironmentDrivenStateSpaceNavigator<C, A, R, V> with(
-            EnvironmentProcess<A, R, V> environmentProcess, ISimulatedExperienceAccessor accessor,
+            EnvironmentProcess<A, R, V> environmentProcess, ISimulatedExperienceStore simulatedExperienceStore,
             SimulationRunnerHolder simulationRunnerHolder) {
-        return new EnvironmentDrivenStateSpaceNavigator<>(environmentProcess, accessor, simulationRunnerHolder);
+        return new EnvironmentDrivenStateSpaceNavigator<>(environmentProcess, simulatedExperienceStore,
+                simulationRunnerHolder);
     }
 
     @Override

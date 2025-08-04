@@ -26,6 +26,14 @@ public class SimulatedExperienceStore<A, R> implements ITrajectoryStore<A, R> {
     }
 
     @Override
+    public Optional<SimulatedExperience> findSelfAdaptiveSystemState(String id) {
+        try (SimulatedExperienceReadAccessor readAccessor = accessor.createSimulatedExperienceReadAccessor()) {
+            Optional<SimulatedExperience> result = readAccessor.findSelfAdaptiveSystemState(id);
+            return result;
+        }
+    }
+
+    @Override
     public void store(Trajectory<A, R> trajectory) {
         try (SimulatedExperienceWriteAccessor writeAccessor = getAccessor()
             .createSimulatedExperienceWriteAccessor(description)) {
