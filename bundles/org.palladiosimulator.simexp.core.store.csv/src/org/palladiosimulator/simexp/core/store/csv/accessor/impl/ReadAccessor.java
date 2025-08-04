@@ -69,12 +69,15 @@ public class ReadAccessor extends BaseAccessor implements SimulatedExperienceRea
 
         try {
             List<String> allRows = csvSampleReadHandler.getAllRows();
+            if (index >= allRows.size()) {
+                return Optional.empty();
+            }
             String rowAt = allRows.get(index);
             String[] row = rowAt.split(CsvFormatter.CSV_DELIMITER);
             return Optional.of(toTrajectory(row));
         } catch (NoSuchFileException e) {
             return Optional.empty();
-        } catch (IndexOutOfBoundsException | IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
