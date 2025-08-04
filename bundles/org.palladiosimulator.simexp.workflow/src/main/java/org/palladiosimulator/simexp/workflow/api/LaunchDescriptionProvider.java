@@ -18,11 +18,7 @@ public class LaunchDescriptionProvider implements DescriptionProvider {
 
     public void setPolicyId(String policyId) {
         String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationID, policyId);
-        desc = SimulatedExperienceStoreDescription.newBuilder()
-            .withSimulationId(simulationID)
-            .andSampleSpaceId(sampleSpaceId)
-            .andSampleHorizon(horizon)
-            .build();
+        desc = new SimulatedExperienceStoreDescription(simulationID, sampleSpaceId, horizon);
     }
 
     @Override
