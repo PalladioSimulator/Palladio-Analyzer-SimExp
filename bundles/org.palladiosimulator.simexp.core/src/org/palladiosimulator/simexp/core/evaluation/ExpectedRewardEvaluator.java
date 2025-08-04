@@ -1,15 +1,15 @@
 package org.palladiosimulator.simexp.core.evaluation;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
+import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.valuefunction.MonteCarloPrediction;
 import org.palladiosimulator.simexp.core.valuefunction.ValueFunction;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class ExpectedRewardEvaluator implements TotalRewardCalculation {
 
@@ -22,12 +22,12 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         }
 
         private List<String> filterSampledInitials() {
-            List<String> sampledInitials = Lists.newArrayList();
-
+            List<String> sampledInitials = new ArrayList<>();
             SampleModelIterator iterator = SampleModelIterator.get(accessor);
             while (iterator.hasNext()) {
-                String initial = DefaultSimulatedExperience.getCurrentStateFrom(iterator.next()
-                    .get(0));
+                List<SimulatedExperience> next = iterator.next();
+                SimulatedExperience simExperience = next.get(0);
+                String initial = DefaultSimulatedExperience.getCurrentStateFrom(simExperience);
                 sampledInitials.add(initial);
             }
 
@@ -35,8 +35,7 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         }
 
         public Set<String> filterInitialStates() {
-            Set<String> initials = Sets.newLinkedHashSet();
-
+            Set<String> initials = new LinkedHashSet<>();
             for (String each : sampledInitials) {
                 if (initials.contains(each) == false) {
                     initials.add(each);
@@ -64,8 +63,8 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
     @Override
     public double computeTotalReward() {
         SampleModelIterator iterator = SampleModelIterator.get(accessor);
-        ValueFunction valueFunction = MonteCarloPrediction.firstVisitEstimation()
-            .estimate(iterator);
+        MonteCarloPrediction firstVisitEstimation = MonteCarloPrediction.firstVisitEstimation();
+        ValueFunction valueFunction = firstVisitEstimation.estimate(iterator);
 
         InitialStateEstimator initialStateEstimator = new InitialStateEstimator();
 
