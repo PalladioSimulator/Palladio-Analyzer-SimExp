@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
@@ -165,8 +166,10 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
+        IQualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
+
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
-                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
+                getSimulationParameters(), reconfStrategy, rewardCalculation, qualityEvaluator, experimentProvider);
         return executor;
     }
 

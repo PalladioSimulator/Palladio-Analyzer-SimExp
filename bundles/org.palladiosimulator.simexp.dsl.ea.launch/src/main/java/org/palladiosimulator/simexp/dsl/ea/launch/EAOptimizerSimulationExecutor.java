@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
@@ -55,8 +56,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private static class EASimulationResult extends SimulationResult {
         private final List<String> detailDescription;
 
-        public EASimulationResult(double totalReward, String rewardDescription, List<String> detailDescription) {
-            super(totalReward, rewardDescription);
+        public EASimulationResult(double totalReward, List<Map<String, List<Double>>> qos, String rewardDescription,
+                List<String> detailDescription) {
+            super(totalReward, qos, rewardDescription);
             this.detailDescription = detailDescription;
         }
 
@@ -69,6 +71,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public ISimulationResult evaluate() {
         double totalReward = 0.0;
+        List<Map<String, List<Double>>> qos = Collections.emptyList();
         List<List<OptimizableValue<?>>> optimizablesList = Collections.emptyList();
         if (optimizationResult != null) {
             totalReward = optimizationResult.getFitness();
@@ -85,7 +88,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
                     .getName(), ov.getValue()));
             }
         }
-        return new EASimulationResult(totalReward, description, detailDescription);
+        return new EASimulationResult(totalReward, qos, description, detailDescription);
     }
 
     @Override

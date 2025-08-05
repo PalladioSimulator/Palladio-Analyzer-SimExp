@@ -23,7 +23,9 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
@@ -110,6 +112,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
+    }
+
+    protected IQualityEvaluator createQualityEvaluator(
+            List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
+        return new QualityEvaluator(measurementSpecs);
     }
 
     protected Optional<ISeedProvider> getSeedProvider() {

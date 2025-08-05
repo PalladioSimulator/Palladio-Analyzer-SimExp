@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
@@ -128,9 +129,10 @@ public class RobotCognitionSimulationExecutorFactory
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
+        IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
-                reconfSelectionPolicy, rewardCalculation, experimentProvider);
+                reconfSelectionPolicy, rewardCalculation, qualityEvaluator, experimentProvider);
     }
 
     private PCMSolverWorkflowRunConfiguration createDefaultRunConfig() {

@@ -18,6 +18,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.ThresholdBasedRewardEvaluator;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
@@ -132,9 +133,10 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
                 experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
+        IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
 
         ModelledSimulationExecutor<Integer> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
-                getSimulationParameters(), reconfStrategy, rewardCalculation, experimentProvider);
+                getSimulationParameters(), reconfStrategy, rewardCalculation, qualityEvaluator, experimentProvider);
         return executor;
     }
 
