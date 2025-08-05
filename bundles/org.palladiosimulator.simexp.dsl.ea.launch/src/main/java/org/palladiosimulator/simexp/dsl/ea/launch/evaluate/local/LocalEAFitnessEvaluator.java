@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 import org.palladiosimulator.edp2.impl.RepositoryManager;
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
@@ -127,13 +127,13 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         LOGGER.info(String.format("### fitness evaluation start: %d ###", counter));
         OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
         LOGGER.info(String.format("evaluate: %s", optimizableValueToString.asString(optimizableValues)));
-        SimulationResult simulationResult = execute(effectiveSimulationExecutor);
+        ISimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
         return Optional.of(simulationResult.getTotalReward());
     }
 
-    private SimulationResult execute(SimulationExecutor effectiveSimulationExecutor) {
+    private ISimulationResult execute(SimulationExecutor effectiveSimulationExecutor) {
         try {
             try {
                 effectiveSimulationExecutor.execute();

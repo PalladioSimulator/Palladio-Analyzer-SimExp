@@ -8,6 +8,7 @@ import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -66,7 +67,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     }
 
     @Override
-    public SimulationResult evaluate() {
+    public ISimulationResult evaluate() {
         double totalReward = 0.0;
         List<List<OptimizableValue<?>>> optimizablesList = Collections.emptyList();
         if (optimizationResult != null) {

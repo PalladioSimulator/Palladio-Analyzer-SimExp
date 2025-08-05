@@ -20,10 +20,12 @@ public interface SimulationExecutor {
             return totalReward;
         }
 
+        @Override
         public String getRewardDescription() {
             return rewardDescription;
         }
 
+        @Override
         public List<String> getDetailDescription() {
             return Collections.emptyList();
         }
@@ -33,7 +35,7 @@ public interface SimulationExecutor {
 
     void execute();
 
-    SimulationResult evaluate();
+    ISimulationResult evaluate();
 
     void dispose();
 }

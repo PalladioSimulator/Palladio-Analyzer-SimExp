@@ -5,6 +5,7 @@ import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
+import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
@@ -47,7 +48,7 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
     }
 
     @Override
-    public SimulationResult evaluate() {
+    public ISimulationResult evaluate() {
         double totalReward = rewardCalculation.computeTotalReward();
         String description = String.format("total %s reward of policy %1s", rewardCalculation.getName(),
                 reconfSelectionPolicy.getId());

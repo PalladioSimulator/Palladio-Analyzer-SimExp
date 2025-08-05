@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
-import org.palladiosimulator.core.simulation.SimulationExecutor.SimulationResult;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.workflow.api.job.IRootJob;
 
@@ -21,7 +20,7 @@ public class PcmExperienceSimulationJob implements IBlackboardInteractingJob<MDS
 
     private final SimulationExecutor simulationExecutor;
 
-    private SimulationResult simulationResult;
+    private ISimulationResult simulationResult;
 
     public PcmExperienceSimulationJob(SimulationExecutor simulationExecutor) {
         this.simulationExecutor = simulationExecutor;
