@@ -27,10 +27,17 @@ public class DecisionBasedMarkovian<A, Aa extends Action<A>, R> extends Markovia
     }
 
     @Override
+    public Sample<A, R> determineInitialState() {
+        Sample<A, R> initialState = super.determineInitialState();
+        stateQuantityMonitor.monitor(initialState.getCurrent());
+        return initialState;
+    }
+
+    @Override
     public void drawSample(Sample<A, R> sample) {
         addSelectedAction(sample);
         addNextState(sample);
-        stateQuantityMonitor.monitor(sample.getCurrent());
+        stateQuantityMonitor.monitor(sample.getNext());
         addObtainedReward(sample);
     }
 
