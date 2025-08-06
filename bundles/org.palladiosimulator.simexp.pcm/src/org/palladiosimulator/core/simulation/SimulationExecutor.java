@@ -2,19 +2,19 @@ package org.palladiosimulator.core.simulation;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
 public interface SimulationExecutor {
     static class SimulationResult implements ISimulationResult {
         private final double totalReward;
-        private final List<Map<String, List<Double>>> qos;
+        private final QualityMeasurements qualityMeasurements;
         private final String rewardDescription;
 
-        public SimulationResult(double totalReward, List<Map<String, List<Double>>> qos, String rewardDescription) {
+        public SimulationResult(double totalReward, QualityMeasurements qualityMeasurements, String rewardDescription) {
             this.totalReward = totalReward;
-            this.qos = qos;
+            this.qualityMeasurements = qualityMeasurements;
             this.rewardDescription = rewardDescription;
         }
 
@@ -24,8 +24,8 @@ public interface SimulationExecutor {
         }
 
         @Override
-        public List<Map<String, List<Double>>> getQualityAttributes() {
-            return qos;
+        public QualityMeasurements getQualityMeasurements() {
+            return qualityMeasurements;
         }
 
         @Override

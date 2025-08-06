@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 
 public class QualityEvaluatorTest {
     private QualityEvaluator evaluator;
@@ -27,8 +26,8 @@ public class QualityEvaluatorTest {
 
     @Test
     public void test() {
-        List<Map<String, List<Double>>> actualQualityAttributes = evaluator.getQualityAttributes();
+        QualityMeasurements actualQualityMeasurements = evaluator.getQualityMeasurements();
 
-        assertThat(actualQualityAttributes).isNull();
+        assertThat(actualQualityMeasurements).isNull();
     }
 }

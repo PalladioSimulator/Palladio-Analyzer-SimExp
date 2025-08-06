@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.core.quality;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
@@ -24,7 +23,7 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
     }
 
     @Override
-    public List<Map<String, List<Double>>> getQualityAttributes() {
+    public QualityMeasurements getQualityMeasurements() {
         // TODO Auto-generated method stub
         return null;
     }

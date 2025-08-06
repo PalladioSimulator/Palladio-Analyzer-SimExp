@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
@@ -56,9 +56,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private static class EASimulationResult extends SimulationResult {
         private final List<String> detailDescription;
 
-        public EASimulationResult(double totalReward, List<Map<String, List<Double>>> qos, String rewardDescription,
+        public EASimulationResult(double totalReward, QualityMeasurements qualityMeasurements, String rewardDescription,
                 List<String> detailDescription) {
-            super(totalReward, qos, rewardDescription);
+            super(totalReward, qualityMeasurements, rewardDescription);
             this.detailDescription = detailDescription;
         }
 
@@ -71,7 +71,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public ISimulationResult evaluate() {
         double totalReward = 0.0;
-        List<Map<String, List<Double>>> qos = Collections.emptyList();
+        QualityMeasurements qualityMeasurements = null;
         List<List<OptimizableValue<?>>> optimizablesList = Collections.emptyList();
         if (optimizationResult != null) {
             totalReward = optimizationResult.getFitness();
@@ -88,7 +88,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
                     .getName(), ov.getValue()));
             }
         }
-        return new EASimulationResult(totalReward, qos, description, detailDescription);
+        return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
     }
 
     @Override
