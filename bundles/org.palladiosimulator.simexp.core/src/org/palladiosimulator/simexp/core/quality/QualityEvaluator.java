@@ -38,7 +38,6 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
 
     @Override
     public void initialize() {
-        LOGGER.info("new run");
         if (currentRun != null) {
             runs.add(new Run(currentRun));
         }
