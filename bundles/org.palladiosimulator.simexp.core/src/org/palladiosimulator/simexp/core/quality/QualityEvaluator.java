@@ -1,7 +1,9 @@
 package org.palladiosimulator.simexp.core.quality;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
@@ -18,20 +20,30 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
 
     private final List<SimulatedMeasurementSpecification> measurementSpecs;
 
+    private List<Run> runs = new ArrayList<>();
+    private Map<String, List<Double>> currentRun = null;
+
     public QualityEvaluator(List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
         this.measurementSpecs = new ArrayList<>(measurementSpecs);
     }
 
     @Override
     public QualityMeasurements getQualityMeasurements() {
-        // TODO Auto-generated method stub
-        return null;
+        if (currentRun != null) {
+            runs.add(new Run(currentRun));
+        }
+        // TODO: check
+        currentRun = null;
+        return new QualityMeasurements(runs);
     }
 
     @Override
     public void initialize() {
-        // TODO Auto-generated method stub
         LOGGER.info("new run");
+        if (currentRun != null) {
+            runs.add(new Run(currentRun));
+        }
+        currentRun = new HashMap<>();
     }
 
     @Override
@@ -41,9 +53,15 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
             StateQuantity quantifiedState = sasState.getQuantifiedState();
             SimulatedMeasurement measurement = quantifiedState.findMeasurementWith(measurementSpec)
                 .orElseThrow();
-            double measurementValue = measurement.getValue();
-
-            LOGGER.info(String.format("measured '%s': %f", measurementSpec.getName(), measurementValue));
+            String measurementName = measurementSpec.getName();
+            double measuredValue = measurement.getValue();
+            LOGGER.info(String.format("measured '%s': %f", measurementName, measuredValue));
+            List<Double> measurements = currentRun.get(measurementName);
+            if (measurements == null) {
+                measurements = new ArrayList<>();
+            }
+            measurements.add(measuredValue);
+            currentRun.put(measurementName, measurements);
         }
     }
 
