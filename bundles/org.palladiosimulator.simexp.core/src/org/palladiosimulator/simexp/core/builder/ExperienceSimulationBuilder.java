@@ -14,7 +14,6 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulationConfigurati
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
-import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.EnvironmentDrivenStateSpaceNavigator;
@@ -48,7 +47,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private int numberOfRuns = 0;
     private int numberOfSamplesPerRun = 0;
     private Set<Aa> reconfigurationSpace = null;
-    private RewardEvaluator<R> rewardEvaluator = null;
+    private SimulatedRewardReceiver<C, A, R, V> rewardReceiver;
     private Policy<A, Aa> policy = null;
     private EnvironmentProcess<A, R, V> envProcess = null;
     private ISimulatedExperienceStore<A, R> simulatedExperienceStore;
@@ -77,8 +76,10 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         return new ReconfigurationSpaceBuilder();
     }
 
-    public RewardReceiverBuilder specifyRewardHandling() {
-        return new RewardReceiverBuilder();
+    public ExperienceSimulationBuilder<C, A, Aa, R, V> withRewardReceiver(
+            SimulatedRewardReceiver<C, A, R, V> rewardReceiver) {
+        this.rewardReceiver = rewardReceiver;
+        return this;
     }
 
     public ExperienceSimulator<C, A, R> build() {
@@ -97,7 +98,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
 
     private void checkValidity() {
         // TODO exception handling
-        Objects.requireNonNull(rewardEvaluator, "");
         Objects.requireNonNull(reconfigurationSpace, "");
         Objects.requireNonNull(policy, "");
         if (envProcess == null && navigator == null) {
@@ -145,7 +145,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
             throw new RuntimeException("The environment must be unobservable to declare the process as POMDP.");
         }
 
-        SimulatedRewardReceiver<C, A, R, V> rewardReceiver = SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator);
         return MarkovianBuilder.<A, Aa, R> createPartiallyObservableMDP()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
@@ -157,7 +156,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     }
 
     private Markovian<A, R> buildMDP(ProbabilityMassFunction<State> initialDist, StateSpaceNavigator<A> navigator) {
-        SimulatedRewardReceiver<C, A, R, V> rewardReceiver = SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator);
         return MarkovianBuilder.<A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
@@ -316,18 +314,6 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         public ReconfigurationSpaceBuilder andReconfigurationStrategy(ReconfigurationStrategy<A, Aa> strategy) {
             // todo: setup mape-k executor here
             ExperienceSimulationBuilder.this.policy = new ReconfigurationStrategyAdapter(strategy);
-            return this;
-        }
-
-        public ExperienceSimulationBuilder<C, A, Aa, R, V> done() {
-            return ExperienceSimulationBuilder.this;
-        }
-    }
-
-    public class RewardReceiverBuilder {
-
-        public RewardReceiverBuilder withRewardEvaluator(RewardEvaluator<R> evaluator) {
-            ExperienceSimulationBuilder.this.rewardEvaluator = evaluator;
             return this;
         }
 

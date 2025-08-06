@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
+import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
@@ -215,6 +216,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
             SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper,
             Optional<ISeedProvider> seedProvider) {
+        SimulatedRewardReceiver<PCMInstance, QVTOReconfigurator, R, V> rewardReceiver = SimulatedRewardReceiver
+            .<PCMInstance, QVTOReconfigurator, R, V> with(evaluator);
 
         return PcmExperienceSimulationBuilder
             .<QVTOReconfigurator, QVToReconfiguration, R, V> newBuilder(experimentProvider, simulationRunnerHolder)
@@ -240,9 +243,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .addReconfigurations(reconfigurations)
             .andReconfigurationStrategy(reconfStrategy)
             .done()
-            .specifyRewardHandling()
-            .withRewardEvaluator(evaluator)
-            .done()
+            .withRewardReceiver(rewardReceiver)
             .build();
     }
 
