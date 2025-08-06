@@ -56,13 +56,50 @@ public class QualityEvaluatorTest {
     @Test
     public void testOneRunOneValue() {
         evaluator.initialize();
-
         evaluator.monitor(sasState1);
 
         QualityMeasurements actualQualityMeasurements = evaluator.getQualityMeasurements();
+
         Map<String, List<Double>> expectedQualityAttributes1 = new HashMap<>();
         expectedQualityAttributes1.put(measurementSpecification1.getName(), Arrays.asList(1.0));
         List<Run> runs = Arrays.asList(new Run(expectedQualityAttributes1));
+        QualityMeasurements expectedQualityMeasurements = new QualityMeasurements(runs);
+        assertThat(actualQualityMeasurements).usingRecursiveComparison()
+            .isEqualTo(expectedQualityMeasurements);
+    }
+
+    @Test
+    public void testOneRunTwoValue() {
+        evaluator.initialize();
+        evaluator.monitor(sasState1);
+        when(measurement1.getValue()).thenReturn(2.0);
+        evaluator.monitor(sasState1);
+
+        QualityMeasurements actualQualityMeasurements = evaluator.getQualityMeasurements();
+
+        Map<String, List<Double>> expectedQualityAttributes1 = new HashMap<>();
+        expectedQualityAttributes1.put(measurementSpecification1.getName(), Arrays.asList(1.0, 2.0));
+        List<Run> runs = Arrays.asList(new Run(expectedQualityAttributes1));
+        QualityMeasurements expectedQualityMeasurements = new QualityMeasurements(runs);
+        assertThat(actualQualityMeasurements).usingRecursiveComparison()
+            .isEqualTo(expectedQualityMeasurements);
+    }
+
+    @Test
+    public void testTwoRunOneValue() {
+        evaluator.initialize();
+        evaluator.monitor(sasState1);
+        evaluator.initialize();
+        when(measurement1.getValue()).thenReturn(2.0);
+        evaluator.monitor(sasState1);
+
+        QualityMeasurements actualQualityMeasurements = evaluator.getQualityMeasurements();
+
+        Map<String, List<Double>> expectedQualityAttributes1 = new HashMap<>();
+        expectedQualityAttributes1.put(measurementSpecification1.getName(), Arrays.asList(1.0));
+        Map<String, List<Double>> expectedQualityAttributes2 = new HashMap<>();
+        expectedQualityAttributes2.put(measurementSpecification1.getName(), Arrays.asList(2.0));
+        List<Run> runs = Arrays.asList(new Run(expectedQualityAttributes1), new Run(expectedQualityAttributes2));
         QualityMeasurements expectedQualityMeasurements = new QualityMeasurements(runs);
         assertThat(actualQualityMeasurements).usingRecursiveComparison()
             .isEqualTo(expectedQualityMeasurements);

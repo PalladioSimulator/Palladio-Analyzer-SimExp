@@ -32,7 +32,6 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
         if (currentRun != null) {
             runs.add(new Run(currentRun));
         }
-        // TODO: check
         currentRun = null;
         return new QualityMeasurements(runs);
     }
