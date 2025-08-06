@@ -37,7 +37,7 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
                 .orElseThrow();
             double measurementValue = measurement.getValue();
 
-            LOGGER.info(String.format("measured %s: %f", measurementSpec.getId(), measurementValue));
+            LOGGER.info(String.format("measured '%s': %f", measurementSpec.getName(), measurementValue));
         }
     }
 
