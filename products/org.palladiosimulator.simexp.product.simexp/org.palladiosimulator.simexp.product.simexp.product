@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="SimExp" uid="org.palladiosimulator.simexp.product.simexp" id="org.eclipse.platform.ide" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-nl en_US --launcher.suppressErrors -consoleLog
+      </programArgs>
+      <programArgsLin>-os linux -ws gtk -arch x86_64
+      </programArgsLin>
+      <programArgsWin>-os win32 -ws win32 -arch x86_64
+      </programArgsWin>
+      <vmArgs>-XX:+UseG1GC
+-XX:+UseStringDeduplication
+-Xmx12g
+-Dio.jenetics.concurrency.maxBatchSize=1
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="simexp">
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17</linux>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.palladiosimulator.simexp.feature"/>
+      <feature id="org.palladiosimulator.simexp.feature.dsl.ea.kubernetes"/>
+      <feature id="org.palladiosimulator.simexp.feature.palladio"/>
+      <feature id="org.palladiosimulator.simexp.feature.palladio.ui"/>
+      <feature id="org.palladiosimulator.simexp.feature.rcp"/>
+      <feature id="org.palladiosimulator.simexp.feature.rcp.ui"/>
+      <feature id="org.palladiosimulator.thirdpartywrapper.feature"/>
+      <feature id="org.palladiosimulator.simexp.feature.examples"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>
