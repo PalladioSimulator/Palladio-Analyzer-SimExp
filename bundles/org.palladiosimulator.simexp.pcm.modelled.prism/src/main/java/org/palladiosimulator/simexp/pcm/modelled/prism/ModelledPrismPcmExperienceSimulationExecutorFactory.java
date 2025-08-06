@@ -158,6 +158,7 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(

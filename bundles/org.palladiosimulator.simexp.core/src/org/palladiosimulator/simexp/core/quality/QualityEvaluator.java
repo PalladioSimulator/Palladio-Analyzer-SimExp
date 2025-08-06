@@ -7,13 +7,14 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
 import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor {
+public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor, Initializable {
     private static final Logger LOGGER = Logger.getLogger(QualityEvaluator.class);
 
     private final List<SimulatedMeasurementSpecification> measurementSpecs;
@@ -26,6 +27,12 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
     public List<Map<String, List<Double>>> getQualityAttributes() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void initialize() {
+        // TODO Auto-generated method stub
+        LOGGER.info("new run");
     }
 
     @Override

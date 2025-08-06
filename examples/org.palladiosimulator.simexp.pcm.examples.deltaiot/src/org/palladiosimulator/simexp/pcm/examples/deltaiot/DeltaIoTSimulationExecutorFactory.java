@@ -162,6 +162,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();

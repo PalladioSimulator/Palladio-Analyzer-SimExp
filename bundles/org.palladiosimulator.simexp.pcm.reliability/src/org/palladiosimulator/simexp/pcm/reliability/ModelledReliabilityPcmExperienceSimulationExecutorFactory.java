@@ -144,6 +144,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();

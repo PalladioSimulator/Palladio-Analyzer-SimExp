@@ -87,6 +87,7 @@ public class LoadBalancingSimulationExecutorFactory
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();

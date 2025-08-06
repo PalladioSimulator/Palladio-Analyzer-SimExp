@@ -127,6 +127,7 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
         RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables,

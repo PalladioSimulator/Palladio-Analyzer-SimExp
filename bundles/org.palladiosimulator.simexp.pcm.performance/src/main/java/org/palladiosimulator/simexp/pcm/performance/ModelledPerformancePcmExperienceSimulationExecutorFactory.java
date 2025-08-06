@@ -126,9 +126,9 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         boolean isHidden = false;
-
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(
                 experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables,
                 envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator,

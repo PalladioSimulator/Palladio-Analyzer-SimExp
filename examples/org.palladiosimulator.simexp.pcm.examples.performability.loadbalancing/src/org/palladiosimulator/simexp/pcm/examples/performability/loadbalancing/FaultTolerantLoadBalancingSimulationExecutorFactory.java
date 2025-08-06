@@ -102,6 +102,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        beforeExecutionInitializables.add(qualityEvaluator);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
