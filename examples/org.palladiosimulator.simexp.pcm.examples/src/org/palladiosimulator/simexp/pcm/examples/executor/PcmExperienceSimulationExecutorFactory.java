@@ -34,6 +34,8 @@ import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -113,6 +115,15 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
+    }
+
+    protected StateQuantityMonitor createStateQuantityMonitor() {
+        return new StateQuantityMonitor() {
+
+            @Override
+            public void monitor(State state) {
+            }
+        };
     }
 
     protected IQualityEvaluator createQualityEvaluator(
@@ -213,9 +224,9 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             ISimulatedExperienceStore<QVTOReconfigurator, R> simulatedExperienceStore,
             SelfAdaptiveSystemStateSpaceNavigator<PCMInstance, QVTOReconfigurator, R, V> navigator,
             Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy, Set<QVToReconfiguration> reconfigurations,
-            RewardEvaluator<R> evaluator, boolean hidden, IExperimentProvider experimentProvider,
-            SimulationRunnerHolder simulationRunnerHolder, SampleDumper sampleDumper,
-            Optional<ISeedProvider> seedProvider) {
+            RewardEvaluator<R> evaluator, StateQuantityMonitor stateQuantityMonitor, boolean hidden,
+            IExperimentProvider experimentProvider, SimulationRunnerHolder simulationRunnerHolder,
+            SampleDumper sampleDumper, Optional<ISeedProvider> seedProvider) {
         SimulatedRewardReceiver<PCMInstance, QVTOReconfigurator, R, V> rewardReceiver = SimulatedRewardReceiver
             .<PCMInstance, QVTOReconfigurator, R, V> with(evaluator);
 
@@ -244,6 +255,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
             .andReconfigurationStrategy(reconfStrategy)
             .done()
             .withRewardReceiver(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .build();
     }
 

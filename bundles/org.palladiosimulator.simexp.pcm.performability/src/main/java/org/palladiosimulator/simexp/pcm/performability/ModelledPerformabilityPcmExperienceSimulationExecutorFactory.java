@@ -38,6 +38,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValu
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -126,11 +127,12 @@ public class ModelledPerformabilityPcmExperienceSimulationExecutorFactory
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
         RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables,
-                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                envProcess, getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator,
+                stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);

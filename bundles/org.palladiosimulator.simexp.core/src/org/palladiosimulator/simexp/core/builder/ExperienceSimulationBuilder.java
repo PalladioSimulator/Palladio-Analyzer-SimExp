@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentPro
 import org.palladiosimulator.simexp.environmentaldynamics.process.UnobservableEnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.builder.MarkovianBuilder;
 import org.palladiosimulator.simexp.markovian.builder.StateSpaceNavigatorBuilder;
 import org.palladiosimulator.simexp.markovian.config.MarkovianConfig;
@@ -48,6 +49,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     private int numberOfSamplesPerRun = 0;
     private Set<Aa> reconfigurationSpace = null;
     private SimulatedRewardReceiver<C, A, R, V> rewardReceiver;
+    private StateQuantityMonitor stateQuantityMonitor;
     private Policy<A, Aa> policy = null;
     private EnvironmentProcess<A, R, V> envProcess = null;
     private ISimulatedExperienceStore<A, R> simulatedExperienceStore;
@@ -79,6 +81,12 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     public ExperienceSimulationBuilder<C, A, Aa, R, V> withRewardReceiver(
             SimulatedRewardReceiver<C, A, R, V> rewardReceiver) {
         this.rewardReceiver = rewardReceiver;
+        return this;
+    }
+
+    public ExperienceSimulationBuilder<C, A, Aa, R, V> withStateQuantityMonitor(
+            StateQuantityMonitor stateQuantityMonitor) {
+        this.stateQuantityMonitor = stateQuantityMonitor;
         return this;
     }
 
@@ -148,6 +156,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         return MarkovianBuilder.<A, Aa, R> createPartiallyObservableMDP()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)
@@ -159,6 +168,7 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
         return MarkovianBuilder.<A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)
             .calculateRewardWith(rewardReceiver)
+            .withStateQuantityMonitor(stateQuantityMonitor)
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)

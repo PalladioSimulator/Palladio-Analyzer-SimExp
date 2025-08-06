@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpace
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -161,6 +162,7 @@ public class DeltaIoTSimulationExecutorFactory extends
 //            .build();
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
@@ -172,8 +174,8 @@ public class DeltaIoTSimulationExecutorFactory extends
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
                 beforeExecutionInitializables, null, simulatedExperienceStore, envProcess, reconfSelectionPolicy,
-                reconfigurations, evaluator, false, experimentProvider, simulationRunnerHolder, deltaIoTSampleLogger,
-                getSeedProvider());
+                reconfigurations, evaluator, stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder,
+                deltaIoTSampleLogger, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);

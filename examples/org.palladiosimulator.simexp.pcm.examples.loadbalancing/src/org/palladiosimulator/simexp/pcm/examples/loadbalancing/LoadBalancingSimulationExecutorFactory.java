@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -86,6 +87,7 @@ public class LoadBalancingSimulationExecutorFactory
         Pair<SimulatedMeasurementSpecification, Threshold> threshold = Pair.of(pcmMeasurementSpecs.get(0),
                 Threshold.lessThanOrEqualTo(UPPER_THRESHOLD_RT));
         RewardEvaluator<Integer> evaluator = ThresholdBasedRewardEvaluator.with(threshold);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
@@ -94,7 +96,7 @@ public class LoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, simulationRunners, getSimulationParameters(), beforeExecutionInitializables,
                 envProcess, getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);

@@ -26,6 +26,7 @@ import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -117,6 +118,7 @@ public class RobotCognitionSimulationExecutorFactory
         EnvironmentProcess<QVTOReconfigurator, Double, List<InputValue<CategoricalValue>>> envProcess = p;
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
@@ -125,8 +127,8 @@ public class RobotCognitionSimulationExecutorFactory
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
-                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, true,
-                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
+                stateQuantityMonitor, true, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);

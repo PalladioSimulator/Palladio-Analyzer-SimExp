@@ -6,6 +6,7 @@ import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunctio
 import org.palladiosimulator.simexp.markovian.activity.ObservationProducer;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.statespace.StateSpaceNavigator;
@@ -77,6 +78,11 @@ public class MarkovianBuilder<A, Aa extends Action<A>, R> {
             return this;
         }
 
+        public MDPBuilder withStateQuantityMonitor(StateQuantityMonitor stateQuantityMonitor) {
+            decisionBuilder.withStateQuantityMonitor(stateQuantityMonitor);
+            return this;
+        }
+
         @Override
         public MDPBuilder withActionSpace(Set<Aa> actions) {
             decisionBuilder.withActionSpace(actions);
@@ -122,6 +128,11 @@ public class MarkovianBuilder<A, Aa extends Action<A>, R> {
         @Override
         public POMDPBuilder calculateRewardWith(RewardReceiver<A, R> rewardCalc) {
             decisionBuilder.calculateRewardWith(rewardCalc);
+            return this;
+        }
+
+        public POMDPBuilder withStateQuantityMonitor(StateQuantityMonitor stateQuantityMonitor) {
+            decisionBuilder.withStateQuantityMonitor(stateQuantityMonitor);
             return this;
         }
 

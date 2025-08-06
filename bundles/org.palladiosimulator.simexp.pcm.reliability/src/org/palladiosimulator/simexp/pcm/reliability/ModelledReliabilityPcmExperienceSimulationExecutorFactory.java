@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValu
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
@@ -143,6 +144,7 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();
@@ -151,8 +153,8 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         SimulationRunnerHolder simulationRunnerHolder = createSimulationRunnerHolder();
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
-                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, true,
-                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                getSimulatedExperienceStore(), null, reconfStrategy, reconfigurations, evaluator, stateQuantityMonitor,
+                true, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);

@@ -30,6 +30,7 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -101,6 +102,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
         RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
+        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
@@ -131,8 +133,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
 
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
-                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator, false,
-                experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
+                stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
         IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.RewardReceiver;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Action;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
@@ -13,13 +14,15 @@ public class DecisionBasedMarkovian<A, Aa extends Action<A>, R> extends Markovia
 
     private final Policy<A, Aa> policy;
     private final RewardReceiver<A, R> rewardReceiver;
+    private final StateQuantityMonitor stateQuantityMonitor;
     private final Set<Aa> actionSpace;
 
     public DecisionBasedMarkovian(Markovian<A, R> decoratedMarkovian, Policy<A, Aa> policy,
-            RewardReceiver<A, R> rewardReceiver, Set<Aa> actionSpace) {
+            RewardReceiver<A, R> rewardReceiver, StateQuantityMonitor stateQuantityMonitor, Set<Aa> actionSpace) {
         super(decoratedMarkovian);
         this.policy = policy;
         this.rewardReceiver = rewardReceiver;
+        this.stateQuantityMonitor = stateQuantityMonitor;
         this.actionSpace = actionSpace;
     }
 
@@ -27,6 +30,7 @@ public class DecisionBasedMarkovian<A, Aa extends Action<A>, R> extends Markovia
     public void drawSample(Sample<A, R> sample) {
         addSelectedAction(sample);
         addNextState(sample);
+        stateQuantityMonitor.monitor(sample.getCurrent());
         addObtainedReward(sample);
     }
 
