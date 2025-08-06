@@ -157,9 +157,10 @@ public abstract class ExperienceSimulationBuilder<C, A, Aa extends Reconfigurati
     }
 
     private Markovian<A, R> buildMDP(ProbabilityMassFunction<State> initialDist, StateSpaceNavigator<A> navigator) {
+        SimulatedRewardReceiver<C, A, R, V> rewardReceiver = SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator);
         return MarkovianBuilder.<A, Aa, R> createMarkovDecisionProcess()
             .createStateSpaceNavigator(navigator)
-            .calculateRewardWith(SimulatedRewardReceiver.<C, A, R, V> with(rewardEvaluator))
+            .calculateRewardWith(rewardReceiver)
             .selectActionsAccordingTo(policy)
             .withActionSpace(getReconfigurationSpace())
             .withInitialStateDistribution(initialDist)
