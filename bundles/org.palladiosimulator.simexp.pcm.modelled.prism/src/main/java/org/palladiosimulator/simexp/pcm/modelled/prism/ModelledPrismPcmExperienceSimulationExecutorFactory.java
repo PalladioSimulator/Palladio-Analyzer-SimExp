@@ -18,8 +18,8 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecificatio
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
-import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
@@ -35,7 +35,6 @@ import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.EnvironmentVari
 import org.palladiosimulator.simexp.dsl.smodel.interpreter.value.OptimizableValueProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.model.strategy.ModelledReconfigurationStrategy;
 import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
@@ -158,17 +157,16 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         Set<QVToReconfiguration> reconfigurations = prismQVToReconfigurationProvider.getReconfigurations();
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
-        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
+        QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
 
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(
                 experiment, prismSimulatedMeasurementSpec, List.of(runner), getSimulationParameters(),
                 beforeExecutionInitializables, null, simulatedExperienceStore, envProcess, reconfStrategy,
-                reconfigurations, evaluator, stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder,
+                reconfigurations, evaluator, qualityEvaluator, false, experimentProvider, simulationRunnerHolder,
                 deltaIoTSampleLogger, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfStrategy.getId());
-        IQualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
 
         ModelledSimulationExecutor<Double> executor = new ModelledSimulationExecutor<>(experienceSimulator, experiment,
                 getSimulationParameters(), reconfStrategy, rewardCalculation, qualityEvaluator, experimentProvider);

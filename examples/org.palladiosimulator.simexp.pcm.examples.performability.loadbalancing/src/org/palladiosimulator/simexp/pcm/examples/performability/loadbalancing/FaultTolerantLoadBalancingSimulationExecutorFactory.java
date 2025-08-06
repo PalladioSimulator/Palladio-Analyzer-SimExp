@@ -20,8 +20,8 @@ import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulationRunner;
 import org.palladiosimulator.simexp.core.process.ExperienceSimulator;
 import org.palladiosimulator.simexp.core.process.Initializable;
+import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
-import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceStore;
@@ -30,7 +30,6 @@ import org.palladiosimulator.simexp.core.util.Pair;
 import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
-import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -102,7 +101,7 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
                 Threshold.lessThanOrEqualTo(LOWER_THRESHOLD_RT.getValue()));
         RewardEvaluator<Double> evaluator = new PerformabilityRewardEvaluation(pcmMeasurementSpecs.get(0),
                 pcmMeasurementSpecs.get(1), upperThresh, lowerThresh);
-        StateQuantityMonitor stateQuantityMonitor = createStateQuantityMonitor();
+        QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);
@@ -134,10 +133,9 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 pcmMeasurementSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                stateQuantityMonitor, false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                qualityEvaluator, false, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
-        IQualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, qualityEvaluator, experimentProvider);

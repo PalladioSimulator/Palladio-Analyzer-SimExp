@@ -26,7 +26,6 @@ import org.palladiosimulator.simexp.core.process.Initializable;
 import org.palladiosimulator.simexp.core.quality.QualityEvaluator;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.reward.SimulatedRewardReceiver;
-import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
 import org.palladiosimulator.simexp.core.state.SimulationRunnerHolder;
 import org.palladiosimulator.simexp.core.statespace.SelfAdaptiveSystemStateSpaceNavigator;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
@@ -35,7 +34,6 @@ import org.palladiosimulator.simexp.core.util.SimulatedExperienceConstants;
 import org.palladiosimulator.simexp.environmentaldynamics.process.EnvironmentProcess;
 import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.markovian.sampling.SampleDumper;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -117,16 +115,7 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         throw new RuntimeException("unknown reward type: " + rewardType);
     }
 
-    protected StateQuantityMonitor createStateQuantityMonitor() {
-        return new StateQuantityMonitor() {
-
-            @Override
-            public void monitor(State state) {
-            }
-        };
-    }
-
-    protected IQualityEvaluator createQualityEvaluator(
+    protected QualityEvaluator createQualityEvaluator(
             List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
         return new QualityEvaluator(measurementSpecs);
     }

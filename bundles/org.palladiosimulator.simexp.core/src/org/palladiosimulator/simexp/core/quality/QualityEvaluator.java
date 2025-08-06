@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator;
+import org.palladiosimulator.simexp.core.state.SelfAdaptiveSystemState;
+import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.activity.StateQuantityMonitor;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 
-public class QualityEvaluator implements IQualityEvaluator {
+public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor {
+    private static final Logger LOGGER = Logger.getLogger(QualityEvaluator.class);
+
     private final List<SimulatedMeasurementSpecification> measurementSpecs;
 
     public QualityEvaluator(List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
@@ -18,6 +26,19 @@ public class QualityEvaluator implements IQualityEvaluator {
     public List<Map<String, List<Double>>> getQualityAttributes() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void monitor(State state) {
+        SelfAdaptiveSystemState<?, ?, ?> sasState = (SelfAdaptiveSystemState<?, ?, ?>) state;
+        for (SimulatedMeasurementSpecification measurementSpec : measurementSpecs) {
+            StateQuantity quantifiedState = sasState.getQuantifiedState();
+            SimulatedMeasurement measurement = quantifiedState.findMeasurementWith(measurementSpec)
+                .orElseThrow();
+            double measurementValue = measurement.getValue();
+
+            LOGGER.info(String.format("measured %s: %f", measurementSpec.getId(), measurementValue));
+        }
     }
 
 }
