@@ -6,7 +6,7 @@
     <stringAttribute key="ModelledOptimizationType" value="EVOLUTIONARY_ALGORITHM"/>
     <stringAttribute key="MutationRate" value="0.000000"/>
     <intAttribute key="NumberOfRuns" value="1"/>
-    <intAttribute key="NumberOfSimulationsPerRun" value="2"/>
+    <intAttribute key="NumberOfSimulationsPerRun" value="4"/>
     <intAttribute key="PopulationSize" value="1"/>
     <stringAttribute key="Quality Objective" value="PERFORMANCE"/>
     <stringAttribute key="Reward Type" value="EXPECTED"/>
