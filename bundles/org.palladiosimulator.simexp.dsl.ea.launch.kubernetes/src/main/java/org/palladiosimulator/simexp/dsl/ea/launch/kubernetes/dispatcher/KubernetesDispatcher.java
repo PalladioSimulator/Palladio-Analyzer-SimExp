@@ -154,7 +154,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                     }
                 });
             } finally {
-                resultLogger.dispose();
+                compositeResultLogger.dispose();
             }
         }
     }
