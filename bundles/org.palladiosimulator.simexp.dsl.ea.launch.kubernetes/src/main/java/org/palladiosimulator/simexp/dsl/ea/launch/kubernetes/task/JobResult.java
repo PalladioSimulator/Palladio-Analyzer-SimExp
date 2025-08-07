@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 
 public class JobResult {
     public enum Status {
@@ -15,6 +16,7 @@ public class JobResult {
     public int delivery_count;
     public Status status;
     public Double reward;
+    public QualityMeasurements qualityMeasurements;
     public String error;
     public Integer return_code;
 
@@ -27,6 +29,7 @@ public class JobResult {
             .append(delivery_count)
             .append(status)
             .append(reward)
+            .append(qualityMeasurements)
             .append(error)
             .append(return_code)
             .toHashCode();
@@ -51,6 +54,7 @@ public class JobResult {
             .append(delivery_count, rhs.delivery_count)
             .append(status, rhs.status)
             .append(reward, rhs.reward)
+            .append(qualityMeasurements, rhs.qualityMeasurements)
             .append(error, rhs.error)
             .append(return_code, rhs.return_code)
             .isEquals();
