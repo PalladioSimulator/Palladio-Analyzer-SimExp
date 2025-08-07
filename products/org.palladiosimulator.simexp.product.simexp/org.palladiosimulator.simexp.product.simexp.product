@@ -25,7 +25,6 @@
 
    <windowImages/>
 
-
    <launcher name="simexp">
       <win useIco="false">
          <bmp/>
@@ -36,6 +35,7 @@
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17</linux>
    </vm>
+
 
    <plugins>
    </plugins>
@@ -49,12 +49,15 @@
       <feature id="org.palladiosimulator.simexp.feature.rcp"/>
       <feature id="org.palladiosimulator.simexp.feature.rcp.ui"/>
       <feature id="org.palladiosimulator.thirdpartywrapper.feature"/>
-      <feature id="org.palladiosimulator.simexp.feature.examples"/>
+      <feature id="org.palladiosimulator.simexp.feature.ui"/>
    </features>
 
    <configurations>
-      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
    </configurations>
 
    <preferencesInfo>
