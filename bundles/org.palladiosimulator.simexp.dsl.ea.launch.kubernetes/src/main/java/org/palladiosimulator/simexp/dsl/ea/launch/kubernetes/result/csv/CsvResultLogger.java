@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.csv;
+package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv;
 
 import java.io.IOException;
 import java.io.Writer;
