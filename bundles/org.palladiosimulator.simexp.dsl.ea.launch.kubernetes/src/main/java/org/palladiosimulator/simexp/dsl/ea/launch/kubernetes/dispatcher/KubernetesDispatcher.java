@@ -35,6 +35,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.Deployme
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
@@ -128,8 +129,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 .resolve("simulation_result.csv");
             Files.createDirectories(csvResourcePath.getParent());
             CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
+            CompositeResultLogger compositeResultLogger = new CompositeResultLogger(Arrays.asList(resultLogger));
             try {
-                TaskManager taskManager = new TaskManager(resultLogger);
+                TaskManager taskManager = new TaskManager(compositeResultLogger);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
