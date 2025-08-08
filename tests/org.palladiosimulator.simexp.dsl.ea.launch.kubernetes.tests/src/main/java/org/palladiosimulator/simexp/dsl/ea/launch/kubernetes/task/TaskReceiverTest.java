@@ -35,29 +35,31 @@ public class TaskReceiverTest {
     public void testDeserializeMessage() {
         String message = """
                 {
-                    "tag": 1,
-                    "executor_id": "node02:default.simexp-6cf84d6945-6tm2t",
-                    "id": "Task 1",
-                    "redelivered": false,
-                    "delivery_count": 0,
-                    "status": "COMPLETE",
-                    "reward": 1.5422303920479277,
-                    "quality_measurements": {
-                        "runs": [
-                            {
-                                "quality_attributes": {
-                                    "PacketLoss.props": [
-                                        0.318942222222,
-                                        0.0774108561996
-                                    ],
-                                    "EnergyConsumption.props": [
-                                        34.5221044,
-                                        33.2258566279
-                                    ]
-                                }
-                            }
-                        ]
-                    }
+                  "id": "Task 1",
+                  "executor_id": "node02:default.simexp-85df8d9cdb-46292",
+                  "tag": 1,
+                  "redelivered": false,
+                  "delivery_count": 0,
+                  "status": "COMPLETE",
+                  "reward": 2.538916360578,
+                  "quality_measurements": {
+                    "runs": [
+                      {
+                        "quality_attributes": {
+                          "PacketLoss.props": [
+                            0.174242424242,
+                            0.127863170907
+                          ],
+                          "EnergyConsumption.props": [
+                            34.3419196,
+                            30.6465861964
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "error": null,
+                  "return_code": 0
                 }
                 """;
 
@@ -65,16 +67,16 @@ public class TaskReceiverTest {
 
         JobResult expectedResult = new JobResult();
         expectedResult.tag = 1;
-        expectedResult.executor_id = "node02:default.simexp-6cf84d6945-6tm2t";
+        expectedResult.executor_id = "node02:default.simexp-85df8d9cdb-46292";
         expectedResult.id = "Task 1";
         expectedResult.redelivered = false;
         expectedResult.delivery_count = 0;
         expectedResult.status = Status.COMPLETE;
-        expectedResult.reward = 1.5422303920479277;
-
+        expectedResult.reward = 2.538916360578;
+        expectedResult.return_code = 0;
         Map<String, List<Double>> expectedQualityAttributes = new HashMap<>();
-        expectedQualityAttributes.put("PacketLoss.props", Arrays.asList(0.318942222222, 0.0774108561996));
-        expectedQualityAttributes.put("EnergyConsumption.props", Arrays.asList(34.5221044, 33.2258566279));
+        expectedQualityAttributes.put("PacketLoss.props", Arrays.asList(0.174242424242, 0.127863170907));
+        expectedQualityAttributes.put("EnergyConsumption.props", Arrays.asList(34.3419196, 30.6465861964));
         Run expectedRun = new Run(expectedQualityAttributes);
         expectedResult.qualityMeasurements = new QualityMeasurements(Collections.singletonList(expectedRun));
         assertThat(actualResult) //

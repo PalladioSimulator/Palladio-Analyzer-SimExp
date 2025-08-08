@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodResta
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.json.JsonQualityAttributesResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskReceiver;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -125,11 +126,16 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 KubernetesPreferenceConstants.RABBIT_MAX_DELIVERY, 3, null);
 
         try (TaskReceiver taskReceiver = new TaskReceiver(channel, inQueueName, classloader)) {
-            Path csvResourcePath = resourcePath.resolve("kubernetes")
-                .resolve("simulation_result.csv");
+            Path kubernetesResourcesPath = resourcePath.resolve("kubernetes");
+            Path csvResourcePath = kubernetesResourcesPath.resolve("simulation_result.csv");
+            Path taskResourcesPath = kubernetesResourcesPath.resolve("tasks");
             Files.createDirectories(csvResourcePath.getParent());
+            Files.createDirectories(taskResourcesPath);
             CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
-            CompositeResultLogger compositeResultLogger = new CompositeResultLogger(Arrays.asList(resultLogger));
+            JsonQualityAttributesResultLogger qualityAttributesResultLogger = new JsonQualityAttributesResultLogger(
+                    taskResourcesPath);
+            CompositeResultLogger compositeResultLogger = new CompositeResultLogger(
+                    Arrays.asList(resultLogger, qualityAttributesResultLogger));
             try {
                 TaskManager taskManager = new TaskManager(compositeResultLogger);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
