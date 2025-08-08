@@ -162,6 +162,9 @@ public class EAOptimizer implements IEAOptimizer {
                     r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
         final double bestFitness = result.bestFitness();
+        List<OptimizableValue<?>> bestOptimizableValues = normalizer.toOptimizableValues(result.bestPhenotype()
+            .genotype());
+
         LOGGER.info("EA finished");
         StringBuilder resultStatistics = new StringBuilder();
         resultStatistics.append(standardStatistics.toString());
@@ -171,7 +174,7 @@ public class EAOptimizer implements IEAOptimizer {
 
         List<List<OptimizableValue<?>>> equivalentOptimizableValues = buildMOEAList(normalizer, result);
 
-        return new EAResult(bestFitness, equivalentOptimizableValues);
+        return new EAResult(bestFitness, bestOptimizableValues, equivalentOptimizableValues);
     }
 
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,

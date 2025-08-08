@@ -72,24 +72,34 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     public ISimulationResult evaluate() {
         double totalReward = 0.0;
         QualityMeasurements qualityMeasurements = null;
+        List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
         List<List<OptimizableValue<?>>> equivalentOptimizableValues = Collections.emptyList();
         if (optimizationResult != null) {
             totalReward = optimizationResult.getFitness();
+            bestOptimizableValues = optimizationResult.getBestOptimizableValues();
             equivalentOptimizableValues = optimizationResult.getEquivalentOptimizableValues();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
+        detailDescription.add("Optimal values of the fittest individual:");
+        detailDescription.addAll(formatOptimizables(bestOptimizableValues));
+
         detailDescription.add(String.format("Equivalent optimal values %d:", equivalentOptimizableValues.size()));
-        for (final ListIterator<List<OptimizableValue<?>>> it = equivalentOptimizableValues.listIterator(); it
-            .hasNext();) {
+        for (ListIterator<List<OptimizableValue<?>>> it = equivalentOptimizableValues.listIterator(); it.hasNext();) {
             List<OptimizableValue<?>> optimizables = it.next();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
-            for (OptimizableValue<?> ov : optimizables) {
-                detailDescription.add(String.format("-- %s: %s", ov.getOptimizable()
-                    .getName(), ov.getValue()));
-            }
+            detailDescription.addAll(formatOptimizables(optimizables));
         }
         return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
+    }
+
+    private List<String> formatOptimizables(List<OptimizableValue<?>> optimizables) {
+        List<String> entries = new ArrayList<>();
+        for (OptimizableValue<?> ov : optimizables) {
+            entries.add(String.format("-- %s: %s", ov.getOptimizable()
+                .getName(), ov.getValue()));
+        }
+        return entries;
     }
 
     @Override
