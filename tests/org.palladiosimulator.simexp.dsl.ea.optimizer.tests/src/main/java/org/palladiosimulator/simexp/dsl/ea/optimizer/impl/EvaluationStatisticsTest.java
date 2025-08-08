@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
 
 import io.jenetics.IntegerGene;
 
@@ -16,13 +15,13 @@ public class EvaluationStatisticsTest {
     private EvaluationStatistics<IntegerGene> statistics;
 
     @Mock
-    private MOEAFitnessFunction<IntegerGene> fitnessFunction;
+    private IEvaluationStatisticsReporter evaluationStatisticsReporter;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
 
-        statistics = new EvaluationStatistics<>(fitnessFunction, BigInteger.valueOf(1l));
+        statistics = new EvaluationStatistics<>(evaluationStatisticsReporter, BigInteger.valueOf(1l));
     }
 
     @Test

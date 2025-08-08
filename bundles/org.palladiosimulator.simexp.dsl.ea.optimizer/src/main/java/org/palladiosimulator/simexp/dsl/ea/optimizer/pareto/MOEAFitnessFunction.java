@@ -12,13 +12,15 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.IEvaluationStatisticsReporter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;
 import io.jenetics.Genotype;
 
-public class MOEAFitnessFunction<G extends Gene<?, G>> implements Function<Genotype<G>, Double> {
+public class MOEAFitnessFunction<G extends Gene<?, G>>
+        implements Function<Genotype<G>, Double>, IEvaluationStatisticsReporter {
 
     private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
 
@@ -63,6 +65,7 @@ public class MOEAFitnessFunction<G extends Gene<?, G>> implements Function<Genot
         return Math.round(number * multiplicator) / multiplicator;
     }
 
+    @Override
     public long getNumberOfUniqueFitnessEvaluations() {
         return evaluatedOptimizables.size();
     }

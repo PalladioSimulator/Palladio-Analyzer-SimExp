@@ -7,8 +7,6 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
-
 import io.jenetics.Gene;
 
 public class EvaluationStatistics<G extends Gene<?, G>> {
@@ -16,11 +14,11 @@ public class EvaluationStatistics<G extends Gene<?, G>> {
     private final static int ROUNDING_CONSTANT = 100000;
     private final static String CPATTERN = "| %22s %-51s|\n";
 
-    private final MOEAFitnessFunction<G> fitnessFunction;
+    private final IEvaluationStatisticsReporter evaluationStatisticsReporter;
     private final BigInteger overallPower;
 
-    public EvaluationStatistics(MOEAFitnessFunction<G> fitnessFunction, BigInteger overallPower) {
-        this.fitnessFunction = fitnessFunction;
+    public EvaluationStatistics(IEvaluationStatisticsReporter evaluationStatisticsReporter, BigInteger overallPower) {
+        this.evaluationStatisticsReporter = evaluationStatisticsReporter;
         this.overallPower = overallPower;
     }
 
@@ -33,7 +31,8 @@ public class EvaluationStatistics<G extends Gene<?, G>> {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
                 + "+---------------------------------------------------------------------------+\n");
-        BigInteger fitnessEvaluationCount = BigInteger.valueOf(fitnessFunction.getNumberOfUniqueFitnessEvaluations());
+        BigInteger fitnessEvaluationCount = BigInteger
+            .valueOf(evaluationStatisticsReporter.getNumberOfUniqueFitnessEvaluations());
         String result = formatResult(fitnessEvaluationCount, overallPower);
         stringBuilder.append(format(CPATTERN, "Evaluated:", result));
 
