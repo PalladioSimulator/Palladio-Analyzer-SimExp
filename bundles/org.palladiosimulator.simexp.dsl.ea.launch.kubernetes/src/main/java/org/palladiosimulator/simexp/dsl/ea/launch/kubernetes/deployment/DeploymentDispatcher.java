@@ -174,8 +174,10 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
     }
 
     private List<EnvVar> createEnvironment(String brokerUrl, String outQueue, String inQueue, int maxDelivery) {
-        return Arrays.asList(
-                // new EnvVarBuilder().withName("DEBUG_FLAG").withValue("-v").build(),
+        return Arrays.asList( //
+                // new EnvVarBuilder().withName("DEBUG_FLAG")
+                // .withValue("-v")
+                // .build(),
                 new EnvVarBuilder().withName("BROKER_URL")
                     .withValue(brokerUrl)
                     .build(),
@@ -186,7 +188,7 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                     .withValue(inQueue)
                     .build(),
                 new EnvVarBuilder().withName("MAX_DELIVERY")
-                    .withValue(String.format("--max_delivery %d", maxDelivery))
+                    .withValue(String.format("--max-delivery %d", maxDelivery))
                     .build(),
                 new EnvVarBuilder().withName("NODE_NAME")
                     .withNewValueFrom()
