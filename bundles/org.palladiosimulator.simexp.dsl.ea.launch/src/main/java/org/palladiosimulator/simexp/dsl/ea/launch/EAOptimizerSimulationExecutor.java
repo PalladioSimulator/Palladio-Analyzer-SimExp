@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
@@ -74,10 +79,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
         List<List<OptimizableValue<?>>> equivalentOptimizableValues = Collections.emptyList();
+        List<IndividualResult> finalPopulation = Collections.emptyList();
         if (optimizationResult != null) {
-            totalReward = optimizationResult.getFitness();
-            bestOptimizableValues = optimizationResult.getBestOptimizableValues();
+            IndividualResult fittest = optimizationResult.getFittest();
+            totalReward = fittest.getFitness();
+            bestOptimizableValues = fittest.getOptimizableValues();
             equivalentOptimizableValues = optimizationResult.getEquivalentOptimizableValues();
+            finalPopulation = optimizationResult.getFinalPopulation();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
         List<String> detailDescription = new ArrayList<>();
@@ -90,7 +98,24 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             detailDescription.add(String.format("- #%d", it.previousIndex()));
             detailDescription.addAll(formatOptimizables(optimizables));
         }
+
+        List<IndividualResult> uniquePopulation = finalPopulation.stream()
+            .filter(distinctByKey(IndividualResult::getOptimizableValues))
+            .toList();
+
+        detailDescription.add(String.format("The final population has %d/%d unique individuals:",
+                uniquePopulation.size(), finalPopulation.size()));
+        for (IndividualResult individual : uniquePopulation) {
+            detailDescription.add(String.format("- fitness %s", individual.getFitness()));
+            detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
+        }
+
         return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     private List<String> formatOptimizables(List<OptimizableValue<?>> optimizables) {

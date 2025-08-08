@@ -114,7 +114,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 50.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -131,7 +132,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
@@ -152,7 +154,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
@@ -174,7 +177,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 6.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -192,7 +196,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 6.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -209,7 +214,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 19.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -226,7 +232,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -244,7 +251,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -261,7 +269,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 85.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
@@ -286,7 +295,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 68.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
@@ -315,7 +325,8 @@ public class EAOptimizerTest {
         EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
 
         double expectedFitness = 16.0;
-        assertEquals(expectedFitness, result.getFitness(), DELTA);
+        assertEquals(expectedFitness, result.getFittest()
+            .getFitness(), DELTA);
         List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())

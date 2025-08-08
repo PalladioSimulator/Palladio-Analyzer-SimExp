@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
@@ -162,7 +163,7 @@ public class EAOptimizer implements IEAOptimizer {
                     r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
         final double bestFitness = result.bestFitness();
-        List<OptimizableValue<?>> bestOptimizableValues = normalizer.toOptimizableValues(result.bestPhenotype()
+        final List<OptimizableValue<?>> bestOptimizableValues = normalizer.toOptimizableValues(result.bestPhenotype()
             .genotype());
 
         LOGGER.info("EA finished");
@@ -174,7 +175,12 @@ public class EAOptimizer implements IEAOptimizer {
 
         List<List<OptimizableValue<?>>> equivalentOptimizableValues = buildMOEAList(normalizer, result);
 
-        return new EAResult(bestFitness, bestOptimizableValues, equivalentOptimizableValues);
+        List<IndividualResult> finalPopulation = result.population()
+            .stream()
+            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
+            .toList();
+        IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
+        return new EAResult(fittestIndividual, equivalentOptimizableValues, finalPopulation);
     }
 
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,
