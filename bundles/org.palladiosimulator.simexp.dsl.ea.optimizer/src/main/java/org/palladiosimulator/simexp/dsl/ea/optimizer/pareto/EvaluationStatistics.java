@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 
 import io.jenetics.Gene;
 
-public class ParetoEvolutionStatistics<G extends Gene<?, G>> {
+public class EvaluationStatistics<G extends Gene<?, G>> {
 
     private final static int ROUNDING_CONSTANT = 100000;
     private final static String CPATTERN = "| %22s %-51s|\n";
@@ -17,7 +17,7 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> {
     private final MOEAFitnessFunction<G> fitnessFunction;
     private final BigInteger overallPower;
 
-    public ParetoEvolutionStatistics(MOEAFitnessFunction<G> fitnessFunction, BigInteger overallPower) {
+    public EvaluationStatistics(MOEAFitnessFunction<G> fitnessFunction, BigInteger overallPower) {
         this.fitnessFunction = fitnessFunction;
         this.overallPower = overallPower;
     }

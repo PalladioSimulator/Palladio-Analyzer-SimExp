@@ -11,8 +11,8 @@ import org.mockito.Mock;
 
 import io.jenetics.IntegerGene;
 
-public class ParetoEvolutionStatisticsTest {
-    private ParetoEvolutionStatistics<IntegerGene> statistics;
+public class EvaluationStatisticsTest {
+    private EvaluationStatistics<IntegerGene> statistics;
 
     @Mock
     private MOEAFitnessFunction<IntegerGene> fitnessFunction;
@@ -21,7 +21,7 @@ public class ParetoEvolutionStatisticsTest {
     public void setUp() throws Exception {
         initMocks(this);
 
-        statistics = new ParetoEvolutionStatistics<>(fitnessFunction, BigInteger.valueOf(1l));
+        statistics = new EvaluationStatistics<>(fitnessFunction, BigInteger.valueOf(1l));
     }
 
     @Test

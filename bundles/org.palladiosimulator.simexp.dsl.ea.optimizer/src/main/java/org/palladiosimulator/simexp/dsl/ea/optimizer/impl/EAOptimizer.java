@@ -23,7 +23,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvolutionStatistics;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.EvaluationStatistics;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
@@ -107,10 +107,10 @@ public class EAOptimizer implements IEAOptimizer {
         MOEAFitnessFunction<G> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
         Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
-        ParetoEvolutionStatistics<G> paretoStatistics = new ParetoEvolutionStatistics<>(fitnessFunction, overallPower);
+        EvaluationStatistics<G> evaluationStatistics = new EvaluationStatistics<>(fitnessFunction, overallPower);
 
         // Run EA
-        return runOptimization(paretoStatistics, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
+        return runOptimization(evaluationStatistics, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
     }
 
     private <G extends Gene<?, G>> Genotype<G> buildGenotype(Collection<Optimizable> optimizables,
@@ -140,7 +140,7 @@ public class EAOptimizer implements IEAOptimizer {
         return builder.alterers(crossover, mutator);
     }
 
-    private <G extends Gene<?, G>> EAResult runOptimization(ParetoEvolutionStatistics<G> paretoStatistics,
+    private <G extends Gene<?, G>> EAResult runOptimization(EvaluationStatistics<G> evaluationStatistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
             MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
@@ -167,7 +167,7 @@ public class EAOptimizer implements IEAOptimizer {
         StringBuilder resultStatistics = new StringBuilder();
         resultStatistics.append(standardStatistics.toString());
         resultStatistics.append("\n");
-        resultStatistics.append(paretoStatistics);
+        resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
