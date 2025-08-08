@@ -22,8 +22,8 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEAFitnessFunction;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEASetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -169,7 +169,7 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = MOEASetCollector
             .create();
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(paretoCollector);

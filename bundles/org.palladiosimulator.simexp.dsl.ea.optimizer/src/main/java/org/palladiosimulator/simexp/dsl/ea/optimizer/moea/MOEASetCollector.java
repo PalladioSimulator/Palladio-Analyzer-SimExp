@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
 
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
@@ -14,7 +14,7 @@ import io.jenetics.ext.moea.Vec;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.IntRange;
 
-public class ParetoSetCollector {
+public class MOEASetCollector {
 
     public static <G extends Gene<?, G>> Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> create() {
         Comparator<Double> dominance = (Double a, Double b) -> Vec.of(a)
