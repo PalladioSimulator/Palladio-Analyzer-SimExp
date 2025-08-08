@@ -37,4 +37,11 @@ public class ParetoEvolutionStatisticsTest {
 
         assertThat(actualRoundedString).isEqualTo("100");
     }
+
+    @Test
+    public void testToRoundedStringInfiniteResult() {
+        String actualRoundedString = statistics.toRoundedString(BigInteger.valueOf(66), BigInteger.valueOf(84));
+
+        assertThat(actualRoundedString).isEqualTo("78.57");
+    }
 }

@@ -71,7 +71,7 @@ public class ParetoEvolutionStatistics<G extends Gene<?, G>> implements Consumer
     String toRoundedString(BigInteger uniqueFitnessEvaluations, BigInteger combinationsInOptimizableSpace) {
         BigDecimal actualEvaluations = new BigDecimal(uniqueFitnessEvaluations);
         BigDecimal totalCombinations = new BigDecimal(combinationsInOptimizableSpace);
-        BigDecimal percentageVisited = actualEvaluations.divide(totalCombinations)
+        BigDecimal percentageVisited = actualEvaluations.divide(totalCombinations, MathContext.DECIMAL32)
             .multiply(BigDecimal.valueOf(100));
         BigDecimal rounded = percentageVisited.round(new MathContext(ROUNDING_CONSTANT));
         DecimalFormat df = new DecimalFormat();
