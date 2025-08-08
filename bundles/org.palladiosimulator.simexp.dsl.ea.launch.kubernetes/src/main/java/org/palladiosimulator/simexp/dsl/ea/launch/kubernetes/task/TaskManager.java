@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
@@ -28,7 +30,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     private final IResultLogger resultLogger;
     private final Map<String, TaskInfo> outstandingTasks;
-    private final Set<String> startedTasks;
+    private final Map<String, String> startedTasks;
     private final Set<String> completedTasks;
     private final Set<String> abortedTasks;
     private final Set<String> failedTasks;
@@ -38,7 +40,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
     public TaskManager(IResultLogger resultLogger) {
         this.resultLogger = resultLogger;
         this.outstandingTasks = new HashMap<>();
-        this.startedTasks = new HashSet<>();
+        this.startedTasks = new HashMap<>();
         this.completedTasks = new HashSet<>();
         this.abortedTasks = new HashSet<>();
         this.failedTasks = new HashSet<>();
@@ -52,9 +54,10 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         public final int failed;
         public final int created;
         public final TaskInfo taskInfo;
+        public final List<String> remaining;
 
         public TaskState(String state, int completed, int started, int aborted, int failed, int created,
-                TaskInfo taskInfo) {
+                TaskInfo taskInfo, List<String> remaining) {
             this.state = state;
             this.completed = completed;
             this.started = started;
@@ -62,6 +65,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             this.failed = failed;
             this.created = created;
             this.taskInfo = taskInfo;
+            this.remaining = Collections.unmodifiableList(remaining);
         }
     }
 
@@ -73,6 +77,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         String description = optimizableValueToString.asString(optimizableValues);
         String tasksDescription = getTasksDescription(taskState);
         LOGGER.info(String.format("%s [%s]: %s", tasksDescription, taskId, description));
+        LOGGER.info(String.format("remaining: %s", listRemainingTaskContainer(taskState.remaining)));
     }
 
     TaskState onTaskCreated(String taskId, SettableFutureTask<Optional<Double>> task,
@@ -82,6 +87,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int aborted;
         final int failed;
         final int created;
+        final List<String> remaining;
         synchronized (this) {
             createdCount++;
             outstandingTasks.put(taskId, new TaskInfo(task, optimizableValues));
@@ -90,8 +96,9 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = createdCount;
+            remaining = new ArrayList<>(startedTasks.values());
         }
-        return new TaskState("created", completed, started, aborted, failed, created, null);
+        return new TaskState("created", completed, started, aborted, failed, created, null, remaining);
     }
 
     @Override
@@ -100,6 +107,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         String tasksDescription = getTasksDescription(taskState);
         LOGGER.info(String.format("%s [%s] by %s (redelivered: %s %d)", tasksDescription, result.id, result.executor_id,
                 result.redelivered, result.delivery_count));
+        LOGGER.info(String.format("remaining: %s", listRemainingTaskContainer(taskState.remaining)));
     }
 
     TaskState onTaskStarted(String taskId, JobResult result) {
@@ -108,17 +116,19 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int aborted;
         final int failed;
         final int created;
+        final List<String> remaining;
         synchronized (this) {
             if (!completedTasks.contains(taskId)) {
-                startedTasks.add(taskId);
+                startedTasks.put(taskId, result.executor_id);
             }
             started = startedTasks.size();
             completed = completedTasks.size();
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = createdCount;
+            remaining = new ArrayList<>(startedTasks.values());
         }
-        return new TaskState("started", completed, started, aborted, failed, created, null);
+        return new TaskState("started", completed, started, aborted, failed, created, null, remaining);
     }
 
     @Override
@@ -133,6 +143,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         String description = getRewardDescription(result);
         LOGGER.info(String.format("%s [%s] by %s reward: %s", tasksDescription, result.id, result.executor_id,
                 description));
+        LOGGER.info(String.format("remaining: %s", listRemainingTaskContainer(taskState.remaining)));
     }
 
     TaskState onTaskCompleted(String taskId, JobResult result) {
@@ -141,6 +152,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int aborted;
         final int failed;
         final int created;
+        final List<String> remaining;
         final TaskInfo taskInfo;
         final String statusString;
         synchronized (this) {
@@ -164,7 +176,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = createdCount;
-
+            remaining = new ArrayList<>(startedTasks.values());
         }
         if (taskInfo != null) {
             resultLogger.log(taskInfo.optimizableValues, result);
@@ -175,7 +187,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
                 future.setResult(Optional.of(result.reward));
             }
         }
-        return new TaskState(statusString, completed, started, aborted, failed, created, taskInfo);
+        return new TaskState(statusString, completed, started, aborted, failed, created, taskInfo, remaining);
     }
 
     @Override
@@ -187,6 +199,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         } else {
             LOGGER.warn(String.format("aborted task [%s] already completed/aborted", taskId));
         }
+        LOGGER.info(String.format("remaining: %s", listRemainingTaskContainer(taskState.remaining)));
     }
 
     TaskState onTaskAborted(String taskId, JobResult result) {
@@ -195,9 +208,11 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         final int aborted;
         final int failed;
         final int created;
+        final List<String> remaining;
         final TaskInfo taskInfo;
         synchronized (this) {
-            boolean processed = !startedTasks.remove(taskId);
+            boolean processed = !startedTasks.containsKey(taskId);
+            startedTasks.remove(taskId);
             started = startedTasks.size();
             completed = completedTasks.size();
             if (!processed) {
@@ -206,6 +221,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             aborted = abortedTasks.size();
             failed = failedTasks.size();
             created = createdCount;
+            remaining = new ArrayList<>(startedTasks.values());
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo != null) {
@@ -213,7 +229,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             SettableFutureTask<Optional<Double>> future = taskInfo.future;
             future.setResult(Optional.empty());
         }
-        return new TaskState("aborted", completed, started, aborted, failed, created, taskInfo);
+        return new TaskState("aborted", completed, started, aborted, failed, created, taskInfo, remaining);
     }
 
     private String getTasksDescription(TaskState taskState) {
@@ -221,6 +237,24 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         String tasksStatus = String.format("task %s %d / %d(%d|%d|%d) / %d", taskState.state, taskState.started, done,
                 taskState.completed, taskState.failed, taskState.aborted, taskState.created);
         return tasksStatus;
+    }
+
+    private String listRemainingTaskContainer(List<String> remaining) {
+        final List<String> toReport;
+        final String info;
+        if (remaining.size() <= 3) {
+            toReport = remaining;
+            info = "";
+        } else {
+            toReport = remaining.subList(0, 3);
+            info = " ...";
+        }
+
+        List<String> containerIds = toReport.stream()
+            .filter(x -> x != null)
+            .map(e -> e.substring(e.lastIndexOf(".") + 1))
+            .toList();
+        return String.format("%s%s", StringUtils.join(containerIds, ","), info);
     }
 
     private String getRewardDescription(JobResult result) {
