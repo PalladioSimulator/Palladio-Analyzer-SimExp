@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.console.api.OptimizableValues;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -38,7 +39,9 @@ public class SimulationExecutor {
 
     public SimulationExecutor(ILaunchManager launchManager) {
         this.launchManager = launchManager;
-        this.gson = new GsonBuilder().serializeNulls()
+        this.gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .serializeNulls()
             .setPrettyPrinting()
             .create();
     }

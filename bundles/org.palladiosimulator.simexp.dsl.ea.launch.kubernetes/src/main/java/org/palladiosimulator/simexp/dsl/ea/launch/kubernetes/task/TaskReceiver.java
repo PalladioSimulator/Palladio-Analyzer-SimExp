@@ -8,7 +8,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult.Status;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -23,7 +25,9 @@ public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
 
     public TaskReceiver(Channel channel, String queueName, ClassLoader classloader) throws IOException {
         super(channel);
-        this.gson = new Gson();
+        this.gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
         this.taskConsumers = new ArrayList<>();
         this.classloader = classloader;
         boolean autoAck = false;
@@ -50,7 +54,7 @@ public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
             long deliveryTag = envelope.getDeliveryTag();
             String message = new String(body, StandardCharsets.UTF_8);
             LOGGER.debug(String.format("received message tag %d: %s", deliveryTag, message));
-            JobResult answer = gson.fromJson(message, JobResult.class);
+            JobResult answer = deserializeMessage(message);
             notifyConsumers(answer.id, answer);
             getChannel().basicAck(deliveryTag, false);
         } catch (Exception e) {
@@ -59,6 +63,11 @@ public class TaskReceiver extends DefaultConsumer implements AutoCloseable {
             Thread.currentThread()
                 .setContextClassLoader(oldContextClassLoader);
         }
+    }
+
+    JobResult deserializeMessage(String message) {
+        JobResult result = gson.fromJson(message, JobResult.class);
+        return result;
     }
 
     private void notifyConsumers(String answerId, JobResult result) {

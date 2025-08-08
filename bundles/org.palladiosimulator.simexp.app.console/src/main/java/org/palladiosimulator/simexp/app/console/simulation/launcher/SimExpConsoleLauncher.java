@@ -22,7 +22,9 @@ import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.launcher.SimExpLauncher;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.uka.ipd.sdq.workflow.BlackboardBasedWorkflow;
 import de.uka.ipd.sdq.workflow.WorkflowExceptionHandler;
@@ -60,7 +62,10 @@ public class SimExpConsoleLauncher extends SimExpLauncher
         }
 
         String jsonValues = configuration.getAttribute(SimulationConstants.OPTIMIZED_VALUES, "");
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
+
         OptimizableValues optimizableValues = gson.fromJson(jsonValues, OptimizableValues.class);
         Map<String, Object> optimizedValues = new HashMap<>();
         for (BoolEntry entry : optimizableValues.boolValues) {

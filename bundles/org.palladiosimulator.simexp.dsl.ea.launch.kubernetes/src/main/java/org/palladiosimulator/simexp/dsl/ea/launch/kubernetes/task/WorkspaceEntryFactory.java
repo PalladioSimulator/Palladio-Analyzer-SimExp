@@ -31,7 +31,9 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 
 public class WorkspaceEntryFactory implements IWorkspaceEntryFactory {
@@ -42,7 +44,10 @@ public class WorkspaceEntryFactory implements IWorkspaceEntryFactory {
         Path optimizableFile = Paths.get("optimizableValues.json");
         OptimizableValues values = convertToJsonStructure(optimizableValues);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .setPrettyPrinting()
+            .create();
         try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(bos, StandardCharsets.UTF_8))) {
             gson.toJson(values, OptimizableValues.class, writer);
         }
