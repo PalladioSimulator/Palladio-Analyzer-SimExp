@@ -27,12 +27,12 @@ import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
 
-public class MOEAFitnessFunctionTest {
+public class FitnessFunctionTest {
     private static final double BIG_TOO_LONG_FLOATING_POINT_NUMBER = 50.12345678901234567890123456789;
     private static final double DELTA = 0.0001;
     private static final double TOO_LONG_FLOATING_POINT_NUMBER = 0.123456789;
 
-    private MOEAFitnessFunction<BitGene> fitnessFunction;
+    private FitnessFunction<BitGene> fitnessFunction;
 
     @Mock
     private IEAFitnessEvaluator fitnessEvaluator;
@@ -61,7 +61,7 @@ public class MOEAFitnessFunctionTest {
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
 
-        fitnessFunction = new MOEAFitnessFunction<>(DELTA, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new FitnessFunction<>(DELTA, fitnessEvaluator, normalizer, 0.0);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class MOEAFitnessFunctionTest {
     public void testRoundingApplyMimimumDelta() throws IOException, InterruptedException, ExecutionException {
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
-        fitnessFunction = new MOEAFitnessFunction<>(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new FitnessFunction<>(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
@@ -135,7 +135,7 @@ public class MOEAFitnessFunctionTest {
     @Test
     public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
         when(chromosome.isValid()).thenReturn(false);
-        fitnessFunction = new MOEAFitnessFunction<>(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
+        fitnessFunction = new FitnessFunction<>(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
 

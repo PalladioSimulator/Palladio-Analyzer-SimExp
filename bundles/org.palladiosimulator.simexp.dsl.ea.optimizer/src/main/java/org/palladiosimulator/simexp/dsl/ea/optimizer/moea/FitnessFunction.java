@@ -19,19 +19,18 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import io.jenetics.Gene;
 import io.jenetics.Genotype;
 
-public class MOEAFitnessFunction<G extends Gene<?, G>>
+public class FitnessFunction<G extends Gene<?, G>>
         implements Function<Genotype<G>, Double>, IEvaluationStatisticsReporter {
-
-    private static final Logger LOGGER = Logger.getLogger(MOEAFitnessFunction.class);
-
-    private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
+    private static final Logger LOGGER = Logger.getLogger(FitnessFunction.class);
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final ITranscoder<G> transcoder;
     private final double epsilon;
     private final double penaltyForInvalids;
 
-    public MOEAFitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator, ITranscoder<G> transcoder,
+    private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
+
+    public FitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator, ITranscoder<G> transcoder,
             double penaltyForInvalids) {
         this.epsilon = epsilon;
         this.fitnessEvaluator = fitnessEvaluator;

@@ -22,7 +22,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEAFitnessFunction;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.FitnessFunction;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEASetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
@@ -103,7 +103,7 @@ public class EAOptimizer implements IEAOptimizer {
         Genotype<G> genotype = buildGenotype(optimizables, transcoder);
         double epsilon = expressionCalculator.getEpsilon();
         final double penaltyForInvalids = config.penaltyForInvalids();
-        MOEAFitnessFunction<G> fitnessFunction = new MOEAFitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
+        FitnessFunction<G> fitnessFunction = new FitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
         Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
         EvaluationStatistics<G> evaluationStatistics = new EvaluationStatistics<>(fitnessFunction, overallPower);
@@ -119,7 +119,7 @@ public class EAOptimizer implements IEAOptimizer {
         return genotype;
     }
 
-    private <G extends Gene<?, G>> Engine<G, Double> buildEngine(MOEAFitnessFunction<G> fitnessFunction,
+    private <G extends Gene<?, G>> Engine<G, Double> buildEngine(FitnessFunction<G> fitnessFunction,
             Genotype<G> genotype, Executor executor) {
         Factory<Genotype<G>> constraintFactory = new ForceValidConstraint<G>().constrain(genotype);
         Builder<G, Double> builder = Engine.builder(fitnessFunction::apply, constraintFactory)
@@ -141,7 +141,7 @@ public class EAOptimizer implements IEAOptimizer {
 
     private <G extends Gene<?, G>> EAResult runOptimization(EvaluationStatistics<G> evaluationStatistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
-            MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
+            FitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
 
         EvolutionStream<G, Double> evolutionStream = engine.stream();
