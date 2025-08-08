@@ -161,6 +161,7 @@ public class EAOptimizer implements IEAOptimizer {
             result = RandomRegistry.with(new Random(seed),
                     r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
+        final double bestFitness = result.bestFitness();
         LOGGER.info("EA finished");
         StringBuilder resultStatistics = new StringBuilder();
         resultStatistics.append(standardStatistics.toString());
@@ -168,21 +169,20 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = MOEASetCollector
-            .create();
+        List<List<OptimizableValue<?>>> moeaList = buildMOEAList(normalizer, result);
+
+        return new EAResult(bestFitness, moeaList);
+    }
+
+    private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,
+            EvolutionResult<G, Double> result) {
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = MOEASetCollector.create();
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
-            .collect(paretoCollector);
-        // all pareto efficient optimizables have the same fitness, so just take
-        // the fitness from the first phenotype
-        double bestFitness = phenotypes.stream()
-            .findFirst()
-            .get()
-            .fitness();
-        List<List<OptimizableValue<?>>> paretoFront = phenotypes.stream()
+            .collect(moeaCollector);
+        List<List<OptimizableValue<?>>> moeaFront = phenotypes.stream()
             .map(p -> normalizer.toOptimizableValues(p.genotype()))
             .toList();
-
-        return new EAResult(bestFitness, paretoFront);
+        return moeaFront;
     }
 
     private <G extends Gene<?, G>> EvolutionStream<G, Double> addTerminationConditions(
