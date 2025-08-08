@@ -169,9 +169,9 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        List<List<OptimizableValue<?>>> moeaList = buildMOEAList(normalizer, result);
+        List<List<OptimizableValue<?>>> equivalentOptimizableValues = buildMOEAList(normalizer, result);
 
-        return new EAResult(bestFitness, moeaList);
+        return new EAResult(bestFitness, equivalentOptimizableValues);
     }
 
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,
