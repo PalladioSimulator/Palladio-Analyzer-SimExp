@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,7 +19,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 

@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.IEvaluationStatisticsReporter;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;
