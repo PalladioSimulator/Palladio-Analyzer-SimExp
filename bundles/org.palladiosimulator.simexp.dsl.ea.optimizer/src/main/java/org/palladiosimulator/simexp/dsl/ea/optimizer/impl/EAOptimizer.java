@@ -11,7 +11,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -44,8 +43,10 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
 import io.jenetics.engine.EvolutionResult;
+import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
+import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.Factory;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
@@ -139,7 +140,7 @@ public class EAOptimizer implements IEAOptimizer {
         return builder.alterers(crossover, mutator);
     }
 
-    private <G extends Gene<?, G>> EAResult runOptimization(Consumer<EvolutionResult<G, Double>> statistics,
+    private <G extends Gene<?, G>> EAResult runOptimization(ParetoEvolutionStatistics<G> paretoStatistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
             MOEAFitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
@@ -148,8 +149,9 @@ public class EAOptimizer implements IEAOptimizer {
         evolutionStream = addTerminationConditions(evolutionStream, config);
 
         EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer);
+        EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics = EvolutionStatistics.ofNumber();
         Stream<EvolutionResult<G, Double>> resultStream = evolutionStream.peek(reporter)
-            .peek(statistics);
+            .peek(standardStatistics);
 
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
         final EvolutionResult<G, Double> result;
@@ -162,7 +164,11 @@ public class EAOptimizer implements IEAOptimizer {
                     r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
         LOGGER.info("EA finished");
-        LOGGER.info(statistics);
+        StringBuilder resultStatistics = new StringBuilder();
+        resultStatistics.append(standardStatistics.toString());
+        resultStatistics.append("\n");
+        resultStatistics.append(paretoStatistics);
+        LOGGER.info(resultStatistics.toString());
 
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
             .create();
