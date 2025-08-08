@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.ea.launch.EAOptimizerLaunchFactory;
@@ -64,6 +65,12 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     @Override
     public int getParallelism() {
         return 1;
+    }
+
+    @Override
+    public IQualityAttributeProvider getQualityAttributeProvider() {
+        // TODO:
+        return null;
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.concurrent.SettableFutureTask;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.CachingWorkspaceEntryFactory;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.ITaskManager;
@@ -27,6 +28,7 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
     private final ITaskManager taskManager;
     private final ITaskSender taskSender;
+    private final IQualityAttributeProvider qualityAttributeProvider;
     private final String launcherName;
     private final List<Path> projectPaths;
     private final ClassLoader classloader;
@@ -36,10 +38,12 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
 
     private int count = 0;
 
-    public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender, String launcherName,
-            List<Path> projectPaths, String timeZone, int parallelism, ClassLoader classloader) {
+    public EAFitnessEvaluator(ITaskManager taskManager, ITaskSender taskSender,
+            IQualityAttributeProvider qualityAttributeProvider, String launcherName, List<Path> projectPaths,
+            String timeZone, int parallelism, ClassLoader classloader) {
         this.taskManager = taskManager;
         this.taskSender = taskSender;
+        this.qualityAttributeProvider = qualityAttributeProvider;
         this.launcherName = launcherName;
         this.projectPaths = projectPaths;
         this.timeZone = timeZone;
@@ -51,6 +55,11 @@ public class EAFitnessEvaluator implements IEAFitnessEvaluator {
     @Override
     public int getParallelism() {
         return parallelism;
+    }
+
+    @Override
+    public IQualityAttributeProvider getQualityAttributeProvider() {
+        return qualityAttributeProvider;
     }
 
     @Override

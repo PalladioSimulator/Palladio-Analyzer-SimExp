@@ -27,4 +27,6 @@ public interface IEAFitnessEvaluator {
      * @return the parallelism of the evaluator
      */
     int getParallelism();
+
+    IQualityAttributeProvider getQualityAttributeProvider();
 }

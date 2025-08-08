@@ -22,8 +22,10 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEASetCollector;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -99,6 +101,8 @@ public class EAOptimizer implements IEAOptimizer {
         df.setGroupingUsed(true);
         LOGGER.info(String.format("optimizeable search space: %s", df.format(overallPower)));
 
+        IQualityAttributeProvider qualityAttributeProvider = fitnessEvaluator.getQualityAttributeProvider();
+
         // Setup EA
         Genotype<G> genotype = buildGenotype(optimizables, transcoder);
         double epsilon = expressionCalculator.getEpsilon();
@@ -109,7 +113,8 @@ public class EAOptimizer implements IEAOptimizer {
         EvaluationStatistics<G> evaluationStatistics = new EvaluationStatistics<>(fitnessFunction, overallPower);
 
         // Run EA
-        return runOptimization(evaluationStatistics, evolutionStatusReceiver, transcoder, fitnessFunction, engine);
+        return runOptimization(evaluationStatistics, evolutionStatusReceiver, transcoder, fitnessFunction,
+                qualityAttributeProvider, engine);
     }
 
     private <G extends Gene<?, G>> Genotype<G> buildGenotype(Collection<Optimizable> optimizables,
@@ -141,7 +146,8 @@ public class EAOptimizer implements IEAOptimizer {
 
     private <G extends Gene<?, G>> EAResult runOptimization(EvaluationStatistics<G> evaluationStatistics,
             IEAEvolutionStatusReceiver evolutionStatusReceiver, ITranscoder<G> normalizer,
-            FitnessFunction<G> fitnessFunction, final Engine<G, Double> engine) {
+            FitnessFunction<G> fitnessFunction, IQualityAttributeProvider qualityAttributeProvider,
+            final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
 
         EvolutionStream<G, Double> evolutionStream = engine.stream();
@@ -180,6 +186,11 @@ public class EAOptimizer implements IEAOptimizer {
             .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
             .toList();
         IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
+
+        ParetoEvaluator paretoEvaluator = new ParetoEvaluator(qualityAttributeProvider);
+
+        List<IndividualResult> paretoFront = paretoEvaluator.buildParetoFront(finalPopulation);
+
         return new EAResult(fittestIndividual, equivalentOptimizableValues, finalPopulation);
     }
 
