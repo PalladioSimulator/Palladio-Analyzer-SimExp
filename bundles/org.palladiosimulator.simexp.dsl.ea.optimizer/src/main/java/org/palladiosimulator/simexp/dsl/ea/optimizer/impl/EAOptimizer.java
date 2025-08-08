@@ -23,7 +23,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.EvaluationStatistics;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;

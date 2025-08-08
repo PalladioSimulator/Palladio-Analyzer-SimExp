@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static java.lang.String.format;
 
@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
 
 import io.jenetics.Gene;
 

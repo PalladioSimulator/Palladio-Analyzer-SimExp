@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEAFitnessFunction;
 
 import io.jenetics.IntegerGene;
 
