@@ -151,28 +151,30 @@ public class EAOptimizer implements IEAOptimizer {
         Stream<EvolutionResult<G, Double>> resultStream = evolutionStream.peek(reporter)
             .peek(statistics);
 
-        final ISeq<Phenotype<G, Double>> result;
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
-            .create();
         Optional<ISeedProvider> seedProvider = config.getSeedProvider();
+        final EvolutionResult<G, Double> result;
         if (seedProvider.isEmpty()) {
-            result = resultStream.collect(paretoCollector);
+            result = resultStream.collect(EvolutionResult.toBestEvolutionResult());
         } else {
             long seed = seedProvider.get()
                 .getLong();
-            result = RandomRegistry.with(new Random(seed), r -> resultStream.collect(paretoCollector));
+            result = RandomRegistry.with(new Random(seed),
+                    r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
-
         LOGGER.info("EA finished");
         LOGGER.info(statistics);
 
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> paretoCollector = ParetoSetCollector
+            .create();
+        final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
+            .collect(paretoCollector);
         // all pareto efficient optimizables have the same fitness, so just take
         // the fitness from the first phenotype
-        double bestFitness = result.stream()
+        double bestFitness = phenotypes.stream()
             .findFirst()
             .get()
             .fitness();
-        List<List<OptimizableValue<?>>> paretoFront = result.stream()
+        List<List<OptimizableValue<?>>> paretoFront = phenotypes.stream()
             .map(p -> normalizer.toOptimizableValues(p.genotype()))
             .toList();
 
