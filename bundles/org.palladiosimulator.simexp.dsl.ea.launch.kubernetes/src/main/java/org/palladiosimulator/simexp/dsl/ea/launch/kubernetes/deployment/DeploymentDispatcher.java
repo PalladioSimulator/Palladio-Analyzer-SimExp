@@ -178,6 +178,9 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
                 // new EnvVarBuilder().withName("DEBUG_FLAG")
                 // .withValue("-v")
                 // .build(),
+                // new EnvVarBuilder().withName("KEEP_WORKSPACE")
+                // .withValue("--keep-workspace")
+                // .build(),
                 new EnvVarBuilder().withName("BROKER_URL")
                     .withValue(brokerUrl)
                     .build(),
