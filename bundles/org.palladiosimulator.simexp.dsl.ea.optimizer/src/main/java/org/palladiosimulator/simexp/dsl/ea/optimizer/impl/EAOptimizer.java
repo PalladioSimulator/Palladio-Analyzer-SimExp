@@ -185,7 +185,8 @@ public class EAOptimizer implements IEAOptimizer {
 
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,
             EvolutionResult<G, Double> result) {
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = MOEASetCollector.create();
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = MOEASetCollector
+            .create(0.0001);
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(moeaCollector);
         List<List<OptimizableValue<?>>> moeaFront = phenotypes.stream()

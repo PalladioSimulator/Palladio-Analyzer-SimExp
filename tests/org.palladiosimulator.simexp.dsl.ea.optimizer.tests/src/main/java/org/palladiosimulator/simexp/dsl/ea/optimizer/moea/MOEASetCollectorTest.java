@@ -21,6 +21,8 @@ import io.jenetics.util.ISeq;
 import io.jenetics.util.IntRange;
 
 public class MOEASetCollectorTest {
+    private static final double EPSILON = 0.0001;
+
     private Collector<EvolutionResult<IntegerGene, Double>, ?, ISeq<Phenotype<IntegerGene, Double>>> collector;
 
     private IntRange range;
@@ -29,7 +31,7 @@ public class MOEASetCollectorTest {
     public void setUp() throws Exception {
         range = IntRange.of(0, 100);
 
-        collector = MOEASetCollector.create();
+        collector = MOEASetCollector.create(EPSILON);
     }
 
     @Test
@@ -88,6 +90,19 @@ public class MOEASetCollectorTest {
             .collect(collector);
 
         assertThat(actualResult).contains(phenotypes.get(0), phenotypes.get(8), phenotypes.get(9));
+    }
+
+    @Test
+    public void collectPrecision() {
+        Phenotype<IntegerGene, Double> pheno1 = createPhenotype(1, 0.0001);
+        Phenotype<IntegerGene, Double> pheno2 = createPhenotype(2, 0.0002);
+        EvolutionResult<IntegerGene, Double> r1 = createEvolutionResult(pheno1);
+        EvolutionResult<IntegerGene, Double> r2 = createEvolutionResult(pheno2);
+
+        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
+            .collect(collector);
+
+        assertThat(actualResult).contains(pheno1, pheno2);
     }
 
     private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType) {
