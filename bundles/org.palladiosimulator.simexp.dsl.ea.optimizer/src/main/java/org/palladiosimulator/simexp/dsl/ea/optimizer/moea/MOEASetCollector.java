@@ -16,6 +16,9 @@ import io.jenetics.util.IntRange;
 
 public class MOEASetCollector {
 
+    static final int SIZE_MIN = 3;
+    static final int SIZE_MAX = 10;
+
     public static <G extends Gene<?, G>> Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> create() {
         Comparator<Double> dominance = (Double a, Double b) -> Vec.of(a)
             .dominance(Vec.of(b));
@@ -24,7 +27,7 @@ public class MOEASetCollector {
             .distance(Vec.of(b), index);
         ToIntFunction<Double> dimension = (Double value) -> 1;
 
-        return MOEA.toParetoSet(IntRange.of(3, 10), dominance, elementComparator, distance, dimension);
+        return MOEA.toParetoSet(IntRange.of(SIZE_MIN, SIZE_MAX), dominance, elementComparator, distance, dimension);
     }
 
 }
