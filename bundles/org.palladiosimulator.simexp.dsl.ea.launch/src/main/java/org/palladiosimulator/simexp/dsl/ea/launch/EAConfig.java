@@ -9,12 +9,20 @@ import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfigurati
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAConfig implements IEAConfig {
+    private final double epsilon;
     private final Optional<ISeedProvider> seedProvider;
     private final IEvolutionaryAlgorithmConfiguration configuration;
 
-    public EAConfig(Optional<ISeedProvider> seedProvider, IEvolutionaryAlgorithmConfiguration configuration) {
+    public EAConfig(double epsilon, Optional<ISeedProvider> seedProvider,
+            IEvolutionaryAlgorithmConfiguration configuration) {
+        this.epsilon = epsilon;
         this.seedProvider = seedProvider;
         this.configuration = configuration;
+    }
+
+    @Override
+    public double getEpsilon() {
+        return epsilon;
     }
 
     @Override
