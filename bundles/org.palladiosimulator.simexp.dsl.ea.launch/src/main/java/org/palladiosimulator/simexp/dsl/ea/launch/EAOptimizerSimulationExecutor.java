@@ -25,6 +25,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusRe
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
+import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
@@ -130,8 +131,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        // TODO: get from SModel see DefaultSmodelConfig
-        double epsilon = 0.0001;
+        // TODO: get from SModel
+        double epsilon = ISmodelConstants.EPSILON;
         IEAConfig eaConfig = new EAConfig(epsilon, configuration.getSeedProvider(), configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
