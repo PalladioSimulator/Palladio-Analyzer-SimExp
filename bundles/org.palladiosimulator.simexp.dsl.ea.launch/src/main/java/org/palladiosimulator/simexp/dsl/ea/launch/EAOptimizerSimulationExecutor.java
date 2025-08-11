@@ -130,7 +130,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        IEAConfig eaConfig = new EAConfig(configuration.getSeedProvider(), configuration);
+        // TODO: get from SModel see DefaultSmodelConfig
+        double epsilon = 0.0001;
+        IEAConfig eaConfig = new EAConfig(epsilon, configuration.getSeedProvider(), configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }
