@@ -42,6 +42,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     private final SimulatedExperienceStoreDescription description;
     private final Optional<ISeedProvider> seedProvider;
     private final ExecutorService executor;
+    private final LocalQualityAttributeProvider qualityAttributeProvider;
     private final Path resourcePath;
     private final ClassLoader classloader;
 
@@ -57,6 +58,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         this.executor = Executors.newFixedThreadPool(1,
                 new BasicThreadFactory.Builder().namingPattern("local-ea-thread-%d")
                     .build());
+        this.qualityAttributeProvider = new LocalQualityAttributeProvider();
         this.resourcePath = resourcePath;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
@@ -69,8 +71,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
 
     @Override
     public IQualityAttributeProvider getQualityAttributeProvider() {
-        // TODO:
-        return null;
+        return qualityAttributeProvider;
     }
 
     @Override
@@ -89,6 +90,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
         }
+        qualityAttributeProvider.dispose();
     }
 
     @Override
@@ -137,6 +139,7 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
         ISimulationResult simulationResult = execute(effectiveSimulationExecutor);
         LOGGER.info(String.format("### fitness evaluation finished: %d reward = %s ###", counter,
                 simulationResult.getTotalReward()));
+        qualityAttributeProvider.add(optimizableValues, simulationResult.getQualityMeasurements());
         return Optional.of(simulationResult.getTotalReward());
     }
 
