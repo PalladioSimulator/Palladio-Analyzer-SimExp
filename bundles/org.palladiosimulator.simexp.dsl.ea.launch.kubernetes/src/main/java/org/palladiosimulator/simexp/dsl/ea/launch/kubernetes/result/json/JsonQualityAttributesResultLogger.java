@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -16,7 +16,7 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class JsonQualityAttributesResultLogger implements IResultLogger {
+public class JsonQualityAttributesResultLogger implements IResultHandler {
     private static final Logger LOGGER = Logger.getLogger(CsvResultLogger.class);
 
     private final Path qaPath;
@@ -32,7 +32,7 @@ public class JsonQualityAttributesResultLogger implements IResultLogger {
     }
 
     @Override
-    public synchronized void log(List<OptimizableValue<?>> optimizableValues, JobResult result) {
+    public synchronized void process(List<OptimizableValue<?>> optimizableValues, JobResult result) {
         Path taskPath = buildTaskPath(result);
         try (Writer writer = Files.newBufferedWriter(taskPath)) {
             gson.toJson(result, writer);

@@ -11,11 +11,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class CsvResultLogger implements IResultLogger {
+public class CsvResultLogger implements IResultHandler {
     private static final Logger LOGGER = Logger.getLogger(CsvResultLogger.class);
     private static final String[] HEADERS = { "TaskId", "Values", "Reward", "Error", "ExecutorId" };
 
@@ -26,7 +26,7 @@ public class CsvResultLogger implements IResultLogger {
     }
 
     @Override
-    public synchronized void log(List<OptimizableValue<?>> optimizableValues, JobResult result) {
+    public synchronized void process(List<OptimizableValue<?>> optimizableValues, JobResult result) {
         CSVFormat csvFormat = CSVFormat.newFormat(';')
             .withRecordSeparator("\r\n");
         if (!Files.exists(csvPath)) {

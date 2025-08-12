@@ -35,7 +35,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.Deployme
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.json.JsonQualityAttributesResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.TaskManager;
@@ -134,7 +134,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             CsvResultLogger resultLogger = new CsvResultLogger(csvResourcePath);
             JsonQualityAttributesResultLogger qualityAttributesResultLogger = new JsonQualityAttributesResultLogger(
                     taskResourcesPath);
-            CompositeResultLogger compositeResultLogger = new CompositeResultLogger(
+            CompositeResultHandler compositeResultLogger = new CompositeResultHandler(
                     Arrays.asList(resultLogger, qualityAttributesResultLogger));
             try {
                 TaskManager taskManager = new TaskManager(compositeResultLogger);

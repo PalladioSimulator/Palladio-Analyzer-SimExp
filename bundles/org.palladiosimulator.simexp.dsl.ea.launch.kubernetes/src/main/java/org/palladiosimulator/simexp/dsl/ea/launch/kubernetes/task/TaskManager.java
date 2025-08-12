@@ -28,7 +28,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
         }
     }
 
-    private final IResultLogger resultLogger;
+    private final IResultHandler resultHandler;
     private final Map<String, TaskInfo> outstandingTasks;
     private final Map<String, String> startedTasks;
     private final Set<String> completedTasks;
@@ -37,8 +37,8 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
 
     private int createdCount = 0;
 
-    public TaskManager(IResultLogger resultLogger) {
-        this.resultLogger = resultLogger;
+    public TaskManager(IResultHandler resultHandler) {
+        this.resultHandler = resultHandler;
         this.outstandingTasks = new HashMap<>();
         this.startedTasks = new HashMap<>();
         this.completedTasks = new HashSet<>();
@@ -179,7 +179,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             remaining = new ArrayList<>(startedTasks.values());
         }
         if (taskInfo != null) {
-            resultLogger.log(taskInfo.optimizableValues, result);
+            resultHandler.process(taskInfo.optimizableValues, result);
             SettableFutureTask<Optional<Double>> future = taskInfo.future;
             if (result.reward == null) {
                 future.setResult(Optional.empty());
@@ -225,7 +225,7 @@ public class TaskManager implements ITaskManager, ITaskConsumer {
             taskInfo = outstandingTasks.remove(taskId);
         }
         if (taskInfo != null) {
-            resultLogger.log(taskInfo.optimizableValues, result);
+            resultHandler.process(taskInfo.optimizableValues, result);
             SettableFutureTask<Optional<Double>> future = taskInfo.future;
             future.setResult(Optional.empty());
         }

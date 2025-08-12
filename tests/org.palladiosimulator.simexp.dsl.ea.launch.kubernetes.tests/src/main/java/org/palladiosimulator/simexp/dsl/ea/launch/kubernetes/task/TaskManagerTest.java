@@ -23,7 +23,7 @@ public class TaskManagerTest {
     private TaskManager taskManager;
 
     @Mock
-    private IResultLogger resultLogger;
+    private IResultHandler resultLogger;
     @Mock
     private SettableFutureTask<Optional<Double>> task;
 
@@ -295,7 +295,7 @@ public class TaskManagerTest {
         verify(task).setResult(captor.capture());
         Optional<Double> capturedArgument = captor.getValue();
         assertThat(capturedArgument).hasValue(result3.reward);
-        verify(resultLogger, times(1)).log(optimizableValues, result3);
+        verify(resultLogger, times(1)).process(optimizableValues, result3);
         assertThat(actualTaskStatus.created).isEqualTo(1);
         assertThat(actualTaskStatus.started).isEqualTo(0);
         assertThat(actualTaskStatus.completed).isEqualTo(1);
