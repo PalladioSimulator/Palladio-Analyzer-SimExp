@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
-import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.IResultHandler;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.task.JobResult.Status;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public class QualityAttributeProvider implements IQualityAttributeProvider, IResultLogger {
+public class QualityAttributeProvider implements IQualityAttributeProvider, IResultHandler {
     private final Map<List<OptimizableValue<?>>, QualityMeasurements> qualityMeasurementMap;
 
     public QualityAttributeProvider() {
@@ -25,7 +25,7 @@ public class QualityAttributeProvider implements IQualityAttributeProvider, IRes
     }
 
     @Override
-    public void log(List<OptimizableValue<?>> optimizableValues, JobResult result) {
+    public void process(List<OptimizableValue<?>> optimizableValues, JobResult result) {
         if (result.status != Status.COMPLETE) {
             return;
         }

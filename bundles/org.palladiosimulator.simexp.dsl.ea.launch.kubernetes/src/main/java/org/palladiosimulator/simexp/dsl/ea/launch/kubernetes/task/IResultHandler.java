@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public interface IResultLogger {
-    void log(List<OptimizableValue<?>> optimizableValues, JobResult result);
+public interface IResultHandler {
+    void process(List<OptimizableValue<?>> optimizableValues, JobResult result);
 
     void dispose();
 }
