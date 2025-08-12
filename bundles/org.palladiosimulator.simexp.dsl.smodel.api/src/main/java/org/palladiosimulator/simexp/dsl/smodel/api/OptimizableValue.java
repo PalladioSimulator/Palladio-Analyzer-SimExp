@@ -23,7 +23,9 @@ public class OptimizableValue<V> {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(optimizable.getName())
+        return new HashCodeBuilder(17, 37) //
+            .append(optimizable.getName())
+            .append(optimizable.getDataType())
             .append(value)
             .toHashCode();
     }
@@ -41,8 +43,11 @@ public class OptimizableValue<V> {
         }
         @SuppressWarnings("unchecked")
         OptimizableValue<V> rhs = (OptimizableValue<V>) obj;
-        return new EqualsBuilder().append(optimizable.getName(), rhs.getOptimizable()
-            .getName())
+        return new EqualsBuilder() //
+            .append(optimizable.getName(), rhs.getOptimizable()
+                .getName())
+            .append(optimizable.getDataType(), rhs.getOptimizable()
+                .getDataType())
             .append(value, rhs.getValue())
             .isEquals();
     }
