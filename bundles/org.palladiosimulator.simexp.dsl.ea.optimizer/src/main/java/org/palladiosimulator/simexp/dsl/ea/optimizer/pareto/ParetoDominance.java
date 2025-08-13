@@ -1,23 +1,16 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
-import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;
 import io.jenetics.Phenotype;
 
 public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenotype<G, Double>> {
-    private final ITranscoder<G> normalizer;
-    private final QualityAttributesAverageCalculator qualityAttributesAverageCalculator;
+    private final IAverageProvider<G> averageProvider;
 
-    public ParetoDominance(ITranscoder<G> normalizer, IQualityAttributeProvider qualityAttributeProvider) {
-        this.normalizer = normalizer;
-        this.qualityAttributesAverageCalculator = new QualityAttributesAverageCalculator(qualityAttributeProvider);
+    public ParetoDominance(IAverageProvider<G> averageProvider) {
+        this.averageProvider = averageProvider;
     }
 
     /**
@@ -27,10 +20,8 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
      */
     @Override
     public int compare(Phenotype<G, Double> a, Phenotype<G, Double> b) {
-        List<OptimizableValue<?>> optimizableValuesA = normalizer.toOptimizableValues(a.genotype());
-        List<OptimizableValue<?>> optimizableValuesB = normalizer.toOptimizableValues(b.genotype());
-        Map<String, Double> averagesA = qualityAttributesAverageCalculator.calculateAverages(optimizableValuesA);
-        Map<String, Double> averagesB = qualityAttributesAverageCalculator.calculateAverages(optimizableValuesB);
+        Map<String, Double> averagesA = averageProvider.getAverages(a);
+        Map<String, Double> averagesB = averageProvider.getAverages(b);
         assert averagesA.keySet()
             .equals(averagesB.keySet());
 

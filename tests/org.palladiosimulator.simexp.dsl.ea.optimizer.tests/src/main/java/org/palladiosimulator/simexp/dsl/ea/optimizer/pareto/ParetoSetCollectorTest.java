@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 
 import io.jenetics.Genotype;
 import io.jenetics.IntegerChromosome;
@@ -31,9 +29,7 @@ public class ParetoSetCollectorTest {
     private IntRange range;
 
     @Mock
-    private ITranscoder<IntegerGene> normalizer;
-    @Mock
-    private IQualityAttributeProvider qualityAttributeProvider;
+    private IAverageProvider<IntegerGene> averageProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +37,7 @@ public class ParetoSetCollectorTest {
 
         range = IntRange.of(0, 100);
 
-        collector = ParetoSetCollector.create(EPSILON, normalizer, qualityAttributeProvider);
+        collector = ParetoSetCollector.create(EPSILON, averageProvider);
     }
 
     // TODO
