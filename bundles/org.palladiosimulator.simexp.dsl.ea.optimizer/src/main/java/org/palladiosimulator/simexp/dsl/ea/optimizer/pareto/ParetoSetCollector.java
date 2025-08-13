@@ -11,8 +11,7 @@ import io.jenetics.util.ISeq;
 public class ParetoSetCollector {
     public static <G extends Gene<?, G>> Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> create(
             double epsilon) {
-        Comparator<Phenotype<G, Double>> dominance = (Phenotype<G, Double> a, Phenotype<G, Double> b) -> a.fitness()
-            .compareTo(b.fitness());
+        Comparator<Phenotype<G, Double>> dominance = new ParetoDominance<>();
 
         return Collector.of( //
                 () -> new Front<>(dominance) //
