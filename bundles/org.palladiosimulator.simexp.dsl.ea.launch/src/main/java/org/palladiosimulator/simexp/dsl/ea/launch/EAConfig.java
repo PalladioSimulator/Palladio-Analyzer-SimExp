@@ -1,6 +1,8 @@
 package org.palladiosimulator.simexp.dsl.ea.launch;
 
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
@@ -11,18 +13,25 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 public class EAConfig implements IEAConfig {
     private final double epsilon;
     private final Optional<ISeedProvider> seedProvider;
+    private final Function<String, Comparator<Double>> comparatorFactory;
     private final IEvolutionaryAlgorithmConfiguration configuration;
 
     public EAConfig(double epsilon, Optional<ISeedProvider> seedProvider,
-            IEvolutionaryAlgorithmConfiguration configuration) {
+            Function<String, Comparator<Double>> comparatorFactory, IEvolutionaryAlgorithmConfiguration configuration) {
         this.epsilon = epsilon;
         this.seedProvider = seedProvider;
+        this.comparatorFactory = comparatorFactory;
         this.configuration = configuration;
     }
 
     @Override
     public double getEpsilon() {
         return epsilon;
+    }
+
+    @Override
+    public Function<String, Comparator<Double>> getComparatorFactory() {
+        return comparatorFactory;
     }
 
     @Override

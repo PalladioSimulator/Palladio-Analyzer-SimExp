@@ -182,7 +182,7 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        Function<String, Comparator<Double>> comparatorFactory = s -> Double::compare;
+        Function<String, Comparator<Double>> comparatorFactory = config.getComparatorFactory();
         List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = buildParetoFront(normalizer,
                 qualityAttributeProvider, comparatorFactory, result);
 
@@ -201,6 +201,7 @@ public class EAOptimizer implements IEAOptimizer {
         IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
             .create(config.getEpsilon(), averageProvider, comparatorFactory);
+        LOGGER.info("building pareto front");
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(moeaCollector);
         List<List<OptimizableValue<?>>> moeaFront = phenotypes.stream()

@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -133,7 +134,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
         // TODO: get from SModel
         double epsilon = ISmodelConstants.EPSILON;
-        IEAConfig eaConfig = new EAConfig(epsilon, configuration.getSeedProvider(), configuration);
+        // TODO: get from factory
+        Function<String, Comparator<Double>> comparatorFactory = s -> Double::compare;
+        IEAConfig eaConfig = new EAConfig(epsilon, configuration.getSeedProvider(), comparatorFactory, configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }
