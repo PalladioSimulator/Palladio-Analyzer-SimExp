@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import java.util.Comparator;
 import java.util.function.ToIntFunction;

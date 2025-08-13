@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.moea;
+package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

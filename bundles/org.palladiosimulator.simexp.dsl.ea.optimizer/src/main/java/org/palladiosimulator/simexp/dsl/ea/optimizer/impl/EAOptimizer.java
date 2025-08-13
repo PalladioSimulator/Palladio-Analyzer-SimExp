@@ -24,7 +24,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEASetCollector;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEASetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
