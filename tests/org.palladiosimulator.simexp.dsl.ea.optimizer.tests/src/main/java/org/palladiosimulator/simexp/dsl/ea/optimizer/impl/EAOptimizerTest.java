@@ -95,6 +95,7 @@ public class EAOptimizerTest {
         Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
         QualityMeasurements qualityMeasurements = new QualityMeasurements(Arrays.asList(run));
         when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(qualityMeasurements);
+        when(qualityAttributeProvider.getComparatorFactory()).thenReturn(s -> Double::compare);
 
         setBoundsHelper = new SetBoundsHelper();
         rangeBoundsHelper = new RangeBoundsHelper();
@@ -103,7 +104,7 @@ public class EAOptimizerTest {
         optFunction = r -> {
             return optimizer.internalOptimize(optimizableProvider, fitnessEvaluator, statusReceiver, Runnable::run);
         };
-        when(eaConfig.getComparatorFactory()).thenReturn(s -> Double::compare);
+
         when(eaConfig.populationSize()).thenReturn(SimulationConstants.DEFAULT_POPULATION_SIZE);
         when(eaConfig.mutationRate()).thenReturn(SimulationConstants.DEFAULT_MUTATION_RATE);
         when(eaConfig.crossoverRate()).thenReturn(SimulationConstants.DEFAULT_CROSSOVER_RATE);
