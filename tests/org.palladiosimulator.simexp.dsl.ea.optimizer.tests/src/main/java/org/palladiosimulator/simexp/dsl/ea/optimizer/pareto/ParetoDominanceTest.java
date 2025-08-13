@@ -31,7 +31,7 @@ public class ParetoDominanceTest {
 
         range = IntRange.of(0, 10);
 
-        paretoDominance = new ParetoDominance<>(averageProvider);
+        paretoDominance = new ParetoDominance<>(averageProvider, s -> Double::compare);
     }
 
     @Test

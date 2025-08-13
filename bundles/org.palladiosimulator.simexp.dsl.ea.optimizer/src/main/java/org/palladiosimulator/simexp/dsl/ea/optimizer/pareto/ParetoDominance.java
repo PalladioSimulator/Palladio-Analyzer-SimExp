@@ -2,15 +2,19 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.function.Function;
 
 import io.jenetics.Gene;
 import io.jenetics.Phenotype;
 
 public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenotype<G, Double>> {
     private final IAverageProvider<G> averageProvider;
+    private final Function<String, Comparator<Double>> comparatorFactory;
 
-    public ParetoDominance(IAverageProvider<G> averageProvider) {
+    public ParetoDominance(IAverageProvider<G> averageProvider,
+            Function<String, Comparator<Double>> comparatorFactory) {
         this.averageProvider = averageProvider;
+        this.comparatorFactory = comparatorFactory;
     }
 
     /**
@@ -29,7 +33,7 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
         boolean bBetter = false;
 
         for (Map.Entry<String, Double> entryA : averagesA.entrySet()) {
-            Comparator<Double> comparator = getComparator(entryA.getKey());
+            Comparator<Double> comparator = comparatorFactory.apply(entryA.getKey());
             double valueA = entryA.getValue();
             double valueB = averagesB.get(entryA.getKey());
 
@@ -60,10 +64,5 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
         }
         // Equal on all objectives -> neither strictly dominates
         return 0;
-    }
-
-    private Comparator<Double> getComparator(String attribute) {
-        // TODO:
-        return Double::compare;
     }
 }
