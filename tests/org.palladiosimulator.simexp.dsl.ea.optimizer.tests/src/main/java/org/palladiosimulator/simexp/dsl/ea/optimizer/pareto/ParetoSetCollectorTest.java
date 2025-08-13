@@ -1,8 +1,11 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -40,34 +43,67 @@ public class ParetoSetCollectorTest {
         collector = ParetoSetCollector.create(EPSILON, averageProvider);
     }
 
-    // TODO
-    @Ignore
     @Test
-    public void collectSingleBest() {
-        Phenotype<IntegerGene, Double> pheno1 = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> pheno2 = createPhenotype(2, 2.0);
-        EvolutionResult<IntegerGene, Double> r1 = createEvolutionResult(pheno1);
-        EvolutionResult<IntegerGene, Double> r2 = createEvolutionResult(pheno2);
+    public void collectFront() {
+        // All points:
+        // A(1.0, 7.0)
+        // B(2.0, 6.0)
+        // C(3.0, 5.0)
+        // D(4.0, 4.0)
+        // E(5.0, 3.0)
+        // F(6.0, 2.0)
+        // G(7.0, 1.0)
+        // H(2.0, 2.0)
+        // I(5.0, 5.0)
+        // J(0.0, 8.0)
+        //
+        // Pareto front (non-dominated points, minimization):
+        // A(1.0, 7.0)
+        // J(0.0, 8.0)
+        // H(2.0, 2.0)
+        // G(7.0, 1.0)
+        Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
+        Phenotype<IntegerGene, Double> d = createPhenotype(3, 1.0);
+        Phenotype<IntegerGene, Double> e = createPhenotype(4, 1.0);
+        Phenotype<IntegerGene, Double> f = createPhenotype(5, 1.0);
+        Phenotype<IntegerGene, Double> g = createPhenotype(6, 1.0);
+        Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
+        Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
+        Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
+        EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a);
+        EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b);
+        EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c);
+        EvolutionResult<IntegerGene, Double> rd = createEvolutionResult(d);
+        EvolutionResult<IntegerGene, Double> re = createEvolutionResult(e);
+        EvolutionResult<IntegerGene, Double> rf = createEvolutionResult(f);
+        EvolutionResult<IntegerGene, Double> rg = createEvolutionResult(g);
+        EvolutionResult<IntegerGene, Double> rh = createEvolutionResult(h);
+        EvolutionResult<IntegerGene, Double> ri = createEvolutionResult(i);
+        EvolutionResult<IntegerGene, Double> rj = createEvolutionResult(j);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
+        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
+        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
+        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
+        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
+        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
+        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
+        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
 
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
+        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(ra, rb, rc, rd, re, rf, rg, rh, ri, rj)
             .collect(collector);
 
-        assertThat(actualResult).containsExactly(createPhenotype(2, 2.0));
+        assertThat(actualResult).containsExactlyInAnyOrder(a, h, j, g);
     }
 
-    // TODO
-    @Ignore
-    @Test
-    public void collectDoubleBest() {
-        Phenotype<IntegerGene, Double> pheno1 = createPhenotype(1, 2.0);
-        Phenotype<IntegerGene, Double> pheno2 = createPhenotype(2, 2.0);
-        EvolutionResult<IntegerGene, Double> r1 = createEvolutionResult(pheno1);
-        EvolutionResult<IntegerGene, Double> r2 = createEvolutionResult(pheno2);
-
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
-            .collect(collector);
-
-        assertThat(actualResult).containsExactly(pheno1, pheno2);
+    private Map<String, Double> buildAverages(double one, double two) {
+        Map<String, Double> averages = new HashMap<>();
+        averages.put("qa1", one);
+        averages.put("qa2", two);
+        return averages;
     }
 
     // TODO
