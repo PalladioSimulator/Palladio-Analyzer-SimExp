@@ -1,8 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
@@ -24,7 +21,7 @@ public class ParetoSetCollector {
             double epsilon) {
         Comparator<Phenotype<G, Double>> dominance = (Phenotype<G, Double> a, Phenotype<G, Double> b) -> a.fitness()
             .compareTo(b.fitness());
-        ElementComparator<Phenotype<G, Double>> elementComparator = (Phenotype<G, Double> a, Phenotype<G, Double> b,
+        ElementComparator<Phenotype<G, Double>> comparator = (Phenotype<G, Double> a, Phenotype<G, Double> b,
                 int index) -> a.fitness()
                     .compareTo(b.fitness());
         ElementDistance<Phenotype<G, Double>> distance = (Phenotype<G, Double> a, Phenotype<G, Double> b,
@@ -32,20 +29,6 @@ public class ParetoSetCollector {
                     .distance(Vec.of(b.fitness()), index);
         ToIntFunction<Phenotype<G, Double>> dimension = (Phenotype<G, Double> value) -> 1;
         IntRange size = IntRange.of(SIZE_MIN, SIZE_MAX);
-        return toParetoSet(size, dominance, elementComparator, distance, dimension);
-    }
-
-    public static <G extends Gene<?, G>, C extends Comparable<? super C>> Collector<EvolutionResult<G, C>, ?, ISeq<Phenotype<G, C>>> toParetoSet(
-            IntRange size, Comparator<Phenotype<G, C>> dominance, ElementComparator<Phenotype<G, C>> comparator,
-            ElementDistance<Phenotype<G, C>> distance, ToIntFunction<Phenotype<G, C>> dimension) {
-        requireNonNull(size);
-        requireNonNull(dominance);
-        requireNonNull(distance);
-
-        if (size.min() < 1) {
-            throw new IllegalArgumentException(
-                    format("Minimal pareto set size must be greater than zero: %d", size.min()));
-        }
 
         return Collector.of( //
                 () -> new Front<>(size, dominance, comparator, distance, dimension) //
