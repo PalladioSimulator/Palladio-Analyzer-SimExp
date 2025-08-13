@@ -37,9 +37,9 @@ public class ParetoSetCollectorTest {
     public void setUp() throws Exception {
         initMocks(this);
 
-        range = IntRange.of(0, 100);
+        range = IntRange.of(0, 10);
 
-        collector = ParetoSetCollector.create(EPSILON, averageProvider);
+        collector = ParetoSetCollector.create(EPSILON, averageProvider, s -> Double::compare);
     }
 
     @Test
