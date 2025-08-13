@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,6 @@ public class QualityAttributesAverageCalculatorTest {
     private SmodelCreator smodelCreator;
     private Optimizable optimizable1;
     private OptimizableValue<Integer> optimizableValue1;
-    private OptimizableValue<Integer> optimizableValue2;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +45,6 @@ public class QualityAttributesAverageCalculatorTest {
         SetBounds bounds = smodelCreator.createSetBounds(literal1, literal2);
         optimizable1 = smodelCreator.createOptimizable("o1", DataType.INT, bounds);
         optimizableValue1 = new OptimizableValue<>(optimizable1, 1);
-        optimizableValue2 = new OptimizableValue<>(optimizable1, 2);
 
         calculator = new QualityAttributesAverageCalculator(qualityAttributeProvider);
     }
@@ -54,32 +52,26 @@ public class QualityAttributesAverageCalculatorTest {
     @Test
     public void testSingleAttribute() {
         List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
-        List<List<OptimizableValue<?>>> optimizableValuesList = new ArrayList<>();
-        optimizableValuesList.add(optimizableValues1);
         Run run1 = new Run(Collections.singletonMap("qa1", Arrays.asList(1.0, 2.0)));
         QualityMeasurements qualityMeasurements1 = new QualityMeasurements(Arrays.asList(run1));
         when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(qualityMeasurements1);
 
-        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValuesList);
+        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValues1);
 
         assertThat(actualAverages).containsOnly(entry("qa1", 1.5));
     }
 
     @Test
     public void testDoubleAttribute() {
-        List<List<OptimizableValue<?>>> optimizableValuesList = new ArrayList<>();
         List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
-        optimizableValuesList.add(optimizableValues1);
-        Run run1 = new Run(Collections.singletonMap("qa1", Arrays.asList(1.0, 2.0)));
+        Map<String, List<Double>> qualityAttributes = new HashMap<>();
+        qualityAttributes.put("qa1", Arrays.asList(1.0, 2.0));
+        qualityAttributes.put("qa2", Arrays.asList(1.0, 1.0));
+        Run run1 = new Run(qualityAttributes);
         QualityMeasurements qualityMeasurements1 = new QualityMeasurements(Arrays.asList(run1));
         when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(qualityMeasurements1);
-        List<OptimizableValue<?>> optimizableValues2 = Collections.singletonList(optimizableValue2);
-        optimizableValuesList.add(optimizableValues2);
-        Run run2 = new Run(Collections.singletonMap("qa2", Arrays.asList(1.0, 1.0)));
-        QualityMeasurements qualityMeasurements2 = new QualityMeasurements(Arrays.asList(run2));
-        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues2)).thenReturn(qualityMeasurements2);
 
-        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValuesList);
+        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValues1);
 
         assertThat(actualAverages).containsOnly(entry("qa1", 1.5), entry("qa2", 1.0));
     }

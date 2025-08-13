@@ -17,8 +17,8 @@ public class QualityAttributesAverageCalculator {
         this.qualityAttributeProvider = qualityAttributeProvider;
     }
 
-    public Map<String, Double> calculateAverages(List<List<OptimizableValue<?>>> optimizableValuesList) {
-        List<QualityMeasurements> qualityMeasurements = getQualityMeasurements(optimizableValuesList);
+    public Map<String, Double> calculateAverages(List<OptimizableValue<?>> optimizableValues) {
+        QualityMeasurements qualityMeasurements = qualityAttributeProvider.getQualityMeasurements(optimizableValues);
         Map<String, List<Double>> values = extractValues(qualityMeasurements);
 
         Map<String, Double> averages = new HashMap<>();
@@ -34,26 +34,17 @@ public class QualityAttributesAverageCalculator {
         return averages;
     }
 
-    private List<QualityMeasurements> getQualityMeasurements(List<List<OptimizableValue<?>>> optimizableValuesList) {
-        List<QualityMeasurements> qualityMeasurements = optimizableValuesList.stream()
-            .map(o -> qualityAttributeProvider.getQualityMeasurements(o))
-            .toList();
-        return qualityMeasurements;
-    }
-
-    private Map<String, List<Double>> extractValues(List<QualityMeasurements> qualityMeasurements) {
+    private Map<String, List<Double>> extractValues(QualityMeasurements qualityMeasurement) {
         Map<String, List<Double>> values = new HashMap<>();
-        for (QualityMeasurements qualityMeasurement : qualityMeasurements) {
-            for (Run run : qualityMeasurement.getRuns()) {
-                for (Map.Entry<String, List<Double>> entry : run.getQualityAttributes()
-                    .entrySet()) {
-                    List<Double> currentValues = values.get(entry.getKey());
-                    if (currentValues == null) {
-                        currentValues = new ArrayList<>();
-                    }
-                    currentValues.addAll(entry.getValue());
-                    values.put(entry.getKey(), currentValues);
+        for (Run run : qualityMeasurement.getRuns()) {
+            for (Map.Entry<String, List<Double>> entry : run.getQualityAttributes()
+                .entrySet()) {
+                List<Double> currentValues = values.get(entry.getKey());
+                if (currentValues == null) {
+                    currentValues = new ArrayList<>();
                 }
+                currentValues.addAll(entry.getValue());
+                values.put(entry.getKey(), currentValues);
             }
         }
         return values;
