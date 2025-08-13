@@ -18,6 +18,8 @@ import io.jenetics.Phenotype;
 import io.jenetics.util.IntRange;
 
 public class ParetoDominanceTest {
+    private static final double EPSILON = 0.0001;
+
     private ParetoDominance<IntegerGene> paretoDominance;
 
     private IntRange range;
@@ -31,21 +33,27 @@ public class ParetoDominanceTest {
 
         range = IntRange.of(0, 10);
 
-        paretoDominance = new ParetoDominance<>(averageProvider, s -> Double::compare);
+        paretoDominance = new ParetoDominance<>(EPSILON, averageProvider, s -> Double::compare);
     }
 
     @Test
     public void testCompareEqual() {
         Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
-        Map<String, Double> averagesA = new HashMap<>();
-        averagesA.put("qa1", 2.0);
-        averagesA.put("qa2", 2.0);
-        Map<String, Double> averagesB = new HashMap<>();
-        averagesB.put("qa1", 2.0);
-        averagesB.put("qa2", 2.0);
-        when(averageProvider.getAverages(a)).thenReturn(averagesA);
-        when(averageProvider.getAverages(b)).thenReturn(averagesB);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isEqualTo(0);
+    }
+
+    @Test
+    public void testComparePrecision() {
+        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2.0001, 2));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2.0002, 2));
 
         int actualCompare = paretoDominance.compare(a, b);
 
@@ -56,14 +64,8 @@ public class ParetoDominanceTest {
     public void testComparePareto() {
         Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
-        Map<String, Double> averagesA = new HashMap<>();
-        averagesA.put("qa1", 1.0);
-        averagesA.put("qa2", 2.0);
-        Map<String, Double> averagesB = new HashMap<>();
-        averagesB.put("qa1", 2.0);
-        averagesB.put("qa2", 1.0);
-        when(averageProvider.getAverages(a)).thenReturn(averagesA);
-        when(averageProvider.getAverages(b)).thenReturn(averagesB);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 2));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 1));
 
         int actualCompare = paretoDominance.compare(a, b);
 
@@ -74,14 +76,8 @@ public class ParetoDominanceTest {
     public void testCompareDominating() {
         Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
-        Map<String, Double> averagesA = new HashMap<>();
-        averagesA.put("qa1", 2.0);
-        averagesA.put("qa2", 2.0);
-        Map<String, Double> averagesB = new HashMap<>();
-        averagesB.put("qa1", 2.0);
-        averagesB.put("qa2", 3.0);
-        when(averageProvider.getAverages(a)).thenReturn(averagesA);
-        when(averageProvider.getAverages(b)).thenReturn(averagesB);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 3));
 
         int actualCompare = paretoDominance.compare(a, b);
 
@@ -92,18 +88,19 @@ public class ParetoDominanceTest {
     public void testCompareNotDominating() {
         Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
-        Map<String, Double> averagesA = new HashMap<>();
-        averagesA.put("qa1", 2.0);
-        averagesA.put("qa2", 3.0);
-        Map<String, Double> averagesB = new HashMap<>();
-        averagesB.put("qa1", 2.0);
-        averagesB.put("qa2", 2.0);
-        when(averageProvider.getAverages(a)).thenReturn(averagesA);
-        when(averageProvider.getAverages(b)).thenReturn(averagesB);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 3));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
 
         int actualCompare = paretoDominance.compare(a, b);
 
         assertThat(actualCompare).isLessThan(0);
+    }
+
+    private Map<String, Double> buildAverages(double one, double two) {
+        Map<String, Double> averages = new HashMap<>();
+        averages.put("qa1", one);
+        averages.put("qa2", two);
+        return averages;
     }
 
     private Phenotype<IntegerGene, Double> createPhenotype(int allele, double fitness) {

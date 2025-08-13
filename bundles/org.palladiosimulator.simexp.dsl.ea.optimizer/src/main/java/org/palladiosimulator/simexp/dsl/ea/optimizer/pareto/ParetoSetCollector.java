@@ -16,7 +16,8 @@ import io.jenetics.util.ISeq;
 public class ParetoSetCollector {
     public static <G extends Gene<?, G>> Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> create(
             double epsilon, IAverageProvider<G> averageProvider) {
-        Comparator<Phenotype<G, Double>> dominance = new ParetoDominance<>(averageProvider, s -> Double::compare);
+        Comparator<Phenotype<G, Double>> dominance = new ParetoDominance<>(epsilon, averageProvider,
+                s -> Double::compare);
 
         return Collector.of( //
                 () -> new Front<>(dominance) //

@@ -10,7 +10,6 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -117,21 +116,6 @@ public class ParetoSetCollectorTest {
         averages.put("qa1", one);
         averages.put("qa2", two);
         return averages;
-    }
-
-    // TODO
-    @Ignore
-    @Test
-    public void collectPrecision() {
-        Phenotype<IntegerGene, Double> pheno1 = createPhenotype(1, 0.0001);
-        Phenotype<IntegerGene, Double> pheno2 = createPhenotype(2, 0.0002);
-        EvolutionResult<IntegerGene, Double> r1 = createEvolutionResult(pheno1);
-        EvolutionResult<IntegerGene, Double> r2 = createEvolutionResult(pheno2);
-
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
-            .collect(collector);
-
-        assertThat(actualResult).containsExactly(pheno1, pheno2);
     }
 
     private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType) {

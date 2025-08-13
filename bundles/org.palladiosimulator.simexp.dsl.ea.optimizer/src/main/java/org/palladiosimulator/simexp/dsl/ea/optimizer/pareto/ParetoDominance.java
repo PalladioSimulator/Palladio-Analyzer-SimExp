@@ -8,11 +8,13 @@ import io.jenetics.Gene;
 import io.jenetics.Phenotype;
 
 public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenotype<G, Double>> {
+    private final double epsilon;
     private final IAverageProvider<G> averageProvider;
     private final Function<String, Comparator<Double>> comparatorFactory;
 
-    public ParetoDominance(IAverageProvider<G> averageProvider,
+    public ParetoDominance(double epsilon, IAverageProvider<G> averageProvider,
             Function<String, Comparator<Double>> comparatorFactory) {
+        this.epsilon = epsilon;
         this.averageProvider = averageProvider;
         this.comparatorFactory = comparatorFactory;
     }
@@ -42,10 +44,10 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
                 return 0;
             }
 
-            if (comparator.compare(valueA, valueB) < 0) {
+            if (compareWithPrecision(valueA, valueB, comparator) < 0) {
                 aBetter = true;
             } else {
-                if (comparator.compare(valueB, valueA) < 0) {
+                if (compareWithPrecision(valueB, valueA, comparator) < 0) {
                     bBetter = true;
                 }
             }
@@ -64,5 +66,22 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
         }
         // Equal on all objectives -> neither strictly dominates
         return 0;
+    }
+
+    private int compareWithPrecision(Double a, Double b, Comparator<Double> comparator) {
+        if (almostEqualAbs(a, b, epsilon)) {
+            return 0;
+        }
+        return comparator.compare(a, b);
+    }
+
+    private boolean almostEqualAbs(double a, double b, double eps) {
+        if (Double.isNaN(a) || Double.isNaN(b)) {
+            return false;
+        }
+        if (Double.isInfinite(a) || Double.isInfinite(b)) {
+            return a == b;
+        }
+        return Math.abs(a - b) <= eps;
     }
 }
