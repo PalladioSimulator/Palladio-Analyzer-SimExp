@@ -79,13 +79,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         double totalReward = 0.0;
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
-        List<List<OptimizableValue<?>>> equivalentOptimizableValues = Collections.emptyList();
+        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = Collections.emptyList();
         List<IndividualResult> finalPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
             totalReward = fittest.getFitness();
             bestOptimizableValues = fittest.getOptimizableValues();
-            equivalentOptimizableValues = optimizationResult.getEquivalentOptimizableValues();
+            paretoFrontOptimizableValues = optimizationResult.getParetoFrontOptimizableValues();
             finalPopulation = optimizationResult.getFinalPopulation();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
@@ -93,8 +93,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.add("Optimal values of the fittest individual:");
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
-        detailDescription.add(String.format("Equivalent optimal values %d:", equivalentOptimizableValues.size()));
-        for (ListIterator<List<OptimizableValue<?>>> it = equivalentOptimizableValues.listIterator(); it.hasNext();) {
+        detailDescription.add(String.format("Pareto optimal values %d:", paretoFrontOptimizableValues.size()));
+        for (ListIterator<List<OptimizableValue<?>>> it = paretoFrontOptimizableValues.listIterator(); it.hasNext();) {
             List<OptimizableValue<?>> optimizables = it.next();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
             detailDescription.addAll(formatOptimizables(optimizables));

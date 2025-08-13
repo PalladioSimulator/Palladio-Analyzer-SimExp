@@ -25,7 +25,6 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.moea.MOEASetCollector;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -179,7 +178,7 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        List<List<OptimizableValue<?>>> equivalentOptimizableValues = buildMOEAList(normalizer, result);
+        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = buildParetoFront(normalizer, result);
 
         List<IndividualResult> finalPopulation = result.population()
             .stream()
@@ -187,14 +186,10 @@ public class EAOptimizer implements IEAOptimizer {
             .toList();
         IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
-        ParetoEvaluator paretoEvaluator = new ParetoEvaluator(qualityAttributeProvider);
-
-        List<IndividualResult> paretoFront = paretoEvaluator.buildParetoFront(finalPopulation);
-
-        return new EAResult(fittestIndividual, equivalentOptimizableValues, finalPopulation);
+        return new EAResult(fittestIndividual, paretoFrontOptimizableValues, finalPopulation);
     }
 
-    private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildMOEAList(ITranscoder<G> normalizer,
+    private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildParetoFront(ITranscoder<G> normalizer,
             EvolutionResult<G, Double> result) {
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = MOEASetCollector
             .create(config.getEpsilon());

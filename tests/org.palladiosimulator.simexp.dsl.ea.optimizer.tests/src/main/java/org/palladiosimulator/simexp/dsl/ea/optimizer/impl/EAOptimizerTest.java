@@ -116,7 +116,7 @@ public class EAOptimizerTest {
         double expectedFitness = 50.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -134,7 +134,7 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
             .build();
@@ -156,7 +156,7 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
             .build();
@@ -179,7 +179,7 @@ public class EAOptimizerTest {
         double expectedFitness = 6.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -198,7 +198,7 @@ public class EAOptimizerTest {
         double expectedFitness = 6.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -216,7 +216,7 @@ public class EAOptimizerTest {
         double expectedFitness = 19.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -234,7 +234,7 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -253,7 +253,7 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -271,7 +271,7 @@ public class EAOptimizerTest {
         double expectedFitness = 85.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
@@ -297,7 +297,7 @@ public class EAOptimizerTest {
         double expectedFitness = 68.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
             .withComparatorForType(new DoubleComparator(DELTA), Double.class)
             .build();
@@ -327,7 +327,7 @@ public class EAOptimizerTest {
         double expectedFitness = 16.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getEquivalentOptimizableValues();
+        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
         assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
             .map(v -> v.getValue())
             .toList())
