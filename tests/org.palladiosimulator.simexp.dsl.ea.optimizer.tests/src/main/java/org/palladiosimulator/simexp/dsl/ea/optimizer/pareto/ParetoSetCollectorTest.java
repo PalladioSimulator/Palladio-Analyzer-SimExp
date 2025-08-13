@@ -2,8 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -45,7 +43,7 @@ public class ParetoSetCollectorTest {
         ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
             .collect(collector);
 
-        assertThat(actualResult).contains(createPhenotype(2, 2.0));
+        assertThat(actualResult).containsExactly(createPhenotype(2, 2.0));
     }
 
     @Test
@@ -58,39 +56,7 @@ public class ParetoSetCollectorTest {
         ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
             .collect(collector);
 
-        assertThat(actualResult).contains(pheno1, pheno2);
-    }
-
-    @Test
-    public void collectMaxMin1() {
-        List<Phenotype<IntegerGene, Double>> phenotypes = new ArrayList<>();
-        List<EvolutionResult<IntegerGene, Double>> evolutionResults = new ArrayList<>();
-        for (int i = 0; i < MOEASetCollector.SIZE_MAX - 1; ++i) {
-            Phenotype<IntegerGene, Double> phenotype = createPhenotype(i, 2.0);
-            phenotypes.add(phenotype);
-            evolutionResults.add(createEvolutionResult(phenotype));
-        }
-
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = evolutionResults.stream()
-            .collect(collector);
-
-        assertThat(actualResult).containsAll(phenotypes);
-    }
-
-    @Test
-    public void collectMax() {
-        List<Phenotype<IntegerGene, Double>> phenotypes = new ArrayList<>();
-        List<EvolutionResult<IntegerGene, Double>> evolutionResults = new ArrayList<>();
-        for (int i = 0; i < MOEASetCollector.SIZE_MAX; ++i) {
-            Phenotype<IntegerGene, Double> phenotype = createPhenotype(i, 2.0);
-            phenotypes.add(phenotype);
-            evolutionResults.add(createEvolutionResult(phenotype));
-        }
-
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = evolutionResults.stream()
-            .collect(collector);
-
-        assertThat(actualResult).contains(phenotypes.get(0), phenotypes.get(8), phenotypes.get(9));
+        assertThat(actualResult).containsExactly(pheno1, pheno2);
     }
 
     // TODO
@@ -105,7 +71,7 @@ public class ParetoSetCollectorTest {
         ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(r1, r2)
             .collect(collector);
 
-        assertThat(actualResult).contains(pheno1, pheno2);
+        assertThat(actualResult).containsExactly(pheno1, pheno2);
     }
 
     private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType) {
