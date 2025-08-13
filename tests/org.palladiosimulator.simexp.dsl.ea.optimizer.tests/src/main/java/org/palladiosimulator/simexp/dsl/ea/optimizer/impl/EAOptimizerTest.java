@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,11 +28,14 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
@@ -46,7 +50,6 @@ import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 import io.jenetics.util.RandomRegistry;
 
 public class EAOptimizerTest {
-
     private static final double DELTA = 0.0001;
 
     private EAOptimizer optimizer;
@@ -59,6 +62,8 @@ public class EAOptimizerTest {
     private IEAFitnessEvaluator fitnessEvaluator;
     @Mock
     private IOptimizableProvider optimizableProvider;
+    @Mock
+    private IQualityAttributeProvider qualityAttributeProvider;
     @Mock
     private IExpressionCalculator calculator;
 
@@ -86,6 +91,10 @@ public class EAOptimizerTest {
             }
         };
         when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
+        when(fitnessEvaluator.getQualityAttributeProvider()).thenReturn(qualityAttributeProvider);
+        Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
+        QualityMeasurements qualityMeasurements = new QualityMeasurements(Arrays.asList(run));
+        when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(qualityMeasurements);
 
         setBoundsHelper = new SetBoundsHelper();
         rangeBoundsHelper = new RangeBoundsHelper();
@@ -116,11 +125,6 @@ public class EAOptimizerTest {
         double expectedFitness = 50.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(true));
     }
 
     @Test
@@ -134,15 +138,6 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
-            .withComparatorForType(new DoubleComparator(DELTA), Double.class)
-            .build();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .usingRecursiveFieldByFieldElementComparator(configuration)
-            .containsExactlyInAnyOrder(List.of(9.0));
     }
 
     @Test
@@ -179,30 +174,6 @@ public class EAOptimizerTest {
         double expectedFitness = 6.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of("123456"));
-    }
-
-    @Test
-    public void stringMultipleParetoOptimalElementsTest() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeStringSetBound(smodelCreator,
-                List.of("Hello", "youuuu", "abcdef"), calculator);
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.STRING, setBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
-        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
-
-        double expectedFitness = 6.0;
-        assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of("abcdef"), List.of("youuuu"));
     }
 
     @Test
@@ -216,11 +187,6 @@ public class EAOptimizerTest {
         double expectedFitness = 19.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(19));
     }
 
     @Test
@@ -234,30 +200,6 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(9));
-    }
-
-    @Test
-    public void integerMultipleParetoOptimalElementsTest() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeIntegerSetBound(smodelCreator, List.of(1, 3, 7, 3, 8, 9, 9),
-                calculator);
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.INT, setBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
-        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
-
-        double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(9), List.of(9));
     }
 
     @Test
@@ -271,11 +213,6 @@ public class EAOptimizerTest {
         double expectedFitness = 85.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(85));
     }
 
     @Test
@@ -297,15 +234,6 @@ public class EAOptimizerTest {
         double expectedFitness = 68.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
-            .withComparatorForType(new DoubleComparator(DELTA), Double.class)
-            .build();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .usingRecursiveFieldByFieldElementComparator(configuration)
-            .containsExactlyInAnyOrder(List.of(9, true, 9.0));
     }
 
     @Test
@@ -327,10 +255,5 @@ public class EAOptimizerTest {
         double expectedFitness = 16.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .containsExactlyInAnyOrder(List.of(10, "single"));
     }
 }

@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -11,6 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -24,7 +26,9 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.MOEASetCollector;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.AverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.IAverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -178,7 +182,9 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = buildParetoFront(normalizer, result);
+        Function<String, Comparator<Double>> comparatorFactory = s -> Double::compare;
+        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = buildParetoFront(normalizer,
+                qualityAttributeProvider, comparatorFactory, result);
 
         List<IndividualResult> finalPopulation = result.population()
             .stream()
@@ -190,9 +196,11 @@ public class EAOptimizer implements IEAOptimizer {
     }
 
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildParetoFront(ITranscoder<G> normalizer,
+            IQualityAttributeProvider qualityAttributeProvider, Function<String, Comparator<Double>> comparatorFactory,
             EvolutionResult<G, Double> result) {
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = MOEASetCollector
-            .create(config.getEpsilon());
+        IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
+        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
+            .create(config.getEpsilon(), averageProvider, comparatorFactory);
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(moeaCollector);
         List<List<OptimizableValue<?>>> moeaFront = phenotypes.stream()
