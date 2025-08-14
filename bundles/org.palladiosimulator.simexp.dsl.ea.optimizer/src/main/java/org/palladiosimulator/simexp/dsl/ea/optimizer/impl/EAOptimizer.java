@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.AverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.CachingAverageProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.IAverageProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
@@ -197,6 +198,7 @@ public class EAOptimizer implements IEAOptimizer {
     private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildParetoFront(ITranscoder<G> normalizer,
             IQualityAttributeProvider qualityAttributeProvider, EvolutionResult<G, Double> result) {
         IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
+        averageProvider = new CachingAverageProvider<>(averageProvider);
         Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
             .create(config.getEpsilon(), averageProvider, comparatorFactory);
