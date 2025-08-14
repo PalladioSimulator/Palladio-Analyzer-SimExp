@@ -12,38 +12,44 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 
 public class FitnessHelper {
+    private static class FixedFuture implements Future<Optional<Double>> {
+        private final double fitnessValue;
+
+        public FixedFuture(double fitnessValue) {
+            this.fitnessValue = fitnessValue;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public Optional<Double> get(long timeout, TimeUnit unit)
+                throws InterruptedException, ExecutionException, TimeoutException {
+            return Optional.of(fitnessValue);
+        }
+
+        @Override
+        public Optional<Double> get() throws InterruptedException, ExecutionException {
+            return Optional.of(fitnessValue);
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+    }
 
     public Future<Optional<Double>> getFitnessFunctionAsFuture(InvocationOnMock invocation) {
         List<OptimizableValue<?>> optimizableValues = invocation.getArgument(0);
-        Optional<Double> fitnessValue = Optional.of(getCurrentFitness(optimizableValues));
-        return new Future<>() {
-
-            @Override
-            public boolean isDone() {
-                return true;
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return false;
-            }
-
-            @Override
-            public Optional<Double> get(long timeout, TimeUnit unit)
-                    throws InterruptedException, ExecutionException, TimeoutException {
-                return fitnessValue;
-            }
-
-            @Override
-            public Optional<Double> get() throws InterruptedException, ExecutionException {
-                return fitnessValue;
-            }
-
-            @Override
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                return false;
-            }
-        };
+        double currentFitness = getCurrentFitness(optimizableValues);
+        return new FixedFuture(currentFitness);
     }
 
     double getCurrentFitness(List<OptimizableValue<?>> optimizableValues) {
