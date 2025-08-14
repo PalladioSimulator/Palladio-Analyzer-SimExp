@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessE
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonParetoWriter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -37,6 +38,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
     private final EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher;
+    private final Path resourcePath;
 
     private EAResult optimizationResult;
 
@@ -48,6 +50,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
         eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger());
         eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
+        this.resourcePath = resourcePath;
     }
 
     @Override
@@ -79,13 +82,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         double totalReward = 0.0;
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
-        List<IndividualResult> paretoFrontOptimizableValues = Collections.emptyList();
+        List<IndividualResult> paretoFront = Collections.emptyList();
         List<IndividualResult> finalPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
             totalReward = fittest.getFitness();
             bestOptimizableValues = fittest.getOptimizableValues();
-            paretoFrontOptimizableValues = optimizationResult.getParetoFront();
+            paretoFront = optimizationResult.getParetoFront();
             finalPopulation = optimizationResult.getFinalPopulation();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
@@ -93,8 +96,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.add("Optimal values of the fittest individual:");
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
-        detailDescription.add(String.format("Pareto optimal values %d:", paretoFrontOptimizableValues.size()));
-        for (ListIterator<IndividualResult> it = paretoFrontOptimizableValues.listIterator(); it.hasNext();) {
+        detailDescription.add(String.format("Pareto optimal values %d:", paretoFront.size()));
+        for (ListIterator<IndividualResult> it = paretoFront.listIterator(); it.hasNext();) {
             IndividualResult individualResult = it.next();
             List<OptimizableValue<?>> optimizables = individualResult.getOptimizableValues();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
@@ -112,7 +115,15 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 
+        storeParetoFront(paretoFront);
+
         return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
+    }
+
+    private void storeParetoFront(List<IndividualResult> paretoFront) {
+        Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
+        JsonParetoWriter jsonParetoWriter = new JsonParetoWriter(paretoFrontFile);
+        jsonParetoWriter.storeParetoFront(paretoFront);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
