@@ -79,13 +79,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         double totalReward = 0.0;
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
-        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = Collections.emptyList();
+        List<IndividualResult> paretoFrontOptimizableValues = Collections.emptyList();
         List<IndividualResult> finalPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
             totalReward = fittest.getFitness();
             bestOptimizableValues = fittest.getOptimizableValues();
-            paretoFrontOptimizableValues = optimizationResult.getParetoFrontOptimizableValues();
+            paretoFrontOptimizableValues = optimizationResult.getParetoFront();
             finalPopulation = optimizationResult.getFinalPopulation();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
@@ -94,8 +94,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
         detailDescription.add(String.format("Pareto optimal values %d:", paretoFrontOptimizableValues.size()));
-        for (ListIterator<List<OptimizableValue<?>>> it = paretoFrontOptimizableValues.listIterator(); it.hasNext();) {
-            List<OptimizableValue<?>> optimizables = it.next();
+        for (ListIterator<IndividualResult> it = paretoFrontOptimizableValues.listIterator(); it.hasNext();) {
+            IndividualResult individualResult = it.next();
+            List<OptimizableValue<?>> optimizables = individualResult.getOptimizableValues();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
             detailDescription.addAll(formatOptimizables(optimizables));
         }

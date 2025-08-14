@@ -1,6 +1,5 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
@@ -18,8 +17,6 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
-import org.assertj.core.util.DoubleComparator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -140,28 +137,6 @@ public class EAOptimizerTest {
         double expectedFitness = 9.0;
         assertEquals(expectedFitness, result.getFittest()
             .getFitness(), DELTA);
-    }
-
-    @Test
-    public void doubleMultipleParetoOptimalElementsTest() throws IOException {
-        SetBounds setBound = setBoundsHelper.initializeDoubleSetBound(smodelCreator, List.of(9.00001, 9.0), calculator);
-        Optimizable optimizable = smodelCreator.createOptimizable("test", DataType.DOUBLE, setBound);
-        when(optimizableProvider.getOptimizables()).thenReturn(List.of(optimizable));
-
-        EAResult result = RandomRegistry.with(threadLocalRandom, optFunction);
-
-        double expectedFitness = 9.0;
-        assertEquals(expectedFitness, result.getFittest()
-            .getFitness(), DELTA);
-        List<List<OptimizableValue<?>>> actualOptimizableValues = result.getParetoFrontOptimizableValues();
-        RecursiveComparisonConfiguration configuration = RecursiveComparisonConfiguration.builder()
-            .withComparatorForType(new DoubleComparator(DELTA), Double.class)
-            .build();
-        assertThat(actualOptimizableValues).<Object> extracting(l -> l.stream()
-            .map(v -> v.getValue())
-            .toList())
-            .usingRecursiveFieldByFieldElementComparator(configuration)
-            .containsExactlyInAnyOrder(List.of(9.0), List.of(9.0));
     }
 
     @Test

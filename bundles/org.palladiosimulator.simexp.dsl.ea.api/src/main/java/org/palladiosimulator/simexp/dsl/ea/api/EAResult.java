@@ -25,13 +25,13 @@ public class EAResult {
     }
 
     private final IndividualResult fittestIndividual;
-    private final List<List<OptimizableValue<?>>> paretoFrontOptimizableValues;
+    private final List<IndividualResult> paretoFront;
     private final List<IndividualResult> finalPopulation;
 
-    public EAResult(IndividualResult fittestIndividual, List<List<OptimizableValue<?>>> paretoFrontOptimizableValues,
+    public EAResult(IndividualResult fittestIndividual, List<IndividualResult> paretoFront,
             List<IndividualResult> finalPopulation) {
         this.fittestIndividual = fittestIndividual;
-        this.paretoFrontOptimizableValues = Collections.unmodifiableList(paretoFrontOptimizableValues);
+        this.paretoFront = Collections.unmodifiableList(paretoFront);
         this.finalPopulation = Collections.unmodifiableList(finalPopulation);
     }
 
@@ -39,8 +39,8 @@ public class EAResult {
         return fittestIndividual;
     }
 
-    public List<List<OptimizableValue<?>>> getParetoFrontOptimizableValues() {
-        return paretoFrontOptimizableValues;
+    public List<IndividualResult> getParetoFront() {
+        return paretoFront;
     }
 
     public List<IndividualResult> getFinalPopulation() {

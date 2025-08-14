@@ -183,8 +183,7 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        List<List<OptimizableValue<?>>> paretoFrontOptimizableValues = buildParetoFront(normalizer,
-                qualityAttributeProvider, result);
+        List<IndividualResult> paretoFront = buildParetoFront(normalizer, qualityAttributeProvider, result);
 
         List<IndividualResult> finalPopulation = result.population()
             .stream()
@@ -192,10 +191,10 @@ public class EAOptimizer implements IEAOptimizer {
             .toList();
         IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
-        return new EAResult(fittestIndividual, paretoFrontOptimizableValues, finalPopulation);
+        return new EAResult(fittestIndividual, paretoFront, finalPopulation);
     }
 
-    private <G extends Gene<?, G>> List<List<OptimizableValue<?>>> buildParetoFront(ITranscoder<G> normalizer,
+    private <G extends Gene<?, G>> List<IndividualResult> buildParetoFront(ITranscoder<G> normalizer,
             IQualityAttributeProvider qualityAttributeProvider, EvolutionResult<G, Double> result) {
         IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
         averageProvider = new CachingAverageProvider<>(averageProvider);
@@ -205,10 +204,10 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("building pareto front");
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(moeaCollector);
-        List<List<OptimizableValue<?>>> moeaFront = phenotypes.stream()
-            .map(p -> normalizer.toOptimizableValues(p.genotype()))
+        List<IndividualResult> paretoFront = phenotypes.stream()
+            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
             .toList();
-        return moeaFront;
+        return paretoFront;
     }
 
     private <G extends Gene<?, G>> EvolutionStream<G, Double> addTerminationConditions(
