@@ -21,11 +21,9 @@ import com.google.gson.GsonBuilder;
 public class JsonParetoWriter {
     private static final Logger LOGGER = Logger.getLogger(JsonParetoWriter.class);
 
-    private final Path paretoFrontFile;
     private final Gson gson;
 
-    public JsonParetoWriter(Path paretoFrontFile) {
-        this.paretoFrontFile = paretoFrontFile;
+    public JsonParetoWriter() {
         this.gson = new GsonBuilder() //
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .serializeNulls()
@@ -33,9 +31,9 @@ public class JsonParetoWriter {
             .create();
     }
 
-    public void storeParetoFront(List<IndividualResult> paretoFrontList) {
+    public void storeIndividualResults(Path resultFile, List<IndividualResult> individualResults) {
         List<ParetoEntry> entries = new ArrayList<>();
-        for (IndividualResult result : paretoFrontList) {
+        for (IndividualResult result : individualResults) {
             Map<String, Object> optimizables = new HashMap<>();
             for (OptimizableValue<?> ov : result.getOptimizableValues()) {
                 optimizables.put(ov.getOptimizable()
@@ -45,7 +43,7 @@ public class JsonParetoWriter {
             entries.add(entry);
         }
         ParetoFront paretoFront = new ParetoFront(entries);
-        try (Writer writer = Files.newBufferedWriter(paretoFrontFile)) {
+        try (Writer writer = Files.newBufferedWriter(resultFile)) {
             gson.toJson(paretoFront, writer);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

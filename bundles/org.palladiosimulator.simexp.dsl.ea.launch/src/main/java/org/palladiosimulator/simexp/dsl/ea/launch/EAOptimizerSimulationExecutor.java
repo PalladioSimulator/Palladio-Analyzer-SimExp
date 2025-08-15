@@ -115,15 +115,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 
-        storeParetoFront(paretoFront);
+        JsonParetoWriter jsonParetoWriter = new JsonParetoWriter();
+        Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
+        jsonParetoWriter.storeIndividualResults(paretoFrontFile, paretoFront);
+        Path finalPopulationFile = resourcePath.resolve("final_population.json");
+        jsonParetoWriter.storeIndividualResults(finalPopulationFile, finalPopulation);
 
         return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
-    }
-
-    private void storeParetoFront(List<IndividualResult> paretoFront) {
-        Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
-        JsonParetoWriter jsonParetoWriter = new JsonParetoWriter(paretoFrontFile);
-        jsonParetoWriter.storeParetoFront(paretoFront);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
