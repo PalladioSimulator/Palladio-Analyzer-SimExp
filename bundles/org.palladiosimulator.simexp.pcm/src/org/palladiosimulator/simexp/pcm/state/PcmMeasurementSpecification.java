@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.metricspec.MetricDescription;
@@ -26,13 +27,13 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
     }
 
     private static final class DefaultMeasurementAggregator implements MeasurementAggregator {
-        
+
         private static final Logger LOGGER = Logger.getLogger(DefaultMeasurementAggregator.class.getName());
-        
+
         @Override
         public double aggregate(MeasurementSeries measurements) {
             List<MeasurementValue> measurementsValues = measurements.asListOfValues();
-            
+
             List<Number> measurementsAsNumbers = new ArrayList<>();
             for (MeasurementValue measurementValue : measurementsValues) {
                 Object value = measurementValue.getValue();
@@ -51,12 +52,13 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
 //                LOGGER.debug(String.format("measurement = %s", number.toString()));
 //            }
 
-            double aggregatedMeasurements = StatisticalQuantities.withNumbers(measurementsAsNumbers).mean();
+            double aggregatedMeasurements = StatisticalQuantities.withNumbers(measurementsAsNumbers)
+                .mean();
             LOGGER.info(String.format("Aggregated measurements = %s", aggregatedMeasurements));
             return aggregatedMeasurements;
         }
     }
-    
+
     public static class PcmMeasurementSpecBuilder {
 
         private String name = null;
@@ -154,13 +156,22 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (super.equals(other) == false || (other instanceof PcmMeasurementSpecification) == false) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-
-        PcmMeasurementSpecification pcmSpec = (PcmMeasurementSpecification) other;
-        return hasMeasuringPoint(pcmSpec.getMeasuringPoint()) && hasMetricDescription(pcmSpec.getMetricDescription());
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        PcmMeasurementSpecification rhs = (PcmMeasurementSpecification) obj;
+        return new EqualsBuilder() //
+            .appendSuper(super.equals(obj))
+            .append(measuringPoint.getStringRepresentation(), rhs.measuringPoint.getStringRepresentation())
+            .append(metricDescription.getId(), rhs.metricDescription.getId())
+            .isEquals();
     }
 
     @Override
