@@ -22,7 +22,7 @@ public class BaseQualityAttributeProvider implements IQualityAttributeProvider {
     }
 
     @Override
-    public QualityMeasurements getQualityMeasurements(List<OptimizableValue<?>> optimizableValues) {
+    public synchronized QualityMeasurements getQualityMeasurements(List<OptimizableValue<?>> optimizableValues) {
         QualityMeasurements qualityMeasurements = qualityMeasurementMap.get(optimizableValues);
         return qualityMeasurements;
     }
