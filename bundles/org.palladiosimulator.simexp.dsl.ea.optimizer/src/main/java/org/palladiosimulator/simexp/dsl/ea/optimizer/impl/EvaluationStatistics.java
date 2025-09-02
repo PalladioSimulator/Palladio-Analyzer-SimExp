@@ -29,7 +29,7 @@ public class EvaluationStatistics<G extends Gene<?, G>> {
 
     public String reportStatistics() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("|  Evaluated optimizables of total search space                             |\n"
+        stringBuilder.append("|  Search space statistics                                                  |\n"
                 + "+---------------------------------------------------------------------------+\n");
         BigInteger fitnessEvaluationCount = BigInteger
             .valueOf(evaluationStatisticsReporter.getNumberOfUniqueFitnessEvaluations());
