@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.distribution.function;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
 public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunction<Sample<S>> {
@@ -31,12 +32,21 @@ public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunct
         }
 
         @Override
-        public boolean equals(Object other) {
-            if (other instanceof Sample) {
-                return ((Sample<?>) other).getValue()
-                    .equals(value);
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
             }
-            return false;
+            if (obj == this) {
+                return true;
+            }
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+            @SuppressWarnings("unchecked")
+            Sample<S> rhs = (Sample<S>) obj;
+            return new EqualsBuilder() //
+                .append(value, rhs.value)
+                .isEquals();
         }
     }
 
