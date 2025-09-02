@@ -6,9 +6,8 @@ public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunct
 
     public static class Sample<S> {
 
-        // TODO: final
-        private S value;
-        private double probability;
+        private final S value;
+        private final double probability;
 
         private Sample(S value, double probability) {
             this.value = value;
