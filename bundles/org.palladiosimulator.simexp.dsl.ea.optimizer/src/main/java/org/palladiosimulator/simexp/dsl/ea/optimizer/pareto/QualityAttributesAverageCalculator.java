@@ -8,6 +8,7 @@ import java.util.Map;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class QualityAttributesAverageCalculator {
@@ -19,6 +20,11 @@ public class QualityAttributesAverageCalculator {
 
     public Map<String, Double> calculateAverages(List<OptimizableValue<?>> optimizableValues) {
         QualityMeasurements qualityMeasurements = qualityAttributeProvider.getQualityMeasurements(optimizableValues);
+        if (qualityMeasurements == null) {
+            OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
+            String optimizables = optimizableValueToString.asString(optimizableValues);
+            throw new RuntimeException(String.format("no quality measurements found for: %s", optimizables));
+        }
         Map<String, List<Double>> values = extractValues(qualityMeasurements);
 
         Map<String, Double> averages = new HashMap<>();
