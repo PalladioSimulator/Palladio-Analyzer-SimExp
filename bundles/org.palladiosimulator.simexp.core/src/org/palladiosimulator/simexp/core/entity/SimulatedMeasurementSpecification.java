@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.core.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public abstract class SimulatedMeasurementSpecification {
 
@@ -18,6 +19,13 @@ public abstract class SimulatedMeasurementSpecification {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 97) //
+            .append(name)
+            .toHashCode();
     }
 
     @Override
