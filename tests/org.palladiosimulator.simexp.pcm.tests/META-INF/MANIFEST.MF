@@ -12,4 +12,5 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
  org.palladiosimulator.envdyn.model,
- org.palladiosimulator.simexp.model.io
+ org.palladiosimulator.simexp.model.io,
+ org.assertj;bundle-version="3.20.2"
