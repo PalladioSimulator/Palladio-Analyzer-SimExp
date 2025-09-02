@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 import org.palladiosimulator.edp2.models.measuringpoint.MeasuringPoint;
 import org.palladiosimulator.metricspec.MetricDescription;
@@ -153,6 +154,15 @@ public class PcmMeasurementSpecification extends SimulatedMeasurementSpecificati
 
     public double computeQuantity(MeasurementSeries measurements) {
         return aggregator.aggregate(measurements);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 23) //
+            .appendSuper(super.hashCode())
+            .append(measuringPoint.getStringRepresentation())
+            .append(metricDescription.getId())
+            .toHashCode();
     }
 
     @Override
