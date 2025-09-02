@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.distribution.function;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.palladiosimulator.simexp.distribution.function.ProbabilityMassFunction.Sample;
 
 public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunction<Sample<S>> {
@@ -29,6 +30,13 @@ public interface ProbabilityMassFunction<S> extends ProbabilityDistributionFunct
 
         public double getProbability() {
             return probability;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 7) //
+                .append(value)
+                .toHashCode();
         }
 
         @Override
