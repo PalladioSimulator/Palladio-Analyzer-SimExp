@@ -1,7 +1,8 @@
-import sys
 import argparse
 import csv
 import collections
+
+import tabulate
 
 class SimulationResult:
 
@@ -20,15 +21,18 @@ class SimulationResult:
         content = self._read_file(args.infile)
         counter = collections.Counter()
         for row in content:
-            counter[row['Error']] += 1
+            if row['Error']:
+                counter[row['Error']] += 1
+            else:
+                counter['Success'] += 1
+        table_entries = []
         for key, count in counter.items():
-            if key:
-                print("error: %s: %s" % (key, count))
-        print("total entries: %s" % counter.total())
-
-        return 0
+            entry = [key, count]
+            table_entries.append(entry)
+        table_entries.append(tabulate.SEPARATING_LINE)
+        table_entries.append(["Total", counter.total()])
+        print(tabulate.tabulate(table_entries, headers=['Error', 'Count']))
 
 if __name__ == '__main__':
     sr = SimulationResult()
-    sys.exit(sr.main())
-
+    sr.main()
