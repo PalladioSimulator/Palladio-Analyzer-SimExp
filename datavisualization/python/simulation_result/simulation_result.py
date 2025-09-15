@@ -31,7 +31,7 @@ class SimulationResult:
             table_entries.append(entry)
         table_entries.append(tabulate.SEPARATING_LINE)
         table_entries.append(["Total", counter.total()])
-        print(tabulate.tabulate(table_entries, headers=['Error', 'Count']))
+        print(tabulate.tabulate(table_entries, headers=['Result', 'Count']))
 
 if __name__ == '__main__':
     sr = SimulationResult()
