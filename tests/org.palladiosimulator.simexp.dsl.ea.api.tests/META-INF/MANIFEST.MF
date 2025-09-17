@@ -7,5 +7,8 @@ Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.api.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Fragment-Host: org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
 Require-Bundle: org.junit;bundle-version="4.13.0",
- org.assertj;bundle-version="3.20.2"
-
+ org.assertj;bundle-version="3.20.2",
+ org.mockito.mockito-merged;bundle-version="3.3.3",
+ net.bytebuddy.byte-buddy;bundle-version="1.10.9",
+ net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
+ org.objenesis;bundle-version="2.6.0"

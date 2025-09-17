@@ -32,7 +32,7 @@ public class FitnessFunction<G extends Gene<?, G>>
 
     public FitnessFunction(IPrecisionProvider precisionProvider, IEAFitnessEvaluator fitnessEvaluator,
             ITranscoder<G> transcoder, double penaltyForInvalids) {
-        this.rewardUtil = new RewardFormater(precisionProvider.getPlaces());
+        this.rewardUtil = new RewardFormater(precisionProvider);
         this.fitnessEvaluator = fitnessEvaluator;
         this.transcoder = transcoder;
         this.penaltyForInvalids = penaltyForInvalids;

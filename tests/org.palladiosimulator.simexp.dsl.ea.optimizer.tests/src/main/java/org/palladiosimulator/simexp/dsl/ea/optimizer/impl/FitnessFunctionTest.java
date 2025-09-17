@@ -60,6 +60,7 @@ public class FitnessFunctionTest {
         initMocks(this);
 
         when(precisionProvider.getPlaces()).thenReturn(PLACES);
+        when(precisionProvider.getPrecision()).thenReturn(EPSILON);
 
         when(chromosome.isValid()).thenReturn(true);
         genotype = Genotype.of(chromosome);
@@ -128,6 +129,7 @@ public class FitnessFunctionTest {
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
         when(precisionProvider.getPlaces()).thenReturn(12);
+        when(precisionProvider.getPrecision()).thenReturn(smallEpsilon);
         fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);

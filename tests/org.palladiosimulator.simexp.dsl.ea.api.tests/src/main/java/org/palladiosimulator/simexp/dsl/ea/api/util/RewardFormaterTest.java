@@ -2,27 +2,32 @@ package org.palladiosimulator.simexp.dsl.ea.api.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 public class RewardFormaterTest {
     private final static double EPSILON = 0.00001;
-
     private final static int PLACES = 3;
+    private final static double PRECISION = 0.0001;
 
     private RewardFormater rewardFormater;
 
+    @Mock
+    private IPrecisionProvider precisionProvider;
+
     @Before
     public void setUp() throws Exception {
-        this.rewardFormater = new RewardFormater(PLACES);
-    }
+        initMocks(this);
 
-    @Test
-    public void testGetPrecision() {
-        double actualPrecision = rewardFormater.getPrecision();
+        when(precisionProvider.getPlaces()).thenReturn(PLACES);
+        when(precisionProvider.getPrecision()).thenReturn(PRECISION);
 
-        assertThat(actualPrecision).isEqualTo(0.0001, withPrecision(EPSILON));
+        this.rewardFormater = new RewardFormater(precisionProvider);
     }
 
     @Test

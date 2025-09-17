@@ -1,16 +1,17 @@
 package org.palladiosimulator.simexp.dsl.ea.api.util;
 
-import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
-public class RewardFormater extends PrecisionProvider implements IRewardRounder, IRewardFormater {
+public class RewardFormater implements IRewardRounder, IRewardFormater {
+    private final IPrecisionProvider precisionProvider;
 
-    public RewardFormater(int places) {
-        super(places);
+    public RewardFormater(IPrecisionProvider precisionProvider) {
+        this.precisionProvider = precisionProvider;
     }
 
     @Override
     public double round(double reward) {
-        double multiplicator = (long) (1.0 / getPrecision());
+        double multiplicator = (long) (1.0 / precisionProvider.getPrecision());
         return Math.round(reward * multiplicator) / multiplicator;
     }
 

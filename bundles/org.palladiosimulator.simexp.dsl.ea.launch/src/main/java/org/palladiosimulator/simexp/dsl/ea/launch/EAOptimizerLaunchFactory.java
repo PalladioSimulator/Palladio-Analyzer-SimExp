@@ -19,6 +19,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
+import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
@@ -69,12 +70,13 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         // TODO: get from SModel
         final int places = ISmodelConstants.PLACES;
-        RewardFormater rewardUtil = new RewardFormater(places);
+        PrecisionProvider precisionProvider = new PrecisionProvider(places);
+        RewardFormater rewardFormater = new RewardFormater(precisionProvider);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launcherName, description, seedProvider, modelLoaderFactory, rewardUtil, resourcePath);
+                launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
-                (IEvolutionaryAlgorithmWorkflowConfiguration) config, rewardUtil, rewardUtil, resourcePath);
+                (IEvolutionaryAlgorithmWorkflowConfiguration) config, precisionProvider, rewardFormater, resourcePath);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
