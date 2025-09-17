@@ -21,12 +21,12 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonParetoWriter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
-import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
@@ -39,16 +39,19 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
     private final EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher;
     private final Path resourcePath;
+    private final IRewardFormater rewardFormater;
 
     private EAResult optimizationResult;
 
     public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
-            IEvolutionaryAlgorithmWorkflowConfiguration configuration, Path resourcePath) {
+            IEvolutionaryAlgorithmWorkflowConfiguration configuration, IRewardFormater rewardFormater,
+            Path resourcePath) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
+        this.rewardFormater = rewardFormater;
         this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
-        eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger());
+        eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
         eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
         this.resourcePath = resourcePath;
     }
@@ -111,7 +114,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.add(String.format("The final population has %d/%d unique individuals:",
                 uniquePopulation.size(), finalPopulation.size()));
         for (IndividualResult individual : uniquePopulation) {
-            detailDescription.add(String.format("- fitness %s", individual.getFitness()));
+            detailDescription.add(String.format("- fitness %s", rewardFormater.asString(individual.getFitness())));
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
 
@@ -141,9 +144,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        // TODO: get from SModel
-        double epsilon = ISmodelConstants.EPSILON;
-        IEAConfig eaConfig = new EAConfig(epsilon, configuration.getSeedProvider(), configuration);
+        IEAConfig eaConfig = new EAConfig(rewardFormater.getPrecision(), configuration.getSeedProvider(),
+                configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }

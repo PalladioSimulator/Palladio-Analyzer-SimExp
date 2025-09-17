@@ -15,7 +15,10 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescripti
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
+import org.palladiosimulator.simexp.dsl.ea.api.util.RewardUtil;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
@@ -64,20 +67,23 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         IModelledWorkflowConfiguration modelledWorkflowConfiguration = (IModelledWorkflowConfiguration) config;
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
+        // TODO: get from SModel
+        final double epsilon = ISmodelConstants.EPSILON;
+        IRewardFormater rewardFormater = new RewardUtil(epsilon);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launcherName, description, seedProvider, modelLoaderFactory, resourcePath);
+                launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
-                (IEvolutionaryAlgorithmWorkflowConfiguration) config, resourcePath);
+                (IEvolutionaryAlgorithmWorkflowConfiguration) config, rewardFormater, resourcePath);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,
             String launcherName, SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, Path resourcePath) throws CoreException {
+            Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) throws CoreException {
         String dispatchername = preferencesService.getString(EAPreferenceConstants.ID, EAPreferenceConstants.DISPATCHER,
                 "", null);
         DispatcherLookup dispatcherLookup = new DispatcherLookup();
         return dispatcherLookup.createEvaluator(dispatchername, config, launcherName, description, seedProvider,
-                modelLoaderFactory, resourcePath);
+                modelLoaderFactory, rewardFormater, resourcePath);
     }
 }

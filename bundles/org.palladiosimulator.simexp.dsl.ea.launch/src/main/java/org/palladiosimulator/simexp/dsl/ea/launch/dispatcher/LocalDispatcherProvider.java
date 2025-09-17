@@ -7,6 +7,7 @@ import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescripti
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDispatcherProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
+import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.local.LocalEAFitnessEvaluator;
 import org.palladiosimulator.simexp.pcm.config.IModelledWorkflowConfiguration;
 import org.palladiosimulator.simexp.pcm.config.IWorkflowConfiguration;
@@ -24,7 +25,7 @@ public class LocalDispatcherProvider implements IDispatcherProvider {
     @Override
     public IDisposeableEAFitnessEvaluator createEvaluator(IWorkflowConfiguration config, String launcherName,
             SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, Path resourcePath) {
+            Factory modelLoaderFactory, IRewardFormater rewardFormater, Path resourcePath) {
         IModelledWorkflowConfiguration modelledConfig = (IModelledWorkflowConfiguration) config;
         return new LocalEAFitnessEvaluator(modelledConfig, launcherName, description, seedProvider, modelLoaderFactory,
                 resourcePath);

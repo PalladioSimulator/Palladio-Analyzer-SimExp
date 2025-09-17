@@ -32,6 +32,7 @@ import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.DeploymentDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
@@ -64,17 +65,20 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     private final String launcherName;
     private final Path resourcePath;
     private final IPreferencesService preferencesService;
+    private final IRewardFormater rewardFormater;
     private final ClassLoader classloader;
 
     private EAFitnessEvaluator fitnessEvaluator;
 
     public KubernetesDispatcher(IModelledWorkflowConfiguration config, String launcherName,
             SimulatedExperienceStoreDescription description, Optional<ISeedProvider> seedProvider,
-            Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService) {
+            Factory modelLoaderFactory, Path resourcePath, IPreferencesService preferencesService,
+            IRewardFormater rewardFormater) {
         this.launcherName = launcherName;
         this.config = config;
         this.resourcePath = resourcePath;
         this.preferencesService = preferencesService;
+        this.rewardFormater = rewardFormater;
         this.classloader = Thread.currentThread()
             .getContextClassLoader();
     }
@@ -140,7 +144,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             CompositeResultHandler compositeResultLogger = new CompositeResultHandler(
                     Arrays.asList(resultLogger, qualityAttributesResultLogger, qualityAttributeProvider));
             try {
-                TaskManager taskManager = new TaskManager(compositeResultLogger);
+                TaskManager taskManager = new TaskManager(compositeResultLogger, rewardFormater);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
                 taskReceiver.registerTaskConsumer(taskManager);
                 String imageRegistryStr = getPreference(KubernetesPreferenceConstants.INTERNAL_IMAGE_REGISTRY_URL);
