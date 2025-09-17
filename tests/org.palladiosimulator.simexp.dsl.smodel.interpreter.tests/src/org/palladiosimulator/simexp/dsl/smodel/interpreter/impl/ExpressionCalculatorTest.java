@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.smodel.interpreter.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.offset;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -27,7 +27,8 @@ import com.google.inject.TypeLiteral;
 
 public class ExpressionCalculatorTest {
     private static final String MODEL_NAME_LINE = "modelName = \"name\";";
-    private static final double DOUBLE_EPSILON = 1e-15;
+    private static final double EPSILON = 1e-15;
+    private static final int PLACES = 15;
 
     private ExpressionCalculator calculator;
 
@@ -42,7 +43,7 @@ public class ExpressionCalculatorTest {
     @Before
     public void setUp() {
         initMocks(this);
-        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        when(smodelConfig.getPlaces()).thenReturn(PLACES);
         calculator = new ExpressionCalculator(smodelConfig, fieldValueProvider);
 
         Injector injector = new SmodelStandaloneSetup().createInjectorAndDoEMFRegistration();
@@ -720,7 +721,7 @@ public class ExpressionCalculatorTest {
 
         double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(0.3, offset(DOUBLE_EPSILON));
+        assertThat(actualCalculatedValue).isEqualTo(0.3, withPrecision(EPSILON));
     }
 
     @Test
@@ -850,7 +851,7 @@ public class ExpressionCalculatorTest {
 
         double actualCalculatedValue = calculator.calculateDouble(constant.getValue());
 
-        assertThat(actualCalculatedValue).isEqualTo(2.31, offset(DOUBLE_EPSILON));
+        assertThat(actualCalculatedValue).isEqualTo(2.31, withPrecision(EPSILON));
     }
 
     @Test
@@ -1334,7 +1335,7 @@ public class ExpressionCalculatorTest {
         double actualCalculatedValue = calculator.calculateInteger(constant.getValue()
             .getLiteral());
 
-        assertThat(actualCalculatedValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
+        assertThat(actualCalculatedValue).isEqualTo(1.0, withPrecision(EPSILON));
     }
 
     private Constant getFirstConstant(Smodel model) {

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 import io.jenetics.Genotype;
 import io.jenetics.IntegerChromosome;
@@ -26,14 +27,18 @@ public class ParetoDominanceTest {
 
     @Mock
     private IAverageProvider<IntegerGene> averageProvider;
+    @Mock
+    private IPrecisionProvider precisionProvider;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
 
+        when(precisionProvider.getPrecision()).thenReturn(EPSILON);
+
         range = IntRange.of(0, 10);
 
-        paretoDominance = new ParetoDominance<>(EPSILON, averageProvider, s -> Double::compare);
+        paretoDominance = new ParetoDominance<>(precisionProvider, averageProvider, s -> Double::compare);
     }
 
     @Test

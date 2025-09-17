@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.offset;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,7 +21,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.VariableAssignment;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class VariableValueProviderTest {
-    private static final double DOUBLE_EPSILON = 1e-15;
+    private static final double EPSILON = 1e-15;
+    private static final int DOUBLE_PRECISION = 15;
 
     private VariableValueProvider provider;
 
@@ -41,7 +42,7 @@ public class VariableValueProviderTest {
     @Before
     public void setUp() {
         initMocks(this);
-        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        when(smodelConfig.getPlaces()).thenReturn(DOUBLE_PRECISION);
         smodelCreator = new SmodelCreator();
         provider = new VariableValueProvider(smodelConfig, constantValueProvider, probeValueProvider,
                 optimizableValueProvider, envVariableValueProvider);
@@ -104,7 +105,7 @@ public class VariableValueProviderTest {
 
         Double actualValue = provider.getDoubleValue(variable);
 
-        assertThat(actualValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
+        assertThat(actualValue).isEqualTo(1.0, withPrecision(EPSILON));
     }
 
     @Test

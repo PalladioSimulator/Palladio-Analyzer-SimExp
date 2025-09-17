@@ -1,6 +1,7 @@
 package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
@@ -28,7 +30,8 @@ import io.jenetics.Genotype;
 
 public class FitnessFunctionTest {
     private static final double BIG_TOO_LONG_FLOATING_POINT_NUMBER = 50.12345678901234567890123456789;
-    private static final double DELTA = 0.0001;
+    private static final double EPSILON = 0.0001;
+    private static final int PLACES = 3;
     private static final double TOO_LONG_FLOATING_POINT_NUMBER = 0.123456789;
 
     private FitnessFunction<BitGene> fitnessFunction;
@@ -37,6 +40,8 @@ public class FitnessFunctionTest {
     private IEAFitnessEvaluator fitnessEvaluator;
     @Mock
     private ITranscoder<BitGene> normalizer;
+    @Mock
+    private IPrecisionProvider precisionProvider;
     @Mock
     private Optimizable optimizable;
     @Mock
@@ -54,13 +59,15 @@ public class FitnessFunctionTest {
     public void setUp() throws IOException, InterruptedException, ExecutionException {
         initMocks(this);
 
+        when(precisionProvider.getPlaces()).thenReturn(PLACES);
+
         when(chromosome.isValid()).thenReturn(true);
         genotype = Genotype.of(chromosome);
 
         when(normalizer.toOptimizableValues(genotype)).thenReturn(List.of(optimizableValue));
         when(fitnessEvaluator.calcFitness(ArgumentMatchers.any())).thenReturn(fitnessFuture);
 
-        fitnessFunction = new FitnessFunction<>(DELTA, fitnessEvaluator, normalizer, 0.0);
+        fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, normalizer, 0.0);
     }
 
     @Test
@@ -69,7 +76,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(50.0, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(50.0, withPrecision(EPSILON));
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
@@ -82,7 +89,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(0.0, withPrecision(EPSILON));
     }
 
     @Test
@@ -91,7 +98,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(0.0, withPrecision(EPSILON));
     }
 
     @Test
@@ -100,7 +107,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.0, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(0.0, withPrecision(EPSILON));
     }
 
     @Test
@@ -109,7 +116,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(50.1235, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(50.1235, withPrecision(EPSILON));
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
@@ -120,11 +127,12 @@ public class FitnessFunctionTest {
     public void testRoundingApplyMimimumDelta() throws IOException, InterruptedException, ExecutionException {
         when(fitnessFuture.get()).thenReturn(Optional.of(BIG_TOO_LONG_FLOATING_POINT_NUMBER));
         double smallEpsilon = 0.0000000000001;
-        fitnessFunction = new FitnessFunction<>(smallEpsilon, fitnessEvaluator, normalizer, 0.0);
+        when(precisionProvider.getPlaces()).thenReturn(12);
+        fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, normalizer, 0.0);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(50.12345678901234, actualFitness, smallEpsilon);
+        assertThat(actualFitness).isEqualTo(50.12345678901234, withPrecision(smallEpsilon));
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
@@ -134,10 +142,10 @@ public class FitnessFunctionTest {
     @Test
     public void testRoundingInvalidChromosome() throws InterruptedException, ExecutionException, IOException {
         when(chromosome.isValid()).thenReturn(false);
-        fitnessFunction = new FitnessFunction<>(DELTA, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
+        fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, normalizer, TOO_LONG_FLOATING_POINT_NUMBER);
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertEquals(0.1235, actualFitness, DELTA);
+        assertThat(actualFitness).isEqualTo(0.1235, withPrecision(EPSILON));
     }
 }

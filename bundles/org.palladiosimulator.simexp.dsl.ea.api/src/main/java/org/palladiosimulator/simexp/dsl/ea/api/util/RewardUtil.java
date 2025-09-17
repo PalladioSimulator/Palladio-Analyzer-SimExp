@@ -1,19 +1,15 @@
 package org.palladiosimulator.simexp.dsl.ea.api.util;
 
-public class RewardUtil implements IRewardFormater {
-    private final double epsilon;
+import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
 
-    public RewardUtil(double epsilon) {
-        this.epsilon = epsilon;
-    }
+public class RewardUtil extends PrecisionProvider implements IRewardFormater {
 
-    @Override
-    public double getPrecision() {
-        return epsilon;
+    public RewardUtil(int places) {
+        super(places);
     }
 
     public double round(double reward) {
-        double multiplicator = (long) (1.0 / epsilon);
+        double multiplicator = (long) (1.0 / getPrecision());
         return Math.round(reward * multiplicator) / multiplicator;
     }
 

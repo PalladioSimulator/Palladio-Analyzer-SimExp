@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DoubleLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.IntLiteral;
@@ -40,6 +41,8 @@ public class PowerUtilTest {
 
     @Mock
     private IExpressionCalculator calculator;
+    @Mock
+    private IPrecisionProvider precisionProvider;
 
     @Before
     public void setUp() {
@@ -47,7 +50,8 @@ public class PowerUtilTest {
         smodelCreator = new SmodelCreator();
         setBoundsHelper = new SetBoundsHelper();
 
-        when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        when(precisionProvider.getPrecision()).thenReturn(DOUBLE_EPSILON);
+        when(calculator.getPrecisionProvider()).thenReturn(precisionProvider);
 
         startLiteralInt = smodelCreator.createIntLiteral(1);
         stopLiteralInt = smodelCreator.createIntLiteral(3);

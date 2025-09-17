@@ -33,6 +33,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
 
@@ -109,9 +110,9 @@ public class EAOptimizer implements IEAOptimizer {
 
         // Setup EA
         Genotype<G> genotype = buildGenotype(optimizables, transcoder);
-        double epsilon = expressionCalculator.getEpsilon();
+        IPrecisionProvider precisionProvider = expressionCalculator.getPrecisionProvider();
         final double penaltyForInvalids = config.penaltyForInvalids();
-        FitnessFunction<G> fitnessFunction = new FitnessFunction<>(epsilon, fitnessEvaluator, transcoder,
+        FitnessFunction<G> fitnessFunction = new FitnessFunction<>(precisionProvider, fitnessEvaluator, transcoder,
                 penaltyForInvalids);
         Engine<G, Double> engine = buildEngine(fitnessFunction, genotype, executor);
         EvaluationStatistics<G> evaluationStatistics = new EvaluationStatistics<>(fitnessFunction, overallPower);
@@ -200,7 +201,7 @@ public class EAOptimizer implements IEAOptimizer {
         averageProvider = new CachingAverageProvider<>(averageProvider);
         Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
         Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
-            .create(config.getEpsilon(), averageProvider, comparatorFactory);
+            .create(config.getPrecisionProvider(), averageProvider, comparatorFactory);
         LOGGER.info("building pareto front");
         final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
             .collect(moeaCollector);

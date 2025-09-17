@@ -1,7 +1,7 @@
 package org.palladiosimulator.simexp.dsl.smodel.interpreter.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.offset;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -16,7 +16,8 @@ import org.palladiosimulator.simexp.dsl.smodel.smodel.SmodelFactory;
 import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class ConstantValueProviderTest {
-    private static final double DOUBLE_EPSILON = 1e-15;
+    private final static double EPSILON = 0.00001;
+    private final static int DOUBLE_PLACES = 15;
 
     private ConstantValueProvider provider;
 
@@ -26,7 +27,7 @@ public class ConstantValueProviderTest {
 
     public ConstantValueProviderTest() {
         initMocks(this);
-        when(smodelConfig.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        when(smodelConfig.getPlaces()).thenReturn(DOUBLE_PLACES);
         smodelCreator = new SmodelCreator();
         provider = new ConstantValueProvider(smodelConfig);
     }
@@ -108,7 +109,7 @@ public class ConstantValueProviderTest {
 
         Double actualValue = provider.getDoubleValue(constant);
 
-        assertThat(actualValue).isEqualTo(1.0, offset(DOUBLE_EPSILON));
+        assertThat(actualValue).isEqualTo(1.0, withPrecision(EPSILON));
     }
 
     @Test

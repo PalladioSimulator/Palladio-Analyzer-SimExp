@@ -3,7 +3,7 @@ package org.palladiosimulator.simexp.dsl.smodel.api;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Expression;
 
 public interface IExpressionCalculator {
-    double getEpsilon();
+    IPrecisionProvider getPrecisionProvider();
 
     boolean calculateBoolean(Expression expression);
 

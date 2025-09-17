@@ -7,22 +7,22 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class RewardUtilTest {
-    private final static double PRECISION = 0.00001;
+    private final static double EPSILON = 0.00001;
 
-    private final static double EPSILON = 0.0001;
+    private final static int PLACES = 3;
 
     private RewardUtil rewardUtil;
 
     @Before
     public void setUp() throws Exception {
-        this.rewardUtil = new RewardUtil(EPSILON);
+        this.rewardUtil = new RewardUtil(PLACES);
     }
 
     @Test
     public void testGetPrecision() {
         double actualPrecision = rewardUtil.getPrecision();
 
-        assertThat(actualPrecision).isEqualTo(EPSILON, withPrecision(PRECISION));
+        assertThat(actualPrecision).isEqualTo(0.0001, withPrecision(EPSILON));
     }
 
     @Test
@@ -31,7 +31,7 @@ public class RewardUtilTest {
 
         double actualReward = rewardUtil.round(reward);
 
-        assertThat(actualReward).isEqualTo(reward, withPrecision(PRECISION));
+        assertThat(actualReward).isEqualTo(reward, withPrecision(EPSILON));
     }
 
     @Test
@@ -40,6 +40,6 @@ public class RewardUtilTest {
 
         double actualReward = rewardUtil.round(reward);
 
-        assertThat(actualReward).isEqualTo(0.0, withPrecision(PRECISION));
+        assertThat(actualReward).isEqualTo(0.0, withPrecision(EPSILON));
     }
 }

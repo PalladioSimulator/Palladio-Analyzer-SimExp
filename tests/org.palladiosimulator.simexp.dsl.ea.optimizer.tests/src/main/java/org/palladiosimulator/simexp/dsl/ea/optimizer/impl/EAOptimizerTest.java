@@ -37,6 +37,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -63,6 +64,8 @@ public class EAOptimizerTest {
     private IQualityAttributeProvider qualityAttributeProvider;
     @Mock
     private IExpressionCalculator calculator;
+    @Mock
+    private IPrecisionProvider precisionProvider;
 
     @Captor
     private ArgumentCaptor<List<OptimizableValue<?>>> optimizableListCaptor;
@@ -79,7 +82,9 @@ public class EAOptimizerTest {
         initMocks(this);
         smodelCreator = new SmodelCreator();
         when(optimizableProvider.getExpressionCalculator()).thenReturn(calculator);
-        when(calculator.getEpsilon()).thenReturn(DELTA);
+        when(precisionProvider.getPrecision()).thenReturn(DELTA);
+        when(calculator.getPrecisionProvider()).thenReturn(precisionProvider);
+        when(eaConfig.getPrecisionProvider()).thenReturn(precisionProvider);
         fitnessAnswer = new Answer<>() {
             @Override
             public Future<Optional<Double>> answer(InvocationOnMock invocation) throws Throwable {

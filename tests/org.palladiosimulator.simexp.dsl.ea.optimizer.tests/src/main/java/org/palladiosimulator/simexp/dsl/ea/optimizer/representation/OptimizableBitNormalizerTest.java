@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.RangeBoundsHelper;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.SetBoundsHelper;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -42,20 +43,20 @@ public class OptimizableBitNormalizerTest {
 
     @Mock
     private IExpressionCalculator calculator;
-
+    @Mock
+    private IPrecisionProvider precisionProvider;
     @Mock
     private Optimizable boolOptimizable;
-
     @Mock
     private Optimizable intOptimizable;
-
     @Mock
     public Optimizable optimizable;
 
     @Before
     public void setUp() {
         initMocks(this);
-        when(calculator.getEpsilon()).thenReturn(DOUBLE_EPSILON);
+        when(precisionProvider.getPrecision()).thenReturn(DOUBLE_EPSILON);
+        when(calculator.getPrecisionProvider()).thenReturn(precisionProvider);
         optimizableNormalizer = new OptimizableBitNormalizer(calculator);
         setBoundsHelper = new SetBoundsHelper();
         smodelCreator = new SmodelCreator();

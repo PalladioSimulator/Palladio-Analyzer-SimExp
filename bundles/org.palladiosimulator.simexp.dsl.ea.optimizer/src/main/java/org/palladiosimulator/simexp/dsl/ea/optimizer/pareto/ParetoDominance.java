@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
+
 import io.jenetics.Gene;
 import io.jenetics.Phenotype;
 
@@ -12,9 +14,9 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
     private final IAverageProvider<G> averageProvider;
     private final Function<String, Comparator<Double>> comparatorFactory;
 
-    public ParetoDominance(double epsilon, IAverageProvider<G> averageProvider,
+    public ParetoDominance(IPrecisionProvider precisionProvider, IAverageProvider<G> averageProvider,
             Function<String, Comparator<Double>> comparatorFactory) {
-        this.epsilon = epsilon;
+        this.epsilon = precisionProvider.getPrecision();
         this.averageProvider = averageProvider;
         this.comparatorFactory = comparatorFactory;
     }

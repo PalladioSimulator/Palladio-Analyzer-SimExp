@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.BoolLiteral;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
@@ -35,6 +36,8 @@ public class OptimizableIntNormalizerTest {
     @Mock
     private IExpressionCalculator calculator;
     @Mock
+    private IPrecisionProvider precisionProvider;
+    @Mock
     private Optimizable boolOptimizable;
     @Mock
     private Optimizable intOptimizable;
@@ -46,7 +49,8 @@ public class OptimizableIntNormalizerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        when(calculator.getEpsilon()).thenReturn(DELTA);
+        when(precisionProvider.getPrecision()).thenReturn(DELTA);
+        when(calculator.getPrecisionProvider()).thenReturn(precisionProvider);
 
         smodelCreator = new SmodelCreator();
 

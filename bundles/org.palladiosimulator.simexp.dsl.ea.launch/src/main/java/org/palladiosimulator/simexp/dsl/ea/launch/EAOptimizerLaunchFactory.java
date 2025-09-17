@@ -68,13 +68,13 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         URI smodelURI = modelledWorkflowConfiguration.getSmodelURI();
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         // TODO: get from SModel
-        final double epsilon = ISmodelConstants.EPSILON;
-        IRewardFormater rewardFormater = new RewardUtil(epsilon);
+        final int places = ISmodelConstants.PLACES;
+        RewardUtil rewardUtil = new RewardUtil(places);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
-                launcherName, description, seedProvider, modelLoaderFactory, rewardFormater, resourcePath);
+                launcherName, description, seedProvider, modelLoaderFactory, rewardUtil, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);
         return new EAOptimizerSimulationExecutor(smodel, fitnessEvaluator,
-                (IEvolutionaryAlgorithmWorkflowConfiguration) config, rewardFormater, resourcePath);
+                (IEvolutionaryAlgorithmWorkflowConfiguration) config, rewardUtil, rewardUtil, resourcePath);
     }
 
     private IDisposeableEAFitnessEvaluator createFitnessEvaluator(IModelledWorkflowConfiguration config,

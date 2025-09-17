@@ -4,8 +4,8 @@ import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 
 public class DefaultSmodelConfig implements ISmodelConfig {
     @Override
-    public double getEpsilon() {
+    public int getPlaces() {
         // TODO: get from SModel
-        return ISmodelConstants.EPSILON;
+        return ISmodelConstants.PLACES;
     }
 }

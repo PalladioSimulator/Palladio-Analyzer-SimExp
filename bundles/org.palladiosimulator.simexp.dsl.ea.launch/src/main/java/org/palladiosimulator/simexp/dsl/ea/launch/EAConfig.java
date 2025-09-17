@@ -4,25 +4,26 @@ import java.util.Optional;
 
 import org.palladiosimulator.simexp.commons.constants.model.SimulationConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmConfiguration;
 
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class EAConfig implements IEAConfig {
-    private final double epsilon;
+    private final IPrecisionProvider precisionProvider;
     private final Optional<ISeedProvider> seedProvider;
     private final IEvolutionaryAlgorithmConfiguration configuration;
 
-    public EAConfig(double epsilon, Optional<ISeedProvider> seedProvider,
+    public EAConfig(IPrecisionProvider precisionProvider, Optional<ISeedProvider> seedProvider,
             IEvolutionaryAlgorithmConfiguration configuration) {
-        this.epsilon = epsilon;
+        this.precisionProvider = precisionProvider;
         this.seedProvider = seedProvider;
         this.configuration = configuration;
     }
 
     @Override
-    public double getEpsilon() {
-        return epsilon;
+    public IPrecisionProvider getPrecisionProvider() {
+        return precisionProvider;
     }
 
     @Override

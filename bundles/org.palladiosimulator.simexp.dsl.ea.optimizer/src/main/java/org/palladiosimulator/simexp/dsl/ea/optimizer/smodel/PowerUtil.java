@@ -7,6 +7,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Bounds;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
@@ -96,7 +97,8 @@ public class PowerUtil {
         DoubleStream stream = DoubleStream.iterate(startValue, n -> n + stepSize)
             .takeWhile(n -> n <= endValue);
         if (rangeBounds.getStop() == StopKind.OPEN) {
-            double epsilon = expressionCalculator.getEpsilon();
+            IPrecisionProvider precisionProvider = expressionCalculator.getPrecisionProvider();
+            double epsilon = precisionProvider.getPrecision();
             stream = stream.filter(n -> Math.abs(n - endValue) >= epsilon);
         }
         List<Double> values = stream.boxed()

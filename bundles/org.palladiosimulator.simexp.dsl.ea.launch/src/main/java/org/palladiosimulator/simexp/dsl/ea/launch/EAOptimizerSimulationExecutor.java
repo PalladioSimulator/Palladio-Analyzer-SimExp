@@ -27,6 +27,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonParetoWriter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
+import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
 import org.palladiosimulator.simexp.pcm.config.IEvolutionaryAlgorithmWorkflowConfiguration;
@@ -39,16 +40,18 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
     private final EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher;
     private final Path resourcePath;
+    private final IPrecisionProvider precisionProvider;
     private final IRewardFormater rewardFormater;
 
     private EAResult optimizationResult;
 
     public EAOptimizerSimulationExecutor(Smodel smodel, IDisposeableEAFitnessEvaluator fitnessEvaluator,
-            IEvolutionaryAlgorithmWorkflowConfiguration configuration, IRewardFormater rewardFormater,
-            Path resourcePath) {
+            IEvolutionaryAlgorithmWorkflowConfiguration configuration, IPrecisionProvider precisionProvider,
+            IRewardFormater rewardFormater, Path resourcePath) {
         this.smodel = smodel;
         this.fitnessEvaluator = fitnessEvaluator;
         this.configuration = configuration;
+        this.precisionProvider = precisionProvider;
         this.rewardFormater = rewardFormater;
         this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
         eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
@@ -144,8 +147,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     @Override
     public void execute() {
         EAOptimizerFactory optimizerFactory = new EAOptimizerFactory();
-        IEAConfig eaConfig = new EAConfig(rewardFormater.getPrecision(), configuration.getSeedProvider(),
-                configuration);
+        IEAConfig eaConfig = new EAConfig(precisionProvider, configuration.getSeedProvider(), configuration);
         IEAOptimizer optimizer = optimizerFactory.create(eaConfig);
         runOptimization(optimizer);
     }
