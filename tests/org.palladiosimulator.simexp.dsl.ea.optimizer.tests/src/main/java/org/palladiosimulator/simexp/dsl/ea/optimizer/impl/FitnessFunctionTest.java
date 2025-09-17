@@ -117,7 +117,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertThat(actualFitness).isEqualTo(50.1235, withPrecision(EPSILON));
+        assertThat(actualFitness).isEqualTo(50.123, withPrecision(EPSILON));
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
@@ -134,7 +134,7 @@ public class FitnessFunctionTest {
 
         double actualFitness = fitnessFunction.apply(genotype);
 
-        assertThat(actualFitness).isEqualTo(50.12345678901234, withPrecision(smallEpsilon));
+        assertThat(actualFitness).isEqualTo(50.123456789012, withPrecision(smallEpsilon));
         verify(fitnessEvaluator).calcFitness(captor.capture());
         assertTrue(captor.getAllValues()
             .get(0)
