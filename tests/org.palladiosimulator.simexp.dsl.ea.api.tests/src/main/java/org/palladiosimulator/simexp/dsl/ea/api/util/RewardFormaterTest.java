@@ -40,11 +40,20 @@ public class RewardFormaterTest {
     }
 
     @Test
-    public void testRoundBeyond() {
-        double reward = 0.00002;
+    public void testRoundBeyondUp() {
+        double reward = 0.0055;
 
         double actualReward = rewardFormater.round(reward);
 
-        assertThat(actualReward).isEqualTo(0.0, withPrecision(EPSILON));
+        assertThat(actualReward).isEqualTo(0.006, withPrecision(EPSILON));
+    }
+
+    @Test
+    public void testRoundBeyondDown() {
+        double reward = 0.0054;
+
+        double actualReward = rewardFormater.round(reward);
+
+        assertThat(actualReward).isEqualTo(0.005, withPrecision(EPSILON));
     }
 }

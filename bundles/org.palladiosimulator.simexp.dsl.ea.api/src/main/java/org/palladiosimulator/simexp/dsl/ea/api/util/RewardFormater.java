@@ -1,5 +1,8 @@
 package org.palladiosimulator.simexp.dsl.ea.api.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 public class RewardFormater implements IRewardRounder, IRewardFormater {
@@ -11,8 +14,9 @@ public class RewardFormater implements IRewardRounder, IRewardFormater {
 
     @Override
     public double round(double reward) {
-        double multiplicator = (long) (1.0 / precisionProvider.getPrecision());
-        return Math.round(reward * multiplicator) / multiplicator;
+        BigDecimal bd = BigDecimal.valueOf(reward);
+        bd = bd.setScale(precisionProvider.getPlaces(), RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override
