@@ -21,6 +21,7 @@ public class RewardFormater implements IRewardRounder, IRewardFormater {
 
     @Override
     public String asString(double reward) {
-        return String.format("%s", reward);
+        double rounded = round(reward);
+        return String.format("%s", rounded);
     }
 }

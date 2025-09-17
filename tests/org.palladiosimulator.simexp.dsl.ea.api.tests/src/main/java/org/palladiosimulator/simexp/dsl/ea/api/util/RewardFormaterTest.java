@@ -56,4 +56,22 @@ public class RewardFormaterTest {
 
         assertThat(actualReward).isEqualTo(0.005, withPrecision(EPSILON));
     }
+
+    @Test
+    public void testAsStringNoRounding() {
+        double reward = 0.9;
+
+        String actualString = rewardFormater.asString(reward);
+
+        assertThat(actualString).isEqualTo("0.9");
+    }
+
+    @Test
+    public void testAsStringRounded() {
+        double reward = 0.0055;
+
+        String actualString = rewardFormater.asString(reward);
+
+        assertThat(actualString).isEqualTo("0.006");
+    }
 }
