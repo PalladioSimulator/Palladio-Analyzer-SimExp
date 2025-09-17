@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
-import org.palladiosimulator.simexp.dsl.ea.api.util.RewardUtil;
+import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -25,14 +25,14 @@ public class FitnessFunction<G extends Gene<?, G>>
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final ITranscoder<G> transcoder;
-    private final RewardUtil rewardUtil;
+    private final RewardFormater rewardUtil;
     private final double penaltyForInvalids;
 
     private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
     public FitnessFunction(IPrecisionProvider precisionProvider, IEAFitnessEvaluator fitnessEvaluator,
             ITranscoder<G> transcoder, double penaltyForInvalids) {
-        this.rewardUtil = new RewardUtil(precisionProvider.getPlaces());
+        this.rewardUtil = new RewardFormater(precisionProvider.getPlaces());
         this.fitnessEvaluator = fitnessEvaluator;
         this.transcoder = transcoder;
         this.penaltyForInvalids = penaltyForInvalids;

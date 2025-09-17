@@ -16,7 +16,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.DispatcherLookup;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.preferences.EAPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
-import org.palladiosimulator.simexp.dsl.ea.api.util.RewardUtil;
+import org.palladiosimulator.simexp.dsl.ea.api.util.RewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.evaluate.CachingEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.smodel.api.ISmodelConstants;
 import org.palladiosimulator.simexp.dsl.smodel.smodel.Smodel;
@@ -69,7 +69,7 @@ public class EAOptimizerLaunchFactory implements ILaunchFactory {
         Smodel smodel = modelledModelLoader.loadSModel(smodelURI);
         // TODO: get from SModel
         final int places = ISmodelConstants.PLACES;
-        RewardUtil rewardUtil = new RewardUtil(places);
+        RewardFormater rewardUtil = new RewardFormater(places);
         IDisposeableEAFitnessEvaluator fitnessEvaluator = createFitnessEvaluator(modelledWorkflowConfiguration,
                 launcherName, description, seedProvider, modelLoaderFactory, rewardUtil, resourcePath);
         fitnessEvaluator = new CachingEAFitnessEvaluator(fitnessEvaluator);

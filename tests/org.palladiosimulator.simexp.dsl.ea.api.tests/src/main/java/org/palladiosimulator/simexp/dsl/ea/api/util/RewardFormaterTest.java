@@ -6,21 +6,21 @@ import static org.assertj.core.api.Assertions.withPrecision;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RewardUtilTest {
+public class RewardFormaterTest {
     private final static double EPSILON = 0.00001;
 
     private final static int PLACES = 3;
 
-    private RewardUtil rewardUtil;
+    private RewardFormater rewardFormater;
 
     @Before
     public void setUp() throws Exception {
-        this.rewardUtil = new RewardUtil(PLACES);
+        this.rewardFormater = new RewardFormater(PLACES);
     }
 
     @Test
     public void testGetPrecision() {
-        double actualPrecision = rewardUtil.getPrecision();
+        double actualPrecision = rewardFormater.getPrecision();
 
         assertThat(actualPrecision).isEqualTo(0.0001, withPrecision(EPSILON));
     }
@@ -29,7 +29,7 @@ public class RewardUtilTest {
     public void testRoundWithin() {
         double reward = 0.9;
 
-        double actualReward = rewardUtil.round(reward);
+        double actualReward = rewardFormater.round(reward);
 
         assertThat(actualReward).isEqualTo(reward, withPrecision(EPSILON));
     }
@@ -38,7 +38,7 @@ public class RewardUtilTest {
     public void testRoundBeyond() {
         double reward = 0.00002;
 
-        double actualReward = rewardUtil.round(reward);
+        double actualReward = rewardFormater.round(reward);
 
         assertThat(actualReward).isEqualTo(0.0, withPrecision(EPSILON));
     }

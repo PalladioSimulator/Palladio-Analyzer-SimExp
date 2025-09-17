@@ -2,9 +2,9 @@ package org.palladiosimulator.simexp.dsl.ea.api.util;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.PrecisionProvider;
 
-public class RewardUtil extends PrecisionProvider implements IRewardFormater {
+public class RewardFormater extends PrecisionProvider implements IRewardFormater {
 
-    public RewardUtil(int places) {
+    public RewardFormater(int places) {
         super(places);
     }
 
