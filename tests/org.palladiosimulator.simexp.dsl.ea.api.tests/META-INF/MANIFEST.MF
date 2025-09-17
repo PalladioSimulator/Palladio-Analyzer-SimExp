@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.palladiosimulator.simexp.dsl.ea.api.tests
+Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.ea.api.tests
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: org.palladiosimulator.simexp.dsl.ea.api.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Fragment-Host: org.palladiosimulator.simexp.dsl.ea.api;bundle-version="0.1.0"
+Require-Bundle: org.junit;bundle-version="4.13.0",
+ org.assertj;bundle-version="3.20.2"
+
