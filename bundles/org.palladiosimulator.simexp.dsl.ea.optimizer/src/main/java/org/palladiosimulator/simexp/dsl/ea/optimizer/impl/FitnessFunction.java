@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.util.RewardUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;
@@ -23,17 +24,17 @@ public class FitnessFunction<G extends Gene<?, G>>
 
     private final IEAFitnessEvaluator fitnessEvaluator;
     private final ITranscoder<G> transcoder;
-    private final double epsilon;
+    private final RewardUtil rewardUtil;
     private final double penaltyForInvalids;
 
     private Set<List<OptimizableValue<?>>> evaluatedOptimizables = Collections.synchronizedSet(new HashSet<>());
 
     public FitnessFunction(double epsilon, IEAFitnessEvaluator fitnessEvaluator, ITranscoder<G> transcoder,
             double penaltyForInvalids) {
-        this.epsilon = epsilon;
+        this.rewardUtil = new RewardUtil(epsilon);
         this.fitnessEvaluator = fitnessEvaluator;
         this.transcoder = transcoder;
-        this.penaltyForInvalids = round(penaltyForInvalids);
+        this.penaltyForInvalids = penaltyForInvalids;
     }
 
     @Override
@@ -49,17 +50,12 @@ public class FitnessFunction<G extends Gene<?, G>>
             Optional<Double> optionalFitness = fitnessFuture.get();
 
             double fitness = optionalFitness.isPresent() ? optionalFitness.get() : penaltyForInvalids;
-            return round(fitness);
+            return rewardUtil.round(fitness);
         } catch (ExecutionException | InterruptedException | IOException e) {
-            Double roundedPenalty = round(penaltyForInvalids);
+            Double roundedPenalty = rewardUtil.round(penaltyForInvalids);
             LOGGER.error(String.format("%s -> return penalty fitness of " + roundedPenalty, e.getMessage()), e);
             return roundedPenalty;
         }
-    }
-
-    private Double round(final Double number) {
-        double multiplicator = (long) (1.0 / epsilon);
-        return Math.round(number * multiplicator) / multiplicator;
     }
 
     @Override
