@@ -6,6 +6,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -101,11 +102,47 @@ public class ParetoDominanceTest {
         assertThat(actualCompare).isLessThan(0);
     }
 
-    private Map<String, Double> buildAverages(double one, double two) {
+    @Test
+    public void testCompareMissingBoth() {
+        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        when(averageProvider.getAverages(a)).thenReturn(Optional.empty());
+        when(averageProvider.getAverages(b)).thenReturn(Optional.empty());
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isEqualTo(0);
+    }
+
+    @Test
+    public void testCompareMissingA() {
+        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        when(averageProvider.getAverages(a)).thenReturn(Optional.empty());
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isLessThan(0);
+    }
+
+    @Test
+    public void testCompareMissingB() {
+        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(b)).thenReturn(Optional.empty());
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isGreaterThan(0);
+    }
+
+    private Optional<Map<String, Double>> buildAverages(double one, double two) {
         Map<String, Double> averages = new HashMap<>();
         averages.put("qa1", one);
         averages.put("qa2", two);
-        return averages;
+        return Optional.of(averages);
     }
 
     private Phenotype<IntegerGene, Double> createPhenotype(int allele, double fitness) {

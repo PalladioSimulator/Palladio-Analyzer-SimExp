@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,23 +42,33 @@ public class BaseQualityAttributeProviderTest {
         QualityMeasurements measurements1 = new QualityMeasurements(Collections.emptyList());
         qualityAttributeProvider.put(optimizableValues1, measurements1);
 
-        QualityMeasurements actualQualityMeasurements = qualityAttributeProvider
+        Optional<QualityMeasurements> actualQualityMeasurements = qualityAttributeProvider
             .getQualityMeasurements(optimizableValues1);
 
-        assertThat(actualQualityMeasurements).isEqualTo(measurements1);
+        assertThat(actualQualityMeasurements).get()
+            .isEqualTo(measurements1);
     }
 
     @Test
-    public void testGetQualityMeasurementsMiss() {
-        List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
-        QualityMeasurements measurements1 = new QualityMeasurements(Collections.emptyList());
-        qualityAttributeProvider.put(optimizableValues1, measurements1);
+    public void testGetQualityMeasurementsMissing() {
         OptimizableValue<Integer> optimizableValue2 = new OptimizableValue<>(optimizable1, 2);
         List<OptimizableValue<?>> optimizableValues2 = Collections.singletonList(optimizableValue2);
 
-        QualityMeasurements actualQualityMeasurements = qualityAttributeProvider
+        Optional<QualityMeasurements> actualQualityMeasurements = qualityAttributeProvider
             .getQualityMeasurements(optimizableValues2);
 
         assertThat(actualQualityMeasurements).isNull();
+    }
+
+    @Test
+    public void testGetQualityMeasurementsFailed() {
+        OptimizableValue<Integer> optimizableValue2 = new OptimizableValue<>(optimizable1, 2);
+        List<OptimizableValue<?>> optimizableValues2 = Collections.singletonList(optimizableValue2);
+        qualityAttributeProvider.put(optimizableValues2, null);
+
+        Optional<QualityMeasurements> actualQualityMeasurements = qualityAttributeProvider
+            .getQualityMeasurements(optimizableValues2);
+
+        assertThat(actualQualityMeasurements).isEmpty();
     }
 }

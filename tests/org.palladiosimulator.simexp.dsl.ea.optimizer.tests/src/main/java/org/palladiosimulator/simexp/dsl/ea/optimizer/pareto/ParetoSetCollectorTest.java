@@ -6,6 +6,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -116,11 +117,11 @@ public class ParetoSetCollectorTest {
         assertThat(actualResult).containsExactlyInAnyOrder(a, h, j, g);
     }
 
-    private Map<String, Double> buildAverages(double one, double two) {
+    private Optional<Map<String, Double>> buildAverages(double one, double two) {
         Map<String, Double> averages = new HashMap<>();
         averages.put("qa1", one);
         averages.put("qa2", two);
-        return averages;
+        return Optional.of(averages);
     }
 
     private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType) {

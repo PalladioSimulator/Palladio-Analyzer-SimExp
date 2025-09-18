@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +55,13 @@ public class QualityAttributesAverageCalculatorTest {
         List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
         Run run1 = new Run(Collections.singletonMap("qa1", Arrays.asList(1.0, 2.0)));
         QualityMeasurements qualityMeasurements1 = new QualityMeasurements(Arrays.asList(run1));
-        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(qualityMeasurements1);
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1))
+            .thenReturn(Optional.of(qualityMeasurements1));
 
-        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValues1);
+        Optional<Map<String, Double>> actualAverages = calculator.calculateAverages(optimizableValues1);
 
-        assertThat(actualAverages).containsOnly(entry("qa1", 1.5));
+        assertThat(actualAverages).isPresent();
+        assertThat(actualAverages.get()).containsOnly(entry("qa1", 1.5));
     }
 
     @Test
@@ -69,10 +72,30 @@ public class QualityAttributesAverageCalculatorTest {
         qualityAttributes.put("qa2", Arrays.asList(1.0, 1.0));
         Run run1 = new Run(qualityAttributes);
         QualityMeasurements qualityMeasurements1 = new QualityMeasurements(Arrays.asList(run1));
-        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(qualityMeasurements1);
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1))
+            .thenReturn(Optional.of(qualityMeasurements1));
 
-        Map<String, Double> actualAverages = calculator.calculateAverages(optimizableValues1);
+        Optional<Map<String, Double>> actualAverages = calculator.calculateAverages(optimizableValues1);
 
-        assertThat(actualAverages).containsOnly(entry("qa1", 1.5), entry("qa2", 1.0));
+        assertThat(actualAverages).isPresent();
+        assertThat(actualAverages.get()).containsOnly(entry("qa1", 1.5), entry("qa2", 1.0));
+    }
+
+    @Test
+    public void testFailed() {
+        List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(Optional.empty());
+
+        Optional<Map<String, Double>> actualAverages = calculator.calculateAverages(optimizableValues1);
+
+        assertThat(actualAverages).isEmpty();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testMissing() {
+        List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1)).thenReturn(null);
+
+        calculator.calculateAverages(optimizableValues1);
     }
 }

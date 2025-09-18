@@ -11,9 +11,10 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 public class KubernetesQualityAttributeProvider extends BaseQualityAttributeProvider implements IResultHandler {
     @Override
     public void process(List<OptimizableValue<?>> optimizableValues, JobResult result) {
-        if (result.status != Status.COMPLETE) {
-            return;
+        if (result.status == Status.COMPLETE) {
+            put(optimizableValues, result.qualityMeasurements);
+        } else {
+            put(optimizableValues, null);
         }
-        put(optimizableValues, result.qualityMeasurements);
     }
 }

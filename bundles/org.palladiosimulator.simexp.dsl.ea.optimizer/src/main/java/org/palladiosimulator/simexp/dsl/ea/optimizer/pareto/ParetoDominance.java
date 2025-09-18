@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
@@ -28,8 +29,23 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
      */
     @Override
     public int compare(Phenotype<G, Double> a, Phenotype<G, Double> b) {
-        Map<String, Double> averagesA = averageProvider.getAverages(a);
-        Map<String, Double> averagesB = averageProvider.getAverages(b);
+        Optional<Map<String, Double>> averagesA = averageProvider.getAverages(a);
+        Optional<Map<String, Double>> averagesB = averageProvider.getAverages(b);
+
+        if (averagesA.isEmpty()) {
+            if (averagesB.isEmpty()) {
+                return 0;
+            }
+            return -1;
+        }
+        if (averagesB.isEmpty()) {
+            return +1;
+        }
+
+        return doCompare(averagesA.get(), averagesB.get());
+    }
+
+    private int doCompare(Map<String, Double> averagesA, Map<String, Double> averagesB) {
         assert averagesA.keySet()
             .equals(averagesB.keySet());
 

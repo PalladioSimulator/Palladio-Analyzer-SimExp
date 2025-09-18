@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.Run;
@@ -18,14 +19,19 @@ public class QualityAttributesAverageCalculator {
         this.qualityAttributeProvider = qualityAttributeProvider;
     }
 
-    public Map<String, Double> calculateAverages(List<OptimizableValue<?>> optimizableValues) {
-        QualityMeasurements qualityMeasurements = qualityAttributeProvider.getQualityMeasurements(optimizableValues);
+    public Optional<Map<String, Double>> calculateAverages(List<OptimizableValue<?>> optimizableValues) {
+        Optional<QualityMeasurements> qualityMeasurements = qualityAttributeProvider
+            .getQualityMeasurements(optimizableValues);
         if (qualityMeasurements == null) {
             OptimizableValueToString optimizableValueToString = new OptimizableValueToString();
             String optimizables = optimizableValueToString.asString(optimizableValues);
             throw new RuntimeException(String.format("no quality measurements found for: %s", optimizables));
         }
-        Map<String, List<Double>> values = extractValues(qualityMeasurements);
+        if (qualityMeasurements.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Map<String, List<Double>> values = extractValues(qualityMeasurements.get());
 
         Map<String, Double> averages = new HashMap<>();
         for (Map.Entry<String, List<Double>> entry : values.entrySet()) {
@@ -37,7 +43,7 @@ public class QualityAttributesAverageCalculator {
             averages.put(entry.getKey(), average);
         }
 
-        return averages;
+        return Optional.of(averages);
     }
 
     private Map<String, List<Double>> extractValues(QualityMeasurements qualityMeasurement) {

@@ -96,7 +96,7 @@ public class EAOptimizerTest {
         when(fitnessEvaluator.getQualityAttributeProvider()).thenReturn(qualityAttributeProvider);
         Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
         QualityMeasurements qualityMeasurements = new QualityMeasurements(Arrays.asList(run));
-        when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(qualityMeasurements);
+        when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(Optional.of(qualityMeasurements));
         when(qualityAttributeProvider.getComparatorFactory()).thenReturn(s -> Double::compare);
 
         setBoundsHelper = new SetBoundsHelper();

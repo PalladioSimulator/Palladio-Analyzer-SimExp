@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
@@ -22,9 +23,13 @@ public class BaseQualityAttributeProvider implements IQualityAttributeProvider {
     }
 
     @Override
-    public synchronized QualityMeasurements getQualityMeasurements(List<OptimizableValue<?>> optimizableValues) {
-        QualityMeasurements qualityMeasurements = qualityMeasurementMap.get(optimizableValues);
-        return qualityMeasurements;
+    public synchronized Optional<QualityMeasurements> getQualityMeasurements(
+            List<OptimizableValue<?>> optimizableValues) {
+        if (qualityMeasurementMap.containsKey(optimizableValues)) {
+            QualityMeasurements qualityMeasurements = qualityMeasurementMap.get(optimizableValues);
+            return Optional.ofNullable(qualityMeasurements);
+        }
+        return null;
     }
 
     public synchronized void dispose() {
