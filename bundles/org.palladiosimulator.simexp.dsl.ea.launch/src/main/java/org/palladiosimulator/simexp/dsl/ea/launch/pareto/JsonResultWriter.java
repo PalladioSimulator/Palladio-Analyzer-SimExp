@@ -17,12 +17,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class JsonParetoWriter {
-    private static final Logger LOGGER = Logger.getLogger(JsonParetoWriter.class);
+public class JsonResultWriter {
+    private static final Logger LOGGER = Logger.getLogger(JsonResultWriter.class);
 
     private final Gson gson;
 
-    public JsonParetoWriter() {
+    public JsonResultWriter() {
         this.gson = new GsonBuilder() //
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .serializeNulls()
@@ -31,14 +31,14 @@ public class JsonParetoWriter {
     }
 
     public void storeIndividualResults(Path resultFile, List<IndividualResult> individualResults) {
-        List<ParetoEntry> entries = new ArrayList<>();
+        List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
             Map<String, Object> optimizables = new TreeMap<>();
             for (OptimizableValue<?> ov : result.getOptimizableValues()) {
                 optimizables.put(ov.getOptimizable()
                     .getName(), ov.getValue());
             }
-            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables);
+            ResultEntry entry = new ResultEntry(result.getFitness(), optimizables);
             entries.add(entry);
         }
         try (Writer writer = Files.newBufferedWriter(resultFile)) {
