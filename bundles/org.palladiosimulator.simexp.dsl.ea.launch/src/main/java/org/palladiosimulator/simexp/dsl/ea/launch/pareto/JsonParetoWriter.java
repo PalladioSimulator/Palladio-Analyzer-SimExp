@@ -5,9 +5,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
@@ -33,7 +33,7 @@ public class JsonParetoWriter {
     public void storeIndividualResults(Path resultFile, List<IndividualResult> individualResults) {
         List<ParetoEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
-            Map<String, Object> optimizables = new HashMap<>();
+            Map<String, Object> optimizables = new TreeMap<>();
             for (OptimizableValue<?> ov : result.getOptimizableValues()) {
                 optimizables.put(ov.getOptimizable()
                     .getName(), ov.getValue());
