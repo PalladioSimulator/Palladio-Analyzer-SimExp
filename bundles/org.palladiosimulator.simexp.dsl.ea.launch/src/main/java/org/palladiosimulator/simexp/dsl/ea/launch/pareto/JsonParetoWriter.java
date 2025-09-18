@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
-import org.palladiosimulator.simexp.dsl.ea.launch.pareto.ParetoFront.ParetoEntry;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import com.google.gson.FieldNamingPolicy;
