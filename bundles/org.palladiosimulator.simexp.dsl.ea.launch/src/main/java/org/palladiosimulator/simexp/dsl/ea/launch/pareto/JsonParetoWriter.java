@@ -42,9 +42,8 @@ public class JsonParetoWriter {
             ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables);
             entries.add(entry);
         }
-        ParetoFront paretoFront = new ParetoFront(entries);
         try (Writer writer = Files.newBufferedWriter(resultFile)) {
-            gson.toJson(paretoFront, writer);
+            gson.toJson(entries, writer);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
