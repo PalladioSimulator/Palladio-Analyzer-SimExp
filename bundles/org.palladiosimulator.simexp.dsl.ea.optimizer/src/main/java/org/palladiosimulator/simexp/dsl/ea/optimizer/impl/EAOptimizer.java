@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -184,7 +185,13 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
 
-        List<IndividualResult> paretoFront = buildParetoFront(normalizer, qualityAttributeProvider, result);
+        List<IndividualResult> paretoFront;
+        try {
+            paretoFront = buildParetoFront(normalizer, qualityAttributeProvider, result);
+        } catch (RuntimeException e) {
+            LOGGER.error(e.getMessage(), e);
+            paretoFront = Collections.emptyList();
+        }
 
         List<IndividualResult> finalPopulation = result.population()
             .stream()
