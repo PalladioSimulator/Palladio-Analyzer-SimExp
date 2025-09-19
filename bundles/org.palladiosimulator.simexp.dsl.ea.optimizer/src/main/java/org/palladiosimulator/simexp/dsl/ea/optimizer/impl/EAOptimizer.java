@@ -188,7 +188,7 @@ public class EAOptimizer implements IEAOptimizer {
         List<IndividualResult> paretoFront;
         try {
             paretoFront = buildParetoFront(normalizer, qualityAttributeProvider, result);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             paretoFront = Collections.emptyList();
         }
