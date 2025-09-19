@@ -174,16 +174,31 @@ public class EAOptimizer implements IEAOptimizer {
             result = RandomRegistry.with(new Random(seed),
                     r -> resultStream.collect(EvolutionResult.toBestEvolutionResult()));
         }
-        final double bestFitness = result.bestFitness();
-        final List<OptimizableValue<?>> bestOptimizableValues = normalizer.toOptimizableValues(result.bestPhenotype()
-            .genotype());
 
         LOGGER.info("EA finished");
+        EAResult eaResult = buildEAResult(result, standardStatistics, evaluationStatistics, normalizer,
+                qualityAttributeProvider);
+        return eaResult;
+    }
+
+    private <G extends Gene<?, G>> EAResult buildEAResult(EvolutionResult<G, Double> result,
+            EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics,
+            EvaluationStatistics<G> evaluationStatistics, ITranscoder<G> normalizer,
+            IQualityAttributeProvider qualityAttributeProvider) {
         StringBuilder resultStatistics = new StringBuilder();
         resultStatistics.append(standardStatistics.toString());
         resultStatistics.append("\n");
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
+
+        List<IndividualResult> finalPopulation = result.population()
+            .stream()
+            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
+            .toList();
+        final double bestFitness = result.bestFitness();
+        final List<OptimizableValue<?>> bestOptimizableValues = normalizer.toOptimizableValues(result.bestPhenotype()
+            .genotype());
+        IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
         List<IndividualResult> paretoFront;
         try {
@@ -192,12 +207,6 @@ public class EAOptimizer implements IEAOptimizer {
             LOGGER.error(e.getMessage(), e);
             paretoFront = Collections.emptyList();
         }
-
-        List<IndividualResult> finalPopulation = result.population()
-            .stream()
-            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
-            .toList();
-        IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
         return new EAResult(fittestIndividual, paretoFront, finalPopulation);
     }
