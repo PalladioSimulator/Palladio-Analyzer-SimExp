@@ -26,7 +26,6 @@ class SimulationResult:
         parser.add_argument('infile', type=argparse.FileType('r'))
         args = parser.parse_args()
 
-        print("Statistics:")
         content = self._read_file(args.infile)
         counter = collections.Counter()
         for row in content:
