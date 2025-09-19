@@ -4,6 +4,7 @@ import collections
 
 import tabulate
 
+
 class SimulationResult:
 
     def _read_file(self, csv_file):
@@ -38,6 +39,7 @@ class SimulationResult:
         table_entries.append(tabulate.SEPARATING_LINE)
         table_entries.append(["Total", counter.total()])
         print(tabulate.tabulate(table_entries, headers=['Result', 'Count']))
+
 
 if __name__ == '__main__':
     sr = SimulationResult()
