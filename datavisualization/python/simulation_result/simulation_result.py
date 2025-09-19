@@ -13,9 +13,11 @@ class SimulationResult:
         return reader
 
     def _get_key(self, error):
-        if error:
-            return error
-        return 'Success'
+        if not error:
+            return 'Success'
+        if error.startswith("Max delivery count reached"):
+            return "Max delivery count reached"
+        return error
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
