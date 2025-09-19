@@ -12,6 +12,11 @@ class SimulationResult:
         next(reader) # skip header
         return reader
 
+    def _get_key(self, error):
+        if error:
+            return error
+        return 'Success'
+
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
         parser.add_argument('infile', type=argparse.FileType('r'))
@@ -21,10 +26,8 @@ class SimulationResult:
         content = self._read_file(args.infile)
         counter = collections.Counter()
         for row in content:
-            if row['Error']:
-                counter[row['Error']] += 1
-            else:
-                counter['Success'] += 1
+            key = self._get_key(row['Error'])
+            counter[key] += 1
         table_entries = []
         for key, count in counter.items():
             entry = [key, count]
