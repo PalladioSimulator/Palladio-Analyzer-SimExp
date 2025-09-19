@@ -32,4 +32,8 @@ public class GenerationLogger implements IEAEvolutionStatusReceiver {
         }
         return StringUtils.join(entries, ",");
     }
+
+    @Override
+    public void close() {
+    }
 }

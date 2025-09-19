@@ -41,4 +41,8 @@ public class GenerationCSVWriter implements IEAEvolutionStatusReceiver {
             LOGGER.error(e.getMessage(), e);
         }
     }
+
+    @Override
+    public void close() {
+    }
 }

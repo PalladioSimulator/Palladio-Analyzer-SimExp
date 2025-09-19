@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-public interface IEAEvolutionStatusReceiver {
+public interface IEAEvolutionStatusReceiver extends AutoCloseable {
     /**
      * Called to report the current status of the EA.
      * 

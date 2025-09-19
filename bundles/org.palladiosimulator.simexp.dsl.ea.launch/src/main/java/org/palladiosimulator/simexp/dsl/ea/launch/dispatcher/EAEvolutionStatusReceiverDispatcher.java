@@ -27,4 +27,11 @@ public class EAEvolutionStatusReceiverDispatcher implements IEAEvolutionStatusRe
         receiversCopy.stream()
             .forEach(r -> r.reportStatus(generation, optimizableValues, fitness));
     }
+
+    @Override
+    public synchronized void close() throws Exception {
+        for (IEAEvolutionStatusReceiver receiver : receivers) {
+            receiver.close();
+        }
+    }
 }

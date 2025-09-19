@@ -38,7 +38,6 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private final Smodel smodel;
     private final IDisposeableEAFitnessEvaluator fitnessEvaluator;
     private final IEvolutionaryAlgorithmWorkflowConfiguration configuration;
-    private final EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher;
     private final Path resourcePath;
     private final IPrecisionProvider precisionProvider;
     private final IRewardFormater rewardFormater;
@@ -53,9 +52,6 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         this.configuration = configuration;
         this.precisionProvider = precisionProvider;
         this.rewardFormater = rewardFormater;
-        this.eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher();
-        eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
-        eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
         this.resourcePath = resourcePath;
     }
 
@@ -159,10 +155,16 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
 
             @Override
             public void process(IEAFitnessEvaluator evaluator) {
-                LOGGER.info("EA optimization start");
-                optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
-                        eaEvolutionStatusReceiverDispatcher);
-                LOGGER.info("EA optimization end");
+                try (EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher()) {
+                    eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
+                    eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
+                    LOGGER.info("EA optimization start");
+                    optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
+                            eaEvolutionStatusReceiverDispatcher);
+                    LOGGER.info("EA optimization end");
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
             }
         });
     }
