@@ -24,6 +24,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessE
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationJsonWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonResultWriter;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
@@ -158,6 +159,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
                 try (EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher()) {
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
+                    eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationJsonWriter(resourcePath));
                     LOGGER.info("EA optimization start");
                     optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
                             eaEvolutionStatusReceiverDispatcher);
