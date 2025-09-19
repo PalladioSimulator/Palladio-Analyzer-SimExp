@@ -33,7 +33,7 @@ class SimulationResult:
             key = self._get_key(row['Error'])
             counter[key] += 1
         table_entries = []
-        for key, count in counter.items():
+        for key, count in counter.most_common():
             entry = [key, count]
             table_entries.append(entry)
         table_entries.append(tabulate.SEPARATING_LINE)
