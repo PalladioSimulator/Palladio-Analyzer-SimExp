@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
@@ -46,7 +46,7 @@ public class JsonQualityAttributesResultLogger implements IResultHandler {
     }
 
     private Map<String, Object> buildOptimizablePairs(List<OptimizableValue<?>> optimizableValues) {
-        Map<String, Object> optimizables = new HashMap<>();
+        Map<String, Object> optimizables = new TreeMap<>();
         for (OptimizableValue<?> optimizable : optimizableValues) {
             String name = optimizable.getOptimizable()
                 .getName();
