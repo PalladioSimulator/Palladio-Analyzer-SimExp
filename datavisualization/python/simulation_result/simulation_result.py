@@ -33,12 +33,15 @@ class SimulationResult:
             key = self._get_key(row['Error'])
             counter[key] += 1
         table_entries = []
+        total = counter.total()
         for key, count in counter.most_common():
-            entry = [key, count]
+            rel = count / total
+            entry = [key, count, rel]
             table_entries.append(entry)
         table_entries.append(tabulate.SEPARATING_LINE)
-        table_entries.append(["Total", counter.total()])
-        print(tabulate.tabulate(table_entries, headers=['Result', 'Count']))
+        table_entries.append(["Total", counter.total(), 1])
+        table_str = tabulate.tabulate(table_entries, headers=['Result', 'Count', 'Rel'], floatfmt=".2%")
+        print(table_str)
 
 
 if __name__ == '__main__':
