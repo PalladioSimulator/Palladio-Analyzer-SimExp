@@ -17,6 +17,8 @@ class SimulationResult:
             return 'Success'
         if error.startswith("Max delivery count reached"):
             return "Max delivery count reached"
+        if error.startswith("not found: /workspace/") and error.endswith("result.json"):
+            return "not found: result.json"
         return error
 
     def main(self):
