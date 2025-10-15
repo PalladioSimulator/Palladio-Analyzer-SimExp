@@ -7,7 +7,7 @@ Automatic-Module-Name: org.palladiosimulator.simexp.ui.workflow
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.debug.ui;bundle-version="3.14.500",
  de.uka.ipd.sdq.codegen.simucontroller;bundle-version="5.2.0",
- org.palladiosimulator.solver.core;bundle-version="5.2.1",
+ org.palladiosimulator.solver.core;bundle-version="5.2.2",
  org.palladiosimulator.analyzer.workflow;bundle-version="4.3.0",
  org.palladiosimulator.simexp.workflow;bundle-version="1.0.0",
  org.palladiosimulator.simexp.commons.constants;bundle-version="1.0.0",

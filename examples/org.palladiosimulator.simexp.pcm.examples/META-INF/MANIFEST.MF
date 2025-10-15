@@ -24,7 +24,7 @@ Require-Bundle: org.apache.log4j,
  tools.mdsd.probdist.api,
  tools.mdsd.probdist.api.apache,
  org.palladiosimulator.simulizar.reconfiguration.qvto;bundle-version="5.1.0",
- org.palladiosimulator.solver.core;bundle-version="5.2.1",
+ org.palladiosimulator.solver.core;bundle-version="5.2.2",
  tools.mdsd.probdist.model;bundle-version="0.1.0",
  tools.mdsd.probdist.model.basic;bundle-version="1.0.0",
  org.palladiosimulator.envdyn.model;bundle-version="5.2.0"

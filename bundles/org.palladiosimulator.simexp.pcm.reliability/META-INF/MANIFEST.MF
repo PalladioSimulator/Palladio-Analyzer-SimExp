@@ -11,14 +11,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.pcm;bundle-version="4.3.0",
  org.palladiosimulator.simexp.pcm,
  org.palladiosimulator.envdyn.api,
- org.palladiosimulator.solver.core;bundle-version="5.2.1",
+ org.palladiosimulator.solver.core;bundle-version="5.2.2",
  org.palladiosimulator.envdyn.model;bundle-version="0.1.0",
  org.palladiosimulator.dependability.reliability.uncertainty,
  tools.mdsd.probdist.api;bundle-version="1.0.0",
  com.google.guava;bundle-version="27.1.0",
  org.palladiosimulator.simexp.markovian.model;bundle-version="0.1.0",
- de.uka.ipd.sdq.workflow.mdsd.core;bundle-version="5.2.1",
- org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.1",
+ de.uka.ipd.sdq.workflow.mdsd.core;bundle-version="5.2.2",
+ org.palladiosimulator.analyzer.workflow.core;bundle-version="5.2.2",
  org.palladiosimulator.commons,
  tools.mdsd.probdist.api.apache,
  org.palladiosimulator.simexp.dsl.smodel,
@@ -34,7 +34,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.palladiosimulator.simexp.pcm.simulator;bundle-version="1.0.0",
  org.palladiosimulator.simexp.pcm.modelled.simulator;bundle-version="1.0.0",
  org.apache.log4j;bundle-version="1.2.19",
- de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.1"
+ de.uka.ipd.sdq.workflow.mdsd.blackboard;bundle-version="5.2.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.palladiosimulator.simexp.pcm.reliability
 Bundle-ActivationPolicy: lazy
