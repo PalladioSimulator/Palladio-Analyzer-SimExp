@@ -35,17 +35,9 @@
 		<unit id="com.fasterxml.jackson.core.jackson-annotations" version="0.0.0"/>
 		<unit id="com.fasterxml.jackson.core.jackson-core" version="0.0.0"/>
 		<unit id="com.fasterxml.jackson.core.jackson-databind" version="0.0.0"/>
+		<unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
+		<unit id="org.aopalliance" version="1.0.0.v20220404-1927"/>
 	</location>
-	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
-			<unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
-			<unit id="org.aopalliance" version="1.0.0.v20220404-1927"/>
-	</location>
-	<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
-		<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230302014618/repository/"/>
-			<unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
-			<unit id="org.aopalliance" version="1.0.0.v20220404-1927"/>
-		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
 			<unit id="tools.descartes.dlim.feature.feature.group" version="0.0.0"/>
 			<repository location="https://updatesite.palladio-simulator.com/palladio-thirdparty-limbo/nightly/"/>
