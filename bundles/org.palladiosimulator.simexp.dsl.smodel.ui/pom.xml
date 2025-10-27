@@ -74,19 +74,6 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.palladiosimulator</groupId>
-										<artifactId>tycho-tp-refresh-maven-plugin</artifactId>
-										<versionRange>[0.2.6,)</versionRange>
-										<goals>
-											<goal>copy</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
