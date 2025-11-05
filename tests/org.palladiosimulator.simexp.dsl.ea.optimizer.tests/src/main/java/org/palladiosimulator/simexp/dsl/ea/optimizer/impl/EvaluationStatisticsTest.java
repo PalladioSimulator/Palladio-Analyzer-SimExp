@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +43,11 @@ public class EvaluationStatisticsTest {
     public void testToRoundedStringInfiniteResult() {
         String actualRoundedString = statistics.toRoundedString(BigInteger.valueOf(66), BigInteger.valueOf(84));
 
-        assertThat(actualRoundedString).isEqualTo("78.57");
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(0);
+        df.setGroupingUsed(false);
+        String expectedRoundedString = df.format(78.57);
+        assertThat(actualRoundedString).isEqualTo(expectedRoundedString);
     }
 }
