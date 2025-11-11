@@ -112,7 +112,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             .toList();
 
         detailDescription.add(String.format("The final population has %d (%d unique) individuals:",
-                uniquePopulation.size(), finalPopulation.size()));
+                finalPopulation.size(), uniquePopulation.size()));
         for (IndividualResult individual : uniquePopulation) {
             detailDescription.add(String.format("- fitness %s", rewardFormater.asString(individual.getFitness())));
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
