@@ -122,7 +122,8 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .build();
 
         Map<String, String> labels = Collections.singletonMap("app", "simexp");
-        Deployment deployment = new DeploymentBuilder().withNewMetadata()
+        Deployment deployment = new DeploymentBuilder() //
+            .withNewMetadata()
             .withName("simexp")
             .withLabels(labels)
             .endMetadata()
@@ -142,7 +143,6 @@ public class DeploymentDispatcher /* implements IShutdownReceiver */ {
             .withImagePullSecrets(new LocalObjectReferenceBuilder().withName("cred-simexp-registry")
                 .build())
             .withTolerations(toleration)
-            .withRestartPolicy("Never")
             .endSpec()
             .endTemplate()
             .endSpec()
