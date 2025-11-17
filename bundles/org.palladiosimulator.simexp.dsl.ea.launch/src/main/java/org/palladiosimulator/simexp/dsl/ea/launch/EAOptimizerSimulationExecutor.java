@@ -1,5 +1,6 @@
 package org.palladiosimulator.simexp.dsl.ea.launch;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessE
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
 import org.palladiosimulator.simexp.dsl.ea.launch.dispatcher.EAEvolutionStatusReceiverDispatcher;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationDumper;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationJsonWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonResultWriter;
@@ -157,9 +159,12 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             @Override
             public void process(IEAFitnessEvaluator evaluator) {
                 try (EAEvolutionStatusReceiverDispatcher eaEvolutionStatusReceiverDispatcher = new EAEvolutionStatusReceiverDispatcher()) {
+                    Path generationsPath = resourcePath.resolve("generations");
+                    Files.createDirectories(generationsPath);
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationLogger(rewardFormater));
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationJsonWriter(resourcePath));
+                    eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationDumper(generationsPath));
                     LOGGER.info("EA optimization start");
                     optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
                             eaEvolutionStatusReceiverDispatcher);
