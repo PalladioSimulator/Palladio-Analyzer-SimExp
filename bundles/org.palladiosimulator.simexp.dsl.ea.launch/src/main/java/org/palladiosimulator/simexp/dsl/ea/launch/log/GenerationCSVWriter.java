@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -25,7 +26,8 @@ public class GenerationCSVWriter implements IEAEvolutionStatusReceiver {
     }
 
     @Override
-    public void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness) {
+    public void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness,
+            List<IndividualResult> population) {
         CSVFormat csvFormat = CSVFormat.newFormat(';')
             .withRecordSeparator("\r\n");
         if (!Files.exists(csvPath)) {

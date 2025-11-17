@@ -2,6 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.List;
 
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public interface IEAEvolutionStatusReceiver extends AutoCloseable {
@@ -13,5 +14,6 @@ public interface IEAEvolutionStatusReceiver extends AutoCloseable {
      * @param fitness
      *            the fitness of the given optimization values
      */
-    void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness);
+    void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness,
+            List<IndividualResult> population);
 }

@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -27,7 +28,11 @@ public class EAReporter<G extends Gene<?, G>> implements Consumer<EvolutionResul
         Genotype<G> genotype = phenotype.genotype();
         List<OptimizableValue<?>> optimizables = transcoder.toOptimizableValues(genotype);
         double fitness = result.bestFitness();
-        evolutionStatusReceiver.reportStatus(generation, optimizables, fitness);
+        List<IndividualResult> population = result.population()
+            .stream()
+            .map(p -> new IndividualResult(p.fitness(), transcoder.toOptimizableValues(p.genotype())))
+            .toList();
+        evolutionStatusReceiver.reportStatus(generation, optimizables, fitness, population);
     }
 
 }

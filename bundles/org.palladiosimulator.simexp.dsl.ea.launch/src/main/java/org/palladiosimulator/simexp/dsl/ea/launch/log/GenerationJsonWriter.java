@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
@@ -51,7 +52,8 @@ public class GenerationJsonWriter implements IEAEvolutionStatusReceiver {
     }
 
     @Override
-    public void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness) {
+    public void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness,
+            List<IndividualResult> population) {
         GenerationEntry entry = new GenerationEntry(generation, fitness, optimizableValues);
         entries.add(entry);
 
