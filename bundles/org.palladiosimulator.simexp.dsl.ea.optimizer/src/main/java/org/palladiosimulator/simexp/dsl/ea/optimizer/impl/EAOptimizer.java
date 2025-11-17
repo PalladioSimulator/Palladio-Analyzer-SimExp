@@ -4,8 +4,6 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -13,8 +11,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -27,10 +23,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.AverageProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.CachingAverageProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.IAverageProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoSetCollector;
+import org.palladiosimulator.simexp.dsl.ea.optimizer.pareto.ParetoFrontBuilder;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.smodel.PowerUtil;
 import org.palladiosimulator.simexp.dsl.smodel.api.IExpressionCalculator;
@@ -44,7 +37,6 @@ import io.jenetics.Gene;
 import io.jenetics.Genotype;
 import io.jenetics.IntegerGene;
 import io.jenetics.Mutator;
-import io.jenetics.Phenotype;
 import io.jenetics.TournamentSelector;
 import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
@@ -55,7 +47,6 @@ import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.Factory;
-import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 import tools.mdsd.probdist.api.random.ISeedProvider;
 
@@ -200,31 +191,11 @@ public class EAOptimizer implements IEAOptimizer {
             .genotype());
         IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
-        List<IndividualResult> paretoFront;
-        try {
-            paretoFront = buildParetoFront(normalizer, qualityAttributeProvider, result);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            paretoFront = Collections.emptyList();
-        }
+        ParetoFrontBuilder<G> paretoFrontBuilder = new ParetoFrontBuilder<>(normalizer, qualityAttributeProvider,
+                config.getPrecisionProvider());
+        List<IndividualResult> paretoFront = paretoFrontBuilder.buildParetoFront(result);
 
         return new EAResult(fittestIndividual, paretoFront, finalPopulation);
-    }
-
-    private <G extends Gene<?, G>> List<IndividualResult> buildParetoFront(ITranscoder<G> normalizer,
-            IQualityAttributeProvider qualityAttributeProvider, EvolutionResult<G, Double> result) {
-        IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
-        averageProvider = new CachingAverageProvider<>(averageProvider);
-        Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
-            .create(config.getPrecisionProvider(), averageProvider, comparatorFactory);
-        LOGGER.info("building pareto front");
-        final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
-            .collect(moeaCollector);
-        List<IndividualResult> paretoFront = phenotypes.stream()
-            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
-            .toList();
-        return paretoFront;
     }
 
     private <G extends Gene<?, G>> EvolutionStream<G, Double> addTerminationConditions(
