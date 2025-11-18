@@ -101,17 +101,6 @@ public class ParetoSetCollectorTest {
         // J(0.0, 8.0)
         // H(2.0, 2.0)
         // G(7.0, 1.0)
-        Optimize optimize = Optimize.MINIMUM;
-        EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
-        EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
-        EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);
-        EvolutionResult<IntegerGene, Double> rd = createEvolutionResult(d, optimize);
-        EvolutionResult<IntegerGene, Double> re = createEvolutionResult(e, optimize);
-        EvolutionResult<IntegerGene, Double> rf = createEvolutionResult(f, optimize);
-        EvolutionResult<IntegerGene, Double> rg = createEvolutionResult(g, optimize);
-        EvolutionResult<IntegerGene, Double> rh = createEvolutionResult(h, optimize);
-        EvolutionResult<IntegerGene, Double> ri = createEvolutionResult(i, optimize);
-        EvolutionResult<IntegerGene, Double> rj = createEvolutionResult(j, optimize);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
         when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
@@ -123,8 +112,8 @@ public class ParetoSetCollectorTest {
         when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
         when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
 
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(ra, rb, rc, rd, re, rf, rg, rh, ri, rj)
-            .collect(collector);
+        Stream<EvolutionResult<IntegerGene, Double>> resultStream = buildResultStream(Optimize.MINIMUM);
+        ISeq<Phenotype<IntegerGene, Double>> actualResult = resultStream.collect(collector);
 
         assertThat(actualResult).containsExactlyInAnyOrder(a, h, j, g);
     }
@@ -151,7 +140,24 @@ public class ParetoSetCollectorTest {
         // F(6.0, 2.0)
         // G(7.0, 1.0)
         // J(0.0, 8.0)
-        Optimize optimize = Optimize.MAXIMUM;
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
+        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
+        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
+        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
+        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
+        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
+        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
+        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
+
+        Stream<EvolutionResult<IntegerGene, Double>> resultStream = buildResultStream(Optimize.MAXIMUM);
+        ISeq<Phenotype<IntegerGene, Double>> actualResult = resultStream.collect(collector);
+
+        assertThat(actualResult).containsExactlyInAnyOrder(a, b, i, f, g, j);
+    }
+
+    private Stream<EvolutionResult<IntegerGene, Double>> buildResultStream(Optimize optimize) {
         EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
         EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
         EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);
@@ -173,10 +179,8 @@ public class ParetoSetCollectorTest {
         when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
         when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
 
-        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(ra, rb, rc, rd, re, rf, rg, rh, ri, rj)
-            .collect(collector);
-
-        assertThat(actualResult).containsExactlyInAnyOrder(a, b, i, f, g, j);
+        Stream<EvolutionResult<IntegerGene, Double>> resultStream = Stream.of(ra, rb, rc, rd, re, rf, rg, rh, ri, rj);
+        return resultStream;
     }
 
     private Optional<Map<String, Double>> buildAverages(double one, double two) {
