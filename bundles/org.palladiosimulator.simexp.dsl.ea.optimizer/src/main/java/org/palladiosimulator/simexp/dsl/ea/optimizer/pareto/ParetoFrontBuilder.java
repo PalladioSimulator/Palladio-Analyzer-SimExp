@@ -9,11 +9,10 @@ import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
-import io.jenetics.Gene;
 import io.jenetics.Optimize;
 import io.jenetics.util.ISeq;
 
-public class ParetoFrontBuilder<G extends Gene<?, G>> {
+public class ParetoFrontBuilder {
     private final IQualityAttributeProvider qualityAttributeProvider;
     private final IPrecisionProvider precisionProvider;
 
