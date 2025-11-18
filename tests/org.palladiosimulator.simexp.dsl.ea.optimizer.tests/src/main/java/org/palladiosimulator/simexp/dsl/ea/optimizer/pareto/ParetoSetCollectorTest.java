@@ -80,7 +80,7 @@ public class ParetoSetCollectorTest {
         // J(0.0, 8.0)
         // H(2.0, 2.0)
         // G(7.0, 1.0)
-        Optimize optimize = Optimize.MAXIMUM;
+        Optimize optimize = Optimize.MINIMUM;
         Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
@@ -162,7 +162,7 @@ public class ParetoSetCollectorTest {
         Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
         Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
         Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
-        Optimize optimize = Optimize.MINIMUM;
+        Optimize optimize = Optimize.MAXIMUM;
         EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
         EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
         EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);

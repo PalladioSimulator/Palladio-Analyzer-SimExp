@@ -54,8 +54,8 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
 
         for (Map.Entry<String, Double> entryA : averagesA.entrySet()) {
             Comparator<Double> comparator = comparatorFactory.apply(entryA.getKey());
-            double valueA = entryA.getValue();
-            double valueB = averagesB.get(entryA.getKey());
+            double valueA = averagesB.get(entryA.getKey());
+            double valueB = entryA.getValue();
 
             if (Double.isNaN(valueA) || Double.isNaN(valueB)) {
                 // Treat NaN as incomparable

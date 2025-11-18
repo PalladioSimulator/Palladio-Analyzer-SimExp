@@ -87,7 +87,7 @@ public class ParetoDominanceTest {
 
         int actualCompare = paretoDominance.compare(a, b);
 
-        assertThat(actualCompare).isGreaterThan(0);
+        assertThat(actualCompare).isLessThan(0);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class ParetoDominanceTest {
 
         int actualCompare = paretoDominance.compare(a, b);
 
-        assertThat(actualCompare).isLessThan(0);
+        assertThat(actualCompare).isGreaterThan(0);
     }
 
     @Test
