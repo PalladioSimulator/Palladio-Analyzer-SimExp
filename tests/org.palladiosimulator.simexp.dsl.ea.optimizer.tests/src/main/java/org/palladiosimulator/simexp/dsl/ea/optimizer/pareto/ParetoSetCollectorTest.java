@@ -49,7 +49,7 @@ public class ParetoSetCollectorTest {
     }
 
     @Test
-    public void collectFront() {
+    public void paretoFrontMinimization() {
         // All points:
         // A(1.0, 7.0)
         // B(2.0, 6.0)
@@ -80,6 +80,7 @@ public class ParetoSetCollectorTest {
         // J(0.0, 8.0)
         // H(2.0, 2.0)
         // G(7.0, 1.0)
+        Optimize optimize = Optimize.MAXIMUM;
         Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
         Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
         Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
@@ -90,16 +91,16 @@ public class ParetoSetCollectorTest {
         Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
         Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
         Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
-        EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a);
-        EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b);
-        EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c);
-        EvolutionResult<IntegerGene, Double> rd = createEvolutionResult(d);
-        EvolutionResult<IntegerGene, Double> re = createEvolutionResult(e);
-        EvolutionResult<IntegerGene, Double> rf = createEvolutionResult(f);
-        EvolutionResult<IntegerGene, Double> rg = createEvolutionResult(g);
-        EvolutionResult<IntegerGene, Double> rh = createEvolutionResult(h);
-        EvolutionResult<IntegerGene, Double> ri = createEvolutionResult(i);
-        EvolutionResult<IntegerGene, Double> rj = createEvolutionResult(j);
+        EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
+        EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
+        EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);
+        EvolutionResult<IntegerGene, Double> rd = createEvolutionResult(d, optimize);
+        EvolutionResult<IntegerGene, Double> re = createEvolutionResult(e, optimize);
+        EvolutionResult<IntegerGene, Double> rf = createEvolutionResult(f, optimize);
+        EvolutionResult<IntegerGene, Double> rg = createEvolutionResult(g, optimize);
+        EvolutionResult<IntegerGene, Double> rh = createEvolutionResult(h, optimize);
+        EvolutionResult<IntegerGene, Double> ri = createEvolutionResult(i, optimize);
+        EvolutionResult<IntegerGene, Double> rj = createEvolutionResult(j, optimize);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
         when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
@@ -117,6 +118,78 @@ public class ParetoSetCollectorTest {
         assertThat(actualResult).containsExactlyInAnyOrder(a, h, j, g);
     }
 
+    @Test
+    public void paretoFrontMaximization() {
+        // All points:
+        // A(1.0, 7.0)
+        // B(2.0, 6.0)
+        // C(3.0, 5.0)
+        // D(4.0, 4.0)
+        // E(5.0, 3.0)
+        // F(6.0, 2.0)
+        // G(7.0, 1.0)
+        // H(2.0, 2.0)
+        // I(5.0, 5.0)
+        // J(0.0, 8.0)
+        //
+        // y\x -0- -1- -2- -3- -4- -5- -6- -7-
+        // -----------------------------------
+        // 8 | [J] --- --- --- --- --- --- ---
+        // 7 | --- [A] --- --- --- --- --- ---
+        // 6 | --- --- [B] --- --- --- --- ---
+        // 5 | --- --- --- -C- --- [I] --- ---
+        // 4 | --- --- --- --- -D- --- --- ---
+        // 3 | --- --- --- --- --- -E- --- ---
+        // 2 | --- --- -H- --- --- --- [F] ---
+        // 1 | --- --- --- --- --- --- --- [G]
+        // -----------------------------------
+        // ___ -0- -1- -2- -3- -4- -5- -6- -7-
+        //
+        // Pareto front (non-dominated points, maximization):
+        // A(1.0, 7.0)
+        // B(2.0, 6.0)
+        // I(5.0, 5.0)
+        // F(6.0, 2.0)
+        // G(7.0, 1.0)
+        // J(0.0, 8.0)
+        Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
+        Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
+        Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
+        Phenotype<IntegerGene, Double> d = createPhenotype(3, 1.0);
+        Phenotype<IntegerGene, Double> e = createPhenotype(4, 1.0);
+        Phenotype<IntegerGene, Double> f = createPhenotype(5, 1.0);
+        Phenotype<IntegerGene, Double> g = createPhenotype(6, 1.0);
+        Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
+        Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
+        Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
+        Optimize optimize = Optimize.MINIMUM;
+        EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
+        EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
+        EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);
+        EvolutionResult<IntegerGene, Double> rd = createEvolutionResult(d, optimize);
+        EvolutionResult<IntegerGene, Double> re = createEvolutionResult(e, optimize);
+        EvolutionResult<IntegerGene, Double> rf = createEvolutionResult(f, optimize);
+        EvolutionResult<IntegerGene, Double> rg = createEvolutionResult(g, optimize);
+        EvolutionResult<IntegerGene, Double> rh = createEvolutionResult(h, optimize);
+        EvolutionResult<IntegerGene, Double> ri = createEvolutionResult(i, optimize);
+        EvolutionResult<IntegerGene, Double> rj = createEvolutionResult(j, optimize);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
+        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
+        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
+        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
+        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
+        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
+        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
+        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
+
+        ISeq<Phenotype<IntegerGene, Double>> actualResult = Stream.of(ra, rb, rc, rd, re, rf, rg, rh, ri, rj)
+            .collect(collector);
+
+        assertThat(actualResult).containsExactlyInAnyOrder(a, b, i, f, g, j);
+    }
+
     private Optional<Map<String, Double>> buildAverages(double one, double two) {
         Map<String, Double> averages = new HashMap<>();
         averages.put("qa1", one);
@@ -124,8 +197,9 @@ public class ParetoSetCollectorTest {
         return Optional.of(averages);
     }
 
-    private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType) {
-        EvolutionResult<IntegerGene, Double> er = EvolutionResult.of(Optimize.MAXIMUM, ISeq.of(phenoType), 1L,
+    private EvolutionResult<IntegerGene, Double> createEvolutionResult(Phenotype<IntegerGene, Double> phenoType,
+            Optimize optimize) {
+        EvolutionResult<IntegerGene, Double> er = EvolutionResult.of(optimize, ISeq.of(phenoType), 1L,
                 EvolutionDurations.ZERO, 0, 0, 0);
         return er;
     }
