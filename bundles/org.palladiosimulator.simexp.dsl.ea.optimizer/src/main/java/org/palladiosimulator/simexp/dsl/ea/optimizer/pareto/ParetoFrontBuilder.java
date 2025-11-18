@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
@@ -15,8 +14,6 @@ import io.jenetics.Optimize;
 import io.jenetics.util.ISeq;
 
 public class ParetoFrontBuilder<G extends Gene<?, G>> {
-    private final static Logger LOGGER = Logger.getLogger(ParetoFrontBuilder.class);
-
     private final IQualityAttributeProvider qualityAttributeProvider;
     private final IPrecisionProvider precisionProvider;
 
@@ -32,7 +29,6 @@ public class ParetoFrontBuilder<G extends Gene<?, G>> {
         Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
         Collector<IndividualResult, ?, ISeq<IndividualResult>> moeaCollector = ParetoSetCollector
             .create(precisionProvider, averageProvider, comparatorFactory, Optimize.MINIMUM);
-        LOGGER.info("building pareto front");
         ISeq<IndividualResult> phenotypes = population.stream()
             .collect(moeaCollector);
         List<IndividualResult> paretoFront = phenotypes.stream()
