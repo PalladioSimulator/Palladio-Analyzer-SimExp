@@ -19,6 +19,17 @@ public class IndividualParetoResultTest {
     }
 
     @Test
+    public void testBuildScoreEmpty() {
+        IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList());
+        Map<String, Double> averages = Collections.emptyMap();
+        IndividualParetoResult paretoResult = new IndividualParetoResult(individuaResult, averages);
+
+        double actualScore = paretoResult.buildScore();
+
+        assertThat(actualScore).isEqualTo(Double.NaN, withPrecision(EPSILON));
+    }
+
+    @Test
     public void testBuildScore() {
         IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList());
         Map<String, Double> averages = new HashMap<>();
