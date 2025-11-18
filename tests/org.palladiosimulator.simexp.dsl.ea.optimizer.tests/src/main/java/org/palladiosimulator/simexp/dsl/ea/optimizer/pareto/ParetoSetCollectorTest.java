@@ -37,6 +37,17 @@ public class ParetoSetCollectorTest {
     @Mock
     private IPrecisionProvider precisionProvider;
 
+    private Phenotype<IntegerGene, Double> a;
+    private Phenotype<IntegerGene, Double> b;
+    private Phenotype<IntegerGene, Double> c;
+    private Phenotype<IntegerGene, Double> d;
+    private Phenotype<IntegerGene, Double> e;
+    private Phenotype<IntegerGene, Double> f;
+    private Phenotype<IntegerGene, Double> g;
+    private Phenotype<IntegerGene, Double> h;
+    private Phenotype<IntegerGene, Double> i;
+    private Phenotype<IntegerGene, Double> j;
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -45,11 +56,6 @@ public class ParetoSetCollectorTest {
 
         range = IntRange.of(0, 10);
 
-        collector = ParetoSetCollector.create(precisionProvider, averageProvider, s -> Double::compare);
-    }
-
-    @Test
-    public void paretoFrontMinimization() {
         // All points:
         // A(1.0, 7.0)
         // B(2.0, 6.0)
@@ -61,7 +67,22 @@ public class ParetoSetCollectorTest {
         // H(2.0, 2.0)
         // I(5.0, 5.0)
         // J(0.0, 8.0)
-        //
+        a = createPhenotype(0, 1.0);
+        b = createPhenotype(1, 1.0);
+        c = createPhenotype(2, 1.0);
+        d = createPhenotype(3, 1.0);
+        e = createPhenotype(4, 1.0);
+        f = createPhenotype(5, 1.0);
+        g = createPhenotype(6, 1.0);
+        h = createPhenotype(7, 1.0);
+        i = createPhenotype(8, 1.0);
+        j = createPhenotype(9, 1.0);
+
+        collector = ParetoSetCollector.create(precisionProvider, averageProvider, s -> Double::compare);
+    }
+
+    @Test
+    public void paretoFrontMinimization() {
         // y\x -0- -1- -2- -3- -4- -5- -6- -7-
         // -----------------------------------
         // 8 | [J] --- --- --- --- --- --- ---
@@ -81,16 +102,6 @@ public class ParetoSetCollectorTest {
         // H(2.0, 2.0)
         // G(7.0, 1.0)
         Optimize optimize = Optimize.MINIMUM;
-        Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
-        Phenotype<IntegerGene, Double> d = createPhenotype(3, 1.0);
-        Phenotype<IntegerGene, Double> e = createPhenotype(4, 1.0);
-        Phenotype<IntegerGene, Double> f = createPhenotype(5, 1.0);
-        Phenotype<IntegerGene, Double> g = createPhenotype(6, 1.0);
-        Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
-        Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
-        Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
         EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
         EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
         EvolutionResult<IntegerGene, Double> rc = createEvolutionResult(c, optimize);
@@ -120,18 +131,6 @@ public class ParetoSetCollectorTest {
 
     @Test
     public void paretoFrontMaximization() {
-        // All points:
-        // A(1.0, 7.0)
-        // B(2.0, 6.0)
-        // C(3.0, 5.0)
-        // D(4.0, 4.0)
-        // E(5.0, 3.0)
-        // F(6.0, 2.0)
-        // G(7.0, 1.0)
-        // H(2.0, 2.0)
-        // I(5.0, 5.0)
-        // J(0.0, 8.0)
-        //
         // y\x -0- -1- -2- -3- -4- -5- -6- -7-
         // -----------------------------------
         // 8 | [J] --- --- --- --- --- --- ---
@@ -152,16 +151,6 @@ public class ParetoSetCollectorTest {
         // F(6.0, 2.0)
         // G(7.0, 1.0)
         // J(0.0, 8.0)
-        Phenotype<IntegerGene, Double> a = createPhenotype(0, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> c = createPhenotype(2, 1.0);
-        Phenotype<IntegerGene, Double> d = createPhenotype(3, 1.0);
-        Phenotype<IntegerGene, Double> e = createPhenotype(4, 1.0);
-        Phenotype<IntegerGene, Double> f = createPhenotype(5, 1.0);
-        Phenotype<IntegerGene, Double> g = createPhenotype(6, 1.0);
-        Phenotype<IntegerGene, Double> h = createPhenotype(7, 1.0);
-        Phenotype<IntegerGene, Double> i = createPhenotype(8, 1.0);
-        Phenotype<IntegerGene, Double> j = createPhenotype(9, 1.0);
         Optimize optimize = Optimize.MAXIMUM;
         EvolutionResult<IntegerGene, Double> ra = createEvolutionResult(a, optimize);
         EvolutionResult<IntegerGene, Double> rb = createEvolutionResult(b, optimize);
