@@ -2,7 +2,6 @@ package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.List;
 
-import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public interface IEAEvolutionStatusReceiver extends AutoCloseable {

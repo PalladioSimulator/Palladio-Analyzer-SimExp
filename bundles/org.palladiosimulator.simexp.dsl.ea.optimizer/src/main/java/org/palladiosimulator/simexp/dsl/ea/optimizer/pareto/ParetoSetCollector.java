@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 import io.jenetics.Gene;

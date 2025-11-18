@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 public class ParetoDominance implements Comparator<IndividualResult> {

@@ -3,8 +3,8 @@ package org.palladiosimulator.simexp.dsl.ea.optimizer.impl;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import io.jenetics.Gene;

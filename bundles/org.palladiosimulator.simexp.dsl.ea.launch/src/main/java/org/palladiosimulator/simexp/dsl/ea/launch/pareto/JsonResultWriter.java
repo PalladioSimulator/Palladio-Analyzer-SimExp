@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 import com.google.gson.FieldNamingPolicy;
