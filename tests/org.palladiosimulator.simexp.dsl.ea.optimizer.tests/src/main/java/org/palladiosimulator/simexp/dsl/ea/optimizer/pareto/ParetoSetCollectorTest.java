@@ -78,6 +78,17 @@ public class ParetoSetCollectorTest {
         i = createPhenotype(8, 1.0);
         j = createPhenotype(9, 1.0);
 
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
+        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
+        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
+        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
+        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
+        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
+        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
+        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
+        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
+
         collector = ParetoSetCollector.create(precisionProvider, averageProvider, s -> Double::compare);
     }
 
@@ -101,17 +112,6 @@ public class ParetoSetCollectorTest {
         // J(0.0, 8.0)
         // H(2.0, 2.0)
         // G(7.0, 1.0)
-        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
-        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
-        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
-        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
-        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
-        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
-        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
-        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
-        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
-        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
-
         Stream<EvolutionResult<IntegerGene, Double>> resultStream = buildResultStream(Optimize.MINIMUM);
         ISeq<Phenotype<IntegerGene, Double>> actualResult = resultStream.collect(collector);
 
@@ -140,17 +140,6 @@ public class ParetoSetCollectorTest {
         // F(6.0, 2.0)
         // G(7.0, 1.0)
         // J(0.0, 8.0)
-        when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 7));
-        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 6));
-        when(averageProvider.getAverages(c)).thenReturn(buildAverages(3, 5));
-        when(averageProvider.getAverages(d)).thenReturn(buildAverages(4, 4));
-        when(averageProvider.getAverages(e)).thenReturn(buildAverages(5, 3));
-        when(averageProvider.getAverages(f)).thenReturn(buildAverages(6, 2));
-        when(averageProvider.getAverages(g)).thenReturn(buildAverages(7, 1));
-        when(averageProvider.getAverages(h)).thenReturn(buildAverages(2, 2));
-        when(averageProvider.getAverages(i)).thenReturn(buildAverages(5, 5));
-        when(averageProvider.getAverages(j)).thenReturn(buildAverages(0, 8));
-
         Stream<EvolutionResult<IntegerGene, Double>> resultStream = buildResultStream(Optimize.MAXIMUM);
         ISeq<Phenotype<IntegerGene, Double>> actualResult = resultStream.collect(collector);
 
