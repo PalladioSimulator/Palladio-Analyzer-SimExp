@@ -191,9 +191,9 @@ public class EAOptimizer implements IEAOptimizer {
             .genotype());
         IndividualResult fittestIndividual = new IndividualResult(bestFitness, bestOptimizableValues);
 
-        ParetoFrontBuilder<G> paretoFrontBuilder = new ParetoFrontBuilder<>(normalizer, qualityAttributeProvider,
+        ParetoFrontBuilder<G> paretoFrontBuilder = new ParetoFrontBuilder<>(qualityAttributeProvider,
                 config.getPrecisionProvider());
-        List<IndividualResult> paretoFront = paretoFrontBuilder.buildParetoFront(result);
+        List<IndividualResult> paretoFront = paretoFrontBuilder.buildParetoFront(finalPopulation);
 
         return new EAResult(fittestIndividual, paretoFront, finalPopulation);
     }
