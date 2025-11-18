@@ -5,17 +5,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
-import io.jenetics.Gene;
-import io.jenetics.Phenotype;
-
-public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenotype<G, Double>> {
+public class ParetoDominance implements Comparator<IndividualResult> {
     private final double epsilon;
-    private final IAverageProvider<G> averageProvider;
+    private final IAverageProvider averageProvider;
     private final Function<String, Comparator<Double>> comparatorFactory;
 
-    public ParetoDominance(IPrecisionProvider precisionProvider, IAverageProvider<G> averageProvider,
+    public ParetoDominance(IPrecisionProvider precisionProvider, IAverageProvider averageProvider,
             Function<String, Comparator<Double>> comparatorFactory) {
         this.epsilon = precisionProvider.getPrecision();
         this.averageProvider = averageProvider;
@@ -28,7 +26,7 @@ public class ParetoDominance<G extends Gene<?, G>> implements Comparator<Phenoty
      * @return +1 if a dominates b, -1 if b dominates a, 0 if neither (or equal)
      */
     @Override
-    public int compare(Phenotype<G, Double> a, Phenotype<G, Double> b) {
+    public int compare(IndividualResult a, IndividualResult b) {
         Optional<Map<String, Double>> averagesA = averageProvider.getAverages(a);
         Optional<Map<String, Double>> averagesB = averageProvider.getAverages(b);
 

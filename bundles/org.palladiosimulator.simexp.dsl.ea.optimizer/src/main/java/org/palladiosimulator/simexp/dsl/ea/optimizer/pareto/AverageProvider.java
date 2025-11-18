@@ -4,27 +4,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
-import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
-import io.jenetics.Gene;
-import io.jenetics.Genotype;
-import io.jenetics.Phenotype;
-
-public class AverageProvider<G extends Gene<?, G>> implements IAverageProvider<G> {
-    private final ITranscoder<G> normalizer;
+public class AverageProvider implements IAverageProvider {
     private final QualityAttributesAverageCalculator qualityAttributesAverageCalculator;
 
-    public AverageProvider(ITranscoder<G> normalizer, IQualityAttributeProvider qualityAttributeProvider) {
-        this.normalizer = normalizer;
+    public AverageProvider(IQualityAttributeProvider qualityAttributeProvider) {
         this.qualityAttributesAverageCalculator = new QualityAttributesAverageCalculator(qualityAttributeProvider);
     }
 
     @Override
-    public Optional<Map<String, Double>> getAverages(Phenotype<G, Double> phenotype) {
-        Genotype<G> genotype = phenotype.genotype();
-        List<OptimizableValue<?>> optimizableValues = normalizer.toOptimizableValues(genotype);
+    public Optional<Map<String, Double>> getAverages(IndividualResult individualResult) {
+        List<OptimizableValue<?>> optimizableValues = individualResult.getOptimizableValues();
         Optional<Map<String, Double>> averages = qualityAttributesAverageCalculator
             .calculateAverages(optimizableValues);
         return averages;

@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
@@ -13,7 +12,7 @@ import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.ITranscoder;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 import io.jenetics.Gene;
-import io.jenetics.Phenotype;
+import io.jenetics.Optimize;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.util.ISeq;
 
@@ -32,16 +31,19 @@ public class ParetoFrontBuilder<G extends Gene<?, G>> {
     }
 
     public List<IndividualResult> buildParetoFront(EvolutionResult<G, Double> result) {
-        IAverageProvider<G> averageProvider = new AverageProvider<>(normalizer, qualityAttributeProvider);
-        averageProvider = new CachingAverageProvider<>(averageProvider);
+        IAverageProvider averageProvider = new AverageProvider(qualityAttributeProvider);
+        averageProvider = new CachingAverageProvider(averageProvider);
         Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
-        Collector<EvolutionResult<G, Double>, ?, ISeq<Phenotype<G, Double>>> moeaCollector = ParetoSetCollector
-            .create(precisionProvider, averageProvider, comparatorFactory);
+        Collector<IndividualResult, ?, ISeq<IndividualResult>> moeaCollector = ParetoSetCollector
+            .create(precisionProvider, averageProvider, comparatorFactory, Optimize.MINIMUM);
+        List<IndividualResult> population = result.population()
+            .stream()
+            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
+            .toList();
         LOGGER.info("building pareto front");
-        final ISeq<Phenotype<G, Double>> phenotypes = Stream.of(result)
+        ISeq<IndividualResult> phenotypes = population.stream()
             .collect(moeaCollector);
         List<IndividualResult> paretoFront = phenotypes.stream()
-            .map(p -> new IndividualResult(p.fitness(), normalizer.toOptimizableValues(p.genotype())))
             .toList();
         return paretoFront;
     }

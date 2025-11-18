@@ -4,28 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.jenetics.Gene;
-import io.jenetics.Phenotype;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 
-public class CachingAverageProvider<G extends Gene<?, G>> implements IAverageProvider<G> {
-    private final IAverageProvider<G> delegate;
+public class CachingAverageProvider implements IAverageProvider {
+    private final IAverageProvider delegate;
 
-    private final Map<Phenotype<G, Double>, Optional<Map<String, Double>>> averageCache;
+    private final Map<IndividualResult, Optional<Map<String, Double>>> averageCache;
 
-    public CachingAverageProvider(IAverageProvider<G> delegate) {
+    public CachingAverageProvider(IAverageProvider delegate) {
         this.delegate = delegate;
         this.averageCache = new HashMap<>();
     }
 
     @Override
-    public Optional<Map<String, Double>> getAverages(Phenotype<G, Double> phenotype) {
-        Optional<Map<String, Double>> averages = averageCache.get(phenotype);
+    public Optional<Map<String, Double>> getAverages(IndividualResult individualResult) {
+        Optional<Map<String, Double>> averages = averageCache.get(individualResult);
         if (averages != null) {
             return averages;
         }
 
-        averages = delegate.getAverages(phenotype);
-        averageCache.put(phenotype, averages);
+        averages = delegate.getAverages(individualResult);
+        averageCache.put(individualResult, averages);
         return averages;
     }
 }

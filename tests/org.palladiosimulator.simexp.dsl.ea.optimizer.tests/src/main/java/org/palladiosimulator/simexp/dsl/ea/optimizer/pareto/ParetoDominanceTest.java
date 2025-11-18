@@ -4,32 +4,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.dsl.ea.api.EAResult.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
-
-import io.jenetics.Genotype;
-import io.jenetics.IntegerChromosome;
-import io.jenetics.IntegerGene;
-import io.jenetics.Phenotype;
-import io.jenetics.util.IntRange;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.DataType;
+import org.palladiosimulator.simexp.dsl.smodel.smodel.Optimizable;
+import org.palladiosimulator.simexp.dsl.smodel.test.util.SmodelCreator;
 
 public class ParetoDominanceTest {
     private static final double EPSILON = 0.0001;
 
-    private ParetoDominance<IntegerGene> paretoDominance;
-
-    private IntRange range;
+    private ParetoDominance paretoDominance;
 
     @Mock
-    private IAverageProvider<IntegerGene> averageProvider;
+    private IAverageProvider averageProvider;
     @Mock
     private IPrecisionProvider precisionProvider;
+
+    private List<OptimizableValue<?>> optimizableValuesA;
+    private List<OptimizableValue<?>> optimizableValuesB;
 
     @Before
     public void setUp() throws Exception {
@@ -37,15 +39,18 @@ public class ParetoDominanceTest {
 
         when(precisionProvider.getPrecision()).thenReturn(EPSILON);
 
-        range = IntRange.of(0, 10);
+        SmodelCreator smodelCreator = new SmodelCreator();
+        Optimizable optimizable = smodelCreator.createOptimizable("o", DataType.STRING, null);
+        optimizableValuesA = Collections.singletonList(new OptimizableValue<>(optimizable, "a"));
+        optimizableValuesB = Collections.singletonList(new OptimizableValue<>(optimizable, "b"));
 
-        paretoDominance = new ParetoDominance<>(precisionProvider, averageProvider, s -> Double::compare);
+        paretoDominance = new ParetoDominance(precisionProvider, averageProvider, s -> Double::compare);
     }
 
     @Test
     public void testCompareEqual() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
 
@@ -56,8 +61,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testComparePrecision() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(2.0001, 2));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2.0002, 2));
 
@@ -68,8 +73,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testComparePareto() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(1, 2));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 1));
 
@@ -80,8 +85,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testCompareDominating() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 3));
 
@@ -92,8 +97,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testCompareNotDominating() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 3));
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
 
@@ -104,8 +109,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testCompareMissingBoth() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(Optional.empty());
         when(averageProvider.getAverages(b)).thenReturn(Optional.empty());
 
@@ -116,8 +121,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testCompareMissingA() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(Optional.empty());
         when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 2));
 
@@ -128,8 +133,8 @@ public class ParetoDominanceTest {
 
     @Test
     public void testCompareMissingB() {
-        Phenotype<IntegerGene, Double> a = createPhenotype(1, 1.0);
-        Phenotype<IntegerGene, Double> b = createPhenotype(2, 1.0);
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
         when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 2));
         when(averageProvider.getAverages(b)).thenReturn(Optional.empty());
 
@@ -145,11 +150,8 @@ public class ParetoDominanceTest {
         return Optional.of(averages);
     }
 
-    private Phenotype<IntegerGene, Double> createPhenotype(int allele, double fitness) {
-        IntegerGene gene = IntegerGene.of(allele, range);
-        IntegerChromosome chromo = IntegerChromosome.of(gene);
-        Genotype<IntegerGene> genoType = Genotype.of(chromo);
-        Phenotype<IntegerGene, Double> phenoType = Phenotype.of(genoType, 0L, fitness);
-        return phenoType;
+    private IndividualResult createIndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues) {
+        IndividualResult result = new IndividualResult(fitness, optimizableValues);
+        return result;
     }
 }
