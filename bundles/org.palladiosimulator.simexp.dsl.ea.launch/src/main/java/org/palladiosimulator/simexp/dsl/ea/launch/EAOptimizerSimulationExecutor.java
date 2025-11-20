@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
@@ -89,7 +90,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         double totalReward = 0.0;
         QualityMeasurements qualityMeasurements = null;
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
-        List<IndividualResult> paretoFront = Collections.emptyList();
+        List<IndividualParetoResult> paretoFront = Collections.emptyList();
         List<IndividualResult> finalPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
@@ -104,8 +105,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         detailDescription.addAll(formatOptimizables(bestOptimizableValues));
 
         detailDescription.add(String.format("Pareto optimal values %d:", paretoFront.size()));
-        for (ListIterator<IndividualResult> it = paretoFront.listIterator(); it.hasNext();) {
-            IndividualResult individualResult = it.next();
+        for (ListIterator<IndividualParetoResult> it = paretoFront.listIterator(); it.hasNext();) {
+            IndividualParetoResult individualParetoResult = it.next();
+            IndividualResult individualResult = individualParetoResult.getIndividualResult();
             List<OptimizableValue<?>> optimizables = individualResult.getOptimizableValues();
             detailDescription.add(String.format("- #%d", it.previousIndex()));
             detailDescription.addAll(formatOptimizables(optimizables));
@@ -124,7 +126,7 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
 
         JsonResultWriter jsonParetoWriter = new JsonResultWriter();
         Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
-        jsonParetoWriter.storeIndividualResults(paretoFrontFile, paretoFront);
+        jsonParetoWriter.storeIndividualParetoResults(paretoFrontFile, paretoFront);
         Path finalPopulationFile = resourcePath.resolve("final_population.json");
         jsonParetoWriter.storeIndividualResults(finalPopulationFile, finalPopulation);
 

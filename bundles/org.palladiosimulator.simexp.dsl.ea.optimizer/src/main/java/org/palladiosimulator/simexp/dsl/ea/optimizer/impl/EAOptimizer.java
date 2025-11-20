@@ -21,6 +21,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.impl.constraints.ForceValidConstraint;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.representation.OptimizableIntNormalizer;
@@ -194,7 +195,7 @@ public class EAOptimizer implements IEAOptimizer {
         LOGGER.info("building pareto front");
         ParetoFrontBuilder paretoFrontBuilder = new ParetoFrontBuilder(qualityAttributeProvider,
                 config.getPrecisionProvider());
-        List<IndividualResult> paretoFront = paretoFrontBuilder.buildParetoFront(finalPopulation);
+        List<IndividualParetoResult> paretoFront = paretoFrontBuilder.buildParetoFront(finalPopulation);
 
         return new EAResult(fittestIndividual, paretoFront, finalPopulation);
     }

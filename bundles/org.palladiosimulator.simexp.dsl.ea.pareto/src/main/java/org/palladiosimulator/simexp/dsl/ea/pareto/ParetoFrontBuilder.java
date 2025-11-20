@@ -1,11 +1,15 @@
 package org.palladiosimulator.simexp.dsl.ea.pareto;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.pareto.impl.AverageProvider;
 import org.palladiosimulator.simexp.dsl.ea.pareto.impl.CachingAverageProvider;
@@ -26,16 +30,23 @@ public class ParetoFrontBuilder {
         this.precisionProvider = precisionProvider;
     }
 
-    public List<IndividualResult> buildParetoFront(List<IndividualResult> population) {
-        IAverageProvider averageProvider = new AverageProvider(qualityAttributeProvider);
-        averageProvider = new CachingAverageProvider(averageProvider);
+    public List<IndividualParetoResult> buildParetoFront(List<IndividualResult> population) {
+        final IAverageProvider averageProvider = new CachingAverageProvider(
+                new AverageProvider(qualityAttributeProvider));
         Function<String, Comparator<Double>> comparatorFactory = qualityAttributeProvider.getComparatorFactory();
         Collector<IndividualResult, ?, ISeq<IndividualResult>> moeaCollector = ParetoSetCollector
             .create(precisionProvider, averageProvider, comparatorFactory, Optimize.MINIMUM);
         ISeq<IndividualResult> phenotypes = population.stream()
             .collect(moeaCollector);
-        List<IndividualResult> paretoFront = phenotypes.stream()
+        List<IndividualParetoResult> paretoFront = phenotypes.stream()
+            .map(each -> toIndividualParetoResult(each, averageProvider))
             .toList();
         return paretoFront;
+    }
+
+    private IndividualParetoResult toIndividualParetoResult(IndividualResult result, IAverageProvider averageProvider) {
+        Optional<Map<String, Double>> optionalAverages = averageProvider.getAverages(result);
+        Map<String, Double> averages = optionalAverages.orElse(Collections.emptyMap());
+        return new IndividualParetoResult(result, averages);
     }
 }
