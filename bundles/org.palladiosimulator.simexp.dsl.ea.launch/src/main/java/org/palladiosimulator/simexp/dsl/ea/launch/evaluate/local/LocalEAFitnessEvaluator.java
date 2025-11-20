@@ -22,6 +22,7 @@ import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
@@ -72,6 +73,11 @@ public class LocalEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator {
     @Override
     public IQualityAttributeProvider getQualityAttributeProvider() {
         return qualityAttributeProvider;
+    }
+
+    @Override
+    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+        return (List<OptimizableValue<?>> optimizableValues) -> Optional.empty();
     }
 
     @Override

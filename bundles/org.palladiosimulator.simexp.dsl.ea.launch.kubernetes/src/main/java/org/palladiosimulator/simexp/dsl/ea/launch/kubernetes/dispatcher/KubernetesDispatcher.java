@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
@@ -38,6 +39,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.NodeInfo
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.deployment.PodRestartObserver;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.preferences.KubernetesPreferenceConstants;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.CompositeResultHandler;
+import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.KubernetesFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.KubernetesQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.csv.CsvResultLogger;
 import org.palladiosimulator.simexp.dsl.ea.launch.kubernetes.result.json.JsonQualityAttributesResultLogger;
@@ -141,8 +143,9 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
             JsonQualityAttributesResultLogger qualityAttributesResultLogger = new JsonQualityAttributesResultLogger(
                     taskResourcesPath);
             KubernetesQualityAttributeProvider qualityAttributeProvider = new KubernetesQualityAttributeProvider();
-            CompositeResultHandler compositeResultLogger = new CompositeResultHandler(
-                    Arrays.asList(resultLogger, qualityAttributesResultLogger, qualityAttributeProvider));
+            KubernetesFitnessResultIdentificator fitnessResultIdentificator = new KubernetesFitnessResultIdentificator();
+            CompositeResultHandler compositeResultLogger = new CompositeResultHandler(Arrays.asList(resultLogger,
+                    qualityAttributesResultLogger, qualityAttributeProvider, fitnessResultIdentificator));
             try {
                 TaskManager taskManager = new TaskManager(compositeResultLogger, rewardFormater);
                 TaskSender taskSender = new TaskSender(channel, outQueueName);
@@ -157,7 +160,7 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
                 List<Path> projectPaths = getProjectPaths(config);
                 int parallelism = getRawCPUCores(client);
                 fitnessEvaluator = new EAFitnessEvaluator(taskManager, taskSender, qualityAttributeProvider,
-                        launcherName, projectPaths, timeZone, parallelism, classloader);
+                        fitnessResultIdentificator, launcherName, projectPaths, timeZone, parallelism, classloader);
                 int memoryUsage = ((IEvolutionaryAlgorithmWorkflowConfiguration) config).getMemoryUsage();
                 dispatcher.dispatch(memoryUsage, brokerUrl, outQueueName, inQueueName, maxDelivery, new Runnable() {
 
@@ -259,6 +262,11 @@ public class KubernetesDispatcher implements IDisposeableEAFitnessEvaluator {
     @Override
     public IQualityAttributeProvider getQualityAttributeProvider() {
         return fitnessEvaluator.getQualityAttributeProvider();
+    }
+
+    @Override
+    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+        return fitnessEvaluator.getFitnessResultIdentificator();
     }
 
     @Override

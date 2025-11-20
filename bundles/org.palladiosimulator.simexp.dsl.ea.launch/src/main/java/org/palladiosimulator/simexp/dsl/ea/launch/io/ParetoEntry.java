@@ -6,8 +6,9 @@ class ParetoEntry extends ResultEntry {
     public final double score;
     public final Map<String, Double> averages;
 
-    public ParetoEntry(double fitness, Map<String, Object> optimizables, double score, Map<String, Double> averages) {
-        super(fitness, optimizables);
+    public ParetoEntry(double fitness, Map<String, Object> optimizables, String id, double score,
+            Map<String, Double> averages) {
+        super(fitness, optimizables, id);
         this.score = score;
         this.averages = averages;
     }

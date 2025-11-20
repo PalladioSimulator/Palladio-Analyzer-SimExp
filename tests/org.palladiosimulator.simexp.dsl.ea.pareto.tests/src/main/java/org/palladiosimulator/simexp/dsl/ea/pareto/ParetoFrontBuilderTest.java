@@ -36,7 +36,7 @@ public class ParetoFrontBuilderTest {
 
     @Test
     public void testBuildParetoFront() {
-        IndividualResult result = new IndividualResult(1.0, Collections.emptyList());
+        IndividualResult result = new IndividualResult(1.0, Collections.emptyList(), "");
         List<IndividualResult> population = Collections.singletonList(result);
 
         List<IndividualParetoResult> actualFront = builder.buildParetoFront(population);

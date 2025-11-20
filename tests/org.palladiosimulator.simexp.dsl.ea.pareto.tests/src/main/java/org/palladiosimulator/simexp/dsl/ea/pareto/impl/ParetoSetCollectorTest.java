@@ -179,6 +179,6 @@ public class ParetoSetCollectorTest {
     }
 
     private IndividualResult createIndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues) {
-        return new IndividualResult(fitness, optimizableValues);
+        return new IndividualResult(fitness, optimizableValues, "");
     }
 }

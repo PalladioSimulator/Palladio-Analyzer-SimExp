@@ -35,7 +35,7 @@ public class JsonResultWriter {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
             Map<String, Object> optimizables = extractOptimizables(result);
-            ResultEntry entry = new ResultEntry(result.getFitness(), optimizables);
+            ResultEntry entry = new ResultEntry(result.getFitness(), optimizables, result.getId());
             entries.add(entry);
         }
         writeEntries(resultFile, entries);
@@ -47,7 +47,8 @@ public class JsonResultWriter {
             IndividualResult result = paretoResult.getIndividualResult();
             Map<String, Object> optimizables = extractOptimizables(result);
             Map<String, Double> averages = new TreeMap<>(paretoResult.getAverages());
-            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables, paretoResult.buildScore(), averages);
+            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables, result.getId(),
+                    paretoResult.buildScore(), averages);
             entries.add(entry);
         }
         writeEntries(resultFile, entries);

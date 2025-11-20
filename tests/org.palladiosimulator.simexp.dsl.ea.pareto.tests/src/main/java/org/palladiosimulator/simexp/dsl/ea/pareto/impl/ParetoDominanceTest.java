@@ -151,7 +151,7 @@ public class ParetoDominanceTest {
     }
 
     private IndividualResult createIndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues) {
-        IndividualResult result = new IndividualResult(fitness, optimizableValues);
+        IndividualResult result = new IndividualResult(fitness, optimizableValues, "");
         return result;
     }
 }

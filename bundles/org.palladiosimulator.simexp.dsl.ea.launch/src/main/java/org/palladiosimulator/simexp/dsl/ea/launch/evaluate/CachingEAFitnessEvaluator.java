@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.OptimizableValueToString;
@@ -82,5 +83,10 @@ public class CachingEAFitnessEvaluator implements IDisposeableEAFitnessEvaluator
     @Override
     public IQualityAttributeProvider getQualityAttributeProvider() {
         return delegate.getQualityAttributeProvider();
+    }
+
+    @Override
+    public IFitnessResultIdentificator getFitnessResultIdentificator() {
+        return delegate.getFitnessResultIdentificator();
     }
 }

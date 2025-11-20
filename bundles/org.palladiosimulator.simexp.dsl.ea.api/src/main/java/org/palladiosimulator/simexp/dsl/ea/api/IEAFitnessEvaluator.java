@@ -29,4 +29,6 @@ public interface IEAFitnessEvaluator {
     int getParallelism();
 
     IQualityAttributeProvider getQualityAttributeProvider();
+
+    IFitnessResultIdentificator getFitnessResultIdentificator();
 }

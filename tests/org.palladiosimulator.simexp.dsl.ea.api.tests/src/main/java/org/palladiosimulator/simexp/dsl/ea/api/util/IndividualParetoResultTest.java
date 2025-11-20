@@ -21,7 +21,7 @@ public class IndividualParetoResultTest {
 
     @Test
     public void testBuildScoreEmpty() {
-        IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList());
+        IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList(), "");
         Map<String, Double> averages = Collections.emptyMap();
         IndividualParetoResult paretoResult = new IndividualParetoResult(individuaResult, averages);
 
@@ -32,7 +32,7 @@ public class IndividualParetoResultTest {
 
     @Test
     public void testBuildScore() {
-        IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList());
+        IndividualResult individuaResult = new IndividualResult(0, Collections.emptyList(), "");
         Map<String, Double> averages = new HashMap<>();
         averages.put("a", 0.3);
         averages.put("b", 0.7);

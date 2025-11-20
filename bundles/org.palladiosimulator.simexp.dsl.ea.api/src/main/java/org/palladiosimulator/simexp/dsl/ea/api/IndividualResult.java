@@ -11,10 +11,12 @@ import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 public class IndividualResult {
     private final double fitness;
     private final List<OptimizableValue<?>> optimizableValues;
+    private final String id;
 
-    public IndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues) {
+    public IndividualResult(double fitness, List<OptimizableValue<?>> optimizableValues, String id) {
         this.fitness = fitness;
         this.optimizableValues = Collections.unmodifiableList(optimizableValues);
+        this.id = id;
     }
 
     public double getFitness() {
@@ -54,5 +56,9 @@ public class IndividualResult {
         return new EqualsBuilder().append(fitness, rhs.fitness)
             .append(optimizableValues, rhs.optimizableValues)
             .isEquals();
+    }
+
+    public String getId() {
+        return id;
     }
 }
