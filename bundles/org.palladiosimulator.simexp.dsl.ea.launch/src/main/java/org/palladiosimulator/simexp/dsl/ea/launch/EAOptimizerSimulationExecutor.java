@@ -20,6 +20,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAOptimizer;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
+import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.ea.api.dispatcher.IDisposeableEAFitnessEvaluator;
 import org.palladiosimulator.simexp.dsl.ea.api.util.IRewardFormater;
@@ -29,6 +30,7 @@ import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationCSVWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationDumper;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationJsonWriter;
 import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationLogger;
+import org.palladiosimulator.simexp.dsl.ea.launch.log.GenerationParetoFrontBuilder;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.EAOptimizerFactory;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
@@ -165,6 +167,10 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationCSVWriter(resourcePath));
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationJsonWriter(resourcePath));
                     eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationDumper(generationsPath));
+                    IQualityAttributeProvider qualityAttributeProvider = evaluator.getQualityAttributeProvider();
+                    eaEvolutionStatusReceiverDispatcher.addReceiver(new GenerationParetoFrontBuilder(generationsPath,
+                            qualityAttributeProvider, precisionProvider));
+
                     LOGGER.info("EA optimization start");
                     optimizationResult = optimizer.optimize(optimizableProvider, evaluator,
                             eaEvolutionStatusReceiverDispatcher);
