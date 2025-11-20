@@ -15,4 +15,3 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  org.palladiosimulator.simexp.dsl.smodel.test.util,
  org.mockito.mockito-merged;bundle-version="3.3.3",
  org.assertj;bundle-version="3.20.2"
-Import-Package: org.palladiosimulator.simexp.dsl.smodel.api
