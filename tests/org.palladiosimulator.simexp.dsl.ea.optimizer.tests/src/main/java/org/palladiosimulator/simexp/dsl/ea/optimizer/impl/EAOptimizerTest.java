@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAConfig;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IEAFitnessEvaluator;
+import org.palladiosimulator.simexp.dsl.ea.api.IFitnessResultIdentificator;
 import org.palladiosimulator.simexp.dsl.ea.api.IOptimizableProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.optimizer.utility.FitnessHelper;
@@ -63,6 +64,8 @@ public class EAOptimizerTest {
     @Mock
     private IQualityAttributeProvider qualityAttributeProvider;
     @Mock
+    private IFitnessResultIdentificator fitnessResultIdentificator;
+    @Mock
     private IExpressionCalculator calculator;
     @Mock
     private IPrecisionProvider precisionProvider;
@@ -94,10 +97,12 @@ public class EAOptimizerTest {
         };
         when(fitnessEvaluator.calcFitness(anyList())).thenAnswer(fitnessAnswer);
         when(fitnessEvaluator.getQualityAttributeProvider()).thenReturn(qualityAttributeProvider);
+        when(fitnessEvaluator.getFitnessResultIdentificator()).thenReturn(fitnessResultIdentificator);
         Run run = new Run(Collections.singletonMap("qa1", Arrays.asList(2.0)));
         QualityMeasurements qualityMeasurements = new QualityMeasurements(Arrays.asList(run));
         when(qualityAttributeProvider.getQualityMeasurements(anyList())).thenReturn(Optional.of(qualityMeasurements));
         when(qualityAttributeProvider.getComparatorFactory()).thenReturn(s -> Double::compare);
+        when(fitnessResultIdentificator.getIdentificator(anyList())).thenReturn(Optional.of(""));
 
         setBoundsHelper = new SetBoundsHelper();
         rangeBoundsHelper = new RangeBoundsHelper();
