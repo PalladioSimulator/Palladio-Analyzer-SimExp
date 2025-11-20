@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IEAEvolutionStatusReceiver;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
-import org.palladiosimulator.simexp.dsl.ea.launch.pareto.JsonResultWriter;
+import org.palladiosimulator.simexp.dsl.ea.launch.io.JsonResultWriter;
 import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class GenerationDumper implements IEAEvolutionStatusReceiver {
