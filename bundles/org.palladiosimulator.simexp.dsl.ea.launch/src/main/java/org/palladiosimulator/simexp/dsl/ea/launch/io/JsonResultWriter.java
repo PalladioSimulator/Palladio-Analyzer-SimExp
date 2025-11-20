@@ -34,33 +34,35 @@ public class JsonResultWriter {
     public void storeIndividualResults(Path resultFile, List<IndividualResult> individualResults) {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
-            Map<String, Object> optimizables = new TreeMap<>();
-            for (OptimizableValue<?> ov : result.getOptimizableValues()) {
-                optimizables.put(ov.getOptimizable()
-                    .getName(), ov.getValue());
-            }
+            Map<String, Object> optimizables = extractOptimizables(result);
             ResultEntry entry = new ResultEntry(result.getFitness(), optimizables);
             entries.add(entry);
         }
-        try (Writer writer = Files.newBufferedWriter(resultFile)) {
-            gson.toJson(entries, writer);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        writeEntries(resultFile, entries);
     }
 
     public void storeIndividualParetoResults(Path resultFile, List<IndividualParetoResult> individualParetoResults) {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualParetoResult paretoResult : individualParetoResults) {
             IndividualResult result = paretoResult.getIndividualResult();
-            Map<String, Object> optimizables = new TreeMap<>();
-            for (OptimizableValue<?> ov : result.getOptimizableValues()) {
-                optimizables.put(ov.getOptimizable()
-                    .getName(), ov.getValue());
-            }
-            ResultEntry entry = new ResultEntry(result.getFitness(), optimizables);
+            Map<String, Object> optimizables = extractOptimizables(result);
+            Map<String, Double> averages = new TreeMap<>(paretoResult.getAverages());
+            ParetoEntry entry = new ParetoEntry(result.getFitness(), optimizables, paretoResult.buildScore(), averages);
             entries.add(entry);
         }
+        writeEntries(resultFile, entries);
+    }
+
+    private Map<String, Object> extractOptimizables(IndividualResult result) {
+        Map<String, Object> optimizables = new TreeMap<>();
+        for (OptimizableValue<?> ov : result.getOptimizableValues()) {
+            optimizables.put(ov.getOptimizable()
+                .getName(), ov.getValue());
+        }
+        return optimizables;
+    }
+
+    private void writeEntries(Path resultFile, List<ResultEntry> entries) {
         try (Writer writer = Files.newBufferedWriter(resultFile)) {
             gson.toJson(entries, writer);
         } catch (IOException e) {
