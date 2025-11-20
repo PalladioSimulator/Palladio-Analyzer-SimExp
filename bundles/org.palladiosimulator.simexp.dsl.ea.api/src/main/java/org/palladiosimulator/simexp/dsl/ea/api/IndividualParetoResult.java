@@ -1,9 +1,7 @@
-package org.palladiosimulator.simexp.dsl.ea.pareto;
+package org.palladiosimulator.simexp.dsl.ea.api;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 
 public class IndividualParetoResult {
 

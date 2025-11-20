@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.pareto;
+package org.palladiosimulator.simexp.dsl.ea.api.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 
 public class IndividualParetoResultTest {
