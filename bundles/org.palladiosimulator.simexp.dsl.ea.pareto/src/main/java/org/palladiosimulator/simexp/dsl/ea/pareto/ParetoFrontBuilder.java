@@ -7,6 +7,10 @@ import java.util.stream.Collector;
 
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
+import org.palladiosimulator.simexp.dsl.ea.pareto.impl.AverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.pareto.impl.CachingAverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.pareto.impl.IAverageProvider;
+import org.palladiosimulator.simexp.dsl.ea.pareto.impl.ParetoSetCollector;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
 
 import io.jenetics.Optimize;

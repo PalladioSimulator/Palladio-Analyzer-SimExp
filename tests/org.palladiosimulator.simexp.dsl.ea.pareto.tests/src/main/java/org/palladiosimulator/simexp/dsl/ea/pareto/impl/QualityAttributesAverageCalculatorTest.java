@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.pareto;
+package org.palladiosimulator.simexp.dsl.ea.pareto.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
