@@ -1,4 +1,4 @@
-package org.palladiosimulator.simexp.dsl.ea.optimizer.pareto;
+package org.palladiosimulator.simexp.dsl.ea.pareto;
 
 import java.util.Comparator;
 import java.util.List;
