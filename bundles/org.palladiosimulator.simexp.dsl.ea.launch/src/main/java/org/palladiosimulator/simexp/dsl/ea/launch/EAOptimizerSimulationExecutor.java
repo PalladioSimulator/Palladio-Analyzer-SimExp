@@ -92,11 +92,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         List<OptimizableValue<?>> bestOptimizableValues = Collections.emptyList();
         List<IndividualParetoResult> paretoFront = Collections.emptyList();
         List<IndividualResult> finalPopulation = Collections.emptyList();
+        List<IndividualResult> initialPopulation = Collections.emptyList();
         if (optimizationResult != null) {
             IndividualResult fittest = optimizationResult.getFittest();
             totalReward = fittest.getFitness();
             bestOptimizableValues = fittest.getOptimizableValues();
             paretoFront = optimizationResult.getParetoFront();
+            initialPopulation = optimizationResult.getInitialPopulation();
             finalPopulation = optimizationResult.getFinalPopulation();
         }
         String description = String.format("fittest individual of policy %s", getPolicyId());
@@ -113,13 +115,13 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
             detailDescription.addAll(formatOptimizables(optimizables));
         }
 
-        List<IndividualResult> uniquePopulation = finalPopulation.stream()
+        List<IndividualResult> uniqueFinalPopulation = finalPopulation.stream()
             .filter(distinctByKey(IndividualResult::getOptimizableValues))
             .toList();
 
         detailDescription.add(String.format("The final population has %d (%d unique) individuals:",
-                finalPopulation.size(), uniquePopulation.size()));
-        for (IndividualResult individual : uniquePopulation) {
+                finalPopulation.size(), uniqueFinalPopulation.size()));
+        for (IndividualResult individual : uniqueFinalPopulation) {
             detailDescription.add(String.format("- fitness %s", rewardFormater.asString(individual.getFitness())));
             detailDescription.addAll(formatOptimizables(individual.getOptimizableValues()));
         }
@@ -127,6 +129,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         JsonResultWriter jsonParetoWriter = new JsonResultWriter();
         Path paretoFrontFile = resourcePath.resolve("pareto_front.json");
         jsonParetoWriter.storeIndividualParetoResults(paretoFrontFile, paretoFront);
+        Path initialPopulationFile = resourcePath.resolve("initial_population.json");
+        jsonParetoWriter.storeIndividualResults(initialPopulationFile, initialPopulation);
         Path finalPopulationFile = resourcePath.resolve("final_population.json");
         jsonParetoWriter.storeIndividualResults(finalPopulationFile, finalPopulation);
 

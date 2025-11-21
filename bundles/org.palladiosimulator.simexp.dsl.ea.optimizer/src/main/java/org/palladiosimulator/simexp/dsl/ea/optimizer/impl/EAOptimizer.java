@@ -151,6 +151,11 @@ public class EAOptimizer implements IEAOptimizer {
             IFitnessResultIdentificator fitnessResultIdentificator, final Engine<G, Double> engine) {
         LOGGER.info("EA running...");
 
+        EvolutionResult<G, Double> initial = engine.stream()
+            .findFirst()
+            .orElseThrow();
+        LOGGER.info("initial population created");
+
         EvolutionStream<G, Double> evolutionStream = engine.stream();
         evolutionStream = addTerminationConditions(evolutionStream, config);
 
@@ -171,13 +176,13 @@ public class EAOptimizer implements IEAOptimizer {
         }
 
         LOGGER.info("EA finished");
-        EAResult eaResult = buildEAResult(result, standardStatistics, evaluationStatistics, normalizer,
+        EAResult eaResult = buildEAResult(initial, result, standardStatistics, evaluationStatistics, normalizer,
                 qualityAttributeProvider, fitnessResultIdentificator);
         return eaResult;
     }
 
-    private <G extends Gene<?, G>> EAResult buildEAResult(EvolutionResult<G, Double> result,
-            EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics,
+    private <G extends Gene<?, G>> EAResult buildEAResult(EvolutionResult<G, Double> initial,
+            EvolutionResult<G, Double> result, EvolutionStatistics<Double, DoubleMomentStatistics> standardStatistics,
             EvaluationStatistics<G> evaluationStatistics, ITranscoder<G> normalizer,
             IQualityAttributeProvider qualityAttributeProvider,
             IFitnessResultIdentificator fitnessResultIdentificator) {
@@ -186,6 +191,11 @@ public class EAOptimizer implements IEAOptimizer {
         resultStatistics.append("\n");
         resultStatistics.append(evaluationStatistics);
         LOGGER.info(resultStatistics.toString());
+
+        List<IndividualResult> initialPopulation = initial.population()
+            .stream()
+            .map(p -> buildIndividualResult(normalizer, fitnessResultIdentificator, p))
+            .toList();
 
         List<IndividualResult> finalPopulation = result.population()
             .stream()
@@ -199,7 +209,7 @@ public class EAOptimizer implements IEAOptimizer {
                 config.getPrecisionProvider());
         List<IndividualParetoResult> paretoFront = paretoFrontBuilder.buildParetoFront(finalPopulation);
 
-        return new EAResult(fittestIndividual, paretoFront, finalPopulation);
+        return new EAResult(fittestIndividual, paretoFront, initialPopulation, finalPopulation);
     }
 
     private <G extends Gene<?, G>> IndividualResult buildIndividualResult(ITranscoder<G> normalizer,
