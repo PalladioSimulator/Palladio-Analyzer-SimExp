@@ -45,6 +45,7 @@ import io.jenetics.UniformCrossover;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.Engine.Builder;
 import io.jenetics.engine.EvolutionResult;
+import io.jenetics.engine.EvolutionStart;
 import io.jenetics.engine.EvolutionStatistics;
 import io.jenetics.engine.EvolutionStream;
 import io.jenetics.engine.Limits;
@@ -154,9 +155,10 @@ public class EAOptimizer implements IEAOptimizer {
         EvolutionResult<G, Double> initial = engine.stream()
             .findFirst()
             .orElseThrow();
-        LOGGER.info("initial population created");
-
-        EvolutionStream<G, Double> evolutionStream = engine.stream();
+        EvolutionStart<G, Double> evolutionStart = initial.toEvolutionStart();
+        LOGGER.info(String.format("initial population of %d individuals created", evolutionStart.population()
+            .size()));
+        EvolutionStream<G, Double> evolutionStream = engine.stream(evolutionStart);
         evolutionStream = addTerminationConditions(evolutionStream, config);
 
         EAReporter<G> reporter = new EAReporter<>(evolutionStatusReceiver, normalizer, fitnessResultIdentificator);
