@@ -22,8 +22,8 @@ public class GenerationLogger implements IEAEvolutionStatusReceiver {
     @Override
     public void reportStatus(long generation, List<OptimizableValue<?>> optimizableValues, double fitness,
             List<IndividualResult> population) {
-        LOGGER.info(String.format("fitness status in generation %d for: %s = %s", generation,
-                asString(optimizableValues), rewardFormater.asString(fitness)));
+        LOGGER.info(String.format("fitness in generation %d is %s for: %s", generation,
+                rewardFormater.asString(fitness), asString(optimizableValues)));
     }
 
     private String asString(List<OptimizableValue<?>> optimizableValues) {
