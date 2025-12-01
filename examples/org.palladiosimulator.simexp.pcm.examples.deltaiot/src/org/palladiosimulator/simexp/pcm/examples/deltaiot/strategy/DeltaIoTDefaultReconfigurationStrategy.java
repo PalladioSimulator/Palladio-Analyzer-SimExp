@@ -124,7 +124,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
                 }
             }
 
-            if (eachMote.hasTwoLinks() && (powerChanging == false)) {
+            if (eachMote.hasTwoLinks() && adaptDistributionFactor(powerChanging)) {
                 if (customizer instanceof IDistributionFactorReconfiguration) {
                     IDistributionFactorReconfiguration distributionFactorReconfiguration = (IDistributionFactorReconfiguration) customizer;
 
@@ -158,6 +158,13 @@ public class DeltaIoTDefaultReconfigurationStrategy
         }
         MultiQVToReconfiguration reconfiguration = MultiQVToReconfiguration.of(singleReconfigurations);
         return reconfiguration;
+    }
+
+    private boolean adaptDistributionFactor(boolean powerChanging) {
+        if (powerChanging) {
+            return false;
+        }
+        return true;
     }
 
     private void setDistributionFactorsUniformally(IDistributionFactorReconfiguration reconfiguration,
