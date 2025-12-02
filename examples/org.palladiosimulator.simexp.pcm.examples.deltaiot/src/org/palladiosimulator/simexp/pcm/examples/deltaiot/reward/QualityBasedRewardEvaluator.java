@@ -9,27 +9,10 @@ import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
 import org.palladiosimulator.simexp.core.reward.RewardEvaluator;
 import org.palladiosimulator.simexp.core.state.StateQuantity;
+import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.MarkovEntityFactory;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.Reward;
-import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.impl.RewardImpl;
 
 public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
-
-    public static class RealValuedReward extends RewardImpl<Double> {
-
-        private RealValuedReward(double value) {
-            super.setValue(value);
-        }
-
-        public static RealValuedReward of(double value) {
-            return new RealValuedReward(value);
-        }
-
-        @Override
-        public String toString() {
-            return Double.toString(getValue());
-        }
-
-    }
 
     private final SimulatedMeasurementSpecification packetLossSpec;
     private final SimulatedMeasurementSpecification energyConsumptionSpec;
@@ -42,19 +25,18 @@ public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
 
     @Override
     public Reward<Double> evaluate(StateQuantity quantifiedState) {
-        double value = 0.0;
         SimulatedMeasurement packetLoss = quantifiedState.findMeasurementWith(packetLossSpec)
             .orElseThrow();
         double normalizedPacketLoss = normalizePacketLoss(packetLoss.getValue());
-        value += normalizedPacketLoss;
         SimulatedMeasurement energyConsumption = quantifiedState.findMeasurementWith(energyConsumptionSpec)
             .orElseThrow();
         double normalizedEnergyConsumption = normalizeEnergyConsumption(energyConsumption.getValue());
-        value += normalizedEnergyConsumption;
 
         double normalizedValue = normalizedPacketLoss + normalizedEnergyConsumption;
 
-        return RealValuedReward.of(normalizedValue);
+        Reward<Double> reward = MarkovEntityFactory.eINSTANCE.createReward();
+        reward.setValue(normalizedValue);
+        return reward;
     }
 
     private double normalizeEnergyConsumption(double ec) {
