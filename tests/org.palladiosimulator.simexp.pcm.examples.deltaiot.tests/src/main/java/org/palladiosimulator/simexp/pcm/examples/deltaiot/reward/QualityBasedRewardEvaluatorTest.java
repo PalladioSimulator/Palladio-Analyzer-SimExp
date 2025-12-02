@@ -105,4 +105,60 @@ public class QualityBasedRewardEvaluatorTest {
 
         assertThat(actualReward.getValue()).isEqualTo(0.7999, withPrecision(EPSILON));
     }
+
+    @Test
+    public void testEvaluatePLBorderLow() {
+        SimulatedMeasurement packetLossMeasurement = SimulatedMeasurement.of(DeltaIoTCommons.LOWER_BOUND_PACKET_LOSS,
+                packetLossSpec);
+        SimulatedMeasurement energyConsumptionMeasurement = SimulatedMeasurement.of(31.9, energyConsumptionSpec);
+        List<SimulatedMeasurement> measuredQuantities = Arrays.asList(packetLossMeasurement,
+                energyConsumptionMeasurement);
+        StateQuantity quantifiedState = StateQuantity.of(measuredQuantities);
+
+        Reward<Double> actualReward = evaluator.evaluate(quantifiedState);
+
+        assertThat(actualReward.getValue()).isEqualTo(1.65, withPrecision(EPSILON));
+    }
+
+    @Test
+    public void testEvaluatePLBorderHigh() {
+        SimulatedMeasurement packetLossMeasurement = SimulatedMeasurement.of(DeltaIoTCommons.UPPER_BOUND_PACKET_LOSS,
+                packetLossSpec);
+        SimulatedMeasurement energyConsumptionMeasurement = SimulatedMeasurement.of(31.9, energyConsumptionSpec);
+        List<SimulatedMeasurement> measuredQuantities = Arrays.asList(packetLossMeasurement,
+                energyConsumptionMeasurement);
+        StateQuantity quantifiedState = StateQuantity.of(measuredQuantities);
+
+        Reward<Double> actualReward = evaluator.evaluate(quantifiedState);
+
+        assertThat(actualReward.getValue()).isEqualTo(0.65, withPrecision(EPSILON));
+    }
+
+    @Test
+    public void testEvaluateECBorderLow() {
+        SimulatedMeasurement packetLossMeasurement = SimulatedMeasurement.of(0.06, packetLossSpec);
+        SimulatedMeasurement energyConsumptionMeasurement = SimulatedMeasurement
+            .of(DeltaIoTCommons.LOWER_BOUND_ENERGY_CONSUMPTION, energyConsumptionSpec);
+        List<SimulatedMeasurement> measuredQuantities = Arrays.asList(packetLossMeasurement,
+                energyConsumptionMeasurement);
+        StateQuantity quantifiedState = StateQuantity.of(measuredQuantities);
+
+        Reward<Double> actualReward = evaluator.evaluate(quantifiedState);
+
+        assertThat(actualReward.getValue()).isEqualTo(1.7999, withPrecision(EPSILON));
+    }
+
+    @Test
+    public void testEvaluateECBorderHigh() {
+        SimulatedMeasurement packetLossMeasurement = SimulatedMeasurement.of(0.06, packetLossSpec);
+        SimulatedMeasurement energyConsumptionMeasurement = SimulatedMeasurement
+            .of(DeltaIoTCommons.UPPER_BOUND_ENERGY_CONSUMPTION, energyConsumptionSpec);
+        List<SimulatedMeasurement> measuredQuantities = Arrays.asList(packetLossMeasurement,
+                energyConsumptionMeasurement);
+        StateQuantity quantifiedState = StateQuantity.of(measuredQuantities);
+
+        Reward<Double> actualReward = evaluator.evaluate(quantifiedState);
+
+        assertThat(actualReward.getValue()).isEqualTo(0.7999, withPrecision(EPSILON));
+    }
 }
