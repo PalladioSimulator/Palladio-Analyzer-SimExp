@@ -149,16 +149,8 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfParamsRepo);
         DeltaIoToReconfCustomizerResolver reconfCustomizerResolver = new DeltaIoToReconfCustomizerResolver();
 
-        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(
-                reconfParamsRepo, modelAccess, getSimulationParameters(), systemConfigTracker,
-                reconfCustomizerResolver);
-        // Strategy: LocalQualityBasedReconfigurationStrategy
-//        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = LocalQualityBasedReconfigurationStrategy
-//            .newBuilder(modelAccess)
-//            .withReconfigurationParams(reconfParamsRepo)
-//            .andPacketLossSpec((PrismSimulatedMeasurementSpec) packetLossSpec)
-//            .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
-//            .build();
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = createReconfigurationStrategy(
+                reconfParamsRepo, modelAccess, systemConfigTracker, reconfCustomizerResolver);
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
@@ -181,6 +173,25 @@ public class DeltaIoTSimulationExecutorFactory extends
 
         return new PcmExperienceSimulationExecutor<>(simulator, experiment, getSimulationParameters(),
                 reconfSelectionPolicy, rewardCalculation, qualityEvaluator, experimentProvider);
+    }
+
+    protected Policy<QVTOReconfigurator, QVToReconfiguration> createReconfigurationStrategy(
+            DeltaIoTReconfigurationParamRepository reconfParamsRepo,
+            DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess,
+            SystemConfigurationTracker systemConfigTracker,
+            DeltaIoToReconfCustomizerResolver reconfCustomizerResolver) {
+        Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy = new DeltaIoTDefaultReconfigurationStrategy(
+                reconfParamsRepo, modelAccess, getSimulationParameters(), systemConfigTracker,
+                reconfCustomizerResolver);
+        // Strategy: LocalQualityBasedReconfigurationStrategy
+        // Policy<QVTOReconfigurator, QVToReconfiguration> reconfSelectionPolicy =
+        // LocalQualityBasedReconfigurationStrategy
+        // .newBuilder(modelAccess)
+        // .withReconfigurationParams(reconfParamsRepo)
+        // .andPacketLossSpec((PrismSimulatedMeasurementSpec) packetLossSpec)
+        // .andEnergyConsumptionSpec((PrismSimulatedMeasurementSpec) energyConsumptionSpec)
+        // .build();
+        return reconfSelectionPolicy;
     }
 
     private Path getPrismFolder() {

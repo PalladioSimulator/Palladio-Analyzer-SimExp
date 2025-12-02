@@ -160,7 +160,7 @@ public class DeltaIoTDefaultReconfigurationStrategy
         return reconfiguration;
     }
 
-    private boolean adaptDistributionFactor(boolean powerChanging) {
+    protected boolean adaptDistributionFactor(boolean powerChanging) {
         if (powerChanging) {
             return false;
         }
