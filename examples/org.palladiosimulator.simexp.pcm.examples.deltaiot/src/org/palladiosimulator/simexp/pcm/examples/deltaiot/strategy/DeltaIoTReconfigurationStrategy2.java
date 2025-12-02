@@ -31,7 +31,7 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.core.models.PCMInstance;
 
 public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
-    private final static Threshold LOWER_PACKET_LOSS = Threshold.lessThan(DeltaIoTCommons.BOUND_PACKET_LOSS);
+    private final static Threshold LOWER_PACKET_LOSS = Threshold.lessThan(DeltaIoTCommons.AVG_BOUND_PACKET_LOSS);
     private final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold
         .lessThan(DeltaIoTCommons.AVG_BOUND_ENERGY_CONSUMPTION);
 

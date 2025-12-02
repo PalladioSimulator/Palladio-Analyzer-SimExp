@@ -28,7 +28,7 @@ public class DeltaIoTCommons {
     public final static String ENERGY_CONSUMPTION_KEY = "EnergyConsumption";
     public final static double UPPER_BOUND_PACKET_LOSS = 0.2;
     public final static double LOWER_BOUND_PACKET_LOSS = 0.025;
-    public final static double BOUND_PACKET_LOSS = 0.1;
+    public final static double AVG_BOUND_PACKET_LOSS = 0.1;
     public final static double UPPER_BOUND_ENERGY_CONSUMPTION = 34.5;
     public final static double AVG_BOUND_ENERGY_CONSUMPTION = 32;
     public final static double LOWER_BOUND_ENERGY_CONSUMPTION = 30.5;
