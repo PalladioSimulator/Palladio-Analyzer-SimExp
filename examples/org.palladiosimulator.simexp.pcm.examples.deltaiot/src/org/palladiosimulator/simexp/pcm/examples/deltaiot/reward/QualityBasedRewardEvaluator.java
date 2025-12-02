@@ -40,28 +40,23 @@ public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
     }
 
     private double normalizeEnergyConsumption(double ec) {
-        if (ec > UPPER_BOUND_ENERGY_CONSUMPTION) {
-            return 0;
-        }
-
-        if (ec < LOWER_BOUND_ENERGY_CONSUMPTION) {
-            return 1;
-        }
-
-        return (1 / (UPPER_BOUND_ENERGY_CONSUMPTION - LOWER_BOUND_ENERGY_CONSUMPTION))
-                * (UPPER_BOUND_ENERGY_CONSUMPTION - ec);
+        return normalize(ec, LOWER_BOUND_ENERGY_CONSUMPTION, UPPER_BOUND_ENERGY_CONSUMPTION);
     }
 
     private double normalizePacketLoss(double pl) {
-        if (pl > UPPER_BOUND_PACKET_LOSS) {
+        return normalize(pl, LOWER_BOUND_PACKET_LOSS, UPPER_BOUND_PACKET_LOSS);
+    }
+
+    private double normalize(double value, double lower, double upper) {
+        if (value > upper) {
             return 0;
         }
 
-        if (pl < LOWER_BOUND_PACKET_LOSS) {
+        if (value < lower) {
             return 1;
         }
 
-        return (1 / (UPPER_BOUND_PACKET_LOSS - LOWER_BOUND_PACKET_LOSS)) * (UPPER_BOUND_PACKET_LOSS - pl);
+        return (1 / (upper - lower)) * (upper - value);
     }
 
 }
