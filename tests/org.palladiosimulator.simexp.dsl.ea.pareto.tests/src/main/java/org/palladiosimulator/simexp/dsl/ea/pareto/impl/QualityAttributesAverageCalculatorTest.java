@@ -91,6 +91,20 @@ public class QualityAttributesAverageCalculatorTest {
         assertThat(actualAverages).isEmpty();
     }
 
+    @Test
+    public void testEmpty() {
+        List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
+        Run run1 = new Run(Collections.singletonMap("qa1", Collections.emptyList()));
+        QualityMeasurements qualityMeasurements1 = new QualityMeasurements(Arrays.asList(run1));
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues1))
+            .thenReturn(Optional.of(qualityMeasurements1));
+
+        Optional<Map<String, Double>> actualAverages = calculator.calculateAverages(optimizableValues1);
+
+        assertThat(actualAverages).isPresent();
+        assertThat(actualAverages.get()).containsOnly(entry("qa1", Double.NaN));
+    }
+
     @Test(expected = RuntimeException.class)
     public void testMissing() {
         List<OptimizableValue<?>> optimizableValues1 = Collections.singletonList(optimizableValue1);
