@@ -143,6 +143,51 @@ public class ParetoDominanceTest {
         assertThat(actualCompare).isGreaterThan(0);
     }
 
+    @Test
+    public void testCompareNaNA() {
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
+        Map<String, Double> averagesA = new HashMap<>();
+        averagesA.put("qa1", Double.NaN);
+        averagesA.put("qa2", Double.NaN);
+        when(averageProvider.getAverages(a)).thenReturn(Optional.of(averagesA));
+        when(averageProvider.getAverages(b)).thenReturn(buildAverages(2, 3));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isLessThan(0);
+    }
+
+    @Test
+    public void testCompareNaNB() {
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
+        Map<String, Double> averagesB = new HashMap<>();
+        averagesB.put("qa1", Double.NaN);
+        averagesB.put("qa2", Double.NaN);
+        when(averageProvider.getAverages(a)).thenReturn(buildAverages(2, 3));
+        when(averageProvider.getAverages(b)).thenReturn(Optional.of(averagesB));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isGreaterThan(0);
+    }
+
+    @Test
+    public void testCompareNaNAB() {
+        IndividualResult a = createIndividualResult(1.0, optimizableValuesA);
+        IndividualResult b = createIndividualResult(1.0, optimizableValuesB);
+        Map<String, Double> averages = new HashMap<>();
+        averages.put("qa1", Double.NaN);
+        averages.put("qa2", Double.NaN);
+        when(averageProvider.getAverages(a)).thenReturn(Optional.of(averages));
+        when(averageProvider.getAverages(b)).thenReturn(Optional.of(averages));
+
+        int actualCompare = paretoDominance.compare(a, b);
+
+        assertThat(actualCompare).isEqualTo(0);
+    }
+
     private Optional<Map<String, Double>> buildAverages(double one, double two) {
         Map<String, Double> averages = new HashMap<>();
         averages.put("qa1", one);
