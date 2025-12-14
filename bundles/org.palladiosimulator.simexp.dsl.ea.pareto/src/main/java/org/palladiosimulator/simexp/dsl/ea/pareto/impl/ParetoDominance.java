@@ -23,6 +23,8 @@ public class ParetoDominance implements Comparator<IndividualResult> {
     /**
      * Return if a dominates b.
      * 
+     * Domination is given when the the Comparator returns < 0.
+     * 
      * @return +1 if a dominates b, -1 if b dominates a, 0 if neither (or equal)
      */
     @Override
