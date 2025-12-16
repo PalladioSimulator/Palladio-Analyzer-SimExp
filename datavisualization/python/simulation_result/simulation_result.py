@@ -22,8 +22,8 @@ class SimulationResult:
             return "not found: result.json"
         return error
 
-    def _analyze_workflows(self, simulation_result_file):
-        content = self._read_file(simulation_result_file)
+    def _analyze_workflows(self, args):
+        content = self._read_file(args.infile)
         counter = collections.Counter()
         for row in content:
             key = self._get_key(row['Error'])
@@ -41,10 +41,15 @@ class SimulationResult:
 
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
-        parser.add_argument('infile', type=argparse.FileType('r'))
+        subparsers = parser.add_subparsers(required=True, help='available subcommands')
+
+        parser_workflow = subparsers.add_parser('workflow', help='workflow analyzer')
+        parser_workflow.add_argument('infile', type=argparse.FileType('r'))
+        parser_workflow.set_defaults(func=self._analyze_workflows)
+
         args = parser.parse_args()
 
-        self._analyze_workflows(args.infile)
+        args.func(args)
 
 
 
