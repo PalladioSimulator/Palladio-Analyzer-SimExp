@@ -29,7 +29,7 @@ public class KubernetesFitnessResultIdentificator implements IFitnessResultIdent
 
     @Override
     public synchronized void process(List<OptimizableValue<?>> optimizableValues, JobResult result) {
-        if (result.status == Status.COMPLETE) {
+        if ((result.status == Status.COMPLETE) || (result.status == Status.ABORT)) {
             idMap.put(optimizableValues, result.id);
         } else {
             idMap.put(optimizableValues, null);
