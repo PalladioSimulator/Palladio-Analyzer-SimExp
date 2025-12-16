@@ -79,6 +79,15 @@ class SimulationResult:
         table_entries = []
         for stats in all_stats:
             table_entries.append(stats)
+
+        table_entries.append(tabulate.SEPARATING_LINE)
+        table_entries.append(["total",
+                              min([stats[1] for stats in all_stats]), max([stats[2] for stats in all_stats]), statistics.mean([stats[3] for stats in all_stats]),
+                              min([stats[4] for stats in all_stats]), max([stats[5] for stats in all_stats]),
+                              statistics.mean([stats[6] for stats in all_stats]),
+                              None
+                              ])
+
         table_str = tabulate.tabulate(table_entries,
                                       headers=['ID', 'Energy Min', 'Energy Max', 'Energy Average',
                                       'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
