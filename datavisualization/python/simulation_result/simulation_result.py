@@ -22,12 +22,8 @@ class SimulationResult:
             return "not found: result.json"
         return error
 
-    def main(self):
-        parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
-        parser.add_argument('infile', type=argparse.FileType('r'))
-        args = parser.parse_args()
-
-        content = self._read_file(args.infile)
+    def _analyze_workflows(self, simulation_result_file):
+        content = self._read_file(simulation_result_file)
         counter = collections.Counter()
         for row in content:
             key = self._get_key(row['Error'])
@@ -42,6 +38,14 @@ class SimulationResult:
         table_entries.append(["Total", counter.total(), 1])
         table_str = tabulate.tabulate(table_entries, headers=['Result', 'Count', 'Rel'], floatfmt=".2%")
         print(table_str)
+
+    def main(self):
+        parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
+        parser.add_argument('infile', type=argparse.FileType('r'))
+        args = parser.parse_args()
+
+        self._analyze_workflows(args.infile)
+
 
 
 if __name__ == '__main__':
