@@ -72,8 +72,9 @@ class SimulationResult:
 
     def _analyze_quality_attributes(self, args):
         all_stats = []
-        stats = self._analyze_task_result(args.task_file)
-        all_stats.append(stats)
+        for result_file in args.task_file:
+            stats = self._analyze_task_result(result_file)
+            all_stats.append(stats)
 
         table_entries = []
         for stats in all_stats:
@@ -95,7 +96,7 @@ class SimulationResult:
         parser_workflow.set_defaults(func=self._analyze_workflows)
 
         parser_quality_attributes = subparsers.add_parser('qa', help='quality attributes analyzer')
-        parser_quality_attributes.add_argument('task_file', type=Path)
+        parser_quality_attributes.add_argument('task_file', type=Path, nargs='+')
         parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
 
         args = parser.parse_args()
