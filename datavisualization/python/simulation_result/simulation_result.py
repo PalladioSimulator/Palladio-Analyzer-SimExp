@@ -3,6 +3,7 @@ import csv
 import collections
 import statistics
 import json
+from pathlib import Path
 
 import tabulate
 
@@ -11,9 +12,11 @@ class SimulationResult:
 
     def _read_file(self, csv_file):
         fieldnames = ["TaskId", "Values", "Reward", "Error", "ExecutorId"]
-        reader = csv.DictReader(csv_file, fieldnames=fieldnames, delimiter=";")
-        next(reader) # skip header
-        return reader
+        with csv_file.open("r", encoding="utf-8") as f:
+            reader = csv.DictReader(f, fieldnames=fieldnames, delimiter=";")
+            next(reader)    # skip header
+            for row in reader:
+                yield row
 
     def _get_key(self, error):
         if not error:
@@ -43,10 +46,9 @@ class SimulationResult:
 
 
     def _read_result_task_file(self, result_file):
-        #with result_file.open("r", encoding="utf-8") as f:
-        #    result = json.load(f)
-        #    return result
-        return json.load(result_file)
+        with result_file.open("r", encoding="utf-8") as f:
+            result = json.load(f)
+            return result
 
     def _analyze_task_result(self, result_file):
         task_result = self._read_result_task_file(result_file)
@@ -89,11 +91,11 @@ class SimulationResult:
         subparsers = parser.add_subparsers(required=True, help='available subcommands')
 
         parser_workflow = subparsers.add_parser('workflow', help='workflow analyzer')
-        parser_workflow.add_argument('infile', type=argparse.FileType('r'))
+        parser_workflow.add_argument('infile', type=Path)
         parser_workflow.set_defaults(func=self._analyze_workflows)
 
         parser_quality_attributes = subparsers.add_parser('qa', help='quality attributes analyzer')
-        parser_quality_attributes.add_argument('task_file', type=argparse.FileType('r'))
+        parser_quality_attributes.add_argument('task_file', type=Path)
         parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
 
         args = parser.parse_args()
