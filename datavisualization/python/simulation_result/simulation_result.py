@@ -1,6 +1,8 @@
 import argparse
 import csv
 import collections
+import statistics
+import json
 
 import tabulate
 
@@ -39,6 +41,40 @@ class SimulationResult:
         table_str = tabulate.tabulate(table_entries, headers=['Result', 'Count', 'Rel'], floatfmt=".2%")
         print(table_str)
 
+
+    def _read_result_task_file(self, result_file):
+        #with result_file.open("r", encoding="utf-8") as f:
+        #    result = json.load(f)
+        #    return result
+        return json.load(result_file)
+
+    def _analyze_quality_attributes(self, args):
+        task_result = self._read_result_task_file(args.task_file)
+        task_id = task_result["result"]["id"]
+        reward = task_result["result"]["reward"]
+        runs = task_result["result"]["quality_measurements"]["runs"]
+        energy_consumption = []
+        packet_loss = []
+        for run in runs:
+            qas = run["quality_attributes"]
+            energy_consumption.extend(qas["EnergyConsumption.props"])
+            packet_loss.extend(qas["PacketLoss.props"])
+
+        table_entries = []
+        table_entries.append([
+            task_id,
+            min(energy_consumption), max(energy_consumption), statistics.mean(energy_consumption),
+            min(packet_loss), max(packet_loss), statistics.mean(packet_loss),
+            reward
+        ])
+        table_str = tabulate.tabulate(table_entries,
+                                      headers=['ID', 'Energy Min', 'Energy Max', 'Energy Average',
+                                      'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
+                                      'Reward'],
+                                      tablefmt="simple"
+                                      )
+        print(table_str)
+
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
         subparsers = parser.add_subparsers(required=True, help='available subcommands')
@@ -47,10 +83,13 @@ class SimulationResult:
         parser_workflow.add_argument('infile', type=argparse.FileType('r'))
         parser_workflow.set_defaults(func=self._analyze_workflows)
 
+        parser_quality_attributes = subparsers.add_parser('qa', help='quality attributes analyzer')
+        parser_quality_attributes.add_argument('task_file', type=argparse.FileType('r'))
+        parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
+
         args = parser.parse_args()
 
         args.func(args)
-
 
 
 if __name__ == '__main__':
