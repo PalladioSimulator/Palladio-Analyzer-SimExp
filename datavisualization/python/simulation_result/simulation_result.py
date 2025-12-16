@@ -48,8 +48,8 @@ class SimulationResult:
         #    return result
         return json.load(result_file)
 
-    def _analyze_quality_attributes(self, args):
-        task_result = self._read_result_task_file(args.task_file)
+    def _analyze_task_result(self, result_file):
+        task_result = self._read_result_task_file(result_file)
         task_id = task_result["result"]["id"]
         reward = task_result["result"]["reward"]
         runs = task_result["result"]["quality_measurements"]["runs"]
@@ -60,13 +60,22 @@ class SimulationResult:
             energy_consumption.extend(qas["EnergyConsumption.props"])
             packet_loss.extend(qas["PacketLoss.props"])
 
-        table_entries = []
-        table_entries.append([
+        result = (
             task_id,
             min(energy_consumption), max(energy_consumption), statistics.mean(energy_consumption),
             min(packet_loss), max(packet_loss), statistics.mean(packet_loss),
             reward
-        ])
+        )
+        return result
+
+    def _analyze_quality_attributes(self, args):
+        all_stats = []
+        stats = self._analyze_task_result(args.task_file)
+        all_stats.append(stats)
+
+        table_entries = []
+        for stats in all_stats:
+            table_entries.append(stats)
         table_str = tabulate.tabulate(table_entries,
                                       headers=['ID', 'Energy Min', 'Energy Max', 'Energy Average',
                                       'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
