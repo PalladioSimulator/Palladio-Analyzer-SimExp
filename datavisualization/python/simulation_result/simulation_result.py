@@ -7,6 +7,8 @@ from pathlib import Path
 
 import tabulate
 
+from prism_property import PrismKind, identify_prism
+
 
 class SimulationResult:
 
@@ -96,6 +98,43 @@ class SimulationResult:
                                       )
         print(table_str)
 
+    def _read_prism_property(self, property_file):
+        with property_file.open("r", encoding="utf-8") as f:
+            content = f.readline()
+            return identify_prism(content)
+
+    def _read_prism_result(self, result_file):
+        with result_file.open("r", encoding="utf-8") as f:
+            next(f)
+            value = float(next(f))
+            return value
+
+    def _analyze_prism(self, args):
+        energy_consumption = []
+        packet_loss = []
+        for property_file in args.prism_property_file:
+            kind = self._read_prism_property(property_file)
+            result_file = property_file.with_suffix(".result")
+            value = self._read_prism_result(result_file)
+            if kind == PrismKind.ENERGY_CONSUMPTION:
+                energy_consumption.append(value)
+            else:
+                packet_loss.append(value)
+
+        table_entries = []
+        table_entries.append([
+            len(energy_consumption),
+            min(energy_consumption), max(energy_consumption), statistics.mean(energy_consumption),
+            min(packet_loss), max(packet_loss), statistics.mean(packet_loss),
+        ])
+
+        table_str = tabulate.tabulate(table_entries,
+                                      headers=['Count', 'Energy Min', 'Energy Max', 'Energy Average',
+                                      'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average'],
+                                      tablefmt="simple"
+                                      )
+        print(table_str)
+
     def main(self):
         parser = argparse.ArgumentParser(prog="simulation_result", description="Analyses simulation results")
         subparsers = parser.add_subparsers(required=True, help='available subcommands')
@@ -107,6 +146,10 @@ class SimulationResult:
         parser_quality_attributes = subparsers.add_parser('qa', help='quality attributes analyzer')
         parser_quality_attributes.add_argument('task_file', type=Path, nargs='+')
         parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
+
+        parser_prism = subparsers.add_parser('prism', help='prism result analyzer')
+        parser_prism.add_argument('prism_property_file', type=Path, nargs='+')
+        parser_prism.set_defaults(func=self._analyze_prism)
 
         args = parser.parse_args()
 
