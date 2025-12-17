@@ -23,6 +23,8 @@ public class ParetoDominance implements Comparator<IndividualResult> {
     /**
      * Return if a dominates b.
      * 
+     * Domination is given when the the Comparator returns < 0.
+     * 
      * @return +1 if a dominates b, -1 if b dominates a, 0 if neither (or equal)
      */
     @Override
@@ -55,9 +57,16 @@ public class ParetoDominance implements Comparator<IndividualResult> {
             double valueA = averagesB.get(entryA.getKey());
             double valueB = entryA.getValue();
 
-            if (Double.isNaN(valueA) || Double.isNaN(valueB)) {
-                // Treat NaN as incomparable
-                return 0;
+            if (Double.isNaN(valueA)) {
+                if (Double.isNaN(valueB)) {
+                    return 0;
+                }
+                return +1;
+            }
+            if (Double.isNaN(valueB)) {
+                if (!Double.isNaN(valueA)) {
+                    return -1;
+                }
             }
 
             if (compareWithPrecision(valueA, valueB, comparator) < 0) {
@@ -92,12 +101,6 @@ public class ParetoDominance implements Comparator<IndividualResult> {
     }
 
     private boolean almostEqualAbs(double a, double b, double eps) {
-        if (Double.isNaN(a) || Double.isNaN(b)) {
-            return false;
-        }
-        if (Double.isInfinite(a) || Double.isInfinite(b)) {
-            return a == b;
-        }
         return Math.abs(a - b) <= eps;
     }
 }

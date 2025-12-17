@@ -6,14 +6,17 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.dsl.ea.api.IQualityAttributeProvider;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualParetoResult;
 import org.palladiosimulator.simexp.dsl.ea.api.IndividualResult;
 import org.palladiosimulator.simexp.dsl.smodel.api.IPrecisionProvider;
+import org.palladiosimulator.simexp.dsl.smodel.api.OptimizableValue;
 
 public class ParetoFrontBuilderTest {
     private static final double EPSILON = 0.0001;
@@ -36,12 +39,26 @@ public class ParetoFrontBuilderTest {
 
     @Test
     public void testBuildParetoFront() {
-        IndividualResult result = new IndividualResult(1.0, Collections.emptyList(), "");
+        List<OptimizableValue<?>> optimizableValues = Collections.emptyList();
+        IndividualResult result = new IndividualResult(1.0, optimizableValues, "");
         List<IndividualResult> population = Collections.singletonList(result);
+        QualityMeasurements qualityMeasurements = new QualityMeasurements(Collections.emptyList());
+        when(qualityAttributeProvider.getQualityMeasurements(optimizableValues))
+            .thenReturn(Optional.of(qualityMeasurements));
 
         List<IndividualParetoResult> actualFront = builder.buildParetoFront(population);
 
         assertThat(actualFront).hasSize(1);
+    }
+
+    @Test
+    public void testBuildParetoFrontAbortedResult() {
+        IndividualResult result = new IndividualResult(0.0, Collections.emptyList(), "");
+        List<IndividualResult> population = Collections.singletonList(result);
+
+        List<IndividualParetoResult> actualFront = builder.buildParetoFront(population);
+
+        assertThat(actualFront).isEmpty();
     }
 
 }

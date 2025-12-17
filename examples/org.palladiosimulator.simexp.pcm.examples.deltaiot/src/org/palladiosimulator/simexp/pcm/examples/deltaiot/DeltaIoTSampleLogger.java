@@ -82,7 +82,8 @@ public class DeltaIoTSampleLogger implements SampleDumper {
     }
 
     private void onEntry(WirelessLink link, int maxName) {
-        LOGGER.info(String.format("Link %-" + String.format("%d", maxName) + "s Power: %2s, SNR: % 22.18f, Dist.: %4s",
-                link.pcmLink.getEntityName(), link.transmissionPower, link.SNR, link.distributionFactor));
+        LOGGER
+            .info(String.format("Link %-" + String.format("%d", maxName) + "s Power: %2s, SNR: % 22.18f, Dist.: %3.2f",
+                    link.pcmLink.getEntityName(), link.transmissionPower, link.SNR, link.distributionFactor));
     }
 }
