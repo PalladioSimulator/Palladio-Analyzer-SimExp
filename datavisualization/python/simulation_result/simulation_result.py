@@ -90,10 +90,29 @@ class SimulationResult:
                               None
                               ])
 
+        headers = ['ID', 'Energy Min', 'Energy Max', 'Energy Average',
+                   'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
+                   'Reward']
+
+        if args.result:
+            with args.result.open("w", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=headers)
+                writer.writeheader()
+                for entry in table_entries:
+                    if entry == tabulate.SEPARATING_LINE:
+                        continue
+                    writer.writerow({'ID': entry[0],
+                                     'Energy Min': entry[1],
+                                     'Energy Max': entry[2],
+                                     'Energy Average': entry[3],
+                                     'Packet Loss Min': entry[4],
+                                     'Packet Loss Max': entry[5],
+                                     'Packet Loss Average': entry[6],
+                                     'Reward': entry[7],
+                                     })
+
         table_str = tabulate.tabulate(table_entries,
-                                      headers=['ID', 'Energy Min', 'Energy Max', 'Energy Average',
-                                      'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
-                                      'Reward'],
+                                      headers=headers,
                                       tablefmt="simple"
                                       )
         print(table_str)
@@ -145,6 +164,7 @@ class SimulationResult:
 
         parser_quality_attributes = subparsers.add_parser('qa', help='quality attributes analyzer')
         parser_quality_attributes.add_argument('task_file', type=Path, nargs='+')
+        parser_quality_attributes.add_argument('-r', '--result', type=Path)
         parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
 
         parser_prism = subparsers.add_parser('prism', help='prism result analyzer')
