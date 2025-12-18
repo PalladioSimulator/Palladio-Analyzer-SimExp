@@ -115,29 +115,31 @@ class SimulationResult:
                                       )
         print(table_str)
 
-    def _analyze_quality_attributes_raw(self, args):
+    def _extract_quality_attributes(self, args):
         headers = ['ID', 'Run', 'Sample', 'Energy', 'Packet Loss']
-
         with args.result.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             writer.writeheader()
             for result_file in args.task_file:
-                print("processing: %s" % result_file.name)
-                task_result = self._read_result_task_file(result_file)
-                task_id = task_result["result"]["id"]
-                runs = task_result["result"]["quality_measurements"]["runs"]
-                for r, run in enumerate(runs):
-                    qas = run["quality_attributes"]
-                    energy_list = qas["EnergyConsumption.props"]
-                    pl_list = qas["PacketLoss.props"]
-                    for s, energy in enumerate(energy_list):
-                        packet_loss = pl_list[s]
-                        writer.writerow({'ID': task_id,
-                                         'Run': r,
-                                         'Sample': s,
-                                         'Energy': energy,
-                                         'Packet Loss': packet_loss,
-                                         })
+                self._process_task_file(writer, result_file)
+
+    def _process_task_file(self, writer, task_file):
+        print("processing: %s" % task_file.name)
+        task_result = self._read_result_task_file(task_file)
+        task_id = task_result["result"]["id"]
+        runs = task_result["result"]["quality_measurements"]["runs"]
+        for r, run in enumerate(runs):
+            qas = run["quality_attributes"]
+            energy_list = qas["EnergyConsumption.props"]
+            pl_list = qas["PacketLoss.props"]
+            for s, energy in enumerate(energy_list):
+                packet_loss = pl_list[s]
+                writer.writerow({'ID': task_id,
+                                 'Run': r,
+                                 'Sample': s,
+                                 'Energy': energy,
+                                 'Packet Loss': packet_loss,
+                                 })
 
     def _read_prism_property(self, property_file):
         with property_file.open("r", encoding="utf-8") as f:
@@ -192,7 +194,7 @@ class SimulationResult:
         parser_quality_attributes_raw = subparsers.add_parser('qa_raw', help='raw quality attributes extractor')
         parser_quality_attributes_raw.add_argument('task_file', type=Path, nargs='+')
         parser_quality_attributes_raw.add_argument('-r', '--result', type=Path, required=True)
-        parser_quality_attributes_raw.set_defaults(func=self._analyze_quality_attributes_raw)
+        parser_quality_attributes_raw.set_defaults(func=self._extract_quality_attributes)
 
         parser_prism = subparsers.add_parser('prism', help='prism result analyzer')
         parser_prism.add_argument('prism_property_file', type=Path, nargs='+')
