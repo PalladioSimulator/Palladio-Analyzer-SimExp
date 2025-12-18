@@ -82,14 +82,6 @@ class SimulationResult:
         for stats in all_stats:
             table_entries.append(stats)
 
-        table_entries.append(tabulate.SEPARATING_LINE)
-        table_entries.append(["total",
-                              min([stats[1] for stats in all_stats]), max([stats[2] for stats in all_stats]), statistics.mean([stats[3] for stats in all_stats]),
-                              min([stats[4] for stats in all_stats]), max([stats[5] for stats in all_stats]),
-                              statistics.mean([stats[6] for stats in all_stats]),
-                              None
-                              ])
-
         headers = ['ID', 'Energy Min', 'Energy Max', 'Energy Average',
                    'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
                    'Reward']
@@ -99,8 +91,6 @@ class SimulationResult:
                 writer = csv.DictWriter(f, fieldnames=headers)
                 writer.writeheader()
                 for entry in table_entries:
-                    if entry == tabulate.SEPARATING_LINE:
-                        continue
                     writer.writerow({'ID': entry[0],
                                      'Energy Min': entry[1],
                                      'Energy Max': entry[2],
@@ -110,6 +100,14 @@ class SimulationResult:
                                      'Packet Loss Average': entry[6],
                                      'Reward': entry[7],
                                      })
+
+        table_entries.append(tabulate.SEPARATING_LINE)
+        table_entries.append(["total",
+                              min([stats[1] for stats in all_stats]), max([stats[2] for stats in all_stats]), statistics.mean([stats[3] for stats in all_stats]),
+                              min([stats[4] for stats in all_stats]), max([stats[5] for stats in all_stats]),
+                              statistics.mean([stats[6] for stats in all_stats]),
+                              None
+                              ])
 
         table_str = tabulate.tabulate(table_entries,
                                       headers=headers,
