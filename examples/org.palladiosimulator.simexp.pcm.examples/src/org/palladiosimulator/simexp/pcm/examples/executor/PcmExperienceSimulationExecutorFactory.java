@@ -17,6 +17,7 @@ import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRe
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.AverageRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.SimulatedExperienceEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
@@ -111,6 +112,8 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         case ACCUMULATED:
             String sampleSpaceId = SimulatedExperienceConstants.constructSampleSpaceId(simulationID, policyId);
             return SimulatedExperienceEvaluator.of(getAccessor(), simulationID, sampleSpaceId);
+        case AVERAGE:
+            return new AverageRewardEvaluator(getAccessor());
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
     }
