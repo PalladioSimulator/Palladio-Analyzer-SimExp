@@ -14,6 +14,7 @@ import org.palladiosimulator.pcm.query.RepositoryModelLookup;
 import org.palladiosimulator.pcm.query.ResourceEnvironmentModelLookup;
 import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurementSpecification;
+import org.palladiosimulator.simexp.core.evaluation.AverageRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.ExpectedRewardEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.PerformabilityEvaluator;
 import org.palladiosimulator.simexp.core.evaluation.TotalRewardCalculation;
@@ -150,6 +151,8 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
             return new ExpectedRewardEvaluator(getAccessor());
         case ACCUMULATED:
             return PerformabilityEvaluator.of(getAccessor());
+        case AVERAGE:
+            return new AverageRewardEvaluator(getAccessor());
         }
         throw new RuntimeException("unknown reward type: " + rewardType);
     }

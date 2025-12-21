@@ -2,7 +2,8 @@ package org.palladiosimulator.simexp.commons.constants.model;
 
 public enum RewardType {
     EXPECTED("Expected"), //
-    ACCUMULATED("Accumulated");
+    ACCUMULATED("Accumulated"), //
+    AVERAGE("Average");
 
     private final String name;
 
