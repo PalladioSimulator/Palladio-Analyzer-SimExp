@@ -116,7 +116,7 @@ class SimulationResult:
         print(table_str)
 
     def _extract_quality_attributes(self, args):
-        headers = ['ID', 'Run', 'Sample', 'Energy', 'Packet Loss']
+        headers = ['ID', 'Values', 'Run', 'Sample', 'Energy', 'Packet Loss']
         with args.result.open("w", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
             writer.writeheader()
@@ -127,6 +127,8 @@ class SimulationResult:
         print("processing: %s" % task_file.name)
         task_result = self._read_result_task_file(task_file)
         task_id = task_result["result"]["id"]
+        optimizables = ["%s=%s" % (key, value) for key, value in task_result["optimizables"].items()]
+        values = ",".join(optimizables)
         runs = task_result["result"]["quality_measurements"]["runs"]
         for r, run in enumerate(runs):
             qas = run["quality_attributes"]
@@ -135,6 +137,7 @@ class SimulationResult:
             for s, energy in enumerate(energy_list):
                 packet_loss = pl_list[s]
                 writer.writerow({'ID': task_id,
+                                 'Values': values,
                                  'Run': r,
                                  'Sample': s,
                                  'Energy': energy,
