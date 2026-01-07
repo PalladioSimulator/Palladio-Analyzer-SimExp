@@ -2,8 +2,6 @@ package org.palladiosimulator.simexp.pcm.examples.deltaiot.strategy;
 
 import static java.util.Objects.requireNonNull;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.ENERGY_CONSUMPTION_KEY;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.LOWER_ENERGY_CONSUMPTION;
-import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.LOWER_PACKET_LOSS;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.OPTIONS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.PACKET_LOSS_KEY;
 import static org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons.STATE_KEY;
@@ -16,6 +14,7 @@ import org.palladiosimulator.pcm.core.composition.AssemblyContext;
 import org.palladiosimulator.simexp.core.entity.SimulatedMeasurement;
 import org.palladiosimulator.simexp.core.strategy.ReconfigurationStrategy;
 import org.palladiosimulator.simexp.core.strategy.SharedKnowledge;
+import org.palladiosimulator.simexp.core.util.Threshold;
 import org.palladiosimulator.simexp.markovian.model.markovmodel.markoventity.State;
 import org.palladiosimulator.simexp.pcm.action.EmptyQVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
@@ -23,6 +22,7 @@ import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.DeltaIoTSampleLogger;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDeltaIoToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reconfiguration.IDistributionFactorReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTCommons;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismSimulatedMeasurementSpec;
@@ -31,6 +31,9 @@ import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.core.models.PCMInstance;
 
 public class DeltaIoTReconfigurationStrategy2 extends ReconfigurationStrategy<QVTOReconfigurator, QVToReconfiguration> {
+    private final static Threshold LOWER_PACKET_LOSS = Threshold.lessThan(DeltaIoTCommons.AVG_BOUND_PACKET_LOSS);
+    private final static Threshold LOWER_ENERGY_CONSUMPTION = Threshold
+        .lessThan(DeltaIoTCommons.AVG_BOUND_ENERGY_CONSUMPTION);
 
     public static class DeltaIoTReconfigurationStrategy2Builder {
         private final DeltaIoTModelAccess<PCMInstance, QVTOReconfigurator> modelAccess;

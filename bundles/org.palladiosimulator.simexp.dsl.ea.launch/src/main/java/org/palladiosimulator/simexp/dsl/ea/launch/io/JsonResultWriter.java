@@ -32,16 +32,26 @@ public class JsonResultWriter {
     }
 
     public void storeIndividualResults(Path resultFile, List<IndividualResult> individualResults) {
+        List<ResultEntry> entries = extractResultEntries(individualResults);
+        writeEntries(resultFile, entries);
+    }
+
+    public void storeIndividualParetoResults(Path resultFile, List<IndividualParetoResult> individualParetoResults) {
+        List<ResultEntry> entries = extractParetoEntries(individualParetoResults);
+        writeEntries(resultFile, entries);
+    }
+
+    public List<ResultEntry> extractResultEntries(List<IndividualResult> individualResults) {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualResult result : individualResults) {
             Map<String, Object> optimizables = extractOptimizables(result);
             ResultEntry entry = new ResultEntry(result.getFitness(), optimizables, result.getId());
             entries.add(entry);
         }
-        writeEntries(resultFile, entries);
+        return entries;
     }
 
-    public void storeIndividualParetoResults(Path resultFile, List<IndividualParetoResult> individualParetoResults) {
+    public List<ResultEntry> extractParetoEntries(List<IndividualParetoResult> individualParetoResults) {
         List<ResultEntry> entries = new ArrayList<>();
         for (IndividualParetoResult paretoResult : individualParetoResults) {
             IndividualResult result = paretoResult.getIndividualResult();
@@ -51,7 +61,7 @@ public class JsonResultWriter {
                     paretoResult.buildScore(), averages);
             entries.add(entry);
         }
-        writeEntries(resultFile, entries);
+        return entries;
     }
 
     private Map<String, Object> extractOptimizables(IndividualResult result) {

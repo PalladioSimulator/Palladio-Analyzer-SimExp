@@ -7,6 +7,11 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurati
 import org.palladiosimulator.simulizar.reconfiguration.qvto.QVTOReconfigurator;
 import org.palladiosimulator.solver.core.models.PCMInstance;
 
+/**
+ * Same behavior as original version of diss. M. Scheerer.
+ * 
+ * This strategy always adapt the distribution factor if required.
+ */
 public class DeltaIoTAlwaysAdaptReconfigurationStrategy extends DeltaIoTDefaultReconfigurationStrategy {
 
     public DeltaIoTAlwaysAdaptReconfigurationStrategy(DeltaIoTReconfigurationParamRepository reconfParamsRepo,

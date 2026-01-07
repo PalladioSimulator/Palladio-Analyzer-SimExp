@@ -30,6 +30,7 @@
 		<module>org.palladiosimulator.simexp.dsl.ea.optimizer.tests</module>
 		<module>org.palladiosimulator.simexp.pcm.modelled.tests</module>
 		<module>org.palladiosimulator.simexp.workflow.tests</module>
+		<module>org.palladiosimulator.simexp.pcm.examples.deltaiot.tests</module>
 	</modules>
 	
 </project>

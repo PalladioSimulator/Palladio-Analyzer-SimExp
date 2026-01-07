@@ -2,7 +2,7 @@ package org.palladiosimulator.simexp.dsl.ea.launch.io;
 
 import java.util.Map;
 
-class ParetoEntry extends ResultEntry {
+public class ParetoEntry extends ResultEntry {
     public final double score;
     public final Map<String, Double> averages;
 

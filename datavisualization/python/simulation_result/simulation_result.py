@@ -82,14 +82,6 @@ class SimulationResult:
         for stats in all_stats:
             table_entries.append(stats)
 
-        table_entries.append(tabulate.SEPARATING_LINE)
-        table_entries.append(["total",
-                              min([stats[1] for stats in all_stats]), max([stats[2] for stats in all_stats]), statistics.mean([stats[3] for stats in all_stats]),
-                              min([stats[4] for stats in all_stats]), max([stats[5] for stats in all_stats]),
-                              statistics.mean([stats[6] for stats in all_stats]),
-                              None
-                              ])
-
         headers = ['ID', 'Energy Min', 'Energy Max', 'Energy Average',
                    'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
                    'Reward']
@@ -99,8 +91,6 @@ class SimulationResult:
                 writer = csv.DictWriter(f, fieldnames=headers)
                 writer.writeheader()
                 for entry in table_entries:
-                    if entry == tabulate.SEPARATING_LINE:
-                        continue
                     writer.writerow({'ID': entry[0],
                                      'Energy Min': entry[1],
                                      'Energy Max': entry[2],
@@ -111,11 +101,45 @@ class SimulationResult:
                                      'Reward': entry[7],
                                      })
 
+        table_entries.append(tabulate.SEPARATING_LINE)
+        table_entries.append(["total",
+                              min([stats[1] for stats in all_stats]), max([stats[2] for stats in all_stats]), statistics.mean([stats[3] for stats in all_stats]),
+                              min([stats[4] for stats in all_stats]), max([stats[5] for stats in all_stats]),
+                              statistics.mean([stats[6] for stats in all_stats]),
+                              None
+                              ])
+
         table_str = tabulate.tabulate(table_entries,
                                       headers=headers,
                                       tablefmt="simple"
                                       )
         print(table_str)
+
+    def _extract_quality_attributes(self, args):
+        headers = ['ID', 'Run', 'Sample', 'Energy', 'Packet Loss']
+        with args.result.open("w", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writeheader()
+            for result_file in args.task_file:
+                self._process_task_file(writer, result_file)
+
+    def _process_task_file(self, writer, task_file):
+        print("processing: %s" % task_file.name)
+        task_result = self._read_result_task_file(task_file)
+        task_id = task_result["result"]["id"]
+        runs = task_result["result"]["quality_measurements"]["runs"]
+        for r, run in enumerate(runs):
+            qas = run["quality_attributes"]
+            energy_list = qas["EnergyConsumption.props"]
+            pl_list = qas["PacketLoss.props"]
+            for s, energy in enumerate(energy_list):
+                packet_loss = pl_list[s]
+                writer.writerow({'ID': task_id,
+                                 'Run': r,
+                                 'Sample': s,
+                                 'Energy': energy,
+                                 'Packet Loss': packet_loss,
+                                 })
 
     def _read_prism_property(self, property_file):
         with property_file.open("r", encoding="utf-8") as f:
@@ -166,6 +190,11 @@ class SimulationResult:
         parser_quality_attributes.add_argument('task_file', type=Path, nargs='+')
         parser_quality_attributes.add_argument('-r', '--result', type=Path)
         parser_quality_attributes.set_defaults(func=self._analyze_quality_attributes)
+
+        parser_quality_attributes_raw = subparsers.add_parser('qa_raw', help='raw quality attributes extractor')
+        parser_quality_attributes_raw.add_argument('task_file', type=Path, nargs='+')
+        parser_quality_attributes_raw.add_argument('-r', '--result', type=Path, required=True)
+        parser_quality_attributes_raw.set_defaults(func=self._extract_quality_attributes)
 
         parser_prism = subparsers.add_parser('prism', help='prism result analyzer')
         parser_prism.add_argument('prism_property_file', type=Path, nargs='+')
