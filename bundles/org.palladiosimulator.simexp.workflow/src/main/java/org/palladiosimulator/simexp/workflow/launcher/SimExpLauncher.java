@@ -40,6 +40,7 @@ import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 import org.palladiosimulator.simexp.core.store.SimulatedExperienceStoreDescription;
 import org.palladiosimulator.simexp.core.store.csv.accessor.CsvAccessor;
 import org.palladiosimulator.simexp.pcm.config.SimulationParameters;
+import org.palladiosimulator.simexp.version.git.GitVersion;
 import org.palladiosimulator.simexp.workflow.api.SimExpWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.ArchitecturalModelsWorkflowConfiguration;
 import org.palladiosimulator.simexp.workflow.config.EnvironmentalModelsWorkflowConfiguration;
@@ -106,8 +107,12 @@ public abstract class SimExpLauncher extends AbstractPCMLaunchConfigurationDeleg
     private SimExpWorkflowConfiguration buildWorkflowConfiguration(ILaunchConfiguration configuration, String mode) {
         SimExpWorkflowConfiguration workflowConfiguration = null;
         try {
-            Map<String, Object> launchConfigurationParams = configuration.getAttributes();
+            LOGGER.info(String.format("Git tags:        %s", GitVersion.TAGS));
+            LOGGER.info(String.format("Git branch:      %s", GitVersion.BRANCH));
+            LOGGER.info(String.format("Git commit:      %s", GitVersion.COMMIT_ID));
+            LOGGER.info(String.format("Git description: %s", GitVersion.DESCRIBE));
 
+            Map<String, Object> launchConfigurationParams = configuration.getAttributes();
             for (Entry<String, Object> entry : launchConfigurationParams.entrySet()) {
                 LOGGER.info(String.format("launch configuration param ['%s':'%s']", entry.getKey(), entry.getValue()));
             }

@@ -18,7 +18,6 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.palladiosimulator.simexp.app.console.simulation.SimulationExecutor;
-import org.palladiosimulator.simexp.version.git.GitVersion;
 
 public class SimExpApplication implements IApplication {
     private static final Integer EXIT_FAILURE_INIT = Integer.valueOf(1);
@@ -36,11 +35,6 @@ public class SimExpApplication implements IApplication {
             if (!init()) {
                 return EXIT_FAILURE_INIT;
             }
-
-            logger.info(String.format("Git tags:        %s", GitVersion.TAGS));
-            logger.info(String.format("Git branch:      %s", GitVersion.BRANCH));
-            logger.info(String.format("Git commit:      %s", GitVersion.COMMIT_ID));
-            logger.info(String.format("Git description: %s", GitVersion.DESCRIBE));
 
             IPath instanceLocation = Platform.getLocation();
             Path instancePath = Paths.get(instanceLocation.toOSString());
