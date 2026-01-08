@@ -66,8 +66,11 @@ public class EAOptimizer implements IEAOptimizer {
     @Override
     public EAResult optimize(IOptimizableProvider optimizableProvider, IEAFitnessEvaluator fitnessEvaluator,
             IEAEvolutionStatusReceiver evolutionStatusReceiver) {
-        int parallelism = Math.max(Runtime.getRuntime()
-            .availableProcessors(), fitnessEvaluator.getParallelism());
+        int availableProcessors = Runtime.getRuntime()
+            .availableProcessors();
+        LOGGER.info(String.format("available local processors:   %d", availableProcessors));
+        LOGGER.info(String.format("available launch parallelism: %d", fitnessEvaluator.getParallelism()));
+        int parallelism = Math.max(availableProcessors, fitnessEvaluator.getParallelism());
         LOGGER.info(String.format("the fitness evaluator has an parallelism of: %d", parallelism));
         ExecutorService executor = Executors.newFixedThreadPool(parallelism);
         try {
