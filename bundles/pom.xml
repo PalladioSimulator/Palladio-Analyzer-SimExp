@@ -16,6 +16,7 @@
 
 	<modules>
 		<!-- insert bundle folders here -->
+		<module>org.palladiosimulator.simexp.version.git</module>
 		<module>org.palladiosimulator.simexp.commons.constants</module>
 		<module>org.palladiosimulator.simexp.markovian.model</module>
 		<module>org.palladiosimulator.simexp.service</module>
