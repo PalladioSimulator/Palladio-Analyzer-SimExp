@@ -4,5 +4,6 @@ Bundle-Name: Console app
 Bundle-SymbolicName: org.palladiosimulator.simexp.version.git
 Automatic-Module-Name: org.palladiosimulator.simexp.version.git
 Bundle-Version: 0.1.0.qualifier
+Export-Package: org.palladiosimulator.simexp.version.git
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 
