@@ -60,7 +60,7 @@ public class QualityBasedRewardEvaluator implements RewardEvaluator<Double> {
         return normalize(pl, LOWER_BOUND_PACKET_LOSS, UPPER_BOUND_PACKET_LOSS, "packet loss");
     }
 
-    private double normalize(double value, double lower, double upper, String name) {
+    double normalize(double value, double lower, double upper, String name) {
         if (value > upper) {
             LOGGER.error(String.format("%s value out of bounds (%f,%f): %f", name, lower, upper, value));
             return 0;
