@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.DefaultSimulatedExperience;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
@@ -76,6 +77,11 @@ public class ExpectedRewardEvaluator implements TotalRewardCalculation {
         }
 
         return totalReward;
+    }
+
+    @Override
+    public RewardType getRewardType() {
+        return RewardType.EXPECTED;
     }
 
     @Override

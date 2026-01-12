@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 
 import org.apache.log4j.Logger;
 import org.palladiosimulator.core.simulation.SimulationExecutor;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMeasurements;
 import org.palladiosimulator.simexp.core.simulation.ISimulationResult;
 import org.palladiosimulator.simexp.dsl.ea.api.EAResult;
@@ -73,9 +74,9 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
     private static class EASimulationResult extends SimulationResult {
         private final List<String> detailDescription;
 
-        public EASimulationResult(double totalReward, QualityMeasurements qualityMeasurements, String rewardDescription,
-                List<String> detailDescription) {
-            super(totalReward, qualityMeasurements, rewardDescription);
+        public EASimulationResult(double totalReward, RewardType rewardType, QualityMeasurements qualityMeasurements,
+                String rewardDescription, List<String> detailDescription) {
+            super(totalReward, rewardType, qualityMeasurements, rewardDescription);
             this.detailDescription = detailDescription;
         }
 
@@ -134,7 +135,8 @@ public class EAOptimizerSimulationExecutor implements SimulationExecutor {
         Path finalPopulationFile = resourcePath.resolve("final_population.json");
         jsonParetoWriter.storeIndividualResults(finalPopulationFile, finalPopulation);
 
-        return new EASimulationResult(totalReward, qualityMeasurements, description, detailDescription);
+        return new EASimulationResult(totalReward, configuration.getRewardType(), qualityMeasurements, description,
+                detailDescription);
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

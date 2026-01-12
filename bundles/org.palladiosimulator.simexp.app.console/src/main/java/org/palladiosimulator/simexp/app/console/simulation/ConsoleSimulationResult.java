@@ -4,19 +4,21 @@ import org.palladiosimulator.simexp.core.simulation.IQualityEvaluator.QualityMea
 
 public class ConsoleSimulationResult {
     public final Double reward;
+    public final String rewardType;
     public final String error;
     public final QualityMeasurements qualityMeasurements;
 
-    public ConsoleSimulationResult(double reward, QualityMeasurements qualityMeasurements) {
-        this(reward, qualityMeasurements, null);
+    public ConsoleSimulationResult(double reward, String rewardType, QualityMeasurements qualityMeasurements) {
+        this(reward, rewardType, qualityMeasurements, null);
     }
 
     public ConsoleSimulationResult(String error) {
-        this(null, null, error);
+        this(null, null, null, error);
     }
 
-    ConsoleSimulationResult(Double reward, QualityMeasurements qualityMeasurements, String error) {
+    ConsoleSimulationResult(Double reward, String rewardType, QualityMeasurements qualityMeasurements, String error) {
         this.reward = reward;
+        this.rewardType = rewardType;
         this.qualityMeasurements = qualityMeasurements;
         this.error = error;
     }

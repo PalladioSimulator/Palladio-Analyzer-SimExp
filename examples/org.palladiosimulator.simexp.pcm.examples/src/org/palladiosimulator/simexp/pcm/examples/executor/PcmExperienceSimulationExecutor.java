@@ -58,6 +58,6 @@ public class PcmExperienceSimulationExecutor<C, A, Aa extends Action<A>, R> impl
         QualityMeasurements qualityMeasurements = qualityEvaluator.getQualityMeasurements();
         String description = String.format("total %s reward of policy %1s", rewardCalculation.getName(),
                 reconfSelectionPolicy.getId());
-        return new SimulationResult(totalReward, qualityMeasurements, description);
+        return new SimulationResult(totalReward, rewardCalculation.getRewardType(), qualityMeasurements, description);
     }
 }

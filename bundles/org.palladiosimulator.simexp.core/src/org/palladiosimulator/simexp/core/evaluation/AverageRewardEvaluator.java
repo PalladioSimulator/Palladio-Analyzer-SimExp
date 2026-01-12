@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 
@@ -12,6 +13,11 @@ public class AverageRewardEvaluator implements TotalRewardCalculation {
 
     public AverageRewardEvaluator(ISimulatedExperienceAccessor accessor) {
         this.accessor = accessor;
+    }
+
+    @Override
+    public RewardType getRewardType() {
+        return RewardType.AVERAGE;
     }
 
     @Override

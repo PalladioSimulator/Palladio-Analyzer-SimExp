@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 
@@ -57,6 +58,11 @@ public class PerformabilityEvaluator implements TotalRewardCalculation {
         // response time reward format is of type double
         String reward = exp.getReward();
         return Double.parseDouble(reward);
+    }
+
+    @Override
+    public RewardType getRewardType() {
+        return RewardType.ACCUMULATED;
     }
 
     @Override

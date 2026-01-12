@@ -62,8 +62,8 @@ public class SimulationExecutor {
         try {
             IProject project = prepareSimulation(instancePath, arguments);
             ISimulationResult simulationResult = executeSimulation(launchManager, project, arguments, instancePath);
-            return new ConsoleSimulationResult(simulationResult.getTotalReward(),
-                    simulationResult.getQualityMeasurements());
+            return new ConsoleSimulationResult(simulationResult.getTotalReward(), simulationResult.getRewardType()
+                .name(), simulationResult.getQualityMeasurements());
         } catch (Exception e) {
             LOGGER.error("simulation failed", e);
             return new ConsoleSimulationResult(e.getMessage());

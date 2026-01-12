@@ -3,6 +3,7 @@ package org.palladiosimulator.simexp.core.evaluation;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.palladiosimulator.simexp.commons.constants.model.RewardType;
 import org.palladiosimulator.simexp.core.entity.SimulatedExperience;
 import org.palladiosimulator.simexp.core.store.ISimulatedExperienceAccessor;
 
@@ -36,6 +37,11 @@ public class SimulatedExperienceEvaluator implements TotalRewardCalculation {
         return traj.map(each -> Double.parseDouble(each.getReward()))
             .reduce((r1, r2) -> r1 + r2)
             .get();
+    }
+
+    @Override
+    public RewardType getRewardType() {
+        return RewardType.ACCUMULATED;
     }
 
     @Override

@@ -16,6 +16,7 @@ public class JobResult {
     public int delivery_count;
     public Status status;
     public Double reward;
+    public String rewardType;
     public QualityMeasurements qualityMeasurements;
     public String error;
     public Integer return_code;
@@ -29,6 +30,7 @@ public class JobResult {
             .append(delivery_count)
             .append(status)
             .append(reward)
+            .append(rewardType)
             .append(qualityMeasurements)
             .append(error)
             .append(return_code)
@@ -54,6 +56,7 @@ public class JobResult {
             .append(delivery_count, rhs.delivery_count)
             .append(status, rhs.status)
             .append(reward, rhs.reward)
+            .append(rewardType, rhs.rewardType)
             .append(qualityMeasurements, rhs.qualityMeasurements)
             .append(error, rhs.error)
             .append(return_code, rhs.return_code)
