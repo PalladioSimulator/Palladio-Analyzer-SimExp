@@ -66,8 +66,8 @@ class SimulationResult:
 
         result = (
             task_id,
-            min(energy_consumption), max(energy_consumption), statistics.mean(energy_consumption),
-            min(packet_loss), max(packet_loss), statistics.mean(packet_loss),
+            min(energy_consumption), max(energy_consumption), statistics.mean(energy_consumption), statistics.stdev(energy_consumption),
+            min(packet_loss), max(packet_loss), statistics.mean(packet_loss), statistics.stdev(packet_loss),
             reward
         )
         return result
@@ -82,8 +82,9 @@ class SimulationResult:
         for stats in all_stats:
             table_entries.append(stats)
 
-        headers = ['ID', 'Energy Min', 'Energy Max', 'Energy Average',
-                   'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average',
+        headers = ['ID',
+                   'Energy Min', 'Energy Max', 'Energy Average', 'Energy SD',
+                   'Packet Loss Min', 'Packet Loss Max', 'Packet Loss Average', 'Packet Loss SD',
                    'Reward']
 
         if args.result:
@@ -95,10 +96,12 @@ class SimulationResult:
                                      'Energy Min': entry[1],
                                      'Energy Max': entry[2],
                                      'Energy Average': entry[3],
-                                     'Packet Loss Min': entry[4],
-                                     'Packet Loss Max': entry[5],
-                                     'Packet Loss Average': entry[6],
-                                     'Reward': entry[7],
+                                     'Energy SD': entry[4],
+                                     'Packet Loss Min': entry[5],
+                                     'Packet Loss Max': entry[6],
+                                     'Packet Loss Average': entry[7],
+                                     'Packet Loss SD': entry[8],
+                                     'Reward': entry[9],
                                      })
 
         table_entries.append(tabulate.SEPARATING_LINE)
