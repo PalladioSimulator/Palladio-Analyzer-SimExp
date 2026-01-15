@@ -31,6 +31,7 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
+import org.palladiosimulator.simexp.pcm.examples.executor.StateQuantityMonitorDispatcher;
 import org.palladiosimulator.simexp.pcm.reliability.RealValuedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.reliability.RobotCognitionBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.reliability.RobotCognitionEnvironmentalDynamics;
@@ -118,6 +119,8 @@ public class RobotCognitionSimulationExecutorFactory
 
         RewardEvaluator<Double> evaluator = new RealValuedRewardEvaluator(reliabilitySpec);
         QualityEvaluator qualityEvaluator = createQualityEvaluator(pcmMeasurementSpecs);
+        StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
@@ -128,7 +131,8 @@ public class RobotCognitionSimulationExecutorFactory
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> simulator = createExperienceSimulator(experiment,
                 joinedSpecs, runners, getSimulationParameters(), beforeExecutionInitializables, envProcess,
                 getSimulatedExperienceStore(), null, reconfSelectionPolicy, reconfigurations, evaluator,
-                qualityEvaluator, true, experimentProvider, simulationRunnerHolder, null, getSeedProvider());
+                stateQuantityMonitorDispatcher, true, experimentProvider, simulationRunnerHolder, null,
+                getSeedProvider());
 
         TotalRewardCalculation rewardCalculation = createRewardCalculation(reconfSelectionPolicy.getId());
 
