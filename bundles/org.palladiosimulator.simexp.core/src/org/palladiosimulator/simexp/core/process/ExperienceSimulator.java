@@ -36,6 +36,7 @@ public class ExperienceSimulator<C, A, R> {
             runExperienceSimulator();
             LOGGER.info(String.format("End simulator run: %d/%d", run + 1, numberOfRuns));
         }
+        disposeInitializer();
     }
 
     private void initExperienceSimulator() {
@@ -54,5 +55,10 @@ public class ExperienceSimulator<C, A, R> {
             simulatedExperienceStore.store(each);
         }
         simulatedExperienceStore.store(traj);
+    }
+
+    private void disposeInitializer() {
+        beforeExecutionInitializations.stream()
+            .forEach(Initializable::dispose);
     }
 }

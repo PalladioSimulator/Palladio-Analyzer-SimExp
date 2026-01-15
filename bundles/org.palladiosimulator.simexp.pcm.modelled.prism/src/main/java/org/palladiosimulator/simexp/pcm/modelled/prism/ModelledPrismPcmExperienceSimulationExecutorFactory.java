@@ -51,6 +51,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.process.PacketLossPris
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.reward.QualityBasedRewardEvaluator;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAccess;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
+import org.palladiosimulator.simexp.pcm.examples.executor.IQualityLogger;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.StateQuantityMonitorDispatcher;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
@@ -144,7 +145,17 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
                 environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider, optimizableValueProvider);
-        beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
+        beforeExecutionInitializables.add(new Initializable() {
+
+            @Override
+            public void initialize() {
+                smodelInterpreter.reset();
+            }
+
+            @Override
+            public void dispose() {
+            }
+        });
         SampleDumper sampleDumper = new DeltaIoTSampleLogger(modelAccess);
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(
@@ -162,6 +173,15 @@ public class ModelledPrismPcmExperienceSimulationExecutorFactory
         StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
         stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
+        Path qaPath = getResourcePath().resolve("qas");
+        try {
+            Files.createDirectories(qaPath);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        IQualityLogger qualityLogger = createQualityLogger(qaPath, prismSimulatedMeasurementSpec);
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityLogger);
+        beforeExecutionInitializables.add(qualityLogger);
 
         DeltaIoTSampleLogger deltaIoTSampleLogger = new DeltaIoTSampleLogger(modelAccess);
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Double> experienceSimulator = createExperienceSimulator(

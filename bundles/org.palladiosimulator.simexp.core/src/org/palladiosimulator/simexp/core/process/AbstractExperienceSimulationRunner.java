@@ -15,6 +15,10 @@ public abstract class AbstractExperienceSimulationRunner<A> implements Experienc
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public final void simulate(State state) {
         LOGGER.info(String.format("Execute pre-simulation hook for state '%s'", state.toString()));
         preSimulate(state);

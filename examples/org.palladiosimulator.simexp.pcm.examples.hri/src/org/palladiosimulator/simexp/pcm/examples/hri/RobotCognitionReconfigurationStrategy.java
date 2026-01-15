@@ -46,6 +46,10 @@ public class RobotCognitionReconfigurationStrategy<C>
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public String getId() {
         return "SimpleStrategy";
     }

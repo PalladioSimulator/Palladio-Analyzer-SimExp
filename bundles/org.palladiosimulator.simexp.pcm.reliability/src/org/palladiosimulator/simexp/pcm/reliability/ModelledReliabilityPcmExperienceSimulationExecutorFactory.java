@@ -1,11 +1,14 @@
 package org.palladiosimulator.simexp.pcm.reliability;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.palladiosimulator.analyzer.workflow.core.ConstantsContainer;
 import org.palladiosimulator.dependability.reliability.uncertainty.UncertaintyRepository;
@@ -42,6 +45,7 @@ import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.IQualityLogger;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.StateQuantityMonitorDispatcher;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
@@ -63,7 +67,8 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
-
+    private static final Logger LOGGER = Logger
+        .getLogger(ModelledReliabilityPcmExperienceSimulationExecutorFactory.class);
     // public static final double UPPER_THRESHOLD_RT = 0.1;
     // public static final double LOWER_THRESHOLD_REL = 0.9;
 
@@ -138,7 +143,17 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         Monitor monitor = new PcmMonitor(joinedSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 environmentVariableValueProvider, optimizableValueProvider);
-        beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
+        beforeExecutionInitializables.add(new Initializable() {
+
+            @Override
+            public void initialize() {
+                smodelInterpreter.reset();
+            }
+
+            @Override
+            public void dispose() {
+            }
+        });
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(null,
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
@@ -148,6 +163,15 @@ public class ModelledReliabilityPcmExperienceSimulationExecutorFactory
         StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
         stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
+        Path qaPath = getResourcePath().resolve("qas");
+        try {
+            Files.createDirectories(qaPath);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        IQualityLogger qualityLogger = createQualityLogger(qaPath, pcmMeasurementSpecs);
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityLogger);
+        beforeExecutionInitializables.add(qualityLogger);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();

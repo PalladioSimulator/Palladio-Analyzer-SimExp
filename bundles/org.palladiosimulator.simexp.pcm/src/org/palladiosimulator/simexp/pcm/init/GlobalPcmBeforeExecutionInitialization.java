@@ -5,20 +5,23 @@ import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.util.IExperimentProvider;
 
 public class GlobalPcmBeforeExecutionInitialization implements Initializable {
-	
-	private final IExperimentProvider experimentProvider;
-	private final IQVToReconfigurationManager qvtoReconfigurationManager;
-	
-	public GlobalPcmBeforeExecutionInitialization(IExperimentProvider experimentProvider, IQVToReconfigurationManager qvtoReconfigurationManager) {
-		this.experimentProvider = experimentProvider;
-		this.qvtoReconfigurationManager = qvtoReconfigurationManager;
-	}
-	
 
-	@Override
-	public void initialize() {
-		experimentProvider.initializeExperimentRunner();
-		qvtoReconfigurationManager.resetReconfigurator();
-	}
+    private final IExperimentProvider experimentProvider;
+    private final IQVToReconfigurationManager qvtoReconfigurationManager;
 
+    public GlobalPcmBeforeExecutionInitialization(IExperimentProvider experimentProvider,
+            IQVToReconfigurationManager qvtoReconfigurationManager) {
+        this.experimentProvider = experimentProvider;
+        this.qvtoReconfigurationManager = qvtoReconfigurationManager;
+    }
+
+    @Override
+    public void initialize() {
+        experimentProvider.initializeExperimentRunner();
+        qvtoReconfigurationManager.resetReconfigurator();
+    }
+
+    @Override
+    public void dispose() {
+    }
 }

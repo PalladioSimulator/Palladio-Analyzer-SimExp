@@ -45,6 +45,10 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
     }
 
     @Override
+    public void dispose() {
+    }
+
+    @Override
     public void monitor(State state) {
         SelfAdaptiveSystemState<?, ?, ?> sasState = (SelfAdaptiveSystemState<?, ?, ?>) state;
         for (SimulatedMeasurementSpecification measurementSpec : measurementSpecs) {
@@ -62,5 +66,4 @@ public class QualityEvaluator implements IQualityEvaluator, StateQuantityMonitor
             currentRun.put(measurementName, measurements);
         }
     }
-
 }

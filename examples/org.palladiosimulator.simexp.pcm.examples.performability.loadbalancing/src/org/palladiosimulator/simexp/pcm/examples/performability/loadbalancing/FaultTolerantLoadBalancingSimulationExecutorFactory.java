@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.examples.performability.loadbalancing;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.experimentautomation.experiments.Experiment;
@@ -34,6 +37,7 @@ import org.palladiosimulator.simexp.markovian.activity.Policy;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.IQualityLogger;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.StateQuantityMonitorDispatcher;
@@ -58,6 +62,7 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class FaultTolerantLoadBalancingSimulationExecutorFactory
         extends SimulatorPcmExperienceSimulationExecutorFactory<Double, List<InputValue<CategoricalValue>>> {
+    private static final Logger LOGGER = Logger.getLogger(FaultTolerantLoadBalancingSimulationExecutorFactory.class);
     public static final Threshold LOWER_THRESHOLD_RT = Threshold.greaterThanOrEqualTo(0.1);
     public static final Threshold UPPER_THRESHOLD_RT = Threshold.lessThanOrEqualTo(0.4);
 
@@ -107,6 +112,15 @@ public class FaultTolerantLoadBalancingSimulationExecutorFactory
         StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
         stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
+        Path qaPath = getResourcePath().resolve("qas");
+        try {
+            Files.createDirectories(qaPath);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        IQualityLogger qualityLogger = createQualityLogger(qaPath, pcmMeasurementSpecs);
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityLogger);
+        beforeExecutionInitializables.add(qualityLogger);
 
         PerformabilityStrategyConfiguration config = new PerformabilityStrategyConfiguration(SERVER_FAILURE_TEMPLATE_ID,
                 LOAD_BALANCER_ID);

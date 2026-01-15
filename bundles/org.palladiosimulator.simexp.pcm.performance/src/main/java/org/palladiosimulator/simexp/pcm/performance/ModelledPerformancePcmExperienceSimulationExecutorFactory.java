@@ -1,5 +1,7 @@
 package org.palladiosimulator.simexp.pcm.performance;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.palladiosimulator.envdyn.api.entity.bn.DynamicBayesianNetwork;
 import org.palladiosimulator.envdyn.api.entity.bn.InputValue;
 import org.palladiosimulator.envdyn.environment.staticmodel.ProbabilisticModelRepository;
@@ -41,6 +44,7 @@ import org.palladiosimulator.simexp.model.strategy.ModelledSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationManager;
 import org.palladiosimulator.simexp.pcm.action.IQVToReconfigurationProvider;
 import org.palladiosimulator.simexp.pcm.action.QVToReconfiguration;
+import org.palladiosimulator.simexp.pcm.examples.executor.IQualityLogger;
 import org.palladiosimulator.simexp.pcm.examples.executor.StateQuantityMonitorDispatcher;
 import org.palladiosimulator.simexp.pcm.init.GlobalPcmBeforeExecutionInitialization;
 import org.palladiosimulator.simexp.pcm.modelled.ModelledModelLoader;
@@ -59,7 +63,8 @@ import tools.mdsd.probdist.api.random.ISeedProvider;
 
 public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         extends ModelledPcmExperienceSimulationExecutorFactory<Integer, List<InputValue<CategoricalValue>>> {
-
+    private static final Logger LOGGER = Logger
+        .getLogger(ModelledPerformancePcmExperienceSimulationExecutorFactory.class);
     private final static double UPPER_THRESHOLD_RT = 2.0;
     private final static double LOWER_THRESHOLD_RT = 0.3;
 
@@ -113,7 +118,17 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         Monitor monitor = new PcmMonitor(pcmMeasurementSpecs, probeValueProvider, environmentVariableValueProvider);
         SmodelInterpreter smodelInterpreter = new SmodelInterpreter(smodel, probeValueProvider,
                 envVariableValueProvider, optimizableValueProvider);
-        beforeExecutionInitializables.add(() -> smodelInterpreter.reset());
+        beforeExecutionInitializables.add(new Initializable() {
+
+            @Override
+            public void initialize() {
+                smodelInterpreter.reset();
+            }
+
+            @Override
+            public void dispose() {
+            }
+        });
         String reconfigurationStrategyId = smodel.getModelName();
         Policy<QVTOReconfigurator, QVToReconfiguration> reconfStrategy = new ModelledReconfigurationStrategy(null,
                 reconfigurationStrategyId, monitor, smodelInterpreter, smodelInterpreter, qvtoReconfigurationManager);
@@ -130,6 +145,15 @@ public class ModelledPerformancePcmExperienceSimulationExecutorFactory
         StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
         stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
+        Path qaPath = getResourcePath().resolve("qas");
+        try {
+            Files.createDirectories(qaPath);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        IQualityLogger qualityLogger = createQualityLogger(qaPath, pcmMeasurementSpecs);
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityLogger);
+        beforeExecutionInitializables.add(qualityLogger);
 
         boolean isHidden = false;
         ExperienceSimulator<PCMInstance, QVTOReconfigurator, Integer> experienceSimulator = createExperienceSimulator(

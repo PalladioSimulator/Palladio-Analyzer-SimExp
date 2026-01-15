@@ -41,6 +41,7 @@ import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTModelAcce
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIoTReconfigurationParamsLoader;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.DeltaIotCSVSystemConfigurationStatisticSink;
 import org.palladiosimulator.simexp.pcm.examples.deltaiot.util.SystemConfigurationTracker;
+import org.palladiosimulator.simexp.pcm.examples.executor.IQualityLogger;
 import org.palladiosimulator.simexp.pcm.examples.executor.ModelLoader;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutor;
 import org.palladiosimulator.simexp.pcm.examples.executor.PcmExperienceSimulationExecutorFactory;
@@ -154,10 +155,19 @@ public class DeltaIoTSimulationExecutorFactory extends
                 reconfParamsRepo, modelAccess, systemConfigTracker, reconfCustomizerResolver);
 
         RewardEvaluator<Double> evaluator = new QualityBasedRewardEvaluator(packetLossSpec, energyConsumptionSpec);
-        QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
         StateQuantityMonitorDispatcher stateQuantityMonitorDispatcher = new StateQuantityMonitorDispatcher();
+        QualityEvaluator qualityEvaluator = createQualityEvaluator(prismSimulatedMeasurementSpec);
         stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityEvaluator);
         beforeExecutionInitializables.add(qualityEvaluator);
+        Path qaPath = getResourcePath().resolve("qas");
+        try {
+            Files.createDirectories(qaPath);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        IQualityLogger qualityLogger = createQualityLogger(qaPath, prismSimulatedMeasurementSpec);
+        stateQuantityMonitorDispatcher.addStateQuantityMonitor(qualityLogger);
+        beforeExecutionInitializables.add(qualityLogger);
 
         IQVToReconfigurationProvider qvToReconfigurationProvider = qvtoReconfigurationManager
             .getQVToReconfigurationProvider();

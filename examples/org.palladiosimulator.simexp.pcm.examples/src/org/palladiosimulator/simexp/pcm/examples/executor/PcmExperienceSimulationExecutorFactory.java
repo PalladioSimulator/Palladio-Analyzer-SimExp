@@ -123,6 +123,11 @@ public abstract class PcmExperienceSimulationExecutorFactory<R extends Number, V
         return new QualityEvaluator(measurementSpecs);
     }
 
+    protected IQualityLogger createQualityLogger(Path qaPath,
+            List<? extends SimulatedMeasurementSpecification> measurementSpecs) {
+        return new QualityLogger(qaPath, measurementSpecs);
+    }
+
     protected Optional<ISeedProvider> getSeedProvider() {
         return seedProvider;
     }

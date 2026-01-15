@@ -1,6 +1,8 @@
 package org.palladiosimulator.simexp.core.process;
 
 public interface Initializable {
-	
-	public void initialize();
+
+    void initialize();
+
+    void dispose();
 }
