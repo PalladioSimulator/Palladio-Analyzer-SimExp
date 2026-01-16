@@ -24,6 +24,10 @@ import org.apache.log4j.Logger;
 import org.palladiosimulator.simexp.pcm.prism.entity.PrismContext;
 import org.palladiosimulator.simexp.pcm.prism.service.PrismService;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import de.fzi.srp.simulatedexperience.prism.wrapper.service.impl.PrismLoader;
 
 public class PrismInvocationService implements PrismService {
@@ -31,6 +35,7 @@ public class PrismInvocationService implements PrismService {
     private static final Logger LOGGER = Logger.getLogger(PrismInvocationService.class);
 
     private final Path javaBinary;
+    private final Gson gson;
 
     private int counter = 0;
     private Path prismBinary;
@@ -40,6 +45,11 @@ public class PrismInvocationService implements PrismService {
         Path javaHome = Paths.get(System.getProperty("java.home"));
         this.javaBinary = javaHome.resolve("bin")
             .resolve("java");
+        this.gson = new GsonBuilder() //
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .serializeNulls()
+            .setPrettyPrinting()
+            .create();
     }
 
     @Override
@@ -67,7 +77,8 @@ public class PrismInvocationService implements PrismService {
         try {
             Path modelFile = createModelFile(context, currentCounter);
             Path propertiesFile = createPropertiesFile(context, currentCounter);
-            Path resultFile = prismFolder.resolve(buildPrismFileName(currentCounter, "result"));
+            Path tempDirectory = Files.createTempDirectory("prism");
+            Path resultFile = tempDirectory.resolve(buildPrismFileName(currentCounter, "result"));
 
             List<String> args = new ArrayList<>();
             args.add(prismBinary.toString());
@@ -109,6 +120,7 @@ public class PrismInvocationService implements PrismService {
 
             String propertyName = extractPropertyName(context);
             PrismResult prismResult = readPrismResult(resultFile, propertyName);
+            storeResult(prismResult, context, currentCounter);
             return prismResult;
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new RuntimeException("Failure during prism model checking", e);
@@ -167,6 +179,26 @@ public class PrismInvocationService implements PrismService {
             w.write(context.getPropertyFileContent());
         }
         return propertiesPath;
+    }
+
+    static class PrismResultEntry {
+        public final int id;
+        public final String kind;
+        public final double value;
+
+        public PrismResultEntry(int id, String kind, double value) {
+            this.id = id;
+            this.kind = kind;
+            this.value = value;
+        }
+    }
+
+    private void storeResult(PrismResult prismResult, PrismContext context, int counter) throws IOException {
+        PrismResultEntry resultEntry = new PrismResultEntry(counter, context.getKind(), prismResult.getValue());
+        Path jsonResultFile = prismFolder.resolve(buildPrismFileName(counter, "json"));
+        try (Writer writer = Files.newBufferedWriter(jsonResultFile)) {
+            gson.toJson(resultEntry, writer);
+        }
     }
 
     private String buildPrismFileName(int counter, String type) {
