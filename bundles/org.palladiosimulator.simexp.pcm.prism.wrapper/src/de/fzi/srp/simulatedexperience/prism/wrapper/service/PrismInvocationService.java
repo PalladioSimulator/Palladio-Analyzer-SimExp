@@ -185,14 +185,14 @@ public class PrismInvocationService implements PrismService {
     static class PrismResultEntry {
         public final int id;
         public final String kind;
-        public final double value;
+        public final double result;
         public final long duration;
         public final String durationUnit;
 
-        public PrismResultEntry(int id, String kind, double value, long duration, String durationUnit) {
+        public PrismResultEntry(int id, String kind, double result, long duration, String durationUnit) {
             this.id = id;
             this.kind = kind;
-            this.value = value;
+            this.result = result;
             this.duration = duration;
             this.durationUnit = durationUnit;
         }
