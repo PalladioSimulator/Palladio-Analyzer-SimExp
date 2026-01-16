@@ -50,11 +50,11 @@ public class PrismInvocationService implements PrismService {
     @Override
     public PrismResult modelCheck(PrismContext context) {
         String contentKind = context.getKind();
-        LOGGER.info("Start prism invocation: " + contentKind);
+        LOGGER.info(String.format("Start prism invocation: %s", contentKind));
         long start = System.currentTimeMillis();
         PrismResult result = executeModelCheck(context);
         long end = System.currentTimeMillis();
-        LOGGER.info("Stop prism invocation: " + contentKind + ", Elapsed time in seconds: " + ((end - start) / 1000));
+        LOGGER.info(String.format("Stop prism invocation: %s, duration: %ss", contentKind, (end - start) / 1000));
         return result;
     }
 
