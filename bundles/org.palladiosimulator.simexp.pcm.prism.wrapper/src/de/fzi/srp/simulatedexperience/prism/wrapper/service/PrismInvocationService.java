@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.fzi.srp.simulatedexperience.prism.wrapper.service.impl.PrismLoader;
+import de.fzi.srp.simulatedexperience.prism.wrapper.service.impl.TempDirectory;
 
 public class PrismInvocationService implements PrismService {
 
@@ -74,10 +75,9 @@ public class PrismInvocationService implements PrismService {
     private PrismResult executeModelCheck(PrismContext context) {
         int currentCounter = getCounter();
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        try {
+        try (TempDirectory tempDirectory = new TempDirectory("prism-")) {
             Path modelFile = createModelFile(context, currentCounter);
             Path propertiesFile = createPropertiesFile(context, currentCounter);
-            Path tempDirectory = Files.createTempDirectory("prism");
             Path resultFile = tempDirectory.resolve(buildPrismFileName(currentCounter, "result"));
 
             List<String> args = new ArrayList<>();
