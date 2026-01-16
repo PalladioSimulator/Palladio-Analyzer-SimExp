@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class PrismServiceReplay extends BasePrismService implements PrismReplayS
 
         counterMap.put(context.getKind(), counter + 1);
 
-        PrismResult cachedCheckResult = new PrismResult(extractPrismKey(context), entry.value);
+        PrismResult cachedCheckResult = new PrismResult(extractPrismKey(context), entry.value, Duration.ZERO);
 
         return cachedCheckResult;
     }

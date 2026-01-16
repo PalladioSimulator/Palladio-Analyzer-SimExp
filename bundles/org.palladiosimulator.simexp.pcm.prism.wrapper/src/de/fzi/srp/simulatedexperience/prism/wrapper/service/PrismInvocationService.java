@@ -64,10 +64,8 @@ public class PrismInvocationService implements PrismService {
     public PrismResult modelCheck(PrismContext context) {
         String contentKind = context.getKind();
         LOGGER.info(String.format("Start prism invocation: %s", contentKind));
-        long start = System.currentTimeMillis();
         PrismResult result = executeModelCheck(context);
-        long end = System.currentTimeMillis();
-        Duration duration = Duration.of(end - start, ChronoUnit.MILLIS);
+        Duration duration = result.getDuration();
         LOGGER.info(String.format("Stop prism invocation: %s, duration: %ss", contentKind, duration.toSeconds()));
         return result;
     }
@@ -92,6 +90,7 @@ public class PrismInvocationService implements PrismService {
                 .toFile());
             pb.environment()
                 .put("PRISM_JAVA", javaBinary.toString());
+            long start = System.currentTimeMillis();
             Process p = pb.start();
 
             Path prismLogPath = prismFolder.resolve("prism.log");
@@ -117,9 +116,11 @@ public class PrismInvocationService implements PrismService {
                     stdoutFuture.get();
                 }
             }
+            long end = System.currentTimeMillis();
+            Duration duration = Duration.of(end - start, ChronoUnit.MILLIS);
 
             String propertyName = extractPropertyName(context);
-            PrismResult prismResult = readPrismResult(resultFile, propertyName);
+            PrismResult prismResult = readPrismResult(resultFile, propertyName, duration);
             storeResult(prismResult, context, currentCounter);
             return prismResult;
         } catch (IOException | InterruptedException | ExecutionException e) {
@@ -155,12 +156,12 @@ public class PrismInvocationService implements PrismService {
         return propertyName;
     }
 
-    private PrismResult readPrismResult(Path resultFile, String propertyToCheck) throws IOException {
+    private PrismResult readPrismResult(Path resultFile, String propertyToCheck, Duration duration) throws IOException {
         try (BufferedReader r = Files.newBufferedReader(resultFile)) {
             r.readLine();
             String valueString = r.readLine();
             Double value = Double.valueOf(valueString);
-            PrismResult prismResult = new PrismResult(propertyToCheck, value);
+            PrismResult prismResult = new PrismResult(propertyToCheck, value, duration);
             return prismResult;
         }
     }
@@ -185,16 +186,23 @@ public class PrismInvocationService implements PrismService {
         public final int id;
         public final String kind;
         public final double value;
+        public final long duration;
+        public final String durationUnit;
 
-        public PrismResultEntry(int id, String kind, double value) {
+        public PrismResultEntry(int id, String kind, double value, long duration, String durationUnit) {
             this.id = id;
             this.kind = kind;
             this.value = value;
+            this.duration = duration;
+            this.durationUnit = durationUnit;
         }
     }
 
     private void storeResult(PrismResult prismResult, PrismContext context, int counter) throws IOException {
-        PrismResultEntry resultEntry = new PrismResultEntry(counter, context.getKind(), prismResult.getValue());
+        long seconds = prismResult.getDuration()
+            .getSeconds();
+        PrismResultEntry resultEntry = new PrismResultEntry(counter, context.getKind(), prismResult.getValue(), seconds,
+                "seconds");
         Path jsonResultFile = prismFolder.resolve(buildPrismFileName(counter, "json"));
         try (Writer writer = Files.newBufferedWriter(jsonResultFile)) {
             gson.toJson(resultEntry, writer);
