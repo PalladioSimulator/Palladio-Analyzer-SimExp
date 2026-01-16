@@ -145,11 +145,10 @@ public class PrismInvocationService implements PrismService {
 
     private PrismResult readPrismResult(Path resultFile, String propertyToCheck) throws IOException {
         try (BufferedReader r = Files.newBufferedReader(resultFile)) {
-            PrismResult prismResult = new PrismResult();
             r.readLine();
             String valueString = r.readLine();
             Double value = Double.valueOf(valueString);
-            prismResult.addResult(propertyToCheck, value);
+            PrismResult prismResult = new PrismResult(propertyToCheck, value);
             return prismResult;
         }
     }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -43,18 +44,18 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
     @Override
     public void simulate(State state) {
         PcmSelfAdaptiveSystemState<A, V> pcmState = PcmSelfAdaptiveSystemState.class.cast(state);
-        PrismResult result = modelCheck(pcmState);
-        retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), result);
+        List<PrismResult> results = modelCheck(pcmState);
+        retrieveAndSetStateQuantities(pcmState.getQuantifiedState(), results);
     }
 
-    private PrismResult modelCheck(PcmSelfAdaptiveSystemState<A, V> sasState) {
-        PrismResult result = new PrismResult();
+    private List<PrismResult> modelCheck(PcmSelfAdaptiveSystemState<A, V> sasState) {
+        List<PrismResult> results = new ArrayList<>();
         for (PrismSimulatedMeasurementSpec each : filterPrismSpecs(sasState)) {
             PrismContext context = prismGenerator.generate(sasState, each);
             PrismResult resultToMerge = prismService.modelCheck(context);
-            result.mergeWith(resultToMerge);
+            results.add(resultToMerge);
         }
-        return result;
+        return results;
     }
 
     private List<PrismSimulatedMeasurementSpec> filterPrismSpecs(PcmSelfAdaptiveSystemState<A, V> sasState) {
@@ -67,14 +68,13 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
     }
 
     // Assuming that specification name is equal to property name.
-    private void retrieveAndSetStateQuantities(StateQuantity quantity, PrismResult result) {
+    private void retrieveAndSetStateQuantities(StateQuantity quantity, List<PrismResult> results) {
         for (SimulatedMeasurementSpecification each : quantity.getMeasurementSpecs()) {
             PrismSimulatedMeasurementSpec prismEach = (PrismSimulatedMeasurementSpec) each;
             File propertyFile = prismEach.getPropertyFile();
             try {
                 String prismProperty = readPrismProperty(propertyFile.toPath());
-                Optional<Double> value = result.getResultOf(prismProperty);
-//                Optional<Double> value = result.getResultOf(each.getName());
+                Optional<Double> value = findResult(results, prismProperty);
                 if (!value.isPresent()) {
                     throw new RuntimeException(String.format("property not found: %s", each.getName()));
                 }
@@ -86,6 +86,16 @@ public class PcmBasedPrismExperienceSimulationRunner<A, V> implements Experience
             }
 
         }
+    }
+
+    private Optional<Double> findResult(List<PrismResult> results, String property) {
+        for (PrismResult result : results) {
+            if (result.getProperty()
+                .equals(property)) {
+                return Optional.of(result.getValue());
+            }
+        }
+        return Optional.empty();
     }
 
     private String readPrismProperty(Path propertyFile) throws IOException {

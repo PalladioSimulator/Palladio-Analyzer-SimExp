@@ -87,8 +87,7 @@ public class PrismServiceReplay extends BasePrismService implements PrismReplayS
 
         counterMap.put(context.getKind(), counter + 1);
 
-        PrismResult cachedCheckResult = new PrismResult();
-        cachedCheckResult.addResult(extractPrismKey(context), entry.value);
+        PrismResult cachedCheckResult = new PrismResult(extractPrismKey(context), entry.value);
 
         return cachedCheckResult;
     }
