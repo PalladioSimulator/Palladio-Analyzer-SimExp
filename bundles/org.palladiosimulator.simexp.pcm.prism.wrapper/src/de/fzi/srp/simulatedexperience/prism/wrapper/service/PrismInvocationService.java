@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -54,7 +56,8 @@ public class PrismInvocationService implements PrismService {
         long start = System.currentTimeMillis();
         PrismResult result = executeModelCheck(context);
         long end = System.currentTimeMillis();
-        LOGGER.info(String.format("Stop prism invocation: %s, duration: %ss", contentKind, (end - start) / 1000));
+        Duration duration = Duration.of(end - start, ChronoUnit.MILLIS);
+        LOGGER.info(String.format("Stop prism invocation: %s, duration: %ss", contentKind, duration.toSeconds()));
         return result;
     }
 
