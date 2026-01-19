@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 import json
 import csv
+import statistics
 
 import tabulate
 
@@ -55,9 +56,7 @@ def main():
                 qas[property_name] = values
         runs.append(qas)
 
-    headers = ['Run', 'Sample',
-               'Energy', 'Packet Loss'
-               ]
+    headers = ['Run', 'Energy Average', 'Packet Loss Average']
 
     table_entries = []
 
@@ -65,20 +64,20 @@ def main():
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
         for r, run in enumerate(runs):
-            samples = list(zip(run["EnergyConsumption"], run["PacketLoss"]))
-            for s, sample in enumerate(samples):
-                table_entries.append([r, s, sample[0], sample[1]])
-                writer.writerow({'Run': r,
-                                 'Sample': s,
-                                 'Energy': sample[0],
-                                 'Packet Loss': sample[1],
-                                 })
+            mean_energy = statistics.mean(run["EnergyConsumption"])
+            mean_packet_loss = statistics.mean(run["PacketLoss"])
+            table_entries.append([r, mean_energy, mean_packet_loss])
+            writer.writerow({'Run': r,
+                             'Energy Average': mean_energy,
+                             'Packet Loss Average': mean_packet_loss,
+                             })
 
     table_str = tabulate.tabulate(table_entries,
                                   headers=headers,
                                   tablefmt="simple"
                                   )
     print(table_str)
+
 
 if __name__ == "__main__":
     main()
