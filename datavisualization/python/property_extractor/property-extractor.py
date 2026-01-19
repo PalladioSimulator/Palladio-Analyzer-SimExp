@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import json
+import csv
 
 import tabulate
 
@@ -30,7 +31,7 @@ def main():
     default = ' (default: %(default)s)'
     parser.add_argument('--input-dir', type=Path, help="PRISM folder containing results")
     parser.add_argument('--sample-count', default=96, help="sample count per run" + default)
-    parser.add_argument('-r', '--result', type=Path, required=True, help="json result file")
+    parser.add_argument('-r', '--result', type=Path, required=True, help="CSV result file")
     args = parser.parse_args()
 
     files = [f for f in args.input_dir.iterdir() if f.is_file()]
@@ -54,18 +55,24 @@ def main():
                 qas[property_name] = values
         runs.append(qas)
 
-    with args.result.open("w") as f:
-        json.dump(runs, f, indent=2)
-
     headers = ['Run', 'Sample',
                'Energy', 'Packet Loss'
                ]
 
     table_entries = []
-    for r, run in enumerate(runs):
-        samples = list(zip(run["EnergyConsumption"], run["PacketLoss"]))
-        for s, sample in enumerate(samples):
-            table_entries.append([r, s, sample[0], sample[1]])
+
+    with args.result.open("w") as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
+        writer.writeheader()
+        for r, run in enumerate(runs):
+            samples = list(zip(run["EnergyConsumption"], run["PacketLoss"]))
+            for s, sample in enumerate(samples):
+                table_entries.append([r, s, sample[0], sample[1]])
+                writer.writerow({'Run': r,
+                                 'Sample': s,
+                                 'Energy': sample[0],
+                                 'Packet Loss': sample[1],
+                                 })
 
     table_str = tabulate.tabulate(table_entries,
                                   headers=headers,
