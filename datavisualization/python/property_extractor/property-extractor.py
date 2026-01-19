@@ -2,6 +2,8 @@ import argparse
 from pathlib import Path
 import json
 
+import tabulate
+
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
@@ -55,6 +57,21 @@ def main():
     with args.result.open("w") as f:
         json.dump(runs, f, indent=2)
 
+    headers = ['Run', 'Sample',
+               'Energy', 'Packet Loss'
+               ]
+
+    table_entries = []
+    for r, run in enumerate(runs):
+        samples = list(zip(run["EnergyConsumption"], run["PacketLoss"]))
+        for s, sample in enumerate(samples):
+            table_entries.append([r, s, sample[0], sample[1]])
+
+    table_str = tabulate.tabulate(table_entries,
+                                  headers=headers,
+                                  tablefmt="simple"
+                                  )
+    print(table_str)
 
 if __name__ == "__main__":
     main()
