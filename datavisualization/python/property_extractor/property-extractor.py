@@ -9,33 +9,18 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 
-def extract_property_name(line):
-    # Rmax=? [ F "EnergyConsumption" ]
-    # P=? [ F "Packetloss" ]
-    name = line.split('"')[1]
-    return name
-
-
-def read_property_name(prism_folder, result_number):
-    property_file = prism_folder / ("prism_%s.properties" % result_number)
-    with open(property_file) as f:
-        line = next(f)
-        property_name = extract_property_name(line)
-        return property_name
-
-
 def read_sample(sample_file):
-    with open(sample_file) as f:
-        next(f)
-        value_str = next(f)
-        value = float(value_str)
-
-    result_number = sample_file.stem.split("_")[1]
-    property_name = read_property_name(sample_file.parent, result_number)
+    sample_data = read_json_file(sample_file)
     return {
-        "value": value,
-        "property_name": property_name,
+        "value": sample_data["result"],
+        "property_name": sample_data["kind"],
     }
+
+
+def read_json_file(json_file):
+    with json_file.open("r", encoding="utf-8") as f:
+        result = json.load(f)
+        return result
 
 
 def main():
@@ -43,15 +28,20 @@ def main():
     default = ' (default: %(default)s)'
     parser.add_argument('--input-dir', type=Path, help="PRISM folder containing results")
     parser.add_argument('--sample-count', default=96, help="sample count per run" + default)
+    parser.add_argument('-r', '--result', type=Path, required=True, help="json result file")
     args = parser.parse_args()
 
     files = [f for f in args.input_dir.iterdir() if f.is_file()]
-    result_files = [file for file in files if file.suffix == ".result"]
+    result_files = [file for file in files if file.suffix == ".json"]
+    print("found result files: %d" % len(result_files))
     sorted_results = sorted(result_files, key=lambda x: x.stem)
 
+    run_results = [c for c in chunks(sorted_results, args.sample_count * 2)]
+    print("found runs:         %d" % len(run_results))
+
     runs = []
-    for i, samples in enumerate(chunks(sorted_results, args.sample_count * 2)):
-        print("run: %d" % (i + 1))
+    for i, samples in enumerate(run_results):
+        #print("run: %d" % (i + 1))
         qas = {}
         for sample_pair in chunks(samples, 2):
             for sample in sample_pair:
@@ -62,8 +52,8 @@ def main():
                 qas[property_name] = values
         runs.append(qas)
 
-    with open("result.json", "w") as f:
-        print(json.dump(runs, f, indent=2))
+    with args.result.open("w") as f:
+        json.dump(runs, f, indent=2)
 
 
 if __name__ == "__main__":
