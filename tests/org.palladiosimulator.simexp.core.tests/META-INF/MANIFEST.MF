@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.palladiosimulator.simexp.core.tests
 Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.palladiosimulator.simexp.core;bundle-version="1.0.0"
+Fragment-Host: org.palladiosimulator.simexp.core
 Automatic-Module-Name: org.palladiosimulator.simexp.core.test
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit,

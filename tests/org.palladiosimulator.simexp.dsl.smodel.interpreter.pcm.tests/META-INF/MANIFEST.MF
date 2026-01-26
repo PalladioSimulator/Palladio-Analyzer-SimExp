@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.tests
 Bundle-Version: 0.1.0.qualifier
-Fragment-Host: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm;bundle-version="0.1.0"
+Fragment-Host: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm
 Automatic-Module-Name: org.palladiosimulator.simexp.dsl.smodel.interpreter.pcm.tests
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.junit;bundle-version="4.13.0",
@@ -11,4 +11,4 @@ Require-Bundle: org.junit;bundle-version="4.13.0",
  net.bytebuddy.byte-buddy;bundle-version="1.10.9",
  net.bytebuddy.byte-buddy-agent;bundle-version="1.10.9",
  org.objenesis;bundle-version="2.6.0",
- org.palladiosimulator.pcm.edp2.measuringpoint;bundle-version="5.2.0"
+ org.palladiosimulator.pcm.edp2.measuringpoint
