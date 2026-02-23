@@ -193,6 +193,8 @@ class SimulationResult:
 
         max_gen = max([entry["generation"] for entry in entries])
         sorted_entries = sorted(entries, key=lambda e: e["generation"] if e["generation"] >= 0 else max_gen+1)
+        if sorted_entries[-1]["generation"] == -1:
+            sorted_entries[-1]["generation"] = max_gen+1
 
         headers = ['generation', 'file', "entry", "id", "reward", "energy_consumption_average", "packet_loss_average"]
         table_entries = []
